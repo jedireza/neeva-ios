@@ -57,6 +57,8 @@ extension Defaults.Keys {
 
     // debug settings
     public static let enableBrowserLogging = Defaults.BoolKey("profile_enableBrowserLogging")
+    public static let enableWebKitConsoleLogging = Defaults.BoolKey(
+        "profile_enableWebKitConsoleLogging")
     public static let enableNetworkLogging = Defaults.BoolKey("profile_enableNetworkLogging")
     public static let enableStorageLogging = Defaults.BoolKey("profile_enableStorageLogging")
     public static let enableLogToConsole = Defaults.BoolKey("profile_enableLogToConsole")

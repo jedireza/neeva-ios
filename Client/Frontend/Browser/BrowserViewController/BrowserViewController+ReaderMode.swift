@@ -63,18 +63,6 @@ extension BrowserViewController {
         let backList = webView.backForwardList.backList
         let forwardList = webView.backForwardList.forwardList
 
-        if !WebServer.sharedInstance.server.isRunning {
-            do {
-                try WebServer.sharedInstance.start()
-                log.info("Started GCDWebServers server (READING MODE)")
-            } catch {
-                log.error("Unable to start GCDWebServers server (READING MODE): \(error)")
-                print("Error starting GCDWebServers server")
-            }
-        } else {
-            log.info("GCDWebServers server already running (READING MODE)")
-        }
-
         guard let currentURL = webView.backForwardList.currentItem?.url,
             let readerModeURL = currentURL.encodeReaderModeURL(
                 WebServer.sharedInstance.baseReaderModeURL())
@@ -86,11 +74,15 @@ extension BrowserViewController {
             webView.go(to: forwardList.first!)
         } else {
             // Store the readability result in the cache and load it. This will later move to the ReadabilityHelper.
-            webView.evaluateJavascriptInDefaultContentWorld("\(ReaderModeNamespace).readerize()") {
+            webView.evaluateJavascriptInDefaultContentWorld(
+                "\(ReaderModeNamespace).readerize()"
+            ) {
                 object, error in
                 if let readabilityResult = ReadabilityResult(object: object as AnyObject?) {
                     try? self.readerModeCache.put(currentURL, readabilityResult)
-                    if let nav = webView.load(PrivilegedRequest(url: readerModeURL) as URLRequest) {
+                    if let nav = webView.load(
+                        PrivilegedRequest(url: readerModeURL) as URLRequest)
+                    {
                         self.ignoreNavigationInTab(tab, navigation: nav)
                         log.info("Navigating to reading mode (READING MODE)")
                     }

@@ -450,6 +450,8 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
+        logJSConsoleOutputIfEnabled(for: webView)
+
         locationModel.resetSecureListener()
         updateFindInPageVisibility(visible: false)
 
@@ -997,6 +999,53 @@ extension BrowserViewController: WKNavigationDelegate {
         // If the page failed to fully load, we still consider it finished.
         if let tab = tabManager[webView] {
             navigateInTab(tab: tab, to: navigation, webViewStatus: .finishedNavigation)
+        }
+    }
+}
+
+extension BrowserViewController: WKScriptMessageHandler {
+    /// Prints/Logs everything from JS console.
+    func logJSConsoleOutputIfEnabled(for webView: WKWebView) {
+        guard Defaults[.enableWebKitConsoleLogging] else { return }
+
+        let source = """
+                (function() {
+                     let originalLog = console.log;
+                     let originalWarn = console.warn;
+                     let originalError = console.error;
+                     let originalDebug = console.debug;
+
+                     function handleMessage(msg, type, log) {
+                         window.webkit.messageHandlers.logHandler.postMessage('[' + type + '] ' + msg);
+                         log(msg);
+                     };
+
+                     window.console.log = function captureLog(msg) { handleMessage(msg, 'log', originalLog); };
+                     window.console.warn = function captureWarn(msg) { handleMessage(msg, 'warn', originalWarn);  };
+                     window.console.error = function captureError(msg) { handleMessage(msg, 'error', originalError); };
+                     window.console.debug = function captureDebug(msg) { handleMessage(msg, 'debug', originalDebug); };
+                })();
+            """
+
+        // inject JS to capture console.log output and send to iOS
+        let script = WKUserScript(
+            source: source, injectionTime: .atDocumentStart, forMainFrameOnly: true)
+
+        if !webView.configuration.userContentController.userScripts.contains(script) {
+            webView.configuration.userContentController.addUserScript(script)
+
+            // register the bridge script that listens for the output
+            webView.configuration.userContentController.removeScriptMessageHandler(
+                forName: "logHandler")
+            webView.configuration.userContentController.add(self, name: "logHandler")
+        }
+    }
+
+    func userContentController(
+        _ userContentController: WKUserContentController, didReceive message: WKScriptMessage
+    ) {
+        if Defaults[.enableWebKitConsoleLogging] {
+            log.info("WebKit Console Log: \(message.body)")
         }
     }
 }

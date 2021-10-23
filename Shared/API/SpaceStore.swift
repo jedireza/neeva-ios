@@ -68,7 +68,8 @@ public struct SpaceEntityData {
             yield: nil, ingredients: nil, instructions: nil,
             recipeRating: RecipeRating(
                 maxStars: 0, recipeStars: entity.recipeRating?.recipeStars ?? 0,
-                numReviews: entity.recipeRating?.numReviews ?? 0), reviews: nil, preference: .noPreference)
+                numReviews: entity.recipeRating?.numReviews ?? 0), reviews: nil,
+            preference: .noPreference)
     }
 
 }

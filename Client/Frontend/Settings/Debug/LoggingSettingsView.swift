@@ -6,6 +6,7 @@ import SwiftUI
 
 struct LoggingSettingsView: View {
     @Default(.enableBrowserLogging) var enableBrowserLogging
+    @Default(.enableWebKitConsoleLogging) var enableWebKitConsoleLogging
     @Default(.enableNetworkLogging) var enableNetworkLogging
     @Default(.enableStorageLogging) var enableStorageLogging
     @Default(.enableLogToConsole) var enableLogToConsole
@@ -21,6 +22,7 @@ struct LoggingSettingsView: View {
                 }.font(.system(.body, design: .monospaced))
             }
             Section(header: Text("Options")) {
+                Toggle("Include JS console output (browser)", isOn: $enableWebKitConsoleLogging)
                 Toggle("Log to console", isOn: $enableLogToConsole)
                 Toggle("Log to file", isOn: $enableLogToFile)
             }

@@ -83,6 +83,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         checkForSignInTokenOnDevice()
 
         getAppDelegate().updateTopSitesWidget()
+
+        // If server is already running this won't do anything.
+        // This will restart the server if it was stopped in `sceneDidEnterBackground`.
+        getAppDelegate().setUpWebServer(getAppDelegate().profile)
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -93,10 +97,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
 
         bvc.downloadQueue.resumeAll()
-        
-        // If server is already running this won't do anything.
-        // This will restart the server if it was stopped in `sceneDidEnterBackground`.
-        getAppDelegate().setUpWebServer(getAppDelegate().profile)
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

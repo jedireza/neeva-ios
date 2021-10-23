@@ -34,8 +34,7 @@ class WebServer {
             try server.start(options: [
                 GCDWebServerOption_Port: AppInfo.webserverPort,
                 GCDWebServerOption_BindToLocalhost: true,
-                // done by the app in AppDelegate:
-                GCDWebServerOption_AutomaticallySuspendInBackground: false,
+                GCDWebServerOption_AutomaticallySuspendInBackground: true,
                 GCDWebServerOption_AuthenticationMethod: GCDWebServerAuthenticationMethod_Basic,
                 GCDWebServerOption_AuthenticationAccounts: [sessionToken: ""],
             ])
