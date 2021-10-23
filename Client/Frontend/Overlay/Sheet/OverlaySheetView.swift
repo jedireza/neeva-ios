@@ -56,10 +56,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 defaultSize = 0
             case .middle:
                 if isPortraitMode(outerGeometry) {
-                    defaultSize =
-                        model.peekHeight == 0
-                        ? outerGeometry.size.height / 2
-                        : outerGeometry.size.height - model.peekHeight
+                    defaultSize = outerGeometry.size.height / 2
                 } else {
                     defaultSize = 0  // Landscape mode does not support half-height
                 }
@@ -172,7 +169,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                         .ignoresSafeArea(edges: .bottom)
                         .gesture(topDrag)
                 )
-
             }
         }
         .onReceive(keyboardPublisher) { height in
@@ -250,8 +246,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             if self.model.position == .top && !keyboardIsVisible
                 && self.model.deltaHeight < 4 * OverlaySheetUX.slideThreshold
             {
-                newPosition = .middle
-            } else if model.peekHeight > 0 {
                 newPosition = .middle
             } else {
                 self.model.hide()

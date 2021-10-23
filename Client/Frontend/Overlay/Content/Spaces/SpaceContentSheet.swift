@@ -12,7 +12,6 @@ enum SpaceContentSheetUX {
 struct SpaceContentSheet: View {
     @ObservedObject var model: SpaceContentSheetModel
     @ObservedObject var scrollingController: TabScrollingController
-    let overlayModel: OverlaySheetModel = OverlaySheetModel()
 
     init(model: SpaceContentSheetModel, scrollingController: TabScrollingController) {
         self.model = model
@@ -22,27 +21,16 @@ struct SpaceContentSheet: View {
     var body: some View {
         if let _ = model.currentSpaceEntityDetail {
             GeometryReader { geom in
-                OverlaySheetView(model: overlayModel, style: .spaces, onDismiss: {}) {
-                    VStack {
-                        SpacePageContent(model: model)
-                        Spacer()
-                    }
+                BottomSheetView(peekContentHeight: SpaceContentSheetUX.SpaceInfoThumbnailSize, onDismiss: {}
+                ) {
+                    SpacePageContent(model: model)
                 }
-                .clipped()
-                .shadow(radius: 2)
                 .offset(
                     x: 0,
                     y: -geom.size.height * scrollingController.headerTopOffset
                         / scrollingController.headerHeight
                 )
                 .animation(.easeInOut)
-                .onAppear {
-                    DispatchQueue.main.async {
-                        overlayModel.peekHeight =
-                            SpaceContentSheetUX.SpaceInfoThumbnailSize + overlayModel.topBarHeight
-                        overlayModel.show()
-                    }
-                }
             }
         }
     }

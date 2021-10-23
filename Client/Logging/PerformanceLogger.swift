@@ -2,7 +2,6 @@
 import Defaults
 import Shared
 
-
 enum PerformanceLoggerAttribute: String {
     case crashed
     case pageLoaded

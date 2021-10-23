@@ -132,14 +132,26 @@ struct RecipeView: View {
         HStack(alignment: .center) {
             if let recipeRating = recipeRating {
                 if recipeRating.recipeStars > 0 {
-                    ForEach((1...Int(floor(normalizeRating(stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars)))), id: \.self) { _ in
+                    ForEach(
+                        (1...Int(
+                            floor(
+                                normalizeRating(
+                                    stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars
+                                )))), id: \.self
+                    ) { _ in
                         Image(systemSymbol: .starFill)
                             .renderingMode(.template)
                             .foregroundColor(Color.brand.orange)
                             .font(.system(size: 12))
                             .padding(.trailing, -4)
                     }
-                    if round(normalizeRating(stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars)) > floor(normalizeRating(stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars)) {
+                    if round(
+                        normalizeRating(
+                            stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars))
+                        > floor(
+                            normalizeRating(
+                                stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars))
+                    {
                         Image(systemSymbol: .starLeadinghalfFill)
                             .renderingMode(.template)
                             .foregroundColor(Color.brand.orange)
@@ -187,7 +199,8 @@ struct RecipeView: View {
     func toggleShowMoreRecipeButton() {
         if !expanded {
             if let tabUUID = tabUUID, let url = currentURL?.absoluteString {
-                RecipeCheatsheetLogManager.shared.logInteraction(logType: .clickShowMoreRecipe, tabUUIDAndURL: tabUUID + url)
+                RecipeCheatsheetLogManager.shared.logInteraction(
+                    logType: .clickShowMoreRecipe, tabUUIDAndURL: tabUUID + url)
             }
         }
         expanded.toggle()

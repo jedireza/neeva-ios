@@ -259,7 +259,8 @@ struct OtherOptionsPage: View {
                     SignUpWithMicrosoftButton(
                         action: {
                             logOtherOptionsSignupWithMicrosoftClick()
-                            buttonAction(.oauthWithProvider(.microsoft, marketingEmailOptOut, "", ""))
+                            buttonAction(
+                                .oauthWithProvider(.microsoft, marketingEmailOptOut, "", ""))
                         },
                         onSignInMode: $onSignInMode
                     ).padding(.top, 10)

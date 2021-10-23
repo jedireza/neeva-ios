@@ -108,7 +108,9 @@ enum NavigationPath {
         return nil
     }
 
-    private static func openUrlFromComponents(bvc: BrowserViewController, components: URLComponents) -> NavigationPath {
+    private static func openUrlFromComponents(bvc: BrowserViewController, components: URLComponents)
+        -> NavigationPath
+    {
         let url = components.valueForQuery("url")?.asURL
 
         // If attempting to sign in, skip first run screen
@@ -248,7 +250,9 @@ enum NavigationPath {
             }
         }
 
-        if let value = value?.replacingOccurrences(of: "+", with: " ").removingPercentEncoding, let newURL = neevaSearchEngine.searchURLForQuery(value) {
+        if let value = value?.replacingOccurrences(of: "+", with: " ").removingPercentEncoding,
+            let newURL = neevaSearchEngine.searchURLForQuery(value)
+        {
             return newURL
         } else {
             return url
