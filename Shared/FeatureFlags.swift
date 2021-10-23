@@ -23,7 +23,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case swipePlusPlus = "Additional forward and back swipe gestures"
     case homeAsSuggestedSite = "Home as Suggested Site"
     case enableOldSuggestUI = "Enable Old Suggestion List UI"
-    case enableNeevaDomainList = "Enable Neeva Domain List"
 
     public init?(caseName: String) {
         for value in FeatureFlag.allCases where "\(value)" == caseName {

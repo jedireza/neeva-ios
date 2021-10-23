@@ -113,11 +113,6 @@ class TPStatsBlocklists {
     }
 
     func load() {
-        if FeatureFlag[.enableNeevaDomainList] {
-            TrackingPreventionUtils.generateRules()
-            return
-        }
-
         // All rules have this prefix on the domain to match.
         let standardPrefix = "^https?://([^/]+\\.)?"
 
@@ -180,14 +175,6 @@ class TPStatsBlocklists {
     }
 
      func urlIsInList(_ url: URL, mainDocumentURL: URL, safelistedDomains: [String]) -> Bool {
-         if FeatureFlag[.enableNeevaDomainList] {
-             if (ContentBlocker.shared.setupCompleted && TrackingPreventionUtils.domainSet.contains(url.baseDomain ?? "")) {
-                 return true
-             }
-
-             return false
-         }
-
          let resourceString = url.absoluteString
 
          guard let firstPartyDomain = mainDocumentURL.baseDomain, let baseDomain = url.baseDomain, let rules = blockRules[baseDomain] else {

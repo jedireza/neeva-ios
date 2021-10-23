@@ -18,7 +18,6 @@ struct TrackingPreventionUtils {
         return nil
     }
 
-    static var domainSet = Set<String>()
     static let maxDomainsPerRule = 20
     static let maxRulesAllowedInContentBlocker = 50000
 
@@ -108,44 +107,5 @@ struct TrackingPreventionUtils {
             rules.append(unblockedRule(domains: groupedPatterns))
         }
         return rules
-    }
-
-    @discardableResult static func generateRules() -> [TrackingPreventionRule]  {
-        let domains = readDomains()
-        var rules: [TrackingPreventionRule] = []
-        if domains != nil {
-            do {
-                let domainsJson: [String] = try JSONDecoder().decode([String].self, from: domains!.data(using: .utf8)!)
-                domainSet = Set(domainsJson)
-                rules = blockingRules(domains: domainsJson) + upgradeAllToHTTPSRule() + unblockedRules()
-            } catch {
-                // Handle
-            }
-        }
-        return rules
-    }
-
-    static let containerUrl = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
-
-    public static let contentBlockerListUrl = containerUrl.appendingPathComponent("contentBlockerList").appendingPathExtension("json")
-
-    public static func contentBlockerExists()-> Bool {
-        if FileManager.default.fileExists(atPath: contentBlockerListUrl.path) {
-            return true
-        }
-        return false
-    }
-
-
-    @discardableResult static func generateContentBlocker()-> URL {
-        let rules = generateRules()
-
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(rules)
-            try data.write(to: contentBlockerListUrl, options: .atomic)
-        } catch {
-        }
-        return contentBlockerListUrl
     }
 }

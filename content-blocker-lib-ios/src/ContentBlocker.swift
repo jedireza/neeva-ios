@@ -8,13 +8,10 @@ import Foundation
 import Defaults
 
 enum BlocklistCategory: CaseIterable {
-    case neeva
     case easyPrivacy
 
     static func fromFile(_ file: BlocklistFileName) -> BlocklistCategory {
         switch file {
-        case .neeva:
-            return .neeva
         case .easyPrivacy:
             return .easyPrivacy
         }
@@ -22,18 +19,14 @@ enum BlocklistCategory: CaseIterable {
 }
 
 enum BlocklistFileName: String, CaseIterable {
-    case neeva = "contentBlockerList"
     case easyPrivacy = "easy_privacy"
 
     var filename: String { return self.rawValue }
 
-    static var neevaStrength: [BlocklistFileName] { return [.neeva] }
     static var easyPrivacyStrength: [BlocklistFileName] { return [.easyPrivacy] }
 
     static func listsForMode(strength: BlockingStrength) -> [BlocklistFileName] {
         switch strength {
-        case .neeva:
-            return BlocklistFileName.neevaStrength
         case .easyPrivacy:
             return BlocklistFileName.easyPrivacyStrength
         }
@@ -116,21 +109,6 @@ class ContentBlocker {
 extension ContentBlocker {
     private func loadJsonFromBundle(forResource file: String, completion: @escaping (_ jsonString: String) -> Void) {
         DispatchQueue.global().async {
-            if file == BlocklistFileName.neeva.filename {
-                if !TrackingPreventionUtils.contentBlockerExists() {
-                    TrackingPreventionUtils.generateContentBlocker()
-                }
-                guard let source =
-                        try? String(contentsOf: TrackingPreventionUtils.contentBlockerListUrl) else {
-                        assert(false)
-                        return
-                }
-                DispatchQueue.main.async {
-                    completion(source)
-                }
-                return
-            }
-
             guard let path = Bundle.main.path(forResource: file, ofType: "json"),
                   let source = try? String(contentsOfFile: path, encoding: .utf8) else {
                       assert(false)
@@ -243,11 +221,7 @@ extension ContentBlocker {
     func compileListsNotInStore(completion: @escaping () -> Void) {
         //let blocklists = BlocklistFileName.allCases.map { $0.filename }
         var blocklists = [String]()
-        if FeatureFlag[.enableNeevaDomainList] {
-            blocklists = [BlocklistFileName.neeva.filename]
-        } else {
-            blocklists = [BlocklistFileName.easyPrivacy.filename]
-        }
+        blocklists = [BlocklistFileName.easyPrivacy.filename]
         let deferreds: [Deferred<Void>] = blocklists.map { filename in
             let result = Deferred<Void>()
             ruleStore.lookUpContentRuleList(forIdentifier: filename) { contentRuleList, error in

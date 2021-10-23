@@ -12,7 +12,6 @@ extension Defaults.Keys {
 }
 
 enum BlockingStrength: String, Codable {
-    case neeva
     case easyPrivacy
 }
 
@@ -39,8 +38,7 @@ class NeevaTabContentBlocker: TabContentBlocker, TabContentScript {
 
     func setupForTab() {
         guard let tab = tab else { return }
-        let rules = BlocklistFileName.listsForMode(
-            strength: FeatureFlag[.enableNeevaDomainList] ? .neeva : .easyPrivacy)
+        let rules = BlocklistFileName.listsForMode(strength: .easyPrivacy)
         ContentBlocker.shared.setupTrackingProtection(
             forTab: tab, isEnabled: isEnabled, rules: rules)
     }
