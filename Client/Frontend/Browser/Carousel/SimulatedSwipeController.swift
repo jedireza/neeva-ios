@@ -149,7 +149,7 @@ class SimulatedSwipeController:
         } else if let _ = tab.parent {
             view.isHidden = false
             chromeModel.canGoBack = true
-        } else if let _ = tab.parentSpaceID {
+        } else if let id = tab.parentSpaceID, !id.isEmpty {
             view.isHidden = false
             chromeModel.canGoBack = true
         }
