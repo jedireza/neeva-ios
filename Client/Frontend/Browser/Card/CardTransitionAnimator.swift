@@ -68,6 +68,7 @@ struct CardTransitionAnimator: View {
                         gridModel.animationThumbnailState = .hidden
                     },
                     fromFalseToTrue: {
+                        gridModel.scrollToSelectedTab()
                         gridModel.hideWithNoAnimation()
                         tabGroupModel.detailedTabGroup = nil
                     }
@@ -85,8 +86,13 @@ struct CardTransitionAnimator: View {
             }
         }
         .useEffect(deps: gridModel.animationThumbnailState) { _ in
+            /// In addition to making the grid visible, we need to make sure that the
+            /// card for the selected tab is visible. When showing the card grid, we
+            /// want to do that upfront. When hiding the card grid, we want to do that
+            /// after the animation completes. See `fromFalseToTrue` above.
             switch gridModel.animationThumbnailState {
             case .visibleForTrayShow:
+                gridModel.scrollToSelectedTab()
                 withAnimation(animation) {
                     gridModel.isHidden = false
                 }

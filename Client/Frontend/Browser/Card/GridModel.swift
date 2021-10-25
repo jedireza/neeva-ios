@@ -25,6 +25,12 @@ class GridModel: ObservableObject {
     @Published var selectedCardFrame: CGRect = .zero
     @Published var selectedTabGroupFrame: CGRect = .zero
 
+    @Published var needsScrollToSelectedTab: Int = 0
+
+    func scrollToSelectedTab() {
+        needsScrollToSelectedTab += 1
+    }
+
     func show() {
         animationThumbnailState = .visibleForTrayShow
         updateVisibility(false)

@@ -91,7 +91,7 @@ struct CardGrid: View {
         }
     }
 
-    func updateCardSize(width: CGFloat, isHidden: Bool, topToolbar: Bool) {
+    func updateCardSize(width: CGFloat, topToolbar: Bool) {
         if width > 1000 {
             columnCount = 4
         } else {
@@ -115,7 +115,8 @@ struct CardGrid: View {
                     )
                     .background(
                         gridModel.animationThumbnailState == .hidden
-                            ? Color.TrayBackground : Color.clear)
+                            ? Color.TrayBackground : Color.clear
+                    )
                     .modifier(SwipeToSwitchToSpacesGesture(model: gridModel))
 
                 Group {
@@ -162,7 +163,7 @@ struct CardGrid: View {
                         width: geom.size.width))
             }
             .useEffect(
-                deps: geom.size.width, gridModel.isHidden, topToolbar, perform: updateCardSize
+                deps: geom.size.width, topToolbar, perform: updateCardSize
             )
             .useEffect(deps: geom.size, geom.safeAreaInsets) { self.geom = ($0, $1) }
             .onReceive(

@@ -28,6 +28,10 @@ struct CardsContainer: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
 
+    // Used to rebuild the scene when switching between portrait and landscape.
+    @State var orientation: UIDeviceOrientation = .unknown
+    @State var generationId: Int = 0
+
     let columns: [GridItem]
 
     var body: some View {
@@ -49,8 +53,9 @@ struct CardsContainer: View {
                                 )
                             }
                     }
-                }.offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
-                    .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+                }
+                .offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
+                .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
 
                 ScrollView(.vertical, showsIndicators: false) {
                     ScrollViewReader { scrollProxy in
@@ -71,27 +76,21 @@ struct CardsContainer: View {
                                 }
                         }
                         .padding(.vertical, CardGridUX.GridSpacing)
-                        .useEffect(
-                            deps: tabModel.selectedTabID, gridModel.animationThumbnailState
-                        ) { (_, _) in
-                            // Call scrollTo when the CardTransitionAnimator finishes or the selected
-                            // tab changes, but only if the card grid is hidden. This way the user
-                            // does not see the scrolling happen.
-                            if gridModel.animationThumbnailState == .hidden && gridModel.isHidden {
-                                // In case the newly selected card is also a newly added card, give
-                                // the card grid time to update and generate that card before we try
-                                // to scroll to it.
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                    scrollProxy.scrollTo(tabModel.selectedTabID)
-                                }
-                            }
+                        .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
+                            scrollProxy.scrollTo(tabModel.selectedTabID)
                         }
                     }
-                }.environment(\.columns, columns)
-                    .offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
-                    .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+                }
+                .environment(\.columns, columns)
+                .offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
+                .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+                .onAppear {
+                    gridModel.scrollToSelectedTab()
+                }
             }
-        }.onChange(of: gridModel.switcherState) { value in
+        }
+        .id(generationId)
+        .onChange(of: gridModel.switcherState) { value in
             guard case .spaces = value, !seenSpacesIntro else {
                 return
             }
@@ -104,6 +103,14 @@ struct CardsContainer: View {
                     gridModel.showSpaces()
                 })
             seenSpacesIntro = true
+        }
+        .onReceive(
+            NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
+        ) { _ in
+            if self.orientation.isLandscape != UIDevice.current.orientation.isLandscape {
+                generationId += 1
+            }
+            self.orientation = UIDevice.current.orientation
         }
     }
 }
