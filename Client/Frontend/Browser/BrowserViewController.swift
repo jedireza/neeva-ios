@@ -386,6 +386,10 @@ class BrowserViewController: UIViewController {
                     }
                 }
             }
+        } else {
+            DispatchQueue.main.async {
+                SpaceStore.suggested.refresh()
+            }
         }
     }
 
@@ -1419,7 +1423,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
         if NeevaUserInfo.shared.isUserLoggedIn
             && url.absoluteString.starts(with: NeevaConstants.appSpacesURL.absoluteString)
         {
-            tabContentHost.updateContent(.hideZeroQuery)
+            hideZeroQuery()
             cardGridViewController.rootView.openSpace(spaceID: url.lastPathComponent)
             return
         }

@@ -31,9 +31,11 @@ struct SuggestedSpacesView: View {
                     // show the 3 most recently updated spaces
                     ForEach(spaceStore.allSpaces.prefix(itemsToShow)) { space in
                         Button(action: {
-                            ClientLogger.shared.logCounter(
-                                .RecommendedSpaceVisited,
-                                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                            if !NeevaUserInfo.shared.isUserLoggedIn {
+                                ClientLogger.shared.logCounter(
+                                    .RecommendedSpaceVisited,
+                                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                            }
                             openURL(space.url)
                         }) {
                             SuggestedSpaceView(space: space)

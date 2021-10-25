@@ -38,12 +38,14 @@ class GridModel: ObservableObject {
         updateSpaces()
     }
 
-    func showSpaces() {
+    func showSpaces(forceUpdate: Bool = true) {
         animationThumbnailState = .hidden
         switcherState = .spaces
         isHidden = false
         updateVisibility(false)
-        updateSpaces()
+        if forceUpdate {
+            updateSpaces()
+        }
     }
 
     func hideWithAnimation() {

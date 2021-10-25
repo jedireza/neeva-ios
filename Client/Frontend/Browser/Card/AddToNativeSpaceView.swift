@@ -53,7 +53,7 @@ private struct iOS15InputField: View {
             if case .descriptionField = title {
                 TextEditor(text: $inputText)
                     .withFont(unkerned: .bodyLarge)
-                    .frame(maxWidth: .infinity, minHeight: 80)
+                    .frame(maxWidth: .infinity, minHeight: 80, maxHeight: 110)
                     .fixedSize(horizontal: false, vertical: true)
                     .focused($isFocused, equals: title)
                     .accentColor(textEditAccentColor(type: title))
@@ -86,7 +86,7 @@ private struct LegacyInputField: View {
             if case .descriptionField = title {
                 TextEditor(text: $inputText)
                     .withFont(unkerned: .bodyLarge)
-                    .frame(maxWidth: .infinity, minHeight: 80)
+                    .frame(maxWidth: .infinity, minHeight: 80, maxHeight: 110)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
                 TextField(bodyText, text: $inputText)

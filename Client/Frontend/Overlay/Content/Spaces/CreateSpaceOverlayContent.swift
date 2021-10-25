@@ -17,9 +17,8 @@ struct CreateSpaceOverlayContent: View {
                     switch state {
                     case .success:
                         SpaceStore.shared.refresh()
-                        subscription = SpaceStore.shared.$state.sink { state in
-                            if case .ready = state, spaceModel.allDetails.first?.title == spaceName
-                            {
+                        subscription = spaceModel.objectWillChange.sink {
+                            if spaceModel.allDetails.first?.title == spaceName {
                                 DispatchQueue.main.async {
                                     spaceModel.allDetails.first?.isShowingDetails = true
                                     subscription?.cancel()

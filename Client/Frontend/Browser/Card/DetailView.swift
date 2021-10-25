@@ -266,8 +266,8 @@ where
         ).actionSheet(isPresented: $showConfirmDeleteAlert) {
             ActionSheet(
                 title: Text(
-                    "Are you sure you want to" + (space?.ACL == .owner ? "delete" : "unfollow")
-                        + "this space?"),
+                    "Are you sure you want to " + (space?.ACL == .owner ? "delete" : "unfollow")
+                        + " this space?"),
                 buttons: [
                     .destructive(
                         Text(space?.ACL == .owner ? "Delete Space" : "Unfollow Space"),
