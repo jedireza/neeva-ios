@@ -12,6 +12,10 @@ class NotificationManager: ObservableObject {
     static let promoIdKey = "PromoId"
     static let shared = NotificationManager()
 
+    public struct notificationKey {
+        public static let deeplinkURL = "deeplinkURL"
+    }
+
     @Published var notifications = [BaseNotification]() {
         didSet {
             saveNotitificationsToDevice(notifications)
@@ -192,6 +196,47 @@ class NotificationManager: ObservableObject {
                 }
             }
         }.store(in: &subscriptions)
+    }
+
+    // MARK: - Notification Handler
+    func handleNotification(request: UNNotificationRequest, bvc: BrowserViewController) {
+        switch NotificationType(rawValue: request.identifier) {
+        case .neevaPromo:
+            var tapAction: LocalNotitifications.LocalNotificationTapAction
+            if !NeevaUserInfo.shared.isUserLoggedIn {
+                bvc.presentIntroViewController(true)
+                tapAction = LocalNotitifications.LocalNotificationTapAction.openIntroView
+            } else {
+                bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
+                tapAction = LocalNotitifications.LocalNotificationTapAction.openWelcomeTour
+            }
+            var attributes = [
+                ClientLogCounterAttribute(
+                    key: LogConfig.NotificationAttribute.localNotificationTapAction,
+                    value: tapAction.rawValue)
+            ]
+            if let promoId = request.content.userInfo[NotificationManager.promoIdKey] as? String {
+                attributes.append(
+                    ClientLogCounterAttribute(
+                        key: LogConfig.NotificationAttribute.localNotificationPromoId,
+                        value: promoId)
+                )
+            }
+            ClientLogger.shared.logCounter(
+                .OpenLocalNotification,
+                attributes: attributes
+            )
+        case .none:
+            break
+        }
+
+        // handle deeplink
+        if let urlStr = request.content.userInfo[notificationKey.deeplinkURL] as? String,
+            let deeplink = URL(string: urlStr),
+            let routerpath = NavigationPath(bvc: bvc, url: deeplink)
+        {
+            NavigationPath.handle(nav: routerpath, with: bvc)
+        }
     }
 
     // MARK: - Init

@@ -176,11 +176,11 @@ enum NavigationPath {
         SpaceStore.openSpace(spaceId: spaceId) {
             let spaceCardModel = bvc.cardGridViewController.rootView.spaceCardModel
             if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                bvc.cardGridViewController.rootView.openSpace(spaceID: spaceId)
+                bvc.cardGridViewController.rootView.openSpace(spaceID: spaceId, animate: false)
             } else {
                 subscription = spaceCardModel.objectWillChange.sink {
                     if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                        bvc.cardGridViewController.rootView.openSpace(spaceID: spaceId)
+                        bvc.cardGridViewController.rootView.openSpace(spaceID: spaceId, animate: false)
                         subscription?.cancel()
                     }
                 }
