@@ -68,6 +68,12 @@ func getLogCounterAttributesForSpaces(details: SpaceCardDetails?) -> [ClientLogC
         ClientLogCounterAttribute(
             key: LogConfig.SpacesAttribute.isPublic,
             value: String(details?.isSharedPublic ?? false)))
+    if details?.isSharedPublic == true {
+        attributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SpacesAttribute.spaceID,
+                value: String(details?.id ?? "")))
+    }
     attributes.append(
         ClientLogCounterAttribute(
             key: LogConfig.SpacesAttribute.isShared,
@@ -77,6 +83,7 @@ func getLogCounterAttributesForSpaces(details: SpaceCardDetails?) -> [ClientLogC
             key: LogConfig.SpacesAttribute.numberOfSpaceEntities,
             value: String(details?.allDetails.count ?? 1)
         )
+
     )
     return attributes
 }

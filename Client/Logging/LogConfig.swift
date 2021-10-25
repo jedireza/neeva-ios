@@ -354,6 +354,8 @@ public struct LogConfig {
     }
 
     public struct SpacesAttribute {
+        public static let spaceID = "SpaceID"
+        public static let spaceEntityID = "SpaceEntityID"
         public static let isShared = "isShared"
         public static let isPublic = "isPublic"
         public static let numberOfSpaceEntities = "NumberOfSpaceEntities"

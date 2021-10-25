@@ -32,7 +32,7 @@ struct SpaceEntityDetailView: View {
                 onSelected()
                 ClientLogger.shared.logCounter(
                     .SpacesDetailEntityClicked,
-                    attributes: EnvironmentHelper.shared.getAttributes())
+                    attributes: getLogCounterAttributesForSpaceEntities(details: details))
             } label: {
                 if details.isImage, let url = details.data.url {
                     VStack(spacing: 0) {
@@ -115,4 +115,34 @@ struct SpaceEntityDetailView: View {
             .accessibilityLabel(details.title)
             .accessibilityHint("Space Item")
     }
+}
+
+fileprivate func getLogCounterAttributesForSpaceEntities(details: SpaceEntityThumbnail?) -> [ClientLogCounterAttribute] {
+    var attributes = EnvironmentHelper.shared.getAttributes()
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.SpacesAttribute.isPublic,
+            value: String(details?.manager.isPublic ?? false)))
+    if details?.isSharedPublic == true {
+        attributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SpacesAttribute.spaceID,
+                value: String(details?.spaceID ?? "")))
+        attributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SpacesAttribute.spaceEntityID,
+                value: String(details?.id ?? "")))
+    }
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.SpacesAttribute.isShared,
+            value: String(details?.manager.isShared ?? false)))
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.SpacesAttribute.numberOfSpaceEntities,
+            value: String(details?.manager.contentData?.count ?? 1)
+        )
+
+    )
+    return attributes
 }
