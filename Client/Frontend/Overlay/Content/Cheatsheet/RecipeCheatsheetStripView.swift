@@ -29,7 +29,7 @@ struct RecipeCheatsheetStripView: View {
     }
 
     var body: some View {
-        if !recipeModel.recipe.title.isEmpty {
+        if !recipeModel.recipe.title.isEmpty && onAllowedDomain() {
             if presentSheet {
                 recipeView
             } else {
@@ -127,5 +127,14 @@ struct RecipeCheatsheetStripView: View {
         if let tabUUID = tabManager.selectedTab?.tabUUID, let url = tabManager.selectedTab?.url?.absoluteString {
             RecipeCheatsheetLogManager.shared.logInteraction(logType: .impression, tabUUIDAndURL: tabUUID + url)
         }
+    }
+
+    func onAllowedDomain() -> Bool {
+        if let url = self.tabManager.selectedTab?.url {
+            if let host = url.host, let baseDomain = url.baseDomain {
+                return DomainAllowList.recipeDomains[host] ?? false || DomainAllowList.recipeDomains[baseDomain] ?? false
+            }
+        }
+        return false
     }
 }
