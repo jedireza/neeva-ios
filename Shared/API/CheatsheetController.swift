@@ -63,6 +63,22 @@ public struct Recipe {
     }
 }
 
+public struct RelatedRecipe {
+    public var title: String
+    public var imageURL: String
+    public var url: URL
+    public var totalTime: String?
+    public var recipeRating: RecipeRating?
+
+    public init(title: String, imageURL: String, url: URL, totalTime: String?, recipeRating: RecipeRating?) {
+        self.title = title
+        self.imageURL = imageURL
+        self.url = url
+        self.totalTime = totalTime
+        self.recipeRating = recipeRating
+    }
+}
+
 public class CheatsheetQueryController:
     QueryController<CheatsheetInfoQuery, [CheatsheetQueryController.CheatsheetInfo]>
 {

@@ -125,6 +125,7 @@ struct RecipeView: View {
             }
             expandButton
         }
+        .onDisappear(perform: onDisappearCleanup)
     }
 
     @ViewBuilder
@@ -228,5 +229,9 @@ struct RecipeView: View {
     func constructYieldString(input: String) -> String {
         let prefix = input.lowercased().hasPrefix("make") ? "" : "Makes "
         return "\(prefix)\(cleanupText(input: input))"
+    }
+
+    func onDisappearCleanup() {
+        expanded = false
     }
 }

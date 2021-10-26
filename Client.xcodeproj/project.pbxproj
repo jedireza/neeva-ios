@@ -309,6 +309,7 @@
 		BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328D2715324700B9BE1C /* OktaAuth.swift */; };
 		BC9332902715386A00B9BE1C /* RecipeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328F2715386A00B9BE1C /* RecipeBanner.swift */; };
 		BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC93EE852654E31300D1AA07 /* Color.xcassets */; };
+		BCA4D73127226E8000AE5A15 /* RelatedRecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */; };
 		BCA86A52270FEE6B00FC4DE8 /* RecipeCheatsheetStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */; };
 		BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
 		BCC138902656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
@@ -1312,6 +1313,7 @@
 		BC93328D2715324700B9BE1C /* OktaAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaAuth.swift; sourceTree = "<group>"; };
 		BC93328F2715386A00B9BE1C /* RecipeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeBanner.swift; sourceTree = "<group>"; };
 		BC93EE852654E31300D1AA07 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
+		BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedRecipeView.swift; sourceTree = "<group>"; };
 		BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetStripView.swift; sourceTree = "<group>"; };
 		BCC1388E2656CBDB0018D87D /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
 		BCC1389F2656CBE70018D87D /* nicons-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-500.ttf"; sourceTree = "<group>"; };
@@ -2526,6 +2528,7 @@
 				BC8EE06A271CEA6A00D6BE2A /* DomainAllowList.swift */,
 				BC8EE028271A046C00D6BE2A /* SetPreferredProviderView.swift */,
 				BC7D47D32720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift */,
+				BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */,
 			);
 			path = Cheatsheet;
 			sourceTree = "<group>";
@@ -4805,6 +4808,7 @@
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,
 				C9FD1B1F26C1AD7C00926A70 /* TopBarHost.swift in Sources */,
 				C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */,
+				BCA4D73127226E8000AE5A15 /* RelatedRecipeView.swift in Sources */,
 				C8CF648F26FA7DE900C3816F /* FaviconResolver.swift in Sources */,
 				E4B423DD1ABA0318007E66C8 /* ReaderModeHandlers.swift in Sources */,
 				745DAB301CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift in Sources */,

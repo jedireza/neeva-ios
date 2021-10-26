@@ -30,9 +30,11 @@ public struct Product {
 }
 
 public typealias ProductClusterResult = ([Product])
+public typealias RecipeBlockResult = ([RelatedRecipe])
 
 public enum RichResultType {
     case ProductCluster(result: ProductClusterResult)
+    case RecipeBlock(result: RecipeBlockResult)
 }
 
 public class SearchController:
@@ -123,6 +125,30 @@ public class SearchController:
 
                                     let productClusterResuslt = ProductClusterResult(productResult)
                                     let finalResult = RichResultType.ProductCluster(result: productClusterResuslt)
+                                    richResult.append(RichResult(resultType: finalResult))
+                                }
+                            } else if typename == "RecipeBlock" {
+                                if let recipes = typeSpecific.asRecipeBlock?.recipeBlock?.recipes {
+                                    var recipeResult: [RelatedRecipe] = []
+
+                                    for recipe in recipes {
+                                        if let title = recipe.title,
+                                            let imageURL = recipe.imageUrl,
+                                            let urlString = recipe.url {
+                                            let url = URL(string: urlString)!
+
+                                            var recipeRating: RecipeRating?
+
+                                            if let maxStars = recipe.recipeRating?.maxStars, let recipeStars = recipe.recipeRating?.recipeStars, let numReviews = recipe.recipeRating?.numReviews {
+                                                recipeRating = RecipeRating(maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews)
+                                            }
+
+                                            recipeResult.append(RelatedRecipe(title: title, imageURL: imageURL, url: url, totalTime: recipe.totalTime, recipeRating: recipeRating))
+                                        }
+                                    }
+
+                                    let recipeBlockResult = RecipeBlockResult(recipeResult)
+                                    let finalResult = RichResultType.RecipeBlock(result: recipeBlockResult)
                                     richResult.append(RichResult(resultType: finalResult))
                                 }
                             }

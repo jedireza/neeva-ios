@@ -168,6 +168,9 @@ public struct CheatsheetMenuView: View {
                 switch richResult.resultType {
                 case .ProductCluster(let productCluster):
                     return AnyView(ProductClusterList(products: productCluster))
+                case .RecipeBlock(let recipes):
+                    // filter out result already showing on the current page
+                    return AnyView(RelatedRecipeList(recipes: recipes.filter { $0.url != model.currentPageURL }))
                 }
             }
         }
