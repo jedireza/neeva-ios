@@ -8,6 +8,7 @@ struct ReaderModePopover: View {
 
     @EnvironmentObject var textSizeModel: TextSizeModel
     @EnvironmentObject var model: ReaderModeModel
+    @EnvironmentObject var brightnessModel: BrightnessModel
 
     var body: some View {
         VStack {
@@ -55,24 +56,24 @@ struct ReaderModePopover: View {
                         content: {
                             HStack {
                                 OverlayStepperButton(
-                                    action: model.brightnessModel.decrease,
+                                    action: brightnessModel.decrease,
                                     symbol: Symbol(decorative: .minus, style: .bodyLarge),
-                                    foregroundColor: model.brightnessModel.canDecrease
+                                    foregroundColor: brightnessModel.canDecrease
                                         ? .label : .tertiaryLabel
                                 )
-                                .disabled(!model.brightnessModel.canDecrease)
+                                .disabled(!brightnessModel.canDecrease)
 
                                 Spacer()
-                                model.brightnessModel.symbol
+                                brightnessModel.symbol
                                 Spacer()
 
                                 OverlayStepperButton(
-                                    action: model.brightnessModel.increase,
+                                    action: brightnessModel.increase,
                                     symbol: Symbol(decorative: .plus, style: .bodyLarge),
-                                    foregroundColor: model.brightnessModel.canIncrease
+                                    foregroundColor: brightnessModel.canIncrease
                                         ? .label : .tertiaryLabel
                                 )
-                                .disabled(!model.brightnessModel.canIncrease)
+                                .disabled(!brightnessModel.canIncrease)
                             }.padding(.horizontal, -GroupedCellUX.padding)
                         }, roundedCorners: .bottom
                     )
@@ -81,8 +82,8 @@ struct ReaderModePopover: View {
                     .modifier(
                         OverlayStepperAccessibilityModifier(
                             accessibilityLabel: "Screen Brightness",
-                            increment: model.brightnessModel.increase,
-                            decrement: model.brightnessModel.decrease))
+                            increment: brightnessModel.increase,
+                            decrement: brightnessModel.decrease))
                 }
             }
 
@@ -126,5 +127,6 @@ struct ReaderModePopover_Previews: PreviewProvider {
             .environmentObject(
                 ReaderModeModel(
                     setReadingMode: { _ in }, tabManager: SceneDelegate.getTabManager(for: nil)))
+            .environmentObject(BrightnessModel())
     }
 }

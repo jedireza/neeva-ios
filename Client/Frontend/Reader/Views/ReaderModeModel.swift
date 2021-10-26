@@ -3,6 +3,7 @@
 import Defaults
 import Foundation
 import Shared
+import SwiftUI
 
 class ReaderModeModel: ObservableObject {
     @Published private(set) var state: ReaderModeState = .unavailable
@@ -13,7 +14,6 @@ class ReaderModeModel: ObservableObject {
     let tabManager: TabManager
 
     var delegate: ReaderModeDelegate?
-    var brightnessModel = ReaderModeBrightnessModel()
     var isOriginalTabSecure: Bool = false
 
     fileprivate var isUsingUserDefinedColor = false

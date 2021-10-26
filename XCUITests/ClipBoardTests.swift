@@ -13,17 +13,6 @@ class ClipBoardTests: BaseTestCase {
         waitForValueContains(urlField, value: "http://example.com/", timeout: 30)
     }
 
-    // Copy url from the browser
-    func copyUrl() {
-        app.buttons["Address Bar"].tap()
-
-        waitForExistence(app.buttons["Edit Current Address"])
-        app.buttons["Edit Current Address"].press(forDuration: 1)
-
-        waitForExistence(app.buttons["Copy Address"])
-        app.buttons["Copy Address"].tap()
-    }
-
     // Check copied url is same as in browser
     func checkCopiedUrl() {
         if let myString = UIPasteboard.general.string {
@@ -53,5 +42,18 @@ class ClipBoardTests: BaseTestCase {
         app.menuItems["Paste & Go"].tap()
 
         checkUrl()
+    }
+}
+
+extension BaseTestCase {
+    // Copy url from the browser
+    func copyUrl() {
+        app.buttons["Address Bar"].tap()
+
+        waitForExistence(app.buttons["Edit Current Address"])
+        app.buttons["Edit Current Address"].press(forDuration: 1)
+
+        waitForExistence(app.buttons["Copy Address"])
+        app.buttons["Copy Address"].tap()
     }
 }

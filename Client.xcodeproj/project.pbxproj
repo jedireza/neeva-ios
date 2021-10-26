@@ -225,6 +225,7 @@
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
 		66E26DB126E2F80200EB23D6 /* EditURLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E26DB026E2F80200EB23D6 /* EditURLTests.swift */; };
+		66E34CDC2711118900F30A3D /* ReaderModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E34CDB2711118900F30A3D /* ReaderModeTests.swift */; };
 		66E34CDA2710E83600F30A3D /* LocalNotificiations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E34CD92710E83600F30A3D /* LocalNotificiations.swift */; };
 		66ECB5DF26BB264700A1857E /* OverlayStepperModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ECB5DE26BB264700A1857E /* OverlayStepperModifier.swift */; };
 		66EE7D9526CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EE7D9226CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift */; };
@@ -238,7 +239,7 @@
 		66F97CC226F68E01005A26C2 /* ReaderModeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC126F68E01005A26C2 /* ReaderModeModel.swift */; };
 		66F97CC626F69303005A26C2 /* TextSizeStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC526F69303005A26C2 /* TextSizeStepper.swift */; };
 		66F97CC826F69381005A26C2 /* ReaderModeColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC726F69381005A26C2 /* ReaderModeColorPicker.swift */; };
-		66F97CCA26F696B7005A26C2 /* ReaderModeBrightnessModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC926F696B7005A26C2 /* ReaderModeBrightnessModel.swift */; };
+		66F97CCA26F696B7005A26C2 /* BrightnessModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC926F696B7005A26C2 /* BrightnessModel.swift */; };
 		66FA64C4270E62A5008BAEAD /* ReaderModeBlocklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FA64C3270E62A5008BAEAD /* ReaderModeBlocklist.swift */; };
 		67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67292D3226AD2CF200DB1BFA /* AnnotationType.swift */; };
 		673C85D826E090DF006C21B0 /* SuggestionModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */; };
@@ -1221,6 +1222,7 @@
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E26DB026E2F80200EB23D6 /* EditURLTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditURLTests.swift; sourceTree = "<group>"; };
 		66E2ED882697C3B400E01010 /* KeyboardShortcutTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutTests.swift; sourceTree = "<group>"; };
+		66E34CDB2711118900F30A3D /* ReaderModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModeTests.swift; sourceTree = "<group>"; };
 		66E34CD92710E83600F30A3D /* LocalNotificiations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificiations.swift; sourceTree = "<group>"; };
 		66ECB5DE26BB264700A1857E /* OverlayStepperModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayStepperModifier.swift; sourceTree = "<group>"; };
 		66EE7D9226CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAuthPromptOverlayView.swift; sourceTree = "<group>"; };
@@ -1234,7 +1236,7 @@
 		66F97CC126F68E01005A26C2 /* ReaderModeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModeModel.swift; sourceTree = "<group>"; };
 		66F97CC526F69303005A26C2 /* TextSizeStepper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextSizeStepper.swift; sourceTree = "<group>"; };
 		66F97CC726F69381005A26C2 /* ReaderModeColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModeColorPicker.swift; sourceTree = "<group>"; };
-		66F97CC926F696B7005A26C2 /* ReaderModeBrightnessModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModeBrightnessModel.swift; sourceTree = "<group>"; };
+		66F97CC926F696B7005A26C2 /* BrightnessModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessModel.swift; sourceTree = "<group>"; };
 		66FA64C3270E62A5008BAEAD /* ReaderModeBlocklist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModeBlocklist.swift; sourceTree = "<group>"; };
 		67292D3226AD2CF200DB1BFA /* AnnotationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationType.swift; sourceTree = "<group>"; };
 		673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionModelTests.swift; sourceTree = "<group>"; };
@@ -2199,6 +2201,7 @@
 				6666D8C626D40278001AD43F /* LazyTabTests.swift */,
 				2CF449A41E7BFE2C00FD7595 /* NavigationTest.swift */,
 				C80A3D4326A25A9C0001E8A1 /* NeevaSignInTests.swift */,
+				66E34CDB2711118900F30A3D /* ReaderModeTests.swift */,
 				2C3406C71E719F00000FD889 /* SettingsTest.swift */,
 				C850CD57269A00C40096F122 /* TabMenuTests.swift */,
 				66DA9E48268E8EFB001EFF13 /* ToastTests.swift */,
@@ -3573,7 +3576,7 @@
 				66CA6D4626FAE14E0008130A /* Views */,
 				E4CD9E901A6897FB00318571 /* ReaderMode.swift */,
 				66FA64C3270E62A5008BAEAD /* ReaderModeBlocklist.swift */,
-				66F97CC926F696B7005A26C2 /* ReaderModeBrightnessModel.swift */,
+				66F97CC926F696B7005A26C2 /* BrightnessModel.swift */,
 				E4A960051ABB9C450069AD6F /* ReaderModeUtils.swift */,
 				E4B423BD1AB9FE6A007E66C8 /* ReaderModeCache.swift */,
 				E4B423DC1ABA0318007E66C8 /* ReaderModeHandlers.swift */,
@@ -4681,6 +4684,7 @@
 				C832BF7026E0B31500B9A1F8 /* ClipBoardTests.swift in Sources */,
 				C832BF7A26E0B31B00B9A1F8 /* NeevaSignInTests.swift in Sources */,
 				C832BF7126E0B31500B9A1F8 /* DatabaseFixtureTest.swift in Sources */,
+				66E34CDC2711118900F30A3D /* ReaderModeTests.swift in Sources */,
 				C832BF6D26E0B31500B9A1F8 /* HistoryTests.swift in Sources */,
 				6618B51E26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift in Sources */,
 				664825F0268FD106000E7F6A /* XCUIElementExtension.swift in Sources */,
@@ -4884,7 +4888,7 @@
 				4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */,
 				C832BF5926DEE0BB00B9A1F8 /* AddToSpaceOverlayContent.swift in Sources */,
 				66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */,
-				66F97CCA26F696B7005A26C2 /* ReaderModeBrightnessModel.swift in Sources */,
+				66F97CCA26F696B7005A26C2 /* BrightnessModel.swift in Sources */,
 				C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */,
 				BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,

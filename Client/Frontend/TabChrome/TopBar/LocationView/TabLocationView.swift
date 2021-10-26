@@ -114,9 +114,7 @@ struct TabLocationView: View {
                     if gridModel.isHidden {
                         Group {
                             if let url = model.url, !InternalURL.isValid(url: url) {
-                                if readerModeModel.state != .unavailable
-                                    && FeatureFlag[.readingMode]
-                                {
+                                if readerModeModel.state != .unavailable {
                                     LongPressButton {
                                         if readerModeModel.state != .active {
                                             readerModeModel.enableReadingMode()
@@ -130,7 +128,7 @@ struct TabLocationView: View {
                                     .accessibilityLabel(
                                         Text(
                                             readerModeModel.state == .available
-                                                ? "Open Reading Mode"
+                                                ? "Reader Mode"
                                                 : "Reading Mode Settings")
                                     )
                                     .foregroundColor(
@@ -149,6 +147,7 @@ struct TabLocationView: View {
                                             showReaderModeSettings = false
                                         })
                                         .environmentObject(readerModeModel)
+                                        .environmentObject(BrightnessModel())
                                         .environmentObject(
                                             TextSizeModel(
                                                 webView: (readerModeModel.tabManager
