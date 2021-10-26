@@ -20,7 +20,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case spaceComments = "Comments from space on pages"
     case spacify = "Enable button to turn a page into a Space"
     case swipePlusPlus = "Additional forward and back swipe gestures"
-    case homeAsSuggestedSite = "Home as Suggested Site"
     case enableOldSuggestUI = "Enable Old Suggestion List UI"
 
     public init?(caseName: String) {
