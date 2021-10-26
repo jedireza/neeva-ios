@@ -157,8 +157,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                 TopSitesHandler.getTopSites(
                     profile: zeroQueryModel.profile
                 ).uponQueue(.main) { result in
-                    self.suggestedSitesViewModel.sites =
-                        Array(result.prefix(FeatureFlag[.homeAsSuggestedSite] ? 7 : 8))
+                    self.suggestedSitesViewModel.sites = Array(result.prefix(7))
                 }
                 self.suggestedSearchesModel.reload(from: zeroQueryModel.profile)
             }
