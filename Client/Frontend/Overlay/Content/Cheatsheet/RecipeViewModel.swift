@@ -33,6 +33,8 @@ class RecipeViewModel: ObservableObject {
             } else {
                 self.reset()
             }
+        } else {
+            self.reset()
         }
     }
 
