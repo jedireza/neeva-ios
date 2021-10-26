@@ -586,10 +586,12 @@ class BrowserViewController: UIViewController {
             showRestoreTabsAlert()
         } else {
             if !tabManager.restoreTabs() {
-                if Defaults[.createNewTabOnStart] {
-                    tabManager.select(tabManager.addTab())
-                } else {
-                    showTabTray()
+                DispatchQueue.main.async { [unowned self] in
+                     if Defaults[.createNewTabOnStart] {
+                         tabManager.select(tabManager.addTab())
+                     } else {
+                         showTabTray()
+                    }
                 }
             }
         }
