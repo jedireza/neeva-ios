@@ -24,12 +24,14 @@ class IntroViewController: UIViewController {
 
     private lazy var welcomeCard = UIView()
     private var marketingEmailOptOut: Bool = true
+    private var signInMode: Bool
 
     // Closure delegate
     var didFinishClosure: ((FirstRunButtonActions) -> Void)?
 
     // MARK: Initializer
-    init() {
+    init(signInMode: Bool = false) {
+        self.signInMode = signInMode
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -106,7 +108,7 @@ class IntroViewController: UIViewController {
         welcomeCard.snp.makeConstraints { make in
             make.top.left.right.bottom.equalTo(self.view)
         }
-        addSubSwiftUIView(IntroFirstRunView(buttonAction: buttonAction), to: welcomeCard)
+        addSubSwiftUIView(IntroFirstRunView(buttonAction: buttonAction, signInMode: self.signInMode), to: welcomeCard)
         setupWelcomeCard()
     }
 

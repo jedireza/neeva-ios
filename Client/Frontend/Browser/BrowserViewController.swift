@@ -1600,9 +1600,9 @@ extension BrowserViewController: UIAdaptivePresentationControllerDelegate {
 }
 
 extension BrowserViewController {
-    func presentIntroViewController(_ alwaysShow: Bool = false, onDismiss: (() -> Void)? = nil) {
+    func presentIntroViewController(_ alwaysShow: Bool = false, onDismiss: (() -> Void)? = nil, signInMode: Bool = false) {
         if alwaysShow || !Defaults[.introSeen] {
-            showProperIntroVC(onDismiss: onDismiss)
+            showProperIntroVC(onDismiss: onDismiss, signInMode: signInMode)
         }
     }
 
@@ -1617,7 +1617,7 @@ extension BrowserViewController {
         present(onboardingVC, animated: true, completion: nil)
     }
 
-    private func showProperIntroVC(onDismiss: (() -> Void)? = nil) {
+    private func showProperIntroVC(onDismiss: (() -> Void)? = nil, signInMode: Bool = false) {
         func setTokenAndOpenURL(token: String, url: URL) {
             NeevaUserInfo.shared.setLoginCookie(token)
             let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
@@ -1626,7 +1626,7 @@ extension BrowserViewController {
             }
         }
 
-        introViewController = IntroViewController()
+        introViewController = IntroViewController(signInMode: signInMode)
 
         introViewController!.didFinishClosure = { action in
             Defaults[.introSeen] = true
@@ -1654,7 +1654,8 @@ extension BrowserViewController {
                 case .oktaSignup(_, _, _, _):
                     break
                 case .oauthWithProvider(_, _, let token, _):
-                    setTokenAndOpenURL(token: token, url: NeevaConstants.appHomeURL)
+                    // loading appSearchURL to prevent showing marketing site
+                    setTokenAndOpenURL(token: token, url: NeevaConstants.appSearchURL)
                 case .oktaAccountCreated(let token):
                     setTokenAndOpenURL(token: token, url: NeevaConstants.verificationRequiredURL)
                 }

@@ -658,6 +658,28 @@ extension BrowserViewController: WKNavigationDelegate {
                 return
             }
 
+            // for Neeva signup or signin page, open native auth panel
+            if NeevaConstants.isAppHost(url.host), request.httpMethod == "GET" {
+                if url.path == "/p/signup" {
+                    // check if query param contains email
+                    // if user already enter email,
+                    // let user stay on the web sign up flow
+                    let query = url.getQuery()
+
+                    if query["e"] == nil {
+                        self.presentIntroViewController(true)
+                        decisionHandler(.cancel)
+                        return
+                    }
+                } else if url.path == "/signin"
+                    || (url.path == "/search" && !NeevaUserInfo.shared.hasLoginCookie())
+                {
+                    self.presentIntroViewController(true, signInMode: true)
+                    decisionHandler(.cancel)
+                    return
+                }
+            }
+
             decisionHandler(.allow)
             return
         }
