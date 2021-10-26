@@ -14,6 +14,7 @@ class NotificationManager: ObservableObject {
 
     public struct notificationKey {
         public static let deeplinkURL = "deeplinkURL"
+        public static let campaignID = "campaignID"
     }
 
     @Published var notifications = [BaseNotification]() {
@@ -236,6 +237,15 @@ class NotificationManager: ObservableObject {
             let routerpath = NavigationPath(bvc: bvc, url: deeplink)
         {
             NavigationPath.handle(nav: routerpath, with: bvc)
+        }
+
+        if let campaignID = request.content.userInfo[notificationKey.campaignID] as? String {
+            let attributes = [
+                ClientLogCounterAttribute(
+                    key: LogConfig.NotificationAttribute.notificationCampaignId,
+                    value: campaignID)
+            ]
+            ClientLogger.shared.logCounter(.OpenNotification, attributes: attributes)
         }
     }
 

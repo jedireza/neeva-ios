@@ -130,6 +130,7 @@ public struct LogConfig {
         case DenySystemNotification
         case ScheduleLocalNotification
         case OpenLocalNotification
+        case OpenNotification
 
         // recipe cheatsheet
         case RecipeCheatsheetImpression
@@ -289,6 +290,7 @@ public struct LogConfig {
         case .DenySystemNotification: return .Notification
         case .ScheduleLocalNotification: return .Notification
         case .OpenLocalNotification: return .Notification
+        case .OpenNotification: return .Notification
 
         case .RecipeCheatsheetImpression: return .RecipeCheatsheet
         case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
@@ -372,6 +374,7 @@ public struct LogConfig {
         public static let localNotificationTapAction = "LocalNotificationTapAction"
         public static let localNotificationScheduleCallSite = "localNotificationScheduledCallSite"
         public static let localNotificationPromoId = "localNotificationPromoId"
+        public static let notificationCampaignId = "NotificationCampaignId"
     }
 
     public struct PerformanceAttribute {
