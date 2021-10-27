@@ -55,7 +55,9 @@ class GridModel: ObservableObject {
     }
 
     func hideWithAnimation() {
-        animationThumbnailState = .visibleForTrayHidden
+        DispatchQueue.main.async {
+            self.animationThumbnailState = .visibleForTrayHidden
+        }
     }
 
     func hideWithNoAnimation() {
