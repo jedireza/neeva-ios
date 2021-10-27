@@ -131,6 +131,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         log.info("URL passed: \(url)")
 
+        if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+            components.scheme == "http" || components.scheme == "https"
+        {
+            ClientLogger.shared.logCounter(.OpenDefaultBrowserURL)
+        }
+
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {
             Defaults[.appExtensionTelemetryOpenUrl] = nil
         }

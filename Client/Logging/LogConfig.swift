@@ -131,6 +131,7 @@ public struct LogConfig {
         case ScheduleLocalNotification
         case OpenLocalNotification
         case OpenNotification
+        case OpenDefaultBrowserURL  // When url is opened in default browser
 
         // recipe cheatsheet
         case RecipeCheatsheetImpression
@@ -291,6 +292,7 @@ public struct LogConfig {
         case .ScheduleLocalNotification: return .Notification
         case .OpenLocalNotification: return .Notification
         case .OpenNotification: return .Notification
+        case .OpenDefaultBrowserURL: return .Notification
 
         case .RecipeCheatsheetImpression: return .RecipeCheatsheet
         case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
