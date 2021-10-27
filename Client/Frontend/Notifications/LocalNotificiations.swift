@@ -12,11 +12,13 @@ class LocalNotitifications {
         let promoId: String
         let title: String
         let body: String
+        let urlStr: String?
     }
 
     public enum LocalNotificationTapAction: String {
         case openWelcomeTour = "openWelcomeTour"
         case openIntroView = "openIntroView"
+        case openCustomURL = "openCustomURL"
     }
 
     public enum ScheduleCallSite: String {
@@ -100,13 +102,22 @@ class LocalNotitifications {
 
     static func parseNotificationPromoContent(content: String) -> NeevaPromo? {
         let components = content.components(separatedBy: "##")
-        if components.count != 3 {
+        // there should always be promoId, title and body in the content
+        if components.count < 3 {
             return nil
         }
+
+        var urlStr : String?
+
+        if components.count > 3 {
+            urlStr = components[3]
+        }
+
         return NeevaPromo(
             promoId: components[0],
             title: components[1],
-            body: components[2]
+            body: components[2],
+            urlStr: urlStr
         )
     }
 
@@ -135,7 +146,8 @@ class LocalNotitifications {
                 type: type,
                 timeInterval: notificationTriggerInterval,
                 title: neevaPromo.title,
-                body: neevaPromo.body
+                body: neevaPromo.body,
+                urlStr: neevaPromo.urlStr
             ) { _ in }
             Defaults[.lastNeevaPromoScheduledTimeInterval] = Int(Date().timeIntervalSince1970)
             return true
