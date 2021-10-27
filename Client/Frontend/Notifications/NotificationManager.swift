@@ -15,6 +15,7 @@ class NotificationManager: ObservableObject {
     public struct notificationKey {
         public static let deeplinkURL = "deeplinkURL"
         public static let campaignID = "campaignID"
+        public static let localNotificationURL = "localNotificationURL"
     }
 
     @Published var notifications = [BaseNotification]() {
@@ -108,6 +109,7 @@ class NotificationManager: ObservableObject {
         title: String,
         subtitle: String? = nil,
         body: String?,
+        urlStr: String? = nil,
         completionHandler: @escaping (Result<BaseNotification, Error>) -> Void
     ) {
         let content = UNMutableNotificationContent()
@@ -119,6 +121,7 @@ class NotificationManager: ObservableObject {
             content.body = body
         }
         content.userInfo[NotificationManager.promoIdKey] = promoId
+        content.userInfo[NotificationManager.notificationKey.localNotificationURL] = urlStr
 
         // Create the trigger as a repeating event.
         let trigger = UNTimeIntervalNotificationTrigger(
@@ -208,8 +211,14 @@ class NotificationManager: ObservableObject {
                 bvc.presentIntroViewController(true)
                 tapAction = LocalNotitifications.LocalNotificationTapAction.openIntroView
             } else {
-                bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
-                tapAction = LocalNotitifications.LocalNotificationTapAction.openWelcomeTour
+                if let urlStr = request.content.userInfo[NotificationManager.notificationKey.localNotificationURL] as? String,
+                    let url = URL(string: urlStr) {
+                    bvc.openURLInNewTab(url)
+                    tapAction = LocalNotitifications.LocalNotificationTapAction.openCustomURL
+                } else {
+                    bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
+                    tapAction = LocalNotitifications.LocalNotificationTapAction.openWelcomeTour
+                }
             }
             var attributes = [
                 ClientLogCounterAttribute(
