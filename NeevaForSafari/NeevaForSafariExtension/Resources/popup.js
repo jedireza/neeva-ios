@@ -1,0 +1,15 @@
+document.getElementById("neevaRedirectToggle").onclick = function() {
+    browser.runtime.sendMessage({ "savePreference": "neevaRedirect", "value": document.getElementById("neevaRedirectToggle").checked });
+};
+
+document.getElementById("navigateToNeevaButton").onclick = function() {
+    window.open("https://neeva.com");
+};
+
+document.getElementById("downloadNeevaAppButton").onclick = function() {
+    window.open("https://apps.apple.com/us/app/neeva-browser-search-engine/id1543288638");
+};
+
+browser.runtime.sendMessage({ "getPreference": "neevaRedirect"}).then((response) => {
+    document.getElementById("neevaRedirectToggle").checked = response["value"]
+});
