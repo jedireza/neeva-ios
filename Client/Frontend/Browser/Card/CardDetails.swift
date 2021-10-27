@@ -416,4 +416,12 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     func onSelect() {
         isShowingDetails = true
     }
+    
+    func onClose() {
+        if let item = manager.get(for: id) {
+            manager.close(item)
+        }
+
+        ClientLogger.shared.logCounter(.tabGroupClosed)
+    }
 }

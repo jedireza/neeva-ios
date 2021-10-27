@@ -139,6 +139,12 @@ public struct LogConfig {
         case RecipeCheatsheetShowMoreRecipe
         case RecipeCheatsheetClickPreferredProvider
         case RecipeCheatsheetUpdatePreferredProvider
+        
+        // tab group
+        case tabGroupClicked
+        case tabGroupClosed
+        case tabInTabGroupClicked
+        case tabRemovedFromGroup
     }
 
     // Specify a comma separated string with these values to
@@ -157,6 +163,7 @@ public struct LogConfig {
         case RatingsCard = "RatingsCard"
         case Notification = "Notification"
         case RecipeCheatsheet = "RecipeCheatsheet"
+        case TabGroup = "TabGroup"
     }
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
@@ -299,6 +306,11 @@ public struct LogConfig {
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
         case .RecipeCheatsheetClickPreferredProvider: return .RecipeCheatsheet
         case .RecipeCheatsheetUpdatePreferredProvider: return .RecipeCheatsheet
+            
+        case .tabGroupClicked: return .TabGroup
+        case .tabGroupClosed: return .TabGroup
+        case .tabInTabGroupClicked: return .TabGroup
+        case .tabRemovedFromGroup: return .TabGroup
         }
     }
 
@@ -381,5 +393,11 @@ public struct LogConfig {
 
     public struct PerformanceAttribute {
         public static let memoryUsage = "MemoryUsage"
+    }
+    
+    public struct TabGroupAttribute {
+        public static let numTabsRemoved = "NumTabsRemoved"
+        public static let numTabGroupsTotal = "NumTabGroupsTotal"
+        public static let numTabsInTabGroup = "NumTabsInTabGroup"
     }
 }

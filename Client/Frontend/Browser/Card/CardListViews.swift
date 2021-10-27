@@ -44,6 +44,18 @@ struct TabCardsView: View {
                     FittedCard(details: (tabGroupModel.allDetails.first { $0.id == rootID })!)
                         .modifier(HideSelectedForTransition(details: details))
                         .id(details.id)
+                        .environment(\.selectionCompletion) {
+                            var attributes = EnvironmentHelper.shared.getAttributes()
+
+                            attributes.append(
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.TabGroupAttribute.numTabsInTabGroup,
+                                    value: String(tabGroupModel.manager.get(for: details.id)?.children.count ?? 0)
+                                )
+                            )
+
+                            ClientLogger.shared.logCounter(.tabGroupClicked, attributes: attributes)
+                        }
                 } else {
                     FittedCard(details: details)
                         .modifier(HideSelectedForTransition(details: details))

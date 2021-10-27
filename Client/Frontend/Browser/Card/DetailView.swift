@@ -79,6 +79,17 @@ where
                                 }
                                 tabModel.manager.objectWillChange.send()
                                 editMode = .inactive
+                                
+                                var attributes = EnvironmentHelper.shared.getAttributes()
+
+                                attributes.append(
+                                    ClientLogCounterAttribute(
+                                        key: LogConfig.TabGroupAttribute.numTabsRemoved,
+                                        value: String(selectedTabIDs.count)
+                                    )
+                                )
+                                
+                                ClientLogger.shared.logCounter(.tabRemovedFromGroup, attributes: attributes)
                             },
                             label: {
                                 Text("Remove from group")
@@ -494,6 +505,7 @@ where
                                 .modifier(HideSelectedForTransition(details: details))
                                 .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                                 .environment(\.selectionCompletion) {
+                                    ClientLogger.shared.logCounter(.tabInTabGroupClicked)
                                     gridModel.hideWithAnimation()
                                 }
                             if editMode == .active {

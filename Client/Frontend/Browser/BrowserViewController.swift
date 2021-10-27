@@ -1174,8 +1174,17 @@ class BrowserViewController: UIViewController {
 
     func showTabTray() {
         // log show tap tray
+        var attributes = EnvironmentHelper.shared.getAttributes()
+
+        attributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.TabGroupAttribute.numTabGroupsTotal,
+                value: String(cardGridViewController.rootView.tabGroupCardModel.allDetails.count)
+            )
+        )
+
         ClientLogger.shared.logCounter(
-            .ShowTabTray, attributes: EnvironmentHelper.shared.getAttributes())
+            .ShowTabTray, attributes: attributes)
 
         Sentry.shared.clearBreadcrumbs()
 
