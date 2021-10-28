@@ -67,7 +67,11 @@ class SpacesDataQueryController: QueryController<
                                     snippet: entity.spaceEntity?.snippet,
                                     thumbnail: entity.spaceEntity?.thumbnail,
                                     recipe: SpaceEntityData.recipe(
-                                        from: entity.annotations?.web?.recipes?.first)))
+                                        from: entity.annotations?.web?.recipes?.first),
+                                    richEntity: SpaceEntityData.richEntity(
+                                        from: entity.spaceEntity?.content?.typeSpecific?
+                                            .asRichEntity?.richEntity,
+                                        with: entity.spaceEntity?.content?.id ?? "unknown-id")))
                         }
                     }
                     var spaceComments: [SpaceCommentData] = []

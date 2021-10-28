@@ -5,6 +5,7 @@ import Shared
 import SwiftUI
 
 struct SpaceEntityDetailView: View {
+    @EnvironmentObject var tabCardModel: TabCardModel
     let details: SpaceEntityThumbnail
     let onSelected: () -> Void
     let addToAnotherSpace: (URL, String?, String?) -> Void
@@ -20,6 +21,7 @@ struct SpaceEntityDetailView: View {
     }
 
     @State private var isPressed: Bool = false
+    @State private var isPreviewActive: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -28,7 +30,7 @@ struct SpaceEntityDetailView: View {
                 Spacer(minLength: 0)
             }
 
-            Button {
+            let entityDetailView = Button {
                 onSelected()
                 ClientLogger.shared.logCounter(
                     .SpacesDetailEntityClicked,
@@ -68,13 +70,15 @@ struct SpaceEntityDetailView: View {
                                         .frame(width: 12, height: 12)
                                         .cornerRadius(4)
                                 }
-                                Text(details.title)
+                                Text(details.data.richEntity?.title ?? details.title)
                                     .withFont(.bodyMedium)
                                     .lineLimit(2)
                                     .foregroundColor(Color.label)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                            if let snippet = details.description {
+                            if let snippet = details.data.richEntity?.description
+                                ?? details.description
+                            {
                                 Text(snippet)
                                     .withFont(.bodySmall)
                                     .lineLimit(2)
@@ -87,6 +91,40 @@ struct SpaceEntityDetailView: View {
             }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
                 .padding()
                 .background(Color.DefaultBackground)
+
+            if let url = details.richEntityPreviewURL {
+                NavigationLink(
+                    isActive: $isPreviewActive,
+                    destination: {
+                        WebViewContainer(
+                            webView: {
+                                let wv = WKWebView(
+                                    frame: CGRect.zero,
+                                    configuration:
+                                        tabCardModel.manager.selectedTab?
+                                        .webView?.configuration
+                                        ?? WKWebViewConfiguration())
+                                wv.load(URLRequest(url: url))
+                                return wv
+                            }()
+                        ).cornerRadius(16).navigationBarHidden(true)
+                            .highPriorityGesture(
+                                TapGesture()
+                                    .onEnded({
+                                        isPreviewActive = false
+                                    }))
+                    }
+                ) {
+                    HStack {
+                        entityDetailView
+                        Text("Preview")
+                            .withFont(.bodyMedium)
+                            .foregroundColor(.secondaryLabel)
+                    }
+                }.padding(.trailing, 6)
+            } else {
+                entityDetailView
+            }
 
             Spacer(minLength: 0)
         }.scaleEffect(isPressed ? 0.95 : 1)

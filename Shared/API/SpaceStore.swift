@@ -39,6 +39,8 @@ public struct SpaceCommentData {
 public struct SpaceEntityData {
     typealias EntityRecipe = GetSpacesDataQuery.Data.GetSpace.Space.Space.Entity.Annotation.Web
         .Recipe
+    typealias EntityRichEntity = GetSpacesDataQuery.Data.GetSpace.Space
+        .Space.Entity.SpaceEntity.Content.TypeSpecific.AsRichEntity.RichEntity
 
     public let id: String
     public let url: URL?
@@ -46,9 +48,11 @@ public struct SpaceEntityData {
     public let snippet: String?
     public let thumbnail: String?
     public let recipe: Recipe?
+    public let richEntity: RichEntity?
 
     public init(
-        id: String, url: URL?, title: String?, snippet: String?, thumbnail: String?, recipe: Recipe?
+        id: String, url: URL?, title: String?, snippet: String?,
+        thumbnail: String?, recipe: Recipe?, richEntity: RichEntity? = nil
     ) {
         self.id = id
         self.url = url
@@ -56,6 +60,7 @@ public struct SpaceEntityData {
         self.snippet = snippet
         self.thumbnail = thumbnail
         self.recipe = recipe
+        self.richEntity = richEntity
     }
 
     static func recipe(from entity: EntityRecipe?) -> Recipe? {
@@ -72,6 +77,15 @@ public struct SpaceEntityData {
             preference: .noPreference)
     }
 
+    static func richEntity(from entity: EntityRichEntity?, with id: String) -> RichEntity? {
+        guard let entity = entity, let title = entity.title, let subtitle = entity.subTitle,
+            let imageURL = URL(string: entity.images?.first?.thumbnailUrl ?? "")
+        else {
+            return nil
+        }
+
+        return RichEntity(id: id, title: title, description: subtitle, imageURL: imageURL)
+    }
 }
 
 public class Space: Hashable, Identifiable {

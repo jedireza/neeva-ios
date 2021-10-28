@@ -59,6 +59,174 @@ query GetSpacesData($ids: [String!]) {
             title
             snippet
             thumbnail
+            content {
+              id
+              title
+              snippet
+              __typename
+              typeSpecific {
+                __typename
+                ... on RichEntity {
+                  richEntity {
+                    displayBlocks {
+                      header {
+                        headerType
+                        title
+                        body
+                        url
+                        imageURLs
+                        source
+                        owner
+                        preposition
+                      }
+                      series {
+                        title
+                        series {
+                          title
+                          items {
+                            title
+                            length
+                            query
+                            credits {
+                              name
+                              url
+                              query
+                            }
+                          }
+                        }
+                      }
+                      offers {
+                        title
+                        offers {
+                          url
+                          query
+                          price
+                          text
+                          providerCode
+                        }
+                      }
+                      userReview {
+                        reviews {
+                          reviewerName
+                          reviewerOrganization
+                          title
+                          body
+                          url
+                          rating {
+                            maxStars
+                            actualStars
+                          }
+                        }
+                        url
+                      }
+                      review {
+                        reviewerName
+                        reviewerOrganization
+                        title
+                        body
+                        url
+                        rating {
+                          maxStars
+                          actualStars
+                        }
+                      }
+                      tabularData {
+                        title
+                        items {
+                          name
+                          ratingValue {
+                            actualStars
+                            maxStars
+                          }
+                          stringValue
+                        }
+                      }
+                    }
+                    description
+                    images {
+                      height
+                      hostPageURL
+                      name
+                      provider {
+                        type
+                        url
+                      }
+                      thumbnailURL
+                      width
+                    }
+                    title
+                    subTitle
+                    url
+                    wikipediaURL
+                    webSearchQuery
+                    isCollapsed
+                    stockPrice {
+                      ticker
+                      change
+                      changePrice
+                      changePercent
+                      price
+                    }
+                    facts {
+                      label
+                      values {
+                        text
+                        isSeparator
+                        webSearchQuery
+                        entityToken
+                      }
+                    }
+                    socialNetworks {
+                      text
+                      url
+                      icon
+                    }
+                    movie {
+                      releaseYear
+                      rating
+                      genre
+                      duration
+                      trailerThumbnailURL
+                      trailerURL
+                      cast {
+                        thumbnailURL
+                        name
+                      }
+                      reviews {
+                        name
+                        url
+                        rating
+                        thumbnailURL
+                        favIconURL
+                      }
+                      offers {
+                        providerName
+                        rentPrice
+                        buyPrice
+                        isSubscription
+                        url
+                      }
+                    }
+                    episodes {
+                      title
+                      releaseDate
+                      image
+                      webSearchQuery
+                    }
+                    relatedSearches {
+                      title
+                      webSearchQuery
+                      images {
+                        thumbnailURL
+                      }
+                    }
+                    entityToken
+                    favIconURL
+                  }
+                }
+              }
+              actionURL
+            }
           }
           annotations {
             web {

@@ -203,6 +203,15 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
             || pathExtension == "gif"
     }
 
+    var richEntityPreviewURL: URL? {
+        guard let richEntity = data.richEntity else {
+            return nil
+        }
+        let spaceURL = NeevaConstants.appSpacesURL.appendingPathComponent(spaceID).absoluteString
+        return URL(string: "\(spaceURL)#kg-entity-\(richEntity.id)")
+
+    }
+
     init(data: SpaceEntityData, spaceID: String) {
         self.spaceID = spaceID
         self.data = data
@@ -214,6 +223,10 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
 
     @ViewBuilder var thumbnail: some View {
         if let recipe = data.recipe, let imageURL = URL(string: recipe.imageURL) {
+            WebImage(url: imageURL)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        } else if let richEntity = data.richEntity, let imageURL = richEntity.imageURL {
             WebImage(url: imageURL)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
