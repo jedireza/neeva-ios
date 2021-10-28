@@ -6,6 +6,7 @@ struct ReaderModeBlocklist {
     // (host suffix, path prefix)
     static let blockedSites: [(String, String)] = [
         ("neeva.com", "/search"),
+        ("neeva.com", "/spaces"),
         ("google.com", "/search"),
         ("twitter.com", "/home"),
         ("carfax.com", "/vehicle")
