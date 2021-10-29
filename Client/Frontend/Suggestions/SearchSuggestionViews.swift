@@ -111,6 +111,28 @@ extension View {
     }
 }
 
+struct URLDisplayView: View {
+    let url: URL
+
+    @ViewBuilder public var body: some View {
+        HStack(spacing: 0) {
+            if let baseDomain = url.baseDomain {
+                Text(baseDomain)
+                    .withFont(.bodySmall)
+                    .foregroundColor(.label)
+                    .lineLimit(1)
+                    .fixedSize()
+            }
+            if let pathDisplay = url.pathDisplay {
+                Text(pathDisplay)
+                    .withFont(.bodySmall)
+                    .foregroundColor(.secondaryLabel)
+                    .lineLimit(1)
+            }
+        }
+    }
+}
+
 struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: View>: View {
     let action: (() -> Void)?
     let icon: Icon
@@ -377,9 +399,14 @@ struct URLSuggestionView: View {
 
     @ViewBuilder
     var secondaryLabel: some View {
-        if !(suggestion.subtitle?.isEmpty ?? true), let title = suggestion.title {
-            Text(URL(string: suggestion.suggestedUrl)?.normalizedHostAndPathForDisplay ?? title)
-                .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
+        if !(suggestion.subtitle?.isEmpty ?? true) {
+            if let url = URL(string: suggestion.suggestedUrl) {
+                URLDisplayView(url: url)
+            } else if let title = suggestion.title {
+                Text(title)
+                    .withFont(.bodySmall)
+                    .foregroundColor(.secondaryLabel).lineLimit(1)
+            }
         }
     }
 

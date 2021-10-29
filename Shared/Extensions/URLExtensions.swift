@@ -304,6 +304,16 @@ extension URL {
         return self
     }
 
+    public var pathDisplay: String? {
+        var pathDisplay = ""
+        pathComponents.forEach { component in
+            if component != "/" {
+                pathDisplay += " \u{203A} " + component
+            }
+        }
+        return pathDisplay.count > 0 ? pathDisplay : nil
+    }
+
     public var normalizedHost: String? {
         // Use components.host instead of self.host since the former correctly preserves
         // brackets for IPv6 hosts, whereas the latter strips them.

@@ -23,6 +23,7 @@ extension SuggestionView: Inspectable {}
 extension Symbol: Inspectable {}
 extension BoldSpanView: Inspectable {}
 extension NavSuggestionsList: Inspectable {}
+extension URLDisplayView: Inspectable {}
 
 class SuggestionViewsTests: XCTestCase {
     func testQuerySuggestion() throws {
@@ -83,7 +84,11 @@ class SuggestionViewsTests: XCTestCase {
         let labels = try hStack.vStack(1).findAll(ViewType.Text.self)
         let label = try labels[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("Neeva Search", label)
-        let secondaryLabel = try labels[1].string(locale: Locale(identifier: "en"))
+        let secondaryLabelView = try navSuggestion.inspect().find(URLDisplayView.self).actualView()
+        let displayURLHStack = try secondaryLabelView.inspect().find(ViewType.HStack.self)
+        XCTAssertNotNil(hStack)
+        let secondaryLabels = try displayURLHStack.findAll(ViewType.Text.self)
+        let secondaryLabel = try secondaryLabels[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel)
     }
 
@@ -110,7 +115,7 @@ class SuggestionViewsTests: XCTestCase {
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)
-        XCTAssertEqual(1, hStacks.count)
+        XCTAssertEqual(2, hStacks.count)
         let labels0 = try hStacks[0].vStack(1).findAll(ViewType.Text.self)
         let label0 = try labels0[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("Neeva Search", label0)
