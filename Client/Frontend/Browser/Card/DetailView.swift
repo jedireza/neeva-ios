@@ -20,6 +20,7 @@ where
     Details.Thumbnail: AccessingManagerProvider
 {
     @Default(.tabGroupNames) var tabGroupDict: [String: String]
+    @Default(.showDescriptions) var showDescriptions
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
@@ -79,7 +80,7 @@ where
                                 }
                                 tabModel.manager.objectWillChange.send()
                                 editMode = .inactive
-                                
+
                                 var attributes = EnvironmentHelper.shared.getAttributes()
 
                                 attributes.append(
@@ -88,8 +89,9 @@ where
                                         value: String(selectedTabIDs.count)
                                     )
                                 )
-                                
-                                ClientLogger.shared.logCounter(.tabRemovedFromGroup, attributes: attributes)
+
+                                ClientLogger.shared.logCounter(
+                                    .tabRemovedFromGroup, attributes: attributes)
                             },
                             label: {
                                 Text("Remove from group")
@@ -261,10 +263,19 @@ where
         }
     }
 
+    @ViewBuilder var descriptionToggle: some View {
+        Toggle(isOn: $showDescriptions) {
+            Text("Show Descriptions")
+                .withFont(.labelMedium)
+                .foregroundColor(.secondaryLabel)
+        }
+    }
+
     @ViewBuilder var menuButton: some View {
         Menu(
             content: {
                 deleteButton
+                descriptionToggle
                 editButton
                 addButton
                 webUIButton
@@ -393,7 +404,8 @@ where
                 ForEach(primitive.allDetails, id: \.id) { details in
                     if let entity = details.manager.get(for: details.id) {
                         if let url = entity.primitiveUrl,
-                           let spaceEntityDetails = details as? SpaceEntityThumbnail {
+                            let spaceEntityDetails = details as? SpaceEntityThumbnail
+                        {
                             SpaceEntityDetailView(
                                 details: spaceEntityDetails,
                                 onSelected: {

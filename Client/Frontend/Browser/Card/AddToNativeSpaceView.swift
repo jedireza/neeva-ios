@@ -53,10 +53,14 @@ private struct iOS15InputField: View {
             if case .descriptionField = title {
                 TextEditor(text: $inputText)
                     .withFont(unkerned: .bodyLarge)
-                    .frame(maxWidth: .infinity, minHeight: 80, maxHeight: 110)
+                    .frame(
+                        maxWidth: .infinity, minHeight: 80,
+                        maxHeight: isFocused == title ? .infinity : 110
+                    )
                     .fixedSize(horizontal: false, vertical: true)
                     .focused($isFocused, equals: title)
                     .accentColor(textEditAccentColor(type: title))
+                    .animation(.easeInOut)
             } else {
                 TextField(bodyText, text: $inputText)
                     .withFont(unkerned: .bodyLarge)

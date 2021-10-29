@@ -87,9 +87,11 @@ public class SocialInfoUpdater: ObservableObject {
             return ogDescription
         case .instagram:
             let index = ogTitle.firstIndex(of: ":")
-            return String(
-                ogTitle.suffix(from: ogTitle.index(after: index ?? ogTitle.startIndex))
-                    .dropFirst(2).dropLast())
+            return index == nil
+                ? ""
+                : String(
+                    ogTitle.suffix(from: ogTitle.index(after: index ?? ogTitle.startIndex))
+                        .dropFirst(2).dropLast())
         }
     }
 

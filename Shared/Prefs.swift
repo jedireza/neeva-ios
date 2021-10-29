@@ -101,6 +101,8 @@ extension Defaults.Keys {
         "spacesIntroSeen", default: false)
     public static let seenSpacesShareIntro = Defaults.Key<Bool>(
         "spacesShareIntroSeen", default: false)
+    public static let showDescriptions = Defaults.Key<Bool>(
+        "showSpaceEntityDescription", default: false)
 
     // notification
     public static let lastScheduledNeevaPromoID = Defaults.Key<String?>(

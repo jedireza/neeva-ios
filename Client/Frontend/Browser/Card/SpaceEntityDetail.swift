@@ -1,10 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 
 struct SpaceEntityDetailView: View {
+    @Default(.showDescriptions) var showDescriptions
     @EnvironmentObject var tabCardModel: TabCardModel
     let details: SpaceEntityThumbnail
     let onSelected: () -> Void
@@ -57,34 +59,45 @@ struct SpaceEntityDetailView: View {
                     RecipeBanner(recipe: recipe)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
-                    HStack(spacing: DetailsViewUX.ItemPadding) {
-                        details.thumbnail.frame(
-                            width: DetailsViewUX.ThumbnailSize, height: DetailsViewUX.ThumbnailSize
-                        )
-
-                        .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
-                        VStack(spacing: DetailsViewUX.Padding) {
-                            HStack(spacing: 6) {
-                                if let socialURL = socialURL {
-                                    FaviconView(forSiteUrl: socialURL)
-                                        .frame(width: 12, height: 12)
-                                        .cornerRadius(4)
+                    VStack(spacing: DetailsViewUX.ItemPadding) {
+                        HStack(spacing: DetailsViewUX.ItemPadding) {
+                            details.thumbnail.frame(
+                                width: DetailsViewUX.ThumbnailSize,
+                                height: DetailsViewUX.ThumbnailSize
+                            )
+                            .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                            VStack(spacing: DetailsViewUX.Padding) {
+                                HStack(spacing: 6) {
+                                    if let socialURL = socialURL {
+                                        FaviconView(forSiteUrl: socialURL)
+                                            .frame(width: 12, height: 12)
+                                            .cornerRadius(4)
+                                    }
+                                    Text(details.data.richEntity?.title ?? details.title)
+                                        .withFont(.bodyMedium)
+                                        .lineLimit(2)
+                                        .foregroundColor(Color.label)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                Text(details.data.richEntity?.title ?? details.title)
-                                    .withFont(.bodyMedium)
-                                    .lineLimit(2)
-                                    .foregroundColor(Color.label)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                if let snippet = details.data.richEntity?.description
+                                    ?? details.description, !showDescriptions
+                                {
+                                    Text(snippet)
+                                        .withFont(.bodySmall)
+                                        .lineLimit(2)
+                                        .foregroundColor(Color.secondaryLabel)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                }
                             }
-                            if let snippet = details.data.richEntity?.description
-                                ?? details.description
-                            {
-                                Text(snippet)
-                                    .withFont(.bodySmall)
-                                    .lineLimit(2)
-                                    .foregroundColor(Color.secondaryLabel)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
+                        }
+                        if let snippet = details.data.richEntity?.description
+                            ?? details.description, showDescriptions
+                        {
+                            Text(snippet)
+                                .withFont(.bodySmall)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .foregroundColor(Color.secondaryLabel)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
                 }
@@ -155,7 +168,9 @@ struct SpaceEntityDetailView: View {
     }
 }
 
-fileprivate func getLogCounterAttributesForSpaceEntities(details: SpaceEntityThumbnail?) -> [ClientLogCounterAttribute] {
+private func getLogCounterAttributesForSpaceEntities(details: SpaceEntityThumbnail?)
+    -> [ClientLogCounterAttribute]
+{
     var attributes = EnvironmentHelper.shared.getAttributes()
     attributes.append(
         ClientLogCounterAttribute(
