@@ -115,7 +115,7 @@ extension BrowserViewController {
         }
     }
 
-    override var keyCommands: [UIKeyCommand]? {
+    var keyboardShortcuts: [UIKeyCommand]? {
         let searchLocationCommands = [
             UIKeyCommand(
                 input: UIKeyCommand.inputUpArrow, modifierFlags: [],
@@ -212,6 +212,15 @@ extension BrowserViewController {
         } else if !isEditingText {
             return tabNavigation + overidesTextEditing
         }
+
         return tabNavigation
+    }
+
+    override var keyCommands: [UIKeyCommand]? {
+        return keyboardShortcuts
+    }
+
+    override var canBecomeFirstResponder: Bool {
+        return true
     }
 }

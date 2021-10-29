@@ -163,27 +163,6 @@ class TabManagerTests: XCTestCase {
         delegate.verify("Not all delegate methods were called")
     }
 
-    func testDidCreateNormalTabWhenDeletingAll() {
-        let removeAllTabs = MethodSpy(functionName: "tabManagerDidRemoveAllTabs(_:)")
-
-        //create the tab before adding the mock delegate. So we don't have to check delegate calls we dont care about
-        let tab = manager.addTab()
-        manager.selectTab(tab)
-        let privateTab = manager.addTab(isPrivate: true)
-        manager.selectTab(privateTab)
-        manager.addDelegate(delegate)
-
-        let didSelect = MethodSpy(functionName: spyDidSelectedTabChange) { _ in
-            // test fails if this not called
-        }
-
-        // This test makes sure that a normal tab is always added even when a normal tab is not selected when calling removeAll
-        delegate.expect([didRemove, didAdd, didSelect, removeAllTabs])
-        manager.removeTabsWithToast(manager.normalTabs)
-
-        delegate.verify("Not all delegate methods were called")
-    }
-
     func testDeletePrivateTabsOnExit() {
         Defaults[.closePrivateTabs] = true
 

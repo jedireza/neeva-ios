@@ -603,10 +603,6 @@ class TabManager: NSObject, ObservableObject {
         addTabsToRecentlyClosed(tabsToRemove, allowToast: true)
         removeTabs(tabsToRemove, updatingSelectedTab: true)
 
-        if normalTabs.isEmpty {
-            selectTab(addTab())
-        }
-
         tabsToRemove.forEach({ $0.hideContent() })
         delegates.forEach { $0.get()?.tabManagerDidRemoveAllTabs(self) }
     }
