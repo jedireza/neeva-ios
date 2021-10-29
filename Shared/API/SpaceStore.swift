@@ -37,8 +37,8 @@ public struct SpaceCommentData {
 }
 
 public struct SpaceEntityData {
-    typealias EntityRecipe = GetSpacesDataQuery.Data.GetSpace.Space.Space.Entity.Annotation.Web
-        .Recipe
+    typealias EntityRecipe = GetSpacesDataQuery.Data.GetSpace.Space.Space.Entity.SpaceEntity.Content
+        .TypeSpecific.AsWeb.Web.Recipe
     typealias EntityRichEntity = GetSpacesDataQuery.Data.GetSpace.Space
         .Space.Entity.SpaceEntity.Content.TypeSpecific.AsRichEntity.RichEntity
 

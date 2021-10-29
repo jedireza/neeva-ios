@@ -66,6 +66,19 @@ query GetSpacesData($ids: [String!]) {
               __typename
               typeSpecific {
                 __typename
+                ... on Web {
+                  web {
+                    recipes {
+                      title
+                      imageURL
+                      totalTime
+                      recipeRating {
+                        recipeStars
+                        numReviews
+                      }
+                    }
+                  }
+                }
                 ... on RichEntity {
                   richEntity {
                     displayBlocks {
@@ -226,19 +239,6 @@ query GetSpacesData($ids: [String!]) {
                 }
               }
               actionURL
-            }
-          }
-          annotations {
-            web {
-              recipes {
-                title
-                imageURL
-                totalTime
-                recipeRating {
-                  recipeStars
-                  numReviews
-                }
-              }
             }
           }
         }

@@ -67,7 +67,8 @@ class SpacesDataQueryController: QueryController<
                                     snippet: entity.spaceEntity?.snippet,
                                     thumbnail: entity.spaceEntity?.thumbnail,
                                     recipe: SpaceEntityData.recipe(
-                                        from: entity.annotations?.web?.recipes?.first),
+                                        from: entity.spaceEntity?.content?.typeSpecific?.asWeb?.web?
+                                            .recipes?.first),
                                     richEntity: SpaceEntityData.richEntity(
                                         from: entity.spaceEntity?.content?.typeSpecific?
                                             .asRichEntity?.richEntity,
