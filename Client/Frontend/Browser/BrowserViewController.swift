@@ -873,6 +873,11 @@ class BrowserViewController: UIViewController {
     }
 
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab?) {
+        if BrowserViewController.isCommandKeyPressed && tabManager.getTabCountForCurrentType() > 0 {
+            openURLInBackground(url)
+            return
+        }
+
         if !tabContentHost.promoteToRealTabIfNecessary(
             url: url, tabManager: tabManager, selectedTabIsNil: tab == nil)
         {
@@ -968,6 +973,33 @@ class BrowserViewController: UIViewController {
     func openURLInNewTabPreservingIncognitoState(_ url: URL) {
         let isPrivate = tabManager.isIncognito
         self.openURLInNewTab(url, isPrivate: isPrivate)
+    }
+
+    func openURLInBackground(_ url: URL, isPrivate: Bool? = nil) {
+        let isIncognito = isPrivate == nil ? tabManager.isIncognito : isPrivate!
+
+        let tab = self.tabManager.addTab(
+            URLRequest(url: url), afterTab: tabManager.selectedTab, isPrivate: isIncognito
+        )
+
+        var toastLabelText: String
+
+        if isIncognito {
+            toastLabelText =
+                Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
+        } else {
+            toastLabelText = Strings.ContextMenuButtonToastNewTabOpenedLabelText
+        }
+
+        if let toastManager = self.getSceneDelegate()?.toastViewManager {
+            toastManager.makeToast(
+                text: toastLabelText,
+                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                buttonAction: {
+                    self.tabManager.selectTab(tab)
+                }
+            ).enqueue(manager: toastManager)
+        }
     }
 
     func openBlankNewTab(focusLocationField: Bool, isPrivate: Bool = false) {
@@ -1443,20 +1475,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
 
     func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
         hideZeroQuery()
-
-        let tab = self.tabManager.addTab(
-            URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
-
-        // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-        if let toastManager = getSceneDelegate()?.toastViewManager {
-            toastManager.makeToast(
-                text: Strings.ContextMenuButtonToastNewTabOpenedLabelText,
-                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
-                buttonAction: {
-                    self.tabManager.selectTab(tab)
-                }
-            ).enqueue(manager: toastManager)
-        }
+        openURLInBackground(url, isPrivate: isPrivate)
     }
 
     func zeroQueryPanel(didEnterQuery query: String) {
@@ -1714,19 +1733,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
             screenshotHelper.takeDelayedScreenshot(currentTab)
 
             let addTab = { (rURL: URL, isPrivate: Bool) in
-                let tab = self.tabManager.addTab(
-                    URLRequest(url: rURL as URL), afterTab: currentTab, isPrivate: isPrivate)
-
-                // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
-                if let toastManager = self.getSceneDelegate()?.toastViewManager {
-                    toastManager.makeToast(
-                        text: Strings.ContextMenuButtonToastNewTabOpenedLabelText,
-                        buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
-                        buttonAction: {
-                            self.tabManager.selectTab(tab)
-                        }
-                    ).enqueue(manager: toastManager)
-                }
+                self.openURLInBackground(rURL, isPrivate: isPrivate)
             }
 
             if !isPrivate {

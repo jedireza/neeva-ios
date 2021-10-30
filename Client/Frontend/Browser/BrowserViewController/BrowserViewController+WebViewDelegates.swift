@@ -231,27 +231,7 @@ extension BrowserViewController: WKUIDelegate {
                     else { return nil }
                     let isPrivate = currentTab.isIncognito
                     let addTab = { (rURL: URL, isPrivate: Bool) in
-                        let tab = self.tabManager.addTab(
-                            URLRequest(url: rURL as URL), afterTab: currentTab, isPrivate: isPrivate
-                        )
-                        var toastLabelText: String
-
-                        if isPrivate {
-                            toastLabelText =
-                                Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
-                        } else {
-                            toastLabelText = Strings.ContextMenuButtonToastNewTabOpenedLabelText
-                        }
-
-                        if let toastManager = self.getSceneDelegate()?.toastViewManager {
-                            toastManager.makeToast(
-                                text: toastLabelText,
-                                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
-                                buttonAction: {
-                                    self.tabManager.selectTab(tab)
-                                }
-                            ).enqueue(manager: toastManager)
-                        }
+                        self.openURLInBackground(rURL, isPrivate: isPrivate)
                     }
 
                     let getImageData = { (_ url: URL, success: @escaping (Data) -> Void) in

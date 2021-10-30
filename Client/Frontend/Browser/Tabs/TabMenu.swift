@@ -61,7 +61,7 @@ class TabMenu {
         ) { _ in
             // make sure the user really wants to close all tabs
             self.showConfirmCloseAllTabs(
-                numberOfTabs: self.getTabCountForCurrentType(), fromTabTray: fromTabTray)
+                numberOfTabs: self.tabManager.getTabCountForCurrentType(), fromTabTray: fromTabTray)
         }
         action.accessibilityLabel = "Close All Tabs"
 
@@ -72,16 +72,6 @@ class TabMenu {
 
     func createCloseAllTabsMenu(fromTabTray: Bool) -> UIMenu {
         return UIMenu(sections: [[createCloseAllTabsAction(fromTabTray: fromTabTray)]])
-    }
-
-    func getTabCountForCurrentType() -> Int {
-        let isPrivate = tabManager.isIncognito
-
-        if isPrivate {
-            return tabManager.privateTabs.count
-        } else {
-            return tabManager.normalTabs.count
-        }
     }
 
     // MARK: Recently Closed Tabs

@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import Shared
+import CoreGraphics
 
 // Naming functions: use the suffix 'KeyCommand' for an additional level of namespacing (bug 1415830)
 extension BrowserViewController {
@@ -222,5 +223,47 @@ extension BrowserViewController {
 
     override var canBecomeFirstResponder: Bool {
         return true
+    }
+}
+
+extension BrowserViewController {
+    static var isCommandKeyPressed = false
+
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        // Run backward or forward when the user presses a left or right arrow key.
+
+        var didHandleEvent = false
+        for press in presses {
+            guard let key = press.key else { continue }
+
+            if key.modifierFlags == .command {
+                didHandleEvent = true
+                BrowserViewController.isCommandKeyPressed = true
+            }
+        }
+
+        if didHandleEvent == false {
+            // Didn't handle this key press, so pass the event to the next responder.
+            super.pressesBegan(presses, with: event)
+        }
+    }
+
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        // Stop running when the user releases the left or right arrow key.
+
+        var didHandleEvent = false
+        for press in presses {
+            guard let key = press.key else { continue }
+
+            if key.modifierFlags == .command {
+                didHandleEvent = true
+                BrowserViewController.isCommandKeyPressed = false
+            }
+        }
+
+        if didHandleEvent == false {
+            // Didn't handle this key press, so pass the event to the next responder.
+            super.pressesBegan(presses, with: event)
+        }
     }
 }
