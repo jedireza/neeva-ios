@@ -4,6 +4,8 @@ import Foundation
 
 enum NotificationType: String, Codable {
     case neevaPromo = "neevaPromo"
+    case neevaOnboardingFastTap = "neevaOnboardingFastTap"
+    case neevaOnboardingNewsProvider = "neevaOnboardingNewsProvider"
 }
 
 class BaseNotification: Codable, Identifiable {
@@ -13,6 +15,8 @@ class BaseNotification: Codable, Identifiable {
     let title: String
     let subtitle: String?
     let body: String?
+
+    let deeplinkUrl: String?
 
     let dateReceived: Date
     var dateRead: Date? = nil
@@ -27,7 +31,7 @@ class BaseNotification: Codable, Identifiable {
 
     init(
         id: String = UUID().uuidString, type: NotificationType? = nil, title: String,
-        subtitle: String? = nil, body: String? = nil,
+        subtitle: String? = nil, body: String? = nil, deeplinkUrl: String? = nil,
         dateReceived: Date, dateRead: Date? = nil
     ) {
         self.id = id
@@ -35,6 +39,7 @@ class BaseNotification: Codable, Identifiable {
         self.title = title
         self.subtitle = subtitle
         self.body = body
+        self.deeplinkUrl = deeplinkUrl
         self.dateReceived = dateReceived
         self.dateRead = dateRead
     }
@@ -47,6 +52,7 @@ class NeevaPromoNotification: BaseNotification {
         id: String = UUID().uuidString, promoId: String,
         type: NotificationType? = nil, title: String,
         subtitle: String? = nil, body: String? = nil,
+        deeplinkUrl: String? = nil,
         dateReceived: Date, dateRead: Date? = nil
     ) {
         self.promoId = promoId
@@ -56,6 +62,7 @@ class NeevaPromoNotification: BaseNotification {
             title: title,
             subtitle: subtitle,
             body: body,
+            deeplinkUrl: deeplinkUrl,
             dateReceived: dateReceived,
             dateRead: dateRead
         )

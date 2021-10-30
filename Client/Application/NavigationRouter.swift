@@ -21,6 +21,8 @@ enum NavigationPath {
     case text(String)
     case closePrivateTabs
     case space(String)
+    case fastTap(String)
+    case configNewsProvider(isPrivate: Bool)
 
     private static var subscription : AnyCancellable? = nil
 
@@ -61,6 +63,12 @@ enum NavigationPath {
         } else if urlString.starts(with: "\(scheme)://space"),
                   let spaceId = components.valueForQuery("id") {
             self = .space(spaceId)
+        } else if urlString.starts(with: "\(scheme)://fast-tap"),
+                  let query = components.valueForQuery("query"){
+            self = .fastTap(query)
+        } else if urlString.starts(with: "\(scheme)://configure-news-provider") {
+            let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
+            self = .configNewsProvider(isPrivate: isPrivate)
         } else {
             return nil
         }
@@ -78,6 +86,10 @@ enum NavigationPath {
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
         case .space(let spaceId):
             NavigationPath.handleSpace(spaceId: spaceId, with: bvc)
+        case .fastTap(let query):
+            NavigationPath.handleFastTap(query: query, with: bvc)
+        case .configNewsProvider(let isPrivate):
+            NavigationPath.handleURL(url: NeevaConstants.configureNewsProviderURL, isPrivate: isPrivate, with: bvc)
         }
     }
 
@@ -186,6 +198,11 @@ enum NavigationPath {
                 }
             }
         }
+    }
+
+    private static func handleFastTap(query: String, with bvc: BrowserViewController) {
+        bvc.openLazyTab()
+        bvc.searchQueryModel.value = query
     }
 
     public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {

@@ -68,6 +68,7 @@ public class NeevaFeatureFlags {
         case personalSuggestion = 53771
         case recipeCheatsheet = 55525
         case recipeCardNavigate = 57167
+        case disableLocalNotification = 57492
 
         public var name: String {
             switch self {
@@ -89,6 +90,7 @@ public class NeevaFeatureFlags {
             case .personalSuggestion: return "ios.personal_suggestion"
             case .recipeCheatsheet: return "ios.recipe_cheatsheet"
             case .recipeCardNavigate: return "ios.recipe_card_navigate"
+            case .disableLocalNotification: return "ios.disable_local_notification"
             }
         }
     }

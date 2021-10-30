@@ -129,7 +129,7 @@ class ZeroQueryModel: ObservableObject {
         {
             promoCard = .notificationPermission(
                 action: {
-                    NotificationPermissionHelper.shared.requestPermissionIfNeeded(completion: {
+                    NotificationPermissionHelper.shared.requestPermissionIfNeeded(completion: { authorized in
                         Defaults[.seenNotificationPermissionPromo] = true
                         self.promoCard = nil
                     })

@@ -39,12 +39,12 @@ class NotificationPermissionHelper {
     }
 
     func requestPermissionIfNeeded(
-        completion: (() -> Void)? = nil,
+        completion: ((Bool) -> Void)? = nil,
         openSettingsIfNeeded: Bool = false
     ) {
         isAuthorized { [self] authorized in
             guard !authorized else {
-                completion?()
+                completion?(true)
                 return
             }
 
@@ -56,7 +56,7 @@ class NotificationPermissionHelper {
                     /// If we can't show the iOS system notification because the user denied our first request,
                     /// this will take them to system settings to enable notifications there.
                     SystemsHelper.openSystemSettingsNeevaPage()
-                    completion?()
+                    completion?(false)
                 }
             }
         }
@@ -64,7 +64,7 @@ class NotificationPermissionHelper {
 
     /// Shows the iOS system popup to request notification permission.
     /// Will only show **once**, and if the user has not denied permission already.
-    func requestPermissionFromSystem(completion: (() -> Void)? = nil) {
+    func requestPermissionFromSystem(completion: ((Bool) -> Void)? = nil) {
         UNUserNotificationCenter.current()
             .requestAuthorization(options: [
                 .alert, .sound, .badge, .providesAppNotificationSettings,
@@ -78,7 +78,7 @@ class NotificationPermissionHelper {
                     )
                 }
 
-                completion?()
+                completion?(granted)
 
                 guard granted else {
                     Defaults[.notificationPermissionState] =

@@ -113,6 +113,9 @@ class NotificationManager: ObservableObject {
         deeplinkUrl: String? = nil,
         completionHandler: @escaping (Result<BaseNotification, Error>) -> Void
     ) {
+        if NeevaFeatureFlags.latestValue(.disableLocalNotification) {
+            return
+        }
         let content = UNMutableNotificationContent()
         content.title = title
         if let subtitle = subtitle {
@@ -122,7 +125,9 @@ class NotificationManager: ObservableObject {
             content.body = body
         }
         content.userInfo[NotificationManager.promoIdKey] = promoId
-        content.userInfo[NotificationManager.notificationKey.localNotificationURL] = urlStr
+        if let urlStr = urlStr {
+            content.userInfo[NotificationManager.notificationKey.localNotificationURL] = urlStr
+        }
         if let deeplinkUrl = deeplinkUrl {
             content.userInfo[NotificationManager.notificationKey.deeplinkURL] = deeplinkUrl
         }
@@ -149,6 +154,7 @@ class NotificationManager: ObservableObject {
                     id: identifier, promoId: promoId,
                     type: type, title: title,
                     subtitle: subtitle, body: body,
+                    deeplinkUrl: deeplinkUrl,
                     dateReceived: Date(timeIntervalSinceNow: timeInterval))
                 self.notifications.append(baseNotification)
                 Defaults[.lastScheduledNeevaPromoID] = promoId
@@ -240,6 +246,25 @@ class NotificationManager: ObservableObject {
                 .OpenLocalNotification,
                 attributes: attributes
             )
+        case .neevaOnboardingNewsProvider, .neevaOnboardingFastTap:
+            var attributes : [ClientLogCounterAttribute] = []
+            if let promoId = request.content.userInfo[NotificationManager.promoIdKey] as? String {
+                attributes.append(
+                    ClientLogCounterAttribute(
+                        key: LogConfig.NotificationAttribute.localNotificationPromoId,
+                        value: promoId)
+                )
+            }
+            ClientLogger.shared.logCounter(
+                .OpenLocalNotification,
+                attributes: attributes
+            )
+
+            if !NeevaUserInfo.shared.isUserLoggedIn {
+                bvc.presentIntroViewController(true)
+                return
+            }
+            break
         case .none:
             break
         }

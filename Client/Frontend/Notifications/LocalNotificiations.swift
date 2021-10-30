@@ -59,10 +59,51 @@ class LocalNotitifications {
             })
     }
 
+    static func scheduleNeevaOnboardingCallback(notificationType: NotificationType) {
+        rescheduleNotificationIfNeeded(
+            for: notificationType,
+            completion: { exists, rescheduled in
+                var scheduled = rescheduled
+                if !exists {
+                    scheduled = createNeevaOnboardingCallback(notificationType: notificationType)
+                }
+                if scheduled {
+                    var attributes = [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.NotificationAttribute.localNotificationPromoId,
+                            value: notificationType.rawValue)
+                    ]
+                    DispatchQueue.main.async {
+                        ClientLogger.shared.logCounter(
+                            .ScheduleLocalNotification,
+                            attributes: attributes
+                        )
+                    }
+                }
+            })
+    }
+
     static func scheduleNeevaPromoCallbackIfAuthorized(callSite: ScheduleCallSite) {
         NotificationPermissionHelper.shared.isAuthorized { authorized in
             if authorized {
                 scheduleNeevaPromoCallback(callSite: callSite)
+            }
+        }
+    }
+
+    static func scheduleAllNeevaOnboardingCallbackIfAuthorized() {
+        NotificationPermissionHelper.shared.isAuthorized { authorized in
+            if authorized {
+                scheduleNeevaOnboardingCallback(notificationType: .neevaOnboardingFastTap)
+                scheduleNeevaOnboardingCallback(notificationType: .neevaOnboardingNewsProvider)
+            }
+        }
+    }
+
+    static func scheduleNeevaOnboardingCallbackIfAuthorized(notificationType: NotificationType) {
+        NotificationPermissionHelper.shared.isAuthorized { authorized in
+            if authorized {
+                scheduleNeevaOnboardingCallback(notificationType: notificationType)
             }
         }
     }
@@ -93,6 +134,10 @@ class LocalNotitifications {
                 switch type {
                 case .neevaPromo:
                     rescheduled = createNeevaPromoCallback()
+                case .neevaOnboardingFastTap:
+                    rescheduled = createNeevaOnboardingCallback(notificationType: .neevaOnboardingFastTap)
+                case .neevaOnboardingNewsProvider:
+                    rescheduled = createNeevaOnboardingCallback(notificationType: .neevaOnboardingNewsProvider)
                 }
             }
 
@@ -154,6 +199,48 @@ class LocalNotitifications {
         } else {
             return false
         }
+    }
+
+    private static func createNeevaOnboardingCallback(notificationType: NotificationType) -> Bool {
+        var title: String?
+        var body: String?
+        var timeInterval: TimeInterval?
+        var deeplinkUrl: String?
+
+        switch notificationType {
+        case .neevaOnboardingFastTap:
+            title = "Neeva"
+            body =
+                "Fast tap takes you to where you want to go in the blink of an eye! See for yourself!"
+            timeInterval = TimeInterval(Defaults[.fastTapPromoTimeInterval])
+            deeplinkUrl = "neeva://fast-tap?query=best%20air%20purifier"
+        case .neevaOnboardingNewsProvider:
+            title = "Neeva"
+            body =
+                "Personalize your searching experience by configuring your favorite news providers."
+            timeInterval = TimeInterval(Defaults[.newsProviderPromoTimeInterval])
+            deeplinkUrl = "neeva://configure-news-provider"
+        default:
+            break
+        }
+
+        if let title = title,
+            let body = body,
+            let timeInterval = timeInterval
+        {
+            notificationManager.createLocalNotification(
+                identifier: notificationType.rawValue,
+                promoId: notificationType.rawValue,
+                type: notificationType,
+                timeInterval: timeInterval,
+                title: title,
+                body: body,
+                deeplinkUrl: deeplinkUrl
+            ) { _ in }
+            return true
+        }
+
+        return false
     }
 
     private static func shouldScheduleNeevaPromoNotification(
