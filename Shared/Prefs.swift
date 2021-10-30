@@ -111,6 +111,11 @@ extension Defaults.Keys {
         "lastNeevaPromoScheduledTimeInterval")
     public static let didRegisterNotificationTokenOnServer = Defaults.Key<Bool>(
         "didRegisterNotificationTokenOnServer", default: false)
+    /// 0: Undecided, 1: Accepted, 2: Denied
+    public static let notificationPermissionState = Defaults.Key<Int>(
+        "notificationPermissionState", default: 0)
+    public static let seenNotificationPermissionPromo = Defaults.Key<Bool>(
+        "seenNotificationPermissionPromo", default: false)
 
     public static let debugNotificationTitle = Defaults.Key<String?>(
         "debugNotificationTitle", default: "Neeva Space")

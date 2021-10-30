@@ -14,6 +14,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case debugURLBar = "URL Bar Debug Mode"
     case inlineAccountSettings = "Inline Account Settings"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"
+    case notificationPermissionPromo = "Notification Permission Promo"
     case notifications = "Notifications"
     case pinToTopSites = "Pin to Top Sites"
     case recommendedSpaces = "Recommended Spaces"

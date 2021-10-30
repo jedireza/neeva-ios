@@ -123,6 +123,21 @@ class ZeroQueryModel: ObservableObject {
                     .PromoSignin, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                 self.signIn()
             }
+        } else if FeatureFlag[.notificationPermissionPromo]
+            && !Defaults[.seenNotificationPermissionPromo]
+            && NotificationPermissionHelper.shared.permissionStatus == .undecided
+        {
+            promoCard = .notificationPermission(
+                action: {
+                    NotificationPermissionHelper.shared.requestPermissionIfNeeded(completion: {
+                        Defaults[.seenNotificationPermissionPromo] = true
+                        self.promoCard = nil
+                    })
+                },
+                onClose: {
+                    Defaults[.seenNotificationPermissionPromo] = true
+                    self.promoCard = nil
+                })
         } else if !Defaults[.didDismissDefaultBrowserCard] {
             promoCard = .defaultBrowser {
                 ClientLogger.shared.logCounter(

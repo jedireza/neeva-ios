@@ -26,6 +26,7 @@ struct InternalSettingsView: View {
     @Default(.lastScheduledNeevaPromoID) var lastScheduledNeevaPromoID
     @Default(.lastNeevaPromoScheduledTimeInterval) var lastNeevaPromoScheduledTimeInterval
     @Default(.didRegisterNotificationTokenOnServer) var didRegisterNotificationTokenOnServer
+    @Default(.seenNotificationPermissionPromo) var seenNotificationPermissionPromo
 
     var body: some View {
         List {
@@ -39,6 +40,7 @@ struct InternalSettingsView: View {
                 Toggle("didDismissDefaultBrowserCard", isOn: $didDismissDefaultBrowserCard)
                 Toggle("didDismissReferralPromoCard", isOn: $didDismissReferralPromoCard)
                 Toggle("ratingsCardHidden", isOn: $ratingsCardHidden)
+                Toggle("seenNotificationPermissionPromo", isOn: $seenNotificationPermissionPromo)
             }
             Section(header: Text("User-generated")) {
                 HStack {
@@ -89,8 +91,12 @@ struct InternalSettingsView: View {
 
             Section(header: Text("Notification")) {
                 OptionalStringField("lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
-                OptionalNumberField("lastNeevaPromoScheduledTimeInterval", number: $lastNeevaPromoScheduledTimeInterval)
-                Toggle("didRegisterNotificationTokenOnServer", isOn: $didRegisterNotificationTokenOnServer)
+                OptionalNumberField(
+                    "lastNeevaPromoScheduledTimeInterval",
+                    number: $lastNeevaPromoScheduledTimeInterval)
+                Toggle(
+                    "didRegisterNotificationTokenOnServer",
+                    isOn: $didRegisterNotificationTokenOnServer)
             }
         }
         .font(.system(.footnote, design: .monospaced))

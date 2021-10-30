@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import Foundation
 import Shared
 import UserNotifications
@@ -7,8 +8,19 @@ import XCGLogger
 
 private let log = Logger.browser
 
+public enum NotificationPermissionStatus: Int {
+    case undecided = 0
+    case authorized = 1
+    case denied = 2
+}
+
 class NotificationPermissionHelper {
     static let shared = NotificationPermissionHelper()
+
+    var permissionStatus: NotificationPermissionStatus {
+        return NotificationPermissionStatus(rawValue: Defaults[.notificationPermissionState])
+            ?? .undecided
+    }
 
     func didAlreadyRequestPermission(completion: @escaping (Bool) -> Void) {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
@@ -68,7 +80,15 @@ class NotificationPermissionHelper {
 
                 completion?()
 
-                guard granted else { return }
+                guard granted else {
+                    Defaults[.notificationPermissionState] =
+                        NotificationPermissionStatus.denied.rawValue
+                    return
+                }
+
+                Defaults[.notificationPermissionState] =
+                    NotificationPermissionStatus.authorized.rawValue
+
                 self.registerAuthorizedNotification()
                 LocalNotitifications.scheduleNeevaPromoCallback(
                     callSite: LocalNotitifications.ScheduleCallSite.authorizeNotification
@@ -77,9 +97,8 @@ class NotificationPermissionHelper {
     }
 
     func registerAuthorizedNotification() {
-        UNUserNotificationCenter.current().getNotificationSettings { settings in
-            print("Notification settings: \(settings)")
-            guard settings.authorizationStatus == .authorized else { return }
+        isAuthorized { authorized in
+            guard authorized else { return }
 
             DispatchQueue.main.async {
                 UIApplication.shared.registerForRemoteNotifications()
@@ -109,6 +128,22 @@ class NotificationPermissionHelper {
             case .failure(let error):
                 log.error("Failed to add device token \(error)")
                 break
+            }
+        }
+    }
+
+    init() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            switch settings.authorizationStatus {
+            case .authorized:
+                Defaults[.notificationPermissionState] =
+                    NotificationPermissionStatus.authorized.rawValue
+            case .denied:
+                Defaults[.notificationPermissionState] =
+                    NotificationPermissionStatus.denied.rawValue
+            default:
+                Defaults[.notificationPermissionState] =
+                    NotificationPermissionStatus.undecided.rawValue
             }
         }
     }

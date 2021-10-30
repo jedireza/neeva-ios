@@ -587,10 +587,10 @@ class BrowserViewController: UIViewController {
         } else {
             if !tabManager.restoreTabs() {
                 DispatchQueue.main.async { [unowned self] in
-                     if Defaults[.createNewTabOnStart] {
-                         tabManager.select(tabManager.addTab())
-                     } else {
-                         showTabTray()
+                    if Defaults[.createNewTabOnStart] {
+                        tabManager.select(tabManager.addTab())
+                    } else {
+                        showTabTray()
                     }
                 }
             }
@@ -1628,7 +1628,9 @@ extension BrowserViewController: UIAdaptivePresentationControllerDelegate {
 }
 
 extension BrowserViewController {
-    func presentIntroViewController(_ alwaysShow: Bool = false, onDismiss: (() -> Void)? = nil, signInMode: Bool = false) {
+    func presentIntroViewController(
+        _ alwaysShow: Bool = false, onDismiss: (() -> Void)? = nil, signInMode: Bool = false
+    ) {
         if alwaysShow || !Defaults[.introSeen] {
             showProperIntroVC(onDismiss: onDismiss, signInMode: signInMode)
         }

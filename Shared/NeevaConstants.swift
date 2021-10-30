@@ -234,12 +234,16 @@ public struct NeevaConstants {
     }
 
     // Construct signup OAuth string
-    public static func signupOAuthString(provider: OAuthProvider, mktEmailOptOut: Bool, email: String = "") -> String {
+    public static func signupOAuthString(
+        provider: OAuthProvider, mktEmailOptOut: Bool, email: String = ""
+    ) -> String {
         switch provider {
         case .google, .microsoft:
-            return "https://\(appHost)/login?provider=neeva.co/auth/oauth2/authenticators/\(provider.rawValue)&finalPath=%2F&signup=true&ignoreCountryCode=true&mktEmailOptOut=\(String(mktEmailOptOut))&loginCallbackType=ios"
+            return
+                "https://\(appHost)/login?provider=neeva.co/auth/oauth2/authenticators/\(provider.rawValue)&finalPath=%2F&signup=true&ignoreCountryCode=true&mktEmailOptOut=\(String(mktEmailOptOut))&loginCallbackType=ios"
         case .okta:
-            let oktaBaseURL = "https://\(appHost)/login?provider=neeva.co/auth/oauth2/authenticators/\(provider.rawValue)&loginCallbackType=ios&finalPath=%2F%3Fnva&loginHint="
+            let oktaBaseURL =
+                "https://\(appHost)/login?provider=neeva.co/auth/oauth2/authenticators/\(provider.rawValue)&loginCallbackType=ios&finalPath=%2F%3Fnva&loginHint="
             if !email.isEmpty {
                 if let encodedEmail = encodeEmail(email: email) {
                     return oktaBaseURL + encodedEmail

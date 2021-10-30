@@ -7,6 +7,7 @@ enum PromoCardType {
     case neevaSignIn(action: () -> Void)
     case defaultBrowser(action: () -> Void, onClose: () -> Void)
     case referralPromo(action: () -> Void, onClose: () -> Void)
+    case notificationPermission(action: () -> Void, onClose: () -> Void)
 
     var action: () -> Void {
         switch self {
@@ -15,6 +16,8 @@ enum PromoCardType {
         case .defaultBrowser(let action, _):
             return action
         case .referralPromo(let action, _):
+            return action
+        case .notificationPermission(let action, _):
             return action
         }
     }
@@ -30,6 +33,8 @@ enum PromoCardType {
             (Text("Win ") + Text("$5000").fontWeight(.medium)
                 + Text(" by inviting friends to join Neeva"))
                 .fixedSize(horizontal: false, vertical: true)
+        case .notificationPermission:
+            Text("Get recommendations from the best of the web")
         }
     }
 
@@ -51,6 +56,8 @@ enum PromoCardType {
                 Text("Tell me more")
                 Symbol(decorative: .arrowRight, weight: .semibold)
             }
+        case .notificationPermission:
+            Text("Enable Notifications")
         }
     }
 
@@ -62,6 +69,8 @@ enum PromoCardType {
             return .brand.adaptive.pistachio
         case .referralPromo:
             return Color(light: .hex(0xFFEAD1), dark: .hex(0xF8C991))
+        case .notificationPermission:
+            return .brand.adaptive.polar
         }
     }
 
@@ -127,6 +136,11 @@ struct PromoCard: View {
                     .padding()
             }
         } else if case .referralPromo(_, let onClose) = type {
+            Button(action: onClose) {
+                Symbol(.xmark, weight: .semibold, label: "Dismiss")
+                    .foregroundColor(Color.ui.gray70)
+            }
+        } else if case .notificationPermission(_, let onClose) = type {
             Button(action: onClose) {
                 Symbol(.xmark, weight: .semibold, label: "Dismiss")
                     .foregroundColor(Color.ui.gray70)
