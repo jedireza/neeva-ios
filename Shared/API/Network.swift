@@ -89,6 +89,11 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         } else {
             // Else, let this request fail with an authentication error.
             clearCookie()
+
+            if FeatureFlag[.enablePreviewMode] {
+                // set up preview mode cookie
+                setPreviewCookie()
+            }
         }
         return req
     }
@@ -96,6 +101,12 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
     private func assignCookie(_ value: String) {
         // only used for URLRequest, not the webview
         HTTPCookieStorage.shared.setCookie(NeevaConstants.loginCookie(for: value))
+    }
+
+    private func setPreviewCookie() {
+        if let previewCookie = NeevaUserInfo.shared.getPreviewCookie() {
+            HTTPCookieStorage.shared.setCookie(NeevaConstants.previewCookie(for: previewCookie))
+        }
     }
 
     private func clearCookie() {

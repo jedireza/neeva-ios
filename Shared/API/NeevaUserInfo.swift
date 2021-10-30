@@ -116,6 +116,32 @@ public class NeevaUserInfo: ObservableObject {
         }
     }
 
+    public func updatePreviewCookieFromWebKitCookieStore(completion: @escaping () -> Void) {
+        WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
+            if let previewCookie = cookies.first(where: Self.matchesPreviewCookie) {
+                self.setPreviewCookie(previewCookie.value)
+            }
+        }
+    }
+
+    public func setPreviewCookie(_ value: String) {
+        if self.getPreviewCookie() != value {
+            try? NeevaConstants.keychain.set(value, key: NeevaConstants.previewKeychainKey)
+        }
+    }
+
+    public func getPreviewCookie() -> String? {
+        return try? NeevaConstants.keychain.getString(NeevaConstants.previewKeychainKey)
+    }
+
+    public func hasPreviewCookie() -> Bool {
+        let cookie = getPreviewCookie()
+        if cookie != nil {
+            return true
+        }
+        return false
+    }
+
     public func setLoginCookie(_ value: String) {
         // check if token has changed, when different, save new token
         // and fetch user info
@@ -155,6 +181,11 @@ public class NeevaUserInfo: ObservableObject {
     private static func matchesLoginCookie(cookie: HTTPCookie) -> Bool {
         // Allow non-HTTPS for testing purposes.
         NeevaConstants.isAppHost(cookie.domain) && cookie.name == "httpd~login"
+            && (NeevaConstants.appURL.scheme != "https" || cookie.isSecure)
+    }
+
+    private static func matchesPreviewCookie(cookie: HTTPCookie) -> Bool {
+        NeevaConstants.isAppHost(cookie.domain) && cookie.name == "httpd~preview"
             && (NeevaConstants.appURL.scheme != "https" || cookie.isSecure)
     }
 

@@ -39,6 +39,10 @@ private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
         httpCookieStore.setCookie(NeevaConstants.loginCookie(for: cookieValue))
     }
 
+    if !isPrivate, let previewCookieValue = NeevaUserInfo.shared.getPreviewCookie() {
+        httpCookieStore.setCookie(NeevaConstants.previewCookie(for: previewCookieValue))
+    }
+
     // Some feature flags need to be echoed to neeva.com to ensure that both
     // the browser and the site are using consistent feature flag values. This
     // helps protect against possible race conditions with the two learning
@@ -661,19 +665,22 @@ extension BrowserViewController: WKNavigationDelegate {
 
             // for Neeva signup or signin page, open native auth panel
             if NeevaConstants.isAppHost(url.host), request.httpMethod == "GET" {
+                let query = url.getQuery()
+
                 if url.path == "/p/signup" {
                     // check if query param contains email
                     // if user already enter email,
                     // let user stay on the web sign up flow
-                    let query = url.getQuery()
-
                     if query["e"] == nil {
                         self.presentIntroViewController(true)
                         decisionHandler(.cancel)
                         return
                     }
                 } else if url.path == "/signin"
-                    || (url.path == "/search" && !NeevaUserInfo.shared.hasLoginCookie())
+                    || (url.path == "/search"
+                        && query["q"] != nil
+                        && !NeevaUserInfo.shared.hasLoginCookie()
+                        && !NeevaUserInfo.shared.hasPreviewCookie())
                 {
                     self.presentIntroViewController(true, signInMode: true)
                     decisionHandler(.cancel)
@@ -1012,6 +1019,11 @@ extension BrowserViewController: WKNavigationDelegate {
                             SpaceStore.shared.refresh()
                         }
                     }
+                }
+
+                // get httpd~preview cookie for preview mode
+                if FeatureFlag[.enablePreviewMode] {
+                    userInfo.updatePreviewCookieFromWebKitCookieStore {}
                 }
             }
         }

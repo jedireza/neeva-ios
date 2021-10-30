@@ -1654,7 +1654,7 @@ extension BrowserViewController {
                     if let onDismiss = onDismiss {
                         onDismiss()
                     }
-                    openURLInNewTab(URL(string: "https://neeva.com"))
+                    openURLInNewTab(NeevaConstants.appSearchURL)
                     break
                 case .oktaSignin(let email):
                     self.openURLInNewTab(

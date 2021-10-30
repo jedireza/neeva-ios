@@ -21,6 +21,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case spacify = "Enable button to turn a page into a Space"
     case swipePlusPlus = "Additional forward and back swipe gestures"
     case enableOldSuggestUI = "Enable Old Suggestion List UI"
+    case enablePreviewMode = "Enable Preview Mode"
 
     public init?(caseName: String) {
         for value in FeatureFlag.allCases where "\(value)" == caseName {
