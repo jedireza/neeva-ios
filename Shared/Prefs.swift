@@ -112,6 +112,15 @@ extension Defaults.Keys {
     public static let didRegisterNotificationTokenOnServer = Defaults.Key<Bool>(
         "didRegisterNotificationTokenOnServer", default: false)
 
+    public static let debugNotificationTitle = Defaults.Key<String?>(
+        "debugNotificationTitle", default: "Neeva Space")
+    public static let debugNotificationBody = Defaults.Key<String?>(
+        "debugNotificationBody", default: "Check out our recommended space: Cookie Monster Space")
+    public static let debugNotificationDeeplink = Defaults.Key<String?>(
+        "debugNotificationDeeplink", default: "neeva://space?id=B-ZzfqeytWS-n3YHKRi77h6Ore1kQ7EuojJIm4b7")
+    public static let debugNotificationTimeInterval = Defaults.Key<Int>(
+        "debugNotificationTimeInterval", default: 10)
+
     // tab groups
     public static let tabGroupNames = Defaults.Key<[String: String]>(
         "tabGroupNames", default: [String: String]())

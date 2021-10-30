@@ -118,6 +118,9 @@ class SettingsViewController: UIHostingController<AnyView> {
                         bvc.presentIntroViewController(true)
                     }
                 }
+                .environment(\.dismissScreen) {
+                    self.dismiss(animated: true, completion: nil)
+                }
         )
     }
 

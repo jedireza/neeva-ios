@@ -42,7 +42,9 @@ struct DebugSettingsSection: View {
                             SceneDelegate.getCurrentSceneDelegate(for: nil).stopGeigerCounter()
                         }
                     }
-
+                NavigationLink(
+                    "Schedule Notification",
+                    destination: ScheduleNotificationView().navigationTitle("Schedule Notification"))
                 if let token = Defaults[.notificationToken] {
                     HStack {
                         Text("Notification Token")

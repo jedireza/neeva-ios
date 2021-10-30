@@ -263,6 +263,7 @@
 		66F97CC826F69381005A26C2 /* ReaderModeColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC726F69381005A26C2 /* ReaderModeColorPicker.swift */; };
 		66F97CCA26F696B7005A26C2 /* BrightnessModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC926F696B7005A26C2 /* BrightnessModel.swift */; };
 		66FA64C4270E62A5008BAEAD /* ReaderModeBlocklist.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66FA64C3270E62A5008BAEAD /* ReaderModeBlocklist.swift */; };
+		670029C1272D1A5C00EBB968 /* ScheduleNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670029C0272D1A5C00EBB968 /* ScheduleNotificationView.swift */; };
 		67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67292D3226AD2CF200DB1BFA /* AnnotationType.swift */; };
 		673C85D826E090DF006C21B0 /* SuggestionModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */; };
 		6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */; };
@@ -1328,6 +1329,7 @@
 		66F97CC726F69381005A26C2 /* ReaderModeColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModeColorPicker.swift; sourceTree = "<group>"; };
 		66F97CC926F696B7005A26C2 /* BrightnessModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrightnessModel.swift; sourceTree = "<group>"; };
 		66FA64C3270E62A5008BAEAD /* ReaderModeBlocklist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModeBlocklist.swift; sourceTree = "<group>"; };
+		670029C0272D1A5C00EBB968 /* ScheduleNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleNotificationView.swift; sourceTree = "<group>"; };
 		67292D3226AD2CF200DB1BFA /* AnnotationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationType.swift; sourceTree = "<group>"; };
 		673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionModelTests.swift; sourceTree = "<group>"; };
 		6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestion.swift; sourceTree = "<group>"; };
@@ -2890,6 +2892,7 @@
 				C80E03E526B8459600A7800A /* LoggingSettingsView.swift */,
 				C96AC26626A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift */,
 				BCC39A1E26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift */,
+				670029C0272D1A5C00EBB968 /* ScheduleNotificationView.swift */,
 			);
 			path = Debug;
 			sourceTree = "<group>";
@@ -5265,6 +5268,7 @@
 				66F97CCA26F696B7005A26C2 /* BrightnessModel.swift in Sources */,
 				C9D4A001265BE0B000299FC2 /* NeevaAccountInfoView.swift in Sources */,
 				BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */,
+				670029C1272D1A5C00EBB968 /* ScheduleNotificationView.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,
 				C93EFEE926716411000396B5 /* TabLocationBarButton.swift in Sources */,
 				C962778D26A20A3B0078CDAF /* WKWebView+Zoom.m in Sources */,

@@ -110,6 +110,7 @@ class NotificationManager: ObservableObject {
         subtitle: String? = nil,
         body: String?,
         urlStr: String? = nil,
+        deeplinkUrl: String? = nil,
         completionHandler: @escaping (Result<BaseNotification, Error>) -> Void
     ) {
         let content = UNMutableNotificationContent()
@@ -122,6 +123,9 @@ class NotificationManager: ObservableObject {
         }
         content.userInfo[NotificationManager.promoIdKey] = promoId
         content.userInfo[NotificationManager.notificationKey.localNotificationURL] = urlStr
+        if let deeplinkUrl = deeplinkUrl {
+            content.userInfo[NotificationManager.notificationKey.deeplinkURL] = deeplinkUrl
+        }
 
         // Create the trigger as a repeating event.
         let trigger = UNTimeIntervalNotificationTrigger(

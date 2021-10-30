@@ -180,7 +180,7 @@ private struct OptionalNumberField<Number: FixedWidthInteger>: View {
     }
 }
 
-private struct NumberField<Number: FixedWidthInteger>: View {
+struct NumberField<Number: FixedWidthInteger>: View {
     init(_ title: String, number: Binding<Number>) {
         self.title = title
         self._number = number
