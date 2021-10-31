@@ -6,6 +6,7 @@ import SwiftUI
 
 struct DebugSettingsSection: View {
     @Environment(\.onOpenURL) var openURL
+    @Environment(\.dismissScreen) var dimissScreen
     @Default(.enableGeigerCounter) var enableGeigerCounter
 
     var body: some View {
@@ -44,7 +45,23 @@ struct DebugSettingsSection: View {
                     }
                 NavigationLink(
                     "Schedule Notification",
-                    destination: ScheduleNotificationView().navigationTitle("Schedule Notification"))
+                    destination: ScheduleNotificationView()
+                        .navigationTitle("Schedule Notification"))
+                Button {
+                    dimissScreen()
+                    SceneDelegate.getBVC(for: nil).showAsModalOverlaySheet(
+                        style: OverlayStyle(
+                            showTitle: false,
+                            backgroundColor: .systemBackground)
+                    ) {
+                        NotificationPromptViewOverlayContent()
+                    } onDismiss: {
+                    }
+                } label: {
+                    Text("Show Welcome Tour Notification Prompt")
+                        .foregroundColor(Color.label)
+                }
+
                 if let token = Defaults[.notificationToken] {
                     HStack {
                         Text("Notification Token")
