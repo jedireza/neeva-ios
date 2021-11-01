@@ -109,6 +109,7 @@ public struct LogConfig {
         case OwnerSharedSpace
         case FollowerSharedSpace
         case SocialShare
+        case space_app_view // This is for aggregate stats collection
 
         // ratings card
         case RatingsRateExperience
@@ -279,6 +280,7 @@ public struct LogConfig {
         case .OwnerSharedSpace: return .Spaces
         case .FollowerSharedSpace: return .Spaces
         case .SocialShare: return .Spaces
+        case .space_app_view: return .Spaces
 
         case .RatingsRateExperience: return .RatingsCard
         case .RatingsPromptFeedback: return .RatingsCard
@@ -370,7 +372,7 @@ public struct LogConfig {
     }
 
     public struct SpacesAttribute {
-        public static let spaceID = "SpaceID"
+        public static let spaceID = "space_id"
         public static let spaceEntityID = "SpaceEntityID"
         public static let isShared = "isShared"
         public static let isPublic = "isPublic"

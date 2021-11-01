@@ -112,6 +112,11 @@ class SpaceCardModel: CardModel {
                     .SpacesDetailUIVisited,
                     attributes:
                         getLogCounterAttributesForSpaces(details: detailedSpace!))
+                // Collect separately. View definition depends on aggregate stats policy
+                ClientLogger.shared.logCounter(
+                    .space_app_view,
+                    attributes:
+                        getLogCounterAttributesForSpaces(details: detailedSpace!))
                 return
             }
 
