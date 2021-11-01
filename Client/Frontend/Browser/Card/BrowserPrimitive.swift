@@ -349,15 +349,6 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
             }.filter { $0.value.count > 1 }.reduce(into: [String: TabGroup]()) { dict, element in
                 dict[element.key] = TabGroup(children: element.value, id: element.key)
             }
-        if tabGroups.count > 0 {
-            var temp = [String: String]()
-            tabGroups.filter {
-                group in tabGroupDict[group.key] != nil
-            }.forEach { group in
-                temp[group.key] = tabGroupDict[group.key]
-            }
-            tabGroupDict = temp
-        }
         objectWillChange.send()
     }
 
@@ -371,5 +362,24 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
 
     func close(_ item: TabGroup) {
         item.children.forEach { tabManager.close($0) }
+    }
+
+    func cleanUpTabGroupNames() {
+        // Write tab group name into dictionary
+        tabGroups.forEach { group in
+            let id = group.key
+            if tabGroupDict[id] == nil {
+                tabGroupDict[id] = group.value.children.first?.displayTitle
+            }
+        }
+
+        // Filter out deleted tab group names
+        var temp = [String: String]()
+        tabGroups.filter {
+            group in tabGroups[group.key] != nil
+        }.forEach { group in
+            temp[group.key] = tabGroupDict[group.key]
+        }
+        tabGroupDict = temp
     }
 }

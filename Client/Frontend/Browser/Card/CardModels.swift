@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Combine
+import Defaults
 import Shared
 import Storage
 import SwiftUI
@@ -398,6 +399,7 @@ class TabGroupCardModel: CardModel {
     var onViewUpdate: () -> Void = {}
     var manager: TabGroupManager
     var anyCancellable: AnyCancellable? = nil
+    @Default(.tabGroupNames) var tabGroupDict: [String: String]
     private var detailsSubscriptions: Set<AnyCancellable> = Set()
     private var stateNeedsRefresh = false
 
@@ -431,6 +433,7 @@ class TabGroupCardModel: CardModel {
                     }
                     detailedTabGroup?.isShowingDetails = true
                 }
+                manager.cleanUpTabGroupNames()
                 representativeTabs = manager.getAll()
                     .reduce(into: [Tab]()) { $0.append($1.children.first!) }
                 allDetails.forEach { details in

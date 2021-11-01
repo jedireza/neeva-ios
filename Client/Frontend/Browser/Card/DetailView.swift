@@ -67,7 +67,6 @@ where
             VStack(spacing: 0) {
                 topBar
                 Color.TrayBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
-
                 if tabGroupCardModel.detailedTabGroup != nil {
                     tabGroupGrid
 
@@ -333,7 +332,7 @@ where
                                     spacesModel.updateSpaceName(space: space, newTitle: newTitle)
                                 } else {
                                     tabGroupDict[tabGroupDetail!.id] = newTitle
-                                    tabGroupCardModel.manager.updateTabGroups()
+                                    tabGroupCardModel.manager.cleanUpTabGroupNames()
                                 }
                             }
                         }
@@ -379,7 +378,7 @@ where
                     editMode = .inactive
                     if newTitle != primitive.title {
                         tabGroupDict[tabGroupDetail!.id] = newTitle
-                        tabGroupCardModel.manager.updateTabGroups()
+                        tabGroupCardModel.manager.cleanUpTabGroupNames()
                     }
                 default: break
                 }
