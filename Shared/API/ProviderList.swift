@@ -8,6 +8,7 @@ public class ProviderList: ObservableObject {
 
     @Published public private(set) var isLoading = false
     @Published public private(set) var allProviders: [String: UserPreference] = [String: UserPreference]()
+    @Published public private(set) var providerDisplayName: [String: String] = [:]
 
     public init() {}
 
@@ -20,6 +21,9 @@ public class ProviderList: ObservableObject {
                     for provider in providers {
                         if let domain = provider.domain, let preference = provider.preference {
                             self.allProviders[domain] = preference
+                            if let displayName = provider.name {
+                                self.providerDisplayName[domain] = displayName
+                            }
                         }
 
                     }
@@ -38,9 +42,16 @@ public class ProviderList: ObservableObject {
     public func getPreferenceByDomain(domain: String) -> UserPreference {
         if allProviders.keys.contains(domain) {
             return allProviders[domain]!
-        } else {
-            fetchProviderList()
-            return .noPreference
         }
+        
+        fetchProviderList()
+        return .noPreference
+    }
+
+    public func getDisplayName(for domain: String) -> String {
+        if providerDisplayName.keys.contains(domain) {
+            return providerDisplayName[domain]!
+        }
+        return domain
     }
 }

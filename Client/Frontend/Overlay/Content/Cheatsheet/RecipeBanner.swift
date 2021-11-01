@@ -38,17 +38,21 @@ struct RecipeBanner: View {
                                         .padding(.leading, -3)
                                 }
                             }
+
+                            if let _ = recipe.totalTime {
+                                Text("·")
+                                    .padding(.horizontal, -1)
+                            }
                         }
                     }
                     if let totalTime = recipe.totalTime {
-                        Text("·")
-                            .padding(.horizontal, -1)
                         Text(String(totalTime))
                     }
                 }
                 .withFont(unkerned: .bodySmall)
                 .foregroundColor(Color.secondaryLabel)
             }
+            .padding(.leading, 2)
         }
     }
 }
