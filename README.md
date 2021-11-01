@@ -1,12 +1,12 @@
 Neeva for iOS [![codebeat badge](https://codebeat.co/badges/67e58b6d-bc89-4f22-ba8f-7668a9c15c5a)](https://codebeat.co/projects/github-com-mozilla-neeva-ios)  [![codecov](https://codecov.io/gh/mozilla-mobile/neeva-ios/branch/main/graph/badge.svg)](https://codecov.io/gh/mozilla-mobile/neeva-ios/branch/main)
 ===============
 
-Download on the [App Store](https://alpha.neeva.co).
+Download on the [App Store](https://apps.apple.com/us/app/neeva-browser-search-engine/id1543288638).
 
 This branch (main)
 -----------
 
-This branch works with [Xcode 12.5](https://developer.apple.com/services-account/download?path=/Developer_Tools/Xcode_12.5/Xcode_12.5.xip), Swift 5.4 and supports iOS 14.0 and above.
+This branch works with [Xcode 13.0](https://apps.apple.com/us/app/xcode/id497799835), Swift 5.5 and supports iOS 14.0 and above.
 
 Please make sure you aim your pull requests in the right direction.
 
@@ -30,15 +30,15 @@ Building the code
     ```
 1. Clone the repository:
     ```shell
-    git clone https://github.com/mozilla-mobile/firefox-ios
+    git clone https://github.com/neevaco/neeva-ios-phoenix.git
     ```
 1. Pull in the project dependencies:
     ```shell
-    cd firefox-ios
+    cd neeva-ios-phoenix
     sh ./bootstrap.sh
     ```
 1. Open `Client.xcodeproj` in Xcode.
-1. Build the `Fennec` scheme in Xcode.
+1. Build the `Client` scheme in Xcode.
 
 ## Building User Scripts
 
@@ -116,3 +116,7 @@ There is currently less infrastructure for calling mutations, but there’s a co
 ## Contributing
 
 Want to contribute to this repository? Check out [Contributing Guidelines](https://github.com/mozilla-mobile/firefox-ios/blob/main/CONTRIBUTING.md)
+
+## Other
+
+For more information and resources see [this](https://paper.dropbox.com/doc/Mobile-team-overview--BVZAP5qbLb1eeOFvNqxB8jgHAg-HRB3Zxy3yWmYisYET9QvN) doc.
