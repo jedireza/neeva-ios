@@ -43,23 +43,8 @@ struct DebugSettingsSection: View {
                         }
                     }
                 NavigationLink(
-                    "Schedule Notification",
-                    destination: ScheduleNotificationView().navigationTitle("Schedule Notification"))
-                if let token = Defaults[.notificationToken] {
-                    HStack {
-                        Text("Notification Token")
-                        Text(token)
-                            .withFont(.bodySmall)
-                            .contextMenu(
-                                ContextMenu(menuItems: {
-                                    Button(
-                                        "Copy",
-                                        action: {
-                                            UIPasteboard.general.string = token
-                                        })
-                                }))
-                    }
-                }
+                    "Notification",
+                    destination: NotificationSettingsView().navigationTitle("Notification"))
             }
             DebugDBSettingsSection()
             DecorativeSection {

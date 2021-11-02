@@ -157,7 +157,9 @@ class NotificationManager: ObservableObject {
                     deeplinkUrl: deeplinkUrl,
                     dateReceived: Date(timeIntervalSinceNow: timeInterval))
                 self.notifications.append(baseNotification)
-                Defaults[.lastScheduledNeevaPromoID] = promoId
+                if type == .neevaPromo {
+                    Defaults[.lastScheduledNeevaPromoID] = promoId
+                }
                 completionHandler(.success(baseNotification))
             }
         }

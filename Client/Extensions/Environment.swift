@@ -79,4 +79,15 @@ extension EnvironmentValues {
         }
         set { self[dismissScreenKey.self] = newValue }
     }
+    private struct showNotificationPromptKey: EnvironmentKey {
+        static var defaultValue: (() -> Void)? = nil
+    }
+    public var showNotificationPrompt: () -> Void {
+        get {
+            self[showNotificationPromptKey.self] ?? {
+                fatalError(".environment(\\.showNotificationPrompt) must be specified")
+            }
+        }
+        set { self[showNotificationPromptKey.self] = newValue }
+    }
 }
