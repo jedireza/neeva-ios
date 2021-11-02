@@ -109,7 +109,7 @@ public struct LogConfig {
         case OwnerSharedSpace
         case FollowerSharedSpace
         case SocialShare
-        case space_app_view // This is for aggregate stats collection
+        case space_app_view  // This is for aggregate stats collection
 
         // ratings card
         case RatingsRateExperience
@@ -142,7 +142,7 @@ public struct LogConfig {
         case RecipeCheatsheetShowMoreRecipe
         case RecipeCheatsheetClickPreferredProvider
         case RecipeCheatsheetUpdatePreferredProvider
-        
+
         // tab group
         case tabGroupClicked
         case tabGroupClosed
@@ -312,7 +312,7 @@ public struct LogConfig {
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
         case .RecipeCheatsheetClickPreferredProvider: return .RecipeCheatsheet
         case .RecipeCheatsheetUpdatePreferredProvider: return .RecipeCheatsheet
-            
+
         case .tabGroupClicked: return .TabGroup
         case .tabGroupClosed: return .TabGroup
         case .tabInTabGroupClicked: return .TabGroup
@@ -400,7 +400,7 @@ public struct LogConfig {
     public struct PerformanceAttribute {
         public static let memoryUsage = "MemoryUsage"
     }
-    
+
     public struct TabGroupAttribute {
         public static let numTabsRemoved = "NumTabsRemoved"
         public static let numTabGroupsTotal = "NumTabGroupsTotal"

@@ -2,6 +2,11 @@
 
 import SwiftUI
 
+enum OverflowMenuLocation {
+    case tab
+    case cardGrid
+}
+
 struct OverflowMenuOverlayContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
 
@@ -9,15 +14,28 @@ struct OverflowMenuOverlayContent: View {
     let changedUserAgent: Bool?
     let chromeModel: TabChromeModel
     let locationModel: LocationViewModel
+    let location: OverflowMenuLocation
+
+    @ViewBuilder
+    var content: some View {
+        if location == .tab {
+            OverflowMenuView(changedUserAgent: changedUserAgent ?? false) { action in
+                hideOverlay()
+                menuAction(action)
+            }
+        } else {
+            CardGridOverflowMenuView(changedUserAgent: changedUserAgent ?? false) { action in
+                hideOverlay()
+                menuAction(action)
+            }
+        }
+    }
 
     var body: some View {
-        OverflowMenuView(changedUserAgent: changedUserAgent ?? false) { action in
-            hideOverlay()
-            menuAction(action)
-        }
-        .environmentObject(chromeModel)
-        .environmentObject(locationModel)
-        .overlayIsFixedHeight(isFixedHeight: true)
-        .padding(.top, -8)
+        content
+            .environmentObject(chromeModel)
+            .environmentObject(locationModel)
+            .overlayIsFixedHeight(isFixedHeight: true)
+            .padding(.top, -8)
     }
 }

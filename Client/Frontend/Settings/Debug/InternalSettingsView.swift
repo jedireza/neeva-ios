@@ -99,6 +99,7 @@ struct InternalSettingsView: View {
                 Toggle(
                     "didRegisterNotificationTokenOnServer",
                     isOn: $didRegisterNotificationTokenOnServer)
+
                 NumberField("productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
                 NumberField("newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
             }

@@ -109,7 +109,9 @@ class IntroViewController: UIViewController {
         welcomeCard.snp.makeConstraints { make in
             make.top.left.right.bottom.equalTo(self.view)
         }
-        addSubSwiftUIView(IntroFirstRunView(buttonAction: buttonAction, signInMode: self.signInMode), to: welcomeCard)
+        addSubSwiftUIView(
+            IntroFirstRunView(buttonAction: buttonAction, signInMode: self.signInMode),
+            to: welcomeCard)
         setupWelcomeCard()
     }
 

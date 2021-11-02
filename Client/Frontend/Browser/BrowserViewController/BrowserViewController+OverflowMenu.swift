@@ -12,6 +12,11 @@ public enum OverflowMenuAction {
     case share
     case downloadPage
     case longPressForward
+    case toggleIncognitoMode
+    case goToSettings
+    case goToHistory
+    case goToDownloads
+    case closeAllTabs
 }
 
 extension BrowserViewController {
@@ -62,6 +67,18 @@ extension BrowserViewController {
             }
         case .longPressForward:
             self.showBackForwardList()
+        case .toggleIncognitoMode:
+            self.cardGridViewController.toolbarModel.onToggleIncognito()
+        case .goToSettings:
+            perform(neevaMenuAction: .settings)
+        case .goToHistory:
+            perform(neevaMenuAction: .history)
+        case .goToDownloads:
+            openDownloadsFolderInFilesApp()
+        case .closeAllTabs:
+            let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
+            tabMenu.showConfirmCloseAllTabs(
+                numberOfTabs: tabMenu.tabManager.getTabCountForCurrentType(), fromTabTray: true)
         }
     }
 }

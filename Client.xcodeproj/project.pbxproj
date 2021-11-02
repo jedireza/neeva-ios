@@ -186,6 +186,7 @@
 		6618B51C26AB3CBD00ED51C9 /* BaseTestCase+GoToExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6618B51B26AB3CBD00ED51C9 /* BaseTestCase+GoToExtension.swift */; };
 		6618B51E26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6618B51D26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift */; };
 		661A3955271E48A2002F32F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 661A3954271E48A2002F32F5 /* Main.storyboard */; };
+		661AFF1A2727A4840099B3E4 /* CardGridOverflowMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661AFF192727A4840099B3E4 /* CardGridOverflowMenuView.swift */; };
 		661F4FB5269CAAE00078238B /* DownloadOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F4FB4269CAAE00078238B /* DownloadOverlayView.swift */; };
 		6626BC9526B9B1A400EE0760 /* FindInPageOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6626BC9426B9B1A400EE0760 /* FindInPageOverlayView.swift */; };
 		6626BC9726B9B1AC00EE0760 /* FindInPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6626BC9626B9B1AC00EE0760 /* FindInPageViewController.swift */; };
@@ -1240,6 +1241,7 @@
 		6618B51B26AB3CBD00ED51C9 /* BaseTestCase+GoToExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaseTestCase+GoToExtension.swift"; sourceTree = "<group>"; };
 		6618B51D26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaseTestCase+ActionExtension.swift"; sourceTree = "<group>"; };
 		661A3954271E48A2002F32F5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		661AFF192727A4840099B3E4 /* CardGridOverflowMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardGridOverflowMenuView.swift; sourceTree = "<group>"; };
 		661F4FB4269CAAE00078238B /* DownloadOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadOverlayView.swift; sourceTree = "<group>"; };
 		6626BC9426B9B1A400EE0760 /* FindInPageOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindInPageOverlayView.swift; sourceTree = "<group>"; };
 		6626BC9626B9B1AC00EE0760 /* FindInPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindInPageViewController.swift; sourceTree = "<group>"; };
@@ -2702,6 +2704,7 @@
 				F0405D0D25FFCA5100A0A3B2 /* NeevaMenuView.swift */,
 				C832BF8226E15B5B00B9A1F8 /* OverflowMenuOverlayContent.swift */,
 				67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */,
+				661AFF192727A4840099B3E4 /* CardGridOverflowMenuView.swift */,
 				4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */,
 				4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */,
 				F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */,
@@ -5386,6 +5389,7 @@
 				1DA3CE5F24EEE7C600422BB2 /* SiteArchiver.swift in Sources */,
 				67942DD826F14F2A0023F623 /* NotificationPromptView.swift in Sources */,
 				D34DC8531A16C40C00D49B7B /* Profile.swift in Sources */,
+				661AFF1A2727A4840099B3E4 /* CardGridOverflowMenuView.swift in Sources */,
 				C9BED4B92667D5D3001D9C77 /* Roobert.swift in Sources */,
 				67F2A52E27306AE900CAE11A /* NotificationSettingsView.swift in Sources */,
 				E65075541E37F6FC006961AC /* DynamicFontHelper.swift in Sources */,

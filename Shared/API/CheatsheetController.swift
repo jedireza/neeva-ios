@@ -74,7 +74,9 @@ public struct RelatedRecipe {
     public var totalTime: String?
     public var recipeRating: RecipeRating?
 
-    public init(title: String, imageURL: String, url: URL, totalTime: String?, recipeRating: RecipeRating?) {
+    public init(
+        title: String, imageURL: String, url: URL, totalTime: String?, recipeRating: RecipeRating?
+    ) {
         self.title = title
         self.imageURL = imageURL
         self.url = url

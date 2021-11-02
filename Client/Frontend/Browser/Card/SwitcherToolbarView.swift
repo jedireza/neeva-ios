@@ -41,13 +41,61 @@ struct SwitcherToolbarView: View {
     @State var presentingMenu: Bool = false
     @State private var action: NeevaMenuAction? = nil
 
+    var bvc: BrowserViewController {
+        SceneDelegate.getBVC(with: toolbarModel.tabManager.scene)
+    }
+
     var body: some View {
         let divider = Color.ui.adaptive.separator.frame(height: 1).ignoresSafeArea()
         VStack(spacing: 0) {
             if !top { divider }
 
             HStack(spacing: 0) {
-                if top {
+                if FeatureFlag[.overflowMenuInCardGrid] {
+                    if case .tabs = gridModel.switcherState {
+                        if top {
+                            TopBarOverflowMenuButton(
+                                changedUserAgent: bvc.tabManager.selectedTab?.showRequestDesktop,
+                                onOverflowMenuAction: { action, view in
+                                    bvc.perform(overflowMenuAction: action, targetButtonView: view)
+                                },
+                                onLongPress: { _ in
+                                }, location: .cardGrid
+                            )
+                            .tapTargetFrame()
+                            .environmentObject(bvc.chromeModel)
+                            .environmentObject(bvc.locationModel)
+                        } else {
+                            TabToolbarButtons.OverflowMenu(
+                                weight: .medium,
+                                action: {
+                                    bvc.showModal(style: .grouped) {
+                                        OverflowMenuOverlayContent(
+                                            menuAction: { action in
+                                                bvc.perform(
+                                                    overflowMenuAction: action,
+                                                    targetButtonView: nil)
+                                            },
+                                            changedUserAgent: bvc.tabManager.selectedTab?
+                                                .showRequestDesktop,
+                                            chromeModel: bvc.chromeModel,
+                                            locationModel: bvc.locationModel,
+                                            location: .cardGrid
+                                        )
+                                    }
+                                },
+                                onLongPress: {}
+                            )
+                            .tapTargetFrame()
+                        }
+                    }
+
+                    if top {
+                        GridPicker()
+                    } else {
+                        Spacer()
+                    }
+                } else if top {
                     TabToolbarButtons.NeevaMenu(iconWidth: 24) {
                         presentingMenu = true
                     }
@@ -77,16 +125,28 @@ struct SwitcherToolbarView: View {
                     }
                     .tapTargetFrame()
                     GridPicker()
-                }
-                if case .tabs = gridModel.switcherState {
+
+                    if case .tabs = gridModel.switcherState {
+                        IncognitoButton(
+                            isIncognito: toolbarModel.isIncognito,
+                            action: {
+                                toolbarModel.onToggleIncognito()
+                            }
+                        )
+
+                        Spacer()
+                    }
+                } else {
                     IncognitoButton(
                         isIncognito: toolbarModel.isIncognito,
                         action: {
                             toolbarModel.onToggleIncognito()
                         }
                     )
+
                     Spacer()
                 }
+
                 SecondaryMenuButton(action: {
                     switch gridModel.switcherState {
                     case .tabs:

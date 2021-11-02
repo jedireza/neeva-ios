@@ -4,7 +4,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-private enum OverflowMenuUX {
+enum OverflowMenuUX {
     static let innerSectionPadding: CGFloat = 8
     static let squareButtonSize: CGFloat = 83
     static let squareButtonSpacing: CGFloat = 4
@@ -13,14 +13,17 @@ private enum OverflowMenuUX {
 
 public struct OverflowMenuButtonView: View {
     let label: String
-    let symbol: SFSymbol
+    var symbol: SFSymbol? = nil
+    var nicon: Nicon? = nil
     let action: () -> Void
     let longPressAction: (() -> Void)?
+    var isIncognito: Bool
 
     @Environment(\.isEnabled) private var isEnabled
 
     public init(
         label: String, symbol: SFSymbol,
+        isIncognito: Bool = false,
         longPressAction: (() -> Void)? = nil,
         action: @escaping () -> Void
     ) {
@@ -28,16 +31,40 @@ public struct OverflowMenuButtonView: View {
         self.symbol = symbol
         self.action = action
         self.longPressAction = longPressAction
+        self.isIncognito = isIncognito
+    }
+
+    public init(
+        label: String, nicon: Nicon,
+        longPressAction: (() -> Void)? = nil,
+        isIncognito: Bool = false,
+        action: @escaping () -> Void
+    ) {
+        self.label = label
+        self.nicon = nicon
+        self.action = action
+        self.longPressAction = longPressAction
+        self.isIncognito = isIncognito
     }
 
     public var body: some View {
-        GroupedCellButton(action: action, longPressAction: longPressAction) {
+        GroupedCellButton(
+            action: action, longPressAction: longPressAction,
+            backgroundColor: isIncognito ? Color.black : Color.secondaryGroupedBackground
+        ) {
             VStack(spacing: OverflowMenuUX.squareButtonSpacing) {
-                Symbol(decorative: symbol, size: OverflowMenuUX.squareButtonIconSize)
+                if let symbol = symbol {
+                    Symbol(
+                        decorative: symbol, size: OverflowMenuUX.squareButtonIconSize,
+                        weight: .medium)
+                } else if let nicon = nicon {
+                    Symbol(decorative: nicon, size: 20, weight: .medium)
+                }
+
                 Text(label).withFont(.bodyLarge)
             }.frame(height: OverflowMenuUX.squareButtonSize)
         }
-        .accentColor(isEnabled ? .label : .quaternaryLabel)
+        .accentColor(isIncognito ? .white : isEnabled ? .label : .quaternaryLabel)
     }
 }
 

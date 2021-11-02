@@ -299,7 +299,7 @@ extension DownloadQueue: DownloadDelegate {
     }
 }
 
-func openDownloadsFolderInFilesApp() {
+public func openDownloadsFolderInFilesApp() {
     guard
         let documentPath = NSSearchPathForDirectoriesInDomains(
             .documentDirectory, .allDomainsMask, true

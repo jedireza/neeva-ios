@@ -52,9 +52,10 @@ public struct GroupedCell<Content: View>: View {
 
     public var body: some View {
         GroupedCell<ContentContainer>.Decoration(
+            roundedCorners: roundedCorners,
             content: {
                 ContentContainer(alignment: alignment, content: content)
-            }, roundedCorners: roundedCorners)
+            })
     }
 }
 
@@ -67,20 +68,23 @@ public struct GroupedCellButton<Label: View>: View {
     let action: () -> Void
     let longPressAction: (() -> Void)?
     let label: () -> Label
+    var backgroundColor: Color
 
     public init(
         alignment: GroupedCellAlignment = .center, action: @escaping () -> Void,
         longPressAction: (() -> Void)? = nil,
-        @ViewBuilder label: @escaping () -> Label
+        @ViewBuilder label: @escaping () -> Label,
+        backgroundColor: Color = Color.secondaryGroupedBackground
     ) {
         self.alignment = alignment
         self.action = action
         self.label = label
         self.longPressAction = longPressAction
+        self.backgroundColor = backgroundColor
     }
 
     public var body: some View {
-        GroupedCell.Decoration {
+        GroupedCell.Decoration(backgroundColor: backgroundColor) {
             LongPressButton(action: action, longPressAction: longPressAction) {
                 GroupedCell.ContentContainer(alignment: alignment, content: label)
             }
@@ -92,12 +96,14 @@ public struct GroupedCellButton<Label: View>: View {
 extension GroupedCellButton where Label == Text.WithFont {
     public init<S: StringProtocol>(
         _ label: S, style: FontStyle = .bodyLarge, weight: UIFont.Weight? = nil,
-        action: @escaping () -> Void, longPressAction: (() -> Void)? = nil
+        action: @escaping () -> Void, longPressAction: (() -> Void)? = nil,
+        backgroundColor: Color = Color.secondaryGroupedBackground
     ) {
         self.label = { Text(label).withFont(style, weight: weight) }
         self.alignment = .center
         self.action = action
         self.longPressAction = longPressAction
+        self.backgroundColor = backgroundColor
     }
 }
 
@@ -105,20 +111,23 @@ extension GroupedCellButton where Label == Text.WithFont {
 extension GroupedCell {
     /// Adds the standard background and rounded corners to the content.
     public struct Decoration: View {
-        let content: () -> Content
         var roundedCorners: UIRectCorner
+        var backgroundColor: Color
+        let content: () -> Content
 
         public init(
-            @ViewBuilder content: @escaping () -> Content,
-            roundedCorners: UIRectCorner = .allCorners
+            roundedCorners: UIRectCorner = .allCorners,
+            backgroundColor: Color = Color.secondaryGroupedBackground,
+            @ViewBuilder content: @escaping () -> Content
         ) {
-            self.content = content
             self.roundedCorners = roundedCorners
+            self.backgroundColor = backgroundColor
+            self.content = content
         }
 
         public var body: some View {
             content()
-                .background(Color.secondaryGroupedBackground)
+                .background(backgroundColor)
                 .cornerRadius(GroupedCellUX.cornerRadius, corners: roundedCorners)
         }
     }

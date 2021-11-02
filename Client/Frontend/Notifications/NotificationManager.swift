@@ -223,8 +223,11 @@ class NotificationManager: ObservableObject {
                 bvc.presentIntroViewController(true)
                 tapAction = LocalNotitifications.LocalNotificationTapAction.openIntroView
             } else {
-                if let urlStr = request.content.userInfo[NotificationManager.notificationKey.localNotificationURL] as? String,
-                    let url = URL(string: urlStr) {
+                if let urlStr =
+                    request.content.userInfo[
+                        NotificationManager.notificationKey.localNotificationURL] as? String,
+                    let url = URL(string: urlStr)
+                {
                     bvc.openURLInNewTab(url)
                     tapAction = LocalNotitifications.LocalNotificationTapAction.openCustomURL
                 } else {

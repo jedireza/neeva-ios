@@ -137,7 +137,8 @@ class LocalNotitifications {
                 case .neevaOnboardingProductSearch:
                     rescheduled = createNeevaOnboardingCallback(notificationType: .neevaOnboardingProductSearch)
                 case .neevaOnboardingNewsProvider:
-                    rescheduled = createNeevaOnboardingCallback(notificationType: .neevaOnboardingNewsProvider)
+                    rescheduled = createNeevaOnboardingCallback(
+                        notificationType: .neevaOnboardingNewsProvider)
                 }
             }
 
@@ -152,7 +153,7 @@ class LocalNotitifications {
             return nil
         }
 
-        var urlStr : String?
+        var urlStr: String?
 
         if components.count > 3 {
             urlStr = components[3]

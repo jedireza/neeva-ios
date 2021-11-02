@@ -75,6 +75,7 @@ struct TopBarOverflowMenuButton: View {
     let changedUserAgent: Bool?
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
     let onLongPress: (UIView) -> Void
+    let location: OverflowMenuLocation
     var inTopBar: Bool = false
 
     @Environment(\.isIncognito) private var isIncognito
@@ -86,6 +87,27 @@ struct TopBarOverflowMenuButton: View {
 
     @EnvironmentObject private var chromeModel: TabChromeModel
     @EnvironmentObject private var locationModel: LocationViewModel
+
+    @ViewBuilder
+    var content: some View {
+        if location == .tab {
+            OverflowMenuView(
+                changedUserAgent: changedUserAgent ?? false,
+                menuAction: {
+                    action = $0
+                    presenting = false
+                }
+            )
+        } else {
+            CardGridOverflowMenuView(
+                changedUserAgent: changedUserAgent ?? false,
+                menuAction: {
+                    action = $0
+                    presenting = false
+                }
+            )
+        }
+    }
 
     var body: some View {
         TabToolbarButtons.OverflowMenu(
@@ -111,17 +133,11 @@ struct TopBarOverflowMenuButton: View {
             }
         ) {
             VerticalScrollViewIfNeeded {
-                OverflowMenuView(
-                    changedUserAgent: changedUserAgent ?? false,
-                    menuAction: {
-                        action = $0
-                        presenting = false
-                    }
-                )
-                .padding(.bottom, 16)
-                .environment(\.isIncognito, isIncognito)
-                .environmentObject(chromeModel)
-                .environmentObject(locationModel)
+                content
+                    .padding(.bottom, 16)
+                    .environment(\.isIncognito, isIncognito)
+                    .environmentObject(chromeModel)
+                    .environmentObject(locationModel)
             }.frame(minWidth: 340, minHeight: 285)
         }
     }

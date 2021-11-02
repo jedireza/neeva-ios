@@ -49,7 +49,8 @@ extension BrowserViewController: ToolbarDelegate {
                         },
                         changedUserAgent: self.tabManager.selectedTab?.showRequestDesktop,
                         chromeModel: self.chromeModel,
-                        locationModel: self.locationModel
+                        locationModel: self.locationModel,
+                        location: .tab
                     )
                 }
                 self.dismissVC()
@@ -87,8 +88,11 @@ extension BrowserViewController: ToolbarDelegate {
             case .longPressOverflow:
                 break
             case .showPreference:
-                if let tabUUID = self.tabManager.selectedTab?.tabUUID, let url = self.tabManager.selectedTab?.url?.absoluteString {
-                    RecipeCheatsheetLogManager.shared.logInteraction(logType: .clickPreferredProvider, tabUUIDAndURL: tabUUID + url)
+                if let tabUUID = self.tabManager.selectedTab?.tabUUID,
+                    let url = self.tabManager.selectedTab?.url?.absoluteString
+                {
+                    RecipeCheatsheetLogManager.shared.logInteraction(
+                        logType: .clickPreferredProvider, tabUUIDAndURL: tabUUID + url)
                 }
                 // Set up preferred provider list
                 let providerList = ProviderList.shared

@@ -24,7 +24,7 @@ enum NavigationPath {
     case fastTap(String)
     case configNewsProvider(isPrivate: Bool)
 
-    private static var subscription : AnyCancellable? = nil
+    private static var subscription: AnyCancellable? = nil
 
     init?(bvc: BrowserViewController, url: URL) {
         let urlString = url.absoluteString
@@ -48,8 +48,8 @@ enum NavigationPath {
         if urlString.starts(with: "\(scheme)://open-url") {
             self = .openUrlFromComponents(bvc: bvc, components: components)
         } else if let widgetKitNavPath = NavigationPath.handleWidgetKitQuery(
-                    bvc: bvc, urlString: urlString,
-                    scheme: scheme, components: components)
+            bvc: bvc, urlString: urlString,
+            scheme: scheme, components: components)
         {
             self = widgetKitNavPath
         } else if urlString.starts(with: "\(scheme)://open-text") {
@@ -61,10 +61,12 @@ enum NavigationPath {
             self = .url(
                 webURL: NavigationPath.maybeRewriteURL(url, components), isPrivate: isPrivate)
         } else if urlString.starts(with: "\(scheme)://space"),
-                  let spaceId = components.valueForQuery("id") {
+            let spaceId = components.valueForQuery("id")
+        {
             self = .space(spaceId)
         } else if urlString.starts(with: "\(scheme)://fast-tap"),
-                  let query = components.valueForQuery("query"){
+            let query = components.valueForQuery("query")
+        {
             self = .fastTap(query)
         } else if urlString.starts(with: "\(scheme)://configure-news-provider") {
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
@@ -89,7 +91,8 @@ enum NavigationPath {
         case .fastTap(let query):
             NavigationPath.handleFastTap(query: query, with: bvc)
         case .configNewsProvider(let isPrivate):
-            NavigationPath.handleURL(url: NeevaConstants.configureNewsProviderURL, isPrivate: isPrivate, with: bvc)
+            NavigationPath.handleURL(
+                url: NeevaConstants.configureNewsProviderURL, isPrivate: isPrivate, with: bvc)
         }
     }
 
@@ -192,7 +195,8 @@ enum NavigationPath {
             } else {
                 subscription = spaceCardModel.objectWillChange.sink {
                     if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                        bvc.cardGridViewController.rootView.openSpace(spaceID: spaceId, animate: false)
+                        bvc.cardGridViewController.rootView.openSpace(
+                            spaceID: spaceId, animate: false)
                         subscription?.cancel()
                     }
                 }

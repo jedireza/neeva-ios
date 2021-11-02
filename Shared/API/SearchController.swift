@@ -140,21 +140,32 @@ public class SearchController:
                                     for recipe in recipes {
                                         if let title = recipe.title,
                                             let imageURL = recipe.imageUrl,
-                                            let urlString = recipe.url {
+                                            let urlString = recipe.url
+                                        {
                                             let url = URL(string: urlString)!
 
                                             var recipeRating: RecipeRating?
 
-                                            if let maxStars = recipe.recipeRating?.maxStars, let recipeStars = recipe.recipeRating?.recipeStars, let numReviews = recipe.recipeRating?.numReviews {
-                                                recipeRating = RecipeRating(maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews)
+                                            if let maxStars = recipe.recipeRating?.maxStars,
+                                                let recipeStars = recipe.recipeRating?.recipeStars,
+                                                let numReviews = recipe.recipeRating?.numReviews
+                                            {
+                                                recipeRating = RecipeRating(
+                                                    maxStars: maxStars, recipeStars: recipeStars,
+                                                    numReviews: numReviews)
                                             }
 
-                                            recipeResult.append(RelatedRecipe(title: title, imageURL: imageURL, url: url, totalTime: recipe.totalTime, recipeRating: recipeRating))
+                                            recipeResult.append(
+                                                RelatedRecipe(
+                                                    title: title, imageURL: imageURL, url: url,
+                                                    totalTime: recipe.totalTime,
+                                                    recipeRating: recipeRating))
                                         }
                                     }
 
                                     let recipeBlockResult = RecipeBlockResult(recipeResult)
-                                    let finalResult = RichResultType.RecipeBlock(result: recipeBlockResult)
+                                    let finalResult = RichResultType.RecipeBlock(
+                                        result: recipeBlockResult)
                                     richResult.append(RichResult(resultType: finalResult))
                                 }
                             }

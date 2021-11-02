@@ -62,6 +62,8 @@ public enum Nicon: Character {
     case ccBy = "\u{101013}"
 
     case ellipsis = "\u{100360}"
+
+    case incognito = "\u{101004}"
     // TODO: Add more here
 }
 
