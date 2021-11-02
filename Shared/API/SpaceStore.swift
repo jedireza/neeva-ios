@@ -37,6 +37,7 @@ public struct SpaceCommentData {
 }
 
 public struct SpaceEntityData {
+    typealias SpaceEntity = GetSpacesDataQuery.Data.GetSpace.Space.Space.Entity.SpaceEntity
     typealias EntityRecipe = GetSpacesDataQuery.Data.GetSpace.Space.Space.Entity.SpaceEntity.Content
         .TypeSpecific.AsWeb.Web.Recipe
     typealias EntityRichEntity = GetSpacesDataQuery.Data.GetSpace.Space
@@ -54,28 +55,45 @@ public struct SpaceEntityData {
     public let title: String?
     public let snippet: String?
     public let thumbnail: String?
-    public let recipe: Recipe?
-    public let richEntity: RichEntity?
-    public let retailProduct: RetailProduct?
-    public let techDoc: TechDoc?
+    public let previewEntity: PreviewEntity
 
     public init(
         id: String, url: URL?, title: String?, snippet: String?,
-        thumbnail: String?, recipe: Recipe?, richEntity: RichEntity? = nil,
-        retailProduct: RetailProduct? = nil, techDoc: TechDoc? = nil
+        thumbnail: String?, previewEntity: PreviewEntity
     ) {
         self.id = id
         self.url = url
         self.title = title
         self.snippet = snippet
         self.thumbnail = thumbnail
-        self.recipe = recipe
-        self.richEntity = richEntity
-        self.retailProduct = retailProduct
-        self.techDoc = techDoc
+        self.previewEntity = previewEntity
     }
 
-    static func recipe(from entity: EntityRecipe?) -> Recipe? {
+    static func previewEntity(from entity: SpaceEntity) -> PreviewEntity {
+        if let recipe = recipe(from: entity.content?.typeSpecific?.asWeb?.web?.recipes?.first) {
+            return PreviewEntity.recipe(recipe)
+        } else if let richEntity = richEntity(
+            from: entity.content?.typeSpecific?.asRichEntity?.richEntity, with: entity.content?.id)
+        {
+            return PreviewEntity.richEntity(richEntity)
+        } else if let retailProduct = retailProduct(
+            from: entity.content?.typeSpecific?.asWeb?.web?.retailerProduct,
+            with: entity.content?.actionUrl.addingPercentEncoding(
+                withAllowedCharacters: .urlHostAllowed))
+        {
+            return PreviewEntity.retailProduct(retailProduct)
+        } else if let techDoc = techDoc(
+            from: entity.content?.typeSpecific?.asTechDoc?.techDoc,
+            with: entity.content?.actionUrl.addingPercentEncoding(
+                withAllowedCharacters: .urlHostAllowed))
+        {
+            return PreviewEntity.techDoc(techDoc)
+        } else {
+            return PreviewEntity.webPage
+        }
+    }
+
+    private static func recipe(from entity: EntityRecipe?) -> Recipe? {
         guard let entity = entity, let title = entity.title, let imageURL = entity.imageUrl else {
             return nil
         }
@@ -89,7 +107,8 @@ public struct SpaceEntityData {
             preference: .noPreference)
     }
 
-    static func richEntity(from entity: EntityRichEntity?, with id: String?) -> RichEntity? {
+    private static func richEntity(from entity: EntityRichEntity?, with id: String?) -> RichEntity?
+    {
         guard let id = id, let entity = entity, let title = entity.title,
             let subtitle = entity.subTitle,
             let imageURL = URL(string: entity.images?.first?.thumbnailUrl ?? "")
@@ -100,7 +119,8 @@ public struct SpaceEntityData {
         return RichEntity(id: id, title: title, description: subtitle, imageURL: imageURL)
     }
 
-    static func retailProduct(from entity: EntityRetailProduct?, with id: String?) -> RetailProduct?
+    private static func retailProduct(from entity: EntityRetailProduct?, with id: String?)
+        -> RetailProduct?
     {
         guard let id = id, let entity = entity, let url = URL(string: entity.url ?? ""),
             let title = entity.name,
@@ -115,7 +135,7 @@ public struct SpaceEntityData {
             ratingSummary: productRating(from: entity.reviews?.ratingSummary))
     }
 
-    static func techDoc(from entity: EntityTechDoc?, with id: String?) -> TechDoc? {
+    private static func techDoc(from entity: EntityTechDoc?, with id: String?) -> TechDoc? {
         guard let id = id, let entity = entity, let title = entity.name else {
             return nil
         }
@@ -123,7 +143,7 @@ public struct SpaceEntityData {
         return TechDoc(id: id, title: title)
     }
 
-    static func productRating(from rating: EntityProductRating?) -> ProductRating? {
+    private static func productRating(from rating: EntityProductRating?) -> ProductRating? {
         guard let rating = rating, let productStars = rating.rating?.productStars else {
             return nil
         }

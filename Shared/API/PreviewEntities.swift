@@ -2,6 +2,14 @@
 
 import Foundation
 
+public enum PreviewEntity {
+    case richEntity(RichEntity)
+    case recipe(Recipe)
+    case techDoc(TechDoc)
+    case retailProduct(RetailProduct)
+    case webPage
+}
+
 public struct RichEntity {
     public let id: String
     public let title: String

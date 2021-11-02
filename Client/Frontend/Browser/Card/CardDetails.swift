@@ -204,7 +204,7 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     }
 
     var richEntityPreviewURL: URL? {
-        guard let richEntity = data.richEntity else {
+        guard case .richEntity(let richEntity) = data.previewEntity else {
             return nil
         }
         let spaceURL = NeevaConstants.appSpacesURL.appendingPathComponent(spaceID).absoluteString
@@ -213,7 +213,7 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     }
 
     var productPreviewURL: URL? {
-        guard let product = data.retailProduct else {
+        guard case .retailProduct(let product) = data.previewEntity else {
             return nil
         }
         let spaceURL = NeevaConstants.appSpacesURL.appendingPathComponent(spaceID).absoluteString
@@ -221,7 +221,7 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     }
 
     var techDocURL: URL? {
-        guard let techDoc = data.techDoc else {
+        guard case .techDoc(let techDoc) = data.previewEntity else {
             return nil
         }
         let spaceURL = NeevaConstants.appSpacesURL.appendingPathComponent(spaceID).absoluteString
@@ -242,11 +242,15 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     }
 
     @ViewBuilder var thumbnail: some View {
-        if let recipe = data.recipe, let imageURL = URL(string: recipe.imageURL) {
+        if case .recipe(let recipe) = data.previewEntity,
+            let imageURL = URL(string: recipe.imageURL)
+        {
             WebImage(url: imageURL)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
-        } else if let richEntity = data.richEntity, let imageURL = richEntity.imageURL {
+        } else if case .richEntity(let richEntity) = data.previewEntity,
+            let imageURL = richEntity.imageURL
+        {
             WebImage(url: imageURL)
                 .resizable()
                 .aspectRatio(contentMode: .fill)

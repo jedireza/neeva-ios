@@ -59,32 +59,18 @@ class SpacesDataQueryController: QueryController<
                     var spaceEntities: [SpaceEntityData] = []
                     if let entities = space.space?.entities {
                         for entity in entities {
+                            guard let spaceEntity = entity.spaceEntity else {
+                                continue
+                            }
                             spaceEntities.append(
                                 SpaceEntityData(
                                     id: entity.metadata?.docId ?? "unknown-id",
-                                    url: URL(string: entity.spaceEntity?.url ?? ""),
-                                    title: entity.spaceEntity?.title,
-                                    snippet: entity.spaceEntity?.snippet,
-                                    thumbnail: entity.spaceEntity?.thumbnail,
-                                    recipe: SpaceEntityData.recipe(
-                                        from: entity.spaceEntity?.content?.typeSpecific?.asWeb?.web?
-                                            .recipes?.first),
-                                    richEntity: SpaceEntityData.richEntity(
-                                        from: entity.spaceEntity?.content?.typeSpecific?
-                                            .asRichEntity?.richEntity,
-                                        with: entity.spaceEntity?.content?.id),
-                                    retailProduct: SpaceEntityData.retailProduct(
-                                        from: entity.spaceEntity?.content?.typeSpecific?
-                                            .asWeb?.web?.retailerProduct,
-                                        with: entity.spaceEntity?.content?.actionUrl
-                                            .addingPercentEncoding(
-                                                withAllowedCharacters: .urlHostAllowed)),
-                                    techDoc: SpaceEntityData.techDoc(
-                                        from: entity.spaceEntity?.content?.typeSpecific?
-                                            .asTechDoc?.techDoc,
-                                        with: entity.spaceEntity?.content?.actionUrl
-                                            .addingPercentEncoding(
-                                                withAllowedCharacters: .urlHostAllowed))))
+                                    url: URL(string: spaceEntity.url ?? ""),
+                                    title: spaceEntity.title,
+                                    snippet: spaceEntity.snippet,
+                                    thumbnail: spaceEntity.thumbnail,
+                                    previewEntity: SpaceEntityData.previewEntity(from: spaceEntity))
+                            )
                         }
                     }
                     var spaceComments: [SpaceCommentData] = []

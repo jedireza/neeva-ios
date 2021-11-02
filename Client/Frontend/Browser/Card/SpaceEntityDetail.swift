@@ -23,12 +23,60 @@ struct SpaceEntityDetailView: View {
     }
 
     var titleToDisplay: String {
-        details.data.techDoc?.title ?? details.data.retailProduct?.title
-            ?? details.data.richEntity?.title ?? details.title
+        switch details.data.previewEntity {
+        case .richEntity(let richEntity):
+            return richEntity.title
+        case .retailProduct(let product):
+            return product.title
+        case .techDoc(let doc):
+            return doc.title
+        default:
+            return details.title
+        }
+    }
+
+    var snippetToDisplay: String? {
+        switch details.data.previewEntity {
+        case .richEntity(let richEntity):
+            return richEntity.description
+        case .retailProduct(let product):
+            return product.description.first ?? details.description
+        default:
+            return details.description
+        }
     }
 
     @State private var isPressed: Bool = false
     @State private var isPreviewActive: Bool = false
+
+    @ViewBuilder var product: some View {
+        if case .retailProduct(let product) = details.data.previewEntity {
+            HStack {
+                Text(product.formattedPrice)
+                    .withFont(.bodyMedium)
+                    .foregroundColor(.label)
+                if let productStars = product.ratingSummary?.productStars {
+                    Image(systemSymbol: .starFill)
+                        .renderingMode(.template)
+                        .foregroundColor(Color.brand.orange)
+                        .font(.system(size: 12))
+                        .padding(.trailing, -5)
+                        .padding(.bottom, 2)
+                    Text(String(round(productStars * 10) / 10.0))
+                        .withFont(.bodyMedium)
+                        .foregroundColor(.label)
+                }
+                if let numReviews = product.ratingSummary?.numReviews {
+                    if numReviews > 0 {
+                        Text("(\(String(numReviews)))")
+                            .withFont(.bodyMedium)
+                            .foregroundColor(.secondaryLabel)
+                            .padding(.leading, -3)
+                    }
+                }
+            }
+        }
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -60,7 +108,7 @@ struct SpaceEntityDetailView: View {
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                     }
-                } else if let recipe = details.data.recipe {
+                } else if case .recipe(let recipe) = details.data.previewEntity {
                     RecipeBanner(recipe: recipe)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
@@ -84,43 +132,8 @@ struct SpaceEntityDetailView: View {
                                         .foregroundColor(Color.label)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                if let product = details.data.retailProduct {
-                                    HStack {
-                                        Text(product.formattedPrice)
-                                            .withFont(.bodyMedium)
-                                            .foregroundColor(.label)
-                                        if let productStars = product.ratingSummary?.productStars {
-                                            Image(systemSymbol: .starFill)
-                                                .renderingMode(.template)
-                                                .foregroundColor(Color.brand.orange)
-                                                .font(.system(size: 12))
-                                                .padding(.trailing, -5)
-                                                .padding(.bottom, 2)
-                                            Text(String(round(productStars * 10) / 10.0))
-                                                .withFont(.bodyMedium)
-                                                .foregroundColor(.label)
-                                        }
-                                        if let numReviews = product.ratingSummary?.numReviews {
-                                            if numReviews > 0 {
-                                                Text("(\(String(numReviews)))")
-                                                    .withFont(.bodyMedium)
-                                                    .foregroundColor(.secondaryLabel)
-                                                    .padding(.leading, -3)
-                                            }
-                                        }
-                                    }
-                                }
-                                if !showDescriptions, let product = details.data.retailProduct,
-                                    let descriptions = product.description, !descriptions.isEmpty
-                                {
-                                    Text(descriptions.first!)
-                                        .withFont(.bodySmall)
-                                        .lineLimit(2)
-                                        .foregroundColor(Color.secondaryLabel)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                } else if let snippet = details.data.richEntity?.description
-                                    ?? details.description, !showDescriptions
-                                {
+                                product
+                                if let snippet = snippetToDisplay, !showDescriptions {
                                     Text(snippet)
                                         .withFont(.bodySmall)
                                         .lineLimit(2)
@@ -129,7 +142,8 @@ struct SpaceEntityDetailView: View {
                                 }
                             }
                         }
-                        if showDescriptions, let product = details.data.retailProduct,
+                        if showDescriptions,
+                            case .retailProduct(let product) = details.data.previewEntity,
                             let descriptions = product.description, !descriptions.isEmpty
                         {
                             ForEach(descriptions, id: \.self) { description in
@@ -139,9 +153,7 @@ struct SpaceEntityDetailView: View {
                                     .foregroundColor(Color.secondaryLabel)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
-                        } else if let snippet = details.data.richEntity?.description
-                            ?? details.description, showDescriptions
-                        {
+                        } else if let snippet = snippetToDisplay, showDescriptions {
                             Text(snippet)
                                 .withFont(.bodySmall)
                                 .fixedSize(horizontal: false, vertical: true)
