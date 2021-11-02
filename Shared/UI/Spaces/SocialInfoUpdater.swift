@@ -113,7 +113,7 @@ public class SocialInfoUpdater: ObservableObject {
             title: title,
             snippet: description,
             thumbnail: thumbnail,
-            recipe: nil)
+            previewEntity: .webPage)
         space.contentData?.replaceSubrange(
             index..<(index + 1), with: [newData])
         updateReady(index..<(index + 1), newData, space.id)
