@@ -123,18 +123,23 @@ class ZeroQueryModel: ObservableObject {
                     .PromoSignin, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                 self.signIn()
             }
-        } else if FeatureFlag[.notificationPermissionPromo]
-            && !Defaults[.seenNotificationPermissionPromo]
+        } else if !Defaults[.seenNotificationPermissionPromo]
             && NotificationPermissionHelper.shared.permissionStatus == .undecided
         {
             promoCard = .notificationPermission(
                 action: {
-                    NotificationPermissionHelper.shared.requestPermissionIfNeeded(completion: { authorized in
-                        Defaults[.seenNotificationPermissionPromo] = true
-                        self.promoCard = nil
-                    })
+                    ClientLogger.shared.logCounter(
+                        .PromoEnableNotification)
+                    NotificationPermissionHelper.shared.requestPermissionIfNeeded(
+                        completion: { authorized in
+                            Defaults[.seenNotificationPermissionPromo] = true
+                            self.promoCard = nil
+                        }
+                    )
                 },
                 onClose: {
+                    ClientLogger.shared.logCounter(
+                        .CloseEnableNotificationPromo)
                     Defaults[.seenNotificationPermissionPromo] = true
                     self.promoCard = nil
                 })
