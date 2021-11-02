@@ -367,19 +367,63 @@ extension URL {
         return self
     }
 
-    public func isEqual(_ url: URL) -> Bool {
-        if self == url {
-            return true
+    public enum EqualsOption {
+        case normalizeHost
+        case ignoreFragment
+        case ignoreLastSlash
+    }
+
+    /// Checks if URLs are exactly the same
+    public func equals(_ url: URL, with options: [EqualsOption] = []) -> Bool {
+        if options.isEmpty {
+            return self == url
         }
 
-        // Try an additional equality case by chopping off the trailing slash
-        let urls: [String] = [url.absoluteString, absoluteString].map { item in
-            if let lastCh = item.last, lastCh == "/" {
-                return item.dropLast().lowercased()
-            }
-            return item.lowercased()
+        // Scheme
+        if scheme != url.scheme {
+            return false
         }
-        return urls[0] == urls[1]
+
+        // Host
+        if options.contains(.normalizeHost) {
+            if normalizedHost != url.normalizedHost {
+                return false
+            }
+        } else {
+            if host != url.host {
+                return false
+            }
+        }
+
+        // Path
+        if options.contains(.ignoreLastSlash) {
+            // Allow paths to differ only by trailing slash
+            let paths: [String] = [url.path, path].map { item in
+                if let lastCh = item.last, lastCh == "/" {
+                    return String(item.dropLast())
+                }
+                return item
+            }
+            if paths[0] != paths[1] {
+                return false
+            }
+        } else {
+            if path != url.path {
+                return false
+            }
+        }
+
+        // Query
+        if query != url.query {
+            return false
+        }
+
+        // Fragment
+        if !options.contains(.ignoreFragment), fragment != url.fragment {
+            return false
+        }
+
+        return true
     }
 }
 

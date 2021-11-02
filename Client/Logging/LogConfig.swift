@@ -98,7 +98,7 @@ public struct LogConfig {
 
         // performance
         case AppCrashWithPageLoad  // App Crash # With Page load #
-        case LowMemoryWarning      // memory warning with memory footprint
+        case LowMemoryWarning  // memory warning with memory footprint
 
         // spaces
         case SpacesUIVisited

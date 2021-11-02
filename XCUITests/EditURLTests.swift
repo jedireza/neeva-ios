@@ -13,8 +13,8 @@ class EditURLTests: BaseTestCase {
         openURL()
         goToAddressBar()
         app.buttons["Edit Current Address"].tap()
-
-        waitForValueContains(app.buttons["Address Bar"], value: "http://example.com/")
+        XCTAssertEqual(
+            app.buttons["Address Bar"].value as! String, "Secure connection, https://example.com/")
     }
 
     func testTapEditURLShowsCorrectURLInAddressBar() {
@@ -22,7 +22,6 @@ class EditURLTests: BaseTestCase {
         openURL("fakeurl.madeup")
         goToAddressBar()
         app.buttons["Edit Current Address"].tap()
-        print(app.debugDescription)
-        waitForValueContains(app.buttons["Address Bar"], value: "http://fakeurl.madeup/")
+        XCTAssertEqual(app.buttons["Address Bar"].value as! String, "https://fakeurl.madeup/")
     }
 }

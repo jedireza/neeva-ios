@@ -48,7 +48,8 @@ class SavedTab: NSObject, NSCoding {
 
     init(
         screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: URL?,
-        url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String, parentUUID: String,
+        url: URL?, sessionData: SessionData?, uuid: String,
+        rootUUID: String, parentUUID: String,
         tabIndex: Int?, parentSpaceID: String
     ) {
         self.screenshotUUID = screenshotUUID

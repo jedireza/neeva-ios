@@ -216,7 +216,7 @@ public class NeevaFeatureFlags {
     // Use this for more time sensitive use cases that require more up to
     // date feature flag instead of waiting for next app restart which
     // may not happen frequently when user often background the app
-    
+
     public static func latestValue(_ flag: BoolFlag) -> Bool {
         return Defaults[Self.boolFlagOverridesKey][flag.rawValue]
             ?? Defaults[Self.boolFlagsKey][flag.rawValue] ?? false
@@ -229,7 +229,7 @@ public class NeevaFeatureFlags {
 
     public static func latestValue(_ flag: FloatFlag) -> Double {
         return Defaults[Self.floatFlagOverridesKey][flag.rawValue]
-        ?? Defaults[Self.floatFlagsKey][flag.rawValue] ?? 0.0
+            ?? Defaults[Self.floatFlagsKey][flag.rawValue] ?? 0.0
     }
 
     public static func latestValue(_ flag: StringFlag) -> String {

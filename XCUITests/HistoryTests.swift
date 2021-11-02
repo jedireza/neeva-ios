@@ -305,10 +305,10 @@ class HistoryTests: BaseTestCase {
     func testDeleteHistoryEntryBySwiping() {
         navigateToExample()
         goToHistory()
-        waitForExistence(app.cells.staticTexts["http://example.com/"], timeout: 10)
-        app.cells.staticTexts["http://example.com/"].firstMatch.swipeLeft()
+        waitForExistence(app.cells.staticTexts["https://example.com/"], timeout: 10)
+        app.cells.staticTexts["https://example.com/"].firstMatch.swipeLeft()
         waitForExistence(app.buttons["Delete"], timeout: 10)
         app.buttons["Delete"].tap()
-        waitForNoExistence(app.staticTexts["http://example.com"])
+        waitForNoExistence(app.staticTexts["https://example.com"])
     }
 }

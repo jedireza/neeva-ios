@@ -99,8 +99,11 @@ struct RecipeCheatsheetStripView: View {
     }
 
     func showOverlaySheet() {
-        if let tabUUID = tabManager.selectedTab?.tabUUID, let url = tabManager.selectedTab?.url?.absoluteString {
-            RecipeCheatsheetLogManager.shared.logInteraction(logType: .clickRecipeBanner, tabUUIDAndURL: tabUUID + url)
+        if let tabUUID = tabManager.selectedTab?.tabUUID,
+            let url = tabManager.selectedTab?.url?.absoluteString
+        {
+            RecipeCheatsheetLogManager.shared.logInteraction(
+                logType: .clickRecipeBanner, tabUUIDAndURL: tabUUID + url)
         }
 
         self.chromeModel.currentCheatsheetFaviconURL = self.tabManager.selectedTab?.favicon?.url
@@ -124,8 +127,11 @@ struct RecipeCheatsheetStripView: View {
     }
 
     func logBannerImpression() {
-        if let tabUUID = tabManager.selectedTab?.tabUUID, let url = tabManager.selectedTab?.url?.absoluteString {
-            RecipeCheatsheetLogManager.shared.logInteraction(logType: .impression, tabUUIDAndURL: tabUUID + url)
+        if let tabUUID = tabManager.selectedTab?.tabUUID,
+            let url = tabManager.selectedTab?.url?.absoluteString
+        {
+            RecipeCheatsheetLogManager.shared.logInteraction(
+                logType: .impression, tabUUIDAndURL: tabUUID + url)
         }
     }
 

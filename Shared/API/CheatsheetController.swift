@@ -49,7 +49,11 @@ public struct Recipe {
     public var reviews: [Review]?
     public var preference: UserPreference?
 
-    public init(title: String, imageURL: String, totalTime: String?, prepTime: String?, yield: String? , ingredients: [String]?, instructions: [String]?, recipeRating: RecipeRating?, reviews: [Review]?, preference: UserPreference) {
+    public init(
+        title: String, imageURL: String, totalTime: String?, prepTime: String?, yield: String?,
+        ingredients: [String]?, instructions: [String]?, recipeRating: RecipeRating?,
+        reviews: [Review]?, preference: UserPreference
+    ) {
         self.title = title
         self.imageURL = imageURL
         self.totalTime = totalTime
@@ -186,7 +190,13 @@ public class CheatsheetQueryController:
             let numReviews = recipe.recipeRating?.numReviews ?? 0
             let preference = recipe.preference ?? .noPreference
 
-            result.recipe = Recipe(title: title, imageURL: imageURL, totalTime: recipe.totalTime, prepTime: recipe.prepTime, yield: recipe.yield, ingredients: ingredients, instructions: instrutions, recipeRating: RecipeRating(maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews), reviews: reviews, preference: preference)
+            result.recipe = Recipe(
+                title: title, imageURL: imageURL, totalTime: recipe.totalTime,
+                prepTime: recipe.prepTime, yield: recipe.yield, ingredients: ingredients,
+                instructions: instrutions,
+                recipeRating: RecipeRating(
+                    maxStars: maxStars, recipeStars: recipeStars, numReviews: numReviews),
+                reviews: reviews, preference: preference)
         }
 
         return [result]

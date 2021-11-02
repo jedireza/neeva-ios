@@ -91,7 +91,8 @@ class IntroViewController: UIViewController {
             case FirstRunButtonActions.oktaSignin(let email):
                 self.didFinishClosure?(.oktaSignin(email))
                 break
-            case FirstRunButtonActions.oauthWithProvider(let provider, let marketingEmailOptOut, _, let email):
+            case FirstRunButtonActions.oauthWithProvider(
+                let provider, let marketingEmailOptOut, _, let email):
                 self.marketingEmailOptOut = marketingEmailOptOut
                 self.oauthWithProvider(provider: provider, email: email)
                 break
@@ -125,11 +126,12 @@ class IntroViewController: UIViewController {
 
     private func oauthWithProvider(provider: NeevaConstants.OAuthProvider, email: String) {
         guard
-            let authURL = provider == .okta ? URL(
-                string: NeevaConstants.signupOAuthString(
-                    provider: provider,
-                    mktEmailOptOut: self.marketingEmailOptOut,
-                    email: email))
+            let authURL = provider == .okta
+                ? URL(
+                    string: NeevaConstants.signupOAuthString(
+                        provider: provider,
+                        mktEmailOptOut: self.marketingEmailOptOut,
+                        email: email))
                 : URL(
                     string: NeevaConstants.signupOAuthString(
                         provider: provider,
@@ -179,7 +181,8 @@ class IntroViewController: UIViewController {
                 }
                 showErrorAlert(errMsg: errorMessage)
             } else if let cookie = token {
-                self.didFinishClosure?(.oauthWithProvider(provider, self.marketingEmailOptOut, cookie, email))
+                self.didFinishClosure?(
+                    .oauthWithProvider(provider, self.marketingEmailOptOut, cookie, email))
             }
         }
 

@@ -189,18 +189,22 @@ class TabManager: NSObject, ObservableObject {
     func getTabFor(_ url: URL) -> Tab? {
         assert(Thread.isMainThread)
 
+        let options: [URL.EqualsOption] = [.normalizeHost, .ignoreFragment, .ignoreLastSlash]
+
         for tab in tabs.filter({ $0.isIncognito == self.isIncognito }) {
-            if let webViewUrl = tab.webView?.url, url.isEqual(webViewUrl) {
+            if let currentUrl = tab.webView?.url, url.equals(currentUrl, with: options) {
                 return tab
             }
 
-            // Also look for tabs that haven't been restored yet.
+            // Also check URL if tab has not been restored yet
             if let sessionUrl = tab.sessionData?.currentUrl {
-                if sessionUrl == url {
+                if url.equals(sessionUrl, with: options) {
                     return tab
                 }
+
                 if let internalUrl = InternalURL(sessionUrl), internalUrl.isSessionRestore,
-                    internalUrl.extractedUrlParam == url
+                    let extractedUrlParam = internalUrl.extractedUrlParam,
+                    url.equals(extractedUrlParam, with: options)
                 {
                     return tab
                 }

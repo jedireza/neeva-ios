@@ -203,6 +203,8 @@ class ZeroQueryModel: ObservableObject {
         guard isLazyTab else {
             return false
         }
+        // TODO(darin): Handle the case of targetTab == .existingOrNewTab here. Might make
+        // sense to refactor with BVC.finishEditingAndSubmit so we don't duplicate logic.
         tabManager.select(tabManager.addTab(URLRequest(url: url), isPrivate: isPrivate))
         reset(bvc: nil, createdLazyTab: true)
         return true

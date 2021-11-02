@@ -505,7 +505,7 @@ private struct TabSuggestionView: View {
 private struct EditCurrentURLSuggestionView: View {
     let suggestion: TabCardDetails
 
-   func copy() {
+    func copy() {
         UIPasteboard.general.string = suggestion.url?.absoluteString
 
         if let toastManager = SceneDelegate.getCurrentSceneDelegate(

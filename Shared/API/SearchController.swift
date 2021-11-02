@@ -67,7 +67,9 @@ public class SearchController:
                         {
                             // process product clusters result
                             if typename == "ProductClusters" {
-                                if let products = typeSpecific.asProductClusters?.productClusters?.products {
+                                if let products = typeSpecific.asProductClusters?.productClusters?
+                                    .products
+                                {
                                     var productResult: [Product] = []
 
                                     for product in products {
@@ -95,13 +97,16 @@ public class SearchController:
                                             }
 
                                             var buyingGuideReviews: [BuyingGuideReview] = []
-                                            if let productBuyingGuideReviews = product.buyingGuideReviews
+                                            if let productBuyingGuideReviews = product
+                                                .buyingGuideReviews
                                             {
                                                 for buyingGuideReview in productBuyingGuideReviews {
                                                     if let source = buyingGuideReview.source,
                                                         let reviewURL = buyingGuideReview.reviewUrl,
                                                         let title = buyingGuideReview.header?.title,
-                                                        let summary = buyingGuideReview.header?.summary {
+                                                        let summary = buyingGuideReview.header?
+                                                            .summary
+                                                    {
                                                         buyingGuideReviews.append(
                                                             BuyingGuideReview(
                                                                 source: source,
@@ -124,7 +129,8 @@ public class SearchController:
                                     }
 
                                     let productClusterResuslt = ProductClusterResult(productResult)
-                                    let finalResult = RichResultType.ProductCluster(result: productClusterResuslt)
+                                    let finalResult = RichResultType.ProductCluster(
+                                        result: productClusterResuslt)
                                     richResult.append(RichResult(resultType: finalResult))
                                 }
                             } else if typename == "RecipeBlock" {

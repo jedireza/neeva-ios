@@ -9,7 +9,7 @@ struct ReaderModeBlocklist {
         ("neeva.com", "/spaces"),
         ("google.com", "/search"),
         ("twitter.com", "/home"),
-        ("carfax.com", "/vehicle")
+        ("carfax.com", "/vehicle"),
     ]
 
     static func isSiteBlocked(url: URL) -> Bool {
