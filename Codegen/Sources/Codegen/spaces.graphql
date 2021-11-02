@@ -33,6 +33,20 @@ query ListSpaces($kind: ListSpacesKind = All) {
   }
 }
 
+query GetSpacesTitleInfo($ids: [String!]) {
+  getSpace(input: { ids: $ids }) {
+    space {
+      pageMetadata {
+        pageID
+      }
+      space {
+        name
+        thumbnail
+      }
+    }
+  }
+}
+
 query GetSpacesData($ids: [String!]) {
   getSpace(input: { ids: $ids }) {
     space {

@@ -115,6 +115,50 @@ class SpacesDataQueryController: QueryController<
     }
 }
 
+/// Retrieves all space title information for the given spaces
+class SuggestedSpacesQueryController: QueryController<
+    GetSpacesTitleInfoQuery, [SuggestedSpacesQueryController.SpaceTitleInfo]
+>
+{
+    struct SpaceTitleInfo {
+        var id: String
+        var name: String
+        var thumbnail: String?
+    }
+
+    private var spaceIds: [String]
+
+    public init(spaceIds: [String]) {
+        self.spaceIds = spaceIds
+        super.init()
+    }
+
+    override func reload() {
+        self.perform(query: GetSpacesTitleInfoQuery(ids: spaceIds))
+    }
+
+    override class func processData(_ data: GetSpacesTitleInfoQuery.Data) -> [SpaceTitleInfo] {
+        var result: [SpaceTitleInfo] = []
+        if let spaces = data.getSpace?.space {
+            for space in spaces {
+                if let id = space.pageMetadata?.pageId, let name = space.space?.name {
+                    result.append(
+                        SpaceTitleInfo(id: id, name: name, thumbnail: space.space?.thumbnail)
+                    )
+                }
+            }
+        }
+        return result
+    }
+
+    @discardableResult static func getSpacesTitleInfo(
+        spaceIds: [String],
+        completion: @escaping (Result<[SpaceTitleInfo], Error>) -> Void
+    ) -> Apollo.Cancellable {
+        Self.perform(query: GetSpacesTitleInfoQuery(ids: spaceIds), completion: completion)
+    }
+}
+
 extension SpaceACLLevel: Comparable {
     public static func < (_ lhs: SpaceACLLevel, _ rhs: SpaceACLLevel) -> Bool {
         switch lhs {

@@ -179,7 +179,9 @@ struct ZeroQueryView: View {
                             ratingsCard(geom.size.width)
                         }
 
-                        if !NeevaUserInfo.shared.isUserLoggedIn {
+                        if !NeevaUserInfo.shared.isUserLoggedIn,
+                            !SpaceStore.suggested.allSpaces.isEmpty
+                        {
                             ZeroQueryHeader(
                                 title: "Spaces from Neeva community",
                                 action: { expandSpaces.toggle() },

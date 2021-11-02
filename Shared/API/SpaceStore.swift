@@ -193,7 +193,7 @@ public class SpaceStore: ObservableObject {
             "qyAaEMBS-1AZE_3RI-jnlAao6OvbbtT4e294zDM5",
             "zxrsTxErt66ZvoTG5FBEKG8yHiqiCpfpA4XWybrn",
             "P18WZHuqEJDnf7llLgmyOIhiLpwF-gLl3OlhT6sh",
-            "F5saVvevP299zjEbkh3ZsmzL8SsMERGPtHU7JWkI",
+            "B-ZzfqeytWS-n3YHKRi77h6Ore1kQ7EuojJIm4b7",
             "brogg3ipmtasecqj230g",
         ])
 
@@ -292,23 +292,15 @@ public class SpaceStore: ObservableObject {
         }
 
         GraphQLAPI.shared.isAnonymous = true
-        SpacesDataQueryController.getSpacesData(spaceIds: ids) { result in
+        SuggestedSpacesQueryController.getSpacesTitleInfo(spaceIds: ids) { result in
             switch result {
             case .success(let spaces):
                 for space in spaces {
                     let fetchedSpace = Space(
                         id: SpaceID(value: space.id), name: space.name, lastModifiedTs: "",
-                        thumbnail: nil, resultCount: space.entities.count, isDefaultSpace: false,
+                        thumbnail: space.thumbnail, resultCount: 1, isDefaultSpace: false,
                         isShared: false, isPublic: true, userACL: .publicView)
                     self.allSpaces.append(fetchedSpace)
-                    self.onUpdateSpaceURLs(
-                        space: fetchedSpace,
-                        urls: Set(
-                            space.entities.filter { $0.url != nil }.reduce(into: [URL]()) {
-                                $0.append($1.url!)
-                            }),
-                        data: space.entities,
-                        comments: space.comments)
                 }
                 self.state = .ready
             case .failure(let error):
