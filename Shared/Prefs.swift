@@ -111,10 +111,10 @@ extension Defaults.Keys {
         "lastNeevaPromoScheduledTimeInterval")
     public static let didRegisterNotificationTokenOnServer = Defaults.Key<Bool>(
         "didRegisterNotificationTokenOnServer", default: false)
-    public static let fastTapPromoTimeInterval = Defaults.Key<Int>(
-        "fastTapPromoTimeInterval", default: 86400)
+    public static let productSearchPromoTimeInterval = Defaults.Key<Int>(
+        "productSearchPromoTimeInterval", default: 259200)
     public static let newsProviderPromoTimeInterval = Defaults.Key<Int>(
-        "newsProviderPromoTimeInterval", default: 259200)
+        "newsProviderPromoTimeInterval", default: 86400)
     /// 0: Undecided, 1: Accepted, 2: Denied
     public static let notificationPermissionState = Defaults.Key<Int>(
         "notificationPermissionState", default: 0)

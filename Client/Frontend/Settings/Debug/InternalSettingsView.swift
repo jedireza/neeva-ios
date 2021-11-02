@@ -26,7 +26,7 @@ struct InternalSettingsView: View {
     @Default(.lastScheduledNeevaPromoID) var lastScheduledNeevaPromoID
     @Default(.lastNeevaPromoScheduledTimeInterval) var lastNeevaPromoScheduledTimeInterval
     @Default(.didRegisterNotificationTokenOnServer) var didRegisterNotificationTokenOnServer
-    @Default(.fastTapPromoTimeInterval) var fastTapPromoTimeInterval
+    @Default(.productSearchPromoTimeInterval) var productSearchPromoTimeInterval
     @Default(.newsProviderPromoTimeInterval) var newsProviderPromoTimeInterval
     @Default(.seenNotificationPermissionPromo) var seenNotificationPermissionPromo
 
@@ -99,7 +99,7 @@ struct InternalSettingsView: View {
                 Toggle(
                     "didRegisterNotificationTokenOnServer",
                     isOn: $didRegisterNotificationTokenOnServer)
-                NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
+                NumberField("productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
                 NumberField("newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
             }
         }

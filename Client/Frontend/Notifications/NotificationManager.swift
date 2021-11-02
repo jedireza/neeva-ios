@@ -248,8 +248,8 @@ class NotificationManager: ObservableObject {
                 .OpenLocalNotification,
                 attributes: attributes
             )
-        case .neevaOnboardingNewsProvider, .neevaOnboardingFastTap:
-            var attributes : [ClientLogCounterAttribute] = []
+        case .neevaOnboardingNewsProvider, .neevaOnboardingProductSearch:
+            var attributes: [ClientLogCounterAttribute] = []
             if let promoId = request.content.userInfo[NotificationManager.promoIdKey] as? String {
                 attributes.append(
                     ClientLogCounterAttribute(
@@ -265,6 +265,14 @@ class NotificationManager: ObservableObject {
             if !NeevaUserInfo.shared.isUserLoggedIn {
                 bvc.presentIntroViewController(true)
                 return
+            } else {
+                if let urlStr =
+                    request.content.userInfo[NotificationManager.notificationKey.localNotificationURL] as? String,
+                    let url = URL(string: urlStr) {
+                    bvc.openURLInNewTab(url)
+                } else {
+                    bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
+                }
             }
             break
         case .none:

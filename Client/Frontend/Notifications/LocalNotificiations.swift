@@ -94,7 +94,7 @@ class LocalNotitifications {
     static func scheduleAllNeevaOnboardingCallbackIfAuthorized() {
         NotificationPermissionHelper.shared.isAuthorized { authorized in
             if authorized {
-                scheduleNeevaOnboardingCallback(notificationType: .neevaOnboardingFastTap)
+                scheduleNeevaOnboardingCallback(notificationType: .neevaOnboardingProductSearch)
                 scheduleNeevaOnboardingCallback(notificationType: .neevaOnboardingNewsProvider)
             }
         }
@@ -134,8 +134,8 @@ class LocalNotitifications {
                 switch type {
                 case .neevaPromo:
                     rescheduled = createNeevaPromoCallback()
-                case .neevaOnboardingFastTap:
-                    rescheduled = createNeevaOnboardingCallback(notificationType: .neevaOnboardingFastTap)
+                case .neevaOnboardingProductSearch:
+                    rescheduled = createNeevaOnboardingCallback(notificationType: .neevaOnboardingProductSearch)
                 case .neevaOnboardingNewsProvider:
                     rescheduled = createNeevaOnboardingCallback(notificationType: .neevaOnboardingNewsProvider)
                 }
@@ -206,18 +206,24 @@ class LocalNotitifications {
         var body: String?
         var timeInterval: TimeInterval?
         var deeplinkUrl: String?
+        var urlStr: String?
 
         switch notificationType {
-        case .neevaOnboardingFastTap:
+        case .neevaOnboardingProductSearch:
             title = "Neeva"
             body =
-                "Fast tap takes you to where you want to go in the blink of an eye! See for yourself!"
-            timeInterval = TimeInterval(Defaults[.fastTapPromoTimeInterval])
-            deeplinkUrl = "neeva://fast-tap?query=best%20air%20purifier"
+                "Neeva shows you high quality reviews when you look for a product. Not ads. Tap here to search for best headphones and see for yourself."
+            timeInterval = TimeInterval(Defaults[.productSearchPromoTimeInterval])
+            let query = "Best Headphones"
+            if let encodedQuery = query.addingPercentEncoding(
+                withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
+            {
+                urlStr = "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)"
+            }
         case .neevaOnboardingNewsProvider:
             title = "Neeva"
             body =
-                "Personalize your searching experience by configuring your favorite news providers."
+                "Set your favorite News sources to personalize your search results!"
             timeInterval = TimeInterval(Defaults[.newsProviderPromoTimeInterval])
             deeplinkUrl = "neeva://configure-news-provider"
         default:
@@ -235,6 +241,7 @@ class LocalNotitifications {
                 timeInterval: timeInterval,
                 title: title,
                 body: body,
+                urlStr: urlStr,
                 deeplinkUrl: deeplinkUrl
             ) { _ in }
             return true

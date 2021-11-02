@@ -4,7 +4,7 @@ import Foundation
 
 enum NotificationType: String, Codable {
     case neevaPromo = "neevaPromo"
-    case neevaOnboardingFastTap = "neevaOnboardingFastTap"
+    case neevaOnboardingProductSearch = "neevaOnboardingProductSearch"
     case neevaOnboardingNewsProvider = "neevaOnboardingNewsProvider"
 }
 
