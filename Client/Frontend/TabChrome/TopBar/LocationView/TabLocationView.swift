@@ -31,6 +31,8 @@ struct TabLocationView: View {
     @EnvironmentObject private var readerModeModel: ReaderModeModel
     @EnvironmentObject private var queryModel: SearchQueryModel
     @EnvironmentObject private var gridModel: GridModel
+    @EnvironmentObject private var trackingStatsModel: TrackingStatsViewModel
+
     @State private var isPressed = false
 
     @Environment(\.isIncognito) private var isIncognito
@@ -108,7 +110,18 @@ struct TabLocationView: View {
                     if gridModel.isHidden
                         && (model.url?.scheme == "https" || model.url?.scheme == "http")
                     {
-                        LocationViewTrackingButton(currentDomain: model.url?.baseDomain ?? "")
+                        if trackingStatsModel.numTrackers > 0 {
+                            NotificationBadgeOverlay(
+                                from: NotificationBadgeLocation.topRight,
+                                count: trackingStatsModel.numTrackers,
+                                content:
+                                    LocationViewTrackingButton(
+                                        currentDomain: model.url?.baseDomain ?? "")
+                            ).frame(width: 80, alignment: .leading)
+                        } else {
+                            LocationViewTrackingButton(
+                                currentDomain: model.url?.baseDomain ?? "")
+                        }
                     }
                 } trailing: {
                     if gridModel.isHidden {

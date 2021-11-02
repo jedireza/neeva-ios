@@ -26,7 +26,7 @@ struct NotificationBadge: View {
 
             if let count = count {
                 Text(textOversized ? "\(maxCount)+" : String(count))
-                    .withFont(.bodyXSmall)
+                    .font(.system(size: 10))
                     .padding(.vertical, 3)
                     .padding(.horizontal, textOversized ? 10 : 5)
                     .foregroundColor(.white)
@@ -50,25 +50,36 @@ enum NotificationBadgeLocation {
     static let bottomRight = [NotificationBadgeLocation.right, NotificationBadgeLocation.bottom]
 }
 
-// HOW TO USE:
-// ZStack {
-//     NotificationBadgeOverlay(from: NotificationBadgeLocation.topLeft)
-//     Content()
-// }
 /// Used for **overlaying** a badge overlay over an entire view.
-struct NotificationBadgeOverlay: View {
+struct NotificationBadgeOverlay<Content: View>: View {
     let from: [NotificationBadgeLocation]
-    let count: Int?
+    var count: Int?
+    let content: Content
+
+    var horizontalPadding: CGFloat {
+        let count = count ?? 0
+        if count > 99 {
+            return -20
+        } else if count > 9 {
+            return 0
+        } else {
+            return 3
+        }
+    }
 
     @ViewBuilder
     var horizontalAlignedContent: some View {
         HStack {
             if from.contains(.left) {
                 NotificationBadge(count: count)
+                    .padding(.top, 3)
+                    .padding(.leading, horizontalPadding)
                 Spacer()
             } else if from.contains(.right) {
                 Spacer()
                 NotificationBadge(count: count)
+                    .padding(.top, 3)
+                    .padding(.trailing, horizontalPadding)
             } else {
                 Spacer()
                 NotificationBadge(count: count)
@@ -78,19 +89,23 @@ struct NotificationBadgeOverlay: View {
     }
 
     var body: some View {
-        VStack {
-            if from.contains(.top) {
-                horizontalAlignedContent
-                Spacer()
-            } else if from.contains(.bottom) {
-                Spacer()
-                horizontalAlignedContent
-            } else {
-                Spacer()
-                horizontalAlignedContent
-                Spacer()
+        ZStack {
+            content
+
+            VStack {
+                if from.contains(.top) {
+                    horizontalAlignedContent
+                    Spacer()
+                } else if from.contains(.bottom) {
+                    Spacer()
+                    horizontalAlignedContent
+                } else {
+                    Spacer()
+                    horizontalAlignedContent
+                    Spacer()
+                }
             }
-        }
+        }.fixedSize()
     }
 }
 

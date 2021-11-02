@@ -128,6 +128,10 @@ class BrowserViewController: UIViewController {
         return TabContentHost(bvc: self)
     }()
 
+    private(set) lazy var trackingStatsViewModel: TrackingStatsViewModel = {
+        return TrackingStatsViewModel(tabManager: tabManager)
+    }()
+
     var findInPageViewController: FindInPageViewController?
     var overlayWindowManager: WindowManager?
 
@@ -430,7 +434,7 @@ class BrowserViewController: UIViewController {
             suggestionModel: suggestionModel,
             queryModel: searchQueryModel,
             gridModel: gridModel,
-            trackingStatsViewModel: TrackingStatsViewModel(tabManager: tabManager),
+            trackingStatsViewModel: trackingStatsViewModel,
             chromeModel: chromeModel,
             readerModeModel: readerModeModel,
             delegate: self,

@@ -19,7 +19,14 @@ struct HallOfShameDomain {
 }
 
 class TrackingStatsViewModel: ObservableObject {
-    @Published var numTrackers = 0
+    var numTrackers: Int {
+        if let numTrackersTesting = numTrackersTesting {
+            return numTrackersTesting
+        } else {
+            return selectedTab?.contentBlocker?.stats.domains.count ?? 0
+        }
+    }
+
     @Published var numDomains = 0
     @Published var hallOfShameDomains = [HallOfShameDomain]()
     @Published var preventTrackersForCurrentPage: Bool {
@@ -38,6 +45,7 @@ class TrackingStatsViewModel: ObservableObject {
 
         }
     }
+
     var viewVisible: Bool = false
 
     private var selectedTab: Tab? = nil {
@@ -61,7 +69,6 @@ class TrackingStatsViewModel: ObservableObject {
             !Defaults[.unblockedDomains].contains(selectedTab?.currentURL()?.host ?? "")
         let trackingData = TrackingEntity.getTrackingDataForCurrentTab(
             stats: selectedTab?.contentBlocker?.stats)
-        self.numTrackers = trackingData.numTrackers
         self.numDomains = trackingData.numDomains
         self.trackers = trackingData.trackingEntities
         tabManager.selectedTabPublisher.assign(to: \.selectedTab, on: self).store(
@@ -69,12 +76,15 @@ class TrackingStatsViewModel: ObservableObject {
         onDataUpdated()
     }
 
-    // For usage with static data and testing only
+    /// FOR TESTING ONLY
+    private(set) var numTrackersTesting: Int?
+
+    /// For usage with static data and testing only
     init(testingData: TrackingData) {
         self.preventTrackersForCurrentPage = true
-        self.numTrackers = testingData.numTrackers
         self.numDomains = testingData.numDomains
         self.trackers = testingData.trackingEntities
+        self.numTrackersTesting = testingData.numTrackers
         onDataUpdated()
     }
 
@@ -85,7 +95,6 @@ class TrackingStatsViewModel: ObservableObject {
 
         let trackingData = TrackingEntity.getTrackingDataForCurrentTab(
             stats: tab.contentBlocker?.stats)
-        self.numTrackers = trackingData.numTrackers
         self.numDomains = trackingData.numDomains
         self.trackers = trackingData.trackingEntities
         onDataUpdated()
@@ -93,7 +102,6 @@ class TrackingStatsViewModel: ObservableObject {
             .filter { [unowned self] _ in self.viewVisible }
             .map { TrackingEntity.getTrackingDataForCurrentTab(stats: $0) }
             .sink { [unowned self] data in
-                self.numTrackers = data.numTrackers
                 self.numDomains = data.numDomains
                 self.trackers = data.trackingEntities
                 self.onDataUpdated()
