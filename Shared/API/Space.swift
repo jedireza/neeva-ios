@@ -72,7 +72,13 @@ class SpacesDataQueryController: QueryController<
                                     richEntity: SpaceEntityData.richEntity(
                                         from: entity.spaceEntity?.content?.typeSpecific?
                                             .asRichEntity?.richEntity,
-                                        with: entity.spaceEntity?.content?.id ?? "unknown-id")))
+                                        with: entity.spaceEntity?.content?.id),
+                                    retailProduct: SpaceEntityData.retailProduct(
+                                        from: entity.spaceEntity?.content?.typeSpecific?
+                                            .asWeb?.web?.retailerProduct,
+                                        with: entity.spaceEntity?.content?.actionUrl
+                                            .addingPercentEncoding(
+                                                withAllowedCharacters: .urlHostAllowed))))
                         }
                     }
                     var spaceComments: [SpaceCommentData] = []

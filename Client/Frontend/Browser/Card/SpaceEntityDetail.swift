@@ -22,6 +22,10 @@ struct SpaceEntityDetailView: View {
         return details.data.url
     }
 
+    var titleToDisplay: String {
+        details.data.retailProduct?.title ?? details.data.richEntity?.title ?? details.title
+    }
+
     @State private var isPressed: Bool = false
     @State private var isPreviewActive: Bool = false
 
@@ -66,20 +70,54 @@ struct SpaceEntityDetailView: View {
                                 height: DetailsViewUX.ThumbnailSize
                             )
                             .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
-                            VStack(spacing: DetailsViewUX.Padding) {
+                            VStack(alignment: .leading, spacing: DetailsViewUX.Padding) {
                                 HStack(spacing: 6) {
                                     if let socialURL = socialURL {
                                         FaviconView(forSiteUrl: socialURL)
                                             .frame(width: 12, height: 12)
                                             .cornerRadius(4)
                                     }
-                                    Text(details.data.richEntity?.title ?? details.title)
+                                    Text(titleToDisplay)
                                         .withFont(.bodyMedium)
                                         .lineLimit(2)
                                         .foregroundColor(Color.label)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                if let snippet = details.data.richEntity?.description
+                                if let product = details.data.retailProduct {
+                                    HStack {
+                                        Text(product.formattedPrice)
+                                            .withFont(.bodyMedium)
+                                            .foregroundColor(.label)
+                                        if let productStars = product.ratingSummary?.productStars {
+                                            Image(systemSymbol: .starFill)
+                                                .renderingMode(.template)
+                                                .foregroundColor(Color.brand.orange)
+                                                .font(.system(size: 12))
+                                                .padding(.trailing, -5)
+                                                .padding(.bottom, 2)
+                                            Text(String(round(productStars * 10) / 10.0))
+                                                .withFont(.bodyMedium)
+                                                .foregroundColor(.label)
+                                        }
+                                        if let numReviews = product.ratingSummary?.numReviews {
+                                            if numReviews > 0 {
+                                                Text("(\(String(numReviews)))")
+                                                    .withFont(.bodyMedium)
+                                                    .foregroundColor(.secondaryLabel)
+                                                    .padding(.leading, -3)
+                                            }
+                                        }
+                                    }
+                                }
+                                if !showDescriptions, let product = details.data.retailProduct,
+                                    let descriptions = product.description, !descriptions.isEmpty
+                                {
+                                    Text(descriptions.first!)
+                                        .withFont(.bodySmall)
+                                        .lineLimit(2)
+                                        .foregroundColor(Color.secondaryLabel)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                } else if let snippet = details.data.richEntity?.description
                                     ?? details.description, !showDescriptions
                                 {
                                     Text(snippet)
@@ -90,7 +128,17 @@ struct SpaceEntityDetailView: View {
                                 }
                             }
                         }
-                        if let snippet = details.data.richEntity?.description
+                        if showDescriptions, let product = details.data.retailProduct,
+                            let descriptions = product.description, !descriptions.isEmpty
+                        {
+                            ForEach(descriptions, id: \.self) { description in
+                                Text(description)
+                                    .withFont(.bodySmall)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .foregroundColor(Color.secondaryLabel)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                        } else if let snippet = details.data.richEntity?.description
                             ?? details.description, showDescriptions
                         {
                             Text(snippet)
@@ -105,7 +153,7 @@ struct SpaceEntityDetailView: View {
                 .padding()
                 .background(Color.DefaultBackground)
 
-            if let url = details.richEntityPreviewURL {
+            if let url = details.previewURL {
                 NavigationLink(
                     isActive: $isPreviewActive,
                     destination: {

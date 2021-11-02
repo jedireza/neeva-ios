@@ -212,6 +212,18 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
 
     }
 
+    var productPreviewURL: URL? {
+        guard let product = data.retailProduct else {
+            return nil
+        }
+        let spaceURL = NeevaConstants.appSpacesURL.appendingPathComponent(spaceID).absoluteString
+        return URL(string: "\(spaceURL)#retail-widget-\(product.id)")
+    }
+
+    var previewURL: URL? {
+        productPreviewURL ?? richEntityPreviewURL
+    }
+
     init(data: SpaceEntityData, spaceID: String) {
         self.spaceID = spaceID
         self.data = data
@@ -429,7 +441,7 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     func onSelect() {
         isShowingDetails = true
     }
-    
+
     func onClose() {
         if let item = manager.get(for: id) {
             manager.close(item)

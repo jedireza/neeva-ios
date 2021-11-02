@@ -163,7 +163,7 @@
 		4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */; };
 		4AB678B826EAA8160078F61B /* SpacesIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B726EAA8160078F61B /* SpacesIntro.swift */; };
 		4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */; };
-		4AD771AE2729C4C000B6769D /* RichEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AD2729C4C000B6769D /* RichEntity.swift */; };
+		4AD771AE2729C4C000B6769D /* PreviewEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AD2729C4C000B6769D /* PreviewEntities.swift */; };
 		4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC541F265DA2CD00A210CE /* PromoCard.swift */; };
 		4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */; };
 		4ADF3F3F269627F100CB1B98 /* TrackingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */; };
@@ -1214,7 +1214,7 @@
 		4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSpaceOverlayContent.swift; sourceTree = "<group>"; };
 		4AB678B726EAA8160078F61B /* SpacesIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesIntro.swift; sourceTree = "<group>"; };
 		4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModel.swift; sourceTree = "<group>"; };
-		4AD771AD2729C4C000B6769D /* RichEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichEntity.swift; sourceTree = "<group>"; };
+		4AD771AD2729C4C000B6769D /* PreviewEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEntities.swift; sourceTree = "<group>"; };
 		4ADC541F265DA2CD00A210CE /* PromoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromoCard.swift; sourceTree = "<group>"; };
 		4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitcherToolbarView.swift; sourceTree = "<group>"; };
 		4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingUITests.swift; sourceTree = "<group>"; };
@@ -3001,7 +3001,7 @@
 				C9C18E30265594DE004710CD /* Space.swift */,
 				4A15C8B826E1BFAB006CD097 /* SpaceRequest.swift */,
 				C9C18E31265594DE004710CD /* SpaceStore.swift */,
-				4AD771AD2729C4C000B6769D /* RichEntity.swift */,
+				4AD771AD2729C4C000B6769D /* PreviewEntities.swift */,
 				C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */,
 				C9C18E2F265594DE004710CD /* TestSpaces.swift */,
 				BC5C43CC265F49EA007E2F61 /* TourManager.swift */,
@@ -4896,7 +4896,7 @@
 				E65075BF1E37F7AB006961AC /* UserAgent.swift in Sources */,
 				C9C18E5D265598EA004710CD /* AbstractController.swift in Sources */,
 				C9C18E3E26559504004710CD /* ErrorView.swift in Sources */,
-				4AD771AE2729C4C000B6769D /* RichEntity.swift in Sources */,
+				4AD771AE2729C4C000B6769D /* PreviewEntities.swift in Sources */,
 				C9C18E60265599E5004710CD /* LoadingView.swift in Sources */,
 				E65075C01E37F7AB006961AC /* WeakList.swift in Sources */,
 				E65075AE1E37F7AB006961AC /* UIImageExtensions.swift in Sources */,

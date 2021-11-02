@@ -41,6 +41,11 @@ public struct SpaceEntityData {
         .TypeSpecific.AsWeb.Web.Recipe
     typealias EntityRichEntity = GetSpacesDataQuery.Data.GetSpace.Space
         .Space.Entity.SpaceEntity.Content.TypeSpecific.AsRichEntity.RichEntity
+    typealias EntityRetailProduct = GetSpacesDataQuery.Data.GetSpace.Space
+        .Space.Entity.SpaceEntity.Content.TypeSpecific.AsWeb.Web.RetailerProduct
+    typealias EntityProductRating = GetSpacesDataQuery.Data.GetSpace.Space
+        .Space.Entity.SpaceEntity.Content.TypeSpecific.AsWeb.Web.RetailerProduct.Review
+        .RatingSummary
 
     public let id: String
     public let url: URL?
@@ -49,10 +54,12 @@ public struct SpaceEntityData {
     public let thumbnail: String?
     public let recipe: Recipe?
     public let richEntity: RichEntity?
+    public let retailProduct: RetailProduct?
 
     public init(
         id: String, url: URL?, title: String?, snippet: String?,
-        thumbnail: String?, recipe: Recipe?, richEntity: RichEntity? = nil
+        thumbnail: String?, recipe: Recipe?, richEntity: RichEntity? = nil,
+        retailProduct: RetailProduct? = nil
     ) {
         self.id = id
         self.url = url
@@ -61,6 +68,7 @@ public struct SpaceEntityData {
         self.thumbnail = thumbnail
         self.recipe = recipe
         self.richEntity = richEntity
+        self.retailProduct = retailProduct
     }
 
     static func recipe(from entity: EntityRecipe?) -> Recipe? {
@@ -77,14 +85,38 @@ public struct SpaceEntityData {
             preference: .noPreference)
     }
 
-    static func richEntity(from entity: EntityRichEntity?, with id: String) -> RichEntity? {
-        guard let entity = entity, let title = entity.title, let subtitle = entity.subTitle,
+    static func richEntity(from entity: EntityRichEntity?, with id: String?) -> RichEntity? {
+        guard let id = id, let entity = entity, let title = entity.title,
+            let subtitle = entity.subTitle,
             let imageURL = URL(string: entity.images?.first?.thumbnailUrl ?? "")
         else {
             return nil
         }
 
         return RichEntity(id: id, title: title, description: subtitle, imageURL: imageURL)
+    }
+
+    static func retailProduct(from entity: EntityRetailProduct?, with id: String?) -> RetailProduct?
+    {
+        guard let id = id, let entity = entity, let url = URL(string: entity.url ?? ""),
+            let title = entity.name,
+            let price = entity.priceHistory?.currentPrice
+        else {
+            return nil
+        }
+
+        return RetailProduct(
+            id: id,
+            url: url, title: title, description: entity.description ?? [], currentPrice: price,
+            ratingSummary: productRating(from: entity.reviews?.ratingSummary))
+    }
+
+    static func productRating(from rating: EntityProductRating?) -> ProductRating? {
+        guard let rating = rating, let productStars = rating.rating?.productStars else {
+            return nil
+        }
+
+        return ProductRating(numReviews: rating.numReviews, productStars: productStars)
     }
 }
 

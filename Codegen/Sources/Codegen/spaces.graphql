@@ -68,6 +68,22 @@ query GetSpacesData($ids: [String!]) {
                 __typename
                 ... on Web {
                   web {
+                    retailerProduct {
+                      url
+                      name
+                      description
+                      priceHistory {
+                        currentPrice
+                      }
+                      reviews {
+                        ratingSummary {
+                          numReviews
+                          rating {
+                            productStars
+                          }
+                        }
+                      }
+                    }
                     recipes {
                       title
                       imageURL
