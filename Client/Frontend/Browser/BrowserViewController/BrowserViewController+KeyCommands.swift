@@ -2,8 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Shared
 import CoreGraphics
+import Shared
 
 // Naming functions: use the suffix 'KeyCommand' for an additional level of namespacing (bug 1415830)
 extension BrowserViewController {
@@ -37,17 +37,18 @@ extension BrowserViewController {
     }
 
     @objc func newTabKeyCommand() {
-        openLazyTab()
+        openLazyTab(
+            openedFrom: cardGridViewController.gridModel.isHidden ? .openTab(nil) : .tabTray)
     }
 
     @objc func newPrivateTabKeyCommand() {
         if !(tabManager.isIncognito) {
-            tabManager.toggleIncognitoMode()
+            tabManager.toggleIncognitoMode(openLazyTab: false)
         }
 
-        // wait for tabManager to switch to normal mode before closing private tabs
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
-            openLazyTab(openedFrom: .createdTab)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
+            openLazyTab(
+                openedFrom: cardGridViewController.gridModel.isHidden ? .openTab(nil) : .tabTray)
         }
     }
 
@@ -116,7 +117,7 @@ extension BrowserViewController {
         }
     }
 
-    var keyboardShortcuts: [UIKeyCommand]? {
+    var keyboardShortcuts: [UIKeyCommand] {
         let searchLocationCommands = [
             UIKeyCommand(
                 input: UIKeyCommand.inputUpArrow, modifierFlags: [],
@@ -230,40 +231,26 @@ extension BrowserViewController {
     static var isCommandKeyPressed = false
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        // Run backward or forward when the user presses a left or right arrow key.
-
-        var didHandleEvent = false
         for press in presses {
             guard let key = press.key else { continue }
 
             if key.modifierFlags == .command {
-                didHandleEvent = true
                 BrowserViewController.isCommandKeyPressed = true
             }
         }
 
-        if didHandleEvent == false {
-            // Didn't handle this key press, so pass the event to the next responder.
-            super.pressesBegan(presses, with: event)
-        }
+        super.pressesBegan(presses, with: event)
     }
 
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        // Stop running when the user releases the left or right arrow key.
-
-        var didHandleEvent = false
         for press in presses {
             guard let key = press.key else { continue }
 
             if key.modifierFlags == .command {
-                didHandleEvent = true
                 BrowserViewController.isCommandKeyPressed = false
             }
         }
 
-        if didHandleEvent == false {
-            // Didn't handle this key press, so pass the event to the next responder.
-            super.pressesBegan(presses, with: event)
-        }
+        super.pressesBegan(presses, with: event)
     }
 }

@@ -478,7 +478,9 @@ class TabManager: NSObject, ObservableObject {
         self.isIncognito = to
     }
 
-    func toggleIncognitoMode(fromTabTray: Bool = true, clearSelectedTab: Bool = true) {
+    func toggleIncognitoMode(
+        fromTabTray: Bool = true, clearSelectedTab: Bool = true, openLazyTab: Bool = true
+    ) {
         let bvc = SceneDelegate.getBVC(with: scene)
 
         // set to nil while inconito changes
@@ -491,7 +493,7 @@ class TabManager: NSObject, ObservableObject {
 
         if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? privateTabs : normalTabs) {
             selectTab(mostRecentTab)
-        } else if isIncognito {  // no empty tab tray in incognito
+        } else if isIncognito && openLazyTab {  // no empty tab tray in incognito
             bvc.openLazyTab(openedFrom: fromTabTray ? .tabTray : .openTab(selectedTab))
         } else {
             let placeholderTab = Tab(bvc: bvc, configuration: configuration, isPrivate: isIncognito)

@@ -88,16 +88,16 @@ class KeyboardShortcutTests: UITestBase {
     func testNewTabKeyCommand() {
         bvc.newTabKeyCommand()
 
-        // turn lazy tab into real tab by opening URL
-        openURL()
+        // Make sure Lazy Tab popped up
+        tester().waitForView(withAccessibilityLabel: "Cancel")
         reset(tester: tester())
     }
 
     func testNewPrivateTabKeyCommand() {
         bvc.newPrivateTabKeyCommand()
 
-        // turn lazy tab into real tab by opening URL
-        openURL()
+        // Make sure Lazy Tab popped up
+        tester().waitForView(withAccessibilityLabel: "Cancel")
 
         XCTAssert(bvc.tabManager.selectedTab?.isIncognito == true)
         reset(tester: tester())

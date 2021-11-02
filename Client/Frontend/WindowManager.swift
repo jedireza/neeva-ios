@@ -99,7 +99,8 @@ class WindowManager: KeyboardReadable {
             return
         }
 
-        openWindow = PopoverWindow(bvc: SceneDelegate.getBVC(for: rootViewController.view), scene: scene)
+        openWindow = PopoverWindow(
+            bvc: SceneDelegate.getBVC(for: rootViewController.view), scene: scene)
 
         // If keyboard is showing, opening window will close it
         // Does not interfere with find in page, but might prevent a Toast
@@ -162,7 +163,7 @@ class WindowManager: KeyboardReadable {
         rootViewController.modalPresentationStyle = .overFullScreen
         openWindow?.rootViewController?.present(
             rootViewController, animated: false, completion: nil)
-        
+
         SceneDelegate.getBVC(for: rootViewController.view).becomeFirstResponder()
     }
 
