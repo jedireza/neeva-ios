@@ -369,7 +369,7 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
         tabGroups.forEach { group in
             let id = group.key
             if tabGroupDict[id] == nil {
-                tabGroupDict[id] = group.value.children.first?.displayTitle
+                tabGroupDict[id] = group.value.displayTitle
             }
         }
 
