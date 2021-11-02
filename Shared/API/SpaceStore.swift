@@ -46,6 +46,8 @@ public struct SpaceEntityData {
     typealias EntityProductRating = GetSpacesDataQuery.Data.GetSpace.Space
         .Space.Entity.SpaceEntity.Content.TypeSpecific.AsWeb.Web.RetailerProduct.Review
         .RatingSummary
+    typealias EntityTechDoc = GetSpacesDataQuery.Data.GetSpace.Space
+        .Space.Entity.SpaceEntity.Content.TypeSpecific.AsTechDoc.TechDoc
 
     public let id: String
     public let url: URL?
@@ -55,11 +57,12 @@ public struct SpaceEntityData {
     public let recipe: Recipe?
     public let richEntity: RichEntity?
     public let retailProduct: RetailProduct?
+    public let techDoc: TechDoc?
 
     public init(
         id: String, url: URL?, title: String?, snippet: String?,
         thumbnail: String?, recipe: Recipe?, richEntity: RichEntity? = nil,
-        retailProduct: RetailProduct? = nil
+        retailProduct: RetailProduct? = nil, techDoc: TechDoc? = nil
     ) {
         self.id = id
         self.url = url
@@ -69,6 +72,7 @@ public struct SpaceEntityData {
         self.recipe = recipe
         self.richEntity = richEntity
         self.retailProduct = retailProduct
+        self.techDoc = techDoc
     }
 
     static func recipe(from entity: EntityRecipe?) -> Recipe? {
@@ -109,6 +113,14 @@ public struct SpaceEntityData {
             id: id,
             url: url, title: title, description: entity.description ?? [], currentPrice: price,
             ratingSummary: productRating(from: entity.reviews?.ratingSummary))
+    }
+
+    static func techDoc(from entity: EntityTechDoc?, with id: String?) -> TechDoc? {
+        guard let id = id, let entity = entity, let title = entity.name else {
+            return nil
+        }
+
+        return TechDoc(id: id, title: title)
     }
 
     static func productRating(from rating: EntityProductRating?) -> ProductRating? {

@@ -23,7 +23,8 @@ struct SpaceEntityDetailView: View {
     }
 
     var titleToDisplay: String {
-        details.data.retailProduct?.title ?? details.data.richEntity?.title ?? details.title
+        details.data.techDoc?.title ?? details.data.retailProduct?.title
+            ?? details.data.richEntity?.title ?? details.title
     }
 
     @State private var isPressed: Bool = false

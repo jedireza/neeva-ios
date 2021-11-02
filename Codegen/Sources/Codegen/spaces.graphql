@@ -80,6 +80,11 @@ query GetSpacesData($ids: [String!]) {
               __typename
               typeSpecific {
                 __typename
+                ... on TechDoc {
+                  techDoc {
+                    name
+                  }
+                }
                 ... on Web {
                   web {
                     retailerProduct {

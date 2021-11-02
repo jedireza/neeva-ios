@@ -220,8 +220,16 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
         return URL(string: "\(spaceURL)#retail-widget-\(product.id)")
     }
 
+    var techDocURL: URL? {
+        guard let techDoc = data.techDoc else {
+            return nil
+        }
+        let spaceURL = NeevaConstants.appSpacesURL.appendingPathComponent(spaceID).absoluteString
+        return URL(string: "\(spaceURL)#techdoc-\(techDoc.id)-\(techDoc.id)")
+    }
+
     var previewURL: URL? {
-        productPreviewURL ?? richEntityPreviewURL
+        techDocURL ?? productPreviewURL ?? richEntityPreviewURL
     }
 
     init(data: SpaceEntityData, spaceID: String) {

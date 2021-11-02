@@ -10036,6 +10036,12 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                   snippet
                   typeSpecific {
                     __typename
+                    ... on TechDoc {
+                      techDoc {
+                        __typename
+                        name
+                      }
+                    }
                     ... on Web {
                       web {
                         __typename
@@ -10274,7 +10280,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "1f7e1c7d1e7bca6fd61c77a9292b243fb71c22ea7704857f929ac0ee8caa406c"
+  public let operationIdentifier: String? = "4424459755c59aa2251b02f874028048c4139a8a221cf8e388903688f8f6da1d"
 
   public var ids: [String]?
 
@@ -10875,7 +10881,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                   public static var selections: [GraphQLSelection] {
                     return [
                       GraphQLTypeCase(
-                        variants: ["Web": AsWeb.selections, "RichEntity": AsRichEntity.selections],
+                        variants: ["TechDoc": AsTechDoc.selections, "Web": AsWeb.selections, "RichEntity": AsRichEntity.selections],
                         default: [
                           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                         ]
@@ -11109,10 +11115,6 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                     return TypeSpecific(unsafeResultMap: ["__typename": "Stock"])
                   }
 
-                  public static func makeTechDoc() -> TypeSpecific {
-                    return TypeSpecific(unsafeResultMap: ["__typename": "TechDoc"])
-                  }
-
                   public static func makeTechQNA() -> TypeSpecific {
                     return TypeSpecific(unsafeResultMap: ["__typename": "TechQNA"])
                   }
@@ -11153,6 +11155,10 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                     return TypeSpecific(unsafeResultMap: ["__typename": "Weather"])
                   }
 
+                  public static func makeTechDoc(techDoc: AsTechDoc.TechDoc? = nil) -> TypeSpecific {
+                    return TypeSpecific(unsafeResultMap: ["__typename": "TechDoc", "techDoc": techDoc.flatMap { (value: AsTechDoc.TechDoc) -> ResultMap in value.resultMap }])
+                  }
+
                   public static func makeWeb(web: AsWeb.Web? = nil) -> TypeSpecific {
                     return TypeSpecific(unsafeResultMap: ["__typename": "Web", "web": web.flatMap { (value: AsWeb.Web) -> ResultMap in value.resultMap }])
                   }
@@ -11167,6 +11173,95 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                     }
                     set {
                       resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var asTechDoc: AsTechDoc? {
+                    get {
+                      if !AsTechDoc.possibleTypes.contains(__typename) { return nil }
+                      return AsTechDoc(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap = newValue.resultMap
+                    }
+                  }
+
+                  public struct AsTechDoc: GraphQLSelectionSet {
+                    public static let possibleTypes: [String] = ["TechDoc"]
+
+                    public static var selections: [GraphQLSelection] {
+                      return [
+                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                        GraphQLField("techDoc", type: .object(TechDoc.selections)),
+                      ]
+                    }
+
+                    public private(set) var resultMap: ResultMap
+
+                    public init(unsafeResultMap: ResultMap) {
+                      self.resultMap = unsafeResultMap
+                    }
+
+                    public init(techDoc: TechDoc? = nil) {
+                      self.init(unsafeResultMap: ["__typename": "TechDoc", "techDoc": techDoc.flatMap { (value: TechDoc) -> ResultMap in value.resultMap }])
+                    }
+
+                    public var __typename: String {
+                      get {
+                        return resultMap["__typename"]! as! String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "__typename")
+                      }
+                    }
+
+                    public var techDoc: TechDoc? {
+                      get {
+                        return (resultMap["techDoc"] as? ResultMap).flatMap { TechDoc(unsafeResultMap: $0) }
+                      }
+                      set {
+                        resultMap.updateValue(newValue?.resultMap, forKey: "techDoc")
+                      }
+                    }
+
+                    public struct TechDoc: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["TechDocData"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("name", type: .scalar(String.self)),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(name: String? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "TechDocData", "name": name])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var name: String? {
+                        get {
+                          return resultMap["name"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "name")
+                        }
+                      }
                     }
                   }
 

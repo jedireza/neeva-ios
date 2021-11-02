@@ -78,6 +78,12 @@ class SpacesDataQueryController: QueryController<
                                             .asWeb?.web?.retailerProduct,
                                         with: entity.spaceEntity?.content?.actionUrl
                                             .addingPercentEncoding(
+                                                withAllowedCharacters: .urlHostAllowed)),
+                                    techDoc: SpaceEntityData.techDoc(
+                                        from: entity.spaceEntity?.content?.typeSpecific?
+                                            .asTechDoc?.techDoc,
+                                        with: entity.spaceEntity?.content?.actionUrl
+                                            .addingPercentEncoding(
                                                 withAllowedCharacters: .urlHostAllowed))))
                         }
                     }

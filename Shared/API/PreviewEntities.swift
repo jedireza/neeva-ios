@@ -9,6 +9,11 @@ public struct RichEntity {
     public let imageURL: URL?
 }
 
+public struct TechDoc {
+    public let id: String
+    public let title: String
+}
+
 public struct ProductRating {
     public let numReviews: Int?
     public let productStars: Double
