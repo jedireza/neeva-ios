@@ -23,10 +23,6 @@ struct FeatureFlagSettingsView: View {
                             } else {
                                 currentFeatureFlags.remove(flag)
                             }
-
-                            if flag == FeatureFlag.notifications.rawValue, !isOn {
-                                NotificationPermissionHelper.shared.unregisterRemoteNotifications()
-                            }
                         }
                     ))
             }

@@ -17,6 +17,17 @@ struct NotificationSettingsView: View {
                     "Schedule Notification",
                     destination: ScheduleNotificationView()
                         .navigationTitle("Schedule Notification"))
+
+                if NotificationPermissionHelper.shared.permissionStatus != .authorized {
+                    Button {
+                        NotificationPermissionHelper.shared.requestPermissionIfNeeded(
+                            openSettingsIfNeeded: true)
+                    } label: {
+                        Text("Show Notification Auth Prompt")
+                            .foregroundColor(Color.label)
+                    }
+                }
+
                 Button {
                     dismissScreen()
                     showNotificationPrompt()
@@ -24,6 +35,7 @@ struct NotificationSettingsView: View {
                     Text("Show Welcome Tour Notification Prompt")
                         .foregroundColor(Color.label)
                 }
+
                 if let token = Defaults[.notificationToken] {
                     HStack {
                         Text("Notification Token")

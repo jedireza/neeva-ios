@@ -87,6 +87,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // If server is already running this won't do anything.
         // This will restart the server if it was stopped in `sceneDidEnterBackground`.
         getAppDelegate().setUpWebServer(getAppDelegate().profile)
+
+        NotificationPermissionHelper.shared.updatePermissionState()
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {

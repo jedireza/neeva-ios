@@ -132,7 +132,7 @@ class NotificationPermissionHelper {
         }
     }
 
-    init() {
+    func updatePermissionState() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             switch settings.authorizationStatus {
             case .authorized:
@@ -146,5 +146,9 @@ class NotificationPermissionHelper {
                     NotificationPermissionStatus.undecided.rawValue
             }
         }
+    }
+
+    init() {
+        updatePermissionState()
     }
 }
