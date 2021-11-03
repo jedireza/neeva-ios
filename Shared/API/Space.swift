@@ -36,6 +36,8 @@ class SpacesDataQueryController: QueryController<
     struct Space {
         var id: String
         var name: String
+        var description: String?
+        var followers: Int?
         var entities: [SpaceEntityData]
         var comments: [SpaceCommentData]
     }
@@ -92,7 +94,9 @@ class SpacesDataQueryController: QueryController<
                     }
                     result.append(
                         Space(
-                            id: id, name: name, entities: spaceEntities, comments: spaceComments))
+                            id: id, name: name, description: space.space?.description,
+                            followers: space.stats?.followers,
+                            entities: spaceEntities, comments: spaceComments))
                 }
             }
         }

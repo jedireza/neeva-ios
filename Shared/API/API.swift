@@ -9999,6 +9999,10 @@ public final class GetSpacesDataQuery: GraphQLQuery {
         __typename
         space {
           __typename
+          stats {
+            __typename
+            followers
+          }
           pageMetadata {
             __typename
             pageID
@@ -10006,6 +10010,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
           space {
             __typename
             name
+            description
             comments {
               __typename
               id
@@ -10280,7 +10285,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "4424459755c59aa2251b02f874028048c4139a8a221cf8e388903688f8f6da1d"
+  public let operationIdentifier: String? = "14d09c4f5e0c383bd7f62ec505f11dc75c27f4960f6484424663d095e46ab99b"
 
   public var ids: [String]?
 
@@ -10366,6 +10371,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
         public static var selections: [GraphQLSelection] {
           return [
             GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+            GraphQLField("stats", type: .object(Stat.selections)),
             GraphQLField("pageMetadata", type: .object(PageMetadatum.selections)),
             GraphQLField("space", type: .object(Space.selections)),
           ]
@@ -10377,8 +10383,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
           self.resultMap = unsafeResultMap
         }
 
-        public init(pageMetadata: PageMetadatum? = nil, space: Space? = nil) {
-          self.init(unsafeResultMap: ["__typename": "Space", "pageMetadata": pageMetadata.flatMap { (value: PageMetadatum) -> ResultMap in value.resultMap }, "space": space.flatMap { (value: Space) -> ResultMap in value.resultMap }])
+        public init(stats: Stat? = nil, pageMetadata: PageMetadatum? = nil, space: Space? = nil) {
+          self.init(unsafeResultMap: ["__typename": "Space", "stats": stats.flatMap { (value: Stat) -> ResultMap in value.resultMap }, "pageMetadata": pageMetadata.flatMap { (value: PageMetadatum) -> ResultMap in value.resultMap }, "space": space.flatMap { (value: Space) -> ResultMap in value.resultMap }])
         }
 
         public var __typename: String {
@@ -10387,6 +10393,15 @@ public final class GetSpacesDataQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue, forKey: "__typename")
+          }
+        }
+
+        public var stats: Stat? {
+          get {
+            return (resultMap["stats"] as? ResultMap).flatMap { Stat(unsafeResultMap: $0) }
+          }
+          set {
+            resultMap.updateValue(newValue?.resultMap, forKey: "stats")
           }
         }
 
@@ -10405,6 +10420,45 @@ public final class GetSpacesDataQuery: GraphQLQuery {
           }
           set {
             resultMap.updateValue(newValue?.resultMap, forKey: "space")
+          }
+        }
+
+        public struct Stat: GraphQLSelectionSet {
+          public static let possibleTypes: [String] = ["SpaceStats"]
+
+          public static var selections: [GraphQLSelection] {
+            return [
+              GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+              GraphQLField("followers", type: .scalar(Int.self)),
+            ]
+          }
+
+          public private(set) var resultMap: ResultMap
+
+          public init(unsafeResultMap: ResultMap) {
+            self.resultMap = unsafeResultMap
+          }
+
+          public init(followers: Int? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceStats", "followers": followers])
+          }
+
+          public var __typename: String {
+            get {
+              return resultMap["__typename"]! as! String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "__typename")
+            }
+          }
+
+          public var followers: Int? {
+            get {
+              return resultMap["followers"] as? Int
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "followers")
+            }
           }
         }
 
@@ -10455,6 +10509,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("name", type: .scalar(String.self)),
+              GraphQLField("description", type: .scalar(String.self)),
               GraphQLField("comments", type: .list(.nonNull(.object(Comment.selections)))),
               GraphQLField("entities", type: .list(.nonNull(.object(Entity.selections)))),
             ]
@@ -10466,8 +10521,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(name: String? = nil, comments: [Comment]? = nil, entities: [Entity]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "comments": comments.flatMap { (value: [Comment]) -> [ResultMap] in value.map { (value: Comment) -> ResultMap in value.resultMap } }, "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
+          public init(name: String? = nil, description: String? = nil, comments: [Comment]? = nil, entities: [Entity]? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "description": description, "comments": comments.flatMap { (value: [Comment]) -> [ResultMap] in value.map { (value: Comment) -> ResultMap in value.resultMap } }, "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
           }
 
           public var __typename: String {
@@ -10485,6 +10540,15 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "name")
+            }
+          }
+
+          public var description: String? {
+            get {
+              return resultMap["description"] as? String
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "description")
             }
           }
 
