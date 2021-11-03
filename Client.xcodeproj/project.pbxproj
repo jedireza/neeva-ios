@@ -164,6 +164,7 @@
 		4AB678B826EAA8160078F61B /* SpacesIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B726EAA8160078F61B /* SpacesIntro.swift */; };
 		4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */; };
 		4AD771AE2729C4C000B6769D /* PreviewEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AD2729C4C000B6769D /* PreviewEntities.swift */; };
+		4AD771B027322BCF00B6769D /* SpaceHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */; };
 		4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC541F265DA2CD00A210CE /* PromoCard.swift */; };
 		4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */; };
 		4ADF3F3F269627F100CB1B98 /* TrackingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */; };
@@ -1216,6 +1217,7 @@
 		4AB678B726EAA8160078F61B /* SpacesIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesIntro.swift; sourceTree = "<group>"; };
 		4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModel.swift; sourceTree = "<group>"; };
 		4AD771AD2729C4C000B6769D /* PreviewEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEntities.swift; sourceTree = "<group>"; };
+		4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceHeaderView.swift; sourceTree = "<group>"; };
 		4ADC541F265DA2CD00A210CE /* PromoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromoCard.swift; sourceTree = "<group>"; };
 		4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitcherToolbarView.swift; sourceTree = "<group>"; };
 		4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingUITests.swift; sourceTree = "<group>"; };
@@ -2357,6 +2359,7 @@
 				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
 				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
 				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
+				4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */,
 				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
 				C9655DEA26A09A2800925912 /* GridModel.swift */,
 				4A9FCD4726F107BF00725E17 /* ProfileView.swift */,
@@ -5333,6 +5336,7 @@
 				E653422D1C5944F90039DD9E /* BrowserPrompts.swift in Sources */,
 				435222C125882E3800FCA5B6 /* WidgetKitTopSiteModel.swift in Sources */,
 				4A88F97526630EFC007C203D /* CardDetails.swift in Sources */,
+				4AD771B027322BCF00B6769D /* SpaceHeaderView.swift in Sources */,
 				C9F49CBD266FDA9500F3408A /* SearchBar.swift in Sources */,
 				BCA86A52270FEE6B00FC4DE8 /* RecipeCheatsheetStripView.swift in Sources */,
 				435D7CC5246209AA0043ACB9 /* IntroViewController.swift in Sources */,

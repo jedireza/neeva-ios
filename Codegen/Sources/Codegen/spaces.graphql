@@ -50,11 +50,15 @@ query GetSpacesTitleInfo($ids: [String!]) {
 query GetSpacesData($ids: [String!]) {
   getSpace(input: { ids: $ids }) {
     space {
+      stats {
+        followers
+      }
       pageMetadata {
         pageID
       }
       space {
         name
+        description
         comments {
           id
           profile {

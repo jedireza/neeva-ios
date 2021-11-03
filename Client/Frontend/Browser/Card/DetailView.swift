@@ -6,7 +6,7 @@ import Shared
 import SwiftUI
 
 enum DetailsViewUX {
-    static let Padding: CGFloat = 2
+    static let Padding: CGFloat = 4
     static let ThumbnailCornerRadius: CGFloat = 6
     static let ThumbnailSize: CGFloat = 54
     static let ItemPadding: CGFloat = 14
@@ -347,14 +347,6 @@ where
                     .withFont(.labelLarge)
                     .foregroundColor(Color.label)
             }
-            if primitive.isSharedPublic {
-                Symbol(decorative: .link, style: .labelMedium)
-                    .foregroundColor(.secondaryLabel)
-            }
-            if primitive.isSharedWithGroup {
-                Symbol(decorative: .person2Fill, style: .labelMedium)
-                    .foregroundColor(.secondaryLabel)
-            }
             Spacer()
             if space != nil {
                 shareButton
@@ -400,6 +392,15 @@ where
     var spaceList: some View {
         NavigationView {
             List {
+                SpaceHeaderView(space: space!)
+                    .listRowInsets(
+                        EdgeInsets.init(
+                            top: 0,
+                            leading: 0,
+                            bottom: 0,
+                            trailing: 0)
+                    )
+                    .modifier(ListSeparatorModifier())
                 ForEach(primitive.allDetails, id: \.id) { details in
                     if let entity = details.manager.get(for: details.id) {
                         if let url = entity.primitiveUrl,
@@ -448,20 +449,21 @@ where
                                 NSItemProvider(id: details.id)
                             }
                         } else {
-                            Section(
-                                header: Text(entity.displayTitle)
-                                    .withFont(.headingSmall)
-                                    .textCase(.none)
-                                    .padding(.horizontal)
-                                    .padding(.top, 14)
-                                    .padding(.bottom, 10)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .background(Color.TrayBackground)
-                            ) {}
-                            .listRowInsets(
-                                EdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                            )
-                            .modifier(ListSeparatorModifier())
+                            Text(entity.displayTitle)
+                                .withFont(.headingMedium)
+                                .foregroundColor(.label)
+                                .textCase(.none)
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.TrayBackground)
+                                .listRowInsets(
+                                    EdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 0)
+                                )
+                                .modifier(ListSeparatorModifier())
+                                .onDrag {
+                                    NSItemProvider(id: details.id)
+                                }
                         }
                     }
                 }

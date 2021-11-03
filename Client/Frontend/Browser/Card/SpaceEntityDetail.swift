@@ -102,7 +102,7 @@ struct SpaceEntityDetailView: View {
                             .padding(.bottom, 8)
                         if !details.title.isEmpty {
                             Text(details.title)
-                                .withFont(.bodyMedium)
+                                .withFont(.bodyLarge)
                                 .lineLimit(1)
                                 .foregroundColor(Color.label)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -113,7 +113,7 @@ struct SpaceEntityDetailView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     VStack(spacing: DetailsViewUX.ItemPadding) {
-                        HStack(spacing: DetailsViewUX.ItemPadding) {
+                        HStack(alignment: .top, spacing: DetailsViewUX.ItemPadding) {
                             details.thumbnail.frame(
                                 width: DetailsViewUX.ThumbnailSize,
                                 height: DetailsViewUX.ThumbnailSize
@@ -127,16 +127,19 @@ struct SpaceEntityDetailView: View {
                                             .cornerRadius(4)
                                     }
                                     Text(titleToDisplay)
-                                        .withFont(.bodyMedium)
+                                        .withFont(.headingMedium)
                                         .lineLimit(2)
-                                        .foregroundColor(Color.label)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .foregroundColor(.label)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
+                                URLDisplayView(url: details.data.url!)
                                 product
                                 if let snippet = snippetToDisplay, !showDescriptions {
                                     Text(snippet)
-                                        .withFont(.bodySmall)
-                                        .lineLimit(2)
+                                        .withFont(.bodyLarge)
+                                        .lineLimit(3)
+                                        .fixedSize(horizontal: false, vertical: true)
                                         .foregroundColor(Color.secondaryLabel)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
@@ -148,14 +151,14 @@ struct SpaceEntityDetailView: View {
                         {
                             ForEach(descriptions, id: \.self) { description in
                                 Text(description)
-                                    .withFont(.bodySmall)
+                                    .withFont(.bodyLarge)
                                     .fixedSize(horizontal: false, vertical: true)
                                     .foregroundColor(Color.secondaryLabel)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
                         } else if let snippet = snippetToDisplay, showDescriptions {
                             Text(snippet)
-                                .withFont(.bodySmall)
+                                .withFont(.bodyLarge)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .foregroundColor(Color.secondaryLabel)
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -163,7 +166,8 @@ struct SpaceEntityDetailView: View {
                     }
                 }
             }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
-                .padding()
+                .padding(.vertical, 12)
+                .padding(.horizontal, 16)
                 .background(Color.DefaultBackground)
 
             if let url = details.previewURL {

@@ -316,10 +316,10 @@ struct ShareSpaceView: View {
             }
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 2) {
+                    publicACLShareView
                     if space.ACL == .owner {
                         soloACLShareView
                     }
-                    publicACLShareView
                     if !fromAddToSpace {
                         Text("Who has access")
                             .withFont(.headingSmall)
