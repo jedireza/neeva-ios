@@ -27,10 +27,7 @@ struct NavSuggestionView: View {
 
     @ViewBuilder
     var secondaryLabel: some View {
-        Text(suggestion.url.normalizedHostAndPathForDisplay)
-            .withFont(suggestion.title != nil ? .bodySmall : .bodyLarge)
-            .foregroundColor(suggestion.title != nil ? .secondaryLabel : .label)
-            .lineLimit(1)
+        URLDisplayView(url: suggestion.url)
     }
 
     var body: some View {
