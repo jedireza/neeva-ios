@@ -16,6 +16,8 @@
 		<string>Neeva Browser ClientIntent</string>
 		<key>co.neeva.app.ios.browser.Clip</key>
 		<string>Neeva Browser Clip</string>
+		<key>co.neeva.app.ios.browser.SafariExtension</key>
+		<string>Neeva Browser Safari Extension</string>
 		<key>co.neeva.app.ios.browser.ShareTo</key>
 		<string>Neeva Browser ShareTo</string>
 		<key>co.neeva.app.ios.browser.WidgetKit</key>
