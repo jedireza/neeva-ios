@@ -159,7 +159,7 @@ class Tab: NSObject, ObservableObject {
     }
 
     fileprivate(set) var screenshot: UIImage?
-    var screenshotUUID: UUID?
+    @Published var screenshotUUID: UUID?
 
     // If this tab has been opened from another, its parent will point to the tab from which it was opened
     weak var parent: Tab?
