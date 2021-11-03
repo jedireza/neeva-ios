@@ -209,12 +209,13 @@ struct Card<Details>: View where Details: CardDetails {
             )
         }
         .onPreferenceChange(CardFramePreferenceKey.self) { frame in
-            if reportFrame && details.isSelected {
-                if details is TabCardDetails {
-                    gridModel.selectedCardFrame = frame
-                } else if details is TabGroupCardDetails {
-                    gridModel.selectedTabGroupFrame = frame
-                }
+            if reportFrame {
+                gridModel.cardFrames[details.id] = frame
+            }
+        }
+        .onDisappear {
+            if reportFrame {
+                gridModel.cardFrames[details.id] = nil
             }
         }
         .accessibilityElement(children: .ignore)

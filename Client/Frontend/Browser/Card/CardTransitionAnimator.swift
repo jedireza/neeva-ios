@@ -46,12 +46,26 @@ struct CardTransitionAnimator: View {
             - transitionTopPadding + safeAreaInsets.top + CardUX.HeaderSize
     }
 
+    var selectedTabGroupFrame: CGRect {
+        if let tab = tabModel.manager.selectedTab, let frame = gridModel.cardFrames[tab.rootUUID] {
+            return frame
+        }
+        return .zero
+    }
+
+    var selectedTabFrame: CGRect {
+        if let tab = tabModel.manager.selectedTab, let frame = gridModel.cardFrames[tab.tabUUID] {
+            return frame
+        }
+        return .zero
+    }
+
     var frame: CGRect {
         gridModel.isHidden
             ? CGRect(width: maxWidth, height: maxHeight)
             : ((isSelectedTabInGroup && gridModel.animationThumbnailState == .visibleForTrayShow)
-                ? gridModel.selectedTabGroupFrame.offsetBy(dx: 0, dy: -transitionTopPadding)
-                : gridModel.selectedCardFrame.offsetBy(dx: 0, dy: -transitionTopPadding))
+                ? selectedTabGroupFrame : selectedTabFrame).offsetBy(
+                    dx: 0, dy: -transitionTopPadding)
     }
 
     var body: some View {

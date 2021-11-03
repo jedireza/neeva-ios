@@ -21,9 +21,10 @@ class GridModel: ObservableObject {
     var buildCloseAllTabsMenu: (() -> UIMenu)!
     var buildRecentlyClosedTabsMenu: (() -> UIMenu)!
     var animateDetailTransitions = true
+
+    /// The cached location of all loaded `Card`s relative to `coordinateSpaceName`
+    @Published var cardFrames: [String: CGRect] = [:]
     let coordinateSpaceName: String = UUID().uuidString
-    @Published var selectedCardFrame: CGRect = .zero
-    @Published var selectedTabGroupFrame: CGRect = .zero
 
     @Published var needsScrollToSelectedTab: Int = 0
 
@@ -55,9 +56,7 @@ class GridModel: ObservableObject {
     }
 
     func hideWithAnimation() {
-        DispatchQueue.main.async {
-            self.animationThumbnailState = .visibleForTrayHidden
-        }
+        self.animationThumbnailState = .visibleForTrayHidden
     }
 
     func hideWithNoAnimation() {
