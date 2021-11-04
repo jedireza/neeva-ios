@@ -213,7 +213,7 @@ class LocalNotitifications {
         case .neevaOnboardingProductSearch:
             title = "Neeva"
             body =
-                "Neeva shows you high quality reviews when you look for a product. Not ads. Tap here to search for best headphones and see for yourself."
+                "Find the best reviewed products around the web, never ads. See the difference!"
             timeInterval = TimeInterval(Defaults[.productSearchPromoTimeInterval])
             let query = "Best Headphones"
             if let encodedQuery = query.addingPercentEncoding(
