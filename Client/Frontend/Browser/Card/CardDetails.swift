@@ -254,6 +254,12 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
             WebImage(url: imageURL)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
+        } else if case .newsItem(let newsItem) = data.previewEntity,
+            let imageURL = newsItem.thumbnailURL
+        {
+            WebImage(url: imageURL)
+                .resizable()
+                .aspectRatio(contentMode: .fill)
         } else if isImage, let imageURL = data.url {
             WebImage(url: imageURL)
                 .resizable()

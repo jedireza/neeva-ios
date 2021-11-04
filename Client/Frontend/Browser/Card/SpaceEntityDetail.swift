@@ -3,6 +3,7 @@
 import Defaults
 import SDWebImageSwiftUI
 import Shared
+import Storage
 import SwiftUI
 
 struct SpaceEntityDetailView: View {
@@ -30,6 +31,8 @@ struct SpaceEntityDetailView: View {
             return product.title
         case .techDoc(let doc):
             return doc.title
+        case .newsItem(let newsItem):
+            return newsItem.title
         default:
             return details.title
         }
@@ -41,6 +44,8 @@ struct SpaceEntityDetailView: View {
             return richEntity.description
         case .retailProduct(let product):
             return product.description.first ?? details.description
+        case .newsItem(let newsItem):
+            return newsItem.formattedDatePublished.capitalized + " - " + newsItem.snippet
         default:
             return details.description
         }
@@ -138,7 +143,20 @@ struct SpaceEntityDetailView: View {
                                         .foregroundColor(.label)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                URLDisplayView(url: details.data.url!)
+                                if case .newsItem(let newsItem) = details.data.previewEntity {
+                                    HStack(spacing: 4) {
+                                        if let favicon = newsItem.faviconURL {
+                                            FaviconView(forFavicon: Favicon(url: favicon))
+                                                .frame(width: 12, height: 12)
+                                                .cornerRadius(4)
+                                        }
+                                        Text(newsItem.providerName)
+                                            .withFont(.bodySmall)
+                                            .foregroundColor(.label)
+                                    }
+                                } else {
+                                    URLDisplayView(url: details.data.url!)
+                                }
                                 product
                                 if let snippet = snippetToDisplay, !showDescriptions {
                                     Text(snippet)

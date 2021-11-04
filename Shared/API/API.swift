@@ -10047,6 +10047,23 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                         name
                       }
                     }
+                    ... on NewsItem {
+                      newsItem {
+                        __typename
+                        title
+                        snippet
+                        url
+                        thumbnailImage {
+                          __typename
+                          url
+                        }
+                        providerName
+                        datePublished
+                        favIconURL
+                        preference
+                        domain
+                      }
+                    }
                     ... on Web {
                       web {
                         __typename
@@ -10285,7 +10302,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "14d09c4f5e0c383bd7f62ec505f11dc75c27f4960f6484424663d095e46ab99b"
+  public let operationIdentifier: String? = "b4fd799c3b391c7491a7660c8476ff40e3b53ab641aa95d491a81d26da1f1cc5"
 
   public var ids: [String]?
 
@@ -10945,7 +10962,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                   public static var selections: [GraphQLSelection] {
                     return [
                       GraphQLTypeCase(
-                        variants: ["TechDoc": AsTechDoc.selections, "Web": AsWeb.selections, "RichEntity": AsRichEntity.selections],
+                        variants: ["TechDoc": AsTechDoc.selections, "NewsItem": AsNewsItem.selections, "Web": AsWeb.selections, "RichEntity": AsRichEntity.selections],
                         default: [
                           GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
                         ]
@@ -11069,10 +11086,6 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
                   public static func makeNews() -> TypeSpecific {
                     return TypeSpecific(unsafeResultMap: ["__typename": "News"])
-                  }
-
-                  public static func makeNewsItem() -> TypeSpecific {
-                    return TypeSpecific(unsafeResultMap: ["__typename": "NewsItem"])
                   }
 
                   public static func makeNewsletterView() -> TypeSpecific {
@@ -11223,6 +11236,10 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                     return TypeSpecific(unsafeResultMap: ["__typename": "TechDoc", "techDoc": techDoc.flatMap { (value: AsTechDoc.TechDoc) -> ResultMap in value.resultMap }])
                   }
 
+                  public static func makeNewsItem(newsItem: AsNewsItem.NewsItem? = nil) -> TypeSpecific {
+                    return TypeSpecific(unsafeResultMap: ["__typename": "NewsItem", "newsItem": newsItem.flatMap { (value: AsNewsItem.NewsItem) -> ResultMap in value.resultMap }])
+                  }
+
                   public static func makeWeb(web: AsWeb.Web? = nil) -> TypeSpecific {
                     return TypeSpecific(unsafeResultMap: ["__typename": "Web", "web": web.flatMap { (value: AsWeb.Web) -> ResultMap in value.resultMap }])
                   }
@@ -11324,6 +11341,214 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                         }
                         set {
                           resultMap.updateValue(newValue, forKey: "name")
+                        }
+                      }
+                    }
+                  }
+
+                  public var asNewsItem: AsNewsItem? {
+                    get {
+                      if !AsNewsItem.possibleTypes.contains(__typename) { return nil }
+                      return AsNewsItem(unsafeResultMap: resultMap)
+                    }
+                    set {
+                      guard let newValue = newValue else { return }
+                      resultMap = newValue.resultMap
+                    }
+                  }
+
+                  public struct AsNewsItem: GraphQLSelectionSet {
+                    public static let possibleTypes: [String] = ["NewsItem"]
+
+                    public static var selections: [GraphQLSelection] {
+                      return [
+                        GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                        GraphQLField("newsItem", type: .object(NewsItem.selections)),
+                      ]
+                    }
+
+                    public private(set) var resultMap: ResultMap
+
+                    public init(unsafeResultMap: ResultMap) {
+                      self.resultMap = unsafeResultMap
+                    }
+
+                    public init(newsItem: NewsItem? = nil) {
+                      self.init(unsafeResultMap: ["__typename": "NewsItem", "newsItem": newsItem.flatMap { (value: NewsItem) -> ResultMap in value.resultMap }])
+                    }
+
+                    public var __typename: String {
+                      get {
+                        return resultMap["__typename"]! as! String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "__typename")
+                      }
+                    }
+
+                    public var newsItem: NewsItem? {
+                      get {
+                        return (resultMap["newsItem"] as? ResultMap).flatMap { NewsItem(unsafeResultMap: $0) }
+                      }
+                      set {
+                        resultMap.updateValue(newValue?.resultMap, forKey: "newsItem")
+                      }
+                    }
+
+                    public struct NewsItem: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["NewsData"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("title", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("snippet", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("url", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("thumbnailImage", type: .nonNull(.object(ThumbnailImage.selections))),
+                          GraphQLField("providerName", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("datePublished", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("favIconURL", type: .scalar(String.self)),
+                          GraphQLField("preference", type: .scalar(UserPreference.self)),
+                          GraphQLField("domain", type: .scalar(String.self)),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(title: String, snippet: String, url: String, thumbnailImage: ThumbnailImage, providerName: String, datePublished: String, favIconUrl: String? = nil, preference: UserPreference? = nil, domain: String? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "NewsData", "title": title, "snippet": snippet, "url": url, "thumbnailImage": thumbnailImage.resultMap, "providerName": providerName, "datePublished": datePublished, "favIconURL": favIconUrl, "preference": preference, "domain": domain])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var title: String {
+                        get {
+                          return resultMap["title"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "title")
+                        }
+                      }
+
+                      public var snippet: String {
+                        get {
+                          return resultMap["snippet"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "snippet")
+                        }
+                      }
+
+                      public var url: String {
+                        get {
+                          return resultMap["url"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "url")
+                        }
+                      }
+
+                      public var thumbnailImage: ThumbnailImage {
+                        get {
+                          return ThumbnailImage(unsafeResultMap: resultMap["thumbnailImage"]! as! ResultMap)
+                        }
+                        set {
+                          resultMap.updateValue(newValue.resultMap, forKey: "thumbnailImage")
+                        }
+                      }
+
+                      public var providerName: String {
+                        get {
+                          return resultMap["providerName"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "providerName")
+                        }
+                      }
+
+                      public var datePublished: String {
+                        get {
+                          return resultMap["datePublished"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "datePublished")
+                        }
+                      }
+
+                      public var favIconUrl: String? {
+                        get {
+                          return resultMap["favIconURL"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "favIconURL")
+                        }
+                      }
+
+                      public var preference: UserPreference? {
+                        get {
+                          return resultMap["preference"] as? UserPreference
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "preference")
+                        }
+                      }
+
+                      public var domain: String? {
+                        get {
+                          return resultMap["domain"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "domain")
+                        }
+                      }
+
+                      public struct ThumbnailImage: GraphQLSelectionSet {
+                        public static let possibleTypes: [String] = ["ThumbnailImage"]
+
+                        public static var selections: [GraphQLSelection] {
+                          return [
+                            GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                            GraphQLField("url", type: .nonNull(.scalar(String.self))),
+                          ]
+                        }
+
+                        public private(set) var resultMap: ResultMap
+
+                        public init(unsafeResultMap: ResultMap) {
+                          self.resultMap = unsafeResultMap
+                        }
+
+                        public init(url: String) {
+                          self.init(unsafeResultMap: ["__typename": "ThumbnailImage", "url": url])
+                        }
+
+                        public var __typename: String {
+                          get {
+                            return resultMap["__typename"]! as! String
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "__typename")
+                          }
+                        }
+
+                        public var url: String {
+                          get {
+                            return resultMap["url"]! as! String
+                          }
+                          set {
+                            resultMap.updateValue(newValue, forKey: "url")
+                          }
                         }
                       }
                     }

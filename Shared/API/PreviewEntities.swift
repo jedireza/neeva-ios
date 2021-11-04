@@ -7,7 +7,29 @@ public enum PreviewEntity {
     case recipe(Recipe)
     case techDoc(TechDoc)
     case retailProduct(RetailProduct)
+    case newsItem(NewsItem)
     case webPage
+}
+
+public struct NewsItem {
+    public let title: String
+    public let snippet: String
+    public let url: URL
+    public let thumbnailURL: URL?
+    public let providerName: String
+    public let datePublished: String
+    public let faviconURL: URL?
+    public let domain: String?
+
+    public var formattedDatePublished: String {
+        let originalDateFormatter = DateFormatter()
+        originalDateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        originalDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+        let convertedDate = originalDateFormatter.date(from: datePublished)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MMM dd"
+        return formatter.string(from: convertedDate ?? Date())
+    }
 }
 
 public struct RichEntity {

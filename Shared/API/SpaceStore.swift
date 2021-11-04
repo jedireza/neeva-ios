@@ -49,6 +49,8 @@ public struct SpaceEntityData {
         .RatingSummary
     typealias EntityTechDoc = GetSpacesDataQuery.Data.GetSpace.Space
         .Space.Entity.SpaceEntity.Content.TypeSpecific.AsTechDoc.TechDoc
+    typealias EntityNewsItem = GetSpacesDataQuery.Data.GetSpace.Space
+        .Space.Entity.SpaceEntity.Content.TypeSpecific.AsNewsItem.NewsItem
 
     public let id: String
     public let url: URL?
@@ -88,9 +90,26 @@ public struct SpaceEntityData {
                 withAllowedCharacters: .urlHostAllowed))
         {
             return PreviewEntity.techDoc(techDoc)
+        } else if let newsItem = newsItem(
+            from: entity.content?.typeSpecific?.asNewsItem?.newsItem
+        ) {
+            return PreviewEntity.newsItem(newsItem)
         } else {
             return PreviewEntity.webPage
         }
+    }
+
+    private static func newsItem(from entity: EntityNewsItem?) -> NewsItem? {
+        guard let entity = entity, let url = URL(string: entity.url) else {
+            return nil
+        }
+
+        return NewsItem(
+            title: entity.title, snippet: entity.snippet, url: url,
+            thumbnailURL: URL(string: entity.thumbnailImage.url),
+            providerName: entity.providerName, datePublished: entity.datePublished,
+            faviconURL: URL(string: entity.favIconUrl ?? ""),
+            domain: entity.domain)
     }
 
     private static func recipe(from entity: EntityRecipe?) -> Recipe? {

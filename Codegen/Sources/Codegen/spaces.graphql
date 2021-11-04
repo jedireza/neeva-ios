@@ -89,6 +89,21 @@ query GetSpacesData($ids: [String!]) {
                     name
                   }
                 }
+                ... on NewsItem {
+                  newsItem {
+                    title
+                    snippet
+                    url
+                    thumbnailImage {
+                      url
+                    }
+                    providerName
+                    datePublished
+                    favIconURL
+                    preference
+                    domain
+                  }
+                }
                 ... on Web {
                   web {
                     retailerProduct {
