@@ -34,7 +34,7 @@ enum PromoCardType {
                 + Text(" by inviting friends to join Neeva"))
                 .fixedSize(horizontal: false, vertical: true)
         case .notificationPermission:
-            Text("Get recommendations from the best of the web")
+            Text("From news to shopping,\nget the best of the web\ndelivered right to you")
         }
     }
 
