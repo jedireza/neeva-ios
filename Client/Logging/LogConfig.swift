@@ -13,11 +13,11 @@ public struct LogConfig {
         case ShowTabTray  // Click tab button to see all available tabs
         case HideTabTray  // Click done button to hide the tab tray
         case SelectTab  // Click on any tabs inside the tab tray
+        case ClickAddToSpaceButton  // Click bookmark button to add to space
         case ClickNewTabButton  // Click the plus new tab button
         case ClickShareButton  // Click the share button
         case TurnOnIncognitoMode  // Click turn on incognito mode button
         case TurnOffIncognitoMode  // Click turn off incognito mode button
-        case SaveToSpace  // Click bookmark button to save to space
         case ClickBack  // Click back button to navigate to previous page
         case ClickForward  // Click forward button to navigate to next page
 
@@ -110,6 +110,7 @@ public struct LogConfig {
         case FollowerSharedSpace
         case SocialShare
         case space_app_view  // This is for aggregate stats collection
+        case SaveToSpace
 
         // ratings card
         case RatingsRateExperience
@@ -197,11 +198,11 @@ public struct LogConfig {
         case .ShowTabTray: return .UI
         case .HideTabTray: return .UI
         case .SelectTab: return .UI
+        case .ClickAddToSpaceButton: return .UI
         case .ClickNewTabButton: return .UI
         case .ClickShareButton: return .UI
         case .TurnOnIncognitoMode: return .UI
         case .TurnOffIncognitoMode: return .UI
-        case .SaveToSpace: return .UI
         case .ClickBack: return .UI
         case .ClickForward: return .UI
         case .TurnOnBlockTracking: return .UI
@@ -283,6 +284,7 @@ public struct LogConfig {
         case .FollowerSharedSpace: return .Spaces
         case .SocialShare: return .Spaces
         case .space_app_view: return .Spaces
+        case .SaveToSpace: return .Spaces
 
         case .RatingsRateExperience: return .RatingsCard
         case .RatingsPromptFeedback: return .RatingsCard

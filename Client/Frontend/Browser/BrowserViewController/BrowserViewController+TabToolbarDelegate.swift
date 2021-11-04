@@ -82,6 +82,8 @@ extension BrowserViewController: ToolbarDelegate {
                 } else {
                     self.showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
                 }
+                ClientLogger.shared.logCounter(
+                    .ClickAddToSpaceButton, attributes: EnvironmentHelper.shared.getAttributes())
 
             case .showTabs:
                 self.showTabTray()
