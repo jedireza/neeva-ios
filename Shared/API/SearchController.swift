@@ -31,16 +31,19 @@ public struct Product {
 
 public typealias ProductClusterResult = ([Product])
 public typealias RecipeBlockResult = ([RelatedRecipe])
+public typealias RelatedSearchesResult = ([String])
 
 public enum RichResultType {
     case ProductCluster(result: ProductClusterResult)
     case RecipeBlock(result: RecipeBlockResult)
+    case RelatedSearches(result: RelatedSearchesResult)
 }
 
 public class SearchController:
     QueryController<SearchQuery, [SearchController.RichResult]>
 {
-    public struct RichResult {
+    public struct RichResult: Identifiable {
+        public var id = UUID()
         public let resultType: RichResultType
     }
 
@@ -128,9 +131,9 @@ public class SearchController:
                                         }
                                     }
 
-                                    let productClusterResuslt = ProductClusterResult(productResult)
+                                    let productClusterResult = ProductClusterResult(productResult)
                                     let finalResult = RichResultType.ProductCluster(
-                                        result: productClusterResuslt)
+                                        result: productClusterResult)
                                     richResult.append(RichResult(resultType: finalResult))
                                 }
                             } else if typename == "RecipeBlock" {
@@ -163,9 +166,36 @@ public class SearchController:
                                         }
                                     }
 
+                                    if richResult.count > 0 {
+                                        for (index, item) in richResult.enumerated() {
+                                            switch item.resultType {
+                                            case .RecipeBlock(let existingResult):
+                                                recipeResult += existingResult
+                                                richResult.remove(at: index)
+                                            default:
+                                                break
+                                            }
+                                        }
+                                    }
+
                                     let recipeBlockResult = RecipeBlockResult(recipeResult)
                                     let finalResult = RichResultType.RecipeBlock(
                                         result: recipeBlockResult)
+                                    richResult.append(RichResult(resultType: finalResult))
+
+                                }
+                            } else if typename == "RelatedSearches" {
+                                if let relatedSearches = typeSpecific.asRelatedSearches?.relatedSearches?.entries {
+
+                                    var relatedSearchesResult: [String] = []
+
+                                    for item in relatedSearches {
+                                        if let searchText = item.searchText {
+                                            relatedSearchesResult.append(searchText)
+                                        }
+                                    }
+
+                                    let finalResult = RichResultType.RelatedSearches(result: relatedSearchesResult)
                                     richResult.append(RichResult(resultType: finalResult))
                                 }
                             }

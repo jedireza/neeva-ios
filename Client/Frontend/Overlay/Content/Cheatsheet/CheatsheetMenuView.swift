@@ -42,22 +42,34 @@ struct ReviewURLButton: View {
 
 struct QueryButton: View {
     let query: String
+    let onDismiss: (() -> Void)?
+
     @Environment(\.onOpenURL) var onOpenURL
 
     var body: some View {
         Button(action: onClick) {
-            Label(query, systemSymbol: .magnifyingglass)
+            ScrollView(.horizontal) {
+                HStack(alignment: .center) {
+                    Label {
+                        Text(query)
+                            .foregroundColor(.label)
+                    } icon: {
+                        Symbol(decorative: .magnifyingglass)
+                            .foregroundColor(.tertiaryLabel)
+                    }
+                }
+            }
         }
-        .withFont(unkerned: .bodyMedium)
+        .withFont(unkerned: .bodyLarge)
         .lineLimit(1)
-        .background(
-            RoundedRectangle(cornerRadius: 20).stroke(Color.gray, lineWidth: 1).padding(-10)
-        )
-        .padding(10)
-        .foregroundColor(.secondaryLabel)
+        .padding(.bottom, 8)
     }
 
     func onClick() {
+        if let onDismiss = onDismiss {
+            onDismiss()
+        }
+
         if let encodedQuery = query.addingPercentEncoding(
             withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
         {
@@ -111,7 +123,14 @@ public struct CheatsheetMenuView: View {
                     CompactNeevaMenuView(menuAction: menuAction)
                     recipeView
                         .padding()
-                    richResult()
+                    if let richResults = model.searchRichResults {
+                        VStack(alignment: .leading) {
+                            ForEach(richResults) { richResult in
+                                renderRichResult(for: richResult)
+                            }
+                        }
+                        .padding()
+                    }
                     priceHistorySection
                     reviewURLSection
                     memorizedQuerySection
@@ -162,19 +181,22 @@ public struct CheatsheetMenuView: View {
         }
     }
 
-    func richResult() -> AnyView {
-        if let richResults = model.searchRichResults {
-            for richResult in richResults {
-                switch richResult.resultType {
-                case .ProductCluster(let productCluster):
-                    return AnyView(ProductClusterList(products: productCluster))
-                case .RecipeBlock(let recipes):
-                    // filter out result already showing on the current page
-                    return AnyView(RelatedRecipeList(recipes: recipes.filter { $0.url != model.currentPageURL }))
-                }
-            }
+    func renderRichResult(for richResult: SearchController.RichResult) -> AnyView {
+        switch richResult.resultType {
+        case .ProductCluster(let productCluster):
+            return AnyView(ProductClusterList(products: productCluster))
+        case .RecipeBlock(let recipes):
+            // filter out result already showing on the current page
+            return AnyView(
+                RelatedRecipeList(
+                    recipes: recipes.filter { $0.url != model.currentPageURL },
+                    onDismiss: nil
+                )
+                .padding(.bottom, 20)
+            )
+        case .RelatedSearches(let relatedSearches):
+            return AnyView(RelatedSearchesView(relatedSearches: relatedSearches, onDismiss: nil))
         }
-        return AnyView(EmptyView())
     }
 
     @ViewBuilder
@@ -196,10 +218,10 @@ public struct CheatsheetMenuView: View {
     var memorizedQuerySection: some View {
         if model.cheatsheetInfo?.memorizedQuery?.count ?? 0 > 0 {
             VStack(alignment: .leading, spacing: 10) {
-                Text("Keep Looking").withFont(.headingMedium)
+                Text("Keep Looking").withFont(.headingXLarge)
                 ForEach(model.cheatsheetInfo?.memorizedQuery?.prefix(5) ?? [], id: \.self) {
                     query in
-                    QueryButton(query: query)
+                    QueryButton(query: query, onDismiss: nil)
                 }
             }
             .padding()

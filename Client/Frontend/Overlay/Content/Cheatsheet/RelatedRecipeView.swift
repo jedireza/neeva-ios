@@ -6,6 +6,7 @@ import SwiftUI
 
 struct RelatedRecipeItem: View {
     let recipe: RelatedRecipe
+    let onDismiss: (() -> Void)?
     @Environment(\.onOpenURL) var onOpenURL
 
     var body: some View {
@@ -81,12 +82,16 @@ struct RelatedRecipeItem: View {
     }
 
     func onClick() {
+        if let onDismiss = onDismiss {
+            onDismiss()
+        }
         onOpenURL(recipe.url)
     }
 }
 
 struct RelatedRecipeList: View {
     let recipes: [RelatedRecipe]
+    let onDismiss: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -97,11 +102,10 @@ struct RelatedRecipeList: View {
             ScrollView(.horizontal) {
                 HStack {
                     ForEach(recipes, id: \.url) { recipe in
-                        RelatedRecipeItem(recipe: recipe)
+                        RelatedRecipeItem(recipe: recipe, onDismiss: onDismiss)
                     }
                 }
             }
         }
-        .padding()
     }
 }

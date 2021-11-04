@@ -308,6 +308,7 @@
 		BC07524C26C3B98F008B607A /* CheatsheetMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */; };
 		BC15D22B26FA575A00FDF6A7 /* AuthButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC15D22A26FA575A00FDF6A7 /* AuthButton.swift */; };
 		BC15D22D26FA5F9C00FDF6A7 /* OtherOptionsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC15D22C26FA5F9C00FDF6A7 /* OtherOptionsPage.swift */; };
+		BC24876A273382E5003A6867 /* RelatedSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC248769273382E5003A6867 /* RelatedSearchesView.swift */; };
 		BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC264BC126746098001527B6 /* ViewExtensions.swift */; };
 		BC423EA626CE391D007E2C01 /* CompactNeevaMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */; };
 		BC4E98012669572A00A8FBD6 /* TourManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43CC265F49EA007E2F61 /* TourManager.swift */; };
@@ -1382,6 +1383,7 @@
 		BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackHelper.swift; sourceTree = "<group>"; };
 		BC15D22A26FA575A00FDF6A7 /* AuthButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthButton.swift; sourceTree = "<group>"; };
 		BC15D22C26FA5F9C00FDF6A7 /* OtherOptionsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OtherOptionsPage.swift; sourceTree = "<group>"; };
+		BC248769273382E5003A6867 /* RelatedSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedSearchesView.swift; sourceTree = "<group>"; };
 		BC264BC126746098001527B6 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactNeevaMenuView.swift; sourceTree = "<group>"; };
 		BC5740A126BB699A0047D29B /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceLogger.swift; sourceTree = "<group>"; };
@@ -2734,6 +2736,7 @@
 				BC8EE028271A046C00D6BE2A /* SetPreferredProviderView.swift */,
 				BC7D47D32720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift */,
 				BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */,
+				BC248769273382E5003A6867 /* RelatedSearchesView.swift */,
 			);
 			path = Cheatsheet;
 			sourceTree = "<group>";
@@ -5467,6 +5470,7 @@
 				E6327A641BF6438E008D12E0 /* DebugSettingsBundleOptions.swift in Sources */,
 				D8FDEB57220CFE970069A582 /* UIImage+ImageEffects.m in Sources */,
 				EBB89506219398E500EB91A0 /* TabContentBlocker.swift in Sources */,
+				BC24876A273382E5003A6867 /* RelatedSearchesView.swift in Sources */,
 				C9299E382694DF5800758795 /* BrowserViewController+TopBarDelegate.swift in Sources */,
 				C8F457AA1F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift in Sources */,
 				8A2401CB26BB4D75006ABF7D /* RatingsCard.swift in Sources */,

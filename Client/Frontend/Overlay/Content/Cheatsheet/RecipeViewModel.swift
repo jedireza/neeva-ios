@@ -17,6 +17,7 @@ class RecipeViewModel: ObservableObject {
             reviews: nil,
             preference: .noPreference
         )
+    @Published var relatedQuery: String? = nil
 
     init(tabManager: TabManager) {
         if let url = tabManager.selectedTab?.url?.absoluteString {
@@ -51,6 +52,7 @@ class RecipeViewModel: ObservableObject {
             reviews: nil,
             preference: .noPreference
         )
+        self.relatedQuery = nil
     }
 
     private func setupRecipeData(url: String) {
@@ -61,6 +63,12 @@ class RecipeViewModel: ObservableObject {
                 let data = cheatsheetInfo[0]
                 if data.recipe != nil {
                     self.recipe = data.recipe!
+
+                    if let memorizedQuery = data.memorizedQuery {
+                        if memorizedQuery.count > 0 {
+                            self.relatedQuery = memorizedQuery[0]
+                        }
+                    }
                 }
                 break
             case .failure(_):

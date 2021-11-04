@@ -5,7 +5,7 @@ import Shared
 import SwiftUI
 
 struct RecipeView: View {
-    @State private var expanded: Bool = true
+    @State private var expanded: Bool = false
 
     let title: String?
     let imageURL: String?
@@ -123,8 +123,7 @@ struct RecipeView: View {
                     }
                 }
             }
-            // hide expand button until we have related content
-            // expandButton
+            expandButton
         }
         .onDisappear(perform: onDisappearCleanup)
     }

@@ -116,6 +116,10 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                                         height: geo.size.height,
                                         chromeModel: bvc.chromeModel
                                     )
+                                    .environment(\.onOpenURL) { url in
+                                        let bvc = zeroQueryModel.bvc
+                                        bvc.tabManager.createOrSwitchToTab(for: url)
+                                    }
                                 }
                             }
                         }

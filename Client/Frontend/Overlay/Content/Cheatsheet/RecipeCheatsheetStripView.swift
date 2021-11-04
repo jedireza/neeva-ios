@@ -5,6 +5,7 @@ import Shared
 import SwiftUI
 
 struct RecipeCheatsheetStripView: View {
+    @Environment(\.onOpenURL) var onOpenURL
     let tabManager: TabManager
     let overlayModel: OverlaySheetModel = OverlaySheetModel()
     var height: CGFloat
@@ -12,6 +13,7 @@ struct RecipeCheatsheetStripView: View {
     @ObservedObject var recipeModel: RecipeViewModel
     @State private var presentSheet: Bool = false
     let chromeModel: TabChromeModel
+    @State private var richResults: [SearchController.RichResult]?
 
     init(
         tabManager: TabManager,
@@ -90,11 +92,63 @@ struct RecipeCheatsheetStripView: View {
                             currentURL: self.tabManager.selectedTab?.url,
                             tabUUID: self.tabManager.selectedTab?.tabUUID
                         )
+                        .padding(.bottom, 20)
+                        if let richResults = self.richResults {
+                            VStack(alignment: .leading) {
+                                ForEach(richResults) { richResult in
+                                    renderRichResult(for: richResult)
+                                }
+                            }
+                        }
                     }
                     .padding()
                     .background(Color.DefaultBackground)
+                    .environment(\.onOpenURL, self.onOpenURL)
+                    .onAppear(perform: loadRelatedContent)
                 }
             }
+        }
+    }
+
+    func loadRelatedContent() {
+        if let relatedQuery = recipeModel.relatedQuery {
+            SearchController.getRichResult(query: relatedQuery) { searchResult in
+                switch searchResult {
+                case .success(let richResult):
+                    self.richResults = richResult
+                case .failure:
+                    break
+                }
+            }
+        }
+    }
+
+    func renderRichResult(for richResult: SearchController.RichResult) -> AnyView {
+        switch richResult.resultType {
+        case .RecipeBlock(let recipes):
+            return AnyView(
+                RelatedRecipeList(
+                    recipes: recipes.filter { $0.url != self.tabManager.selectedTab?.url ?? "" },
+                    onDismiss: {
+                        presentSheet = false
+                        self.chromeModel.toolBarContentView = .regularContent
+                    }
+                )
+                .padding(.bottom, 30)
+            )
+        case .RelatedSearches(let relatedSearches):
+            return AnyView(
+                RelatedSearchesView(
+                    relatedSearches: relatedSearches,
+                    onDismiss: {
+                        presentSheet = false
+                        self.chromeModel.toolBarContentView = .regularContent
+                    }
+                )
+                .padding(.bottom, 30)
+            )
+        default:
+            return AnyView(EmptyView())
         }
     }
 
