@@ -54,6 +54,26 @@ struct ProfileView: View {
     let email: String
 
     var body: some View {
+        ProfileImageView(pictureURL: pictureURL, displayName: displayName)
+            .frame(width: 20, height: 20)
+        VStack(alignment: .leading, spacing: 0) {
+            Text(displayName)
+                .withFont(.bodyMedium)
+                .lineLimit(1)
+                .foregroundColor(Color.label)
+            Text(email)
+                .withFont(.bodySmall)
+                .lineLimit(1)
+                .foregroundColor(Color.secondaryLabel)
+        }
+    }
+}
+
+struct ProfileImageView: View {
+    let pictureURL: String
+    let displayName: String
+
+    var body: some View {
         Group {
             if let pictureUrl = URL(string: pictureURL) {
                 WebImage(url: pictureUrl).resizable()
@@ -70,16 +90,5 @@ struct ProfileView: View {
         }
         .clipShape(Circle())
         .aspectRatio(contentMode: .fill)
-        .frame(width: 20, height: 20)
-        VStack(alignment: .leading, spacing: 0) {
-            Text(displayName)
-                .withFont(.bodyMedium)
-                .lineLimit(1)
-                .foregroundColor(Color.label)
-            Text(email)
-                .withFont(.bodySmall)
-                .lineLimit(1)
-                .foregroundColor(Color.secondaryLabel)
-        }
     }
 }

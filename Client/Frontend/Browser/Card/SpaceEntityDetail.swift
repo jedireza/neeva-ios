@@ -92,7 +92,7 @@ struct SpaceEntityDetailView: View {
                     attributes: getLogCounterAttributesForSpaceEntities(details: details))
             } label: {
                 if details.isImage, let url = details.data.url {
-                    VStack(spacing: 0) {
+                    VStack(alignment: .leading, spacing: 6) {
                         WebImage(url: url).resizable()
                             .transition(.fade(duration: 0.5))
                             .background(Color.white)
@@ -105,7 +105,12 @@ struct SpaceEntityDetailView: View {
                                 .withFont(.bodyLarge)
                                 .lineLimit(1)
                                 .foregroundColor(Color.label)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                        if let domain = details.data.url?.baseDomain {
+                            Text(domain)
+                                .withFont(.bodySmall)
+                                .lineLimit(1)
+                                .foregroundColor(Color.secondaryLabel)
                         }
                     }
                 } else if case .recipe(let recipe) = details.data.previewEntity {

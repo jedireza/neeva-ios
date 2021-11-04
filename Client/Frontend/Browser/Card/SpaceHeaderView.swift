@@ -18,30 +18,7 @@ struct SpaceHeaderView: View {
                 .foregroundColor(.label)
                 .fixedSize(horizontal: false, vertical: true)
                 .lineLimit(2)
-            if let owner = owner?.profile {
-                HStack(spacing: 12) {
-                    Group {
-                        if let pictureUrl = URL(string: owner.pictureUrl) {
-                            WebImage(url: pictureUrl).resizable()
-                        } else {
-                            let name = (owner.displayName).prefix(2).uppercased()
-                            Color.brand.blue
-                                .overlay(
-                                    Text(name)
-                                        .accessibilityHidden(true)
-                                        .font(.system(size: 10))
-                                        .foregroundColor(.white)
-                                )
-                        }
-                    }
-                    .clipShape(Circle())
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: 32, height: 32)
-                    Text(owner.displayName)
-                        .withFont(.bodyLarge)
-                        .foregroundColor(.label)
-                }
-            }
+            SpaceACLView(isPublic: space.isPublic, acls: space.acls)
             if let description = space.description, !description.isEmpty {
                 Text(description)
                     .withFont(.bodyLarge)
@@ -74,4 +51,72 @@ struct SpaceHeaderView: View {
         .background(Color.DefaultBackground)
 
     }
+}
+
+struct SpaceACLView: View {
+    let isPublic: Bool
+    let acls: [Space.Acl]
+
+    var owner: Space.Acl? {
+        acls.first(where: { $0.acl == .owner })
+    }
+
+    var secondACL: Space.Acl? {
+        print("yusuf \(acls.forEach { $0.profile.displayName})")
+        return acls.first(where: { $0.acl != .owner })
+    }
+
+    var countToShow: Int {
+        var count = acls.count
+        if let _ = owner {
+            count -= 1
+        }
+        if let _ = secondACL {
+            count -= 1
+        }
+        return count
+    }
+
+    var body: some View {
+        if let owner = owner?.profile {
+            if isPublic {
+                HStack(spacing: 12) {
+                    ProfileImageView(pictureURL: owner.pictureUrl, displayName: owner.displayName)
+                        .frame(width: 32, height: 32)
+                    Text(owner.displayName)
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.label)
+                }
+            } else {
+                HStack(spacing: 12) {
+                    HStack(spacing: -6) {
+                        ProfileImageView(
+                            pictureURL: owner.pictureUrl, displayName: owner.displayName
+                        )
+                        .frame(width: 32, height: 32)
+                        if let secondACL = secondACL?.profile {
+                            ProfileImageView(
+                                pictureURL: secondACL.pictureUrl,
+                                displayName: secondACL.displayName
+                            )
+                            .frame(width: 32, height: 32)
+                        }
+                        if countToShow > 0 {
+                            Text("\(countToShow)")
+                                .withFont(.labelMedium)
+                                .foregroundColor(.label)
+                                .frame(width: 32, height: 32)
+                                .background(Color.brand.polar)
+                                .clipShape(Circle())
+                        }
+                    }
+                    Text(acls.map { $0.profile.displayName }.joined(separator: ", "))
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.label)
+                        .lineLimit(1)
+                }
+            }
+        }
+    }
+
 }
