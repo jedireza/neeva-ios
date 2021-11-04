@@ -44,7 +44,7 @@ struct CompactNeevaMenuView: View {
                 .accessibilityIdentifier("NeevaMenu.Settings")
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
-                CompactNeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft) {
+                CompactNeevaMenuButtonView(label: "Support", symbol: .bubbleLeft) {
                     self.menuAction(.feedback)
                 }
                 .accessibilityIdentifier("NeevaMenu.Feedback")

@@ -193,7 +193,7 @@ public struct SendFeedbackView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("Send Feedback").font(.headline)
+                    Text("Contact Us").font(.headline)
                 }
                 ToolbarItem(placement: .cancellationAction) {
                     Button(
