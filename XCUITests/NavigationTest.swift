@@ -276,12 +276,12 @@ class NavigationTest: BaseTestCase {
     // Smoketest
     func testVerifyNeevaMenu() {
         app.buttons["Neeva Menu"].tap(force: true)
-        waitForExistence(app.buttons["Feedback"])
+        waitForExistence(app.buttons["Support"])
 
         XCTAssertTrue(app.buttons["Home"].exists)
         XCTAssertTrue(app.buttons["Spaces"].exists)
         XCTAssertTrue(app.buttons["Settings"].exists)
-        XCTAssertTrue(app.buttons["Feedback"].exists)
+        XCTAssertTrue(app.buttons["Support"].exists)
         XCTAssertTrue(app.buttons["History"].exists)
         XCTAssertTrue(app.buttons["Downloads"].exists)
     }

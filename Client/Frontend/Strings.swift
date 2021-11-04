@@ -2672,10 +2672,6 @@ extension String {
         "Terms", comment: "Terms settings section title")
     public static let AppSettingsShowTour = MZLocalizedString(
         "Show Tour", comment: "Show the on-boarding screen again from the settings")
-    public static let AppSettingsSendFeedback = MZLocalizedString(
-        "Send Feedback",
-        comment:
-            "Menu item in settings used to open input.mozilla.org where people can submit feedback")
     public static let AppSettingsHelp = MZLocalizedString(
         "Help",
         comment:

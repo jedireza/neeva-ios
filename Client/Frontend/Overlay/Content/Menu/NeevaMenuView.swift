@@ -77,7 +77,7 @@ struct NeevaMenuView: View {
                         showPopover: $openFeedbackPrompt,
                         popoverSize: CGSize(width: 290, height: 120),
                         content: {
-                            NeevaMenuButtonView(label: "Feedback", symbol: .bubbleLeft) {
+                            NeevaMenuButtonView(label: "Support", symbol: .bubbleLeft) {
                                 self.menuAction(.feedback)
                             }
                             .accessibilityIdentifier("NeevaMenu.Feedback")
