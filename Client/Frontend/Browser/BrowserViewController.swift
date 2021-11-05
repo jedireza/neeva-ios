@@ -1712,7 +1712,6 @@ extension BrowserViewController {
         }
         present(introViewController, animated: true)
     }
-
 }
 
 extension BrowserViewController: ContextMenuHelperDelegate {

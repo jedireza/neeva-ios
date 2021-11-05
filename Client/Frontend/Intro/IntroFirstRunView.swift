@@ -20,25 +20,33 @@ struct FirstRunHomePage: View {
                     logFirstRunSkipToBrowser()
                 }
             )
-            Spacer()
-            VStack(alignment: .leading) {
-                Image("neeva-letter-only")
+
+            GeometryReader { geom in
                 VStack(alignment: .leading) {
-                    Text("Welcome to")
-                    Text("Neeva, the only")
-                    Text("ad-free, private")
-                    Text("search engine")
+                    Spacer()
+
+                    Image("neeva-letter-only")
+
+                    VStack(alignment: .leading) {
+                        Text("Welcome to")
+                        Text("Neeva, the only")
+                        Text("ad-free, private")
+                        Text("search engine")
+                    }
+                    .font(
+                        .roobert(
+                            .light, size: geom.size.width <= smallSizeScreen ? 32 : 42)
+                    )
+                    .foregroundColor(Color.ui.gray20)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 20)
+
+                    Spacer()
                 }
-                .font(
-                    .roobert(.light, size: UIScreen.main.bounds.width <= smallSizeScreen ? 32 : 42)
-                )
-                .foregroundColor(Color.ui.gray20)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.top, 20)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Welcome to Neeva, the only ad-free, private search engine")
+                .accessibilityAddTraits(.isHeader)
             }
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Welcome to Neeva, the only ad-free, private search engine")
-            .accessibilityAddTraits(.isHeader)
 
             VStack {
                 SignUpWithAppleButton(
