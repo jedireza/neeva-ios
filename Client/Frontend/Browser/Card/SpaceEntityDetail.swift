@@ -86,7 +86,7 @@ struct SpaceEntityDetailView: View {
     var body: some View {
         VStack(spacing: 0) {
             if index > 0 {
-                Color.TrayBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
+                Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
                 Spacer(minLength: 0)
             }
 

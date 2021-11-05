@@ -62,7 +62,6 @@ struct SpaceACLView: View {
     }
 
     var secondACL: Space.Acl? {
-        print("yusuf \(acls.forEach { $0.profile.displayName})")
         return acls.first(where: { $0.acl != .owner })
     }
 

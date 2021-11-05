@@ -34,6 +34,7 @@ where
     @State private var newTitle: String = ""
     @State private var shareTargetView: UIView!
     @State private var showConfirmDeleteAlert = false
+    @State private var headerVisible = true
 
     @ObservedObject var primitive: Details
     var dismissWithAnimation: () -> Void
@@ -62,11 +63,15 @@ where
         spacesModel.detailedSpace != nil ? true : false
     }
 
+    var ownerName: String? {
+        space?.acls.first(where: { $0.acl == .owner })?.profile.displayName
+    }
+
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
                 topBar
-                Color.TrayBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
+                Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
                 if tabGroupCardModel.detailedTabGroup != nil {
                     tabGroupGrid
 
@@ -146,14 +151,20 @@ where
                     }
                 },
                 label: {
-                    Label(
-                        title: {
-                            Text("Add Item")
-                                .withFont(.labelMedium)
-                                .foregroundColor(Color.label)
-                        },
-                        icon: { Image(systemName: "plus.square") }
-                    )
+                    if !headerVisible {
+                        Label(
+                            title: {
+                                Text("Add Item")
+                                    .withFont(.labelMedium)
+                                    .foregroundColor(Color.label)
+                            },
+                            icon: { Image(systemName: "plus.square") }
+                        )
+                    } else {
+                        Image(systemName: "plus")
+                            .foregroundColor(.label)
+                            .tapTargetFrame()
+                    }
                 }
             )
         }
@@ -262,7 +273,7 @@ where
         }
     }
 
-    @ViewBuilder var descriptionToggle: some View {
+    var descriptionToggle: some View {
         Toggle(isOn: $showDescriptions) {
             Text("Show Descriptions")
                 .withFont(.labelMedium)
@@ -270,13 +281,28 @@ where
         }
     }
 
+    var layoutButton: some View {
+        Button(
+            action: { showDescriptions.toggle() },
+            label: {
+                Symbol(
+                    decorative: showDescriptions
+                        ? .rectangleArrowtriangle2Inward : .rectangleArrowtriangle2Outward
+                )
+                .foregroundColor(Color.label)
+                .tapTargetFrame()
+            })
+    }
+
     @ViewBuilder var menuButton: some View {
         Menu(
             content: {
                 deleteButton
-                descriptionToggle
                 editButton
-                addButton
+                if !headerVisible {
+                    addButton
+                    descriptionToggle
+                }
                 webUIButton
             },
             label: {
@@ -335,20 +361,41 @@ where
                                     tabGroupCardModel.manager.cleanUpTabGroupNames()
                                 }
                             }
+                            editMode = .inactive
                         }
                     )
                     .lineLimit(1)
                     .foregroundColor(Color.label)
-                    Color.ui.adaptive.separator
+                    Color.label
                         .frame(height: 1)
                 }
             } else {
-                Text(primitive.title)
-                    .withFont(.labelLarge)
-                    .foregroundColor(Color.label)
+                if let ownerName = ownerName {
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(primitive.title)
+                            .withFont(.headingSmall)
+                            .foregroundColor(Color.label)
+                        Text(ownerName)
+                            .withFont(.bodyXSmall)
+                            .foregroundColor(Color.secondaryLabel)
+                    }
+                    .opacity(headerVisible ? 0 : 1)
+                    .animation(.easeInOut)
+                } else {
+                    Text(primitive.title)
+                        .withFont(.headingMedium)
+                        .foregroundColor(Color.label)
+                        .opacity(headerVisible ? 0 : 1)
+                        .animation(.easeInOut)
+                }
+
             }
             Spacer()
             if space != nil {
+                if headerVisible && editMode != .active {
+                    addButton
+                    layoutButton
+                }
                 shareButton
                 menuButton
             } else {
@@ -401,6 +448,12 @@ where
                             trailing: 0)
                     )
                     .modifier(ListSeparatorModifier())
+                    .onAppear {
+                        headerVisible = true
+                    }
+                    .onDisappear {
+                        headerVisible = false
+                    }
                 ForEach(primitive.allDetails, id: \.id) { details in
                     if let entity = details.manager.get(for: details.id) {
                         if let url = entity.primitiveUrl,
@@ -456,7 +509,7 @@ where
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.TrayBackground)
+                                .background(Color.secondaryBackground)
                                 .listRowInsets(
                                     EdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 0)
                                 )
