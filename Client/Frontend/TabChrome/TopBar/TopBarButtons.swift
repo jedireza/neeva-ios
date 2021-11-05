@@ -114,6 +114,7 @@ struct TopBarOverflowMenuButton: View {
             weight: inTopBar ? .regular : .medium,
             action: {
                 presenting = true
+                chromeModel.hideZeroQuery()
             },
             onLongPress: {
                 onLongPress(targetButtonView)

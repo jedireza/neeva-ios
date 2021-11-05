@@ -63,7 +63,10 @@ struct TopBarView: View {
                 .layoutPriority(1)
                 if chrome.inlineToolbar {
                     TopBarNeevaMenuButton(
-                        onTap: didTapNeevaMenu, onNeevaMenuAction: onNeevaMenuAction)
+                        onTap: {
+                            chrome.hideZeroQuery()
+                            didTapNeevaMenu()
+                        }, onNeevaMenuAction: onNeevaMenuAction)
 
                     TabToolbarButtons.AddToSpace(
                         weight: .regular, action: { performTabToolbarAction(.addToSpace) }

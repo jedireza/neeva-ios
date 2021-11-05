@@ -53,8 +53,8 @@ extension BrowserViewController: ToolbarDelegate {
                         location: .tab
                     )
                 }
-                self.dismissVC()
 
+                self.dismissVC()
             case .longPressBackForward:
                 self.showBackForwardList()
             case .addToSpace:
@@ -116,6 +116,8 @@ extension BrowserViewController: ToolbarDelegate {
             case .share:
                 self.showShareSheet(buttonView: self.topBar.view)
             }
+
+            self.hideZeroQuery()
         }
     }
 

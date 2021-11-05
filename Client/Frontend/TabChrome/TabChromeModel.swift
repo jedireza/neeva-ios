@@ -98,4 +98,8 @@ class TabChromeModel: ObservableObject {
             isEditingLocation = value
         }
     }
+
+    func hideZeroQuery() {
+        SceneDelegate.getBVC(with: topBarDelegate?.tabManager.scene).hideZeroQuery()
+    }
 }

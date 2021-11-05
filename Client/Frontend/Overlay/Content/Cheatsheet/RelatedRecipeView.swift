@@ -20,7 +20,7 @@ struct RelatedRecipeItem: View {
                     .scaledToFill()
                     .frame(width: 175, height: 100, alignment: .center)
                     .clipped()
-                    .cornerRadius(11, corners:[.topLeft, .topRight])
+                    .cornerRadius(11, corners: [.topLeft, .topRight])
                 Text(recipe.title)
                     .withFont(.headingMedium)
                     .foregroundColor(Color.label)

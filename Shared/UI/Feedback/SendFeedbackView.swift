@@ -130,7 +130,8 @@ public struct SendFeedbackView: View {
                         }
 
                         if let query = query, requestId != nil,
-                            NeevaFeatureFlags[.feedbackQuery] {
+                            NeevaFeatureFlags[.feedbackQuery]
+                        {
                             GroupedCell {
                                 Toggle(isOn: $shareQuery) {
                                     VStack(alignment: .leading, spacing: 0) {
@@ -201,7 +202,9 @@ public struct SendFeedbackView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Send", action: sendFeedbackHandler)
-                        .disabled(feedbackText.isEmpty || (!NeevaUserInfo.shared.isUserLoggedIn && email.isEmpty))
+                        .disabled(
+                            feedbackText.isEmpty
+                                || (!NeevaUserInfo.shared.isUserLoggedIn && email.isEmpty))
                 }
             }
         }

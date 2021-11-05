@@ -135,7 +135,8 @@ class LocalNotitifications {
                 case .neevaPromo:
                     rescheduled = createNeevaPromoCallback()
                 case .neevaOnboardingProductSearch:
-                    rescheduled = createNeevaOnboardingCallback(notificationType: .neevaOnboardingProductSearch)
+                    rescheduled = createNeevaOnboardingCallback(
+                        notificationType: .neevaOnboardingProductSearch)
                 case .neevaOnboardingNewsProvider:
                     rescheduled = createNeevaOnboardingCallback(
                         notificationType: .neevaOnboardingNewsProvider)
