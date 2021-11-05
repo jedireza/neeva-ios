@@ -2,14 +2,17 @@
 * License, v. 2.0. If a copy of the MPL was not distributed with this
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Shared
+
 extension Tab {
     class ChangeUserAgent {
         // Track these in-memory only
         static var privateModeHostList = Set<String>()
 
         private static let file: URL = {
-            let root = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            return root.appendingPathComponent("changed-ua-set-of-hosts.xcarchive")
+            return FileManager.default.containerURL(
+                forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)!
+                .appendingPathComponent("changed-ua-set-of-hosts.xcarchive")
         }()
 
         private static var baseDomainList: Set<String> = {
