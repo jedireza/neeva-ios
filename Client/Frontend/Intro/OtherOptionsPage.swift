@@ -54,7 +54,7 @@ public struct EmailForm: View {
 
     public var body: some View {
         VStack {
-            TextField("Email", text: $email)
+            TextField(emailPlaceHolder(), text: $email)
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 12.0)
@@ -63,19 +63,11 @@ public struct EmailForm: View {
                 .disableAutocorrection(true)
                 .autocapitalization(.none)
                 .fixedSize(horizontal: false, vertical: true)
+                .background(Color.brand.white)
 
             if !onSignInMode {
-                TextField("First name (optional)", text: $firstname)
-                    .padding()
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12.0)
-                            .stroke(Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 1.0))
-                    )
-                    .disableAutocorrection(true)
-                    .fixedSize(horizontal: false, vertical: true)
-
                 VStack {
-                    SecureField("Password", text: $password)
+                    SecureField("Password (required)", text: $password)
                         .textContentType(.newPassword)
                         .padding()
                         .overlay(
@@ -86,6 +78,7 @@ public struct EmailForm: View {
                         .disableAutocorrection(true)
                         .autocapitalization(.none)
                         .fixedSize(horizontal: false, vertical: true)
+                        .background(Color.brand.white)
                         .onChange(of: password, perform: passwordOnChange)
 
                     if passwordStrength != .none {
@@ -138,6 +131,10 @@ public struct EmailForm: View {
                 .disabled(email.isEmpty)
             }
         }
+    }
+
+    func emailPlaceHolder() -> String {
+        return onSignInMode ? "Email" : "Email (required)"
     }
 
     func passwordOnChange(newValue: String) {
@@ -205,7 +202,7 @@ struct OtherOptionsPage: View {
                     )
 
                     if onSignInMode {
-                        Text("Log In")
+                        Text("Sign In")
                             .font(.roobert(.medium, size: 20))
                             .padding(.top, 20)
                             .padding(.bottom, 6)
