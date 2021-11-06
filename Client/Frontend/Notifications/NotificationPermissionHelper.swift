@@ -132,6 +132,24 @@ class NotificationPermissionHelper {
         }
     }
 
+    func deleteDeviceTokenFromServer() {
+        if let vendorID = UIDevice.current.identifierForVendor?.uuidString {
+            DeleteDeviceTokenIosMutation(
+                input: DeleteDeviceTokenInput(
+                    deviceId: vendorID
+                )
+            ).perform { result in
+                switch result {
+                case .success:
+                    break
+                case .failure(let error):
+                    log.error("Failed to delete device tokens \(error)")
+                    break
+                }
+            }
+        }
+    }
+
     func updatePermissionState() {
         UNUserNotificationCenter.current().getNotificationSettings { settings in
             switch settings.authorizationStatus {

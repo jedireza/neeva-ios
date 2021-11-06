@@ -1654,6 +1654,12 @@ extension BrowserViewController {
     private func showProperIntroVC(onDismiss: (() -> Void)? = nil, signInMode: Bool = false) {
         func setTokenAndOpenURL(token: String, url: URL) {
             NeevaUserInfo.shared.setLoginCookie(token)
+
+            if let notificationToken = Defaults[.notificationToken] {
+                NotificationPermissionHelper.shared
+                    .registerDeviceTokenWithServer(deviceToken: notificationToken)
+            }
+
             let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
             httpCookieStore.setCookie(NeevaConstants.loginCookie(for: token)) {
                 self.openURLInNewTab(url)
@@ -1694,6 +1700,13 @@ extension BrowserViewController {
                     setTokenAndOpenURL(token: token, url: NeevaConstants.verificationRequiredURL)
                 }
                 self.introViewController = nil
+            }
+
+            if NeevaUserInfo.shared.hasLoginCookie() {
+                if let notificationToken = Defaults[.notificationToken] {
+                    NotificationPermissionHelper.shared
+                        .registerDeviceTokenWithServer(deviceToken: notificationToken)
+                }
             }
         }
 
