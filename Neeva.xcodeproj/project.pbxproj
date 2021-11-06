@@ -216,7 +216,7 @@
 		669ACD62269CED070038C89C /* AppClip.app in Embed App Clips */ = {isa = PBXBuildFile; fileRef = 669ACD53269CED060038C89C /* AppClip.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
-		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		66A6A73626840376005425D0 /* NeevaIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* NeevaIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		66AC64B326E8324500D7BA83 /* SystemsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AC64B226E8324500D7BA83 /* SystemsHelper.swift */; };
 		66B379DB26DDAD1800087B04 /* FeedbackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665CE64726DDA7E70069EFDD /* FeedbackRequest.swift */; };
 		66B379DD26DDAD4400087B04 /* FeedbackHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */; };
@@ -339,6 +339,7 @@
 		BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC93EE852654E31300D1AA07 /* Color.xcassets */; };
 		BCA4D73127226E8000AE5A15 /* RelatedRecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */; };
 		BCA86A52270FEE6B00FC4DE8 /* RecipeCheatsheetStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */; };
+		BCB04A302736352E00D3B919 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCB04A2F2736352E00D3B919 /* Strings.swift */; };
 		BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
 		BCC138902656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
 		BCC138922656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
@@ -620,7 +621,6 @@
 		D3972BF41C22412B00035B87 /* TitleActivityItemProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3972BF21C22412B00035B87 /* TitleActivityItemProvider.swift */; };
 		D39FA16C1A83E17800EE869C /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D39FA16B1A83E17800EE869C /* CoreGraphics.framework */; };
 		D39FA1811A83E84900EE869C /* Global.swift in Sources */ = {isa = PBXBuildFile; fileRef = D39FA1801A83E84900EE869C /* Global.swift */; };
-		D3A14C221CB3145E00253BC6 /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = D35210E01CB2F16600FC5DCB /* Strings.swift */; };
 		D3A9949C1A3686BD008AD1AC /* BrowserViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A994951A3686BD008AD1AC /* BrowserViewController.swift */; };
 		D3A9949D1A3686BD008AD1AC /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3A994961A3686BD008AD1AC /* Tab.swift */; };
 		D3B6923F1B9F9A58004B87A4 /* FindInPageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3B6923E1B9F9A58004B87A4 /* FindInPageHelper.swift */; };
@@ -1052,7 +1052,7 @@
 				677F4D6C272B622C00332759 /* NeevaForSafariExtension.appex in Embed App Extensions */,
 				047F9B3224E1FE1F00CD7DF7 /* WidgetKitExtension.appex in Embed App Extensions */,
 				F84B22541A0920C600AAB793 /* ShareTo.appex in Embed App Extensions */,
-				66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */,
+				66A6A73626840376005425D0 /* NeevaIntent.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1277,7 +1277,7 @@
 		669ACD66269CED1D0038C89C /* AppClipDev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AppClipDev.entitlements; sourceTree = "<group>"; };
 		66A6A6D42683E632005425D0 /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
 		66A6A6DF2683E633005425D0 /* IntentsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IntentsUI.framework; path = System/Library/Frameworks/IntentsUI.framework; sourceTree = SDKROOT; };
-		66A6A71E26840376005425D0 /* ClientIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClientIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		66A6A71E26840376005425D0 /* NeevaIntent.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NeevaIntent.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		66A6A72126840376005425D0 /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
 		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		66AC64B226E8324500D7BA83 /* SystemsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemsHelper.swift; sourceTree = "<group>"; };
@@ -1414,6 +1414,8 @@
 		BC93EE852654E31300D1AA07 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
 		BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedRecipeView.swift; sourceTree = "<group>"; };
 		BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetStripView.swift; sourceTree = "<group>"; };
+		BCB04A2E273634DE00D3B919 /* Client-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Client-Bridging-Header.h"; sourceTree = "<group>"; };
+		BCB04A2F2736352E00D3B919 /* Strings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
 		BCC1388E2656CBDB0018D87D /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
 		BCC1389F2656CBE70018D87D /* nicons-500.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-500.ttf"; sourceTree = "<group>"; };
 		BCC138B02656CBF20018D87D /* nicons-600.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-600.ttf"; sourceTree = "<group>"; };
@@ -1664,7 +1666,6 @@
 		D343DCFD1C446BDB00D7EEE8 /* findPage.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = findPage.html; sourceTree = "<group>"; };
 		D34DC84D1A16C40C00D49B7B /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Profile.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		D34E33021BA793C2006135F0 /* loginForm.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = loginForm.html; sourceTree = "<group>"; };
-		D35210E01CB2F16600FC5DCB /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Strings.swift; path = ../Client/Frontend/Strings.swift; sourceTree = "<group>"; };
 		D36998881AD70A0A00650C6C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS.sdk/System/Library/Frameworks/IOKit.framework; sourceTree = DEVELOPER_DIR; };
 		D375A91F1AE71675001B30D5 /* ViewMemoryLeakTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewMemoryLeakTests.swift; sourceTree = "<group>"; };
 		D37DE2821CA2047500A5EC69 /* CertStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CertStore.swift; sourceTree = "<group>"; };
@@ -1699,7 +1700,6 @@
 		D3E171C11A841EAD00AB44CD /* KIFHelper.js */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.javascript; path = KIFHelper.js; sourceTree = "<group>"; };
 		D3FA77831A43B2CE0010CD32 /* OpenSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenSearch.swift; sourceTree = "<group>"; };
 		D595529725D1F5590040B30B /* WidgetIntents.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = WidgetIntents.intentdefinition; sourceTree = "<group>"; };
-		D81E377D2242FF61006AC72D /* Client-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Client-Bridging-Header.h"; path = "Client/Client-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		D8C75DE9207584C300BB8AD0 /* UIImageViewAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIImageViewAligned.h; path = ThirdParty/UIImageViewAligned/UIImageViewAligned.h; sourceTree = SOURCE_ROOT; };
 		D8C75DF2207584C300BB8AD0 /* UIImageViewAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIImageViewAligned.m; path = ThirdParty/UIImageViewAligned/UIImageViewAligned.m; sourceTree = SOURCE_ROOT; };
 		D8D33A7C1FBD080300A20A28 /* SnapKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapKitExtensions.swift; sourceTree = "<group>"; };
@@ -1849,8 +1849,8 @@
 		F0ACC19E25E8C2380024991B /* Neeva.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Neeva.entitlements; sourceTree = "<group>"; };
 		F35B8D2A1D6380EA008E3D61 /* SessionRestore.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = SessionRestore.html; sourceTree = "<group>"; };
 		F35B8D2C1D6383E9008E3D61 /* SessionRestoreHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SessionRestoreHelper.swift; sourceTree = "<group>"; };
-		F84B21BE1A090F8100AAB793 /* Client.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Client.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F84B21D31A090F8100AAB793 /* ClientTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClientTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F84B21BE1A090F8100AAB793 /* Neeva.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Neeva.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F84B21D31A090F8100AAB793 /* NeevaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NeevaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F84B21D81A090F8100AAB793 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F84B21D91A090F8100AAB793 /* ClientTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientTests.swift; sourceTree = "<group>"; };
 		F84B21E51A0910F600AAB793 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = AppDelegate.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
@@ -3421,7 +3421,6 @@
 				D02818601EF056C800240CAA /* SentryIntegration.swift */,
 				064741F8AE308A64808E6265 /* Shared.strings */,
 				9403451493EE3ADAAEFA2EB1 /* Storage.strings */,
-				D35210E01CB2F16600FC5DCB /* Strings.swift */,
 				E4E0BB161AFBC9E4008D6260 /* Supporting Files */,
 				C9C18DCE26558FF2004710CD /* SystemColors.swift */,
 				E650758E1E37F7AB006961AC /* SystemUtils.swift */,
@@ -3429,6 +3428,7 @@
 				C9C18E2426559457004710CD /* UI */,
 				E65075901E37F7AB006961AC /* UserAgent.swift */,
 				E65075911E37F7AB006961AC /* WeakList.swift */,
+				BCB04A2F2736352E00D3B919 /* Strings.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -3603,8 +3603,8 @@
 			isa = PBXGroup;
 			children = (
 				C9098F6026B0533200D2B5F4 /* Configuration */,
-				F84B21C01A090F8100AAB793 /* Client */,
-				F84B21D61A090F8100AAB793 /* ClientTests */,
+				F84B21C01A090F8100AAB793 /* Neeva */,
+				F84B21D61A090F8100AAB793 /* NeevaTests */,
 				EBB894E9219398E500EB91A0 /* content-blocker-lib-ios */,
 				F8708D1E1A0970990051AB07 /* Extensions */,
 				C8FBBD41261F81A6004490A9 /* Fonts */,
@@ -3630,8 +3630,8 @@
 		F84B21BF1A090F8100AAB793 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F84B21BE1A090F8100AAB793 /* Client.app */,
-				F84B21D31A090F8100AAB793 /* ClientTests.xctest */,
+				F84B21BE1A090F8100AAB793 /* Neeva.app */,
+				F84B21D31A090F8100AAB793 /* NeevaTests.xctest */,
 				F84B22491A0920C600AAB793 /* ShareTo.appex */,
 				D39FA15F1A83E0EC00EE869C /* UITests.xctest */,
 				288A2D861AB8B3260023ABC3 /* Shared.framework */,
@@ -3642,7 +3642,7 @@
 				3B43E3D01D95C48D00BBA9DB /* StoragePerfTests.xctest */,
 				047F9B2724E1FE1C00CD7DF7 /* WidgetKitExtension.appex */,
 				C9DF5696266A84A4009A2E6C /* ShareTo Preview Support.app */,
-				66A6A71E26840376005425D0 /* ClientIntent.appex */,
+				66A6A71E26840376005425D0 /* NeevaIntent.appex */,
 				669ACD53269CED060038C89C /* AppClip.app */,
 				661519D226A9C3A6008E2725 /* AppClipTests.xctest */,
 				66E25029270FDDB20085AA35 /* NeevaForSafari.app */,
@@ -3653,7 +3653,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		F84B21C01A090F8100AAB793 /* Client */ = {
+		F84B21C01A090F8100AAB793 /* Neeva */ = {
 			isa = PBXGroup;
 			children = (
 				F84B21E41A0910F600AAB793 /* Application */,
@@ -3667,10 +3667,10 @@
 				C9C18E6226559B9C004710CD /* Logging */,
 				E65075551E37F714006961AC /* Utils */,
 			);
-			path = Client;
+			path = Neeva;
 			sourceTree = "<group>";
 		};
-		F84B21D61A090F8100AAB793 /* ClientTests */ = {
+		F84B21D61A090F8100AAB793 /* NeevaTests */ = {
 			isa = PBXGroup;
 			children = (
 				4A5B0F2026AF9610009D1336 /* CardTests.swift */,
@@ -3701,7 +3701,7 @@
 				D3BA41671BD82F2200DA5457 /* XCTestCaseExtensions.swift */,
 				3B6F40171DC7849C00656CC6 /* ZeroQueryTests.swift */,
 			);
-			path = ClientTests;
+			path = NeevaTests;
 			sourceTree = "<group>";
 		};
 		F84B21D71A090F8100AAB793 /* Supporting Files */ = {
@@ -3718,7 +3718,6 @@
 		F84B21E41A0910F600AAB793 /* Application */ = {
 			isa = PBXGroup;
 			children = (
-				D81E377D2242FF61006AC72D /* Client-Bridging-Header.h */,
 				E6327A631BF6438E008D12E0 /* DebugSettingsBundleOptions.swift */,
 				E652F6F91BF66A79007FFDD6 /* Delegates */,
 				E4D6BEB81A0930EC00F538BD /* LaunchScreen.xib */,
@@ -3727,6 +3726,7 @@
 				7BEFC67F1BFF68C30059C952 /* QuickActions.swift */,
 				E6639F171BF11E17002D0853 /* Settings.bundle */,
 				E40FAB0B1A7ABB77009CB80D /* WebServer.swift */,
+				BCB04A2E273634DE00D3B919 /* Client-Bridging-Header.h */,
 			);
 			path = Application;
 			sourceTree = "<group>";
@@ -4028,9 +4028,9 @@
 			productReference = 669ACD53269CED060038C89C /* AppClip.app */;
 			productType = "com.apple.product-type.application.on-demand-install-capable";
 		};
-		66A6A71D26840376005425D0 /* ClientIntent */ = {
+		66A6A71D26840376005425D0 /* NeevaIntent */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 66A6A73A26840376005425D0 /* Build configuration list for PBXNativeTarget "ClientIntent" */;
+			buildConfigurationList = 66A6A73A26840376005425D0 /* Build configuration list for PBXNativeTarget "NeevaIntent" */;
 			buildPhases = (
 				66A6A71A26840376005425D0 /* Sources */,
 				66A6A71B26840376005425D0 /* Frameworks */,
@@ -4040,9 +4040,9 @@
 			);
 			dependencies = (
 			);
-			name = ClientIntent;
+			name = NeevaIntent;
 			productName = ClientIntent;
-			productReference = 66A6A71E26840376005425D0 /* ClientIntent.appex */;
+			productReference = 66A6A71E26840376005425D0 /* NeevaIntent.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		66E25028270FDDB20085AA35 /* NeevaForSafari */ = {
@@ -4177,9 +4177,9 @@
 			productReference = E6F9650C1B2F1CF20034B023 /* SharedTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		F84B21BD1A090F8100AAB793 /* Client */ = {
+		F84B21BD1A090F8100AAB793 /* Neeva */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F84B21DD1A090F8100AAB793 /* Build configuration list for PBXNativeTarget "Client" */;
+			buildConfigurationList = F84B21DD1A090F8100AAB793 /* Build configuration list for PBXNativeTarget "Neeva" */;
 			buildPhases = (
 				23BEA762251A93FE00A014BF /* ShellScript */,
 				7B604F8F1C494AAA006EEEC3 /* Copy Carthage Dependencies */,
@@ -4203,16 +4203,16 @@
 				66A6A73526840376005425D0 /* PBXTargetDependency */,
 				669ACD61269CED070038C89C /* PBXTargetDependency */,
 			);
-			name = Client;
+			name = Neeva;
 			packageProductDependencies = (
 			);
 			productName = Client;
-			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
+			productReference = F84B21BE1A090F8100AAB793 /* Neeva.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F84B21D21A090F8100AAB793 /* ClientTests */ = {
+		F84B21D21A090F8100AAB793 /* NeevaTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F84B21E01A090F8100AAB793 /* Build configuration list for PBXNativeTarget "ClientTests" */;
+			buildConfigurationList = F84B21E01A090F8100AAB793 /* Build configuration list for PBXNativeTarget "NeevaTests" */;
 			buildPhases = (
 				F84B21CF1A090F8100AAB793 /* Sources */,
 				F84B21D01A090F8100AAB793 /* Frameworks */,
@@ -4225,12 +4225,12 @@
 				7B9BF92F1E435DE400CB24F4 /* PBXTargetDependency */,
 				F84B21D51A090F8100AAB793 /* PBXTargetDependency */,
 			);
-			name = ClientTests;
+			name = NeevaTests;
 			packageProductDependencies = (
 				4A3D2997268993FE0082F293 /* ViewInspector */,
 			);
 			productName = ClientTests;
-			productReference = F84B21D31A090F8100AAB793 /* ClientTests.xctest */;
+			productReference = F84B21D31A090F8100AAB793 /* NeevaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		F84B22481A0920C600AAB793 /* ShareTo */ = {
@@ -4377,7 +4377,7 @@
 					};
 				};
 			};
-			buildConfigurationList = F84B21B91A090F8100AAB793 /* Build configuration list for PBXProject "Client" */;
+			buildConfigurationList = F84B21B91A090F8100AAB793 /* Build configuration list for PBXProject "Neeva" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -4399,14 +4399,14 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F84B21BD1A090F8100AAB793 /* Client */,
+				F84B21BD1A090F8100AAB793 /* Neeva */,
 				669ACD52269CED060038C89C /* AppClip */,
 				F84B22481A0920C600AAB793 /* ShareTo */,
 				047F9B2624E1FE1C00CD7DF7 /* WidgetKitExtension */,
-				66A6A71D26840376005425D0 /* ClientIntent */,
+				66A6A71D26840376005425D0 /* NeevaIntent */,
 				288A2D851AB8B3260023ABC3 /* Shared */,
 				2FCAE2191ABB51F800877008 /* Storage */,
-				F84B21D21A090F8100AAB793 /* ClientTests */,
+				F84B21D21A090F8100AAB793 /* NeevaTests */,
 				D39FA15E1A83E0EC00EE869C /* UITests */,
 				2FCAE2231ABB51F800877008 /* StorageTests */,
 				E6F9650B1B2F1CF20034B023 /* SharedTests */,
@@ -4836,6 +4836,7 @@
 				E65075BA1E37F7AB006961AC /* Prefs.swift in Sources */,
 				C9C18E4726559616004710CD /* MultilineTextField.swift in Sources */,
 				BC8EE02C271A3CBB00D6BE2A /* PreferredProviderRequest.swift in Sources */,
+				BCB04A302736352E00D3B919 /* Strings.swift in Sources */,
 				C9C18E5C265598EA004710CD /* QueryController.swift in Sources */,
 				C9C18E5726559874004710CD /* NeevaColors.swift in Sources */,
 				C9C18E58265598A0004710CD /* SpaceListItem.swift in Sources */,
@@ -4874,7 +4875,6 @@
 				C9C18E3F26559504004710CD /* API.swift in Sources */,
 				BC8EE030271AA2B200D6BE2A /* ProviderList.swift in Sources */,
 				BC07524626C324A3008B607A /* CheatsheetController.swift in Sources */,
-				D3A14C221CB3145E00253BC6 /* Strings.swift in Sources */,
 				C9F49CC6266FFB8200F3408A /* Environment.swift in Sources */,
 				E65075931E37F7AB006961AC /* AppConstants.swift in Sources */,
 				E65075B81E37F7AB006961AC /* NotificationConstants.swift in Sources */,
@@ -5550,7 +5550,7 @@
 		};
 		2FCAE2291ABB51F800877008 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F84B21BD1A090F8100AAB793 /* Client */;
+			target = F84B21BD1A090F8100AAB793 /* Neeva */;
 			targetProxy = 2FCAE2281ABB51F800877008 /* PBXContainerItemProxy */;
 		};
 		2FCAE23C1ABB520700877008 /* PBXTargetDependency */ = {
@@ -5560,12 +5560,12 @@
 		};
 		3B43E3D61D95C48D00BBA9DB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F84B21BD1A090F8100AAB793 /* Client */;
+			target = F84B21BD1A090F8100AAB793 /* Neeva */;
 			targetProxy = 3B43E3D51D95C48D00BBA9DB /* PBXContainerItemProxy */;
 		};
 		3BFE4B0D1D342FB900DDF53F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F84B21BD1A090F8100AAB793 /* Client */;
+			target = F84B21BD1A090F8100AAB793 /* Neeva */;
 			targetProxy = 3BFE4B0C1D342FB900DDF53F /* PBXContainerItemProxy */;
 		};
 		43118CDF251A9CAD00F24376 /* PBXTargetDependency */ = {
@@ -5590,7 +5590,7 @@
 		};
 		66A6A73526840376005425D0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 66A6A71D26840376005425D0 /* ClientIntent */;
+			target = 66A6A71D26840376005425D0 /* NeevaIntent */;
 			targetProxy = 66A6A73426840376005425D0 /* PBXContainerItemProxy */;
 		};
 		66E25047270FDDB30085AA35 /* PBXTargetDependency */ = {
@@ -5625,7 +5625,7 @@
 		};
 		D39FA1661A83E0EC00EE869C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F84B21BD1A090F8100AAB793 /* Client */;
+			target = F84B21BD1A090F8100AAB793 /* Neeva */;
 			targetProxy = D39FA1651A83E0EC00EE869C /* PBXContainerItemProxy */;
 		};
 		E6F965141B2F1CF20034B023 /* PBXTargetDependency */ = {
@@ -5635,7 +5635,7 @@
 		};
 		E6F9653A1B2F1D330034B023 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F84B21BD1A090F8100AAB793 /* Client */;
+			target = F84B21BD1A090F8100AAB793 /* Neeva */;
 			targetProxy = E63CD1B21B31B66400A63AFF /* PBXContainerItemProxy */;
 		};
 		F016AC0F25ED5F590007270F /* PBXTargetDependency */ = {
@@ -5650,7 +5650,7 @@
 		};
 		F84B21D51A090F8100AAB793 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F84B21BD1A090F8100AAB793 /* Client */;
+			target = F84B21BD1A090F8100AAB793 /* Neeva */;
 			targetProxy = F84B21D41A090F8100AAB793 /* PBXContainerItemProxy */;
 		};
 		F84B22521A0920C600AAB793 /* PBXTargetDependency */ = {
@@ -6550,7 +6550,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				INFOPLIST_FILE = UITests/Info.plist;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
@@ -6641,10 +6641,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Neeva/Entitlements/Neeva.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = A9735M6NPH;
-				INFOPLIST_FILE = Client/Info.plist;
+				INFOPLIST_FILE = Neeva/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -6652,11 +6653,11 @@
 				OTHER_SWIFT_FLAGS = "$(OTHER_SWIFT_FLAGS_common) -DMOZ_CHANNEL_NEEVA -DPROD";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(NEEVA_ROOT_BUNDLE_INDENTIFIER)";
 				PRODUCT_MODULE_NAME = Client;
-				PRODUCT_NAME = Client;
+				PRODUCT_NAME = Neeva;
 				PROVISIONING_PROFILE_SPECIFIER = "Neeva Browser";
 				SHARED_DEFS = "MOZ_TARGET_CLIENT $(inherited)";
 				SKIP_INSTALL = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Client/Client-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Neeva/Client-Bridging-Header.h";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
@@ -6734,11 +6735,11 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A9735M6NPH;
-				INFOPLIST_FILE = ClientTests/Info.plist;
-				PRODUCT_NAME = ClientTests;
+				INFOPLIST_FILE = NeevaTests/Info.plist;
+				PRODUCT_NAME = NeevaTests;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 			};
 			name = Release;
 		};
@@ -6754,7 +6755,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/UITests/UITests-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
@@ -6771,7 +6772,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/StorageTests/StorageTests-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 			};
 			name = Release;
 		};
@@ -6787,7 +6788,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Shared/Shared-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 			};
 			name = Release;
 		};
@@ -6817,7 +6818,7 @@
 				INFOPLIST_FILE = StoragePerfTests/Info.plist;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 			};
 			name = Release;
 		};
@@ -6909,11 +6910,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_Developer;
-				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaDev.entitlements;
+				CODE_SIGN_ENTITLEMENTS = Neeva/Entitlements/NeevaDev.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A9735M6NPH;
-				INFOPLIST_FILE = Client/Info.plist;
+				INFOPLIST_FILE = Neeva/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -6921,10 +6922,10 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(NEEVA_ROOT_BUNDLE_INDENTIFIER)";
 				PRODUCT_MODULE_NAME = Client;
-				PRODUCT_NAME = Client;
+				PRODUCT_NAME = Neeva;
 				SHARED_DEFS = "MOZ_TARGET_CLIENT $(inherited)";
 				SKIP_INSTALL = NO;
-				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Client/Client-Bridging-Header.h";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Neeva/Client-Bridging-Header.h";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
@@ -6990,11 +6991,11 @@
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A9735M6NPH;
-				INFOPLIST_FILE = ClientTests/Info.plist;
-				PRODUCT_NAME = ClientTests;
+				INFOPLIST_FILE = NeevaTests/Info.plist;
+				PRODUCT_NAME = NeevaTests;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 			};
 			name = Debug;
 		};
@@ -7010,7 +7011,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(SRCROOT)/UITests/UITests-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
@@ -7027,7 +7028,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/StorageTests/StorageTests-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 			};
 			name = Debug;
 		};
@@ -7043,7 +7044,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Shared/Shared-Bridging-Header.h";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 			};
 			name = Debug;
 		};
@@ -7067,7 +7068,7 @@
 			buildSettings = {
 				CODE_SIGN_ENTITLEMENTS = "";
 				INFOPLIST_FILE = StoragePerfTests/Info.plist;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Client.app/Client";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Neeva.app/Neeva";
 			};
 			name = Debug;
 		};
@@ -7146,7 +7147,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		66A6A73A26840376005425D0 /* Build configuration list for PBXNativeTarget "ClientIntent" */ = {
+		66A6A73A26840376005425D0 /* Build configuration list for PBXNativeTarget "NeevaIntent" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				66A6A73B26840376005425D0 /* Release */,
@@ -7228,7 +7229,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F84B21B91A090F8100AAB793 /* Build configuration list for PBXProject "Client" */ = {
+		F84B21B91A090F8100AAB793 /* Build configuration list for PBXProject "Neeva" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F0FF957125E03EFF00008BD2 /* Release */,
@@ -7237,7 +7238,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F84B21DD1A090F8100AAB793 /* Build configuration list for PBXNativeTarget "Client" */ = {
+		F84B21DD1A090F8100AAB793 /* Build configuration list for PBXNativeTarget "Neeva" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F0FF957225E03EFF00008BD2 /* Release */,
@@ -7246,7 +7247,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F84B21E01A090F8100AAB793 /* Build configuration list for PBXNativeTarget "ClientTests" */ = {
+		F84B21E01A090F8100AAB793 /* Build configuration list for PBXNativeTarget "NeevaTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F0FF957C25E03EFF00008BD2 /* Release */,

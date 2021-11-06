@@ -67,7 +67,7 @@ python-env/
 
 Carthage/
 # Required for Glean
-/Client/Generated
+/Neeva/Generated
 .venv/
 
 ThirdParty/google-breakpad
@@ -89,11 +89,11 @@ __pycache__
 
 # Node.js
 node_modules
-Client/Assets/AllFramesAtDocumentStart.js
-Client/Assets/AllFramesAtDocumentEnd.js
-Client/Assets/MainFrameAtDocumentStart.js
-Client/Assets/MainFrameAtDocumentEnd.js
-Client/Assets/*.js.LICENSE.txt
+Neeva/Assets/AllFramesAtDocumentStart.js
+Neeva/Assets/AllFramesAtDocumentEnd.js
+Neeva/Assets/MainFrameAtDocumentStart.js
+Neeva/Assets/MainFrameAtDocumentEnd.js
+Neeva/Assets/*.js.LICENSE.txt
 
 # L10n
 /firefoxios-l10n
