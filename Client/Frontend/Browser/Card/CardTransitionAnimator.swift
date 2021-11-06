@@ -73,8 +73,7 @@ struct CardTransitionAnimator: View {
             if let selectedCardDetails = selectedCardDetails {
                 Card(
                     details: selectedCardDetails, showsSelection: !gridModel.isHidden,
-                    animate: true,
-                    reportFrame: false
+                    animate: true, reportFrame: false
                 )
                 .runAfter(
                     toggling: gridModel.isHidden,

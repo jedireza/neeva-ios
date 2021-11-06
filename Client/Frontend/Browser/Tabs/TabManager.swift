@@ -434,6 +434,7 @@ class TabManager: NSObject, ObservableObject {
             }
 
             tab.parent = parent
+            tab.parent?.isPinned = (tab.parent?.parentUUID == nil)
             tab.parentUUID = parent.tabUUID
             tab.rootUUID = parent.rootUUID
             tabs.insert(tab, at: insertIndex)
