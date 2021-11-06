@@ -5,7 +5,7 @@
 import Storage
 import XCTest
 
-@testable import Client
+@testable import Neeva
 
 class CertTests: XCTestCase {
     func testCertStore() {

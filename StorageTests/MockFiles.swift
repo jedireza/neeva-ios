@@ -5,7 +5,7 @@
 import Foundation
 import XCTest
 
-@testable import Client
+@testable import Neeva
 @testable import Storage
 
 class MockFiles: FileAccessor {

@@ -5,7 +5,7 @@
 import Foundation
 import WebKit
 
-@testable import Client
+@testable import Neeva
 
 class SecurityTests: UITestBase {
     fileprivate var webRoot: String!

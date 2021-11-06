@@ -4,7 +4,7 @@
 
 import Foundation
 
-@testable import Client
+@testable import Neeva
 
 /* Disabled as we don't support logins
 class LoginInputTests: KIFTestCase {

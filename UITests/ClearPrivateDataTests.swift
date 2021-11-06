@@ -8,7 +8,7 @@ import Shared
 import UIKit
 import WebKit
 
-@testable import Client
+@testable import Neeva
 
 class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
     fileprivate var webRoot: String!

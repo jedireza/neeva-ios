@@ -4,7 +4,7 @@ import Defaults
 import Foundation
 import Storage
 
-@testable import Client
+@testable import Neeva
 
 // Needs to be in sync with Client Clearables.
 enum Clearable: String, CaseIterable {

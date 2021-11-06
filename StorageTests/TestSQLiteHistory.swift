@@ -6,7 +6,7 @@ import Foundation
 import Shared
 import XCTest
 
-@testable import Client
+@testable import Neeva
 @testable import Storage
 
 // Root Bookmarks folders

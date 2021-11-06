@@ -6,7 +6,7 @@ import Foundation
 import KIF
 import Storage
 
-@testable import Client
+@testable import Neeva
 
 class TrackingProtectionTests: UITestBase, TabEventHandler {
     private var webRoot: String!

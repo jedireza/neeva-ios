@@ -5,7 +5,7 @@
 import Foundation
 import Storage
 
-@testable import Client
+@testable import Neeva
 // Disabling due to failure in iOS 13/Xcode 11. Investigation requiered
 /*
 class ReopenLastTabTests: KIFTestCase {

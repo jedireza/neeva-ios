@@ -2,15 +2,15 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#ifndef Client_UITests_Bridging_Header_h
-#define Client_UITests_Bridging_Header_h
+#ifndef Neeva_UITests_Bridging_Header_h
+#define Neeva_UITests_Bridging_Header_h
 
 #import <KIF/KIF.h>
 #import <KIF/KIFUITestActor-IdentifierTests.h>
 #import <KIF/UIApplication-KIFAdditions.h>
 #import <KIF/UIAccessibilityElement-KIFAdditions.h>
 #import <KIF/UIWindow-KIFAdditions.h>
-#import "Client-Bridging-Header.h"
+#import "Neeva-Bridging-Header.h"
 #import "Storage-Bridging-Header.h"
 
 #endif

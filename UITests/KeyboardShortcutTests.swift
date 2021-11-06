@@ -2,7 +2,7 @@
 
 import Foundation
 
-@testable import Client
+@testable import Neeva
 
 class KeyboardShortcutTests: UITestBase {
     var bvc: BrowserViewController!

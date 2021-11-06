@@ -7,7 +7,7 @@ import Shared
 import XCGLogger
 import XCTest
 
-@testable import Client
+@testable import Neeva
 @testable import Storage
 
 private let log = XCGLogger.default

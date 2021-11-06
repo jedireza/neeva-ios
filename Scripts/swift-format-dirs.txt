@@ -1,5 +1,5 @@
-Client
-ClientTests
+Neeva
+NeevaTests
 Extensions
 Providers
 Shared

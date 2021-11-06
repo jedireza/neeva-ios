@@ -8,7 +8,7 @@ import Foundation
 import Shared
 import XCTest
 
-@testable import Client
+@testable import Neeva
 @testable import Storage
 
 let threeMonthsInMillis: UInt64 = 3 * 30 * 24 * 60 * 60 * 1000

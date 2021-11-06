@@ -7,7 +7,7 @@ import Shared
 import SwiftyJSON
 import WebKit
 
-@testable import Client
+@testable import Neeva
 
 class SessionRestoreTests: UITestBase {
     fileprivate var webRoot: String!

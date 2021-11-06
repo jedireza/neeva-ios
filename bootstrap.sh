@@ -39,7 +39,7 @@ if [ "$1" == "--importLocales" ]; then
       getLocale
   fi
 
-  ./ios-l10n-scripts/ios-l10n-tools --project-path Client.xcodeproj --l10n-project-path ./firefoxios-l10n --import
+  ./ios-l10n-scripts/ios-l10n-tools --project-path Neeva.xcodeproj --l10n-project-path ./firefoxios-l10n --import
   exit 0
 fi
 
