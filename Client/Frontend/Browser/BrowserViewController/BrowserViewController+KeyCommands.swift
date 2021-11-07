@@ -234,8 +234,10 @@ extension BrowserViewController {
         for press in presses {
             guard let key = press.key else { continue }
 
-            if key.modifierFlags == .command {
+            if key.characters == "" && key.modifierFlags == .command {
                 BrowserViewController.isCommandKeyPressed = true
+            } else {
+                BrowserViewController.isCommandKeyPressed = false
             }
         }
 
@@ -251,6 +253,6 @@ extension BrowserViewController {
             }
         }
 
-        super.pressesBegan(presses, with: event)
+        super.pressesEnded(presses, with: event)
     }
 }
