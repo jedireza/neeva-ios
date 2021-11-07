@@ -257,12 +257,15 @@ class ErrorPageHelper {
     }
 
     func loadPage(_ error: NSError, forUrl url: URL, inWebView webView: WKWebView) {
-        logger.error("Show error page with error: \(error), for URL: \(url), callstack: \(Thread.callStackSymbols)")
+        logger.error(
+            "Show error page with error: \(error), for URL: \(url), callstack: \(Thread.callStackSymbols)"
+        )
+
+        let webViewUrl = webView.url ?? url
 
         guard
             var components = URLComponents(
-                string: "\(InternalURL.baseUrl)/\(ErrorPageHandler.path)"),
-            let webViewUrl = webView.url
+                string: "\(InternalURL.baseUrl)/\(ErrorPageHandler.path)")
         else {
             return
         }

@@ -63,7 +63,7 @@ class SecurityTests: UITestBase {
         let webView = tester().waitForView(withAccessibilityLabel: "Web content") as! WKWebView
 
         // Make sure the URL doesn't change.
-        XCTAssert(webView.url == nil)
+        XCTAssertEqual(webView.url?.path, "/errorpage")
 
         // Also make sure the XSS alert doesn't appear.
         XCTAssertFalse(tester().viewExistsWithLabel("Local page loaded"))
