@@ -159,7 +159,25 @@ public struct SpaceEntityData {
             return nil
         }
 
-        return TechDoc(id: id, title: title)
+        let data = entity.sections?.first?.body?.data(using: String.Encoding.utf8)
+
+        var attributedString = NSMutableAttributedString(string: "")
+        if let data = data {
+            do {
+                attributedString = try NSMutableAttributedString(
+                    data: data,
+                    options: [
+                        NSAttributedString.DocumentReadingOptionKey.documentType: NSAttributedString
+                            .DocumentType.html,
+                        NSAttributedString.DocumentReadingOptionKey.characterEncoding: NSNumber(
+                            value: String.Encoding.utf8.rawValue),
+                    ], documentAttributes: nil)
+            } catch let _ as NSError {
+                Logger.browser.info("Already initialized to blank. Ignoring...")
+            }
+        }
+
+        return TechDoc(id: id, title: title, body: attributedString)
     }
 
     private static func productRating(from rating: EntityProductRating?) -> ProductRating? {

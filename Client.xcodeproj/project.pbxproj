@@ -165,6 +165,7 @@
 		4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */; };
 		4AD771AE2729C4C000B6769D /* PreviewEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AD2729C4C000B6769D /* PreviewEntities.swift */; };
 		4AD771B027322BCF00B6769D /* SpaceHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */; };
+		4AD771B42734F06900B6769D /* EntityInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771B32734F06800B6769D /* EntityInfoView.swift */; };
 		4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC541F265DA2CD00A210CE /* PromoCard.swift */; };
 		4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */; };
 		4ADF3F3F269627F100CB1B98 /* TrackingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */; };
@@ -1221,6 +1222,7 @@
 		4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModel.swift; sourceTree = "<group>"; };
 		4AD771AD2729C4C000B6769D /* PreviewEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEntities.swift; sourceTree = "<group>"; };
 		4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceHeaderView.swift; sourceTree = "<group>"; };
+		4AD771B32734F06800B6769D /* EntityInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityInfoView.swift; sourceTree = "<group>"; };
 		4ADC541F265DA2CD00A210CE /* PromoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromoCard.swift; sourceTree = "<group>"; };
 		4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitcherToolbarView.swift; sourceTree = "<group>"; };
 		4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingUITests.swift; sourceTree = "<group>"; };
@@ -2365,6 +2367,7 @@
 				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
 				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
 				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
+				4AD771B32734F06800B6769D /* EntityInfoView.swift */,
 				4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */,
 				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
 				C9655DEA26A09A2800925912 /* GridModel.swift */,
@@ -5453,6 +5456,7 @@
 				66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */,
 				59A68B280D62462B85CF57A4 /* HistoryPanel.swift in Sources */,
 				C965BDD6268E729000F02224 /* InternalSettingsView.swift in Sources */,
+				4AD771B42734F06900B6769D /* EntityInfoView.swift in Sources */,
 				C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */,
 				C9BED4C9266824D7001D9C77 /* FadingHorizontalScrollView.swift in Sources */,
 				D3972BF31C22412B00035B87 /* ShareExtensionHelper.swift in Sources */,

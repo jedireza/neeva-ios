@@ -50,7 +50,8 @@ public struct Recipe {
     public var preference: UserPreference?
 
     public init(
-        title: String, imageURL: String, totalTime: String?, prepTime: String?, yield: String?,
+        title: String, imageURL: String, totalTime: String?,
+        prepTime: String?, yield: String?,
         ingredients: [String]?, instructions: [String]?, recipeRating: RecipeRating?,
         reviews: [Review]?, preference: UserPreference
     ) {

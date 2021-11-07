@@ -42,6 +42,7 @@ public struct RichEntity {
 public struct TechDoc {
     public let id: String
     public let title: String
+    public let body: NSMutableAttributedString?
 }
 
 public struct ProductRating {

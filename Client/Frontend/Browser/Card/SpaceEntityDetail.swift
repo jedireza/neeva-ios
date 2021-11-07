@@ -33,7 +33,9 @@ struct SpaceEntityDetailView: View {
             return doc.title
         case .newsItem(let newsItem):
             return newsItem.title
-        default:
+        case .recipe(let recipe):
+            return recipe.title
+        case .webPage:
             return details.title
         }
     }
@@ -46,6 +48,10 @@ struct SpaceEntityDetailView: View {
             return product.description.first ?? details.description
         case .newsItem(let newsItem):
             return newsItem.formattedDatePublished.capitalized + " - " + newsItem.snippet
+        case .recipe(let _):
+            return nil
+        case .techDoc(let doc):
+            return doc.body?.string
         default:
             return details.description
         }
@@ -54,35 +60,6 @@ struct SpaceEntityDetailView: View {
     @State private var isPressed: Bool = false
     @State private var isPreviewActive: Bool = false
 
-    @ViewBuilder var product: some View {
-        if case .retailProduct(let product) = details.data.previewEntity {
-            HStack {
-                Text(product.formattedPrice)
-                    .withFont(.bodyMedium)
-                    .foregroundColor(.label)
-                if let productStars = product.ratingSummary?.productStars {
-                    Image(systemSymbol: .starFill)
-                        .renderingMode(.template)
-                        .foregroundColor(Color.brand.orange)
-                        .font(.system(size: 12))
-                        .padding(.trailing, -5)
-                        .padding(.bottom, 2)
-                    Text(String(round(productStars * 10) / 10.0))
-                        .withFont(.bodyMedium)
-                        .foregroundColor(.label)
-                }
-                if let numReviews = product.ratingSummary?.numReviews {
-                    if numReviews > 0 {
-                        Text("(\(String(numReviews)))")
-                            .withFont(.bodyMedium)
-                            .foregroundColor(.secondaryLabel)
-                            .padding(.leading, -3)
-                    }
-                }
-            }
-        }
-    }
-
     var body: some View {
         VStack(spacing: 0) {
             if index > 0 {
@@ -90,7 +67,7 @@ struct SpaceEntityDetailView: View {
                 Spacer(minLength: 0)
             }
 
-            let entityDetailView = Button {
+            Button {
                 onSelected()
                 ClientLogger.shared.logCounter(
                     .SpacesDetailEntityClicked,
@@ -118,9 +95,6 @@ struct SpaceEntityDetailView: View {
                                 .foregroundColor(Color.secondaryLabel)
                         }
                     }
-                } else if case .recipe(let recipe) = details.data.previewEntity {
-                    RecipeBanner(recipe: recipe)
-                        .frame(maxWidth: .infinity, alignment: .leading)
                 } else {
                     VStack(spacing: DetailsViewUX.ItemPadding) {
                         HStack(alignment: .top, spacing: DetailsViewUX.ItemPadding) {
@@ -143,22 +117,17 @@ struct SpaceEntityDetailView: View {
                                         .foregroundColor(.label)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
-                                if case .newsItem(let newsItem) = details.data.previewEntity {
-                                    HStack(spacing: 4) {
-                                        if let favicon = newsItem.faviconURL {
-                                            FaviconView(forFavicon: Favicon(url: favicon))
-                                                .frame(width: 12, height: 12)
-                                                .cornerRadius(4)
-                                        }
-                                        Text(newsItem.providerName)
-                                            .withFont(.bodySmall)
-                                            .foregroundColor(.label)
-                                    }
-                                } else {
-                                    URLDisplayView(url: details.data.url!)
-                                }
-                                product
-                                if let snippet = snippetToDisplay, !showDescriptions {
+                                if !showDescriptions, #available(iOS 15.0, *),
+                                    case .techDoc(let doc) = details.data.previewEntity,
+                                    let body = doc.body
+                                {
+                                    Text(AttributedString(body))
+                                        .withFont(.bodyLarge)
+                                        .lineLimit(3)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                        .foregroundColor(Color.secondaryLabel)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                } else if let snippet = snippetToDisplay, !showDescriptions {
                                     Text(snippet)
                                         .withFont(.bodyLarge)
                                         .lineLimit(3)
@@ -179,6 +148,14 @@ struct SpaceEntityDetailView: View {
                                     .foregroundColor(Color.secondaryLabel)
                                     .frame(maxWidth: .infinity, alignment: .leading)
                             }
+                        } else if showDescriptions, #available(iOS 15.0, *),
+                            case .techDoc(let doc) = details.data.previewEntity, let body = doc.body
+                        {
+                            Text(AttributedString(body))
+                                .withFont(.bodyLarge)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .foregroundColor(Color.secondaryLabel)
+                                .frame(maxWidth: .infinity, alignment: .leading)
                         } else if let snippet = snippetToDisplay, showDescriptions {
                             Text(snippet)
                                 .withFont(.bodyLarge)
@@ -192,41 +169,6 @@ struct SpaceEntityDetailView: View {
                 .padding(.vertical, 12)
                 .padding(.horizontal, 16)
                 .background(Color.DefaultBackground)
-
-            if let url = details.previewURL {
-                NavigationLink(
-                    isActive: $isPreviewActive,
-                    destination: {
-                        WebViewContainer(
-                            webView: {
-                                let wv = WKWebView(
-                                    frame: CGRect.zero,
-                                    configuration:
-                                        tabCardModel.manager.selectedTab?
-                                        .webView?.configuration
-                                        ?? WKWebViewConfiguration())
-                                wv.load(URLRequest(url: url))
-                                return wv
-                            }()
-                        ).cornerRadius(16).navigationBarHidden(true)
-                            .highPriorityGesture(
-                                TapGesture()
-                                    .onEnded({
-                                        isPreviewActive = false
-                                    }))
-                    }
-                ) {
-                    HStack {
-                        entityDetailView
-                        Text("Preview")
-                            .withFont(.bodyMedium)
-                            .foregroundColor(.secondaryLabel)
-                    }
-                }.padding(.trailing, 6)
-            } else {
-                entityDetailView
-            }
-
             Spacer(minLength: 0)
         }.scaleEffect(isPressed ? 0.95 : 1)
             .contextMenu(
