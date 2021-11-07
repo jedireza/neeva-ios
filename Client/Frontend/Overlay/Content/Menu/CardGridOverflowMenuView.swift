@@ -63,6 +63,7 @@ public struct CardGridOverflowMenuView: View {
                 }
                 .accessibilityIdentifier("CardGridOverflowMenu.CloseAllTabs")
                 .accentColor(.red)
+                .disabled(chromeModel.topBarDelegate?.tabManager.getTabCountForCurrentType() == 0)
             }
         }.padding(.bottom, -12)
     }
