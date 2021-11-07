@@ -1455,7 +1455,7 @@ extension BrowserViewController: TabDelegate {
 
 extension BrowserViewController: HistoryPanelDelegate {
     func libraryPanel(didSelectURL url: URL, visitType: VisitType) {
-        finishEditingAndSubmit(url, visitType: visitType, forTab: tabManager.selectedTab)
+        tabManager.createOrSwitchToTab(for: url)
         presentedViewController?.dismiss(animated: true, completion: nil)
     }
 }
