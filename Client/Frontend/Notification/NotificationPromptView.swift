@@ -40,7 +40,8 @@ struct NotificationPromptView: View {
                                 LocalNotitifications.scheduleAllNeevaOnboardingCallbackIfAuthorized()
                             }
                             hideOverlay()
-                        }, openSettingsIfNeeded: false)
+                        }, openSettingsIfNeeded: false, callSite: .tourFlow
+                    )
                     ClientLogger.shared.logCounter(.NotificationPromptEnable)
                 },
                 label: {

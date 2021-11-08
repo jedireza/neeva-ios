@@ -14,6 +14,12 @@ public enum NotificationPermissionStatus: Int {
     case denied = 2
 }
 
+public enum NotificationAuthorizationCallSite: String {
+    case tourFlow
+    case promoCard
+    case settings
+}
+
 class NotificationPermissionHelper {
     static let shared = NotificationPermissionHelper()
 
@@ -40,7 +46,8 @@ class NotificationPermissionHelper {
 
     func requestPermissionIfNeeded(
         completion: ((Bool) -> Void)? = nil,
-        openSettingsIfNeeded: Bool = false
+        openSettingsIfNeeded: Bool = false,
+        callSite: NotificationAuthorizationCallSite
     ) {
         isAuthorized { [self] authorized in
             guard !authorized else {
@@ -50,8 +57,18 @@ class NotificationPermissionHelper {
 
             didAlreadyRequestPermission { requested in
                 if !requested {
-                    ClientLogger.shared.logCounter(.ShowSystemNotificationPrompt)
-                    requestPermissionFromSystem(completion: completion)
+                    ClientLogger.shared.logCounter(
+                        .ShowSystemNotificationPrompt,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key:
+                                    LogConfig.NotificationAttribute
+                                    .notificationAuthorizationCallSite,
+                                value: callSite.rawValue
+                            )
+                        ]
+                    )
+                    requestPermissionFromSystem(completion: completion, callSite: callSite)
                 } else if openSettingsIfNeeded {
                     /// If we can't show the iOS system notification because the user denied our first request,
                     /// this will take them to system settings to enable notifications there.
@@ -64,7 +81,10 @@ class NotificationPermissionHelper {
 
     /// Shows the iOS system popup to request notification permission.
     /// Will only show **once**, and if the user has not denied permission already.
-    func requestPermissionFromSystem(completion: ((Bool) -> Void)? = nil) {
+    func requestPermissionFromSystem(
+        completion: ((Bool) -> Void)? = nil,
+        callSite: NotificationAuthorizationCallSite
+    ) {
         UNUserNotificationCenter.current()
             .requestAuthorization(options: [
                 .alert, .sound, .badge, .providesAppNotificationSettings,
@@ -74,7 +94,15 @@ class NotificationPermissionHelper {
                     ClientLogger.shared.logCounter(
                         granted
                             ? .AuthorizeSystemNotification
-                            : .DenySystemNotification
+                            : .DenySystemNotification,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key:
+                                    LogConfig.NotificationAttribute
+                                    .notificationAuthorizationCallSite,
+                                value: callSite.rawValue
+                            )
+                        ]
                     )
                 }
 

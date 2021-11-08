@@ -134,7 +134,8 @@ class ZeroQueryModel: ObservableObject {
                         completion: { authorized in
                             Defaults[.seenNotificationPermissionPromo] = true
                             self.promoCard = nil
-                        }
+                        },
+                        callSite: .promoCard
                     )
                 },
                 onClose: {

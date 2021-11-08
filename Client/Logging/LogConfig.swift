@@ -392,6 +392,7 @@ public struct LogConfig {
 
     public struct NotificationAttribute {
         public static let notificationPromptCallSite = "NotificationPromptCallSite"
+        public static let notificationAuthorizationCallSite = "notificationAuthorizationCallSite"
 
         public static let localNotificationTapAction = "LocalNotificationTapAction"
         public static let localNotificationScheduleCallSite = "localNotificationScheduledCallSite"

@@ -21,7 +21,7 @@ struct NotificationSettingsView: View {
                 if NotificationPermissionHelper.shared.permissionStatus != .authorized {
                     Button {
                         NotificationPermissionHelper.shared.requestPermissionIfNeeded(
-                            openSettingsIfNeeded: true)
+                            openSettingsIfNeeded: true, callSite: .settings)
                     } label: {
                         Text("Show Notification Auth Prompt")
                             .foregroundColor(Color.label)
