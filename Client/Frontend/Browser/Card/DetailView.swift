@@ -440,13 +440,6 @@ where
         NavigationView {
             List {
                 SpaceHeaderView(space: space!)
-                    .listRowInsets(
-                        EdgeInsets.init(
-                            top: 0,
-                            leading: 0,
-                            bottom: 0,
-                            trailing: 0)
-                    )
                     .modifier(ListSeparatorModifier())
                     .onAppear {
                         headerVisible = true
@@ -489,13 +482,6 @@ where
                                 },
                                 index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0
                             )
-                            .listRowInsets(
-                                EdgeInsets.init(
-                                    top: 0,
-                                    leading: 0,
-                                    bottom: 0,
-                                    trailing: 0)
-                            )
                             .modifier(ListSeparatorModifier())
                             .listRowBackground(Color.DefaultBackground)
                             .onDrag {
@@ -510,9 +496,6 @@ where
                                 .padding(.vertical, 12)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(Color.secondaryBackground)
-                                .listRowInsets(
-                                    EdgeInsets.init(top: 0, leading: 0, bottom: 0, trailing: 0)
-                                )
                                 .modifier(ListSeparatorModifier())
                                 .onDrag {
                                     NSItemProvider(id: details.id)
@@ -522,6 +505,14 @@ where
                 }
                 .onDelete(perform: canEdit ? onDelete : nil)
                 .onMove(perform: canEdit ? onMove : nil)
+                if let generators = space?.generators, !generators.isEmpty {
+                    SpaceGeneratorHeader(generators: generators)
+                        .modifier(ListSeparatorModifier())
+                    ForEach(generators, id: \.id) { generator in
+                        SpaceGeneratorView(generator: generator)
+                            .modifier(ListSeparatorModifier())
+                    }
+                }
             }
             .background(Color.groupedBackground)
             .modifier(ListStyleModifier())
@@ -635,11 +626,25 @@ struct ListSeparatorModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
             content
+                .listRowInsets(
+                    EdgeInsets.init(
+                        top: 0,
+                        leading: 0,
+                        bottom: 0,
+                        trailing: 0)
+                )
                 .listSectionSeparator(Visibility.hidden)
                 .listRowSeparator(Visibility.hidden)
                 .listSectionSeparatorTint(Color.TrayBackground)
         } else {
             content
+                .listRowInsets(
+                    EdgeInsets.init(
+                        top: 0,
+                        leading: 0,
+                        bottom: 0,
+                        trailing: 0)
+                )
         }
     }
 }

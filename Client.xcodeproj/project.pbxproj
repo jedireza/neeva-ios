@@ -166,6 +166,8 @@
 		4AD771AE2729C4C000B6769D /* PreviewEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AD2729C4C000B6769D /* PreviewEntities.swift */; };
 		4AD771B027322BCF00B6769D /* SpaceHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */; };
 		4AD771B42734F06900B6769D /* EntityInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771B32734F06800B6769D /* EntityInfoView.swift */; };
+		4AD771B62738697A00B6769D /* SpaceEntityData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771B52738697A00B6769D /* SpaceEntityData.swift */; };
+		4AD771B827387B1F00B6769D /* SpaceGeneratorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771B727387B1F00B6769D /* SpaceGeneratorView.swift */; };
 		4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADC541F265DA2CD00A210CE /* PromoCard.swift */; };
 		4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */; };
 		4ADF3F3F269627F100CB1B98 /* TrackingUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */; };
@@ -1222,6 +1224,8 @@
 		4AD771AD2729C4C000B6769D /* PreviewEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEntities.swift; sourceTree = "<group>"; };
 		4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceHeaderView.swift; sourceTree = "<group>"; };
 		4AD771B32734F06800B6769D /* EntityInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EntityInfoView.swift; sourceTree = "<group>"; };
+		4AD771B52738697A00B6769D /* SpaceEntityData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceEntityData.swift; sourceTree = "<group>"; };
+		4AD771B727387B1F00B6769D /* SpaceGeneratorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceGeneratorView.swift; sourceTree = "<group>"; };
 		4ADC541F265DA2CD00A210CE /* PromoCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PromoCard.swift; sourceTree = "<group>"; };
 		4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwitcherToolbarView.swift; sourceTree = "<group>"; };
 		4ADF3F3E269627F100CB1B98 /* TrackingUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingUITests.swift; sourceTree = "<group>"; };
@@ -2353,11 +2357,11 @@
 				4A9F65422710A49000B7C06E /* CustomThumbnails.swift */,
 				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
+				4A3D2992268583710082F293 /* CardModels.swift */,
 				4A88F97426630EFC007C203D /* CardDetails.swift */,
 				4A3D299026850CB60082F293 /* CardGrid.swift */,
 				4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */,
 				C9655DEE26A09A8600925912 /* CardListViews.swift */,
-				4A3D2992268583710082F293 /* CardModels.swift */,
 				C9655DEC26A09A6900925912 /* CardsContainer.swift */,
 				4A88F9722662AEAB007C203D /* CardStrip.swift */,
 				C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */,
@@ -2367,6 +2371,7 @@
 				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
 				4AD771B32734F06800B6769D /* EntityInfoView.swift */,
 				4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */,
+				4AD771B727387B1F00B6769D /* SpaceGeneratorView.swift */,
 				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
 				C9655DEA26A09A2800925912 /* GridModel.swift */,
 				4A9FCD4726F107BF00725E17 /* ProfileView.swift */,
@@ -3016,6 +3021,7 @@
 				C9C18E30265594DE004710CD /* Space.swift */,
 				4A15C8B826E1BFAB006CD097 /* SpaceRequest.swift */,
 				C9C18E31265594DE004710CD /* SpaceStore.swift */,
+				4AD771B52738697A00B6769D /* SpaceEntityData.swift */,
 				4AD771AD2729C4C000B6769D /* PreviewEntities.swift */,
 				C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */,
 				C9C18E2F265594DE004710CD /* TestSpaces.swift */,
@@ -4931,6 +4937,7 @@
 				EB912B9A22722B5F00DF585A /* Deferred.swift in Sources */,
 				E65075B71E37F7AB006961AC /* Logger.swift in Sources */,
 				E65075961E37F7AB006961AC /* AsyncReducer.swift in Sources */,
+				4AD771B62738697A00B6769D /* SpaceEntityData.swift in Sources */,
 				C9C18E4B265596AC004710CD /* Network.swift in Sources */,
 				C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */,
 				7B9BF91C1E43472E00CB24F4 /* JSONExtensions.swift in Sources */,
@@ -5328,6 +5335,7 @@
 				39A359E41BFCCE94006B9E87 /* UserActivityHandler.swift in Sources */,
 				67AA22F226C476F300F33D09 /* BrowserViewController+OverflowMenu.swift in Sources */,
 				67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */,
+				4AD771B827387B1F00B6769D /* SpaceGeneratorView.swift in Sources */,
 				E698FFDA1B4AADF40001F623 /* TabScrollController.swift in Sources */,
 				C9C18DDE26558FF3004710CD /* Action.swift in Sources */,
 				8AA97E4026AF36F300ACCCCF /* ZeroQueryCommonContextMenuActions.swift in Sources */,

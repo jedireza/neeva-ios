@@ -313,6 +313,15 @@ class SpaceCardModel: CardModel {
         }
     }
 
+    func deleteGeneratorFromSpace(spaceID: String, generatorID: String) {
+        DispatchQueue.main.async {
+            let request = DeleteGeneratorRequest(spaceID: spaceID, generatorID: generatorID)
+            request.$state.sink { state in
+                self.spaceNeedsRefresh = spaceID
+            }.cancel()
+        }
+    }
+
     func removeSpace(spaceID: String, isOwner: Bool) {
 
         if isOwner {
@@ -449,9 +458,14 @@ class TabGroupCardModel: CardModel {
                 manager.getAll().forEach { tabgroup in
                     tabgroup.children.forEach { tab in
                         tab.$screenshotUUID.sink { [weak self] (_) in
-                            if let index = self?.allDetails.firstIndex(where: {$0.id == tab.rootUUID} ), let tabGroup = manager.tabGroups[tab.rootUUID] {
-                                self?.allDetails[index] = TabGroupCardDetails(tabGroup: tabGroup, tabGroupManager: manager)
-                                createIsShowingDetailsSink(details: self?.allDetails[index], storeIn: &screenshotsSubscriptions)
+                            if let index = self?.allDetails.firstIndex(where: {
+                                $0.id == tab.rootUUID
+                            }), let tabGroup = manager.tabGroups[tab.rootUUID] {
+                                self?.allDetails[index] = TabGroupCardDetails(
+                                    tabGroup: tabGroup, tabGroupManager: manager)
+                                createIsShowingDetailsSink(
+                                    details: self?.allDetails[index],
+                                    storeIn: &screenshotsSubscriptions)
                             }
                         }.store(in: &screenshotsSubscriptions)
                     }
@@ -474,13 +488,15 @@ class TabGroupCardModel: CardModel {
         objectWillChange.send()
     }
 
-    func createIsShowingDetailsSink(details: TabGroupCardDetails?, storeIn: inout Set<AnyCancellable> ) {
+    func createIsShowingDetailsSink(
+        details: TabGroupCardDetails?, storeIn: inout Set<AnyCancellable>
+    ) {
         let id = details?.id
         details?.$isShowingDetails.sink { [weak self] showingDetails in
             if showingDetails {
                 withAnimation {
                     self?.detailedTabGroup =
-                    self?.allDetails.first(where: { $0.id == id })
+                        self?.allDetails.first(where: { $0.id == id })
                 }
             }
         }.store(in: &storeIn)

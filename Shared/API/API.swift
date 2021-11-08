@@ -4144,6 +4144,35 @@ public struct DeleteSpacePublicACLInput: GraphQLMapConvertible {
   }
 }
 
+public struct DeleteSpaceGeneratorInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - spaceId
+  ///   - generatorId
+  public init(spaceId: Swift.Optional<String?> = nil, generatorId: Swift.Optional<String?> = nil) {
+    graphQLMap = ["spaceID": spaceId, "generatorID": generatorId]
+  }
+
+  public var spaceId: Swift.Optional<String?> {
+    get {
+      return graphQLMap["spaceID"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "spaceID")
+    }
+  }
+
+  public var generatorId: Swift.Optional<String?> {
+    get {
+      return graphQLMap["generatorID"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "generatorID")
+    }
+  }
+}
+
 public struct AddSpaceCommentInput: GraphQLMapConvertible {
   public var graphQLMap: GraphQLMap
 
@@ -9876,6 +9905,11 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             __typename
             name
             description
+            generators {
+              __typename
+              id
+              params
+            }
             comments {
               __typename
               id
@@ -9995,7 +10029,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "f170e4e04f443c4720a77d53084da74ddd6e4005268f776f6dc4c61c716e1335"
+  public let operationIdentifier: String? = "79d2b66c3bb9236533813a0e8056bd2f744293eabb6cb068ca87c8472915603d"
 
   public var ids: [String]?
 
@@ -10220,6 +10254,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("name", type: .scalar(String.self)),
               GraphQLField("description", type: .scalar(String.self)),
+              GraphQLField("generators", type: .list(.nonNull(.object(Generator.selections)))),
               GraphQLField("comments", type: .list(.nonNull(.object(Comment.selections)))),
               GraphQLField("entities", type: .list(.nonNull(.object(Entity.selections)))),
             ]
@@ -10231,8 +10266,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(name: String? = nil, description: String? = nil, comments: [Comment]? = nil, entities: [Entity]? = nil) {
-            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "description": description, "comments": comments.flatMap { (value: [Comment]) -> [ResultMap] in value.map { (value: Comment) -> ResultMap in value.resultMap } }, "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
+          public init(name: String? = nil, description: String? = nil, generators: [Generator]? = nil, comments: [Comment]? = nil, entities: [Entity]? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "description": description, "generators": generators.flatMap { (value: [Generator]) -> [ResultMap] in value.map { (value: Generator) -> ResultMap in value.resultMap } }, "comments": comments.flatMap { (value: [Comment]) -> [ResultMap] in value.map { (value: Comment) -> ResultMap in value.resultMap } }, "entities": entities.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }])
           }
 
           public var __typename: String {
@@ -10262,6 +10297,15 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             }
           }
 
+          public var generators: [Generator]? {
+            get {
+              return (resultMap["generators"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Generator] in value.map { (value: ResultMap) -> Generator in Generator(unsafeResultMap: value) } }
+            }
+            set {
+              resultMap.updateValue(newValue.flatMap { (value: [Generator]) -> [ResultMap] in value.map { (value: Generator) -> ResultMap in value.resultMap } }, forKey: "generators")
+            }
+          }
+
           public var comments: [Comment]? {
             get {
               return (resultMap["comments"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Comment] in value.map { (value: ResultMap) -> Comment in Comment(unsafeResultMap: value) } }
@@ -10277,6 +10321,55 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue.flatMap { (value: [Entity]) -> [ResultMap] in value.map { (value: Entity) -> ResultMap in value.resultMap } }, forKey: "entities")
+            }
+          }
+
+          public struct Generator: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["SpaceGenerator"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("id", type: .nonNull(.scalar(String.self))),
+                GraphQLField("params", type: .scalar(String.self)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(id: String, params: String? = nil) {
+              self.init(unsafeResultMap: ["__typename": "SpaceGenerator", "id": id, "params": params])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            public var id: String {
+              get {
+                return resultMap["id"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "id")
+              }
+            }
+
+            public var params: String? {
+              get {
+                return resultMap["params"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "params")
+              }
             }
           }
 
@@ -12514,6 +12607,102 @@ public final class DeleteSpacePublicAclMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "deleteSpacePublicACL")
+      }
+    }
+  }
+}
+
+public final class DeleteSpaceGeneratorMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation DeleteSpaceGenerator($input: DeleteSpaceGeneratorInput!) {
+      deleteSpaceGenerator(input: $input) {
+        __typename
+        applied
+      }
+    }
+    """
+
+  public let operationName: String = "DeleteSpaceGenerator"
+
+  public let operationIdentifier: String? = "6fff312db30ee2b63f2e7c572e7a97904d99d983f962f32e665907014fcf58ee"
+
+  public var input: DeleteSpaceGeneratorInput
+
+  public init(input: DeleteSpaceGeneratorInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("deleteSpaceGenerator", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.object(DeleteSpaceGenerator.selections))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(deleteSpaceGenerator: DeleteSpaceGenerator) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "deleteSpaceGenerator": deleteSpaceGenerator.resultMap])
+    }
+
+    /// API to delete space generators from a space
+    public var deleteSpaceGenerator: DeleteSpaceGenerator {
+      get {
+        return DeleteSpaceGenerator(unsafeResultMap: resultMap["deleteSpaceGenerator"]! as! ResultMap)
+      }
+      set {
+        resultMap.updateValue(newValue.resultMap, forKey: "deleteSpaceGenerator")
+      }
+    }
+
+    public struct DeleteSpaceGenerator: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["DeleteSpaceGeneratorResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("applied", type: .scalar(Bool.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(applied: Bool? = nil) {
+        self.init(unsafeResultMap: ["__typename": "DeleteSpaceGeneratorResponse", "applied": applied])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var applied: Bool? {
+        get {
+          return resultMap["applied"] as? Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "applied")
+        }
       }
     }
   }

@@ -44,6 +44,14 @@ public class DeleteSpaceRequest: SpaceRequest<DeleteSpaceMutation> {
     }
 }
 
+public class DeleteGeneratorRequest: SpaceRequest<DeleteSpaceGeneratorMutation> {
+    public init(spaceID: String, generatorID: String) {
+        super.init(
+            mutation: DeleteSpaceGeneratorMutation(
+                input: DeleteSpaceGeneratorInput(spaceId: spaceID, generatorId: generatorID)))
+    }
+}
+
 public class UnfollowSpaceRequest: SpaceRequest<LeaveSpaceMutation> {
     public init(spaceID: String) {
         super.init(mutation: LeaveSpaceMutation(input: LeaveSpaceInput(id: spaceID)))

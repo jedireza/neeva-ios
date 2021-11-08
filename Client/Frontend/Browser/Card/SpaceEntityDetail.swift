@@ -98,11 +98,15 @@ struct SpaceEntityDetailView: View {
                 } else {
                     VStack(spacing: DetailsViewUX.ItemPadding) {
                         HStack(alignment: .top, spacing: DetailsViewUX.ItemPadding) {
-                            details.thumbnail.frame(
-                                width: DetailsViewUX.ThumbnailSize,
-                                height: DetailsViewUX.ThumbnailSize
-                            )
-                            .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                            if case .techDoc(let _) = details.data.previewEntity {
+                                EmptyView()
+                            } else {
+                                details.thumbnail.frame(
+                                    width: DetailsViewUX.ThumbnailSize,
+                                    height: DetailsViewUX.ThumbnailSize
+                                )
+                                .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                            }
                             VStack(alignment: .leading, spacing: DetailsViewUX.Padding) {
                                 HStack(spacing: 6) {
                                     if let socialURL = socialURL {
@@ -117,15 +121,19 @@ struct SpaceEntityDetailView: View {
                                         .foregroundColor(.label)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 }
+                                EntityInfoView(
+                                    url: details.data.url!,
+                                    entity: details.data.previewEntity
+                                )
                                 if !showDescriptions, #available(iOS 15.0, *),
                                     case .techDoc(let doc) = details.data.previewEntity,
                                     let body = doc.body
                                 {
                                     Text(AttributedString(body))
                                         .withFont(.bodyLarge)
+                                        .foregroundColor(Color.secondaryLabel)
                                         .lineLimit(3)
                                         .fixedSize(horizontal: false, vertical: true)
-                                        .foregroundColor(Color.secondaryLabel)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                 } else if let snippet = snippetToDisplay, !showDescriptions {
                                     Text(snippet)

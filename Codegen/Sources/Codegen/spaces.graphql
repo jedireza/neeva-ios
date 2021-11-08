@@ -59,6 +59,10 @@ query GetSpacesData($ids: [String!]) {
       space {
         name
         description
+        generators {
+          id
+          params
+        }
         comments {
           id
           profile {
@@ -198,6 +202,12 @@ mutation AddSpacePublicACL($input: AddSpacePublicACLInput!) {
 
 mutation DeleteSpacePublicACL($input: DeleteSpacePublicACLInput!) {
   deleteSpacePublicACL(input: $input)
+}
+
+mutation DeleteSpaceGenerator($input: DeleteSpaceGeneratorInput!) {
+  deleteSpaceGenerator(input: $input) {
+    applied
+  }
 }
 
 mutation AddSpaceComment($input: AddSpaceCommentInput!) {

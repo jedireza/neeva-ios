@@ -40,6 +40,7 @@ class SpacesDataQueryController: QueryController<
         var followers: Int?
         var entities: [SpaceEntityData]
         var comments: [SpaceCommentData]
+        var generators: [SpaceGeneratorData]
     }
 
     private var spaceIds: [String]
@@ -75,6 +76,20 @@ class SpacesDataQueryController: QueryController<
                             )
                         }
                     }
+                    var spaceGenerators: [SpaceGeneratorData] = []
+                    if let generators = space.space?.generators {
+                        for generator in generators {
+                            if let params = SpaceGeneratorData.params(from: generator.params ?? "")
+                            {
+                                spaceGenerators.append(
+                                    SpaceGeneratorData(
+                                        id: generator.id,
+                                        params: params
+                                    )
+                                )
+                            }
+                        }
+                    }
                     var spaceComments: [SpaceCommentData] = []
                     if let comments = space.space?.comments {
                         for comment in comments {
@@ -96,7 +111,8 @@ class SpacesDataQueryController: QueryController<
                         Space(
                             id: id, name: name, description: space.space?.description,
                             followers: space.stats?.followers,
-                            entities: spaceEntities, comments: spaceComments))
+                            entities: spaceEntities, comments: spaceComments,
+                            generators: spaceGenerators))
                 }
             }
         }
