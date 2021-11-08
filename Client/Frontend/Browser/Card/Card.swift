@@ -129,14 +129,6 @@ extension EnvironmentValues {
     }
 }
 
-struct CardFramePreferenceKey: PreferenceKey {
-    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
-        value = nextValue()
-    }
-    typealias Value = CGRect
-    static var defaultValue = CGRect.zero
-}
-
 /// A card that constrains itself to the default height and provided width.
 struct FittedCard<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
@@ -156,7 +148,6 @@ struct Card<Details>: View where Details: CardDetails {
     /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
     var animate = false
-    var reportFrame = true
 
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
     @EnvironmentObject var gridModel: GridModel
@@ -202,20 +193,6 @@ struct Card<Details>: View where Details: CardDetails {
                     .frame(width: max(0, geom.size.width), height: CardUX.ButtonSize)
                     .background(Color.clear).opacity(animate && gridModel.isHidden ? 0 : 1)
                 }
-            }
-            .preference(
-                key: CardFramePreferenceKey.self,
-                value: geom.frame(in: .named(gridModel.coordinateSpaceName))
-            )
-        }
-        .onPreferenceChange(CardFramePreferenceKey.self) { frame in
-            if reportFrame {
-                gridModel.cardFrames[details.id] = frame
-            }
-        }
-        .onDisappear {
-            if reportFrame {
-                gridModel.cardFrames[details.id] = nil
             }
         }
         .accessibilityElement(children: .ignore)

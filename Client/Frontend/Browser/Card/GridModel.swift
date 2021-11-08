@@ -22,10 +22,6 @@ class GridModel: ObservableObject {
     var buildRecentlyClosedTabsMenu: (() -> UIMenu)!
     var animateDetailTransitions = true
 
-    /// The cached location of all loaded `Card`s relative to `coordinateSpaceName`
-    @Published var cardFrames: [String: CGRect] = [:]
-    let coordinateSpaceName: String = UUID().uuidString
-
     @Published var needsScrollToSelectedTab: Int = 0
 
     func scrollToSelectedTab() {

@@ -40,19 +40,6 @@ struct CardGrid: View {
             count: columnCount)
     }
 
-    @ViewBuilder var transitionAnimator: some View {
-        if gridModel.animationThumbnailState != .hidden || gridModel.isHidden,
-            let geom = geom
-        {
-            CardTransitionAnimator(
-                cardSize: cardSize,
-                containerSize: geom.size,
-                safeAreaInsets: geom.safeAreaInsets,
-                topToolbar: topToolbar
-            )
-        }
-    }
-
     @ViewBuilder var cardContainerBackground: some View {
         if tabModel.isCardGridEmpty, case .tabs = gridModel.switcherState {
             EmptyCardGrid()
@@ -133,7 +120,6 @@ struct CardGrid: View {
                             ])
                         )
                         .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
-
                     }
 
                     if let tabGroupDetails = tabGroupModel.detailedTabGroup {
@@ -148,12 +134,7 @@ struct CardGrid: View {
                                 .bottom, .horizontal,
                             ])
                         )
-                        .transition(.flipFromRight)
-                        .opacity(gridModel.isHidden ? 0 : 1)
-                        .animation(
-                            gridModel.animationThumbnailState == .visibleForTrayShow
-                                ? nil : .easeInOut
-                        )
+                        .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
                         .environment(\.cardSize, cardSize)
                         .environment(\.columns, columns)
                     }
@@ -172,12 +153,36 @@ struct CardGrid: View {
                 self.geom = (geom.size, geom.safeAreaInsets)
             }
         }
-        .overlay(
-            transitionAnimator.coordinateSpace(name: gridModel.coordinateSpaceName), alignment: .top
-        )
         .ignoresSafeArea(.keyboard)
         .accessibilityAction(.escape) {
             gridModel.hideWithAnimation()
+        }
+        .runAfter(
+            toggling: gridModel.isHidden,
+            fromTrueToFalse: {  // Done with animation to show the CardGrid
+                gridModel.animationThumbnailState = .hidden
+                gridModel.animateDetailTransitions = true
+            },
+            fromFalseToTrue: {  // Done with animation to hide the CardGrid
+                gridModel.hideWithNoAnimation()
+                gridModel.animateDetailTransitions = false
+                tabGroupModel.detailedTabGroup = nil
+            }
+        )
+        .useEffect(deps: gridModel.animationThumbnailState) { _ in
+            // Ensure that the `Card` for the selected tab is visible. This way its
+            // `CardTransitionModifier` will kick-in and run the animation and
+            // toggle `gridModel.isHidden`. Update directly if there are no tabs.
+            if gridModel.animationThumbnailState != .hidden {
+                if tabModel.allDetails.isEmpty {
+                    withAnimation {
+                        gridModel.isHidden =
+                            (gridModel.animationThumbnailState == .visibleForTrayHidden)
+                    }
+                } else {
+                    gridModel.scrollToSelectedTab()
+                }
+            }
         }
     }
 }

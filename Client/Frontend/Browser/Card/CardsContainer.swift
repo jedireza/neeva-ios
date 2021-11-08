@@ -20,6 +20,7 @@ extension EnvironmentValues {
         set { self[ColumnsKey.self] = newValue }
     }
 }
+
 struct CardsContainer: View {
     @Default(.seenSpacesIntro) var seenSpacesIntro: Bool
 
@@ -33,6 +34,16 @@ struct CardsContainer: View {
     @State var generationId: Int = 0
 
     let columns: [GridItem]
+
+    var selectedCardID: String? {
+        if let details = tabModel.allDetailsWithExclusionList.first(where: \.isSelected) {
+            return details.id
+        }
+        if let details = tabGroupModel.allDetails.first(where: \.isSelected) {
+            return details.id
+        }
+        return nil
+    }
 
     var body: some View {
         ZStack {
@@ -57,36 +68,44 @@ struct CardsContainer: View {
                 .offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
                 .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
 
-                ScrollView(.vertical, showsIndicators: false) {
-                    ScrollViewReader { scrollProxy in
-                        LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                            TabCardsView()
-                                .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                                .environment(\.selectionCompletion) {
-                                    guard tabGroupModel.detailedTabGroup == nil else {
-                                        return
+                GeometryReader { scrollGeometry in
+                    ScrollView(.vertical, showsIndicators: false) {
+                        ScrollViewReader { scrollProxy in
+                            LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
+                                TabCardsView(containerGeometry: scrollGeometry)
+                                    .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                                    .environment(\.selectionCompletion) {
+                                        guard tabGroupModel.detailedTabGroup == nil else {
+                                            return
+                                        }
+                                        ClientLogger.shared.logCounter(
+                                            .SelectTab,
+                                            attributes: getLogCounterAttributesForTabs(
+                                                selectedTabIndex: tabModel.allDetails.firstIndex(
+                                                    where: {
+                                                        $0.id == tabModel.selectedTabID
+                                                    })))
+                                        gridModel.hideWithAnimation()
                                     }
-                                    ClientLogger.shared.logCounter(
-                                        .SelectTab,
-                                        attributes: getLogCounterAttributesForTabs(
-                                            selectedTabIndex: tabModel.allDetails.index(where: {
-                                                $0.id == tabModel.selectedTabID
-                                            })))
-                                    gridModel.hideWithAnimation()
+                            }
+                            .padding(.vertical, CardGridUX.GridSpacing)
+                            .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
+                                if let selectedCardID = selectedCardID {
+                                    scrollProxy.scrollTo(selectedCardID)
                                 }
-                        }
-                        .padding(.vertical, CardGridUX.GridSpacing)
-                        .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
-                            scrollProxy.scrollTo(tabModel.selectedTabID)
+                            }
                         }
                     }
+                    .environment(\.columns, columns)
+                    .offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
+                    .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+                    .onAppear {
+                        gridModel.scrollToSelectedTab()
+                    }
                 }
-                .environment(\.columns, columns)
-                .offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
-                .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
-                .onAppear {
-                    gridModel.scrollToSelectedTab()
-                }
+                // So that in landscape mode `scrollGeometry` includes the safe area, which is
+                // needed by the `CardTransitionModifier`.
+                .ignoresSafeArea(edges: [.bottom])
             }
         }
         .id(generationId)

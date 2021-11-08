@@ -47,7 +47,6 @@ class Tab: NSObject, ObservableObject {
 
     var consecutiveCrashes: UInt = 0
 
-    // Setting defualt page as topsites
     var tabUUID: String = UUID().uuidString
 
     // To check if current URL is the starting page i.e. either blank page or internal page like topsites
@@ -166,6 +165,7 @@ class Tab: NSObject, ObservableObject {
     var parentUUID: String? = nil
     var parentSpaceID: String? = nil
 
+    // All tabs with the same `rootUUID` are considered part of the same group.
     var rootUUID: String = UUID().uuidString
 
     fileprivate var contentScriptManager = TabContentScriptManager()

@@ -3,18 +3,6 @@
 import Shared
 import SwiftUI
 
-struct HideSelectedForTransition<Details: CardDetails>: ViewModifier {
-    let details: Details
-
-    @EnvironmentObject private var gridModel: GridModel
-
-    func body(content: Content) -> some View {
-        content
-            .opacity(details.isSelected && gridModel.animationThumbnailState != .hidden ? 0 : 1)
-            .animation(nil)
-    }
-}
-
 struct SpaceCardsView: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
     var body: some View {
@@ -29,6 +17,8 @@ struct TabCardsView: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
 
+    let containerGeometry: GeometryProxy
+
     var body: some View {
         Group {
             ForEach(
@@ -39,18 +29,23 @@ struct TabCardsView: View {
                 }, id: \.id
             ) { details in
                 if let rootID = details.manager.get(for: details.id)?.rootUUID,
-                    tabGroupModel.allDetails.contains { $0.id == rootID }
+                    let groupDetails = tabGroupModel.allDetails.first { $0.id == rootID }
                 {
-                    FittedCard(details: (tabGroupModel.allDetails.first { $0.id == rootID })!)
-                        .modifier(HideSelectedForTransition(details: details))
-                        .id(details.id)
+                    FittedCard(details: groupDetails)
+                        .modifier(
+                            CardTransitionModifier(
+                                details: groupDetails, containerGeometry: containerGeometry)
+                        )
+                        .id(groupDetails.id)
                         .environment(\.selectionCompletion) {
                             var attributes = EnvironmentHelper.shared.getAttributes()
 
                             attributes.append(
                                 ClientLogCounterAttribute(
                                     key: LogConfig.TabGroupAttribute.numTabsInTabGroup,
-                                    value: String(tabGroupModel.manager.get(for: details.id)?.children.count ?? 0)
+                                    value: String(
+                                        tabGroupModel.manager.get(for: details.id)?.children.count
+                                            ?? 0)
                                 )
                             )
 
@@ -58,7 +53,10 @@ struct TabCardsView: View {
                         }
                 } else {
                     FittedCard(details: details)
-                        .modifier(HideSelectedForTransition(details: details))
+                        .modifier(
+                            CardTransitionModifier(
+                                details: details, containerGeometry: containerGeometry)
+                        )
                         .id(details.id)
                 }
             }

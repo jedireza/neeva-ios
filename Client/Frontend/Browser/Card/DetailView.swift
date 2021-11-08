@@ -29,6 +29,8 @@ where
     @Environment(\.onOpenURL) var onOpenURL
     @Environment(\.shareURL) var shareURL
     @Environment(\.columns) var gridColumns
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var editMode = EditMode.inactive
     @State private var shareMenuPresented = false
     @State private var newTitle: String = ""
@@ -39,6 +41,10 @@ where
     @ObservedObject var primitive: Details
     var dismissWithAnimation: () -> Void
     @State var selectedTabIDs: [String] = []
+
+    var topToolbar: Bool {
+        verticalSizeClass == .compact || horizontalSizeClass == .regular
+    }
 
     var space: Space? {
         primitive.manager.get(for: primitive.id) as? Space
@@ -552,49 +558,71 @@ where
         }
     }
 
+    func tabSelectButtonOverlay(details: TabCardDetails) -> some View {
+        Group {
+            if editMode == .active {
+                Button(action: {
+                    if let index = selectedTabIDs.firstIndex(where: { $0 == details.id }) {
+                        selectedTabIDs.remove(at: index)
+                    } else {
+                        selectedTabIDs.append(details.id)
+                    }
+                }) {
+                    Image(
+                        systemSymbol: selectedTabIDs.contains(details.id)
+                            ? .checkmarkCircleFill : .circle
+                    )
+                    .resizable().renderingMode(.template)
+                    .foregroundColor(
+                        selectedTabIDs.contains(details.id) ? .ui.adaptive.blue : .tertiaryLabel
+                    )
+                    .padding(2)
+                    .frame(width: 24, height: 24)
+                    .background(Color(UIColor.systemGray6))
+                    .clipShape(Circle())
+                    .padding(6)
+                }
+            }
+        }
+    }
+
     var tabGroupGrid: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            ScrollViewReader { scrollProxy in
-                LazyVGrid(columns: gridColumns, spacing: CardGridUX.GridSpacing) {
-                    ForEach(primitive.allDetails, id: \.id) { details in
-                        ZStack(alignment: .topTrailing) {
+        GeometryReader { scrollGeometry in
+            ScrollView(.vertical, showsIndicators: false) {
+                ScrollViewReader { scrollProxy in
+                    LazyVGrid(columns: gridColumns, spacing: CardGridUX.GridSpacing) {
+                        ForEach(tabGroupDetail!.allDetails, id: \.id) { details in
                             FittedCard(details: details)
-                                .modifier(HideSelectedForTransition(details: details))
+                                .modifier(
+                                    CardTransitionModifier(
+                                        details: details, containerGeometry: scrollGeometry,
+                                        extraBottomPadding: topToolbar
+                                            ? 0 : UIConstants.ToolbarHeight)
+                                )
                                 .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                                 .environment(\.selectionCompletion) {
                                     ClientLogger.shared.logCounter(.tabInTabGroupClicked)
                                     gridModel.hideWithAnimation()
                                 }
-                            if editMode == .active {
-                                Button(action: {
-                                    if let index = selectedTabIDs.firstIndex { $0 == details.id } {
-                                        selectedTabIDs.remove(at: index)
-                                    } else {
-                                        selectedTabIDs.append(details.id)
-                                    }
-                                }) {
-                                    Image(
-                                        systemSymbol:
-                                            selectedTabIDs.contains(details.id)
-                                            ? .checkmarkCircleFill : .circle
-                                    ).resizable().renderingMode(.template)
-                                        .foregroundColor(
-                                            selectedTabIDs.contains(details.id)
-                                                ? .ui.adaptive.blue : .tertiaryLabel
-                                        )
-                                        .padding(2)
-                                        .frame(width: 24, height: 24)
-                                        .background(Color(UIColor.systemGray6))
-                                        .clipShape(Circle())
-                                        .padding(6)
-                                }
-                            }
+                                .overlay(
+                                    tabSelectButtonOverlay(details: details),
+                                    alignment: .topTrailing)
+                        }
+                    }
+                    .padding(.vertical, CardGridUX.GridSpacing)
+                    .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
+                        if let selectedItem = primitive.allDetails.first(where: \.isSelected) {
+                            scrollProxy.scrollTo(selectedItem.id)
                         }
                     }
                 }
-                .padding(.vertical, CardGridUX.GridSpacing)
             }
-        }.environment(\.columns, gridColumns)
+            .environment(\.columns, gridColumns)
+            .onAppear {
+                gridModel.scrollToSelectedTab()
+            }
+        }
+        .ignoresSafeArea(edges: topToolbar ? [.bottom] : [])
     }
 
     private func onDelete(offsets: IndexSet) {

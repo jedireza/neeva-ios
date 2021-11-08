@@ -400,6 +400,7 @@
 		C8800ED72635F0FE005B7503 /* DeferredTestUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8800EA52635EF06005B7503 /* DeferredTestUtils.swift */; };
 		C885659E2620366400B2C228 /* SwiftUIHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C885659D2620366400B2C228 /* SwiftUIHelpers.swift */; };
 		C88F9D1426D961EC00FD0E04 /* UserInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */; };
+		C894C5892735DAF40068B0BE /* CardTransitionModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894C5882735DAF40068B0BE /* CardTransitionModifier.swift */; };
 		C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */; };
 		C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */; };
 		C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */; };
@@ -449,7 +450,6 @@
 		C9655DED26A09A6900925912 /* CardsContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DEC26A09A6900925912 /* CardsContainer.swift */; };
 		C9655DEF26A09A8600925912 /* CardListViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DEE26A09A8600925912 /* CardListViews.swift */; };
 		C9655DF126A09AC900925912 /* CompletionForAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DF026A09AC900925912 /* CompletionForAnimation.swift */; };
-		C9655DF326A09B4300925912 /* CardTransitionAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */; };
 		C965BDD2268E71C500F02224 /* AppHostSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD1268E71C500F02224 /* AppHostSetting.swift */; };
 		C965BDD4268E720400F02224 /* DebugDBSettingsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */; };
 		C965BDD6268E729000F02224 /* InternalSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C965BDD5268E728F00F02224 /* InternalSettingsView.swift */; };
@@ -1452,6 +1452,7 @@
 		C8800EA52635EF06005B7503 /* DeferredTestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeferredTestUtils.swift; sourceTree = "<group>"; };
 		C885659D2620366400B2C228 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUIHelpers.swift; path = Helpers/SwiftUIHelpers.swift; sourceTree = "<group>"; };
 		C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoProvider.swift; sourceTree = "<group>"; };
+		C894C5882735DAF40068B0BE /* CardTransitionModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTransitionModifier.swift; sourceTree = "<group>"; };
 		C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlaySheetView.swift; sourceTree = "<group>"; };
 		C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationLinkButton.swift; sourceTree = "<group>"; };
 		C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaFeatureFlags.swift; sourceTree = "<group>"; };
@@ -1515,7 +1516,6 @@
 		C9655DEC26A09A6900925912 /* CardsContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardsContainer.swift; sourceTree = "<group>"; };
 		C9655DEE26A09A8600925912 /* CardListViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardListViews.swift; sourceTree = "<group>"; };
 		C9655DF026A09AC900925912 /* CompletionForAnimation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionForAnimation.swift; sourceTree = "<group>"; };
-		C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTransitionAnimator.swift; sourceTree = "<group>"; };
 		C965BDD1268E71C500F02224 /* AppHostSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppHostSetting.swift; sourceTree = "<group>"; };
 		C965BDD3268E720400F02224 /* DebugDBSettingsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugDBSettingsSection.swift; sourceTree = "<group>"; };
 		C965BDD5268E728F00F02224 /* InternalSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InternalSettingsView.swift; sourceTree = "<group>"; };
@@ -2364,7 +2364,6 @@
 				C9655DEE26A09A8600925912 /* CardListViews.swift */,
 				C9655DEC26A09A6900925912 /* CardsContainer.swift */,
 				4A88F9722662AEAB007C203D /* CardStrip.swift */,
-				C9655DF226A09B4300925912 /* CardTransitionAnimator.swift */,
 				4A1D054F2669715B00D63333 /* CardViewControllers.swift */,
 				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
 				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
@@ -2378,6 +2377,8 @@
 				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
 				4A9FCD4526F1074600725E17 /* SocialShare.swift */,
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
+				8AAB76FB2720B88A0015B2C1 /* TabGroupContextMenu.swift */,
+				C894C5882735DAF40068B0BE /* CardTransitionModifier.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -5272,7 +5273,6 @@
 				BC8EE06B271CEA6A00D6BE2A /* DomainAllowList.swift in Sources */,
 				D0C95E36200FDC5500E4E51C /* MetadataParserHelper.swift in Sources */,
 				C9E5F2B52673EF1D00025A7F /* Environment.swift in Sources */,
-				C9655DF326A09B4300925912 /* CardTransitionAnimator.swift in Sources */,
 				D0C95EF6201A55A800E4E51C /* BrowserViewController+UIDropInteractionDelegate.swift in Sources */,
 				D31CF65C1CC1959A001D0BD0 /* PrivilegedRequest.swift in Sources */,
 				C832BF8726E3CA0900B9A1F8 /* SendFeedbackPanel.swift in Sources */,
@@ -5333,6 +5333,7 @@
 				4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */,
 				66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */,
 				39A359E41BFCCE94006B9E87 /* UserActivityHandler.swift in Sources */,
+				C894C5892735DAF40068B0BE /* CardTransitionModifier.swift in Sources */,
 				67AA22F226C476F300F33D09 /* BrowserViewController+OverflowMenu.swift in Sources */,
 				67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */,
 				4AD771B827387B1F00B6769D /* SpaceGeneratorView.swift in Sources */,
