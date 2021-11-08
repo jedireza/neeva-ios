@@ -565,13 +565,10 @@ where
         ScrollView(.vertical, showsIndicators: false) {
             ScrollViewReader { scrollProxy in
                 LazyVGrid(columns: gridColumns, spacing: CardGridUX.GridSpacing) {
-                    ForEach(tabGroupDetail!.allDetails, id: \.id) { details in
+                    ForEach(primitive.allDetails, id: \.id) { details in
                         ZStack(alignment: .topTrailing) {
                             FittedCard(details: details)
                                 .modifier(HideSelectedForTransition(details: details))
-                                .contextMenu {
-                                    TabGroupContextMenu(details: details)
-                                }
                                 .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                                 .environment(\.selectionCompletion) {
                                     ClientLogger.shared.logCounter(.tabInTabGroupClicked)

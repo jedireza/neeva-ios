@@ -11,7 +11,6 @@ class SavedTab: NSObject, NSCoding {
     var title: String?
     var url: URL?
     var isPrivate: Bool
-    var isPinned: Bool
     var sessionData: SessionData?
     var screenshotUUID: UUID?
     var faviconURL: URL?
@@ -48,15 +47,15 @@ class SavedTab: NSObject, NSCoding {
     }
 
     init(
-        screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, isPinned: Bool,
-        faviconURL: URL?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String,
-        parentUUID: String, tabIndex: Int?, parentSpaceID: String
+        screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, faviconURL: URL?,
+        url: URL?, sessionData: SessionData?, uuid: String,
+        rootUUID: String, parentUUID: String,
+        tabIndex: Int?, parentSpaceID: String
     ) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
         self.title = title
         self.isPrivate = isPrivate
-        self.isPinned = isPinned
         self.faviconURL = faviconURL
         self.url = url
         self.sessionData = sessionData
@@ -73,7 +72,6 @@ class SavedTab: NSObject, NSCoding {
         self.sessionData = coder.decodeObject(forKey: "sessionData") as? SessionData
         self.screenshotUUID = coder.decodeObject(forKey: "screenshotUUID") as? UUID
         self.isSelected = coder.decodeBool(forKey: "isSelected")
-        self.isPinned = coder.decodeBool(forKey: "isPinned")
         self.title = coder.decodeObject(forKey: "title") as? String
         self.isPrivate = coder.decodeBool(forKey: "isPrivate")
         self.faviconURL = (coder.decodeObject(forKey: "faviconURL") as? URL)
@@ -89,7 +87,6 @@ class SavedTab: NSObject, NSCoding {
         coder.encode(sessionData, forKey: "sessionData")
         coder.encode(screenshotUUID, forKey: "screenshotUUID")
         coder.encode(isSelected, forKey: "isSelected")
-        coder.encode(isPinned, forKey: "isPinned")
         coder.encode(title, forKey: "title")
         coder.encode(isPrivate, forKey: "isPrivate")
         coder.encode(faviconURL, forKey: "faviconURL")

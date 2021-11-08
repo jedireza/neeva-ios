@@ -40,7 +40,6 @@ protocol TabDelegate {
 
 class Tab: NSObject, ObservableObject {
     let isIncognito: Bool
-    var isPinned: Bool = false
 
     // PageMetadata is derived from the page content itself, and as such lags behind the
     // rest of the tab.
