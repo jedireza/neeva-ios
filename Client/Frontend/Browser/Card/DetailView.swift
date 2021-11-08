@@ -610,7 +610,7 @@ where
                         }
                     }
                     .padding(.vertical, CardGridUX.GridSpacing)
-                    .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
+                    .onAppear {
                         if let selectedItem = primitive.allDetails.first(where: \.isSelected) {
                             scrollProxy.scrollTo(selectedItem.id)
                         }
@@ -618,9 +618,6 @@ where
                 }
             }
             .environment(\.columns, gridColumns)
-            .onAppear {
-                gridModel.scrollToSelectedTab()
-            }
         }
         .ignoresSafeArea(edges: topToolbar ? [.bottom] : [])
     }
