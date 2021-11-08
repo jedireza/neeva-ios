@@ -255,6 +255,7 @@
 		66E34CDA2710E83600F30A3D /* LocalNotificiations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E34CD92710E83600F30A3D /* LocalNotificiations.swift */; };
 		66E34CDC2711118900F30A3D /* ReaderModeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E34CDB2711118900F30A3D /* ReaderModeTests.swift */; };
 		66ECB5DF26BB264700A1857E /* OverlayStepperModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ECB5DE26BB264700A1857E /* OverlayStepperModifier.swift */; };
+		66EDCCCD2732286B00AB1EAD /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EDCCCC2732286B00AB1EAD /* NotificationService.swift */; };
 		66EE7D9526CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EE7D9226CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift */; };
 		66F0E62026EC22C3008A4327 /* OverlaySheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F0E61F26EC22C3008A4327 /* OverlaySheetModel.swift */; };
 		66F0E62326EC23AD008A4327 /* OverlayStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F0E62226EC23AD008A4327 /* OverlayStyle.swift */; };
@@ -262,6 +263,7 @@
 		66F571D726BD9CE800BEECF9 /* UITestBase+GoToExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571D626BD9CE800BEECF9 /* UITestBase+GoToExtension.swift */; };
 		66F571D926BD9CF700BEECF9 /* UITestBase+ActionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571D826BD9CF700BEECF9 /* UITestBase+ActionExtension.swift */; };
 		66F571DB26BD9D0B00BEECF9 /* UITestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571DA26BD9D0B00BEECF9 /* UITestBase.swift */; };
+		66F92F42273372F3005C190C /* NotificationServiceExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66EDCCCA2732286A00AB1EAD /* NotificationServiceExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		66F97CC026F68C4A005A26C2 /* ReaderModePopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CBF26F68C4A005A26C2 /* ReaderModePopover.swift */; };
 		66F97CC226F68E01005A26C2 /* ReaderModeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC126F68E01005A26C2 /* ReaderModeModel.swift */; };
 		66F97CC626F69303005A26C2 /* TextSizeStepper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F97CC526F69303005A26C2 /* TextSizeStepper.swift */; };
@@ -904,6 +906,13 @@
 			remoteGlobalIDString = 66E25028270FDDB20085AA35;
 			remoteInfo = "Neeva for Safari";
 		};
+		66F92F43273372F3005C190C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F84B21B61A090F8100AAB793 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 66EDCCC92732286A00AB1EAD;
+			remoteInfo = NotificationServiceExtension;
+		};
 		677F4D6A272B621B00332759 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F84B21B61A090F8100AAB793 /* Project object */;
@@ -1054,6 +1063,7 @@
 			files = (
 				677F4D6C272B622C00332759 /* NeevaForSafariExtension.appex in Embed App Extensions */,
 				047F9B3224E1FE1F00CD7DF7 /* WidgetKitExtension.appex in Embed App Extensions */,
+				66F92F42273372F3005C190C /* NotificationServiceExtension.appex in Embed App Extensions */,
 				F84B22541A0920C600AAB793 /* ShareTo.appex in Embed App Extensions */,
 				66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */,
 			);
@@ -1328,6 +1338,11 @@
 		66E34CD92710E83600F30A3D /* LocalNotificiations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificiations.swift; sourceTree = "<group>"; };
 		66E34CDB2711118900F30A3D /* ReaderModeTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReaderModeTests.swift; sourceTree = "<group>"; };
 		66ECB5DE26BB264700A1857E /* OverlayStepperModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayStepperModifier.swift; sourceTree = "<group>"; };
+		66EDCCA32731FE5700AB1EAD /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
+		66EDCCA52731FE5700AB1EAD /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
+		66EDCCCA2732286A00AB1EAD /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		66EDCCCC2732286B00AB1EAD /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		66EDCCCE2732286B00AB1EAD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		66EE7D9226CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAuthPromptOverlayView.swift; sourceTree = "<group>"; };
 		66F0E61F26EC22C3008A4327 /* OverlaySheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlaySheetModel.swift; sourceTree = "<group>"; };
 		66F0E62226EC23AD008A4327 /* OverlayStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayStyle.swift; sourceTree = "<group>"; };
@@ -1994,6 +2009,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		66EDCCC72732286A00AB1EAD /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9DF5693266A84A4009A2E6C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -2622,6 +2644,15 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		66EDCCCB2732286B00AB1EAD /* NotificationServiceExtension */ = {
+			isa = PBXGroup;
+			children = (
+				66EDCCCC2732286B00AB1EAD /* NotificationService.swift */,
+				66EDCCCE2732286B00AB1EAD /* Info.plist */,
+			);
+			path = NotificationServiceExtension;
+			sourceTree = "<group>";
+		};
 		66EE7D9026CD5EB5004BD435 /* HTTPAuthPrompt */ = {
 			isa = PBXGroup;
 			children = (
@@ -2704,6 +2735,8 @@
 				3B4988CD1E42B01800A12FDA /* SwiftyJSON.framework */,
 				DAD46F3324A1606C001B3967 /* WidgetKit.framework */,
 				7B604FBA1C495D8A006EEEC3 /* XCGLogger.framework */,
+				66EDCCA32731FE5700AB1EAD /* UserNotifications.framework */,
+				66EDCCA52731FE5700AB1EAD /* UserNotificationsUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -3630,6 +3663,7 @@
 				28CE83EF1A1D246900576538 /* Third-Party Source */,
 				669ACD54269CED060038C89C /* AppClip */,
 				66F715F7270BDFFF00041606 /* NeevaForSafari */,
+				66EDCCCB2732286B00AB1EAD /* NotificationServiceExtension */,
 				047F9B2A24E1FE1C00CD7DF7 /* WidgetKit */,
 				D39FA1601A83E0EC00EE869C /* UITests */,
 				3BFE4B081D342FB900DDF53F /* XCUITests */,
@@ -3659,6 +3693,7 @@
 				66E25045270FDDB30085AA35 /* NeevaForSafariTests.xctest */,
 				66E2504F270FDDB30085AA35 /* NeevaForSafariUITests.xctest */,
 				66E2505B270FDDB30085AA35 /* NeevaForSafariExtension.appex */,
+				66EDCCCA2732286A00AB1EAD /* NotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -4127,6 +4162,23 @@
 			productReference = 66E2505B270FDDB30085AA35 /* NeevaForSafariExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		66EDCCC92732286A00AB1EAD /* NotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 66EDCCD22732286B00AB1EAD /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */;
+			buildPhases = (
+				66EDCCC62732286A00AB1EAD /* Sources */,
+				66EDCCC72732286A00AB1EAD /* Frameworks */,
+				66EDCCC82732286A00AB1EAD /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NotificationServiceExtension;
+			productName = NotificationServiceExtension;
+			productReference = 66EDCCCA2732286A00AB1EAD /* NotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		C9DF5695266A84A4009A2E6C /* ShareTo Preview Support */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C9DF56A4266A84A5009A2E6C /* Build configuration list for PBXNativeTarget "ShareTo Preview Support" */;
@@ -4212,6 +4264,7 @@
 				047F9B3124E1FE1F00CD7DF7 /* PBXTargetDependency */,
 				66A6A73526840376005425D0 /* PBXTargetDependency */,
 				669ACD61269CED070038C89C /* PBXTargetDependency */,
+				66F92F44273372F3005C190C /* PBXTargetDependency */,
 			);
 			name = Client;
 			packageProductDependencies = (
@@ -4272,7 +4325,7 @@
 			attributes = {
 				DefaultBuildSystemTypeForWorkspace = Latest;
 				LastSwiftMigration = 0700;
-				LastSwiftUpdateCheck = 1300;
+				LastSwiftUpdateCheck = 1310;
 				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = Neeva;
 				TargetAttributes = {
@@ -4327,6 +4380,9 @@
 					};
 					66E2505A270FDDB30085AA35 = {
 						CreatedOnToolsVersion = 13.0;
+					};
+					66EDCCC92732286A00AB1EAD = {
+						CreatedOnToolsVersion = 13.1;
 					};
 					C9DF5695266A84A4009A2E6C = {
 						CreatedOnToolsVersion = 12.5;
@@ -4429,6 +4485,7 @@
 				66E25044270FDDB30085AA35 /* NeevaForSafariTests */,
 				66E2504E270FDDB30085AA35 /* NeevaForSafariUITests */,
 				66E2505A270FDDB30085AA35 /* NeevaForSafariExtension */,
+				66EDCCC92732286A00AB1EAD /* NotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -4563,6 +4620,13 @@
 				66E25064270FDDB30085AA35 /* _locales in Resources */,
 				66E2506C270FDDB30085AA35 /* content.js in Resources */,
 				66E25072270FDDB30085AA35 /* popup.js in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		66EDCCC82732286A00AB1EAD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -5118,6 +5182,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		66EDCCC62732286A00AB1EAD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66EDCCCD2732286B00AB1EAD /* NotificationService.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		C9DF5692266A84A4009A2E6C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -5615,6 +5687,11 @@
 			isa = PBXTargetDependency;
 			target = 66E25028270FDDB20085AA35 /* NeevaForSafari */;
 			targetProxy = 66E25050270FDDB30085AA35 /* PBXContainerItemProxy */;
+		};
+		66F92F44273372F3005C190C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 66EDCCC92732286A00AB1EAD /* NotificationServiceExtension */;
+			targetProxy = 66F92F43273372F3005C190C /* PBXContainerItemProxy */;
 		};
 		677F4D6B272B621B00332759 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -6398,6 +6475,99 @@
 			};
 			name = Debug;
 		};
+		66EDCCD32732286B00AB1EAD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = A9735M6NPH;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2021 Neeva. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser.NotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		66EDCCD42732286B00AB1EAD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A9735M6NPH;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ServiceExtension;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2021 Neeva. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "co.neeva.app.ios.browser-dev.NotificationServiceExtension";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		C98C36B526AC6FB4001DEA5B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -6653,6 +6823,7 @@
 		F0FF957225E03EFF00008BD2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -6921,6 +7092,7 @@
 		F0FF95C125E03F8F00008BD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_Developer;
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaDev.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -7200,6 +7372,15 @@
 			buildConfigurations = (
 				66E25080270FDDB40085AA35 /* Release */,
 				66E25081270FDDB40085AA35 /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		66EDCCD22732286B00AB1EAD /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				66EDCCD32732286B00AB1EAD /* Release */,
+				66EDCCD42732286B00AB1EAD /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

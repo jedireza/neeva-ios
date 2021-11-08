@@ -43,7 +43,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let bvc = SceneDelegate.getBVC(for: nil)
-
         let request = response.notification.request
 
         NotificationManager.shared.handleNotification(request: request, bvc: bvc)

@@ -1,8 +1,12 @@
-﻿{
+{
   "aps": {
     "alert": {
       "title": "Test",
       "body": "Test Notification"
-    }
-  }
+    },
+
+    "mutable-content": 1
+  },
+
+  "mediaURL": "https://picsum.photos/200"
 }
