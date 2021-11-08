@@ -52,22 +52,22 @@ public class EnvironmentHelper {
     }
 
     public func getAttributes() -> [ClientLogCounterAttribute] {
-        // selected tab is private
-        let tabManager = SceneDelegate.getTabManager(for: nil)
-        let isPrivate =
-            tabManager.isIncognito
-        let isPrivateMode = ClientLogCounterAttribute(
-            key: LogConfig.Attribute.IsInPrivateMode, value: String(isPrivate))
+        var numOfNormalTabs = 0
+        var numOfPrivateTabs = 0
+        TabManager.all.forEach { tabManager in
+            numOfNormalTabs += tabManager.normalTabs.count
+            numOfPrivateTabs += tabManager.privateTabs.count
+        }
 
         // number of normal tabs opened
         let normalTabsOpened = ClientLogCounterAttribute(
             key: LogConfig.Attribute.NormalTabsOpened,
-            value: String(tabManager.normalTabs.count))
+            value: String(numOfNormalTabs))
 
         // number of private tabs opened
         let privateTabsOpened = ClientLogCounterAttribute(
             key: LogConfig.Attribute.PrivateTabsOpened,
-            value: String(tabManager.privateTabs.count))
+            value: String(numOfPrivateTabs))
 
         // user theme setting
         let deviceTheme = ClientLogCounterAttribute(
@@ -87,7 +87,7 @@ public class EnvironmentHelper {
             value: String(NeevaUserInfo.shared.hasLoginCookie()))
 
         let attributes = [
-            isPrivateMode, normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation,
+            normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation,
             deviceScreensSize, isUserSignedIn, getSessionUUID()
         ]
 
