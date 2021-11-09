@@ -594,6 +594,9 @@ where
                     LazyVGrid(columns: gridColumns, spacing: CardGridUX.GridSpacing) {
                         ForEach(tabGroupDetail!.allDetails, id: \.id) { details in
                             FittedCard(details: details)
+                                .contextMenu {
+                                    FeatureFlag[.tabGroupsPinning] ? TabGroupContextMenu(details: details) : nil
+                                }
                                 .modifier(
                                     CardTransitionModifier(
                                         details: details, containerGeometry: scrollGeometry,

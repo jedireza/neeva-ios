@@ -149,6 +149,10 @@ struct Card<Details>: View where Details: CardDetails {
     var showsSelection = true
     var animate = false
 
+    var tabCardDetail: TabCardDetails? {
+        details as? TabCardDetails
+    }
+
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
     @EnvironmentObject var gridModel: GridModel
     @State private var isPressed = false
@@ -205,6 +209,7 @@ struct Card<Details>: View where Details: CardDetails {
                 .overlay(
                     Button(action: details.onClose) {
                         Image(uiImage: buttonImage).resizable().renderingMode(.template)
+                            .scaledToFit()
                             .foregroundColor(.secondaryLabel)
                             .padding(6)
                             .frame(width: CardUX.CloseButtonSize, height: CardUX.CloseButtonSize)

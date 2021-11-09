@@ -131,6 +131,11 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         manager.get(for: id)?.url
     }
 
+    var closeButtonImage: UIImage? {
+        FeatureFlag[.tabGroupsPinning] && manager.get(for: id)?.isPinned == true
+                ? UIImage(systemName: "pin.fill") : UIImage(systemName: "xmark")
+    }
+
     var isSelected: Bool {
         self.manager.selectedTab?.tabUUID == id
     }
@@ -167,6 +172,12 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         }
 
         return true
+    }
+
+    func onClose() {
+        if let item = manager.get(for: id), !item.isPinned {
+            manager.close(item)
+        }
     }
 }
 
@@ -451,7 +462,11 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
         self.manager = tabGroupManager
         allDetails =
             manager.get(for: id)?.children
-            .map({ TabCardDetails(tab: $0, manager: manager.tabManager) }) ?? []
+            .map({
+                TabCardDetails(
+                    tab: $0,
+                    manager: manager.tabManager)
+            }) ?? []
     }
 
     var thumbnail: some View {
