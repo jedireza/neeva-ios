@@ -52,6 +52,22 @@ public class EnvironmentHelper {
     }
 
     public func getAttributes() -> [ClientLogCounterAttribute] {
+        var numOfNormalTabs = 0
+        var numOfPrivateTabs = 0
+        TabManager.all.forEach { tabManager in
+            numOfNormalTabs += tabManager.normalTabs.count
+            numOfPrivateTabs += tabManager.privateTabs.count
+        }
+
+        // number of normal tabs opened
+        let normalTabsOpened = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.NormalTabsOpened,
+            value: String(numOfNormalTabs))
+
+        // number of private tabs opened
+        let privateTabsOpened = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.PrivateTabsOpened,
+            value: String(numOfPrivateTabs))
 
         // user theme setting
         let deviceTheme = ClientLogCounterAttribute(
@@ -70,40 +86,10 @@ public class EnvironmentHelper {
             key: LogConfig.Attribute.isUserSignedIn,
             value: String(NeevaUserInfo.shared.hasLoginCookie()))
 
-        var attributes = [
-            deviceTheme, deviceOrientation,
-            deviceScreensSize, isUserSignedIn,
-            getSessionUUID()
+        let attributes = [
+            normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation,
+            deviceScreensSize, isUserSignedIn, getSessionUUID()
         ]
-
-        // selected tab is private
-        if let tabManager = SceneDelegate.getTabManagerOrNil() {
-            let isPrivate =
-            tabManager.isIncognito
-            attributes.append(
-                ClientLogCounterAttribute(
-                    key: LogConfig.Attribute.IsInPrivateMode,
-                    value: String(isPrivate)
-                )
-            )
-
-            // number of normal tabs opened
-            attributes.append(
-                ClientLogCounterAttribute(
-                    key: LogConfig.Attribute.NormalTabsOpened,
-                    value: String(tabManager.normalTabs.count)
-                )
-            )
-
-            // number of private tabs opened
-            attributes.append(
-                ClientLogCounterAttribute(
-                    key: LogConfig.Attribute.PrivateTabsOpened,
-                    value: String(tabManager.privateTabs.count)
-                )
-            )
-        }
-
         return attributes
     }
 
