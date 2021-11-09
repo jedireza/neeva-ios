@@ -48,7 +48,7 @@ class TabEventHandlerTests: XCTestCase {
         }
         let webServerBase = "http://localhost:\(webServer.port)"
 
-        let tabManager = SceneDelegate.getTabManager(for: nil)
+        let tabManager = SceneDelegate.getTabManagerOrNil()!
 
         Defaults[.blockPopups] = false
         tabManager.addTab(
@@ -60,7 +60,7 @@ class TabEventHandlerTests: XCTestCase {
         }
 
         expectation(for: exists, evaluatedWith: tabManager) {
-            let url = SceneDelegate.getTabManager(for: nil).tabs[2].url
+            let url = SceneDelegate.getTabManagerOrNil()!.tabs[2].url
             XCTAssertTrue(url?.absoluteString == "about:blank")
             return true
         }

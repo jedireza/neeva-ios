@@ -126,7 +126,7 @@ struct ReaderModePopover_Previews: PreviewProvider {
         ReaderModePopover(disableReadingMode: {})
             .environmentObject(
                 ReaderModeModel(
-                    setReadingMode: { _ in }, tabManager: SceneDelegate.getTabManager(for: nil)))
+                    setReadingMode: { _ in }, tabManager: SceneDelegate.getTabManagerOrNil()!))
             .environmentObject(BrightnessModel())
     }
 }

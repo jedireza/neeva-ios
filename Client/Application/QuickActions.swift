@@ -77,8 +77,11 @@ class QuickActions: NSObject {
     // MARK: Handling Quick Actions
     @discardableResult func handleShortCutItem(
         _ shortcutItem: UIApplicationShortcutItem,
-        withBrowserViewController bvc: BrowserViewController
+        withBrowserViewController bvc: BrowserViewController?
     ) -> Bool {
+        guard let bvc = bvc else {
+            return false
+        }
 
         // Verify that the provided `shortcutItem`'s `type` is one handled by the application.
         guard let shortCutType = ShortcutType(fullType: shortcutItem.type) else { return false }

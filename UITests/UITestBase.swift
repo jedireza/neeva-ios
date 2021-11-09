@@ -39,7 +39,7 @@ class UITestBase: KIFTestCase {
     }
 
     func getNumberOfTabs() -> Int {
-        SceneDelegate.getTabManager(for: nil).tabs.count
+        SceneDelegate.getTabManagerOrNil()?.tabs.count ?? 0
     }
 
     func isiPad() -> Bool {
