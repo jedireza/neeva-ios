@@ -37,9 +37,9 @@ struct DebugSettingsSection: View {
                 Toggle("Enable Geiger Counter", isOn: $enableGeigerCounter)
                     .onChange(of: enableGeigerCounter) {
                         if $0 {
-                            SceneDelegate.getCurrentSceneDelegate(for: nil).startGeigerCounter()
+                            SceneDelegate.getCurrentSceneDelegateOrNil()?.startGeigerCounter()
                         } else {
-                            SceneDelegate.getCurrentSceneDelegate(for: nil).stopGeigerCounter()
+                            SceneDelegate.getCurrentSceneDelegateOrNil()?.stopGeigerCounter()
                         }
                     }
                 NavigationLink(

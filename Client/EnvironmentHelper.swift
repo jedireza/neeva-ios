@@ -90,7 +90,6 @@ public class EnvironmentHelper {
             normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation,
             deviceScreensSize, isUserSignedIn, getSessionUUID()
         ]
-
         return attributes
     }
 

@@ -204,7 +204,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         completionHandler: @escaping (Bool) -> Void = { _ in }
     ) {
         let handledShortCutItem = QuickActions.sharedInstance.handleShortCutItem(
-            shortcutItem, withBrowserViewController: SceneDelegate.getBVC(for: nil))
+            shortcutItem, withBrowserViewController: bvc)
         completionHandler(handledShortCutItem)
     }
 
@@ -224,6 +224,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         fatalError("Scene Delegate doesn't exist for view or is nil")
+    }
+
+    @available(*, deprecated, message: "should use getCurrentSceneDelegate with non-nil view or scene")
+    static func getCurrentSceneDelegateOrNil() -> SceneDelegate? {
+        if let sceneDelegate = getActiveSceneDelegate() {
+            return sceneDelegate
+        }
+
+        return nil
     }
 
     static private func getSceneDelegate(for view: UIView) -> SceneDelegate? {
@@ -275,6 +284,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return getCurrentSceneDelegate(for: view).bvc
     }
 
+    @available(*, deprecated, message: "should use getBVC with a non-nil view or scene")
+    static func getBVCOrNil() -> BrowserViewController? {
+        return getCurrentSceneDelegateOrNil()?.bvc
+    }
+
     static func getBVC(with scene: UIScene?) -> BrowserViewController {
         if let sceneDelegate = scene?.delegate as? SceneDelegate {
             return sceneDelegate.bvc
@@ -287,8 +301,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         return getAllSceneDelegates().map { $0.bvc }
     }
 
-    static func getTabManager(for view: UIView?) -> TabManager {
+    static func getTabManager(for view: UIView) -> TabManager {
         return getCurrentSceneDelegate(for: view).tabManager
+    }
+
+    @available(*, deprecated, message: "should use getTabManager with a non-nil view")
+    static func getTabManagerOrNil() -> TabManager? {
+        return getCurrentSceneDelegateOrNil()?.tabManager
     }
 
     // MARK: - Geiger
