@@ -29,6 +29,7 @@ struct InternalSettingsView: View {
     @Default(.productSearchPromoTimeInterval) var productSearchPromoTimeInterval
     @Default(.newsProviderPromoTimeInterval) var newsProviderPromoTimeInterval
     @Default(.seenNotificationPermissionPromo) var seenNotificationPermissionPromo
+    @Default(.fastTapPromoTimeInterval) var fastTapPromoTimeInterval
 
     var body: some View {
         List {
@@ -102,6 +103,7 @@ struct InternalSettingsView: View {
 
                 NumberField("productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
                 NumberField("newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
+                NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
             }
         }
         .font(.system(.footnote, design: .monospaced))

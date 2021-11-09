@@ -251,7 +251,7 @@ class NotificationManager: ObservableObject {
                 .OpenLocalNotification,
                 attributes: attributes
             )
-        case .neevaOnboardingNewsProvider, .neevaOnboardingProductSearch:
+        case .neevaOnboardingNewsProvider, .neevaOnboardingProductSearch, .neevaOnboardingFastTap:
             var attributes: [ClientLogCounterAttribute] = []
             if let promoId = request.content.userInfo[NotificationManager.promoIdKey] as? String {
                 attributes.append(
