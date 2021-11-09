@@ -522,7 +522,6 @@ where
                     }
                 }
             }
-            .background(Color.groupedBackground)
             .modifier(ListStyleModifier())
             .navigationBarHidden(true)
             .edgesIgnoringSafeArea([.top, .bottom])
