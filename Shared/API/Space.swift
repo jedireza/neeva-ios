@@ -73,6 +73,8 @@ class SpacesDataQueryController: QueryController<
                                     title: spaceEntity.title,
                                     snippet: spaceEntity.snippet,
                                     thumbnail: spaceEntity.thumbnail,
+                                    resultType: ResultType(
+                                        rawValue: spaceEntity.resultType ?? "web") ?? .web,
                                     previewEntity: SpaceEntityData.previewEntity(from: spaceEntity))
                             )
                         }

@@ -82,6 +82,7 @@ query GetSpacesData($ids: [String!]) {
             title
             snippet
             thumbnail
+            resultType
             content {
               id
               title

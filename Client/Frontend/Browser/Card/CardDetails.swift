@@ -203,7 +203,10 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     private var imageThumbnailModel: ImageThumbnailModel?
 
     var isImage: Bool {
+        isImageExtension || data.resultType == .image
+    }
 
+    var isImageExtension: Bool {
         guard let pathExtension = data.url?.pathExtension else {
             return false
         }
@@ -278,7 +281,7 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
             let imageURL = newsItem.thumbnailURL
         {
             webImage(url: imageURL)
-        } else if isImage, let imageURL = data.url {
+        } else if isImageExtension, let imageURL = data.url {
             webImage(url: imageURL)
         } else if let imageThumbnailModel = imageThumbnailModel {
             ImageThumbnailView(model: imageThumbnailModel)

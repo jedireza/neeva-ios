@@ -24,17 +24,19 @@ public struct SpaceEntityData {
     public let title: String?
     public let snippet: String?
     public let thumbnail: String?
+    public let resultType: ResultType
     public let previewEntity: PreviewEntity
 
     public init(
         id: String, url: URL?, title: String?, snippet: String?,
-        thumbnail: String?, previewEntity: PreviewEntity
+        thumbnail: String?, resultType: ResultType = .web, previewEntity: PreviewEntity
     ) {
         self.id = id
         self.url = url
         self.title = title
         self.snippet = snippet
         self.thumbnail = thumbnail
+        self.resultType = resultType
         self.previewEntity = previewEntity
     }
 
@@ -158,4 +160,9 @@ public struct SpaceEntityData {
 
         return ProductRating(numReviews: rating.numReviews, productStars: productStars)
     }
+}
+
+public enum ResultType: String {
+    case web = "web"
+    case image = "image"
 }
