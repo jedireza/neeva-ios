@@ -108,25 +108,46 @@ public struct OverflowMenuView: View {
                     }
                     .accessibilityIdentifier("OverflowMenu.Reload")
 
-                    OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                        menuAction(.newTab)
+                    if !FeatureFlag[.overflowMenuInCardGrid] {
+                        OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                            menuAction(.newTab)
+                        }
+                        .accessibilityIdentifier("OverflowMenu.NewTab")
+                    } else {
+                        OverflowMenuButtonView(label: "Support", symbol: .bubbleLeft) {
+                            menuAction(.feedback)
+                        }
+                        .accessibilityIdentifier("OverflowMenu.Feedback")
                     }
-                    .accessibilityIdentifier("OverflowMenu.NewTab")
                 }
             }
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
                     if chromeModel.inlineToolbar {
-                        NeevaMenuRowButtonView(
-                            label: "New Tab",
-                            symbol: .plus
-                        ) {
-                            menuAction(.newTab)
+                        if !FeatureFlag[.overflowMenuInCardGrid] {
+                            NeevaMenuRowButtonView(
+                                label: "New Tab",
+                                symbol: .plus
+                            ) {
+                                menuAction(.newTab)
+                            }
+                            .accessibilityIdentifier("OverflowMenu.NewTab")
                         }
-                        .accessibilityIdentifier("OverflowMenu.NewTab")
 
                         Color.groupedBackground.frame(height: 1)
+
+                        if FeatureFlag[.overflowMenuInCardGrid] {
+                            NeevaMenuRowButtonView(
+                                label: "Support",
+                                symbol: .bubbleLeft
+                            ) {
+                                menuAction(.feedback)
+                            }
+                            .accessibilityIdentifier("OverflowMenu.Feedback")
+
+                            Color.groupedBackground.frame(height: 1)
+                        }
                     }
 
                     NeevaMenuRowButtonView(

@@ -17,6 +17,7 @@ public enum OverflowMenuAction {
     case goToHistory
     case goToDownloads
     case closeAllTabs
+    case feedback
 }
 
 extension BrowserViewController {
@@ -79,6 +80,8 @@ extension BrowserViewController {
             let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
             tabMenu.showConfirmCloseAllTabs(
                 numberOfTabs: tabMenu.tabManager.getTabCountForCurrentType(), fromTabTray: true)
+        case .feedback:
+            perform(neevaMenuAction: .feedback)
         }
     }
 }
