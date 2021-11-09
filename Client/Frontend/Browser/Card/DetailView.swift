@@ -9,6 +9,7 @@ enum DetailsViewUX {
     static let Padding: CGFloat = 4
     static let ThumbnailCornerRadius: CGFloat = 6
     static let ThumbnailSize: CGFloat = 54
+    static let DetailThumbnailSize: CGFloat = 72
     static let ItemPadding: CGFloat = 14
     static let EditingRowInset: CGFloat = 8
 }
@@ -34,7 +35,7 @@ where
     @State private var editMode = EditMode.inactive
     @State private var shareMenuPresented = false
     @State private var newTitle: String = ""
-    @State private var shareTargetView: UIView!
+    @State private var shareTargetView: UIView? = nil
     @State private var showConfirmDeleteAlert = false
     @State private var headerVisible = true
 
@@ -74,71 +75,55 @@ where
     }
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                topBar
-                Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
-                if tabGroupCardModel.detailedTabGroup != nil {
-                    tabGroupGrid
+        VStack(spacing: 0) {
+            topBar
+            Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
+            if tabGroupCardModel.detailedTabGroup != nil {
+                tabGroupGrid
 
-                    if editMode == .active {
-                        Button(
-                            action: {
-                                selectedTabIDs.forEach {
-                                    tabModel.manager.get(for: $0)?.rootUUID =
-                                        UUID().uuidString
-                                }
-                                tabModel.manager.objectWillChange.send()
-                                editMode = .inactive
-
-                                var attributes = EnvironmentHelper.shared.getAttributes()
-
-                                attributes.append(
-                                    ClientLogCounterAttribute(
-                                        key: LogConfig.TabGroupAttribute.numTabsRemoved,
-                                        value: String(selectedTabIDs.count)
-                                    )
-                                )
-
-                                ClientLogger.shared.logCounter(
-                                    .tabRemovedFromGroup, attributes: attributes)
-                            },
-                            label: {
-                                Text("Remove from group")
-                                    .withFont(.labelLarge)
-                                    .frame(maxWidth: .infinity)
-                                    .clipShape(Capsule())
+                if editMode == .active {
+                    Button(
+                        action: {
+                            selectedTabIDs.forEach {
+                                tabModel.manager.get(for: $0)?.rootUUID =
+                                    UUID().uuidString
                             }
-                        )
-                        .environment(\.isEnabled, selectedTabIDs.count > 0)
-                        .buttonStyle(NeevaButtonStyle(.primary))
-                        .padding(16)
-                    }
-                } else if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty {
-                    EmptySpaceView()
-                } else if showingAsList {
-                    spaceList
-                } else {
-                    spaceGrid
-                }
-            }.accessibilityHidden(shareMenuPresented)
+                            tabModel.manager.objectWillChange.send()
+                            editMode = .inactive
 
-            if let space = space, shareMenuPresented {
-                ShareSpaceView(
-                    space: space,
-                    shareTarget: shareTargetView,
-                    isPresented: $shareMenuPresented,
-                    noteText: "Check out my Neeva Space!"
-                )
-                .environmentObject(spacesModel)
-                .environment(\.onOpenURL) { url in
-                    gridModel.hideWithNoAnimation()
-                    spacesModel.detailedSpace = nil
-                    onOpenURL(url)
-                }.transition(.flipFromRight)
-                .animation(.easeInOut)
+                            var attributes = EnvironmentHelper.shared.getAttributes()
+
+                            attributes.append(
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.TabGroupAttribute.numTabsRemoved,
+                                    value: String(selectedTabIDs.count)
+                                )
+                            )
+
+                            ClientLogger.shared.logCounter(
+                                .tabRemovedFromGroup, attributes: attributes)
+                        },
+                        label: {
+                            Text("Remove from group")
+                                .withFont(.labelLarge)
+                                .frame(maxWidth: .infinity)
+                                .clipShape(Capsule())
+                        }
+                    )
+                    .environment(\.isEnabled, selectedTabIDs.count > 0)
+                    .buttonStyle(NeevaButtonStyle(.primary))
+                    .padding(16)
+                }
+            } else if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty {
+                EmptySpaceView()
+            } else if showingAsList {
+                spaceList
+            } else {
+                spaceGrid
             }
-        }.onDisappear {
+        }
+        .accessibilityHidden(shareMenuPresented)
+        .onDisappear {
             gridModel.animateDetailTransitions = true
         }
     }
@@ -181,9 +166,26 @@ where
             Button(
                 action: {
                     if case .owner = space.userACL {
-                        shareMenuPresented = true
+                        SceneDelegate.getBVC(with: tabModel.manager.scene)
+                            .showModal(
+                                style: .withTitle
+                            ) {
+                                ShareSpaceContent(
+                                    space: space,
+                                    shareTargetView: shareTargetView ?? UIView(),
+                                    fromAddToSpace: false,
+                                    noteText: "Check out my Neeva Space!"
+                                )
+                                .environmentObject(spacesModel)
+                                .environmentObject(tabModel)
+                                .environment(\.onOpenURL) { url in
+                                    gridModel.hideWithNoAnimation()
+                                    spacesModel.detailedSpace = nil
+                                    onOpenURL(url)
+                                }
+                            }
                     } else {
-                        shareURL(space.url, shareTargetView)
+                        shareURL(space.url, shareTargetView ?? UIView())
                         ClientLogger.shared.logCounter(
                             .FollowerSharedSpace,
                             attributes: getLogCounterAttributesForSpaces(

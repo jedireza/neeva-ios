@@ -61,10 +61,12 @@ struct ProfileView: View {
                 .withFont(.bodyMedium)
                 .lineLimit(1)
                 .foregroundColor(Color.label)
-            Text(email)
-                .withFont(.bodySmall)
-                .lineLimit(1)
-                .foregroundColor(Color.secondaryLabel)
+            if !email.isEmpty {
+                Text(email)
+                    .withFont(.bodySmall)
+                    .lineLimit(1)
+                    .foregroundColor(Color.secondaryLabel)
+            }
         }
     }
 }

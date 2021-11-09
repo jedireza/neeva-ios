@@ -131,3 +131,9 @@ mutation deleteDeviceTokenIOS($input:DeleteDeviceTokenInput!) {
     success
   }
 }
+
+mutation UpdateUserProfile($input: UpdateUserProfileInput!) {
+  updateUserProfile(input: $input) {
+    success
+  }
+}

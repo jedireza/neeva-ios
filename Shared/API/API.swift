@@ -3453,6 +3453,35 @@ public struct DeleteDeviceTokenInput: GraphQLMapConvertible {
   }
 }
 
+public struct UpdateUserProfileInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - firstName
+  ///   - lastName
+  public init(firstName: Swift.Optional<String?> = nil, lastName: Swift.Optional<String?> = nil) {
+    graphQLMap = ["firstName": firstName, "lastName": lastName]
+  }
+
+  public var firstName: Swift.Optional<String?> {
+    get {
+      return graphQLMap["firstName"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "firstName")
+    }
+  }
+
+  public var lastName: Swift.Optional<String?> {
+    get {
+      return graphQLMap["lastName"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "lastName")
+    }
+  }
+}
+
 public enum ListSpacesKind: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case all
@@ -6491,6 +6520,102 @@ public final class DeleteDeviceTokenIosMutation: GraphQLMutation {
 
       public init(success: Bool? = nil) {
         self.init(unsafeResultMap: ["__typename": "DeleteDeviceTokenResponse", "success": success])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var success: Bool? {
+        get {
+          return resultMap["success"] as? Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "success")
+        }
+      }
+    }
+  }
+}
+
+public final class UpdateUserProfileMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation UpdateUserProfile($input: UpdateUserProfileInput!) {
+      updateUserProfile(input: $input) {
+        __typename
+        success
+      }
+    }
+    """
+
+  public let operationName: String = "UpdateUserProfile"
+
+  public let operationIdentifier: String? = "f48db7858c3f67d2faf8c0a8dffc7abb38c37d7ce70b1b4a1129aff134ec8a9b"
+
+  public var input: UpdateUserProfileInput
+
+  public init(input: UpdateUserProfileInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("updateUserProfile", arguments: ["input": GraphQLVariable("input")], type: .object(UpdateUserProfile.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(updateUserProfile: UpdateUserProfile? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "updateUserProfile": updateUserProfile.flatMap { (value: UpdateUserProfile) -> ResultMap in value.resultMap }])
+    }
+
+    /// Updates the displayed first and last name of the user
+    public var updateUserProfile: UpdateUserProfile? {
+      get {
+        return (resultMap["updateUserProfile"] as? ResultMap).flatMap { UpdateUserProfile(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "updateUserProfile")
+      }
+    }
+
+    public struct UpdateUserProfile: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["UpdateUserProfileResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("success", type: .scalar(Bool.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(success: Bool? = nil) {
+        self.init(unsafeResultMap: ["__typename": "UpdateUserProfileResponse", "success": success])
       }
 
       public var __typename: String {

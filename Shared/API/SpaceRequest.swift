@@ -137,3 +137,11 @@ public class AddToSpaceWithURLRequest: SpaceRequest<AddToSpaceMutation> {
                     data: description, mediaType: "text/plain")))
     }
 }
+
+public class UpdateProfileRequest: SpaceRequest<UpdateUserProfileMutation> {
+    public init(firstName: String, lastName: String) {
+        super.init(
+            mutation: UpdateUserProfileMutation(
+                input: UpdateUserProfileInput(firstName: firstName, lastName: lastName)))
+    }
+}

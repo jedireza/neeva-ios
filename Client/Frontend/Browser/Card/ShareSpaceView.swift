@@ -24,6 +24,32 @@ extension SpaceACLLevel {
     }
 }
 
+struct ShareSpaceContent: View {
+    @Environment(\.hideOverlay) private var hideOverlay
+    let space: Space
+    let shareTargetView: UIView
+    let fromAddToSpace: Bool
+    let noteText: String
+
+    var body: some View {
+        ShareSpaceView(
+            space: space,
+            shareTarget: shareTargetView,
+            isPresented: Binding(
+                get: { true },
+                set: { present in
+                    if !present {
+                        hideOverlay()
+                    }
+                }),
+            compact: fromAddToSpace,
+            noteText: noteText
+        )
+        .overlayTitle(title: "Share Space")
+    }
+
+}
+
 struct ShareSpaceView: View {
     typealias ACL = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     let space: Space
@@ -38,9 +64,15 @@ struct ShareSpaceView: View {
     @State var selectedProfiles: [ContactsProvider.Profile] = []
     @State var isPublic: Bool
     @State var soloACLSharePresented: Bool = false
+    @State var editingName: Bool = false
     @State var emailText: String = ""
     @State var noteText: String
     @State var selectedACL = SpaceACLLevel.view
+    @State var nameText: String = NeevaUserInfo.shared.displayName ?? ""
+
+    private var profileNameToDisplay: String {
+        return !nameText.isEmpty ? nameText : NeevaUserInfo.shared.displayName ?? ""
+    }
 
     init(
         space: Space, shareTarget: UIView, isPresented: Binding<Bool>, compact: Bool = false,
@@ -227,7 +259,7 @@ struct ShareSpaceView: View {
                         Symbol(decorative: soloACLSharePresented ? .chevronUp : .chevronDown)
                             .foregroundColor(.label)
                     }.padding(.horizontal, 16)
-                        .padding(.vertical, 19)
+                        .padding(.vertical, 12)
                 }
             ).buttonStyle(TableCellButtonStyle())
             if soloACLSharePresented {
@@ -259,6 +291,72 @@ struct ShareSpaceView: View {
                 ).padding(.horizontal, 16)
                     .padding(.vertical, 12)
             }
+            if !fromAddToSpace, space.ACL == .owner, isPublic {
+                VStack(alignment: .leading, spacing: 12) {
+                    Text("You'll be shown as the owner of the Space")
+                        .withFont(.bodyMedium)
+                        .foregroundColor(.label)
+                    HStack {
+                        if editingName {
+                            VStack(spacing: 2) {
+                                TextField(
+                                    "Enter a profile name", text: $nameText,
+                                    onCommit: {
+                                        editingName = false
+                                    }
+                                )
+                                .withFont(unkerned: .bodyMedium)
+                                .foregroundColor(.label)
+                                Color.label.frame(height: 1)
+                            }
+                            .introspectTextField { textfield in
+                                textfield.becomeFirstResponder()
+                            }
+                        } else {
+                            ProfileView(
+                                pictureURL: NeevaUserInfo.shared.pictureUrl ?? "",
+                                displayName: profileNameToDisplay,
+                                email: "")
+                        }
+
+                        Spacer()
+                        Button(
+                            action: {
+                                editingName.toggle()
+                            },
+                            label: {
+                                Text(editingName ? "Update" : "Edit Name")
+                                    .withFont(.bodyMedium)
+                            })
+                    }
+                    .padding(.vertical, 19)
+                    .padding(.horizontal, 12)
+                    .background(Color.DefaultBackground)
+                    .cornerRadius(16)
+                    .onChange(of: editingName) { value in
+                        if !value {
+                            if nameText != NeevaUserInfo.shared.displayName {
+                                let index = nameText.lastIndex(of: " ")
+                                let firstName =
+                                    index == nil ? nameText : String(nameText.prefix(upTo: index!))
+                                let lastName =
+                                    index == nil
+                                    ? ""
+                                    : String(
+                                        nameText.dropFirst(index!.utf16Offset(in: nameText) + 1))
+                                let _ =
+                                    UpdateProfileRequest(firstName: firstName, lastName: lastName)
+                            }
+                        }
+                    }
+                }
+                .padding(.vertical, 16)
+                .padding(.horizontal, 16)
+                .background(Color.secondaryBackground)
+                .cornerRadius(16)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 16)
+            }
             if space.ACL == .owner || isPublic {
                 ShareToSocialView(
                     url: fromAddToSpace ? space.urlWithAddedItem : space.url, noteText: noteText,
@@ -289,34 +387,13 @@ struct ShareSpaceView: View {
         }.background(Color.DefaultBackground)
     }
 
-    var header: some View {
-        HStack(spacing: 0) {
-            Text("Done").withFont(.headingMedium).hidden()
-            Spacer()
-            Text("Share Space")
-                .withFont(.headingMedium)
-                .foregroundColor(.label)
-            Spacer()
-            Button(
-                action: { isPresented = false },
-                label: {
-                    Text("Done")
-                        .withFont(.headingMedium)
-                        .foregroundColor(.ui.adaptive.blue)
-                })
-        }.padding(.horizontal, 7)
-            .padding(.vertical, 15)
-            .background(Color.DefaultBackground)
-    }
-
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            if !fromAddToSpace {
-                header
-            }
             ScrollView(.vertical, showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 2) {
-                    publicACLShareView
+                    if !soloACLSharePresented {
+                        publicACLShareView
+                    }
                     if space.ACL == .owner {
                         soloACLShareView
                     }

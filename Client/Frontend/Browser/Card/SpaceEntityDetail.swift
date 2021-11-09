@@ -102,8 +102,8 @@ struct SpaceEntityDetailView: View {
                                 EmptyView()
                             } else {
                                 details.thumbnail.frame(
-                                    width: DetailsViewUX.ThumbnailSize,
-                                    height: DetailsViewUX.ThumbnailSize
+                                    width: DetailsViewUX.DetailThumbnailSize,
+                                    height: DetailsViewUX.DetailThumbnailSize
                                 )
                                 .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
                             }
