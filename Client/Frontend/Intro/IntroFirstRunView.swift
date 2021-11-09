@@ -33,9 +33,10 @@ struct FirstRunHomePage: View {
                         Text("ad-free, private")
                         Text("search engine")
                     }
+                    .minimumScaleFactor(0.1)
                     .font(
                         .roobert(
-                            .light, size: geom.size.width <= smallSizeScreen ? 32 : 42)
+                            .light, size: 42)
                     )
                     .foregroundColor(Color.ui.gray20)
                     .frame(maxWidth: .infinity, alignment: .leading)
