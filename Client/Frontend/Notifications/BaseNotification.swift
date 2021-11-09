@@ -6,6 +6,7 @@ enum NotificationType: String, Codable {
     case neevaPromo = "neevaPromo"
     case neevaOnboardingProductSearch = "neevaOnboardingProductSearch"
     case neevaOnboardingNewsProvider = "neevaOnboardingNewsProvider"
+    case neevaOnboardingFastTap = "neevaOnboardingFastTap"
 }
 
 class BaseNotification: Codable, Identifiable {

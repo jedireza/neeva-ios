@@ -96,6 +96,7 @@ class LocalNotitifications {
             if authorized {
                 scheduleNeevaOnboardingCallback(notificationType: .neevaOnboardingProductSearch)
                 scheduleNeevaOnboardingCallback(notificationType: .neevaOnboardingNewsProvider)
+                scheduleNeevaOnboardingCallback(notificationType: .neevaOnboardingFastTap)
             }
         }
     }
@@ -140,6 +141,9 @@ class LocalNotitifications {
                 case .neevaOnboardingNewsProvider:
                     rescheduled = createNeevaOnboardingCallback(
                         notificationType: .neevaOnboardingNewsProvider)
+                case .neevaOnboardingFastTap:
+                    rescheduled = createNeevaOnboardingCallback(
+                        notificationType: .neevaOnboardingFastTap)
                 }
             }
 
@@ -228,6 +232,12 @@ class LocalNotitifications {
                 "Set your favorite News sources to personalize your search results!"
             timeInterval = TimeInterval(Defaults[.newsProviderPromoTimeInterval])
             deeplinkUrl = "neeva://configure-news-provider"
+        case .neevaOnboardingFastTap:
+            title = "Neeva"
+            body =
+                "Neeva's fast tap takes you to where you want to go in the blink of an eye! See for yourself!"
+            timeInterval = TimeInterval(Defaults[.fastTapPromoTimeInterval])
+            deeplinkUrl = "neeva://fast-tap?query=best+air+purifier"
         default:
             break
         }
