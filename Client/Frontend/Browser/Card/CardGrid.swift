@@ -104,7 +104,7 @@ struct CardGrid: View {
                         gridModel.animationThumbnailState == .hidden
                             ? Color.TrayBackground : Color.clear
                     )
-                    .modifier(SwipeToSwitchToSpacesGesture(model: gridModel))
+                    .modifier(SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
 
                 Group {
                     if let spaceDetails = spaceModel.detailedSpace {
@@ -251,7 +251,8 @@ struct GridPicker: View {
 }
 
 struct SwipeToSwitchToSpacesGesture: ViewModifier {
-    let model: GridModel
+    let gridModel: GridModel
+    let tabModel: TabCardModel
 
     func body(content: Content) -> some View {
         content
@@ -261,8 +262,8 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
                         let horizontalAmount = value.translation.width as CGFloat
                         let verticalAmount = value.translation.height as CGFloat
 
-                        if abs(horizontalAmount) > abs(verticalAmount) {
-                            model.switcherState = horizontalAmount < 0 ? .spaces : .tabs
+                        if abs(horizontalAmount) > abs(verticalAmount) && !tabModel.manager.isIncognito {
+                            gridModel.switcherState = horizontalAmount < 0 ? .spaces : .tabs
                         }
                     })
     }

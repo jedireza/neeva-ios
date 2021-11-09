@@ -37,6 +37,7 @@ struct SwitcherToolbarView: View {
     let top: Bool
     var isEmpty: Bool
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
     @State var presentingMenu: Bool = false
     @State private var action: NeevaMenuAction? = nil
@@ -199,6 +200,6 @@ struct SwitcherToolbarView: View {
         .background(Color.DefaultBackground.ignoresSafeArea())
         .opacity(gridModel.isHidden ? 0 : 1)
         .animation(.easeOut)
-        .modifier(SwipeToSwitchToSpacesGesture(model: gridModel))
+        .modifier(SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
     }
 }
