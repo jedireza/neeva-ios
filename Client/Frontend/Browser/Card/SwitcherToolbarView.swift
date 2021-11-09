@@ -137,7 +137,7 @@ struct SwitcherToolbarView: View {
 
                         Spacer()
                     }
-                } else {
+                } else if case .tabs = gridModel.switcherState {
                     IncognitoButton(
                         isIncognito: toolbarModel.isIncognito,
                         action: {
