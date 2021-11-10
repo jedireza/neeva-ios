@@ -500,11 +500,15 @@ class SuggestionModel: ObservableObject {
             }
             finishEditingAndSubmit(url: URL(string: suggestion.suggestedUrl)!)
         case .lens(let suggestion):
+            hideZeroQuery = false
+
             interaction = .LensSuggestion
-            finishEditingAndSubmit(url: URL(string: suggestion.shortcut)!)
+            queryModel.value = "@\(suggestion.shortcut) "
         case .bang(let suggestion):
+            hideZeroQuery = false
+
             interaction = .BangSuggestion
-            finishEditingAndSubmit(url: URL(string: suggestion.shortcut)!)
+            queryModel.value = "!\(suggestion.shortcut) "
         case .navigation(let nav):
             interaction =
                 nav.isMemorizedNav
