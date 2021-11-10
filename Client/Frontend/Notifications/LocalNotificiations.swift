@@ -216,7 +216,7 @@ class LocalNotitifications {
 
         switch notificationType {
         case .neevaOnboardingProductSearch:
-            title = "Neeva"
+            title = "Search better with Neeva"
             body =
                 "Find the best reviewed products around the web, never ads. See the difference!"
             timeInterval = TimeInterval(Defaults[.productSearchPromoTimeInterval])
@@ -227,17 +227,17 @@ class LocalNotitifications {
                 urlStr = "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)"
             }
         case .neevaOnboardingNewsProvider:
-            title = "Neeva"
+            title = "Search better with Neeva"
             body =
                 "Set your favorite News sources to personalize your search results!"
             timeInterval = TimeInterval(Defaults[.newsProviderPromoTimeInterval])
             deeplinkUrl = "neeva://configure-news-provider"
         case .neevaOnboardingFastTap:
-            title = "Neeva"
+            title = "Search better with Neeva"
             body =
-                "Neeva's fast tap takes you to where you want to go in the blink of an eye! See for yourself!"
+                "Skip the search results page with FastTap, and go directly to the website of your choice. Start typing and see for yourself!"
             timeInterval = TimeInterval(Defaults[.fastTapPromoTimeInterval])
-            deeplinkUrl = "neeva://fast-tap?query=best%20air%20purifier"
+            deeplinkUrl = "neeva://fast-tap?query=tv%20shows"
         default:
             break
         }

@@ -205,8 +205,10 @@ enum NavigationPath {
     }
 
     private static func handleFastTap(query: String, with bvc: BrowserViewController) {
-        bvc.openLazyTab()
-        bvc.searchQueryModel.value = query
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            bvc.openLazyTab()
+            bvc.searchQueryModel.value = query
+        }
     }
 
     public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
