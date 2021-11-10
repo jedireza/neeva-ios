@@ -21,10 +21,13 @@ struct SuggestionsList: View {
                             switch lensOrBang.type {
                             case .bang:
                                 Text("Search on \(description)")
+                                    .withFont(.bodyMedium)
+
                             default:
                                 Text(description)
+                                    .withFont(.bodyMedium)
                             }
-                        }.textCase(nil)
+                        }.textCase(nil).padding(.vertical, 8)
                     ) {
                         QuerySuggestionsList()
                     }
