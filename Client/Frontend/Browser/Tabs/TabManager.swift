@@ -394,17 +394,26 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
-    func createOrSwitchToTab(for url: URL) {
+    enum CreateOrSwitchToTabResult {
+        case createdNewTab
+        case switchedToExistingTab
+    }
+
+    @discardableResult func createOrSwitchToTab(for url: URL) -> CreateOrSwitchToTabResult {
         if let existingTab = getTabFor(url) {
             select(existingTab)
+            return .switchedToExistingTab
         } else {
             let newTab = addTab(
                 URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
             select(newTab)
+            return .createdNewTab
         }
     }
 
-    func createOrSwitchToTabForSpace(for url: URL, spaceID: String) {
+    @discardableResult func createOrSwitchToTabForSpace(for url: URL, spaceID: String)
+        -> CreateOrSwitchToTabResult
+    {
         if let tab = selectedTab {
             ScreenshotHelper(controller: SceneDelegate.getBVC(with: scene)).takeScreenshot(tab)
         }
@@ -413,12 +422,14 @@ class TabManager: NSObject, ObservableObject {
             existingTab.parentSpaceID = spaceID
             existingTab.rootUUID = spaceID
             select(existingTab)
+            return .switchedToExistingTab
         } else {
             let newTab = addTab(
                 URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
             newTab.parentSpaceID = spaceID
             newTab.rootUUID = spaceID
             select(newTab)
+            return .createdNewTab
         }
     }
 

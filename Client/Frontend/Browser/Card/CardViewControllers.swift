@@ -28,7 +28,10 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 .environmentObject(tabGroupCardModel)
                 .environmentObject(gridModel)
                 .environment(\.onOpenURL, { tabCardModel.manager.createOrSwitchToTab(for: $0) })
-                .environment(\.onOpenURLForSpace, tabCardModel.manager.createOrSwitchToTabForSpace)
+                .environment(
+                    \.onOpenURLForSpace,
+                    { tabCardModel.manager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
+                )
                 .environment(\.shareURL, shareURL)
         }
 

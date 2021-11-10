@@ -103,7 +103,9 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                                 scrollingController: bvc.scrollController
                             )
                             .environment(
-                                \.onOpenURLForSpace, bvc.tabManager.createOrSwitchToTabForSpace)
+                                \.onOpenURLForSpace,
+                                { bvc.tabManager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
+                            )
                         }
                         if NeevaFeatureFlags[.recipeCheatsheet] && !bvc.tabManager.isIncognito {
                             GeometryReader { geo in
@@ -198,7 +200,8 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                 let currentState = KeyboardHelper.defaultHelper.currentState
             {
                 // Minus extra padding which is calculated in landscape mode
-                return currentState.intersectionHeightForView(view) - (UIDevice.current.orientation.isLandscape ? 16 : 0)
+                return currentState.intersectionHeightForView(view)
+                    - (UIDevice.current.orientation.isLandscape ? 16 : 0)
             } else {
                 return 0
             }

@@ -1455,8 +1455,13 @@ extension BrowserViewController: TabDelegate {
 
 extension BrowserViewController: HistoryPanelDelegate {
     func libraryPanel(didSelectURL url: URL, visitType: VisitType) {
-        tabManager.createOrSwitchToTab(for: url)
-        presentedViewController?.dismiss(animated: true, completion: nil)
+        presentedViewController?.dismiss(
+            animated: true,
+            completion: {
+                self.hideCardGrid(
+                    withAnimation: self.tabManager.createOrSwitchToTab(for: url)
+                        == .switchedToExistingTab)
+            })
     }
 }
 
