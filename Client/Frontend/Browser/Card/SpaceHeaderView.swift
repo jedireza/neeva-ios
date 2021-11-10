@@ -29,10 +29,18 @@ struct SpaceHeaderView: View {
                 if let followers = space.followers {
                     HStack(spacing: 0) {
                         Symbol(decorative: .person2Fill, style: .bodyLarge)
-                            .foregroundColor(.secondaryLabel)
+                            .foregroundColor(.label)
                         Text(" \(followers) Following")
                             .withFont(.bodyLarge)
-                            .foregroundColor(.secondaryLabel)
+                            .foregroundColor(.label)
+                        Spacer()
+                        if space.ACL == .owner, let views = space.views {
+                            Symbol(decorative: .eye, style: .bodyLarge)
+                                .foregroundColor(.label)
+                            Text(" \(views)")
+                                .withFont(.bodyLarge)
+                                .foregroundColor(.label)
+                        }
                     }
                 }
             } else {

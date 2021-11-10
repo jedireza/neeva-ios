@@ -38,6 +38,7 @@ class SpacesDataQueryController: QueryController<
         var name: String
         var description: String?
         var followers: Int?
+        var views: Int?
         var entities: [SpaceEntityData]
         var comments: [SpaceCommentData]
         var generators: [SpaceGeneratorData]
@@ -110,7 +111,7 @@ class SpacesDataQueryController: QueryController<
                     result.append(
                         Space(
                             id: id, name: name, description: space.space?.description,
-                            followers: space.stats?.followers,
+                            followers: space.stats?.followers, views: space.stats?.views,
                             entities: spaceEntities, comments: spaceComments,
                             generators: spaceGenerators))
                 }
