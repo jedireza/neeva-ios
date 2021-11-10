@@ -61,6 +61,7 @@ class ZeroQueryModel: ObservableObject {
     }
 
     let bvc: BrowserViewController
+    let suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
     let profile: Profile
     let shareURLHandler: (URL, UIView) -> Void
     var delegate: ZeroQueryPanelDelegate?
@@ -183,6 +184,14 @@ class ZeroQueryModel: ObservableObject {
         }
     }
 
+    func updateSuggestedSites() {
+        TopSitesHandler.getTopSites(
+            profile: self.profile
+        ).uponQueue(.main) { result in
+            self.suggestedSitesViewModel.sites = Array(result.prefix(7))
+        }
+    }
+
     func hideURLFromTopSites(_ site: Site) {
         guard let host = site.tileURL.normalizedHost else {
             return
@@ -195,6 +204,7 @@ class ZeroQueryModel: ObservableObject {
         profile.history.removeHostFromTopSites(host).uponQueue(.main) { result in
             guard result.isSuccess else { return }
             self.profile.panelDataObservers.activityStream.refreshIfNeeded(forceTopSites: true)
+            self.updateSuggestedSites()
         }
     }
 

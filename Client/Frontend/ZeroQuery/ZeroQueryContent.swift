@@ -27,7 +27,6 @@ extension EnvironmentValues {
 
 struct ZeroQueryContent: View {
     @ObservedObject var model: ZeroQueryModel
-    @EnvironmentObject var suggestedSitesViewModel: SuggestedSitesViewModel
     @EnvironmentObject var suggestedSearchesModel: SuggestedSearchesModel
 
     var body: some View {

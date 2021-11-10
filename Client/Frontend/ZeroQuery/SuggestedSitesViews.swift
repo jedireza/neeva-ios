@@ -130,10 +130,17 @@ struct SuggestedSiteView: View {
                 title: title,
                 description: site.metadata?.description,
                 shareTarget: shareTargetView)
-            // TODO: make this red
-            Button(action: { isDeleting = true }) {
-                Label("Remove", systemSymbol: .trash)
-            }.foregroundColor(.red)
+
+            if #available(iOS 15.0, *) {
+                Button(role: .destructive, action: { isDeleting = true }) {
+                    Label("Remove", systemSymbol: .trash)
+                }
+            } else {
+                Button(action: { isDeleting = true }) {
+                    Label("Remove", systemSymbol: .trash)
+                }
+            }
+
             if FeatureFlag[.pinToTopSites] {
                 Text("Pin/unpin not yet implemented")
             }
@@ -143,7 +150,7 @@ struct SuggestedSiteView: View {
 
 struct SuggestedSitesView: View {
     let isExpanded: Bool
-    @EnvironmentObject private var viewModel: SuggestedSitesViewModel
+    @ObservedObject var viewModel: SuggestedSitesViewModel
     @Environment(\.zeroQueryWidth) private var zeroQueryWidth
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -225,12 +232,11 @@ struct SuggestedSitesView: View {
                     isPinnedSite: true)
             }.padding().previewLayout(.sizeThatFits)
             Group {
-                SuggestedSitesView(isExpanded: false)
-                SuggestedSitesView(isExpanded: true)
+                SuggestedSitesView(isExpanded: false, viewModel: SuggestedSitesViewModel.preview)
+                SuggestedSitesView(isExpanded: true, viewModel: SuggestedSitesViewModel.preview)
             }
             .previewLayout(.sizeThatFits)
             .environment(\.zeroQueryWidth, 375)
-            .environmentObject(SuggestedSitesViewModel.preview)
         }
     }
 #endif

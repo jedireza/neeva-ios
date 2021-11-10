@@ -128,7 +128,6 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                     }
                 case .zeroQuery:
                     ZeroQueryContent(model: zeroQueryModel)
-                        .environmentObject(suggestedSitesViewModel)
                         .environmentObject(suggestedSearchesModel)
                 case .suggestions:
                     SuggestionsContent(suggestionModel: suggestionModel)
@@ -160,11 +159,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
             }.useEffect(deps: model.currentContentUI) { _ in
                 zeroQueryModel.profile.panelDataObservers.activityStream.refreshIfNeeded(
                     forceTopSites: true)
-                TopSitesHandler.getTopSites(
-                    profile: zeroQueryModel.profile
-                ).uponQueue(.main) { result in
-                    self.suggestedSitesViewModel.sites = Array(result.prefix(7))
-                }
+                self.zeroQueryModel.updateSuggestedSites()
                 self.suggestedSearchesModel.reload(from: zeroQueryModel.profile)
             }
         }

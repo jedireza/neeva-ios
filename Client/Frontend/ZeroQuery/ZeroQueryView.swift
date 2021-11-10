@@ -200,7 +200,7 @@ struct ZeroQueryView: View {
                             icon: expandSuggestedSites.icon
                         )
                         if expandSuggestedSites != .hidden {
-                            SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded)
+                            SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded, viewModel: viewModel.suggestedSitesViewModel)
                         }
 
                         if !isLandScape() && viewModel.showRatingsCard {
