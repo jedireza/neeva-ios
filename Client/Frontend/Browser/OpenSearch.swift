@@ -66,7 +66,7 @@ class OpenSearchEngine {
 
     /// check that the URL host contains the name of the search engine somewhere inside it
     fileprivate func isSearchURLForEngine(_ url: URL?) -> Bool {
-        guard  url?.path == NeevaConstants.appSearchURL.path,
+        guard url?.path == NeevaConstants.appSearchURL.path,
             let urlHost = url?.shortDisplayString,
             let queryEndIndex = searchTemplate.range(of: "?")?.lowerBound,
             let templateURL = URL(string: String(searchTemplate[..<queryEndIndex]))
@@ -92,7 +92,7 @@ class OpenSearchEngine {
     }
 
     func queryForLocationBar(from url: URL?) -> String? {
-        let showQueryInLocationBar = NeevaFeatureFlags[.clientHideSearchBox]
+        let showQueryInLocationBar = NeevaFeatureFlags[.clientHideSearchBoxOnAllPagesAndMoveFilters]
         if showQueryInLocationBar, let query = queryForSearchURL(url),
             !NeevaConstants.isNeevaPageWithSearchBox(url: url)
         {

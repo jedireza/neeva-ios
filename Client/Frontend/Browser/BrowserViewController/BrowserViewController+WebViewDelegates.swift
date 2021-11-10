@@ -50,7 +50,7 @@ private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
     // should be synchronized in this fashion.
 
     let boolFlags: [NeevaFeatureFlags.BoolFlag] = [
-        .clientHideSearchBox,
+        .clientHideSearchBoxOnAllPagesAndMoveFilters,
         .browserQuests,
         .neevaMemory,
         .feedbackQuery,
