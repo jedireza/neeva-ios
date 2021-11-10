@@ -105,6 +105,7 @@ struct RecipeCheatsheetStripView: View {
                     .background(Color.DefaultBackground)
                     .environment(\.onOpenURL, self.onOpenURL)
                     .onAppear(perform: loadRelatedContent)
+                    .onDisappear(perform: resetRelatedContent)
                 }
             }
         }
@@ -121,6 +122,10 @@ struct RecipeCheatsheetStripView: View {
                 }
             }
         }
+    }
+
+    func resetRelatedContent() {
+        self.richResults = nil
     }
 
     func renderRichResult(for richResult: SearchController.RichResult) -> AnyView {
