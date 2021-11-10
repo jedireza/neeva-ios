@@ -105,7 +105,9 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                             .environment(
                                 \.onOpenURLForSpace, bvc.tabManager.createOrSwitchToTabForSpace)
                         }
-                        if NeevaFeatureFlags[.recipeCheatsheet] && !bvc.tabManager.isIncognito {
+                        if NeevaFeatureFlags[.recipeCheatsheet] && !bvc.tabManager.isIncognito
+                            && NeevaUserInfo.shared.hasLoginCookie()
+                        {
                             GeometryReader { geo in
                                 VStack {
                                     Spacer()

@@ -143,6 +143,8 @@ public struct LogConfig {
         case RecipeCheatsheetShowMoreRecipe
         case RecipeCheatsheetClickPreferredProvider
         case RecipeCheatsheetUpdatePreferredProvider
+        case RelatedRecipeClick
+        case RelatedSearchClick
 
         // tab group
         case tabGroupClicked
@@ -314,6 +316,9 @@ public struct LogConfig {
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
         case .RecipeCheatsheetClickPreferredProvider: return .RecipeCheatsheet
         case .RecipeCheatsheetUpdatePreferredProvider: return .RecipeCheatsheet
+        case .RelatedRecipeClick: return .RecipeCheatsheet
+        case .RelatedSearchClick: return .RecipeCheatsheet
+
 
         case .tabGroupClicked: return .TabGroup
         case .tabGroupClosed: return .TabGroup

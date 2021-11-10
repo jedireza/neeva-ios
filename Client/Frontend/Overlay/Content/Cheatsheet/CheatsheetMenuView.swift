@@ -73,6 +73,7 @@ struct QueryButton: View {
         if let encodedQuery = query.addingPercentEncoding(
             withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
         {
+            ClientLogger.shared.logCounter(.RelatedSearchClick, attributes: EnvironmentHelper.shared.getAttributes())
             let target = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")!
             onOpenURL(target)
         }

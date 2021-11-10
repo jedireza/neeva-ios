@@ -85,6 +85,7 @@ struct RelatedRecipeItem: View {
         if let onDismiss = onDismiss {
             onDismiss()
         }
+        ClientLogger.shared.logCounter(.RelatedRecipeClick, attributes: EnvironmentHelper.shared.getAttributes())
         onOpenURL(recipe.url)
     }
 }
