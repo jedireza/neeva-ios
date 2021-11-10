@@ -75,6 +75,7 @@ class SpacesDataQueryController: QueryController<
                                     thumbnail: spaceEntity.thumbnail,
                                     resultType: ResultType(
                                         rawValue: spaceEntity.resultType ?? "web") ?? .web,
+                                    contentURL: URL(string: spaceEntity.contentUrl ?? ""),
                                     previewEntity: SpaceEntityData.previewEntity(from: spaceEntity))
                             )
                         }

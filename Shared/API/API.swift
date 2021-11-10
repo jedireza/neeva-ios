@@ -10065,6 +10065,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 snippet
                 thumbnail
                 resultType
+                contentURL
                 content {
                   __typename
                   id
@@ -10161,7 +10162,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "3e5f41a9a406c55e16ac94939689ca32bafbe89edb936ce09fc0b04e73ff3fc7"
+  public let operationIdentifier: String? = "29ec7f9f32a930cae470db4ae737c98e0bc67f6e0a00e92075b15a6d13b6ffd2"
 
   public var ids: [String]?
 
@@ -10733,6 +10734,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                   GraphQLField("snippet", type: .scalar(String.self)),
                   GraphQLField("thumbnail", type: .scalar(String.self)),
                   GraphQLField("resultType", type: .scalar(String.self)),
+                  GraphQLField("contentURL", type: .scalar(String.self)),
                   GraphQLField("content", type: .object(Content.selections)),
                 ]
               }
@@ -10743,8 +10745,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 self.resultMap = unsafeResultMap
               }
 
-              public init(url: String? = nil, title: String? = nil, snippet: String? = nil, thumbnail: String? = nil, resultType: String? = nil, content: Content? = nil) {
-                self.init(unsafeResultMap: ["__typename": "SpaceEntityData", "url": url, "title": title, "snippet": snippet, "thumbnail": thumbnail, "resultType": resultType, "content": content.flatMap { (value: Content) -> ResultMap in value.resultMap }])
+              public init(url: String? = nil, title: String? = nil, snippet: String? = nil, thumbnail: String? = nil, resultType: String? = nil, contentUrl: String? = nil, content: Content? = nil) {
+                self.init(unsafeResultMap: ["__typename": "SpaceEntityData", "url": url, "title": title, "snippet": snippet, "thumbnail": thumbnail, "resultType": resultType, "contentURL": contentUrl, "content": content.flatMap { (value: Content) -> ResultMap in value.resultMap }])
               }
 
               public var __typename: String {
@@ -10798,6 +10800,15 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 }
                 set {
                   resultMap.updateValue(newValue, forKey: "resultType")
+                }
+              }
+
+              public var contentUrl: String? {
+                get {
+                  return resultMap["contentURL"] as? String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "contentURL")
                 }
               }
 
