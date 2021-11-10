@@ -393,10 +393,9 @@ where
                     Text(primitive.title)
                         .withFont(.headingMedium)
                         .foregroundColor(Color.label)
-                        .opacity(headerVisible ? 0 : 1)
+                        .opacity(headerVisible && tabGroupDetail == nil ? 0 : 1)
                         .animation(.easeInOut)
                 }
-
             }
             Spacer()
             if space != nil {
