@@ -1228,7 +1228,11 @@ class BrowserViewController: UIViewController {
         cardGridViewController.gridModel.pickerHeight =
             topBar.view.frame.height - view.safeAreaInsets.top
 
-        cardGridViewController.gridModel.show()
+        if zeroQueryModel.isLazyTab {
+            cardGridViewController.gridModel.showWithNoAnimation()
+        } else {
+            cardGridViewController.gridModel.show()
+        }
 
         if let tab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(tab)
