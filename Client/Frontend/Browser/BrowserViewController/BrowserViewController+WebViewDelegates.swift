@@ -8,6 +8,7 @@ import Shared
 import StoreKit
 import SwiftyJSON
 import UIKit
+import SafariServices
 import WebKit
 
 private let log = Logger.browser
@@ -466,6 +467,10 @@ extension BrowserViewController: WKNavigationDelegate {
         return false
     }
 
+    fileprivate func isICSFile(_ url: URL) -> Bool {
+        return url.pathExtension == "ics"
+    }
+
     fileprivate func getAppStoreID(_ url: URL) -> String? {
         let prefix = "id"
         guard let id = url.pathComponents.last(where: { $0.hasPrefix(prefix) }) else {
@@ -557,6 +562,17 @@ extension BrowserViewController: WKNavigationDelegate {
             }
 
             present(productVC, animated: true, completion: nil)
+
+            decisionHandler(.cancel)
+            return
+        }
+
+        // Prompt user to add event to the Calendar app
+        if isICSFile(url) {
+            // Open ICS file in Safari Controller to show iOS Calendar modal
+            let safariVC = SFSafariViewController(url: url)
+            safariVC.modalPresentationStyle = .formSheet
+            present(safariVC, animated: true, completion: nil)
 
             decisionHandler(.cancel)
             return
