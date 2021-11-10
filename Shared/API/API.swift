@@ -3256,6 +3256,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   case appAccountDeletion
   case iosApp
   case iosAppLoggedOut
+  case preview
   /// Auto generated constant for unknown enum values
   case __unknown(RawValue)
 
@@ -3270,6 +3271,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case "AppAccountDeletion": self = .appAccountDeletion
       case "IOSApp": self = .iosApp
       case "IOSAppLoggedOut": self = .iosAppLoggedOut
+      case "Preview": self = .preview
       default: self = .__unknown(rawValue)
     }
   }
@@ -3285,6 +3287,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case .appAccountDeletion: return "AppAccountDeletion"
       case .iosApp: return "IOSApp"
       case .iosAppLoggedOut: return "IOSAppLoggedOut"
+      case .preview: return "Preview"
       case .__unknown(let value): return value
     }
   }
@@ -3300,6 +3303,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case (.appAccountDeletion, .appAccountDeletion): return true
       case (.iosApp, .iosApp): return true
       case (.iosAppLoggedOut, .iosAppLoggedOut): return true
+      case (.preview, .preview): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
       default: return false
     }
@@ -3316,6 +3320,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       .appAccountDeletion,
       .iosApp,
       .iosAppLoggedOut,
+      .preview,
     ]
   }
 }
@@ -10021,6 +10026,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
           stats {
             __typename
             followers
+            views
           }
           pageMetadata {
             __typename
@@ -10154,7 +10160,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
   public let operationName: String = "GetSpacesData"
 
-  public let operationIdentifier: String? = "79d2b66c3bb9236533813a0e8056bd2f744293eabb6cb068ca87c8472915603d"
+  public let operationIdentifier: String? = "630fbfee52b02295b0d158d065c81d38b50258e5b29d34a22242e9ff630854bc"
 
   public var ids: [String]?
 
@@ -10299,6 +10305,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             return [
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("followers", type: .scalar(Int.self)),
+              GraphQLField("views", type: .scalar(Int.self)),
             ]
           }
 
@@ -10308,8 +10315,8 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(followers: Int? = nil) {
-            self.init(unsafeResultMap: ["__typename": "SpaceStats", "followers": followers])
+          public init(followers: Int? = nil, views: Int? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceStats", "followers": followers, "views": views])
           }
 
           public var __typename: String {
@@ -10327,6 +10334,15 @@ public final class GetSpacesDataQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "followers")
+            }
+          }
+
+          public var views: Int? {
+            get {
+              return resultMap["views"] as? Int
+            }
+            set {
+              resultMap.updateValue(newValue, forKey: "views")
             }
           }
         }

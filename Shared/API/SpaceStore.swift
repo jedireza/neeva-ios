@@ -58,6 +58,7 @@ public class Space: Hashable, Identifiable {
     public var name: String
     public var description: String?
     public var followers: Int?
+    public var views: Int?
     public let lastModifiedTs: String
     public let thumbnail: String?
     public let resultCount: Int
@@ -69,7 +70,7 @@ public class Space: Hashable, Identifiable {
 
     init(
         id: SpaceID, name: String, description: String? = nil, followers: Int? = nil,
-        lastModifiedTs: String, thumbnail: String?,
+        views: Int? = nil, lastModifiedTs: String, thumbnail: String?,
         resultCount: Int, isDefaultSpace: Bool, isShared: Bool, isPublic: Bool,
         userACL: SpaceACLLevel, acls: [Acl] = []
     ) {
@@ -77,6 +78,7 @@ public class Space: Hashable, Identifiable {
         self.name = name
         self.description = description
         self.followers = followers
+        self.views = views
         self.lastModifiedTs = lastModifiedTs
         self.thumbnail = thumbnail
         self.resultCount = resultCount
@@ -328,6 +330,7 @@ public class SpaceStore: ObservableObject {
                         space: newSpace,
                         description: oldSpace.description,
                         followers: oldSpace.followers,
+                        views: oldSpace.views,
                         urls: contentURLs,
                         data: contentData,
                         comments: comments,
@@ -364,6 +367,7 @@ public class SpaceStore: ObservableObject {
                         space: spacesToFetch.first { $0.id.value == space.id }!,
                         description: space.description,
                         followers: space.followers,
+                        views: space.views,
                         urls: Set(
                             space.entities.filter { $0.url != nil }.reduce(into: [URL]()) {
                                 $0.append($1.url!)
@@ -386,7 +390,7 @@ public class SpaceStore: ObservableObject {
     }
 
     private func onUpdateSpaceURLs(
-        space: Space, description: String?, followers: Int?,
+        space: Space, description: String?, followers: Int?, views: Int?,
         urls: Set<URL>, data: [SpaceEntityData], comments: [SpaceCommentData],
         generators: [SpaceGeneratorData]
     ) {
@@ -396,6 +400,7 @@ public class SpaceStore: ObservableObject {
         space.generators = generators
         space.description = description
         space.followers = followers
+        space.views = views
         for url in urls {
             var spaces = urlToSpacesMap[url] ?? []
             spaces.append(space)

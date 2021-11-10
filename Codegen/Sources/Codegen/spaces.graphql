@@ -52,6 +52,7 @@ query GetSpacesData($ids: [String!]) {
     space {
       stats {
         followers
+        views
       }
       pageMetadata {
         pageID
