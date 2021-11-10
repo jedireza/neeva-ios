@@ -11,6 +11,8 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
 
+    let animation = Animation.interpolatingSpring(stiffness: 425, damping: 30)
+
     func body(content: Content) -> some View {
         content
             .zIndex(details.isSelected ? 1 : 0)
@@ -26,7 +28,7 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
                 overlayCard
                     .offset(x: rect.minX, y: rect.minY)
                     .frame(width: rect.width, height: rect.height)
-                    .animation(.interpolatingSpring(stiffness: 425, damping: 30))
+                    .animation(animation)
                     .transition(.identity)
                     .useEffect(deps: gridModel.animationThumbnailState) { _ in
                         /// This needs to run after `CardGrid` has called `gridModel.scrollToSelectedTab()`,
@@ -34,7 +36,7 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
                         /// through `DispatchQueue.main` does the trick.
                         DispatchQueue.main.async {
                             if gridModel.animationThumbnailState != .hidden {
-                                withAnimation {
+                                withAnimation(animation) {
                                     gridModel.isHidden =
                                         (gridModel.animationThumbnailState == .visibleForTrayHidden)
                                 }
