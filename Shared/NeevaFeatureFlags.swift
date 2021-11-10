@@ -50,7 +50,7 @@ public class NeevaFeatureFlags {
     // that mirror the values defined in //neeva/serving/featureflags/data/.
 
     public enum BoolFlag: Int, CaseIterable {
-        case clientHideSearchBox = 34933
+        case clientHideSearchBoxOnAllPagesAndMoveFilters = 54750
         case browserQuests = 42234
         case suggestionsLogging = 45278
         case neevaMemory = 40640
@@ -72,7 +72,8 @@ public class NeevaFeatureFlags {
 
         public var name: String {
             switch self {
-            case .clientHideSearchBox: return "client.hide_search_box"
+            case .clientHideSearchBoxOnAllPagesAndMoveFilters:
+                return "client.hide_search_bar_on_all_pages_and_move_filters"
             case .browserQuests: return "ios.quests"
             case .suggestionsLogging: return "ios.log.suggestions"
             case .neevaMemory: return "privacy.frontend_options"

@@ -145,7 +145,7 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
-                    if NeevaFeatureFlags[.clientHideSearchBox],
+                    if NeevaFeatureFlags[.clientHideSearchBoxOnAllPagesAndMoveFilters],
                         let searchQuery = viewModel.searchQuery, let url = viewModel.tabURL
                     {
                         SearchSuggestionView(
