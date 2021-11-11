@@ -2,7 +2,7 @@ browser.runtime.sendMessage({ "getPreference": "neevaRedirect"}).then((response)
     const searchQuery = navigateIfNeeded(window.location);
     const possibleReferalURLs = ["https://www.google.com/", "https://www.bing.com/", "https://www.ecosia.com/",
                                   "https://search.yahoo.com/", "https://duckduckgo.com/", "https://yandex.com/",
-                                  "https://www.baidu.com/", "https://www.so.com/", "https://www.sogou.com/"];
+                                  "https://www.baidu.com/", "https://www.so.com/", "https://www.sogou.com/", "https://neeva.com/"];
 
     referrerURL = window.document.referrer;
 
