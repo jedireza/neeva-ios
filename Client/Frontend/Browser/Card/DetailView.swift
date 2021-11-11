@@ -295,7 +295,7 @@ where
             label: {
                 Symbol(
                     decorative: showDescriptions
-                        ? .rectangleArrowtriangle2Inward : .rectangleArrowtriangle2Outward
+                        ? .arrowDownRightAndArrowUpLeft : .arrowUpLeftAndArrowDownRight
                 )
                 .foregroundColor(Color.label)
                 .tapTargetFrame()
