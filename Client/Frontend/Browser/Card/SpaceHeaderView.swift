@@ -30,7 +30,7 @@ struct SpaceHeaderView: View {
                     HStack(spacing: 0) {
                         Symbol(decorative: .person2Fill, style: .bodyLarge)
                             .foregroundColor(.label)
-                        Text(" \(followers) Following")
+                        Text(" \(followers) Followers")
                             .withFont(.bodyLarge)
                             .foregroundColor(.label)
                         Spacer()
