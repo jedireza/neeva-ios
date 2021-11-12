@@ -49,9 +49,11 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarContent> {
         NotificationCenter.default.removeObserver(
             view, name: UIApplication.keyboardDidHideNotification, object: nil)
 
+        // Grab window now when we can be sure to find it.
+        let window = SceneDelegate.getKeyWindow(for: view)
         DispatchQueue.main.async { [self] in
             self.view.heightAnchor.constraint(
-                equalToConstant: SceneDelegate.getKeyWindow(for: view).safeAreaInsets.bottom
+                equalToConstant: window.safeAreaInsets.bottom
                     + UIConstants.TopToolbarHeightWithToolbarButtonsShowing
             ).isActive = true
         }
