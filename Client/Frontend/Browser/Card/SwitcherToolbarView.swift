@@ -93,7 +93,7 @@ struct SwitcherToolbarView: View {
 
                     if top {
                         GridPicker()
-                    } else {
+                    } else if case .tabs = gridModel.switcherState {
                         Spacer()
                     }
                 } else if top {
