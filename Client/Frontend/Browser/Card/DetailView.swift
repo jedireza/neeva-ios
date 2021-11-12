@@ -454,6 +454,7 @@ where
                     .onDisappear {
                         headerVisible = false
                     }
+
                 ForEach(primitive.allDetails, id: \.id) { details in
                     if let entity = details.manager.get(for: details.id) {
                         if let url = entity.primitiveUrl,
@@ -494,6 +495,7 @@ where
                             .onDrag {
                                 NSItemProvider(id: details.id)
                             }
+                            .iPadOnlyID()
                         } else {
                             Text(entity.displayTitle)
                                 .withFont(.headingMedium)
@@ -501,9 +503,9 @@ where
                                 .textCase(.none)
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
+                                .modifier(ListSeparatorModifier())
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .background(Color.secondaryBackground)
-                                .modifier(ListSeparatorModifier())
                                 .onDrag {
                                     NSItemProvider(id: details.id)
                                 }
@@ -512,6 +514,7 @@ where
                 }
                 .onDelete(perform: canEdit ? onDelete : nil)
                 .onMove(perform: canEdit ? onMove : nil)
+
                 if let generators = space?.generators, !generators.isEmpty {
                     SpaceGeneratorHeader(generators: generators)
                         .modifier(ListSeparatorModifier())
@@ -524,7 +527,7 @@ where
             .modifier(ListStyleModifier())
             .navigationBarHidden(true)
             .edgesIgnoringSafeArea([.top, .bottom])
-        }
+        }.modifier(iPadOnlyStackNavigation())
     }
 
     var spaceGrid: some View {
@@ -689,6 +692,18 @@ struct ListStyleModifier: ViewModifier {
     }
 }
 
+struct iPadOnlyStackNavigation: ViewModifier {
+    func body(content: Content) -> some View {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            content
+                .navigationViewStyle(.stack)
+        } else {
+            content
+                .navigationViewStyle(.automatic)
+        }
+    }
+}
+
 struct DetailView_Previews: PreviewProvider {
     static var previews: some View {
         DetailView(
@@ -696,5 +711,15 @@ struct DetailView_Previews: PreviewProvider {
                 space: .stackOverflow,
                 manager: SpaceStore.shared)
         ) {}
+    }
+}
+
+extension View {
+    @ViewBuilder func iPadOnlyID() -> some View {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            self.id(UUID())
+        } else {
+            self
+        }
     }
 }
