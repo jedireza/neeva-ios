@@ -497,18 +497,27 @@ where
                             }
                             .iPadOnlyID()
                         } else {
-                            Text(entity.displayTitle)
-                                .withFont(.headingMedium)
-                                .foregroundColor(.label)
-                                .textCase(.none)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 12)
-                                .modifier(ListSeparatorModifier())
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.secondaryBackground)
-                                .onDrag {
-                                    NSItemProvider(id: details.id)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(entity.displayTitle)
+                                    .withFont(.headingMedium)
+                                    .foregroundColor(.label)
+                                if let spaceEntityDetails = details as? SpaceEntityThumbnail,
+                                    let description = spaceEntityDetails.data.snippet,
+                                    !description.isEmpty
+                                {
+                                    Text(description)
+                                        .withFont(.bodyLarge)
+                                        .foregroundColor(.secondaryLabel)
                                 }
+                            }
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 12)
+                            .modifier(ListSeparatorModifier())
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(Color.secondaryBackground)
+                            .onDrag {
+                                NSItemProvider(id: details.id)
+                            }
                         }
                     }
                 }
@@ -597,7 +606,8 @@ where
                         ForEach(tabGroupDetail!.allDetails, id: \.id) { details in
                             FittedCard(details: details)
                                 .contextMenu {
-                                    FeatureFlag[.tabGroupsPinning] ? TabGroupContextMenu(details: details) : nil
+                                    FeatureFlag[.tabGroupsPinning]
+                                        ? TabGroupContextMenu(details: details) : nil
                                 }
                                 .modifier(
                                     CardTransitionModifier(

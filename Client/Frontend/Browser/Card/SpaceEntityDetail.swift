@@ -49,7 +49,7 @@ struct SpaceEntityDetailView: View {
         case .newsItem(let newsItem):
             return newsItem.formattedDatePublished.capitalized + " - " + newsItem.snippet
         case .recipe(let _):
-            return nil
+            return details.description
         case .techDoc(let doc):
             return doc.body?.string
         default:
@@ -135,7 +135,9 @@ struct SpaceEntityDetailView: View {
                                         .lineLimit(3)
                                         .fixedSize(horizontal: false, vertical: true)
                                         .frame(maxWidth: .infinity, alignment: .leading)
-                                } else if let snippet = snippetToDisplay, !showDescriptions {
+                                } else if let snippet = snippetToDisplay,
+                                    !showDescriptions, !snippet.isEmpty
+                                {
                                     Text(snippet)
                                         .withFont(.bodyLarge)
                                         .lineLimit(3)
@@ -164,7 +166,9 @@ struct SpaceEntityDetailView: View {
                                 .fixedSize(horizontal: false, vertical: true)
                                 .foregroundColor(Color.secondaryLabel)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                        } else if let snippet = snippetToDisplay, showDescriptions {
+                        } else if let snippet = snippetToDisplay,
+                            showDescriptions, !snippet.isEmpty
+                        {
                             Text(snippet)
                                 .withFont(.bodyLarge)
                                 .fixedSize(horizontal: false, vertical: true)
