@@ -148,7 +148,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
     ) {
         coordinator.animate(
             alongsideTransition: {
-                [unowned self] (UIViewControllerTransitionCoordinatorContext) -> Void in
+                [self] (UIViewControllerTransitionCoordinatorContext) -> Void in
                 height.constant = chromeModel.inlineToolbar ? inlineToolbarHeight : portaitHeight
             },
             completion: { (UIViewControllerTransitionCoordinatorContext) -> Void in
