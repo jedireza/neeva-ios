@@ -19,7 +19,6 @@ class AppClipHelper {
             let data = try Data(contentsOf: appClipPath)
             return try JSONDecoder().decode(String.self, from: data)
         } catch {
-            print("Error retriving App Clip data:", error.localizedDescription)
             return nil
         }
     }
@@ -38,7 +37,6 @@ class AppClipHelper {
             let encoder = JSONEncoder()
             let data = try encoder.encode(token)
             try data.write(to: containerURL)
-            print("Saved \(token as Any) to: \(containerURL.absoluteString)")
         } catch {
             print("Whoops, an error occured: \(error)")
         }
