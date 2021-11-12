@@ -43,7 +43,7 @@ struct LocationLabelAndIcon: View {
             Label {
                 Text(query).withFont(.bodyLarge)
             } icon: {
-                Symbol(decorative: .magnifyingglass)
+                Symbol(decorative: .magnifyingglass, size: 14)
             }
         } else if let scheme = url?.scheme, let host = url?.host,
             scheme == "https" || scheme == "http"
