@@ -133,7 +133,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     var closeButtonImage: UIImage? {
         FeatureFlag[.tabGroupsPinning] && manager.get(for: id)?.isPinned == true
-                ? UIImage(systemName: "pin.fill") : UIImage(systemName: "xmark")
+            ? UIImage(systemName: "pin.fill") : UIImage(systemName: "xmark")
     }
 
     var isSelected: Bool {
@@ -252,29 +252,34 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
         }
     }
 
+    func webImage(url: URL) -> some View {
+        WebImage(
+            url: url,
+            context: [
+                .imageThumbnailPixelSize: CGSize(
+                    width: DetailsViewUX.DetailThumbnailSize * 4,
+                    height: DetailsViewUX.DetailThumbnailSize * 4)
+            ]
+        )
+        .resizable()
+        .aspectRatio(contentMode: .fill)
+    }
+
     @ViewBuilder var thumbnail: some View {
         if case .recipe(let recipe) = data.previewEntity,
             let imageURL = URL(string: recipe.imageURL)
         {
-            WebImage(url: imageURL)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
+            webImage(url: imageURL)
         } else if case .richEntity(let richEntity) = data.previewEntity,
             let imageURL = richEntity.imageURL
         {
-            WebImage(url: imageURL)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
+            webImage(url: imageURL)
         } else if case .newsItem(let newsItem) = data.previewEntity,
             let imageURL = newsItem.thumbnailURL
         {
-            WebImage(url: imageURL)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
+            webImage(url: imageURL)
         } else if isImage, let imageURL = data.url {
-            WebImage(url: imageURL)
-                .resizable()
-                .aspectRatio(contentMode: .fill)
+            webImage(url: imageURL)
         } else if let imageThumbnailModel = imageThumbnailModel {
             ImageThumbnailView(model: imageThumbnailModel)
         } else {

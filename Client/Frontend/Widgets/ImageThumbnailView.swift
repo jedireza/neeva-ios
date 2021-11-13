@@ -16,7 +16,8 @@ class ImageThumbnailModel: ObservableObject {
             return image
         }
         DispatchQueue.global().async {
-            let image = UIImage.imageFromDataThreadSafe(self.imageData)
+            let image = UIImage.imageFromDataThreadSafe(
+                self.imageData, resizeWith: DetailsViewUX.DetailThumbnailSize * 4)
             DispatchQueue.main.async {
                 self.cachedImage = image
             }
