@@ -161,8 +161,8 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                     )
                     .unredacted()
                 VStack(alignment: .leading, spacing: 0) {
-                    label
-                    secondaryLabel
+                    label.minimumScaleFactor(0.4)
+                    secondaryLabel.minimumScaleFactor(0.1)
                 }.padding(
                     .leading,
                     config == .row ? SuggestionViewUX.Padding : SuggestionViewUX.ChipPadding)
