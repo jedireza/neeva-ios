@@ -695,7 +695,7 @@ class TabManager: NSObject, ObservableObject {
         }
 
         // Prevents a sticky tab tray
-        SceneDelegate.getBVC(with: scene).cardGridViewController.gridModel.animationThumbnailState =
+        SceneDelegate.getBVC(with: scene).gridModel.animationThumbnailState =
             .hidden
 
         if let selectedSavedTab = selectedSavedTab, shouldSelectTab {

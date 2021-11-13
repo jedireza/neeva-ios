@@ -189,7 +189,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                 spaceContentSheetModel: FeatureFlag[.spaceComments]
                     ? SpaceContentSheetModel(
                         tabManager: bvc.tabManager,
-                        spaceModel: bvc.cardGridViewController.rootView.spaceCardModel) : nil)
+                        spaceModel: bvc.gridModel.spaceCardModel) : nil)
         }
 
         suggestionModel.getKeyboardHeight = {

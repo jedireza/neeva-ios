@@ -13,9 +13,6 @@ public enum CardControllerUX {
 
 class CardGridViewController: UIHostingController<CardGridViewController.Content> {
     struct Content: View {
-        let tabCardModel: TabCardModel
-        let tabGroupCardModel: TabGroupCardModel
-        let spaceCardModel: SpaceCardModel
         let gridModel: GridModel
         let toolbarModel: SwitcherToolbarModel
         let shareURL: (URL, UIView) -> Void
@@ -23,39 +20,25 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         var body: some View {
             CardGrid()
                 .environmentObject(toolbarModel)
-                .environmentObject(tabCardModel)
-                .environmentObject(spaceCardModel)
-                .environmentObject(tabGroupCardModel)
+                .environmentObject(gridModel.tabCardModel)
+                .environmentObject(gridModel.spaceCardModel)
+                .environmentObject(gridModel.tabGroupCardModel)
                 .environmentObject(gridModel)
-                .environment(\.onOpenURL, { tabCardModel.manager.createOrSwitchToTab(for: $0) })
+                .environment(\.onOpenURL, { gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) })
                 .environment(
                     \.onOpenURLForSpace,
-                    { tabCardModel.manager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
+                     { gridModel.tabCardModel.manager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
                 )
                 .environment(\.shareURL, shareURL)
-        }
-
-        func openSpace(spaceID: String, animate: Bool = true) {
-            let detail = spaceCardModel.allDetails.first(where: { $0.id == spaceID })
-            withAnimation(nil) {
-                gridModel.showSpaces(forceUpdate: false)
-            }
-            gridModel.animateDetailTransitions = animate
-            detail?.isShowingDetails = true
-        }
-
-        func openTabGroup(detail: TabGroupCardDetails) {
-            tabGroupCardModel.detailedTabGroup = detail
-            gridModel.show()
         }
     }
 
     var leadingConstraint: Constraint? = nil
-    let gridModel = GridModel()
+    let gridModel: GridModel
     let toolbarModel: SwitcherToolbarModel
 
     init(bvc: BrowserViewController, toolbarModel: SwitcherToolbarModel) {
-        let tabGroupManager = TabGroupManager(tabManager: bvc.tabManager)
+        self.gridModel = GridModel(tabManager: bvc.tabManager)
         self.toolbarModel = toolbarModel
         let shareURL: (URL, UIView) -> Void = { url, view in
             let helper = ShareExtensionHelper(url: url, tab: nil)
@@ -70,9 +53,6 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         }
         super.init(
             rootView: Content(
-                tabCardModel: TabCardModel(manager: bvc.tabManager, groupManager: tabGroupManager),
-                tabGroupCardModel: TabGroupCardModel(manager: tabGroupManager),
-                spaceCardModel: SpaceCardModel(),
                 gridModel: gridModel,
                 toolbarModel: toolbarModel,
                 shareURL: shareURL

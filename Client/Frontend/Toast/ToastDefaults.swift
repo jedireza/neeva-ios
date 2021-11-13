@@ -93,7 +93,7 @@ class ToastDefaults: NSObject {
         let (toastText, completedText, deleted) = request.textInfo
 
         let buttonAction = {
-            bvc.cardGridViewController.gridModel.showSpaces()
+            bvc.gridModel.showSpaces()
         }
 
         let failedAction = {

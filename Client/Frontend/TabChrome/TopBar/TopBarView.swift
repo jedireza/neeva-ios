@@ -117,31 +117,3 @@ struct TopBarView: View {
         .accentColor(.label)
     }
 }
-
-struct TopBarView_Previews: PreviewProvider {
-    static var previews: some View {
-        Group {
-            VStack {
-                TopBarView(
-                    performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
-                    onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
-                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, onCancel: {},
-                    onOverflowMenuAction: { _, _ in }, onLongPressOverflowButton: { _ in })
-                Spacer()
-            }.background(Color.red.ignoresSafeArea())
-
-            VStack {
-                TopBarView(
-                    performTabToolbarAction: { _ in }, buildTabsMenu: { nil }, onReload: {},
-                    onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
-                    onNeevaMenuAction: { _ in }, didTapNeevaMenu: {}, newTab: {}, onCancel: {},
-                    onOverflowMenuAction: { _, _ in }, onLongPressOverflowButton: { _ in })
-                Spacer()
-            }
-            .preferredColorScheme(.dark)
-        }
-        .environmentObject(LocationViewModel(previewURL: nil, isSecure: true))
-        .environmentObject(GridModel())
-        .environmentObject(TabChromeModel(estimatedProgress: 0.5))
-    }
-}

@@ -72,6 +72,10 @@ class BrowserViewController: UIViewController {
     }()
 
     let chromeModel = TabChromeModel()
+    var gridModel: GridModel {
+        cardGridViewController.gridModel
+    }
+
     lazy var cardGridViewController: CardGridViewController = { [unowned self] in
         let controller = CardGridViewController(
             bvc: self,
@@ -81,7 +85,7 @@ class BrowserViewController: UIViewController {
                 createNewSpace: {
                     self.showModal(style: .grouped) {
                         CreateSpaceOverlayContent()
-                            .environmentObject(self.cardGridViewController.rootView.spaceCardModel)
+                            .environmentObject(self.gridModel.spaceCardModel)
                     }
                 },
                 onNeevaMenuAction: self.perform(neevaMenuAction:)))
@@ -427,7 +431,7 @@ class BrowserViewController: UIViewController {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        let gridModel = self.cardGridViewController.gridModel
+        let gridModel = self.gridModel
         let topBarHost = TopBarHost(
             isIncognito: tabManager.isIncognito,
             locationViewModel: locationModel,
@@ -726,7 +730,7 @@ class BrowserViewController: UIViewController {
         // makes sure zeroQuery isn't already open
         guard zeroQueryModel.openedFrom == nil else { return }
 
-        if !cardGridViewController.gridModel.isHidden {
+        if !gridModel.isHidden {
             hideCardGrid(withAnimation: false)
         }
 
@@ -1040,8 +1044,8 @@ class BrowserViewController: UIViewController {
     }
 
     fileprivate func popToBVC() {
-        if !cardGridViewController.gridModel.isHidden {
-            cardGridViewController.gridModel.hideWithNoAnimation()
+        if !gridModel.isHidden {
+            gridModel.hideWithNoAnimation()
         }
 
         if let presentedViewController = presentedViewController {
@@ -1215,7 +1219,7 @@ class BrowserViewController: UIViewController {
         attributes.append(
             ClientLogCounterAttribute(
                 key: LogConfig.TabGroupAttribute.numTabGroupsTotal,
-                value: String(cardGridViewController.rootView.tabGroupCardModel.allDetails.count)
+                value: String(gridModel.tabGroupCardModel.allDetails.count)
             )
         )
 
@@ -1225,13 +1229,13 @@ class BrowserViewController: UIViewController {
         Sentry.shared.clearBreadcrumbs()
 
         updateFindInPageVisibility(visible: false)
-        cardGridViewController.gridModel.pickerHeight =
+        gridModel.pickerHeight =
             topBar.view.frame.height - view.safeAreaInsets.top
 
         if zeroQueryModel.isLazyTab {
-            cardGridViewController.gridModel.showWithNoAnimation()
+            gridModel.showWithNoAnimation()
         } else {
-            cardGridViewController.gridModel.show()
+            gridModel.show()
         }
 
         if let tab = tabManager.selectedTab {
@@ -1241,9 +1245,9 @@ class BrowserViewController: UIViewController {
 
     func hideCardGrid(withAnimation: Bool) {
         if withAnimation {
-            cardGridViewController.gridModel.hideWithAnimation()
+            gridModel.hideWithAnimation()
         } else {
-            cardGridViewController.gridModel.hideWithNoAnimation()
+            gridModel.hideWithNoAnimation()
         }
     }
 }
@@ -1251,7 +1255,7 @@ class BrowserViewController: UIViewController {
 // MARK: URL Bar Delegate support code
 extension BrowserViewController {
     func urlBarDidEnterOverlayMode() {
-        if !cardGridViewController.gridModel.isHidden {
+        if !gridModel.isHidden {
             openLazyTab(openedFrom: .tabTray)
         } else {
             showZeroQuery(openedFrom: .openTab(tabManager.selectedTab))
@@ -1480,7 +1484,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
             && url.absoluteString.starts(with: NeevaConstants.appSpacesURL.absoluteString)
         {
             hideZeroQuery()
-            cardGridViewController.rootView.openSpace(spaceID: url.lastPathComponent)
+            gridModel.openSpace(spaceID: url.lastPathComponent)
             return
         }
         finishEditingAndSubmit(url, visitType: visitType, forTab: tabManager.selectedTab)
@@ -2012,7 +2016,7 @@ extension BrowserViewController {
             }
 
             var updater: SocialInfoUpdater? = nil
-            weak var model = cardGridViewController.rootView.spaceCardModel
+            weak var model = gridModel.spaceCardModel
 
             updater = SocialInfoUpdater.from(url: url, ogInfo: output?.last, title: title ?? "") {
                 range, data, id in

@@ -2,8 +2,12 @@
 
 import Foundation
 import Shared
+import SwiftUI
 
 class GridModel: ObservableObject {
+    let tabCardModel: TabCardModel
+    let tabGroupCardModel: TabGroupCardModel
+    let spaceCardModel: SpaceCardModel
     @Published var isHidden = true
     @Published var animationThumbnailState: AnimationThumbnailState = .hidden
     @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
@@ -23,6 +27,13 @@ class GridModel: ObservableObject {
     var animateDetailTransitions = true
 
     @Published var needsScrollToSelectedTab: Int = 0
+
+    init(tabManager: TabManager) {
+        let tabGroupManager = TabGroupManager(tabManager: tabManager)
+        self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)
+        self.tabGroupCardModel = TabGroupCardModel(manager: tabGroupManager)
+        self.spaceCardModel = SpaceCardModel()
+    }
 
     func scrollToSelectedTab() {
         needsScrollToSelectedTab += 1
@@ -72,6 +83,20 @@ class GridModel: ObservableObject {
         DispatchQueue.main.async {
             SpaceStore.shared.refresh()
         }
+    }
+
+    func openSpace(spaceID: String, animate: Bool = true) {
+        let detail = spaceCardModel.allDetails.first(where: { $0.id == spaceID })
+        withAnimation(nil) {
+            showSpaces(forceUpdate: false)
+        }
+        animateDetailTransitions = animate
+        detail?.isShowingDetails = true
+    }
+
+    func openTabGroup(detail: TabGroupCardDetails) {
+        tabGroupCardModel.detailedTabGroup = detail
+        show()
     }
 }
 

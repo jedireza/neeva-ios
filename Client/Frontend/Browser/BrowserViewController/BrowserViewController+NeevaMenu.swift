@@ -36,7 +36,7 @@ extension BrowserViewController {
                 if TourManager.shared.hasActiveStep() {
                     switchToTabForURLOrOpen(NeevaConstants.appSpacesURL)
                 } else {
-                    cardGridViewController.gridModel.showSpaces()
+                    gridModel.showSpaces()
                 }
             }
 

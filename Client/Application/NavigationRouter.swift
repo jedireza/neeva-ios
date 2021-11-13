@@ -189,13 +189,13 @@ enum NavigationPath {
     private static func handleSpace(spaceId: String, with bvc: BrowserViewController) {
         // navigate to SpaceId
         SpaceStore.openSpace(spaceId: spaceId) {
-            let spaceCardModel = bvc.cardGridViewController.rootView.spaceCardModel
+            let spaceCardModel = bvc.gridModel.spaceCardModel
             if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                bvc.cardGridViewController.rootView.openSpace(spaceID: spaceId, animate: false)
+                bvc.gridModel.openSpace(spaceID: spaceId, animate: false)
             } else {
                 subscription = spaceCardModel.objectWillChange.sink {
                     if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                        bvc.cardGridViewController.rootView.openSpace(
+                        bvc.gridModel.openSpace(
                             spaceID: spaceId, animate: false)
                         subscription?.cancel()
                     }

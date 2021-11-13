@@ -44,7 +44,7 @@ struct ShareAddedSpaceView: View {
                     Spacer()
                     Button(
                         action: {
-                            bvc.cardGridViewController.rootView.openSpace(
+                            bvc.gridModel.openSpace(
                                 spaceID: request.targetSpaceID!, animate: false)
                             hideOverlay()
                             let entity: SpaceEntityData? = space?.contentData?.first
@@ -56,7 +56,7 @@ struct ShareAddedSpaceView: View {
                                         AddToNativeSpaceOverlayContent(
                                             space: space, entityID: id
                                         ).environmentObject(
-                                            bvc.cardGridViewController.rootView.spaceCardModel)
+                                            bvc.gridModel.spaceCardModel)
                                     }
                             }
                         },
@@ -68,7 +68,7 @@ struct ShareAddedSpaceView: View {
                         })
                     Button(
                         action: {
-                            bvc.cardGridViewController.rootView.openSpace(
+                            bvc.gridModel.openSpace(
                                 spaceID: request.targetSpaceID!)
                             hideOverlay()
                         },
@@ -118,8 +118,8 @@ struct ShareAddedSpaceView: View {
 
                 bvc.present(controller, animated: true, completion: nil)
             }
-        ).environmentObject(bvc.cardGridViewController.rootView.spaceCardModel)
-        .environmentObject(bvc.cardGridViewController.rootView.tabCardModel)
+        ).environmentObject(bvc.gridModel.spaceCardModel)
+        .environmentObject(bvc.gridModel.tabCardModel)
         .onChange(of: presentingShareUI) { _ in
             hideOverlay()
         }.onChange(of: request.state) { state in

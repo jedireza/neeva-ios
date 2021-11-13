@@ -177,7 +177,7 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
-        let model = GridModel()
+        let model = GridModel(tabManager: manager)
         let cardGrid = CardGrid().environmentObject(tabCardModel).environmentObject(spaceCardModel)
             .environmentObject(tabGroupCardModel).environmentObject(model)
 
@@ -202,7 +202,7 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
-        let model = GridModel()
+        let model = GridModel(tabManager: manager)
         model.switcherState = .spaces
         spaceCardModel.onDataUpdated()
         waitForCondition(condition: { spaceCardModel.allDetails.count == 4 })
