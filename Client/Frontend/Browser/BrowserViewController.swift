@@ -1646,10 +1646,13 @@ extension BrowserViewController: UIAdaptivePresentationControllerDelegate {
 
 extension BrowserViewController {
     func presentIntroViewController(
-        _ alwaysShow: Bool = false, onDismiss: (() -> Void)? = nil, signInMode: Bool = false
+        _ alwaysShow: Bool = false,
+        onDismiss: (() -> Void)? = nil,
+        signInMode: Bool = false,
+        completion: (() -> Void)? = nil
     ) {
         if alwaysShow || !Defaults[.introSeen] {
-            showProperIntroVC(onDismiss: onDismiss, signInMode: signInMode)
+            showProperIntroVC(onDismiss: onDismiss, signInMode: signInMode, completion: completion)
         }
     }
 
@@ -1664,7 +1667,18 @@ extension BrowserViewController {
         present(onboardingVC, animated: true, completion: nil)
     }
 
-    private func showProperIntroVC(onDismiss: (() -> Void)? = nil, signInMode: Bool = false) {
+    private func showProperIntroVC(onDismiss: (() -> Void)? = nil, signInMode: Bool = false, completion: (() -> Void)? = nil) {
+        func createOrSwitchToTabFromAuth(_ url: URL) {
+            if let selectedTab = self.tabManager.selectedTab, let _ = self.tabManager.selectedTab?.url {
+                DispatchQueue.main.async {
+                    selectedTab.loadRequest(URLRequest(url: url))
+                    self.hideCardGrid(withAnimation: false)
+                }
+            } else {
+                openURLInNewTab(url)
+            }
+        }
+
         func setTokenAndOpenURL(token: String, url: URL) {
             NeevaUserInfo.shared.setLoginCookie(token)
 
@@ -1675,7 +1689,9 @@ extension BrowserViewController {
 
             let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
             httpCookieStore.setCookie(NeevaConstants.loginCookie(for: token)) {
-                self.openURLInNewTab(url)
+                DispatchQueue.main.async {
+                    createOrSwitchToTabFromAuth(url)
+                }
             }
         }
 
@@ -1687,22 +1703,21 @@ extension BrowserViewController {
             self.introViewController?.dismiss(animated: true) { [self] in
                 switch action {
                 case .signin:
-                    self.openURLInNewTab(NeevaConstants.appSigninURL)
+                    break
                 case .signupWithApple(_, let url):
                     if let url = url {
                         self.openURLInNewTab(url)
                     }
                 case .signupWithOther:
-                    self.openURLInNewTab(NeevaConstants.appSignupURL)
+                    break
                 case .skipToBrowser:
                     if let onDismiss = onDismiss {
                         onDismiss()
                     }
-                    openURLInNewTab(NeevaConstants.appSearchURL)
+                    createOrSwitchToTabFromAuth(NeevaConstants.appSearchURL)
                     break
                 case .oktaSignin(let email):
-                    self.openURLInNewTab(
-                        NeevaConstants.oktaSigninURL(email: email))
+                    createOrSwitchToTabFromAuth(NeevaConstants.oktaSigninURL(email: email))
                     break
                 case .oktaSignup(_, _, _, _):
                     break
@@ -1723,10 +1738,10 @@ extension BrowserViewController {
             }
         }
 
-        self.introVCPresentHelper(introViewController: introViewController!)
+        self.introVCPresentHelper(introViewController: introViewController!, completion: completion)
     }
 
-    private func introVCPresentHelper(introViewController: UIViewController) {
+    private func introVCPresentHelper(introViewController: UIViewController, completion: (() -> Void)?) {
         // On iPad we present it modally in a controller
         if traitCollection.horizontalSizeClass == .regular
             && traitCollection.verticalSizeClass == .regular
@@ -1736,7 +1751,7 @@ extension BrowserViewController {
         } else {
             introViewController.modalPresentationStyle = .fullScreen
         }
-        present(introViewController, animated: true)
+        present(introViewController, animated: true, completion: completion)
     }
 }
 

@@ -115,7 +115,9 @@ class SettingsViewController: UIHostingController<AnyView> {
                 }
                 .environment(\.settingsPresentIntroViewController) {
                     self.dismiss(animated: true) {
-                        bvc.presentIntroViewController(true)
+                        bvc.presentIntroViewController(true) {
+                            bvc.hideZeroQuery()
+                        }
                     }
                 }
                 .environment(\.dismissScreen) {
