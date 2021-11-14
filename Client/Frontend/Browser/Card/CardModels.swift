@@ -438,36 +438,43 @@ class TabGroupCardModel: CardModel {
     init(manager: TabGroupManager) {
         self.manager = manager
         onDataUpdated()
-        self.anyCancellable = self.manager.objectWillChange.sink { [unowned self] (_) in
+        self.anyCancellable = self.manager.objectWillChange.sink { [weak self] (_) in
             DispatchQueue.main.async {
-                allDetails = manager.getAll().map {
+                guard let self = self else {
+                    return
+                }
+                self.allDetails = manager.getAll().map {
                     TabGroupCardDetails(tabGroup: $0, tabGroupManager: manager)
                 }
-                if detailedTabGroup != nil {
-                    detailedTabGroup = allDetails.first {
-                        $0.id == detailedTabGroup?.id
+                if self.detailedTabGroup != nil {
+                    self.detailedTabGroup = self.allDetails.first {
+                        $0.id == self.detailedTabGroup?.id
                     }
-                    detailedTabGroup?.isShowingDetails = true
+                    self.detailedTabGroup?.isShowingDetails = true
                 }
-                manager.cleanUpTabGroupNames()
-                representativeTabs = manager.getAll()
+                self.manager.cleanUpTabGroupNames()
+                self.representativeTabs = manager.getAll()
                     .reduce(into: [Tab]()) { $0.append($1.children.first!) }
-                allDetails.forEach { details in
-                    createIsShowingDetailsSink(details: details, storeIn: &detailsSubscriptions)
+                self.allDetails.forEach { details in
+                    self.createIsShowingDetailsSink(
+                        details: details, storeIn: &self.detailsSubscriptions)
                 }
-                manager.getAll().forEach { tabgroup in
+                self.manager.getAll().forEach { tabgroup in
                     tabgroup.children.forEach { tab in
                         tab.$screenshotUUID.sink { [weak self] (_) in
-                            if let index = self?.allDetails.firstIndex(where: {
+                            guard let self = self else {
+                                return
+                            }
+                            if let index = self.allDetails.firstIndex(where: {
                                 $0.id == tab.rootUUID
                             }), let tabGroup = manager.tabGroups[tab.rootUUID] {
-                                self?.allDetails[index] = TabGroupCardDetails(
-                                    tabGroup: tabGroup, tabGroupManager: manager)
-                                createIsShowingDetailsSink(
-                                    details: self?.allDetails[index],
-                                    storeIn: &screenshotsSubscriptions)
+                                self.allDetails[index] = TabGroupCardDetails(
+                                    tabGroup: tabGroup, tabGroupManager: self.manager)
+                                self.createIsShowingDetailsSink(
+                                    details: self.allDetails[index],
+                                    storeIn: &self.screenshotsSubscriptions)
                             }
-                        }.store(in: &screenshotsSubscriptions)
+                        }.store(in: &self.screenshotsSubscriptions)
                     }
                 }
             }
