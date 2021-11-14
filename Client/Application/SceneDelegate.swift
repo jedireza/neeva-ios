@@ -69,14 +69,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func sceneDidBecomeActive(_ scene: UIScene) {
         self.scene = scene
 
-        //
-        // We are back in the foreground, so set applicationCleanlyBackgrounded to false so that we can detect that
-        // the application was cleanly backgrounded later.
-        //
-        Defaults[.applicationCleanlyBackgrounded] = false
-
         Self.activeSceneCount += 1
         if Self.activeSceneCount == 1 {
+            // We are back in the foreground, so set applicationCleanlyBackgrounded to false so that we can detect that
+            // the application was cleanly backgrounded later.
+            Defaults[.applicationCleanlyBackgrounded] = false
+
             getAppDelegate().profile._reopen()
         }
 
@@ -102,16 +100,15 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        //
-        // At this point we are happy to mark the app as applicationCleanlyBackgrounded. If a crash happens in background
-        // sync then that crash will still be reported. But we won't bother the user with the Restore Tabs
-        // dialog. We don't have to because at this point we already saved the tab state properly.
-        //
-        Defaults[.applicationCleanlyBackgrounded] = true
         tabManager.preserveTabs()
 
         Self.activeSceneCount -= 1
         if Self.activeSceneCount == 0 {
+            // At this point we are happy to mark the app as applicationCleanlyBackgrounded. If a crash happens in background
+            // sync then that crash will still be reported. But we won't bother the user with the Restore Tabs
+            // dialog. We don't have to because at this point we already saved the tab state properly.
+            Defaults[.applicationCleanlyBackgrounded] = true
+
             WebServer.sharedInstance.server.stop()
             getAppDelegate().shutdownProfile()
         }
@@ -226,7 +223,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         fatalError("Scene Delegate doesn't exist for view or is nil")
     }
 
-    @available(*, deprecated, message: "should use getCurrentSceneDelegate with non-nil view or scene")
+    @available(
+        *, deprecated, message: "should use getCurrentSceneDelegate with non-nil view or scene"
+    )
     static func getCurrentSceneDelegateOrNil() -> SceneDelegate? {
         if let sceneDelegate = getActiveSceneDelegate() {
             return sceneDelegate

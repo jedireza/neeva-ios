@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         return nil
     }
 
-    var applicationCleanlyBackgrounded = true
+    var cleanlyBackgroundedLastTime = true
     weak var application: UIApplication?
     var launchOptions: [AnyHashable: Any]?
     var receivedURLs = [URL]()
@@ -40,17 +40,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         _ application: UIApplication,
         willFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        //
         // Determine if the application cleanly exited last time it was used.
         // Check if the "applicationCleanlyBackgrounded" user
         // default exists and whether was properly set to true on app exit.
         //
         // Then we always set the user default to false. It will be set to true when we the application
         // is backgrounded.
-        //
-
-        self.applicationCleanlyBackgrounded = Defaults[.applicationCleanlyBackgrounded]
-        Defaults[.applicationCleanlyBackgrounded] = false
+        cleanlyBackgroundedLastTime = Defaults[.applicationCleanlyBackgrounded]
+        Defaults[.applicationCleanlyBackgrounded] = false  // Reset for this session.
 
         lateInitializedProfile = createProfile()
 
@@ -93,7 +90,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // before the app enter background or close, we use it as a proxy
         // to determine if there is a crash from last exit
         PerformanceLogger.shared.logPageLoadWithCrashedStatus(
-            crashed: !self.applicationCleanlyBackgrounded)
+            crashed: !cleanlyBackgroundedLastTime)
 
         // set session UUID and timestamp if not set
         if Defaults[.sessionUUID].isEmpty {

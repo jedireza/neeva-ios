@@ -90,6 +90,15 @@ struct InternalSettingsView: View {
 
             Section(header: Text("Performance")) {
                 Toggle("applicationCleanlyBackgrounded", isOn: $applicationCleanlyBackgrounded)
+                if let cleanlyBackgrounded = cleanlyBackgroundedLastTime {
+                    let text =
+                        cleanlyBackgrounded
+                        ? "Was cleanly backgrounded last time"
+                        : "Was NOT cleanly backgrounded last time"
+                    Text(text)
+                        .font(.system(.footnote)).italic()
+                        .foregroundColor(cleanlyBackgrounded ? nil : Color.red)
+                }
             }
 
             Section(header: Text("Notification")) {
@@ -101,7 +110,8 @@ struct InternalSettingsView: View {
                     "didRegisterNotificationTokenOnServer",
                     isOn: $didRegisterNotificationTokenOnServer)
 
-                NumberField("productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
+                NumberField(
+                    "productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
                 NumberField("newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
                 NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
             }
@@ -110,6 +120,10 @@ struct InternalSettingsView: View {
         .minimumScaleFactor(0.75)
         .listStyle(GroupedListStyle())
         .applyToggleStyle()
+    }
+
+    private var cleanlyBackgroundedLastTime: Bool? {
+        (UIApplication.shared.delegate as? AppDelegate)?.cleanlyBackgroundedLastTime
     }
 }
 
