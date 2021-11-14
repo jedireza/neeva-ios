@@ -82,11 +82,7 @@ struct CardGrid: View {
         if width > 1000 {
             columnCount = 4
         } else {
-            switch horizontalSizeClass {
-            case .regular:
-                columnCount = 3
-            default: columnCount = topToolbar ? 3 : 2
-            }
+            columnCount = topToolbar ? 3 : 2
         }
         self.cardSize = (width - (columnCount + 1) * CardGridUX.GridSpacing) / columnCount
     }
