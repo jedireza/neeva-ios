@@ -153,7 +153,7 @@ public struct EmailForm: View {
             {
                 passwordStrength = .strong
                 passwordStrengthColor = Color.brand.blue
-                passwordStrengthLabel = "Wow! Not that's a strong password"
+                passwordStrengthLabel = "Wow! Now that's a strong password"
                 passwordStrengthPercent = 100.0
             } else if newValue.count > 8
                 && passwordWithOneBigLetterAndOneDigit.evaluate(with: newValue)
