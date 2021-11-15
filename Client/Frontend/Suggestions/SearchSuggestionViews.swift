@@ -9,6 +9,8 @@ enum SuggestionViewUX {
     static let ThumbnailSize: CGFloat = 36
     static let CornerRadius: CGFloat = 4
     static let Padding: CGFloat = 12
+    static let DictionaryIconTopPadding: CGFloat = 5
+    static let DictionaryLabelPadding: CGFloat = 5
     static let ChipPadding: CGFloat = 8
     static let ChipInnerPadding: CGFloat = 10
     static let RowHeight: CGFloat = 58
@@ -67,6 +69,7 @@ public struct SearchSuggestionView: View {
 public enum SuggestionConfig {
     case row
     case chip
+    case dictionary
 }
 
 struct SuggestionSpec: ViewModifier {
@@ -87,6 +90,11 @@ struct SuggestionSpec: ViewModifier {
                 .overlay(Capsule().stroke(Color.ui.adaptive.separator, lineWidth: 1))
                 .contentShape(Capsule())
                 .hoverEffect()
+        case .dictionary:
+            content.padding(.horizontal, SuggestionViewUX.Padding)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(suggestionState.color)
+                .hoverEffect()
         }
     }
 }
@@ -100,6 +108,8 @@ struct ClipShape: ViewModifier {
             content.clipped()
         case .chip:
             content.clipShape(Capsule())
+        case .dictionary:
+            content.clipped()
         }
     }
 }
@@ -153,7 +163,7 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
 
             action?()
         } label: {
-            HStack(spacing: 0) {
+            HStack(alignment: config == .dictionary ? .top : .center, spacing: 0) {
                 icon.foregroundColor(.tertiaryLabel)
                     .frame(
                         width: SuggestionViewUX.IconSize,
@@ -165,7 +175,9 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                     secondaryLabel.minimumScaleFactor(0.1)
                 }.padding(
                     .leading,
-                    config == .row ? SuggestionViewUX.Padding : SuggestionViewUX.ChipPadding)
+                    (config == .row || config == .dictionary)
+                        ? SuggestionViewUX.Padding
+                        : SuggestionViewUX.ChipPadding)
                 if case .row = config {
                     Spacer(minLength: 0)
                     detail
@@ -196,6 +208,27 @@ struct QuerySuggestionView: View {
 
     @EnvironmentObject public var model: SuggestionModel
     @Environment(\.setSearchInput) private var setInput
+
+    @ViewBuilder
+    var dictionaryLabelView: some View {
+        if let annotation = suggestion.annotation,
+           let dictionaryInfo = suggestion.annotation?.dictionaryInfo {
+            HStack(spacing: 0) {
+                Text(dictionaryInfo.word ?? "")
+                    .withFont(.bodyLarge)
+                    .foregroundColor(.label)
+                    .lineLimit(1)
+                    .fixedSize()
+                Text(
+                    annotation.dictionarySupplementText()
+                )
+                .withFont(.bodySmall)
+                .padding(.leading, SuggestionViewUX.DictionaryLabelPadding)
+                .foregroundColor(.secondaryLabel)
+                .lineLimit(1)
+            }
+        }
+    }
 
     @ViewBuilder
     var stockLabelView: some View {
@@ -270,6 +303,11 @@ struct QuerySuggestionView: View {
                     width: SuggestionViewUX.ThumbnailSize,
                     height: SuggestionViewUX.ThumbnailSize
                 )
+        } else if AnnotationType(annotation: suggestion.annotation) == .dictionary
+            && suggestion.annotation?.dictionaryInfo != nil
+        {
+            Image("icon-dictionary")
+                .padding(.top, SuggestionViewUX.DictionaryIconTopPadding)
         } else {
             switch suggestion.type {
             case .searchHistory:
@@ -298,6 +336,10 @@ struct QuerySuggestionView: View {
             Text(suggestion.suggestedQuery.capitalized)
                 .withFont(.bodyLarge)
                 .lineLimit(1)
+        } else if AnnotationType(annotation: suggestion.annotation) == .dictionary
+            && suggestion.annotation?.dictionaryInfo != nil
+        {
+            dictionaryLabelView
         } else {
             Text(suggestion.suggestedQuery)
                 .withFont(.bodyLarge)
@@ -329,6 +371,11 @@ struct QuerySuggestionView: View {
         {
             Text(description).withFont(.bodySmall)
                 .foregroundColor(.secondaryLabel).lineLimit(1)
+        } else if AnnotationType(annotation: suggestion.annotation) == .dictionary
+            && suggestion.annotation?.dictionaryInfo != nil
+        {
+            Text(suggestion.annotation?.dictionaryInfo?.shortDefinition ?? "").withFont(.bodySmall)
+                .foregroundColor(.secondaryLabel).lineLimit(3)
         } else {
             EmptyView()
         }

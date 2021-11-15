@@ -19,6 +19,8 @@ enum AnnotationType: String {
     case stock = "Stock"
     /// `AnnotationTypeContact` indicated the type is a contact annotation
     case contact = "Contact"
+    /// `AnnotationTypeDictionary` indicated the type is a dictionary annotation
+    case dictionary = "Dictionary"
 }
 
 extension AnnotationType {
@@ -38,5 +40,6 @@ extension SuggestionsQuery.Data.Suggest.QuerySuggestion {
         return AnnotationType(annotation: annotation) == .calculator
             || AnnotationType(annotation: annotation) == .stock
             || AnnotationType(annotation: annotation) == .wikipedia
+            || AnnotationType(annotation: annotation) == .dictionary
     }
 }

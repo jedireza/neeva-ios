@@ -113,7 +113,13 @@ struct TopSuggestionsList: View {
         if !suggestionModel.topSuggestions.isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
             ForEach(suggestionModel.topSuggestions) { suggestion in
-                SearchSuggestionView(suggestion)
+                if case let .query(querySuggestion) = suggestion,
+                   AnnotationType(annotation: querySuggestion.annotation) == .dictionary {
+                    SearchSuggestionView(suggestion)
+                        .environment(\.suggestionConfig, .dictionary)
+                } else {
+                    SearchSuggestionView(suggestion)
+                }
             }.padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
         }
     }

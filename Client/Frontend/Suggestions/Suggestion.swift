@@ -4,6 +4,13 @@ import Apollo
 import SFSafeSymbols
 import Shared
 
+public struct DictionaryInfo {
+    var shortDefinition: String
+    var phoneticSpelling: String
+    var lexicalCategory: String
+    var word: String
+}
+
 /// A type that wraps both query and URL suggestions
 public enum Suggestion {
     case query(SuggestionsQuery.Data.Suggest.QuerySuggestion)
@@ -142,6 +149,7 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                 $0.type == .standard
                     && $0.annotation?.description == nil
                     && $0.annotation?.stockInfo == nil
+                    && $0.annotation?.dictionaryInfo == nil
                     && (AnnotationType(annotation: $0.annotation) != .contact
                         || (AnnotationType(annotation: $0.annotation) == .contact
                             && NeevaFeatureFlags[.personalSuggestion]))
@@ -151,6 +159,7 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                 $0.type != .standard
                     || $0.annotation?.description != nil
                     || $0.annotation?.stockInfo != nil
+                    || $0.annotation?.dictionaryInfo != nil
             }
 
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
@@ -163,6 +172,11 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
             (rowQuerySuggestions.firstIndex { $0.annotation?.stockInfo != nil })
         {
             topSuggestions = [rowQuerySuggestions.remove(at: stockElementIdx)].map(Suggestion.query)
+        } else if let dictionaryElementIdx =
+            (rowQuerySuggestions.firstIndex { $0.annotation?.dictionaryInfo != nil })
+        {
+            topSuggestions =
+                [rowQuerySuggestions.remove(at: dictionaryElementIdx)].map(Suggestion.query)
         } else if navSuggestions.isEmpty {
             if !rowQuerySuggestions.isEmpty {
                 topSuggestions = [rowQuerySuggestions.removeFirst()].map(Suggestion.query)
