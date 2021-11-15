@@ -498,7 +498,13 @@ class SuggestionModel: ObservableObject {
                     suggestedUrl = suggestion.suggestedUrl
                 }
             }
-            finishEditingAndSubmit(url: URL(string: suggestion.suggestedUrl)!)
+            if let suggestedUrl = URL(string: suggestion.suggestedUrl) {
+                finishEditingAndSubmit(url: suggestedUrl)
+            } else {
+                log.error(
+                    "Malformed memorized url \(suggestion.suggestedUrl) for query \(suggestedQuery ?? "empty")"
+                )
+            }
         case .lens(let suggestion):
             hideZeroQuery = false
 
