@@ -824,11 +824,15 @@ class BrowserViewController: UIViewController {
     }
 
     func showModal<Content: View>(
-        style: OverlayStyle, content: @escaping () -> Content,
+        style: OverlayStyle,
+        headerButton: OverlayHeaderButton? = nil,
+        content: @escaping () -> Content,
         onDismiss: (() -> Void)? = nil
     ) {
         if !chromeModel.inlineToolbar {
-            showAsModalOverlaySheet(style: style, content: content, onDismiss: onDismiss)
+            showAsModalOverlaySheet(
+                style: style, content: content,
+                onDismiss: onDismiss, headerButton: headerButton)
         } else {
             showAsModalOverlayPopover(style: style, content: content, onDismiss: onDismiss)
         }
@@ -836,7 +840,8 @@ class BrowserViewController: UIViewController {
 
     func showAsModalOverlaySheet<Content: View>(
         style: OverlayStyle, content: @escaping () -> Content,
-        onDismiss: (() -> Void)? = nil
+        onDismiss: (() -> Void)? = nil,
+        headerButton: OverlayHeaderButton? = nil
     ) {
         var controller: UIViewController? = nil
         controller = OverlayViewController(
@@ -853,7 +858,8 @@ class BrowserViewController: UIViewController {
                     self.hideOverlaySheetViewController()
                 }
                 self.openURLInNewTabPreservingIncognitoState(url)
-            })
+            },
+            headerButton: headerButton)
 
         showOverlaySheetViewController(controller!)
     }
@@ -872,7 +878,8 @@ class BrowserViewController: UIViewController {
             onOpenURL: { url in
                 controller?.dismiss(animated: true, completion: nil)
                 self.openURLInNewTabPreservingIncognitoState(url)
-            })
+            },
+            headerButton: nil)
 
         controller?.modalPresentationStyle = .overFullScreen
         controller?.modalTransitionStyle = .crossDissolve
@@ -1667,9 +1674,13 @@ extension BrowserViewController {
         present(onboardingVC, animated: true, completion: nil)
     }
 
-    private func showProperIntroVC(onDismiss: (() -> Void)? = nil, signInMode: Bool = false, completion: (() -> Void)? = nil) {
+    private func showProperIntroVC(
+        onDismiss: (() -> Void)? = nil, signInMode: Bool = false, completion: (() -> Void)? = nil
+    ) {
         func createOrSwitchToTabFromAuth(_ url: URL) {
-            if let selectedTab = self.tabManager.selectedTab, let _ = self.tabManager.selectedTab?.url {
+            if let selectedTab = self.tabManager.selectedTab,
+                let _ = self.tabManager.selectedTab?.url
+            {
                 DispatchQueue.main.async {
                     selectedTab.loadRequest(URLRequest(url: url))
                     self.hideCardGrid(withAnimation: false)
@@ -1741,7 +1752,9 @@ extension BrowserViewController {
         self.introVCPresentHelper(introViewController: introViewController!, completion: completion)
     }
 
-    private func introVCPresentHelper(introViewController: UIViewController, completion: (() -> Void)?) {
+    private func introVCPresentHelper(
+        introViewController: UIViewController, completion: (() -> Void)?
+    ) {
         // On iPad we present it modally in a controller
         if traitCollection.horizontalSizeClass == .regular
             && traitCollection.verticalSizeClass == .regular
@@ -2060,7 +2073,18 @@ extension BrowserViewController {
         let request = AddToSpaceRequest(
             title: title, description: description, url: url, updater: updater)
 
-        self.showModal(style: .withTitle) {
+        self.showModal(
+            style: .withTitle,
+            headerButton: OverlayHeaderButton(
+                text: "View Spaces",
+                icon: .bookmarkOnBookmark,
+                action: {
+                    self.gridModel.showSpaces()
+                    ClientLogger.shared.logCounter(
+                        .ViewSpacesFromSheet,
+                        attributes: EnvironmentHelper.shared.getAttributes())
+                })
+        ) {
             AddToSpaceOverlayContent(
                 request: request,
                 bvc: self, importData: importData

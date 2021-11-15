@@ -28,6 +28,7 @@ struct OverlayRootView: View {
     let content: () -> AnyView
     let onDismiss: () -> Void
     let onOpenURL: (URL) -> Void
+    let headerButton: OverlayHeaderButton?
 
     var body: some View {
         if isPopover {
@@ -35,7 +36,8 @@ struct OverlayRootView: View {
                 style: style, content: content, onDismiss: onDismiss, onOpenURL: onOpenURL)
         } else {
             OverlaySheetRootView(
-                style: style, content: content, onDismiss: onDismiss, onOpenURL: onOpenURL)
+                style: style, content: content, onDismiss: onDismiss,
+                onOpenURL: onOpenURL, headerButton: headerButton)
         }
     }
 }
@@ -62,10 +64,14 @@ private struct OverlaySheetRootView: View {
     let content: () -> AnyView
     let onDismiss: () -> Void
     let onOpenURL: (URL) -> Void
+    let headerButton: OverlayHeaderButton?
 
     @ViewBuilder
     var overlay: some View {
-        OverlaySheetView(model: overlayModel, style: style, onDismiss: onDismiss) {
+        OverlaySheetView(
+            model: overlayModel, style: style,
+            onDismiss: onDismiss, headerButton: headerButton
+        ) {
             content()
                 .environment(\.onOpenURL, self.onOpenURL)
                 .environment(\.hideOverlay, { self.overlayModel.hide() })
@@ -88,12 +94,13 @@ private struct OverlaySheetRootView: View {
 class OverlayViewController: UIHostingController<OverlayRootView> {
     init(
         isPopover: Bool, style: OverlayStyle, content: @escaping () -> AnyView,
-        onDismiss: @escaping () -> Void, onOpenURL: @escaping (URL) -> Void
+        onDismiss: @escaping () -> Void, onOpenURL: @escaping (URL) -> Void,
+        headerButton: OverlayHeaderButton?
     ) {
         super.init(
             rootView: OverlayRootView(
                 isPopover: isPopover, style: style, content: content, onDismiss: onDismiss,
-                onOpenURL: onOpenURL)
+                onOpenURL: onOpenURL, headerButton: headerButton)
         )
 
         self.view.accessibilityViewIsModal = true

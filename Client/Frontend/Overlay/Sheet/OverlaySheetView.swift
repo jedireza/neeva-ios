@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Foundation
 import Shared
 import SwiftUI
 
@@ -18,6 +19,12 @@ enum OverlaySheetUX {
     static let landscapeModeWidth: CGFloat = 500
 }
 
+public struct OverlayHeaderButton {
+    public let text: String
+    public let icon: Nicon
+    public let action: () -> Void
+}
+
 // This view provides an overlay bottom sheet implementation that starts in a
 // half-height (or middle) position. The user can drag it to a fullscreen (or
 // top) position or can drag down to dismiss.
@@ -32,6 +39,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
 
     let style: OverlayStyle
     let onDismiss: () -> Void
+    let headerButton: OverlayHeaderButton?
     let content: () -> Content
 
     private var keyboardIsVisible: Bool {
@@ -145,8 +153,34 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 // the sheet. By sizing this spacer instead of the sheet directly
                 // we avoid encroaching on the safe area. That's because the spacer
                 // cannot be made to have negative height.
-                Spacer()
-                    .frame(height: getSpacerHeight(outerGeometry))
+                VStack(spacing: 0) {
+                    Spacer()
+                    if let headerButton = headerButton, case .middle = model.position {
+                        HStack(spacing: 0) {
+                            Spacer().layoutPriority(0.5)
+                            Button(
+                                action: {
+                                    headerButton.action()
+                                    model.hide()
+                                },
+                                label: {
+                                    HStack(spacing: 10) {
+                                        Text(headerButton.text)
+                                            .withFont(.labelLarge)
+                                        Symbol(decorative: headerButton.icon)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                            )
+                            .buttonStyle(NeevaButtonStyle(.primary))
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 6)
+                            .layoutPriority(0.5)
+                        }
+                    }
+
+                }
+                .frame(height: getSpacerHeight(outerGeometry))
 
                 VStack(spacing: 0) {
                     self.topBar

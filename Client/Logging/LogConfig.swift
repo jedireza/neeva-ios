@@ -111,6 +111,7 @@ public struct LogConfig {
         case SocialShare
         case space_app_view  // This is for aggregate stats collection
         case SaveToSpace
+        case ViewSpacesFromSheet
 
         // ratings card
         case RatingsRateExperience
@@ -287,6 +288,7 @@ public struct LogConfig {
         case .SocialShare: return .Spaces
         case .space_app_view: return .Spaces
         case .SaveToSpace: return .Spaces
+        case .ViewSpacesFromSheet: return .Spaces
 
         case .RatingsRateExperience: return .RatingsCard
         case .RatingsPromptFeedback: return .RatingsCard
@@ -318,7 +320,6 @@ public struct LogConfig {
         case .RecipeCheatsheetUpdatePreferredProvider: return .RecipeCheatsheet
         case .RelatedRecipeClick: return .RecipeCheatsheet
         case .RelatedSearchClick: return .RecipeCheatsheet
-
 
         case .tabGroupClicked: return .TabGroup
         case .tabGroupClosed: return .TabGroup

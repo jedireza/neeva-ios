@@ -72,7 +72,8 @@ struct RecipeCheatsheetStripView: View {
                     onDismiss: {
                         presentSheet = false
                         self.chromeModel.toolBarContentView = .regularContent
-                    }
+                    },
+                    headerButton: nil
                 ) {
                     ScrollView(.vertical, showsIndicators: false) {
                         RecipeView(
