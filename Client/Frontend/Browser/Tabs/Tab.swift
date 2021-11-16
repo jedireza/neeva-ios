@@ -412,21 +412,19 @@ class Tab: NSObject, ObservableObject {
     }
 
     var displayTitle: String {
+        let result: String
         if let title = title, !title.isEmpty {
-            return title
-        }
-
-        if let url = self.url, !InternalURL.isValid(url: url),
+            result = title
+        } else if let url = self.url, !InternalURL.isValid(url: url),
             let shownUrl = url.displayURL?.absoluteString
         {
-            return shownUrl
+            result = shownUrl
+        } else if let lastTitle = lastTitle, !lastTitle.isEmpty {
+            result = lastTitle
+        } else {
+            result = self.url?.displayURL?.absoluteString ?? ""
         }
-
-        guard let lastTitle = lastTitle, !lastTitle.isEmpty else {
-            return self.url?.displayURL?.absoluteString ?? ""
-        }
-
-        return lastTitle
+        return result.truncateTo(length: 100)
     }
 
     func goBack() {
