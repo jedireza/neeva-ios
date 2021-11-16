@@ -44,7 +44,7 @@ enum PromoCardType {
         case .blackFridayFollowPromo(_, _):
             Text("Follow Neeva's Black\nFriday Space to get\nthe best deals!")
         case .blackFridayNotifyPromo(_, _):
-            Text("Get notified about space\nupdate")
+            Text("Get notified about new\nitems added to this Space!")
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
