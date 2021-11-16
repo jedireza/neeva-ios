@@ -30,6 +30,8 @@ struct InternalSettingsView: View {
     @Default(.newsProviderPromoTimeInterval) var newsProviderPromoTimeInterval
     @Default(.seenNotificationPermissionPromo) var seenNotificationPermissionPromo
     @Default(.fastTapPromoTimeInterval) var fastTapPromoTimeInterval
+    @Default(.seenBlackFridayFollowPromo) var seenBlackFridayFollowPromo
+    @Default(.seenBlackFridayNotifyPromo) var seenBlackFridayNotifyPromo
 
     var body: some View {
         List {
@@ -43,7 +45,11 @@ struct InternalSettingsView: View {
                 Toggle("didDismissDefaultBrowserCard", isOn: $didDismissDefaultBrowserCard)
                 Toggle("didDismissReferralPromoCard", isOn: $didDismissReferralPromoCard)
                 Toggle("ratingsCardHidden", isOn: $ratingsCardHidden)
+            }
+            Section(header: Text("promo-card")) {
                 Toggle("seenNotificationPermissionPromo", isOn: $seenNotificationPermissionPromo)
+                Toggle("seenBlackFridayFollowPromo", isOn: $seenBlackFridayFollowPromo)
+                Toggle("seenBlackFridayNotifyPromo", isOn: $seenBlackFridayNotifyPromo)
             }
             Section(header: Text("User-generated")) {
                 HStack {

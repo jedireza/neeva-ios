@@ -137,6 +137,9 @@ public class SpaceStore: ObservableObject {
             "brogg3ipmtasecqj230g",
         ])
 
+    public static var promotionalSpaceId =
+        "-ysvXOiH2HWXsXeN_QaVFzwWEF_ASvtOW_yylJEM"
+
     private static var subscription: AnyCancellable? = nil
 
     private var suggestedSpaceIDs: [String]? = nil
@@ -275,6 +278,18 @@ public class SpaceStore: ObservableObject {
                         subscription?.cancel()
                     }
                 }
+            case .failure(let error):
+                Logger.browser.error(error.localizedDescription)
+            }
+        }
+    }
+
+    public static func followSpace(spaceId: String, completion: @escaping () -> Void) {
+        SpacesDataQueryController.getSpacesData(spaceIds: [spaceId]) { result in
+            switch result {
+            case .success:
+                Logger.browser.info("Space followed")
+                completion()
             case .failure(let error):
                 Logger.browser.error(error.localizedDescription)
             }

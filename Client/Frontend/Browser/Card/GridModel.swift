@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
 import Foundation
 import Shared
 import SwiftUI
@@ -20,6 +21,8 @@ class GridModel: ObservableObject {
             }
         }
     }
+
+    private var followPublicSpaceSubscription: AnyCancellable? = nil
 
     private var updateVisibility: ((Bool) -> Void)!
     var buildCloseAllTabsMenu: (() -> UIMenu)!
@@ -82,6 +85,26 @@ class GridModel: ObservableObject {
         // In preparation for the CardGrid being shown soon, refresh spaces.
         DispatchQueue.main.async {
             SpaceStore.shared.refresh()
+        }
+    }
+
+    func openSpace(spaceId: String, bvc: BrowserViewController, completion: @escaping () -> Void) {
+        SpaceStore.openSpace(spaceId: spaceId) { [weak self] in
+            let spaceCardModel = bvc.gridModel.spaceCardModel
+            if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
+                bvc.gridModel.openSpace(spaceID: spaceId, animate: false)
+                completion()
+            } else {
+                guard let self = self else { return }
+                self.followPublicSpaceSubscription = spaceCardModel.objectWillChange.sink {
+                    if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
+                        bvc.gridModel.openSpace(
+                            spaceID: spaceId, animate: false)
+                        completion()
+                        self.followPublicSpaceSubscription?.cancel()
+                    }
+                }
+            }
         }
     }
 

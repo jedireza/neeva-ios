@@ -24,8 +24,6 @@ enum NavigationPath {
     case fastTap(String)
     case configNewsProvider(isPrivate: Bool)
 
-    private static var subscription: AnyCancellable? = nil
-
     init?(bvc: BrowserViewController, url: URL) {
         let urlString = url.absoluteString
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
@@ -188,20 +186,8 @@ enum NavigationPath {
 
     private static func handleSpace(spaceId: String, with bvc: BrowserViewController) {
         // navigate to SpaceId
-        SpaceStore.openSpace(spaceId: spaceId) {
-            let spaceCardModel = bvc.gridModel.spaceCardModel
-            if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                bvc.gridModel.openSpace(spaceID: spaceId, animate: false)
-            } else {
-                subscription = spaceCardModel.objectWillChange.sink {
-                    if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                        bvc.gridModel.openSpace(
-                            spaceID: spaceId, animate: false)
-                        subscription?.cancel()
-                    }
-                }
-            }
-        }
+        let gridModel = bvc.gridModel
+        gridModel.openSpace(spaceId: spaceId, bvc: bvc, completion: {})
     }
 
     private static func handleFastTap(query: String, with bvc: BrowserViewController) {

@@ -373,6 +373,25 @@ class SpaceCardModel: CardModel {
             }
         }
     }
+
+    func promoCard() -> PromoCardType {
+        return .blackFridayNotifyPromo(
+            action: {
+                ClientLogger.shared.logCounter(
+                    .BlackFridayNotifyPromo)
+                NotificationPermissionHelper.shared.requestPermissionIfNeeded(
+                    completion: { authorized in
+                        Defaults[.seenBlackFridayNotifyPromo] = true
+                    },
+                    callSite: .blackFriday
+                )
+            },
+            onClose: {
+                ClientLogger.shared.logCounter(
+                    .CloseBlackFridayNotifyPromo)
+                Defaults[.seenBlackFridayNotifyPromo] = true
+            })
+    }
 }
 
 class SiteCardModel: CardModel {
