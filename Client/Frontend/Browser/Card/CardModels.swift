@@ -302,12 +302,19 @@ class SpaceCardModel: CardModel {
         }
     }
 
-    func updateSpaceName(space: Space, newTitle: String) {
+    func updateSpaceHeader(
+        space: Space, title: String,
+        description: String? = nil, thumbnail: String? = nil
+    ) {
         DispatchQueue.main.async {
-            let request = UpdateSpaceRequest(spaceID: space.id.id, name: newTitle)
+            let request = UpdateSpaceRequest(
+                spaceID: space.id.id, title: title,
+                description: description, thumbnail: thumbnail)
             request.$state.sink { state in
                 self.spaceNeedsRefresh = space.id.id
-                space.name = newTitle
+                space.name = title
+                space.description = description
+                space.thumbnail = thumbnail
                 self.objectWillChange.send()
             }.cancel()
         }

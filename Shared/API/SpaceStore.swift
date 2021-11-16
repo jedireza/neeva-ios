@@ -57,10 +57,10 @@ public class Space: Hashable, Identifiable {
     public let id: SpaceID
     public var name: String
     public var description: String?
+    public var thumbnail: String?
     public var followers: Int?
     public var views: Int?
     public let lastModifiedTs: String
-    public let thumbnail: String?
     public let resultCount: Int
     public let isDefaultSpace: Bool
     public var isShared: Bool

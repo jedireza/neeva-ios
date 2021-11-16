@@ -5,6 +5,7 @@ import Shared
 import SwiftUI
 
 struct SpaceHeaderView: View {
+    @EnvironmentObject var spaceModel: SpaceCardModel
     let space: Space
 
     var owner: Space.Acl? {

@@ -149,7 +149,7 @@ where
                         SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
                             style: .withTitle
                         ) {
-                            AddToNativeSpaceOverlayContent(space: space)
+                            AddOrUpdateSpaceContent(space: space, config: .addSpaceItem)
                                 .environmentObject(spacesModel)
                         }
                     }
@@ -220,40 +220,35 @@ where
     }
 
     @ViewBuilder var editButton: some View {
-        if showingAsList && canEdit {
+        if showingAsList && canEdit, let space = space {
             Button(
                 action: {
-                    switch editMode {
-                    case .inactive:
-                        newTitle = primitive.title
-
-                        withAnimation {
-                            editMode = .active
+                    SceneDelegate.getBVC(with: tabModel.manager.scene)
+                        .showModal(
+                            style: .withTitle
+                        ) {
+                            AddOrUpdateSpaceContent(space: space, config: .updateSpace)
+                                .environmentObject(spacesModel)
                         }
-                    case .active:
-                        withAnimation {
-                            editMode = .inactive
-                        }
-
-                        if let space = space, newTitle != primitive.title {
-                            spacesModel.updateSpaceName(space: space, newTitle: newTitle)
-                        }
-                    default:
-                        Logger.browser.info("Pressed button again during transition. Ignoring...")
-                    }
                     ClientLogger.shared.logCounter(
                         .SpacesDetailEditButtonClicked,
                         attributes: EnvironmentHelper.shared.getAttributes())
                 },
                 label: {
-                    Label(
-                        title: {
-                            Text(editMode == .inactive ? "Edit Space" : "Done Editing")
-                                .withFont(.labelMedium)
-                                .foregroundColor(Color.label)
-                        },
-                        icon: { Image(systemName: "square.and.pencil") }
-                    )
+                    if !headerVisible {
+                        Label(
+                            title: {
+                                Text("Edit Space")
+                                    .withFont(.labelMedium)
+                                    .foregroundColor(Color.label)
+                            },
+                            icon: { Image(systemName: "square.and.pencil") }
+                        )
+                    } else {
+                        Image(systemName: "square.and.pencil")
+                            .foregroundColor(.label)
+                            .tapTargetFrame()
+                    }
                 })
         }
     }
@@ -319,9 +314,9 @@ where
         Menu(
             content: {
                 deleteButton
-                editButton
                 if !headerVisible {
                     addButton
+                    editButton
                     descriptionToggle
                 }
                 webUIButton
@@ -367,20 +362,15 @@ where
                         .foregroundColor(Color.label)
                         .tapTargetFrame()
                 })
-            if case .active = editMode {
+            if case .active = editMode, tabGroupDetail != nil {
                 VStack(spacing: 2) {
                     TextField(
-                        space != nil
-                            ? "Enter a name for your Space" : "Enter a name for your tab group",
+                        "Enter a name for your tab group",
                         text: $newTitle,
                         onCommit: {
                             if newTitle != primitive.title {
-                                if let space = space {
-                                    spacesModel.updateSpaceName(space: space, newTitle: newTitle)
-                                } else {
-                                    tabGroupDict[tabGroupDetail!.id] = newTitle
-                                    tabGroupCardModel.manager.cleanUpTabGroupNames()
-                                }
+                                tabGroupDict[tabGroupDetail!.id] = newTitle
+                                tabGroupCardModel.manager.cleanUpTabGroupNames()
                             }
                             editMode = .inactive
                         }
@@ -412,8 +402,9 @@ where
             }
             Spacer()
             if space != nil {
-                if headerVisible && editMode != .active {
+                if headerVisible {
                     addButton
+                    editButton
                     layoutButton
                 }
                 shareButton
@@ -500,8 +491,8 @@ where
                                         .showModal(
                                             style: .withTitle
                                         ) {
-                                            AddToNativeSpaceOverlayContent(
-                                                space: space, entityID: details.id
+                                            AddOrUpdateSpaceContent(
+                                                space: space, config: .updateSpaceItem(details.id)
                                             )
                                             .environmentObject(spacesModel)
                                         }

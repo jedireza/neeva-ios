@@ -13,8 +13,14 @@ class CustomThumbnailModel: ObservableObject {
         }
     }
     @Published var selectedData: String? = nil
+    @Published var selectedSpaceThumbnailEntityID: String? = nil
     @Published var thumbnailData = [URL: String]()
     @Published var showing = true
+}
+
+enum ThumbnailPickerUX {
+    static let ThumbnailSize: CGFloat = 64
+    static let ThumbnailRadius: CGFloat = 6
 }
 
 struct CustomThumbnailPicker: View {
@@ -29,52 +35,99 @@ struct CustomThumbnailPicker: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack {
                     ForEach(thumbnails, id: \.absoluteString) { thumbnail in
-                        Button(
-                            action: {
-                                model.selectedThumbnail = thumbnail
-                            },
-                            label: {
-                                WebImage(url: thumbnail)
-                                    .onSuccess { image, data, cacheType in
-                                        guard model.showing,
-                                            model.thumbnailData.index(forKey: thumbnail) == nil
-                                        else {
-                                            return
-                                        }
-
-                                        DispatchQueue.global(qos: .userInitiated).async {
-                                            // compress and encode on a background thread with
-                                            // user initiated priority.
-                                            guard
-                                                let data = image.jpegData(
-                                                    compressionQuality: 0.7
-                                                        - min(
-                                                            0.4,
-                                                            0.2 * floor(image.size.width / 1000)))
-                                            else {
-                                                return
-                                            }
-
-                                            let string = data.base64EncodedString()
-
-                                            DispatchQueue.main.async {
-                                                model.thumbnailData[thumbnail] = string
-                                            }
-                                        }
-                                    }
-                                    .resizable()
-                                    .placeholder { Color.DefaultBackground }
-                                    .scaledToFill()
-                                    .frame(width: 64, height: 64)
-                                    .cornerRadius(6)
-                            }
-                        ).roundedOuterBorder(
-                            cornerRadius: 6,
-                            color: model.selectedThumbnail == thumbnail
-                                ? Color.ui.adaptive.blue : Color.clear, lineWidth: 2)
+                        URLBasedThumbnailView(model: model, thumbnail: thumbnail)
                     }
                 }
             }
         }
+    }
+}
+
+struct SpaceThumbnailPicker: View {
+    let spaceDetails: SpaceCardDetails
+    @ObservedObject var model: CustomThumbnailModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Thumbnails")
+                .withFont(.headingSmall)
+                .foregroundColor(.label)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(alignment: .center) {
+                    ForEach(spaceDetails.allDetails, id: \.id) { entity in
+                        if let thumbnail = entity.data.thumbnail, !thumbnail.isEmpty {
+                            Button(
+                                action: { model.selectedSpaceThumbnailEntityID = entity.id },
+                                label: {
+                                    entity.thumbnail.frame(
+                                        width: ThumbnailPickerUX.ThumbnailSize,
+                                        height: ThumbnailPickerUX.ThumbnailSize
+                                    ).cornerRadius(ThumbnailPickerUX.ThumbnailRadius)
+                                }
+                            )
+                            .roundedOuterBorder(
+                                cornerRadius: ThumbnailPickerUX.ThumbnailRadius,
+                                color: model.selectedSpaceThumbnailEntityID == entity.id
+                                    ? Color.ui.adaptive.blue : Color.clear, lineWidth: 2)
+                        } else if entity.isImage, let thumbnail = entity.data.url {
+                            URLBasedThumbnailView(model: model, thumbnail: thumbnail)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct URLBasedThumbnailView: View {
+    @ObservedObject var model: CustomThumbnailModel
+    let thumbnail: URL
+
+    var body: some View {
+        Button(
+            action: { model.selectedThumbnail = thumbnail },
+            label: {
+                WebImage(url: thumbnail)
+                    .onSuccess { image, data, cacheType in
+                        guard model.showing,
+                            model.thumbnailData.index(forKey: thumbnail) == nil
+                        else {
+                            return
+                        }
+
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            // compress and encode on a background thread with
+                            // user initiated priority.
+                            guard
+                                let data = image.jpegData(
+                                    compressionQuality: 0.7
+                                        - min(
+                                            0.4,
+                                            0.2 * floor(image.size.width / 1000)))
+                            else {
+                                return
+                            }
+
+                            let string = data.base64EncodedString()
+
+                            DispatchQueue.main.async {
+                                model.thumbnailData[thumbnail] = string
+                            }
+                        }
+                    }
+                    .resizable()
+                    .placeholder { Color.DefaultBackground }
+                    .scaledToFill()
+                    .frame(
+                        width: ThumbnailPickerUX.ThumbnailSize,
+                        height: ThumbnailPickerUX.ThumbnailSize
+                    )
+                    .cornerRadius(ThumbnailPickerUX.ThumbnailRadius)
+            }
+        )
+        .roundedOuterBorder(
+            cornerRadius: ThumbnailPickerUX.ThumbnailRadius,
+            color: model.selectedThumbnail == thumbnail
+                ? Color.ui.adaptive.blue : Color.clear, lineWidth: 2)
     }
 }

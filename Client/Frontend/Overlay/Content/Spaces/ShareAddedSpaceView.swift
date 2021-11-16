@@ -53,8 +53,8 @@ struct ShareAddedSpaceView: View {
                                     .showModal(
                                         style: .withTitle
                                     ) {
-                                        AddToNativeSpaceOverlayContent(
-                                            space: space, entityID: id
+                                        AddOrUpdateSpaceContent(
+                                            space: space, config: .updateSpaceItem(id)
                                         ).environmentObject(
                                             bvc.gridModel.spaceCardModel)
                                     }

@@ -4,21 +4,38 @@ import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 
-struct AddToNativeSpaceOverlayContent: View {
+enum AddOrUpdateSpaceConfig {
+    case addSpaceItem
+    case updateSpaceItem(String)
+    case updateSpace
+}
+
+struct AddOrUpdateSpaceContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
 
     let space: Space
-    let entityID: String?
+    let config: AddOrUpdateSpaceConfig
 
-    init(space: Space, entityID: String? = nil) {
+    var title: String {
+        switch config {
+        case .addSpaceItem:
+            return "Add item"
+        case .updateSpaceItem(let _):
+            return "Edit item"
+        case .updateSpace:
+            return "Update Space"
+        }
+    }
+
+    init(space: Space, config: AddOrUpdateSpaceConfig) {
         self.space = space
-        self.entityID = entityID
+        self.config = config
     }
 
     var body: some View {
-        AddToNativeSpaceView(space: space, entityID: entityID, dismiss: hideOverlay)
+        AddOrUpdateSpaceView(space: space, config: config, dismiss: hideOverlay)
             .overlayIsFixedHeight(isFixedHeight: true)
-            .overlayTitle(title: entityID == nil ? "Add item" : "Edit item")
+            .overlayTitle(title: title)
     }
 }
 
@@ -105,9 +122,9 @@ private struct LegacyInputField: View {
     }
 }
 
-struct AddToNativeSpaceView: View {
+struct AddOrUpdateSpaceView: View {
     let space: Space
-    let entityID: String?
+    let config: AddOrUpdateSpaceConfig
     let dismiss: () -> Void
     let thumbnailModel = CustomThumbnailModel()
 
@@ -116,14 +133,33 @@ struct AddToNativeSpaceView: View {
     @State var titleText: String
     @State var urlText: String
 
-    init(space: Space, entityID: String? = nil, dismiss: @escaping () -> Void) {
+    var shouldShowURL: Bool {
+        guard case .addSpaceItem = config else {
+            return false
+        }
+        return true
+    }
+
+    init(space: Space, config: AddOrUpdateSpaceConfig, dismiss: @escaping () -> Void) {
         self.space = space
-        self.entityID = entityID
+        self.config = config
         self.dismiss = dismiss
-        let data = space.contentData?.first(where: { $0.id == entityID })
-        self.titleText = data?.title ?? ""
-        self.urlText = data?.url?.absoluteString ?? ""
-        self.descriptionText = data?.snippet ?? ""
+
+        switch config {
+        case .addSpaceItem:
+            self.titleText = ""
+            self.urlText = ""
+            self.descriptionText = ""
+        case .updateSpaceItem(let entityID):
+            let data = space.contentData?.first(where: { $0.id == entityID })
+            self.titleText = data?.title ?? ""
+            self.urlText = data?.url?.absoluteString ?? ""
+            self.descriptionText = data?.snippet ?? ""
+        case .updateSpace:
+            self.titleText = space.name
+            self.urlText = ""
+            self.descriptionText = space.description ?? ""
+        }
     }
 
     private func inputField(title: FieldType, bodyText: String, inputText: Binding<String>)
@@ -142,19 +178,19 @@ struct AddToNativeSpaceView: View {
         GroupedStack {
             inputField(
                 title: .titleField, bodyText: "Please provide a title", inputText: $titleText)
-            if entityID != nil {
-                inputField(
-                    title: .descriptionField,
-                    bodyText: "Please provide a description",
-                    inputText: $descriptionText)
-                if let url = URL(string: urlText),
-                    let thumbnails = spaceModel.thumbnailURLCandidates[url],
-                    thumbnailModel.showing
-                {
-                    CustomThumbnailPicker(thumbnails: thumbnails, model: thumbnailModel)
-                }
+            inputField(
+                title: .descriptionField,
+                bodyText: "Please provide a description",
+                inputText: $descriptionText)
+            if let url = URL(string: urlText),
+                let thumbnails = spaceModel.thumbnailURLCandidates[url],
+                thumbnailModel.showing
+            {
+                CustomThumbnailPicker(thumbnails: thumbnails, model: thumbnailModel)
+            } else if case .updateSpace = config, let details = spaceModel.detailedSpace {
+                SpaceThumbnailPicker(spaceDetails: details, model: thumbnailModel)
             }
-            if entityID == nil {
+            if shouldShowURL {
                 inputField(
                     title: .urlField, bodyText: "Add a URL to your new item (optional)",
                     inputText: $urlText
@@ -162,7 +198,23 @@ struct AddToNativeSpaceView: View {
             }
             Button(
                 action: {
-                    if let entityID = entityID {
+                    switch config {
+                    case .addSpaceItem:
+                        let data = SpaceEntityData(
+                            id: space.id.id,
+                            url: URL(string: urlText),
+                            title: titleText,
+                            snippet: descriptionText,
+                            thumbnail: nil,
+                            previewEntity: .webPage)
+
+                        // modify target spaceCardDetail's Data and signal changes
+                        spaceModel.detailedSpace?.space?.contentData?.insert(data, at: 0)
+                        spaceModel.detailedSpace?.updateDetails()
+                        spaceModel.add(
+                            spaceID: space.id.id, url: urlText,
+                            title: titleText, description: descriptionText)
+                    case .updateSpaceItem(let entityID):
                         let oldData = (space.contentData?.first(where: { $0.id == entityID }))!
                         let index = (space.contentData?.firstIndex(where: { $0.id == entityID }))!
                         let newData = SpaceEntityData(
@@ -183,20 +235,16 @@ struct AddToNativeSpaceView: View {
                             thumbnail: thumbnailModel.selectedData)
                         thumbnailModel.selectedData = nil
                         thumbnailModel.thumbnailData = [URL: String]()
-                    } else {
-                        // construct a local spaceEntityData
-                        let data = SpaceEntityData(
-                            id: space.id.id,
-                            url: URL(string: urlText),
-                            title: titleText,
-                            snippet: nil,
-                            thumbnail: nil,
-                            previewEntity: .webPage)
-
-                        // modify target spaceCardDetail's Data and signal changes
-                        spaceModel.detailedSpace?.space?.contentData?.insert(data, at: 0)
-                        spaceModel.detailedSpace?.updateDetails()
-                        spaceModel.add(spaceID: space.id.id, url: urlText, title: titleText)
+                    case .updateSpace:
+                        var thumbnail: String? = nil
+                        if let id = thumbnailModel.selectedSpaceThumbnailEntityID {
+                            thumbnail = space.contentData?.first(where: { $0.id == id })?.thumbnail
+                        } else if let thumbnailData = thumbnailModel.selectedData {
+                            thumbnail = thumbnailData
+                        }
+                        spaceModel.updateSpaceHeader(
+                            space: space, title: titleText,
+                            description: descriptionText, thumbnail: thumbnail)
                     }
                     dismiss()
                 },
