@@ -80,7 +80,7 @@ struct SuggestionSpec: ViewModifier {
         switch config {
         case .row:
             content
-                .frame(height: SuggestionViewUX.RowHeight)
+                .frame(minHeight: SuggestionViewUX.RowHeight)
                 .padding(.horizontal, SuggestionViewUX.Padding)
                 .background(suggestionState.color)
                 .hoverEffect()
@@ -171,8 +171,8 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                     )
                     .unredacted()
                 VStack(alignment: .leading, spacing: 0) {
-                    label.minimumScaleFactor(0.4)
-                    secondaryLabel.minimumScaleFactor(0.1)
+                    label
+                    secondaryLabel
                 }.padding(
                     .leading,
                     (config == .row || config == .dictionary)
