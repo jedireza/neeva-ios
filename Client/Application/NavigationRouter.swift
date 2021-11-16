@@ -20,7 +20,7 @@ enum NavigationPath {
     case widgetUrl(webURL: URL?, uuid: String)
     case text(String)
     case closePrivateTabs
-    case space(String)
+    case space(String, [String]?)
     case fastTap(String)
     case configNewsProvider(isPrivate: Bool)
 
@@ -61,7 +61,11 @@ enum NavigationPath {
         } else if urlString.starts(with: "\(scheme)://space"),
             let spaceId = components.valueForQuery("id")
         {
-            self = .space(spaceId)
+            var updatedItemIds: [String]?
+            if let ids = components.valueForQuery("updatedItemIds") {
+                updatedItemIds = ids.components(separatedBy: ",")
+            }
+            self = .space(spaceId, updatedItemIds)
         } else if urlString.starts(with: "\(scheme)://fast-tap"),
             let query = components.valueForQuery("query")
         {
@@ -84,8 +88,8 @@ enum NavigationPath {
             NavigationPath.handleClosePrivateTabs(with: bvc)
         case .widgetUrl(let webURL, let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
-        case .space(let spaceId):
-            NavigationPath.handleSpace(spaceId: spaceId, with: bvc)
+        case .space(let spaceId, let updatedItemIds):
+            NavigationPath.handleSpace(spaceId: spaceId, updatedItemIds: updatedItemIds, with: bvc)
         case .fastTap(let query):
             NavigationPath.handleFastTap(query: query, with: bvc)
         case .configNewsProvider(let isPrivate):
@@ -184,7 +188,7 @@ enum NavigationPath {
         bvc.urlBar(didSubmitText: text)
     }
 
-    private static func handleSpace(spaceId: String, with bvc: BrowserViewController) {
+    private static func handleSpace(spaceId: String, updatedItemIds: [String]?, with bvc: BrowserViewController) {
         // navigate to SpaceId
         let gridModel = bvc.gridModel
         gridModel.openSpace(spaceId: spaceId, bvc: bvc, completion: {})
