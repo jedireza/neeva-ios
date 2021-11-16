@@ -125,7 +125,7 @@ class ZeroQueryModel: ObservableObject {
                 self.signIn()
             }
         } else if !Defaults[.seenBlackFridayFollowPromo]
-            && NeevaFeatureFlags[.enableBlackFridayPromoCard]
+            && NeevaFeatureFlags.latestValue(.enableBlackFridayPromoCard)
             && !SpaceStore.shared.allSpaces.contains(where: {
                 $0.id.id == SpaceStore.promotionalSpaceId
             })
