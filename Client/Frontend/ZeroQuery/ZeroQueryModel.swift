@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Combine
 import Defaults
 import Shared
 import Storage
@@ -123,6 +124,31 @@ class ZeroQueryModel: ObservableObject {
                     .PromoSignin, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                 self.signIn()
             }
+        } else if !Defaults[.seenBlackFridayFollowPromo]
+            && NeevaFeatureFlags[.enableBlackFridayPromoCard]
+            && !SpaceStore.shared.allSpaces.contains(where: {
+                $0.id.id == SpaceStore.promotionalSpaceId
+            })
+        {
+            promoCard = .blackFridayFollowPromo(
+                action: {
+                    ClientLogger.shared.logCounter(
+                        .BlackFridayPromo)
+                    let spaceId = SpaceStore.promotionalSpaceId
+                    let gridModel = self.bvc.cardGridViewController.gridModel
+                    gridModel.openSpace(
+                        spaceId: spaceId, bvc: self.bvc,
+                        completion: {
+                            self.promoCard = nil
+                        }
+                    )
+                },
+                onClose: {
+                    ClientLogger.shared.logCounter(
+                        .CloseBlackFridayPromo)
+                    Defaults[.seenBlackFridayFollowPromo] = true
+                    self.promoCard = nil
+                })
         } else if !Defaults[.seenNotificationPermissionPromo]
             && NotificationPermissionHelper.shared.permissionStatus == .undecided
         {

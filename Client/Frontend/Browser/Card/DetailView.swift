@@ -22,6 +22,7 @@ where
 {
     @Default(.tabGroupNames) var tabGroupDict: [String: String]
     @Default(.showDescriptions) var showDescriptions
+    @Default(.seenBlackFridayNotifyPromo) var seenBlackFridayNotifyPromo
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
@@ -53,6 +54,18 @@ where
 
     var tabGroupDetail: TabGroupCardDetails? {
         primitive as? TabGroupCardDetails
+    }
+
+    var promoCardType: PromoCardType? {
+        guard
+            primitive.id == SpaceStore.promotionalSpaceId
+                && !seenBlackFridayNotifyPromo
+                && NotificationPermissionHelper.shared.permissionStatus == .undecided
+        else {
+            return nil
+        }
+
+        return spacesModel.promoCard()
     }
 
     let listColumns = Array(
@@ -446,6 +459,11 @@ where
     var spaceList: some View {
         NavigationView {
             List {
+                if let promoCardType = promoCardType {
+                    PromoCard(type: promoCardType, viewWidth: 390)
+                        .buttonStyle(PlainButtonStyle())
+                        .modifier(ListSeparatorModifier())
+                }
                 SpaceHeaderView(space: space!)
                     .modifier(ListSeparatorModifier())
                     .onAppear {

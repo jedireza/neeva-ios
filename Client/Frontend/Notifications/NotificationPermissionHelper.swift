@@ -18,6 +18,7 @@ public enum NotificationAuthorizationCallSite: String {
     case tourFlow
     case promoCard
     case settings
+    case blackFriday
 }
 
 class NotificationPermissionHelper {

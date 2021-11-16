@@ -8,6 +8,8 @@ enum PromoCardType {
     case defaultBrowser(action: () -> Void, onClose: () -> Void)
     case referralPromo(action: () -> Void, onClose: () -> Void)
     case notificationPermission(action: () -> Void, onClose: () -> Void)
+    case blackFridayFollowPromo(action: () -> Void, onClose: () -> Void)
+    case blackFridayNotifyPromo(action: () -> Void, onClose: () -> Void)
 
     var action: () -> Void {
         switch self {
@@ -18,6 +20,10 @@ enum PromoCardType {
         case .referralPromo(let action, _):
             return action
         case .notificationPermission(let action, _):
+            return action
+        case .blackFridayFollowPromo(let action, _):
+            return action
+        case .blackFridayNotifyPromo(let action, _):
             return action
         }
     }
@@ -35,6 +41,11 @@ enum PromoCardType {
                 .fixedSize(horizontal: false, vertical: true)
         case .notificationPermission:
             Text("From news to shopping,\nget the best of the web\ndelivered right to you")
+        case .blackFridayFollowPromo(_, _):
+            Text("Follow Neeva's Black\nFriday Space to get\nthe best deals!")
+        case .blackFridayNotifyPromo(_, _):
+            Text("Get notified about space\nupdate")
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -58,6 +69,10 @@ enum PromoCardType {
             }
         case .notificationPermission:
             Text("Enable Notifications")
+        case .blackFridayFollowPromo(_, _):
+            Text("Follow Space")
+        case .blackFridayNotifyPromo(_, _):
+            Text("Enable Notifications")
         }
     }
 
@@ -69,14 +84,16 @@ enum PromoCardType {
             return .brand.adaptive.pistachio
         case .referralPromo:
             return Color(light: .hex(0xFFEAD1), dark: .hex(0xF8C991))
-        case .notificationPermission:
+        case .notificationPermission,
+            .blackFridayFollowPromo,
+            .blackFridayNotifyPromo:
             return .brand.adaptive.polar
         }
     }
 
     var isCompact: Bool {
         switch self {
-        case .referralPromo:
+        case .referralPromo, .blackFridayNotifyPromo:
             return true
         default:
             return false
@@ -120,11 +137,19 @@ struct PromoCard: View {
         let size: CGFloat = type.isCompact ? 20 : 24
         let lineSpacing = 32 - size
 
-        type.title
-            .font(.roobert(.regular, size: size))
-            .lineSpacing(lineSpacing)
-            .foregroundColor(.hex(0x131415))
-            .padding(.vertical, type.isCompact ? 0 : lineSpacing)
+        if case .blackFridayNotifyPromo = type {
+            type.title
+                .font(.roobert(.regular, size: size))
+                .lineSpacing(5)
+                .foregroundColor(.hex(0x131415))
+                .padding(.vertical, type.isCompact ? 0 : lineSpacing)
+        } else {
+            type.title
+                .font(.roobert(.regular, size: size))
+                .lineSpacing(lineSpacing)
+                .foregroundColor(.hex(0x131415))
+                .padding(.vertical, type.isCompact ? 0 : lineSpacing)
+        }
     }
 
     @ViewBuilder
@@ -141,6 +166,16 @@ struct PromoCard: View {
                     .foregroundColor(Color.ui.gray70)
             }
         } else if case .notificationPermission(_, let onClose) = type {
+            Button(action: onClose) {
+                Symbol(.xmark, weight: .semibold, label: "Dismiss")
+                    .foregroundColor(Color.ui.gray70)
+            }
+        } else if case .blackFridayFollowPromo(_, let onClose) = type {
+            Button(action: onClose) {
+                Symbol(.xmark, weight: .semibold, label: "Dismiss")
+                    .foregroundColor(Color.ui.gray70)
+            }
+        } else if case .blackFridayNotifyPromo(_, let onClose) = type {
             Button(action: onClose) {
                 Symbol(.xmark, weight: .semibold, label: "Dismiss")
                     .foregroundColor(Color.ui.gray70)
