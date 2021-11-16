@@ -59,10 +59,15 @@ public class UnfollowSpaceRequest: SpaceRequest<LeaveSpaceMutation> {
 }
 
 public class UpdateSpaceRequest: SpaceRequest<UpdateSpaceMutation> {
-    public init(spaceID: String, name: String, description: String? = nil) {
+    public init(
+        spaceID: String, title: String,
+        description: String? = nil, thumbnail: String? = nil
+    ) {
         super.init(
             mutation: UpdateSpaceMutation(
-                input: UpdateSpaceInput(id: spaceID, name: name, description: description)))
+                input: UpdateSpaceInput(
+                    id: spaceID, name: title,
+                    description: description, thumbnail: thumbnail)))
     }
 }
 
