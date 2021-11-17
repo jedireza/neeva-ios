@@ -139,6 +139,7 @@ class ZeroQueryModel: ObservableObject {
                     gridModel.openSpace(
                         spaceId: spaceId, bvc: self.bvc,
                         completion: {
+                            self.bvc.hideZeroQuery()
                             self.promoCard = nil
                         }
                     )
