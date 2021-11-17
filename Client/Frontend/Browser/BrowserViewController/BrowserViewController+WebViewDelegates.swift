@@ -40,10 +40,6 @@ private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
         httpCookieStore.setCookie(NeevaConstants.loginCookie(for: cookieValue))
     }
 
-    if !isPrivate, let previewCookieValue = NeevaUserInfo.shared.getPreviewCookie() {
-        httpCookieStore.setCookie(NeevaConstants.previewCookie(for: previewCookieValue))
-    }
-
     // Some feature flags need to be echoed to neeva.com to ensure that both
     // the browser and the site are using consistent feature flag values. This
     // helps protect against possible race conditions with the two learning
