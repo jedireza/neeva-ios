@@ -188,9 +188,14 @@ enum NavigationPath {
         bvc.urlBar(didSubmitText: text)
     }
 
-    private static func handleSpace(spaceId: String, updatedItemIds: [String]?, with bvc: BrowserViewController) {
+    private static func handleSpace(
+        spaceId: String, updatedItemIds: [String]?, with bvc: BrowserViewController
+    ) {
         // navigate to SpaceId
         let gridModel = bvc.gridModel
+        if let updatedItemIDs = updatedItemIds, !updatedItemIDs.isEmpty {
+            gridModel.spaceCardModel.updatedItemIDs = updatedItemIDs
+        }
         gridModel.openSpace(spaceId: spaceId, bvc: bvc, completion: {})
     }
 

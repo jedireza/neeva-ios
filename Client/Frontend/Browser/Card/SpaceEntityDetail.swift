@@ -8,12 +8,19 @@ import SwiftUI
 
 struct SpaceEntityDetailView: View {
     @Default(.showDescriptions) var showDescriptions
-    @EnvironmentObject var tabCardModel: TabCardModel
+    @EnvironmentObject var spaceCardModel: SpaceCardModel
     let details: SpaceEntityThumbnail
     let onSelected: () -> Void
     let addToAnotherSpace: (URL, String?, String?) -> Void
     let editSpaceItem: () -> Void
     let index: Int
+
+    var shouldHighlightAsUpdated: Bool {
+        guard details.manager.id.id == SpaceStore.promotionalSpaceId else {
+            return false
+        }
+        return spaceCardModel.updatedItemIDs.contains(details.id)
+    }
 
     var socialURL: URL? {
         guard SocialInfoType(rawValue: details.data.url?.baseDomain ?? "") != nil else {
@@ -180,7 +187,9 @@ struct SpaceEntityDetailView: View {
             }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
                 .padding(.vertical, 12)
                 .padding(.horizontal, 16)
-                .background(Color.DefaultBackground)
+                .background(
+                    shouldHighlightAsUpdated
+                        ? Color.ui.adaptive.blue.opacity(0.1) : Color.DefaultBackground)
             Spacer(minLength: 0)
         }.scaleEffect(isPressed ? 0.95 : 1)
             .contextMenu(

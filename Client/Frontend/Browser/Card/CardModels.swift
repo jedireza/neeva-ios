@@ -126,6 +126,7 @@ class SpaceCardModel: CardModel {
             }
         }
     }
+    @Published var updatedItemIDs = [String]()
 
     var onViewUpdate: () -> Void = {}
     var thumbnailURLCandidates = [URL: [URL]]()
