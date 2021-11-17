@@ -465,6 +465,22 @@ where
                     }
 
                 ForEach(primitive.allDetails, id: \.id) { details in
+                    let editSpaceItem = {
+                        guard let space = space else {
+                            return
+                        }
+
+                        SceneDelegate.getBVC(with: tabModel.manager.scene)
+                            .showModal(
+                                style: .withTitle
+                            ) {
+                                AddOrUpdateSpaceContent(
+                                    space: space,
+                                    config: .updateSpaceItem(details.id)
+                                )
+                                .environmentObject(spacesModel)
+                            }
+                    }
                     if let entity = details.manager.get(for: details.id) {
                         if let url = entity.primitiveUrl,
                             let spaceEntityDetails = details as? SpaceEntityThumbnail
@@ -482,21 +498,7 @@ where
                                         .showAddToSpacesSheet(
                                             url: url, title: title, description: description)
                                 },
-                                editSpaceItem: {
-                                    guard let space = space else {
-                                        return
-                                    }
-
-                                    SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                        .showModal(
-                                            style: .withTitle
-                                        ) {
-                                            AddOrUpdateSpaceContent(
-                                                space: space, config: .updateSpaceItem(details.id)
-                                            )
-                                            .environmentObject(spacesModel)
-                                        }
-                                },
+                                editSpaceItem: editSpaceItem,
                                 index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0
                             )
                             .modifier(ListSeparatorModifier())
@@ -521,6 +523,17 @@ where
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
+                            .contextMenu(
+                                ContextMenu(menuItems: {
+                                    if details.ACL >= .edit {
+                                        Button(
+                                            action: editSpaceItem,
+                                            label: {
+                                                Label("Edit item", systemSymbol: .squareAndPencil)
+                                            })
+                                    }
+                                })
+                            )
                             .modifier(ListSeparatorModifier())
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.secondaryBackground)
