@@ -152,6 +152,8 @@ extension UIColor {
         named: "TrayBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
     public static let TextSelectionHighlight = UIColor(
         named: "TextSelectionHighlight", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
+    public static let PreviewHomeBackground = UIColor(
+        named: "PreviewHomeBackground", in: NeevaConstants.sharedBundle, compatibleWith: nil)!
 }
 
 extension Color {
@@ -240,4 +242,6 @@ extension Color {
     public static let selectedCell = Color(UIColor.SelectedCell)
 
     public static let spaceIconBackground = Color.brand.variant.polar
+
+    public static let PreviewHomeBackground = Color(UIColor.PreviewHomeBackground)
 }

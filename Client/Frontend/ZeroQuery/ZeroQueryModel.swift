@@ -106,7 +106,9 @@ class ZeroQueryModel: ObservableObject {
             Defaults[.didDismissDefaultBrowserCard] = true
         }
 
-        if NeevaFeatureFlags[.referralPromo] && !Defaults[.didDismissReferralPromoCard] {
+        if FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] {
+            promoCard = nil
+        } else if NeevaFeatureFlags[.referralPromo] && !Defaults[.didDismissReferralPromoCard] {
             promoCard = .referralPromo {
                 self.handleReferralPromo()
             } onClose: {

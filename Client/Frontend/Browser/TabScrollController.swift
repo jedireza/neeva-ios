@@ -113,7 +113,7 @@ class TabScrollingController: NSObject, ObservableObject {
             completion: completion)
     }
 
-    fileprivate func hideToolbars(animated: Bool, completion: ((_ finished: Bool) -> Void)? = nil) {
+    func hideToolbars(animated: Bool, completion: ((_ finished: Bool) -> Void)? = nil) {
         if toolbarState == .collapsed {
             completion?(true)
             return
@@ -253,8 +253,7 @@ extension TabScrollingController {
         _ animated: Bool, duration: TimeInterval, headerOffset: CGFloat, footerOffset: CGFloat,
         alpha: CGFloat, completion: ((_ finished: Bool) -> Void)?
     ) {
-        guard let scrollView = scrollView else { return }
-        let initialContentOffset = scrollView.contentOffset
+        let initialContentOffset = scrollView?.contentOffset ?? CGPoint.zero
 
         // If this function is used to fully animate the toolbar from hidden to shown, keep the page from scrolling by adjusting contentOffset,
         // Otherwise when the toolbar is hidden and a link navigated, showing the toolbar will scroll the page and
@@ -262,7 +261,7 @@ extension TabScrollingController {
         let isShownFromHidden = headerTopOffset == -topScrollHeight && headerOffset == 0
 
         let animation: () -> Void = {
-            if isShownFromHidden {
+            if isShownFromHidden, let scrollView = self.scrollView {
                 scrollView.contentOffset = CGPoint(
                     x: initialContentOffset.x, y: initialContentOffset.y + self.topScrollHeight)
             }

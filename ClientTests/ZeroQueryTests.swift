@@ -143,22 +143,22 @@ class ZeroQueryTests: XCTestCase {
     }
 
     func assertTabContentOnlyContainsZeroQuery() throws {
-        let zStack = try tabContentHost.rootView.inspect().find(ViewType.ZStack.self)
-        let content = try zStack.view(ZeroQueryContent.self, 0).actualView()
+        let group = try tabContentHost.rootView.inspect().find(ViewType.Group.self)
+        let content = try group.view(ZeroQueryContent.self, 0).actualView()
         XCTAssertNotNil(content)
-        XCTAssertEqual(zStack.count, 1)
+        XCTAssertEqual(group.count, 1)
     }
 
     func assertTabContentOnlyContainsSuggestions() throws {
-        let zStack = try tabContentHost.rootView.inspect().find(ViewType.ZStack.self)
-        let content = try zStack.view(SuggestionsContent.self, 0).actualView()
+        let group = try tabContentHost.rootView.inspect().find(ViewType.Group.self)
+        let content = try group.view(SuggestionsContent.self, 0).actualView()
         XCTAssertNotNil(content)
-        XCTAssertEqual(zStack.count, 1)
+        XCTAssertEqual(group.count, 1)
     }
 
     func assertTabContentOnlyContainsWebContainer() throws {
-        let zStack = try tabContentHost.rootView.inspect().find(ViewType.ZStack.self)
-        XCTAssertEqual(zStack.count, 1)
+        let group = try tabContentHost.rootView.inspect().find(ViewType.Group.self)
+        XCTAssertEqual(group.count, 1)
     }
 
     func testDeletionOfSingleSuggestedSite() {

@@ -795,7 +795,7 @@ extension TabManager {
         return store.getStartupTabs(for: scene).count > 0
     }
 
-    /// - Returns: Returns a bool of wether there were tabs to restore
+    /// - Returns: Returns a bool of whether there were tabs to restore
     func restoreTabs(_ forced: Bool = false) -> Bool {
         log.info("Restoring tabs")
 

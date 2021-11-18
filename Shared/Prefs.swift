@@ -13,6 +13,7 @@ extension Defaults.Keys {
     public static let searchInputPromptDismissed = Defaults.BoolKey(
         "profile.SearchInputPromptDismissed")
     public static let introSeen = Defaults.BoolKey("profile.IntroViewControllerSeen")
+    public static let didFirstNavigation = Defaults.BoolKey("profile_didFirstNavigation")
     public static let lastVersionNumber = Defaults.Key<String?>("profile.KeyLastVersionNumber")
     public static let didShowDefaultBrowserOnboarding = Defaults.BoolKey(
         "didShowDefaultBrowserOnboarding")

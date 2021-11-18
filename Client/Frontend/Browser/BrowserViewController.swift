@@ -331,8 +331,11 @@ class BrowserViewController: UIViewController {
         }
 
         displayedPopoverController?.dismiss(animated: true, completion: nil)
-        coordinator.animate { context in
-            self.scrollController.showToolbars(animated: false)
+
+        if tabContentHost.model.currentContentUI != .previewHome {
+            coordinator.animate { context in
+                self.scrollController.showToolbars(animated: false)
+            }
         }
     }
 
@@ -389,7 +392,9 @@ class BrowserViewController: UIViewController {
             })
 
         // Re-show toolbar which might have been hidden during scrolling (prior to app moving into the background)
-        scrollController.showToolbars(animated: false)
+        if tabContentHost.model.currentContentUI != .previewHome {
+            scrollController.showToolbars(animated: false)
+        }
 
         if NeevaUserInfo.shared.isUserLoggedIn {
             DispatchQueue.main.async {
@@ -605,12 +610,18 @@ class BrowserViewController: UIViewController {
             displayedRestoreTabsAlert = true
             showRestoreTabsAlert()
         } else {
-            if !tabManager.restoreTabs() {
+            if tabManager.restoreTabs() {
+                // Handle the case of an existing user upgrading to a version of the app
+                // that supports preview mode. They will have tabs already, so we don't
+                // want to show them the preview home experience.
+                Defaults[.didFirstNavigation] = true
+            } else {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-
                     if Defaults[.createNewTabOnStart] {
                         self.tabManager.select(self.tabManager.addTab())
+                    } else if FeatureFlag[.enablePreviewMode] && !Defaults[.didFirstNavigation] {
+                        self.showPreviewHome()
                     } else {
                         self.showTabTray()
                     }
@@ -772,7 +783,9 @@ class BrowserViewController: UIViewController {
         DispatchQueue.main.async {
             switch self.zeroQueryModel.openedFrom {
             case .tabTray:
-                self.showTabTray()
+                if !FeatureFlag[.enablePreviewMode] || Defaults[.didFirstNavigation] {
+                    self.showTabTray()
+                }
             case .createdTab:
                 self.tabManager.close(self.tabManager.selectedTab!)
             default:
@@ -788,9 +801,17 @@ class BrowserViewController: UIViewController {
         chromeModel.setEditingLocation(to: false)
         zeroQueryModel.reset(bvc: self)
 
-        DispatchQueue.main.async {
-            self.tabContentHost.updateContent(.hideZeroQuery)
+        DispatchQueue.main.async { [self] in
+            tabContentHost.updateContent(.hideZeroQuery)
+            if tabContentHost.model.currentContentUI == .previewHome {
+                scrollController.hideToolbars(animated: true)
+            }
         }
+    }
+
+    public func showPreviewHome() {
+        tabContentHost.updateContent(.showPreviewHome)
+        self.scrollController.hideToolbars(animated: false)
     }
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
@@ -1188,6 +1209,8 @@ class BrowserViewController: UIViewController {
             return
         }
 
+        Defaults[.didFirstNavigation] = true
+
         if let url = webView.url {
             if tab === tabManager.selectedTab {
                 chromeModel.isPage = tab.url?.displayURL?.isWebPage() ?? false
@@ -1278,7 +1301,7 @@ class BrowserViewController: UIViewController {
 // MARK: URL Bar Delegate support code
 extension BrowserViewController {
     func urlBarDidEnterOverlayMode() {
-        if !gridModel.isHidden {
+        if !gridModel.isHidden || tabManager.selectedTab == nil {
             openLazyTab(openedFrom: .tabTray)
         } else {
             showZeroQuery(openedFrom: .openTab(tabManager.selectedTab))
@@ -1741,7 +1764,6 @@ extension BrowserViewController {
                     if let onDismiss = onDismiss {
                         onDismiss()
                     }
-                    createOrSwitchToTabFromAuth(NeevaConstants.appSearchURL)
                     break
                 case .oktaSignin(let email):
                     createOrSwitchToTabFromAuth(NeevaConstants.oktaSigninURL(email: email))

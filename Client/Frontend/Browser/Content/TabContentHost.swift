@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Combine
+import Defaults
 import Shared
 import Storage
 import SwiftUI
@@ -10,6 +11,7 @@ enum ContentUIType: Equatable {
     case zeroQuery
     case suggestions
     case blank
+    case previewHome
 }
 
 enum ContentUIVisibilityEvent {
@@ -17,6 +19,7 @@ enum ContentUIVisibilityEvent {
     case hideZeroQuery
     case showSuggestions
     case hideSuggestions
+    case showPreviewHome
 }
 
 class TabContentHostModel: ObservableObject {
@@ -43,7 +46,7 @@ class TabContentHostModel: ObservableObject {
     init(bvc: BrowserViewController) {
         let tabManager = bvc.tabManager
         let webView = tabManager.selectedTab?.webView
-        let type = webView.map(ContentUIType.webPage) ?? .blank
+        let type = webView.map(ContentUIType.webPage) ?? Self.defaultType
         self.webContainerType = type
         self.currentContentUI = type
         self.recipeModel = RecipeViewModel(tabManager: tabManager)
@@ -66,6 +69,12 @@ class TabContentHostModel: ObservableObject {
             }
         }
     }
+
+    static var defaultType: ContentUIType {
+        // TODO(darin): We should get rid of the notion of .blank. We should be showing the empty
+        // card grid in this case instead.
+        (FeatureFlag[.enablePreviewMode] && !Defaults[.didFirstNavigation]) ? .previewHome : .blank
+    }
 }
 
 class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
@@ -84,7 +93,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
         let spaceContentSheetModel: SpaceContentSheetModel?
 
         var body: some View {
-            ZStack {
+            Group {
                 switch model.currentContentUI {
                 case .webPage(let currentWebView):
                     ZStack {
@@ -159,6 +168,8 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                     ZeroQueryContent(model: zeroQueryModel)
                         .environmentObject(suggestedSitesViewModel)
                         .environmentObject(suggestedSearchesModel)
+                case .previewHome:
+                    PreviewHomeView(bvc: bvc)
                 }
             }.useEffect(deps: model.currentContentUI) { _ in
                 zeroQueryModel.profile.panelDataObservers.activityStream.refreshIfNeeded(
@@ -239,8 +250,14 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                 zeroQueryModel.targetTab = .defaultValue
             }
         case .hideZeroQuery:
-            model.currentContentUI = model.webContainerType
-            self.zeroQueryModel.reset(bvc: nil)
+            if FeatureFlag[.enablePreviewMode] && !Defaults[.didFirstNavigation] {
+                model.currentContentUI = .previewHome
+            } else {
+                model.currentContentUI = model.webContainerType
+                self.zeroQueryModel.reset(bvc: nil)
+            }
+        case .showPreviewHome:
+            model.currentContentUI = .previewHome
         }
     }
 }

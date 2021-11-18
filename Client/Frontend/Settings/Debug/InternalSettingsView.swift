@@ -7,6 +7,7 @@ import SwiftUI
 struct InternalSettingsView: View {
     @Default(.searchInputPromptDismissed) var searchInputPromptDismissed
     @Default(.introSeen) var introSeen
+    @Default(.didFirstNavigation) var didFirstNavigation
     @Default(.seenSpacesIntro) var seenSpacesIntro
     @Default(.seenSpacesShareIntro) var seenSpacesShareIntro
     @Default(.lastVersionNumber) var lastVersionNumber
@@ -35,12 +36,16 @@ struct InternalSettingsView: View {
 
     var body: some View {
         List {
-            Section(header: Text("Implicit")) {
+            Section(header: Text("First Run")) {
                 Toggle("searchInputPromptDismissed", isOn: $searchInputPromptDismissed)
                 Toggle("introSeen", isOn: $introSeen)
+                Toggle("didFirstNavigation", isOn: $didFirstNavigation)
+            }
+            Section(header: Text("Spaces")) {
                 Toggle("spacesIntroSeen", isOn: $seenSpacesIntro)
                 Toggle("spacesShareIntroSeen", isOn: $seenSpacesShareIntro)
-                OptionalStringField("lastVersionNumber", text: $lastVersionNumber)
+            }
+            Section(header: Text("Promo Cards")) {
                 Toggle("didShowDefaultBrowserOnboarding", isOn: $didShowDefaultBrowserOnboarding)
                 Toggle("didDismissDefaultBrowserCard", isOn: $didDismissDefaultBrowserCard)
                 Toggle("didDismissReferralPromoCard", isOn: $didDismissReferralPromoCard)
@@ -77,6 +82,8 @@ struct InternalSettingsView: View {
 
                 OptionalBooleanField(
                     "appExtensionTelemetryOpenUrl", value: $appExtensionTelemetryOpenUrl)
+
+                OptionalStringField("lastVersionNumber", text: $lastVersionNumber)
             }
 
             Section(header: Text("Top Sites Cache")) {

@@ -343,6 +343,7 @@
 		BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328D2715324700B9BE1C /* OktaAuth.swift */; };
 		BC9332902715386A00B9BE1C /* RecipeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC93328F2715386A00B9BE1C /* RecipeBanner.swift */; };
 		BC93EE862654E31300D1AA07 /* Color.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BC93EE852654E31300D1AA07 /* Color.xcassets */; };
+		BC9478E32740FCCD00623D6C /* PreviewHomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9478E22740FCCD00623D6C /* PreviewHomeView.swift */; };
 		BCA4D73127226E8000AE5A15 /* RelatedRecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */; };
 		BCA86A52270FEE6B00FC4DE8 /* RecipeCheatsheetStripView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */; };
 		BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC1388E2656CBDB0018D87D /* nicons-400.ttf */; };
@@ -1435,6 +1436,7 @@
 		BC93328D2715324700B9BE1C /* OktaAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OktaAuth.swift; sourceTree = "<group>"; };
 		BC93328F2715386A00B9BE1C /* RecipeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeBanner.swift; sourceTree = "<group>"; };
 		BC93EE852654E31300D1AA07 /* Color.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Color.xcassets; sourceTree = "<group>"; };
+		BC9478E22740FCCD00623D6C /* PreviewHomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewHomeView.swift; sourceTree = "<group>"; };
 		BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedRecipeView.swift; sourceTree = "<group>"; };
 		BCA86A51270FEE6A00FC4DE8 /* RecipeCheatsheetStripView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetStripView.swift; sourceTree = "<group>"; };
 		BCC1388E2656CBDB0018D87D /* nicons-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-400.ttf"; sourceTree = "<group>"; };
@@ -3404,6 +3406,7 @@
 				BC15D22A26FA575A00FDF6A7 /* AuthButton.swift */,
 				BC15D22C26FA5F9C00FDF6A7 /* OtherOptionsPage.swift */,
 				BC93328D2715324700B9BE1C /* OktaAuth.swift */,
+				BC9478E22740FCCD00623D6C /* PreviewHomeView.swift */,
 			);
 			path = Intro;
 			sourceTree = "<group>";
@@ -5327,6 +5330,7 @@
 				C9AFE6E726583F5A000C5A03 /* SettingsView.swift in Sources */,
 				4A46E4E426730D790001687E /* CarouselProgressView.swift in Sources */,
 				BCC39A1F26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift in Sources */,
+				BC9478E32740FCCD00623D6C /* PreviewHomeView.swift in Sources */,
 				66430430267C19D200674549 /* ToastDefaults.swift in Sources */,
 				39F4C10A2045DB2E00746155 /* FocusHelper.swift in Sources */,
 				4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */,
