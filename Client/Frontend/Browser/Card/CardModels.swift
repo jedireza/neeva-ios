@@ -150,8 +150,8 @@ class SpaceCardModel: CardModel {
             }
         }.store(in: &detailsSubscriptions)
 
-        self.anyCancellable = manager.$state.sink { [unowned self] state in
-            guard detailedSpace == nil, case .ready = state,
+        self.anyCancellable = manager.$state.sink { [weak self] state in
+            guard let self = self, self.detailedSpace == nil, case .ready = state,
                 manager.updatedSpacesFromLastRefresh.count > 0
             else {
                 return
@@ -160,23 +160,23 @@ class SpaceCardModel: CardModel {
             if manager.updatedSpacesFromLastRefresh.count == 1,
                 let id = manager.updatedSpacesFromLastRefresh.first?.id.id,
                 let indexInStore = manager.allSpaces.firstIndex(where: { $0.id.id == id }),
-                let indexInDetails = allDetails.firstIndex(where: { $0.id == id })
+                let indexInDetails = self.allDetails.firstIndex(where: { $0.id == id })
             {
                 // If only one space is updated and it exists inside the current details, then just
                 // update its contents and move it to the right place, instead of resetting all.
-                allDetails.first(where: { $0.id == id })?.updateDetails()
+                self.allDetails.first(where: { $0.id == id })?.updateDetails()
                 if indexInStore != indexInDetails {
                     let indices: IndexSet = [indexInDetails]
-                    allDetails.move(fromOffsets: indices, toOffset: indexInStore)
+                    self.allDetails.move(fromOffsets: indices, toOffset: indexInStore)
                 }
                 return
             }
 
             DispatchQueue.main.async {
-                allDetails = manager.getAll().map {
+                self.allDetails = manager.getAll().map {
                     SpaceCardDetails(space: $0, manager: manager)
                 }
-                allDetails.forEach { details in
+                self.allDetails.forEach { details in
                     let detailID = details.id
                     details.$isShowingDetails.sink { [weak self] showingDetails in
                         if showingDetails {
@@ -185,12 +185,12 @@ class SpaceCardModel: CardModel {
                                     self?.allDetails.first(where: { $0.id == detailID })
                             }
                         }
-                    }.store(in: &detailsSubscriptions)
+                    }.store(in: &self.detailsSubscriptions)
                 }
 
-                onViewUpdate()
-                detailedSpace = allDetails.first { $0.isShowingDetails }
-                objectWillChange.send()
+                self.onViewUpdate()
+                self.detailedSpace = self.allDetails.first { $0.isShowingDetails }
+                self.objectWillChange.send()
             }
         }
     }
@@ -256,8 +256,10 @@ class SpaceCardModel: CardModel {
                         spaceID: spaceID, url: entity.data.url?.absoluteString ?? "",
                         title: entity.title, description: entity.description)
                 }
-            } retryDeletion: { [unowned self] in
-                delete(space: spaceID, entities: entities, from: scene, undoDeletion: undoDeletion)
+            } retryDeletion: { [weak self] in
+                guard let self = self else { return }
+                self.delete(
+                    space: spaceID, entities: entities, from: scene, undoDeletion: undoDeletion)
             }
         }
     }

@@ -93,7 +93,7 @@ class HistoryPanel: SiteTableViewController {
         return SceneDelegate.getTabManager(for: view).recentlyClosedTabs.count > 0
     }
 
-    lazy var emptyStateOverlayView: UIView = { [unowned self] in createEmptyStateOverlayView() }()
+    lazy var emptyStateOverlayView: UIView = { createEmptyStateOverlayView() }()
 
     // MARK: - Lifecycle
     override init(profile: Profile) {

@@ -249,19 +249,21 @@ class SuggestionModel: ObservableObject {
 
     private func subscribe() {
         searchTextSubscription = queryModel.$value.withPrevious().sink {
-            [unowned self] oldQuery, query in
-            currentDeferredHistoryQuery?.cancel()
+            [weak self] oldQuery, query in
+            guard let self = self else { return }
+
+            self.currentDeferredHistoryQuery?.cancel()
 
             if query.isEmpty {
-                sites = []
-                completion = nil
-                shouldSkipNextAutocomplete = false
-                autocompleteSuggestion = nil
+                self.sites = []
+                self.completion = nil
+                self.shouldSkipNextAutocomplete = false
+                self.autocompleteSuggestion = nil
                 return
             }
 
             guard
-                let deferredHistory = frecentHistory.getSites(
+                let deferredHistory = self.frecentHistory.getSites(
                     matchingSearchQuery: query, limit: numSuggestionsToFetch)
                     as? CancellableDeferred
             else {
@@ -269,7 +271,7 @@ class SuggestionModel: ObservableObject {
                 return
             }
 
-            currentDeferredHistoryQuery = deferredHistory
+            self.currentDeferredHistoryQuery = deferredHistory
 
             deferredHistory.uponQueue(.main) { result in
                 defer {
@@ -317,8 +319,8 @@ class SuggestionModel: ObservableObject {
 
                 // First, see if the query matches any URLs from the user's search history.
                 for site in deferredHistorySites {
-                    if setCompletion(
-                        to: completionForURL(site.url, from: query, site: site), from: query)
+                    if self.setCompletion(
+                        to: self.completionForURL(site.url, from: query, site: site), from: query)
                     {
                         return
                     }

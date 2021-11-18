@@ -14,7 +14,7 @@ class TextSizeModel: ObservableObject {
         self.subscription =
             webView
             .publisher(for: \.pageZoom, options: .new)
-            .sink { [unowned self] _ in objectWillChange.send() }
+            .sink { [weak self] _ in self?.objectWillChange.send() }
 
         #if !USE_PRIVATE_WEB_VIEW_ZOOM_API
             // The fallback API tries to scale the text up and down — like Chrome for iOS does

@@ -24,10 +24,15 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 .environmentObject(gridModel.spaceCardModel)
                 .environmentObject(gridModel.tabGroupCardModel)
                 .environmentObject(gridModel)
-                .environment(\.onOpenURL, { gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) })
+                .environment(
+                    \.onOpenURL, { gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) }
+                )
                 .environment(
                     \.onOpenURLForSpace,
-                     { gridModel.tabCardModel.manager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
+                    {
+                        gridModel.tabCardModel.manager.createOrSwitchToTabForSpace(
+                            for: $0, spaceID: $1)
+                    }
                 )
                 .environment(\.shareURL, shareURL)
         }
@@ -37,20 +42,12 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     let gridModel: GridModel
     let toolbarModel: SwitcherToolbarModel
 
-    init(bvc: BrowserViewController, toolbarModel: SwitcherToolbarModel) {
-        self.gridModel = GridModel(tabManager: bvc.tabManager)
+    init(
+        tabManager: TabManager, toolbarModel: SwitcherToolbarModel,
+        shareURL: @escaping (URL, UIView) -> Void
+    ) {
+        self.gridModel = GridModel(tabManager: tabManager)
         self.toolbarModel = toolbarModel
-        let shareURL: (URL, UIView) -> Void = { url, view in
-            let helper = ShareExtensionHelper(url: url, tab: nil)
-            let controller = helper.createActivityViewController({ (_, _) in })
-            if UIDevice.current.userInterfaceIdiom != .pad {
-                controller.modalPresentationStyle = .formSheet
-            } else {
-                controller.popoverPresentationController?.sourceView = view
-                controller.popoverPresentationController?.permittedArrowDirections = .up
-            }
-            bvc.present(controller, animated: true, completion: nil)
-        }
         super.init(
             rootView: Content(
                 gridModel: gridModel,
@@ -68,14 +65,14 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
         })
         gridModel.buildCloseAllTabsMenu = {
             if self.gridModel.switcherState == .tabs {
-                let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
+                let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
                 return tabMenu.createCloseAllTabsMenu(fromTabTray: true)
             } else {
                 return UIMenu(sections: [[]])
             }
         }
         gridModel.buildRecentlyClosedTabsMenu = {
-            let tabMenu = TabMenu(tabManager: bvc.tabManager, alertPresentViewController: self)
+            let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
             return tabMenu.createRecentlyClosedTabsMenu()
         }
     }

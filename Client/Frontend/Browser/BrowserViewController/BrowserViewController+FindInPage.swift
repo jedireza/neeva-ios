@@ -14,33 +14,36 @@ extension BrowserViewController {
                     self.updateFindInPageVisibility(visible: false, tab: tab)
                 })
 
-
             let height: CGFloat = 50
             if let query = query {
                 // delay displaying query till after animation to prevent weird spacing
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [unowned self] in
-                    guard let findInPageViewController = findInPageViewController else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
+                    guard let self = self,
+                        let findInPageViewController = self.findInPageViewController
+                    else {
                         return
                     }
 
-                    overlayWindowManager?.createWindow(with: findInPageViewController,
-                                                       height: height,
-                                                       addShadow: true,
-                                                       alignToBottom: true)
+                    self.overlayWindowManager?.createWindow(
+                        with: findInPageViewController,
+                        height: height,
+                        addShadow: true,
+                        alignToBottom: true)
 
                     findInPageViewController.model.searchValue = query
                 }
             } else {
-                overlayWindowManager?.createWindow(with: findInPageViewController!,
-                                                   height: height,
-                                                   addShadow: true,
-                                                   alignToBottom: true)
+                overlayWindowManager?.createWindow(
+                    with: findInPageViewController!,
+                    height: height,
+                    addShadow: true,
+                    alignToBottom: true)
             }
         } else {
             let tab = tab ?? tabManager.selectedTab
             guard let webView = tab?.webView else { return }
             webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
-            
+
             overlayWindowManager?.removeCurrentWindow()
             findInPageViewController = nil
         }

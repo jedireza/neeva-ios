@@ -51,7 +51,9 @@ class ContentBlocker {
             }
         }
 
-        Defaults.observe(.contentBlockingEnabled, options: []) { [unowned self] change in
+        Defaults.observe(.contentBlockingEnabled, options: []) { [weak self] change in
+            guard let self = self else { return }
+
             if change.newValue {
                 ClientLogger.shared.logCounter(.TurnOffBlockTracking, attributes: EnvironmentHelper.shared.getAttributes())
             } else {

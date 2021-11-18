@@ -65,12 +65,14 @@ extension BrowserViewController: ToolbarDelegate {
                     let domain = SpaceImportDomain(rawValue: tab.url?.baseDomain ?? "")
                 {
                     tab.webView?.evaluateJavaScript(domain.script) {
-                        [unowned self] (result, error) in
+                        [weak self] (result, error) in
+                        guard let self = self else { return }
                         guard let linkData = result as? [[String]] else {
                             self.showAddToSpacesSheet(
                                 url: url, title: tab.title, webView: tab.webView!)
                             return
                         }
+
                         let importData = SpaceImportHandler(
                             title: tab.url!.path.remove("/").capitalized, data: linkData)
                         self.showAddToSpacesSheet(

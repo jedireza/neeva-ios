@@ -99,9 +99,10 @@ class TrackingStatsViewModel: ObservableObject {
         self.trackers = trackingData.trackingEntities
         onDataUpdated()
         statsSubscription = selectedTab?.contentBlocker?.$stats
-            .filter { [unowned self] _ in self.viewVisible }
+            .filter { [weak self] _ in self?.viewVisible ?? false }
             .map { TrackingEntity.getTrackingDataForCurrentTab(stats: $0) }
-            .sink { [unowned self] data in
+            .sink { [weak self] data in
+                guard let self = self else { return }
                 self.numDomains = data.numDomains
                 self.trackers = data.trackingEntities
                 self.onDataUpdated()

@@ -106,14 +106,16 @@ class WindowManager: KeyboardReadable {
         // Does not interfere with find in page, but might prevent a Toast
         if checkKeyboard && keyboardHelper.keyboardVisible {
             keyboardVisibleListener = keyboardHelper.$keyboardVisible.sink {
-                [unowned self] keyboardVisible in
+                [weak self] keyboardVisible in
+                guard let self = self else { return }
+
                 // Calls window to load after keyboard is dismissed
                 // Small delay to allow keyboard to hide before showing window
                 if !keyboardVisible {
                     DispatchQueue.main.asyncAfter(
                         deadline: .now() + KeyboardHelper.keyboardAnimationTime
                     ) {
-                        createWindow(
+                        self.createWindow(
                             with: rootViewController, height: height, addShadow: addShadow,
                             checkKeyboard: false, alignToBottom: alignToBottom,
                             completionHandler: completionHandler)

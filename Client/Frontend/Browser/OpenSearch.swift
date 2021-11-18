@@ -15,7 +15,7 @@ class OpenSearchEngine {
     fileprivate let SearchTermComponent = "{searchTerms}"
     fileprivate let LocaleTermComponent = "{moz:locale}"
 
-    fileprivate lazy var searchQueryComponentKey: String? = { [unowned self] in
+    fileprivate lazy var searchQueryComponentKey: String? = {
         self.getQueryArgFromTemplate()
     }()
 

@@ -29,7 +29,7 @@ class ContextMenuHelper: NSObject {
 
     fileprivate var nativeHighlightLongPressRecognizer: UILongPressGestureRecognizer?
 
-    lazy var gestureRecognizer: UILongPressGestureRecognizer = { [unowned self] in
+    lazy var gestureRecognizer: UILongPressGestureRecognizer = {
         let g = UILongPressGestureRecognizer(
             target: self, action: #selector(self.longPressGestureDetected))
         g.delegate = self

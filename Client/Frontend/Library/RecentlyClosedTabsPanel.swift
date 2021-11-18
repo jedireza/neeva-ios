@@ -19,7 +19,7 @@ class RecentlyClosedTabsPanel: UIViewController {
     weak var delegate: HistoryPanelDelegate?
     let profile: Profile
 
-    fileprivate lazy var tableViewController = { [unowned self] in
+    fileprivate lazy var tableViewController = {
         RecentlyClosedTabsPanelSiteTableViewController(profile: profile)
     }()
 

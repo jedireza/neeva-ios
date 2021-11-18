@@ -47,12 +47,14 @@ class TabContentHostModel: ObservableObject {
         self.webContainerType = type
         self.currentContentUI = type
         self.recipeModel = RecipeViewModel(tabManager: tabManager)
-        self.subscription = tabManager.selectedTabPublisher.sink { [unowned self] tab in
+        self.subscription = tabManager.selectedTabPublisher.sink { [weak self] tab in
+            guard let self = self else { return }
             guard let webView = tab?.webView else {
-                webContainerType = .blank
+                self.webContainerType = .blank
                 return
             }
-            webContainerType = .webPage(webView)
+
+            self.webContainerType = .webPage(webView)
 
             if NeevaFeatureFlags[.recipeCheatsheet] && !tabManager.isIncognito {
                 if let url = webView.url {

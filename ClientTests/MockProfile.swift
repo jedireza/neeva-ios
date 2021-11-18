@@ -60,7 +60,7 @@ open class MockProfile: Client.Profile {
     fileprivate var legacyPlaces:
         BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations
 
-    public lazy var panelDataObservers: PanelDataObservers = { [unowned self] in
+    public lazy var panelDataObservers: PanelDataObservers = {
         return MockPanelDataObservers(profile: self)
     }()
 
@@ -132,11 +132,11 @@ open class MockProfile: Client.Profile {
         return SQLiteReadingList(db: self.readingListDB)
     }()
 
-    internal lazy var remoteClientsAndTabs: RemoteClientsAndTabs = { [unowned self] in
+    internal lazy var remoteClientsAndTabs: RemoteClientsAndTabs = {
         return SQLiteRemoteClientsAndTabs(db: self.db)
     }()
 
-    fileprivate lazy var syncCommands: SyncCommands = { [unowned self] in
+    fileprivate lazy var syncCommands: SyncCommands = {
         return SQLiteRemoteClientsAndTabs(db: self.db)
     }()
 

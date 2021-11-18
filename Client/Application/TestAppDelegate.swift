@@ -41,7 +41,7 @@ class MockUserInfoProvider: UserInfoProvider {
 }
 
 class TestAppDelegate: AppDelegate {
-    lazy var dirForTestProfile = { [unowned self] in "\(appRootDir())/profile.testProfile" }()
+    lazy var dirForTestProfile = { "\(appRootDir())/profile.testProfile" }()
 
     override func createProfile() -> Profile {
         var profile: BrowserProfile

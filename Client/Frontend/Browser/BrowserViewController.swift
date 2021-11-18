@@ -46,12 +46,11 @@ class BrowserViewController: UIViewController {
         model.delegate = self
         return model
     }()
-    private(set) lazy var suggestionModel: SuggestionModel = { [unowned self] in
+    private(set) lazy var suggestionModel: SuggestionModel = {
         return SuggestionModel(bvc: self, profile: self.profile, queryModel: self.searchQueryModel)
     }()
 
     private(set) lazy var zeroQueryModel: ZeroQueryModel = {
-        [unowned self] in
         let model = ZeroQueryModel(
             bvc: self,
             profile: profile,
@@ -76,19 +75,32 @@ class BrowserViewController: UIViewController {
         cardGridViewController.gridModel
     }
 
-    lazy var cardGridViewController: CardGridViewController = { [unowned self] in
+    lazy var cardGridViewController: CardGridViewController = {
         let controller = CardGridViewController(
-            bvc: self,
+            tabManager: self.tabManager,
             toolbarModel: SwitcherToolbarModel(
                 tabManager: tabManager,
-                openLazyTab: { openLazyTab(openedFrom: .tabTray) },
+                openLazyTab: { self.openLazyTab(openedFrom: .tabTray) },
                 createNewSpace: {
                     self.showModal(style: .grouped) {
                         CreateSpaceOverlayContent()
                             .environmentObject(self.gridModel.spaceCardModel)
                     }
                 },
-                onNeevaMenuAction: self.perform(neevaMenuAction:)))
+                onNeevaMenuAction: self.perform(neevaMenuAction:))
+        ) { url, view in
+            let helper = ShareExtensionHelper(url: url, tab: nil)
+            let controller = helper.createActivityViewController({ (_, _) in })
+            if UIDevice.current.userInterfaceIdiom != .pad {
+                controller.modalPresentationStyle = .formSheet
+            } else {
+                controller.popoverPresentationController?.sourceView = view
+                controller.popoverPresentationController?.permittedArrowDirections = .up
+            }
+
+            self.present(controller, animated: true, completion: nil)
+        }
+
         addChild(controller)
         view.addSubview(controller.view)
         controller.didMove(toParent: self)
@@ -99,7 +111,6 @@ class BrowserViewController: UIViewController {
 
     private(set) var overlaySheetViewController: UIViewController?
     private(set) lazy var simulateForwardViewController: SimulatedSwipeController? = {
-        [unowned self] in
         guard FeatureFlag[.swipePlusPlus] else {
             return nil
         }
@@ -115,7 +126,6 @@ class BrowserViewController: UIViewController {
     }()
 
     private(set) lazy var simulateBackViewController: SimulatedSwipeController? = {
-        [unowned self] in
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             chromeModel: chromeModel,
@@ -128,7 +138,6 @@ class BrowserViewController: UIViewController {
     }()
 
     private(set) lazy var tabContentHost: TabContentHost = {
-        [unowned self] in
         return TabContentHost(bvc: self)
     }()
 
@@ -443,11 +452,12 @@ class BrowserViewController: UIViewController {
             readerModeModel: readerModeModel,
             delegate: self,
             newTab: { self.openURLInNewTab(nil) },
-            onCancel: { [unowned self] in
-                if zeroQueryModel.isLazyTab {
-                    closeLazyTab()
+            onCancel: { [weak self] in
+                guard let self = self else { return }
+                if self.zeroQueryModel.isLazyTab {
+                    self.closeLazyTab()
                 } else {
-                    hideZeroQuery()
+                    self.hideZeroQuery()
                 }
             })
         addChild(topBarHost)
@@ -496,9 +506,10 @@ class BrowserViewController: UIViewController {
             if !UIConstants.enableBottomURLBar {
                 let headerTopConstraint = make.top.equalToSuperview().constraint
                 scrollController.$headerTopOffset
-                    .sink { [unowned self] in
+                    .sink { [weak self] in
+                        guard let self = self else { return }
                         headerTopConstraint.update(offset: $0)
-                        view.setNeedsLayout()
+                        self.view.setNeedsLayout()
                     }
                     .store(in: &subscriptions)
             }
@@ -509,9 +520,10 @@ class BrowserViewController: UIViewController {
             make.leading.trailing.equalTo(self.view)
 
             scrollController.$footerBottomOffset
-                .sink { [unowned self] in
+                .sink { [weak self] in
+                    guard let self = self else { return }
                     footerBottomConstraint.update(offset: $0)
-                    view.setNeedsLayout()
+                    self.view.setNeedsLayout()
                 }
                 .store(in: &subscriptions)
         }
@@ -594,11 +606,13 @@ class BrowserViewController: UIViewController {
             showRestoreTabsAlert()
         } else {
             if !tabManager.restoreTabs() {
-                DispatchQueue.main.async { [unowned self] in
+                DispatchQueue.main.async { [weak self] in
+                    guard let self = self else { return }
+
                     if Defaults[.createNewTabOnStart] {
-                        tabManager.select(tabManager.addTab())
+                        self.tabManager.select(self.tabManager.addTab())
                     } else {
-                        showTabTray()
+                        self.showTabTray()
                     }
                 }
             }
@@ -1124,7 +1138,9 @@ class BrowserViewController: UIViewController {
         }
 
         let controller = helper.createActivityViewController(appActivities: appActivities) {
-            [unowned self] completed, _ in
+            [weak self] completed, _ in
+            guard let self = self else { return }
+
             // After dismissing, check to see if there were any prompts we queued up
             self.showQueuedAlertIfAvailable()
 
@@ -1665,9 +1681,9 @@ extension BrowserViewController {
 
     // Default browser onboarding
     func presentDBOnboardingViewController(_ force: Bool = false) {
-        let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: {
-            [unowned self] in
-            zeroQueryModel.updateState()
+        let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: { [weak self] in
+            guard let self = self else { return }
+            self.zeroQueryModel.updateState()
         })
 
         onboardingVC.modalPresentationStyle = .formSheet
@@ -1906,7 +1922,9 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                 copyImageLinkAction, accessibilityIdentifier: "linkContextMenu.copyImageLink")
         }
 
-        let setupPopover = { [unowned self] in
+        let setupPopover = { [weak self] in
+            guard let self = self else { return }
+
             // If we're showing an arrow popup, set the anchor to the long press location.
             if let popoverPresentationController = actionSheetController
                 .popoverPresentationController
@@ -2020,8 +2038,10 @@ extension BrowserViewController {
     ) {
         // TODO: Inject this as a ContentScript to avoid the delay here.
         webView.evaluateJavaScript(SpaceImportHandler.descriptionImageScript) {
-            [unowned self]
+            [weak self]
             (result, error) in
+
+            guard let self = self else { return }
 
             let output = result as? [[String]]
 
@@ -2030,7 +2050,7 @@ extension BrowserViewController {
             var set = Set<String>()
             var thumbnailUrls = [URL]()
             if let mediaURL =
-                URL(string: tabManager.getTabForURL(url)?.pageMetadata?.mediaURL ?? "")
+                URL(string: self.tabManager.getTabForURL(url)?.pageMetadata?.mediaURL ?? "")
             {
                 thumbnailUrls.append(mediaURL)
                 set.insert(mediaURL.absoluteString)
@@ -2044,7 +2064,7 @@ extension BrowserViewController {
             }
 
             var updater: SocialInfoUpdater? = nil
-            weak var model = gridModel.spaceCardModel
+            weak var model = self.gridModel.spaceCardModel
 
             updater = SocialInfoUpdater.from(url: url, ogInfo: output?.last, title: title ?? "") {
                 range, data, id in
@@ -2056,7 +2076,7 @@ extension BrowserViewController {
 
             model?.thumbnailURLCandidates[url] = thumbnailUrls
 
-            showAddToSpacesSheet(
+            self.showAddToSpacesSheet(
                 url: url, title: updater?.title ?? title,
                 description: description ?? updater?.description ?? output?.first?.first,
                 importData: importData, updater: updater)

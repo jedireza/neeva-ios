@@ -32,13 +32,13 @@ struct LocationViewTouchHandler: UIViewRepresentable {
 
         private var touchCount = 0
         private var oldItems: [UIMenuItem]?
-        private lazy var longPressGesture: UILongPressGestureRecognizer = { [unowned self] in
+        private lazy var longPressGesture: UILongPressGestureRecognizer = {
             .init(target: self, action: #selector(didLongPress))
         }()
-        private lazy var tapGesture: UITapGestureRecognizer = { [unowned self] in
+        private lazy var tapGesture: UITapGestureRecognizer = {
             .init(target: self, action: #selector(didTap))
         }()
-        private lazy var dragInteraction: UIDragInteraction = { [unowned self] in
+        private lazy var dragInteraction: UIDragInteraction = {
             .init(delegate: self)
         }()
 

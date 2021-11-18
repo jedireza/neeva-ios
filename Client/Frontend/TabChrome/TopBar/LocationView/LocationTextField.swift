@@ -106,11 +106,13 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
 
         subscription = suggestionModel.$completion
             .removeDuplicates()
-            .sink { [unowned self] completion in
-                if completion != nil, isEditing, markedTextRange == nil {
-                    tintColor = defaultTint.withAlphaComponent(0)
+            .sink { [weak self] completion in
+                guard let self = self else { return }
+
+                if completion != nil, self.isEditing, self.markedTextRange == nil {
+                    self.tintColor = self.defaultTint.withAlphaComponent(0)
                 } else {
-                    tintColor = defaultTint
+                    self.tintColor = self.defaultTint
                 }
             }
         tintColor =
@@ -134,7 +136,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 action: #selector(self.handleKeyCommand(sender:))),
             UIKeyCommand(
                 input: UIKeyCommand.inputRightArrow, modifierFlags: [],
-                action: #selector(self.handleKeyCommand(sender:)))
+                action: #selector(self.handleKeyCommand(sender:))),
         ]
 
         if #available(iOS 15.0, *) {

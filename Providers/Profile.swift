@@ -99,7 +99,7 @@ open class BrowserProfile: Profile {
 
     private let loginsSaltKeychainKey = "sqlcipher.key.logins.salt"
     private let loginsUnlockKeychainKey = "sqlcipher.key.logins.db"
-    private lazy var loginsKey: String = { [unowned self] in
+    private lazy var loginsKey: String = {
         if let secret = keychain.string(forKey: loginsUnlockKeychainKey) {
             return secret
         }
@@ -240,7 +240,7 @@ open class BrowserProfile: Profile {
         return name
     }
 
-    lazy var queue: TabQueue = { [unowned self] in
+    lazy var queue: TabQueue = {
         withExtendedLifetime(self.history) {
             return SQLiteQueue(db: self.db)
         }
@@ -253,7 +253,6 @@ open class BrowserProfile: Profile {
     /// that this is initialized first.
     fileprivate lazy var legacyPlaces:
         BrowserHistory & Favicons & ResettableSyncStorage & HistoryRecommendations = {
-            [unowned self] in
             return SQLiteHistory(db: self.db)
         }()
 
@@ -265,11 +264,11 @@ open class BrowserProfile: Profile {
         return self.legacyPlaces
     }
 
-    lazy var panelDataObservers: PanelDataObservers = { [unowned self] in
+    lazy var panelDataObservers: PanelDataObservers = {
         return PanelDataObservers(profile: self)
     }()
 
-    lazy var metadata: Metadata = { [unowned self] in
+    lazy var metadata: Metadata = {
         return SQLiteMetadata(db: self.db)
     }()
 
@@ -277,13 +276,12 @@ open class BrowserProfile: Profile {
         return self.legacyPlaces
     }
 
-    lazy var readingList: ReadingList = { [unowned self] in
+    lazy var readingList: ReadingList = {
         return SQLiteReadingList(db: self.readingListDB)
     }()
 
     lazy var remoteClientsAndTabs:
         RemoteClientsAndTabs & ResettableSyncStorage & AccountRemovalDelegate & RemoteDevices = {
-            [unowned self] in
             return SQLiteRemoteClientsAndTabs(db: self.db)
         }()
 
@@ -307,7 +305,7 @@ open class BrowserProfile: Profile {
         return self.remoteClientsAndTabs.insertOrUpdateTabs(tabs)
     }
 
-    lazy var logins: RustLogins = { [unowned self] in
+    lazy var logins: RustLogins = {
         let databasePath = URL(
             fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true
         ).appendingPathComponent("logins.db").path

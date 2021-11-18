@@ -4,11 +4,11 @@
 
 import Defaults
 import Foundation
+import SafariServices
 import Shared
 import StoreKit
 import SwiftyJSON
 import UIKit
-import SafariServices
 import WebKit
 
 private let log = Logger.browser

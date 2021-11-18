@@ -32,23 +32,25 @@ class TabScrollingController: NSObject, ObservableObject {
         super.init()
 
         tabManager.selectedTabPublisher
-            .sink { [unowned self] newTab in
-                scrollView?.delegate = nil
-                scrollView?.removeGestureRecognizer(panGesture)
+            .sink { [weak self] newTab in
+                guard let self = self else { return }
+
+                self.scrollView?.delegate = nil
+                self.scrollView?.removeGestureRecognizer(self.panGesture)
 
                 if let tab = newTab, let scrollView = tab.webView?.scrollView {
-                    scrollView.addGestureRecognizer(panGesture)
+                    scrollView.addGestureRecognizer(self.panGesture)
                     scrollView.delegate = self
 
                     self.scrollView = scrollView
 
-                    tabSubscriptions = []
+                    self.tabSubscriptions = []
                     tab.$isLoading
                         .assign(to: \.tabIsLoading, on: self)
-                        .store(in: &tabSubscriptions)
+                        .store(in: &self.tabSubscriptions)
                 } else {
-                    scrollView = nil
-                    tabSubscriptions = []
+                    self.scrollView = nil
+                    self.tabSubscriptions = []
                 }
             }
             .store(in: &subscriptions)
@@ -66,7 +68,7 @@ class TabScrollingController: NSObject, ObservableObject {
     fileprivate var lastZoomedScale: CGFloat = 0
     fileprivate var isUserZoom = false
 
-    fileprivate lazy var panGesture: UIPanGestureRecognizer = { [unowned self] in
+    fileprivate lazy var panGesture: UIPanGestureRecognizer = {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
         panGesture.delegate = self

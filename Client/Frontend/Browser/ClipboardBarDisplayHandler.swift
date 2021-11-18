@@ -61,21 +61,23 @@ class ClipboardBarDisplayHandler: NSObject {
             firstTabLoaded = true
             return
         }
-        subscription = webView.publisher(for: \.url, options: .new).sink { [unowned self] url in
+        subscription = webView.publisher(for: \.url, options: .new).sink { [weak self] url in
+            guard let self = self else { return }
+
             // Ugly hack to ensure we wait until we're finished restoring the session on the first tab
             // before checking if we should display the clipboard bar.
             guard
                 let url = url,
-                sessionRestored,
+                self.sessionRestored,
                 !url.absoluteString.hasPrefix(
                     "\(WebServer.sharedInstance.base)/about/sessionrestore?history=")
             else {
                 return
             }
 
-            subscription = nil
-            firstTabLoaded = true
-            checkIfShouldDisplayBar()
+            self.subscription = nil
+            self.firstTabLoaded = true
+            self.checkIfShouldDisplayBar()
         }
     }
 
@@ -139,7 +141,9 @@ class ClipboardBarDisplayHandler: NSObject {
 
             self.lastDisplayedURL = absoluteString
 
-            if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.bvc?.view).toastViewManager {
+            if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.bvc?.view)
+                .toastViewManager
+            {
                 let toastView = toastManager.makeToast(
                     text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle,
                     buttonAction: {
