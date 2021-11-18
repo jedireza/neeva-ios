@@ -228,7 +228,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             ZStack {
                 // The semi-transparent backdrop used to shade the content that lies below
                 // the sheet.
-                Button(action: self.model.hide) {
+                Button(action: style.nonDismissible ? {} : self.model.hide) {
                     Color.black
                         .opacity(self.model.backdropOpacity)
                         .ignoresSafeArea()

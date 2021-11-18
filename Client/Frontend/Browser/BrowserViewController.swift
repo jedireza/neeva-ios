@@ -1698,7 +1698,11 @@ extension BrowserViewController {
         completion: (() -> Void)? = nil
     ) {
         if alwaysShow || !Defaults[.introSeen] {
-            showProperIntroVC(onDismiss: onDismiss, signInMode: signInMode, completion: completion)
+            showProperIntroVC(
+                onDismiss: onDismiss,
+                signInMode: signInMode,
+                completion: completion
+            )
         }
     }
 

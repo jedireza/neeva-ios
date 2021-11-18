@@ -15,7 +15,7 @@ struct PopoverView<Content: View>: View {
             ZStack {
                 // The semi-transparent backdrop used to shade the content that lies below
                 // the sheet.
-                Button(action: onDismiss) {
+                Button(action: style.nonDismissible ? {} : onDismiss) {
                     Color.black
                         .opacity(0.2)
                         .ignoresSafeArea()

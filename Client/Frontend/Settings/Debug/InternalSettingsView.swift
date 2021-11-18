@@ -33,6 +33,9 @@ struct InternalSettingsView: View {
     @Default(.fastTapPromoTimeInterval) var fastTapPromoTimeInterval
     @Default(.seenBlackFridayFollowPromo) var seenBlackFridayFollowPromo
     @Default(.seenBlackFridayNotifyPromo) var seenBlackFridayNotifyPromo
+    @Default(.previewModeQueries) var previewModeQueries
+    @Default(.signupPromptInterval) var signupPromptInterval
+    @Default(.maxQueryLimit) var maxQueryLimit
 
     var body: some View {
         List {
@@ -114,19 +117,35 @@ struct InternalSettingsView: View {
                 }
             }
 
-            Section(header: Text("Notification")) {
-                OptionalStringField("lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
-                OptionalNumberField(
-                    "lastNeevaPromoScheduledTimeInterval",
-                    number: $lastNeevaPromoScheduledTimeInterval)
-                Toggle(
-                    "didRegisterNotificationTokenOnServer",
-                    isOn: $didRegisterNotificationTokenOnServer)
+            Group {
+                Section(header: Text("Notification")) {
+                    OptionalStringField(
+                        "lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
+                    OptionalNumberField(
+                        "lastNeevaPromoScheduledTimeInterval",
+                        number: $lastNeevaPromoScheduledTimeInterval)
+                    Toggle(
+                        "didRegisterNotificationTokenOnServer",
+                        isOn: $didRegisterNotificationTokenOnServer)
 
-                NumberField(
-                    "productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
-                NumberField("newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
-                NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
+                    NumberField(
+                        "productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
+                    NumberField(
+                        "newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
+                    NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
+                }
+
+                Section(header: Text("Preview Mode")) {
+                    HStack {
+                        Text("previewModeQueries")
+                        Spacer()
+                        Text("\(previewModeQueries.count)")
+                    }
+                    NumberField(
+                        "signupPromptInterval", number: $signupPromptInterval)
+                    NumberField(
+                        "maxQueryLimit", number: $maxQueryLimit)
+                }
             }
         }
         .font(.system(.footnote, design: .monospaced))

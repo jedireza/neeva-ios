@@ -5,10 +5,14 @@ import Foundation
 public struct OverlayStyle {
     let showTitle: Bool
     let backgroundColor: UIColor
+    let nonDismissible: Bool  // disable dismiss modal by clicking the gray black
 
-    init(showTitle: Bool, backgroundColor: UIColor = .systemBackground) {
+    init(
+        showTitle: Bool, backgroundColor: UIColor = .systemBackground, nonDismissible: Bool = false
+    ) {
         self.showTitle = showTitle
         self.backgroundColor = backgroundColor
+        self.nonDismissible = nonDismissible
     }
 
     /// Use for sheets containing grouped sets of controls (e.g., like the Overflow menu).

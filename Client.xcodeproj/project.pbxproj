@@ -357,6 +357,7 @@
 		BCC138B42656CBF20018D87D /* nicons-600.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BCC138B02656CBF20018D87D /* nicons-600.ttf */; };
 		BCC39A1F26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC39A1E26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift */; };
 		BCC39A2126C7258600EEC559 /* UserFlagStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC39A2026C7258600EEC559 /* UserFlagStore.swift */; };
+		BCC7737B27443E7F008E7538 /* SignUpOneButtonPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC7737A27443E7F008E7538 /* SignUpOneButtonPromptView.swift */; };
 		BCC7CA482703E938004714C0 /* CompactNeevaMenuButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC7CA472703E938004714C0 /* CompactNeevaMenuButtonView.swift */; };
 		BCC7CA4A270401AC004714C0 /* RecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC7CA49270401AC004714C0 /* RecipeView.swift */; };
 		BCF248472670967C00ACAD11 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF248462670967C00ACAD11 /* ViewExtensions.swift */; };
@@ -1444,6 +1445,7 @@
 		BCC138B02656CBF20018D87D /* nicons-600.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "nicons-600.ttf"; sourceTree = "<group>"; };
 		BCC39A1E26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaUserFlagSettingsView.swift; sourceTree = "<group>"; };
 		BCC39A2026C7258600EEC559 /* UserFlagStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserFlagStore.swift; sourceTree = "<group>"; };
+		BCC7737A27443E7F008E7538 /* SignUpOneButtonPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneButtonPromptView.swift; sourceTree = "<group>"; };
 		BCC7CA472703E938004714C0 /* CompactNeevaMenuButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactNeevaMenuButtonView.swift; sourceTree = "<group>"; };
 		BCC7CA49270401AC004714C0 /* RecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeView.swift; sourceTree = "<group>"; };
 		BCF248462670967C00ACAD11 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
@@ -3407,6 +3409,7 @@
 				BC15D22C26FA5F9C00FDF6A7 /* OtherOptionsPage.swift */,
 				BC93328D2715324700B9BE1C /* OktaAuth.swift */,
 				BC9478E22740FCCD00623D6C /* PreviewHomeView.swift */,
+				BCC7737A27443E7F008E7538 /* SignUpOneButtonPromptView.swift */,
 			);
 			path = Intro;
 			sourceTree = "<group>";
@@ -5245,6 +5248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C9C18DEA26558FF3004710CD /* FrontViewController.swift in Sources */,
+				BCC7737B27443E7F008E7538 /* SignUpOneButtonPromptView.swift in Sources */,
 				C9F8EB352680DA8A0042CFE7 /* TabToolbarHost.swift in Sources */,
 				C9946461265706D500613110 /* FeatureFlagSettingsView.swift in Sources */,
 				D029A04920A62DB0001DB72F /* TemporaryDocument.swift in Sources */,

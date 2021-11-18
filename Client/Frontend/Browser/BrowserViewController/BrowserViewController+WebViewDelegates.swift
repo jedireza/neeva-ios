@@ -901,6 +901,12 @@ extension BrowserViewController: WKNavigationDelegate {
                         ClientLogCounterAttribute(
                             key: LogConfig.Attribute.FirstRunSearchPathQuery,
                             value: url.path + query))
+
+                    // if in preview mode, increase counter for preview mode queries
+                    if FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] && !query.isEmpty
+                    {
+                        Defaults[.previewModeQueries].insert(query)
+                    }
                 }
 
                 ClientLogger.shared.logCounter(
@@ -1015,12 +1021,35 @@ extension BrowserViewController: WKNavigationDelegate {
                 }
 
                 // get httpd~preview cookie for preview mode
-                if FeatureFlag[.enablePreviewMode] {
+                if FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] {
+                    // show sign up prompt with query when on a search path
+                    if let query = neevaSearchEngine.queryForSearchURL(url),
+                        Defaults[.previewModeQueries].count == Defaults[.maxQueryLimit]
+                            || Defaults[.previewModeQueries].count % Defaults[.signupPromptInterval]
+                                == 0
+                    {
+                        self.showModal(
+                            style: OverlayStyle(
+                                showTitle: false,
+                                backgroundColor: .systemBackground,
+                                nonDismissible: true
+                            )
+                        ) {
+                            SignUpOneButtonPromptViewOverlayContent(
+                                query: query,
+                                skippable: Defaults[.previewModeQueries].count
+                                    == Defaults[.maxQueryLimit]
+                            )
+                            .padding(.top, 4)
+                            .environment(\.onSigninOrJoinNeeva) {
+                                self.presentIntroViewController(true)
+                            }
+                        }
+                    }
                     userInfo.updatePreviewCookieFromWebKitCookieStore {}
                 }
             }
         }
-
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError: Error) {
