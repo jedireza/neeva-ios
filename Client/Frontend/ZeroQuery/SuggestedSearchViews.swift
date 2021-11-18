@@ -16,7 +16,10 @@ struct SuggestedSearchesView: View {
                 ZeroQueryPlaceholder(label: "Your searches go here")
             }
             ForEach(model.suggestedQueries.prefix(3), id: \.1) { query, site in
-                Button(action: { openURL(site.url) }) {
+                Button(action: {
+                    ClientLogger.shared.logCounter(LogConfig.Interaction.openSuggestedSearch)
+                    openURL(site.url)
+                }) {
                     HStack {
                         Symbol(decorative: .clock)
                         Text(query.trimmingCharacters(in: .whitespacesAndNewlines))

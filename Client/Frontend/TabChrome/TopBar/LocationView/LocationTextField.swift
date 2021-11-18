@@ -245,7 +245,8 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 typedQuery: textField.text ?? "",
                 suggestedQuery: nil,
                 index: nil,
-                suggestedUrl: nil
+                suggestedUrl: nil,
+                isFromSearchHistory: false
             )
         }
 

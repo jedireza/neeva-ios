@@ -91,6 +91,10 @@ public struct LogConfig {
         case NoSuggestionQuery
         case NoSuggestionURL
         case FindOnPageSuggestion
+        case openSuggestedSearch
+        case openSuggestedSite
+        case tabSuggestion
+        case editCurrentURL
 
         // referral promo
         case OpenReferralPromo  // Open referral promo
@@ -276,6 +280,10 @@ public struct LogConfig {
         case .NoSuggestionQuery: return .Suggestions
         case .LensSuggestion: return .Suggestions
         case .FindOnPageSuggestion: return .Suggestions
+        case .openSuggestedSearch: return .Suggestions
+        case .openSuggestedSite: return .Suggestions
+        case .tabSuggestion: return .Suggestions
+        case .editCurrentURL: return .Suggestions
 
         case .OpenReferralPromo: return .ReferralPromo
         case .CloseReferralPromo: return .ReferralPromo
@@ -391,6 +399,8 @@ public struct LogConfig {
         public static let selectedQuerySuggestion = "SelectedQuerySuggestion"
         // autocomplete
         public static let autocompleteSelectedFromRow = "AutocompleteSelectedFromRow"
+        // searchHistory
+        public static let fromSearchHistory = "FromSearchHistory"
     }
 
     public struct SpacesAttribute {

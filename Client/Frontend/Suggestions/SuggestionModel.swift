@@ -473,6 +473,7 @@ class SuggestionModel: ObservableObject {
         var querySuggestionIndex: Int?
         var suggestedUrl: String?
         var suggestedQuery: String?
+        var isSearchHistoryQuery: Bool = false
 
         switch suggestion {
         case .query(let suggestion):
@@ -490,6 +491,7 @@ class SuggestionModel: ObservableObject {
                     suggestedUrl = memorizedUrl.key
                 }
             }
+            isSearchHistoryQuery = suggestion.type == .searchHistory
         case .url(let suggestion):
             interaction =
                 suggestion.title?.isEmpty ?? false ? .PersonalSuggestion : .MemorizedSuggestion
@@ -534,6 +536,7 @@ class SuggestionModel: ObservableObject {
             }
             finishEditingAndSubmit(url: nav.url)
         case .editCurrentURL(let tab):
+            interaction = LogConfig.Interaction.editCurrentURL
             hideZeroQuery = false
 
             let tabURL = tab.url
@@ -546,6 +549,7 @@ class SuggestionModel: ObservableObject {
             bvc.zeroQueryModel.targetTab = .currentTab
         case .tabSuggestion(let selectedTab):
             if let tab = selectedTab.manager.get(for: selectedTab.id) {
+                interaction = LogConfig.Interaction.tabSuggestion
                 selectedTab.manager.select(tab)
             }
         case .findInPage(let query):
@@ -565,7 +569,8 @@ class SuggestionModel: ObservableObject {
                 typedQuery: bvc.searchQueryModel.value,
                 suggestedQuery: suggestedQuery,
                 index: querySuggestionIndex,
-                suggestedUrl: suggestedUrl
+                suggestedUrl: suggestedUrl,
+                isFromSearchHistory: isSearchHistoryQuery
             )
 
             ClientLogger.shared.logCounter(
@@ -872,13 +877,18 @@ extension SuggestionModel {
         typedQuery: String,
         suggestedQuery: String?,
         index: Int?,
-        suggestedUrl: String?
+        suggestedUrl: String?,
+        isFromSearchHistory: Bool
     ) -> [ClientLogCounterAttribute] {
         var queryAttributes =
             [
                 ClientLogCounterAttribute(
                     key: LogConfig.SuggestionAttribute.queryInputForSelectedSuggestion,
                     value: typedQuery
+                ),
+                ClientLogCounterAttribute(
+                    key: LogConfig.SuggestionAttribute.fromSearchHistory,
+                    value: String(isFromSearchHistory)
                 )
             ]
 

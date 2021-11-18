@@ -28,7 +28,10 @@ struct SuggestedNavigationView<Content: View>: View {
     }
 
     var body: some View {
-        Button(action: { openURL(url) }) {
+        Button(action: {
+            ClientLogger.shared.logCounter(LogConfig.Interaction.openSuggestedSite)
+            openURL(url)
+        }) {
             VStack(spacing: 2) {
                 icon()
                     .frame(
