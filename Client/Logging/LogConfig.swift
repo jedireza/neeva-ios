@@ -99,6 +99,7 @@ public struct LogConfig {
         // performance
         case AppCrashWithPageLoad  // App Crash # With Page load #
         case LowMemoryWarning  // memory warning with memory footprint
+        case AppEnterForeground  // session start = app enter foreground
 
         // spaces
         case SpacesUIVisited
@@ -281,6 +282,7 @@ public struct LogConfig {
 
         case .AppCrashWithPageLoad: return .Performance
         case .LowMemoryWarning: return .Performance
+        case .AppEnterForeground: return .Performance
 
         case .SpacesUIVisited: return .Spaces
         case .SpacesDetailUIVisited: return .Spaces
