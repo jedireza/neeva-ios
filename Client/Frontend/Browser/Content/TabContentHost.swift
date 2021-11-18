@@ -87,7 +87,6 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
         let bvc: BrowserViewController
         let zeroQueryModel: ZeroQueryModel
         let suggestionModel: SuggestionModel
-        let suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
         let suggestedSearchesModel: SuggestedSearchesModel =
             SuggestedSearchesModel(suggestedQueries: [])
         let spaceContentSheetModel: SpaceContentSheetModel?
@@ -166,7 +165,6 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                         }
                 case .blank:
                     ZeroQueryContent(model: zeroQueryModel)
-                        .environmentObject(suggestedSitesViewModel)
                         .environmentObject(suggestedSearchesModel)
                 case .previewHome:
                     PreviewHomeView(bvc: bvc)

@@ -4,6 +4,7 @@ import Combine
 import Defaults
 import Shared
 import Storage
+import SwiftUI
 
 protocol ZeroQueryPanelDelegate: AnyObject {
     func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
@@ -62,7 +63,7 @@ class ZeroQueryModel: ObservableObject {
     }
 
     let bvc: BrowserViewController
-    let suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
+    @ObservedObject var suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
     let profile: Profile
     let shareURLHandler: (URL, UIView) -> Void
     var delegate: ZeroQueryPanelDelegate?
@@ -213,10 +214,12 @@ class ZeroQueryModel: ObservableObject {
     }
 
     func updateSuggestedSites() {
-        TopSitesHandler.getTopSites(
-            profile: self.profile
-        ).uponQueue(.main) { result in
-            self.suggestedSitesViewModel.sites = Array(result.prefix(7))
+        DispatchQueue.main.async {
+            TopSitesHandler.getTopSites(
+                profile: self.profile
+            ).uponQueue(.main) { result in
+                self.suggestedSitesViewModel.sites = Array(result.prefix(7))
+            }
         }
     }
 
