@@ -19,6 +19,7 @@ struct TopBarView: View {
     let onLongPressOverflowButton: (UIView) -> Void
 
     @State private var shouldInsetHorizontally = false
+    @State private var opacity: Double = 1
 
     @EnvironmentObject private var chrome: TabChromeModel
     @EnvironmentObject private var location: LocationViewModel
@@ -87,7 +88,13 @@ struct TopBarView: View {
                     }
                 }
             }
-            .opacity(chrome.controlOpacity)
+            /// Unfortunately `.opacity(chrome.controlOpacity)` doesn't work consistently.
+            /// Sometimes SwiftUI will not notice updates to `controlOpacity`. Directly
+            /// observing `controlOpacity` here seems to do the trick. /Sigh/
+            .onReceive(chrome.$controlOpacity) { value in
+                opacity = value
+            }
+            .opacity(opacity)
             .padding(.horizontal, shouldInsetHorizontally ? 12 : 0)
             .padding(.bottom, chrome.estimatedProgress == nil ? 0 : -1)
 
