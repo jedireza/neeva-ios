@@ -3,6 +3,52 @@
 import Shared
 import SwiftUI
 
+struct QueryChip: View {
+    let query: String
+    @Environment(\.onOpenURL) var onOpenURL
+
+    var body: some View {
+        Button(action: onClick) {
+            HStack(alignment: .center) {
+                Label {
+                    Text(query)
+                        .foregroundColor(Color.ui.gray20)
+                } icon: {
+                    Symbol(decorative: .magnifyingglass)
+                        .foregroundColor(Color.ui.gray70)
+                }
+            }
+        }
+        .background(
+            RoundedRectangle(cornerRadius: 20).stroke(Color.ui.gray80, lineWidth: 1).padding(-10)
+        )
+        .padding(10)
+        .withFont(unkerned: .bodyMedium)
+        .lineLimit(1)
+    }
+
+    func onClick() {
+        if let target = neevaSearchEngine.searchURLForQuery(query) {
+            onOpenURL(target)
+        }
+    }
+}
+
+struct QueryChipList: View {
+    let list = ["Best Headphones", "Lemon Bar Recipe", "React Hooks"]
+
+    var body: some View {
+        ScrollView(.horizontal) {
+            HStack(alignment: .center) {
+                ForEach(list, id: \.self) { query in
+                    QueryChip(query: query)
+                }
+            }
+        }
+        .frame(maxWidth: 475)
+    }
+}
+
 struct PreviewHomeView: View {
     let bvc: BrowserViewController
 
@@ -83,7 +129,7 @@ struct PreviewHomeView: View {
     var body: some View {
         ZStack {
             background
-            VStack(spacing: 0) {
+            VStack(alignment: .center, spacing: 0) {
                 signInButton
                     .opacity(opacity)
                     .padding(.top, 20)
@@ -107,6 +153,9 @@ struct PreviewHomeView: View {
                     .buttonStyle(NoAnim())
                 }
                 .frame(height: 46)
+                QueryChipList()
+                    .opacity(opacity)
+                    .padding(.top, 20)
                 Spacer()
                 Spacer()
             }

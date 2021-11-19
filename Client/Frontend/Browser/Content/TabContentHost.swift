@@ -168,6 +168,9 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
                         .environmentObject(suggestedSearchesModel)
                 case .previewHome:
                     PreviewHomeView(bvc: bvc)
+                        .environment(\.onOpenURL) { url in
+                            bvc.tabManager.createOrSwitchToTab(for: url)
+                        }
                 }
             }.useEffect(deps: model.currentContentUI) { _ in
                 zeroQueryModel.profile.panelDataObservers.activityStream.refreshIfNeeded(

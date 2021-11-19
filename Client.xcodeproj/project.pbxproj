@@ -330,6 +330,7 @@
 		BC6D34872622D4DE0050DEC4 /* Roobert-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34812622D4DE0050DEC4 /* Roobert-Regular.otf */; };
 		BC6D34882622D4DE0050DEC4 /* Roobert-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34822622D4DE0050DEC4 /* Roobert-SemiBold.otf */; };
 		BC6D34892622D4DE0050DEC4 /* Roobert-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */; };
+		BC76F9192747182D0067C6A6 /* SuggestedPreviewSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC76F9182747182D0067C6A6 /* SuggestedPreviewSearchesView.swift */; };
 		BC7D47D42720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D47D32720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift */; };
 		BC85E226264F407C0068092F /* TourPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E225264F407C0068092F /* TourPromptView.swift */; };
 		BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */; };
@@ -1424,6 +1425,7 @@
 		BC6D34812622D4DE0050DEC4 /* Roobert-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Regular.otf"; sourceTree = "<group>"; };
 		BC6D34822622D4DE0050DEC4 /* Roobert-SemiBold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-SemiBold.otf"; sourceTree = "<group>"; };
 		BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Medium.otf"; sourceTree = "<group>"; };
+		BC76F9182747182D0067C6A6 /* SuggestedPreviewSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedPreviewSearchesView.swift; sourceTree = "<group>"; };
 		BC7D47D32720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetLogManager.swift; sourceTree = "<group>"; };
 		BC85E225264F407C0068092F /* TourPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptView.swift; sourceTree = "<group>"; };
 		BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTourPromptViewController.swift; sourceTree = "<group>"; };
@@ -3873,6 +3875,7 @@
 				C9BED4C02667FA91001D9C77 /* SuggestedSearchViews.swift */,
 				8AA97E3F26AF36F300ACCCCF /* ZeroQueryCommonContextMenuActions.swift */,
 				8A2401CA26BB4D75006ABF7D /* RatingsCard.swift */,
+				BC76F9182747182D0067C6A6 /* SuggestedPreviewSearchesView.swift */,
 			);
 			path = ZeroQuery;
 			sourceTree = "<group>";
@@ -5384,6 +5387,7 @@
 				E4B423BE1AB9FE6A007E66C8 /* ReaderModeCache.swift in Sources */,
 				4ADC5420265DA2CD00A210CE /* PromoCard.swift in Sources */,
 				6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */,
+				BC76F9192747182D0067C6A6 /* SuggestedPreviewSearchesView.swift in Sources */,
 				BCC7CA4A270401AC004714C0 /* RecipeView.swift in Sources */,
 				C9C18E6526559B9C004710CD /* LogConfig.swift in Sources */,
 				C832BF5B26E0A7A400B9A1F8 /* OpenInAppOverlayContent.swift in Sources */,

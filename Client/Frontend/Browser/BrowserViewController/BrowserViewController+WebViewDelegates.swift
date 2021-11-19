@@ -673,6 +673,7 @@ extension BrowserViewController: WKNavigationDelegate {
                         && query["q"] != nil
                         && !NeevaUserInfo.shared.hasLoginCookie()
                         && !NeevaUserInfo.shared.hasPreviewCookie())
+                        && (Defaults[.signedInOnce] || !FeatureFlag[.enablePreviewMode])
                 {
                     self.presentIntroViewController(true, signInMode: true)
                     decisionHandler(.cancel)

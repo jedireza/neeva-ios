@@ -36,6 +36,7 @@ struct InternalSettingsView: View {
     @Default(.previewModeQueries) var previewModeQueries
     @Default(.signupPromptInterval) var signupPromptInterval
     @Default(.maxQueryLimit) var maxQueryLimit
+    @Default(.signedInOnce) var signedInOnce
 
     var body: some View {
         List {
@@ -43,6 +44,16 @@ struct InternalSettingsView: View {
                 Toggle("searchInputPromptDismissed", isOn: $searchInputPromptDismissed)
                 Toggle("introSeen", isOn: $introSeen)
                 Toggle("didFirstNavigation", isOn: $didFirstNavigation)
+                Toggle("signedInOnce", isOn: $signedInOnce)
+                HStack {
+                    Text("previewModeQueries")
+                    Spacer()
+                    Text("\(previewModeQueries.count)")
+                }
+                NumberField(
+                    "signupPromptInterval", number: $signupPromptInterval)
+                NumberField(
+                    "maxQueryLimit", number: $maxQueryLimit)
             }
             Section(header: Text("Spaces")) {
                 Toggle("spacesIntroSeen", isOn: $seenSpacesIntro)
@@ -117,35 +128,21 @@ struct InternalSettingsView: View {
                 }
             }
 
-            Group {
-                Section(header: Text("Notification")) {
-                    OptionalStringField(
-                        "lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
-                    OptionalNumberField(
-                        "lastNeevaPromoScheduledTimeInterval",
-                        number: $lastNeevaPromoScheduledTimeInterval)
-                    Toggle(
-                        "didRegisterNotificationTokenOnServer",
-                        isOn: $didRegisterNotificationTokenOnServer)
+            Section(header: Text("Notification")) {
+                OptionalStringField(
+                    "lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
+                OptionalNumberField(
+                    "lastNeevaPromoScheduledTimeInterval",
+                    number: $lastNeevaPromoScheduledTimeInterval)
+                Toggle(
+                    "didRegisterNotificationTokenOnServer",
+                    isOn: $didRegisterNotificationTokenOnServer)
 
-                    NumberField(
-                        "productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
-                    NumberField(
-                        "newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
-                    NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
-                }
-
-                Section(header: Text("Preview Mode")) {
-                    HStack {
-                        Text("previewModeQueries")
-                        Spacer()
-                        Text("\(previewModeQueries.count)")
-                    }
-                    NumberField(
-                        "signupPromptInterval", number: $signupPromptInterval)
-                    NumberField(
-                        "maxQueryLimit", number: $maxQueryLimit)
-                }
+                NumberField(
+                    "productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
+                NumberField(
+                    "newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
+                NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
             }
         }
         .font(.system(.footnote, design: .monospaced))

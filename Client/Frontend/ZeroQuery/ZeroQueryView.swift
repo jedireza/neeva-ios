@@ -193,18 +193,22 @@ struct ZeroQueryView: View {
                             }
                         }
 
-                        ZeroQueryHeader(
-                            title: "Suggested sites",
-                            action: { expandSuggestedSites.advance() },
-                            label: "\(expandSuggestedSites.verb) this section",
-                            icon: expandSuggestedSites.icon
-                        )
-                        if expandSuggestedSites != .hidden {
-                            SuggestedSitesView(isExpanded: expandSuggestedSites == .expanded, viewModel: viewModel.suggestedSitesViewModel)
-                        }
+                        if !FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] {
+                            ZeroQueryHeader(
+                                title: "Suggested sites",
+                                action: { expandSuggestedSites.advance() },
+                                label: "\(expandSuggestedSites.verb) this section",
+                                icon: expandSuggestedSites.icon
+                            )
+                            if expandSuggestedSites != .hidden {
+                                SuggestedSitesView(
+                                    isExpanded: expandSuggestedSites == .expanded,
+                                    viewModel: viewModel.suggestedSitesViewModel)
+                            }
 
-                        if !isLandScape() && viewModel.showRatingsCard {
-                            ratingsCard(geom.size.width)
+                            if !isLandScape() && viewModel.showRatingsCard {
+                                ratingsCard(geom.size.width)
+                            }
                         }
 
                         ZeroQueryHeader(
@@ -214,10 +218,15 @@ struct ZeroQueryView: View {
                             icon: expandSearches ? .chevronUp : .chevronDown
                         )
                         if expandSearches {
-                            SuggestedSearchesView()
+                            if FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] {
+                                SuggestedPreviewSearchesView()
+                            } else {
+                                SuggestedSearchesView()
+                            }
+
                         }
 
-                        if NeevaUserInfo.shared.isUserLoggedIn {
+                        if NeevaUserInfo.shared.isUserLoggedIn && Defaults[.signedInOnce] {
                             ZeroQueryHeader(
                                 title: "Spaces",
                                 action: { expandSpaces.toggle() },
