@@ -12,27 +12,28 @@ class TabMenu {
 
     // MARK: Close All Tabs
     func showConfirmCloseAllTabs(numberOfTabs: Int, fromTabTray: Bool) {
-        let isPrivate = tabManager.isIncognito
+        let isIncognito = tabManager.isIncognito
         guard let alertPresentViewController = alertPresentViewController else {
             return
         }
 
         let actionSheet = UIAlertController(
             title: nil,
-            message: "Are you sure you want to close all open \(isPrivate ? "private " : "")tabs?",
+            message:
+                "Are you sure you want to close all open \(isIncognito ? "incognito " : "")tabs?",
             preferredStyle: .actionSheet)
 
         let closeAction = UIAlertAction(
             title:
-                "Close \(numberOfTabs) \(isPrivate ? "Private " : "")\(numberOfTabs > 1 ? "Tabs" : "Tab")",
+                "Close \(numberOfTabs) \(isIncognito ? "Incognito " : "")\(numberOfTabs > 1 ? "Tabs" : "Tab")",
             style: .destructive
         ) { [self] _ in
             tabManager.removeTabs(
-                isPrivate ? tabManager.privateTabs : tabManager.normalTabs, showToast: false,
+                isIncognito ? tabManager.privateTabs : tabManager.normalTabs, showToast: false,
                 addNormalTab: false)
 
             if let tabsClosed = tabsClosed {
-                tabsClosed(isPrivate)
+                tabsClosed(isIncognito)
             }
         }
         closeAction.accessibilityLabel = "Confirm Close All Tabs"

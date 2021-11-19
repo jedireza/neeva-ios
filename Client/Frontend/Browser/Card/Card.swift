@@ -21,13 +21,17 @@ enum CardUX {
 private struct BorderTreatment: ViewModifier {
     let isSelected: Bool
     let thumbnailDrawsHeader: Bool
+    let isIncognito: Bool
 
     func body(content: Content) -> some View {
         content
             .shadow(radius: thumbnailDrawsHeader ? 0 : CardUX.ShadowRadius)
             .overlay(
                 RoundedRectangle(cornerRadius: CardUX.CornerRadius)
-                    .stroke(isSelected ? Color.ui.adaptive.blue : Color.clear, lineWidth: 3)
+                    .stroke(
+                        isSelected
+                            ? (isIncognito ? Color.label : Color.ui.adaptive.blue) : Color.clear,
+                        lineWidth: 3)
             )
             .accessibilityAddTraits(isSelected ? .isSelected : [])
     }
@@ -180,7 +184,8 @@ struct Card<Details>: View where Details: CardDetails {
                 .modifier(
                     BorderTreatment(
                         isSelected: showsSelection && details.isSelected,
-                        thumbnailDrawsHeader: details.thumbnailDrawsHeader)
+                        thumbnailDrawsHeader: details.thumbnailDrawsHeader,
+                        isIncognito: gridModel.isIncognito)
                 )
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {

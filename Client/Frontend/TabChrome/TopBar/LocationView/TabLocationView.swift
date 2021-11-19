@@ -210,7 +210,7 @@ struct TabLocationView: View {
                     Text("Cancel").withFont(.bodyLarge)
                 }
                 .transition(.move(edge: .trailing).combined(with: .opacity))
-                .accentColor(.ui.adaptive.blue)
+                .accentColor(isIncognito ? .label : .ui.adaptive.blue)
             }
         }
     }

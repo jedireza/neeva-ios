@@ -9,6 +9,7 @@ class GridModel: ObservableObject {
     let tabCardModel: TabCardModel
     let tabGroupCardModel: TabGroupCardModel
     let spaceCardModel: SpaceCardModel
+
     @Published var isHidden = true
     @Published var animationThumbnailState: AnimationThumbnailState = .hidden
     @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
@@ -20,6 +21,10 @@ class GridModel: ObservableObject {
                     attributes: EnvironmentHelper.shared.getAttributes())
             }
         }
+    }
+
+    var isIncognito: Bool {
+        tabCardModel.manager.isIncognito
     }
 
     private var followPublicSpaceSubscription: AnyCancellable? = nil

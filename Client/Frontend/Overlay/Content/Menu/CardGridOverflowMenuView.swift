@@ -45,6 +45,7 @@ public struct CardGridOverflowMenuView: View {
                     NeevaMenuRowButtonView(label: "History", symbol: .clock) {
                         menuAction(.goToHistory)
                     }
+                    .disabled(chromeModel.topBarDelegate?.tabManager.isIncognito ?? false)
                     .accessibilityIdentifier("CardGridOverflowMenu.History")
 
                     Color.groupedBackground.frame(height: 1)
