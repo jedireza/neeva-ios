@@ -196,6 +196,7 @@ where
                                     spacesModel.detailedSpace = nil
                                     onOpenURL(url)
                                 }
+                                .environment(\.shareURL, shareURL)
                             }
                     } else {
                         shareURL(space.url, shareTargetView ?? UIView())
