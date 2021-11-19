@@ -458,8 +458,9 @@ where
                 }
                 SpaceHeaderView(space: space!)
                     .modifier(ListSeparatorModifier())
+                    .iPadOnlyID()
                     .onAppear {
-                        headerVisible = true
+                        headerVisible = UIDevice.current.userInterfaceIdiom != .pad
                     }
                     .onDisappear {
                         headerVisible = false
