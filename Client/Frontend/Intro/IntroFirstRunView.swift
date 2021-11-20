@@ -205,9 +205,13 @@ struct IntroFirstRunView: View {
     @State var onOtherOptionsPage = false
     @State var onSignInMode = false
 
-    init(buttonAction: @escaping ((FirstRunButtonActions) -> Void), signInMode: Bool = false) {
+    init(
+        buttonAction: @escaping ((FirstRunButtonActions) -> Void), signInMode: Bool = false,
+        onOtherOptionsPage: Bool = false
+    ) {
         self.buttonAction = buttonAction
         _onSignInMode = .init(initialValue: signInMode)
+        _onOtherOptionsPage = .init(initialValue: onOtherOptionsPage)
         if signInMode {
             _onOtherOptionsPage = .init(initialValue: true)
         }

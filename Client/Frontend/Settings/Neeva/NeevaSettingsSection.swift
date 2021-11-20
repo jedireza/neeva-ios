@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import Shared
 import SwiftUI
 import WebKit
@@ -44,7 +45,7 @@ struct NeevaSettingsSection: View {
             }.onDisappear {
                 loaderOpacity = 0
             }
-        } else if userInfo.isUserLoggedIn {
+        } else if userInfo.isUserLoggedIn && Defaults[.signedInOnce] {
             NavigationLink(
                 destination: NeevaAccountInfoView(
                     userInfo: userInfo, isPresented: $showingAccountDetails),
@@ -120,17 +121,18 @@ struct NeevaSettingsSection_Previews: PreviewProvider {
         SettingPreviewWrapper {
             Section(header: Text("Neeva — Logged in")) {
                 NeevaSettingsSection(
-                    dismissVC: { }, userInfo: NeevaUserInfo(
+                    dismissVC: {},
+                    userInfo: NeevaUserInfo(
                         previewDisplayName: "First Last", email: "name@example.com",
                         pictureUrl:
                             "https://pbs.twimg.com/profile_images/1273823608297500672/MBtG7NMI_400x400.jpg",
                         authProvider: .apple))
             }
             Section(header: Text("Neeva — Logged out")) {
-                NeevaSettingsSection(dismissVC: { }, userInfo: .previewLoggedOut)
+                NeevaSettingsSection(dismissVC: {}, userInfo: .previewLoggedOut)
             }
             Section(header: Text("Neeva — Fetching status")) {
-                NeevaSettingsSection(dismissVC: { }, userInfo: .previewLoading)
+                NeevaSettingsSection(dismissVC: {}, userInfo: .previewLoading)
             }
         }
     }

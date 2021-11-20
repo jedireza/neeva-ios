@@ -322,6 +322,7 @@
 		BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */; };
 		BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */; };
 		BC5C442326600F23007E2F61 /* WithPopover.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C442226600F23007E2F61 /* WithPopover.swift */; };
+		BC6239E027476BC8004A036F /* SignUpTwoButtonsPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6239DF27476BC8004A036F /* SignUpTwoButtonsPromptView.swift */; };
 		BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC62C06F263E0E6A00615E70 /* EnvironmentHelper.swift */; };
 		BC6D33C826228EA00050DEC4 /* IntroFirstRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */; };
 		BC6D34842622D4DE0050DEC4 /* Roobert-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */; };
@@ -1417,6 +1418,7 @@
 		BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptViewController.swift; sourceTree = "<group>"; };
 		BC5C43CC265F49EA007E2F61 /* TourManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourManager.swift; sourceTree = "<group>"; };
 		BC5C442226600F23007E2F61 /* WithPopover.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithPopover.swift; sourceTree = "<group>"; };
+		BC6239DF27476BC8004A036F /* SignUpTwoButtonsPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpTwoButtonsPromptView.swift; sourceTree = "<group>"; };
 		BC62C06F263E0E6A00615E70 /* EnvironmentHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvironmentHelper.swift; sourceTree = "<group>"; };
 		BC6D33C726228EA00050DEC4 /* IntroFirstRunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntroFirstRunView.swift; sourceTree = "<group>"; };
 		BC6D347E2622D4DE0050DEC4 /* Roobert-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Bold.otf"; sourceTree = "<group>"; };
@@ -3412,6 +3414,7 @@
 				BC93328D2715324700B9BE1C /* OktaAuth.swift */,
 				BC9478E22740FCCD00623D6C /* PreviewHomeView.swift */,
 				BCC7737A27443E7F008E7538 /* SignUpOneButtonPromptView.swift */,
+				BC6239DF27476BC8004A036F /* SignUpTwoButtonsPromptView.swift */,
 			);
 			path = Intro;
 			sourceTree = "<group>";
@@ -5422,6 +5425,7 @@
 				C894C5892735DAF40068B0BE /* CardTransitionModifier.swift in Sources */,
 				67AA22F226C476F300F33D09 /* BrowserViewController+OverflowMenu.swift in Sources */,
 				67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */,
+				BC6239E027476BC8004A036F /* SignUpTwoButtonsPromptView.swift in Sources */,
 				4AD771B827387B1F00B6769D /* SpaceGeneratorView.swift in Sources */,
 				E698FFDA1B4AADF40001F623 /* TabScrollController.swift in Sources */,
 				C9C18DDE26558FF3004710CD /* Action.swift in Sources */,

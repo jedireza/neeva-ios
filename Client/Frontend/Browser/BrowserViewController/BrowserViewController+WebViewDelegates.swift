@@ -1036,14 +1036,19 @@ extension BrowserViewController: WKNavigationDelegate {
                                 nonDismissible: true
                             )
                         ) {
-                            SignUpOneButtonPromptViewOverlayContent(
+                            SignUpTwoButtonsPromptViewOverlayContent(
                                 query: query,
                                 skippable: Defaults[.previewModeQueries].count
-                                    == Defaults[.maxQueryLimit]
+                                    != Defaults[.maxQueryLimit],
+                                openOtherSignUpOption: { marketingEmailOptOut in
+                                    self.presentIntroViewController(
+                                        true, onOtherOptionsPage: true,
+                                        marketingEmailOptOut: marketingEmailOptOut)
+                                }
                             )
                             .padding(.top, 4)
-                            .environment(\.onSigninOrJoinNeeva) {
-                                self.presentIntroViewController(true)
+                            .environment(\.openInNewTab) { url, _ in
+                                self.openURLInNewTab(url)
                             }
                         }
                     }

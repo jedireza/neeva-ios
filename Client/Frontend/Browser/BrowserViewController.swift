@@ -1695,12 +1695,16 @@ extension BrowserViewController {
         _ alwaysShow: Bool = false,
         onDismiss: (() -> Void)? = nil,
         signInMode: Bool = false,
+        onOtherOptionsPage: Bool = false,
+        marketingEmailOptOut: Bool = false,
         completion: (() -> Void)? = nil
     ) {
         if alwaysShow || !Defaults[.introSeen] {
             showProperIntroVC(
                 onDismiss: onDismiss,
                 signInMode: signInMode,
+                onOtherOptionsPage: onOtherOptionsPage,
+                marketingEmailOptOut: marketingEmailOptOut,
                 completion: completion
             )
         }
@@ -1718,7 +1722,8 @@ extension BrowserViewController {
     }
 
     private func showProperIntroVC(
-        onDismiss: (() -> Void)? = nil, signInMode: Bool = false, completion: (() -> Void)? = nil
+        onDismiss: (() -> Void)? = nil, signInMode: Bool = false, onOtherOptionsPage: Bool = false,
+        marketingEmailOptOut: Bool = false, completion: (() -> Void)? = nil
     ) {
         func createOrSwitchToTabFromAuth(_ url: URL) {
             if let selectedTab = self.tabManager.selectedTab,
@@ -1749,7 +1754,9 @@ extension BrowserViewController {
             }
         }
 
-        introViewController = IntroViewController(signInMode: signInMode)
+        introViewController = IntroViewController(
+            signInMode: signInMode, onOtherOptionsPage: onOtherOptionsPage,
+            marketingEmailOptOut: marketingEmailOptOut)
 
         introViewController!.didFinishClosure = { action in
             Defaults[.introSeen] = true
@@ -1767,6 +1774,9 @@ extension BrowserViewController {
                 case .skipToBrowser:
                     if let onDismiss = onDismiss {
                         onDismiss()
+                    }
+                    if !FeatureFlag[.enablePreviewMode] {
+                        createOrSwitchToTabFromAuth(NeevaConstants.appSearchURL)
                     }
                     break
                 case .oktaSignin(let email):
