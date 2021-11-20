@@ -78,6 +78,20 @@ struct CardGrid: View {
         }
     }
 
+    @ViewBuilder var loadingIndicator: some View {
+        ZStack {
+            Color.TrayBackground
+                .opacity(0.5)
+
+            RoundedRectangle(cornerRadius: 8)
+                .foregroundColor(Color(UIColor.DefaultBackground))
+                .shadow(color: .black.opacity(0.1), radius: 12)
+                .frame(width: 50, height: 50)
+
+            ProgressView()
+        }
+    }
+
     func updateCardSize(width: CGFloat, topToolbar: Bool) {
         if width > 1000 {
             columnCount = 4
@@ -101,6 +115,10 @@ struct CardGrid: View {
                             ? Color.TrayBackground : Color.clear
                     )
                     .modifier(SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
+
+                if gridModel.isLoading {
+                    loadingIndicator
+                }
 
                 Group {
                     if let spaceDetails = spaceModel.detailedSpace {

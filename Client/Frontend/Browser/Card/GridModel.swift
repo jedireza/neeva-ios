@@ -13,6 +13,7 @@ class GridModel: ObservableObject {
     @Published var isHidden = true
     @Published var animationThumbnailState: AnimationThumbnailState = .hidden
     @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+    @Published var isLoading = false
     @Published var switcherState: SwitcherViews = .tabs {
         didSet {
             if case .spaces = switcherState {
@@ -94,13 +95,26 @@ class GridModel: ObservableObject {
     }
 
     func openSpace(spaceId: String, bvc: BrowserViewController, completion: @escaping () -> Void) {
-        SpaceStore.openSpace(spaceId: spaceId) { [weak self] in
+        DispatchQueue.main.async { [self] in
+            if isIncognito {
+                bvc.tabManager.toggleIncognitoMode()
+            }
+
+            bvc.showTabTray()
+            bvc.gridModel.switcherState = .spaces
+
+            isLoading = true
+        }
+
+        SpaceStore.openSpace(spaceId: spaceId) { [self] in
             let spaceCardModel = bvc.gridModel.spaceCardModel
             if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
+                self.isLoading = false
                 bvc.gridModel.openSpace(spaceID: spaceId, animate: false)
                 completion()
             } else {
-                guard let self = self else { return }
+                self.isLoading = false
+
                 self.followPublicSpaceSubscription = spaceCardModel.objectWillChange.sink {
                     if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
                         bvc.gridModel.openSpace(
