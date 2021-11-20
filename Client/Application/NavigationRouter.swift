@@ -21,7 +21,7 @@ enum NavigationPath {
     case text(String)
     case closePrivateTabs
     case space(String, [String]?)
-    case fastTap(String)
+    case fastTap(String, Bool)
     case configNewsProvider(isPrivate: Bool)
 
     init?(bvc: BrowserViewController, url: URL) {
@@ -67,9 +67,10 @@ enum NavigationPath {
             }
             self = .space(spaceId, updatedItemIds)
         } else if urlString.starts(with: "\(scheme)://fast-tap"),
-            let query = components.valueForQuery("query")
+            let query =
+                components.valueForQuery("query")?.replacingOccurrences(of: "+", with: " ")
         {
-            self = .fastTap(query)
+            self = .fastTap(query, components.valueForQuery("no-delay") != nil)
         } else if urlString.starts(with: "\(scheme)://configure-news-provider") {
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .configNewsProvider(isPrivate: isPrivate)
@@ -90,12 +91,25 @@ enum NavigationPath {
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
         case .space(let spaceId, let updatedItemIds):
             NavigationPath.handleSpace(spaceId: spaceId, updatedItemIds: updatedItemIds, with: bvc)
-        case .fastTap(let query):
-            NavigationPath.handleFastTap(query: query, with: bvc)
+        case .fastTap(let query, let noDelay):
+            NavigationPath.handleFastTap(query: query, with: bvc, noDelay: noDelay)
         case .configNewsProvider(let isPrivate):
             NavigationPath.handleURL(
                 url: NeevaConstants.configureNewsProviderURL, isPrivate: isPrivate, with: bvc)
         }
+    }
+
+    static func navigationPath(from url: URL, with bvc: BrowserViewController) -> NavigationPath? {
+        guard url.absoluteString.hasPrefix(NeevaConstants.appDeepLinkURL.absoluteString),
+            let deepLink = URL(
+                string: "neeva://"
+                    + url.absoluteString.dropFirst(
+                        NeevaConstants.appDeepLinkURL.absoluteString.count))
+        else {
+            return nil
+        }
+
+        return NavigationPath(bvc: bvc, url: deepLink)
     }
 
     private static func handleWidgetKitQuery(
@@ -199,8 +213,9 @@ enum NavigationPath {
         gridModel.openSpace(spaceId: spaceId, bvc: bvc, completion: {})
     }
 
-    private static func handleFastTap(query: String, with bvc: BrowserViewController) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+    private static func handleFastTap(query: String, with bvc: BrowserViewController, noDelay: Bool)
+    {
+        DispatchQueue.main.asyncAfter(deadline: .now() + (noDelay ? 0 : 1.5)) {
             bvc.openLazyTab()
             bvc.searchQueryModel.value = query
         }

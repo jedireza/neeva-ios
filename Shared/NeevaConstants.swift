@@ -45,6 +45,7 @@ public struct NeevaConstants {
     public static var appFAQURL: URL { buildAppURL("faq") }
     public static var appWelcomeToursURL: URL { buildAppURL("#modal-hello") }
     public static var configureNewsProviderURL: URL { buildAppURL("settings/news-providers") }
+    public static var appDeepLinkURL: URL { buildAppURL("app/") }
 
     public static var createOktaAccountURL: URL { buildAppURL("login/create") }
     public static var oktaLoginBaseURL: URL { buildAppURL("login") }

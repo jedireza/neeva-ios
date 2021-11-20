@@ -490,6 +490,16 @@ where
                             SpaceEntityDetailView(
                                 details: spaceEntityDetails,
                                 onSelected: {
+                                    let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                    if let navPath = NavigationPath.navigationPath(
+                                        from: url, with: bvc)
+                                    {
+                                        gridModel.hideWithNoAnimation()
+                                        spacesModel.detailedSpace = nil
+
+                                        NavigationPath.handle(nav: navPath, with: bvc)
+                                        return
+                                    }
                                     onOpenURLForSpace(url, primitive.id)
                                     gridModel.hideWithNoAnimation()
                                     spacesModel.detailedSpace = nil
