@@ -110,7 +110,7 @@ struct CardsContainer: View {
         }
         .id(generationId)
         .onChange(of: gridModel.switcherState) { value in
-            guard case .spaces = value, !seenSpacesIntro else {
+            guard case .spaces = value, !seenSpacesIntro, !gridModel.isLoading else {
                 return
             }
             SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
