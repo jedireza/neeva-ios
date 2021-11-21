@@ -1,10 +1,10 @@
 #!/bin/sh
 
 UPLOAD_BUILD=false
-while getopts ":u" option; do
+while getopts ":e" option; do
   case $option in
-    u) # upload
-       UPLOAD_BUILD=true
+    e) # export
+       EXPORT_BUILD=true
   esac
 done
 
@@ -13,7 +13,12 @@ done
 
 ./bootstrap.sh
 
-if $UPLOAD_BUILD; then
+if $EXPORT_BUILD; then
+  xcodebuild clean archive -scheme Client -workspace Neeva.xcworkspace -configuration Release
+
+  # Open Xcode Organizer
+  osascript Scripts/open-organizer.as > /dev/null
+else
   if [ -z ${APP_STORE_USERNAME} ] || [ -z ${APP_STORE_TOKEN} ]; then
     echo "APP_STORE_USERNAME or APP_STORE_TOKEN not defined for upload. Abort"
     exit 1
@@ -43,11 +48,6 @@ if $UPLOAD_BUILD; then
   if [ ! $? -eq 0 ]; then
     exit 1
   fi
-else
-  xcodebuild clean archive -scheme Client -workspace Neeva.xcworkspace -configuration Release
-
-  # Open Xcode Organizer
-  osascript Scripts/open-organizer.as > /dev/null
 fi
 
 

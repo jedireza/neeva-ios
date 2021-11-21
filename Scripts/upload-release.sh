@@ -15,7 +15,6 @@ APP_VERSION=$(/usr/libexec/PlistBuddy -c 'print ":ApplicationProperties:CFBundle
 # convert xcarchive to ipa
 xcodebuild -exportArchive -archivePath $1 -exportPath /tmp -exportOptionsPlist Scripts/ExportOptions.plist
 
-echo "Uploading build $APP_VERSION to Testflight? Press ENTER to continue. Ctrl+C to cancel."
-read
+echo "Uploading build $APP_VERSION to Testflight..."
 
 xcrun altool --upload-app -f /tmp/Neeva.ipa --type ios --username $APP_STORE_USERNAME --password $APP_STORE_TOKEN
