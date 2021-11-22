@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import Foundation
 import SDWebImageSwiftUI
 import Shared
@@ -157,8 +158,22 @@ struct Card<Details>: View where Details: CardDetails {
         details as? TabCardDetails
     }
 
+    var titleInMainGrid: String {
+        if let rootUUID = tabCardDetail?.manager.get(for: details.id)?.rootUUID, Defaults[.tabGroupNames][rootUUID] != nil {
+            return Defaults[.tabGroupNames][rootUUID]!
+        } else {
+            return details.title
+        }
+    }
+
+    var iconInMainGrid: String {
+        details.id == tabGroupCardModel.manager.get(for: details.id)?.children.first?.parentSpaceID
+            ? "bookmark.fill" : "square.grid.2x2.fill"
+    }
+
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @State private var isPressed = false
 
     var body: some View {
@@ -189,13 +204,18 @@ struct Card<Details>: View where Details: CardDetails {
                 )
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
-                        if let favicon = details.favicon {
+                        if let favicon = details.favicon, !(gridModel.animationThumbnailState == .visibleForTrayShow) {
                             favicon
                                 .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
                                 .cornerRadius(CardUX.FaviconCornerRadius)
                                 .padding(5)
+                        } else {
+                            Image(systemName: iconInMainGrid)
+                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                                .cornerRadius(CardUX.FaviconCornerRadius)
+                                .padding(5)
                         }
-                        Text(details.title).withFont(.labelMedium)
+                        Text(gridModel.animationThumbnailState == .visibleForTrayShow ? titleInMainGrid: details.title).withFont(.labelMedium)
                             .frame(alignment: .center)
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     }
