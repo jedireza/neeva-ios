@@ -158,6 +158,7 @@
 		4A9FCD4626F1074600725E17 /* SocialShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4526F1074600725E17 /* SocialShare.swift */; };
 		4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4726F107BF00725E17 /* ProfileView.swift */; };
 		4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* ZeroQueryView.swift */; };
+		4AA9F66727478DB8005F6F81 /* SpaceDetailList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */; };
 		4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */; };
 		4AB50DA726FA8CC300B75AFA /* ShareAddedSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB50DA526FA8C3E00B75AFA /* ShareAddedSpaceView.swift */; };
 		4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */; };
@@ -1231,6 +1232,7 @@
 		4A9FCD4526F1074600725E17 /* SocialShare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialShare.swift; sourceTree = "<group>"; };
 		4A9FCD4726F107BF00725E17 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* ZeroQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryView.swift; sourceTree = "<group>"; };
+		4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceDetailList.swift; sourceTree = "<group>"; };
 		4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserPrimitive.swift; sourceTree = "<group>"; };
 		4AB50DA526FA8C3E00B75AFA /* ShareAddedSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareAddedSpaceView.swift; sourceTree = "<group>"; };
 		4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSpaceOverlayContent.swift; sourceTree = "<group>"; };
@@ -2399,6 +2401,7 @@
 				4A1D054F2669715B00D63333 /* CardViewControllers.swift */,
 				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
 				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
+				4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */,
 				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
 				4AD771B32734F06800B6769D /* EntityInfoView.swift */,
 				4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */,
@@ -5328,6 +5331,7 @@
 				D3BE7B461B054F8600641031 /* TestAppDelegate.swift in Sources */,
 				C9FD1B2026C2F46B00926A70 /* SuggestionPositionInfo.swift in Sources */,
 				C98E405F26585AB3003AC0E2 /* SupportSettingsSection.swift in Sources */,
+				4AA9F66727478DB8005F6F81 /* SpaceDetailList.swift in Sources */,
 				C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */,
 				C87AA4A22614C1FC00F1318F /* IncognitoDescriptionView.swift in Sources */,
 				0B62EFD21AD63CD100ACB9CD /* Clearables.swift in Sources */,

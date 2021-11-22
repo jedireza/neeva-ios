@@ -116,36 +116,17 @@ public class Space: Hashable, Identifiable {
 public class SpaceStore: ObservableObject {
     public static var shared = SpaceStore()
     public static var suggested = SpaceStore(
-        suggestedIDs: [
-            // From neeva.com/community
-            "AvTLrA0-XxVpTsesZx_gRcDBxl4SE9tY6pgF9eNh",
-            "XYJHMw5ptIlAot-1yln1MdLgSOoRsGzn1-b2C3GE",
-            "gT01MM6Hkv7N7XkvQrUx2N44x-zjfkbzXlR44uX5",
-            "Ok-XsoNeDNzu0uV6ziFFJ-XxH0oGAquIyxPhaweF",
-            "WiF8e6LomHAnUNTudwzpCZ0i3dHsTtiaP14F6FcA",
-            "v8JNVLpV2V_tRshYe87ZXoF2NfkVaMyDKaQImveS",
-            "bG6jT2pnzrmdINzh9vY77wacBjawGfnUlc_V6D1P",
-            "VSg5lqugMVgpyXiCDoQsuEBXbqrwYydDJkOMVSy9",
-            "MwC3dgk3bbVSmB_AGPL0RHMkt-_Ejn5yjOV3sLTF",
-            "Zt0o4Sj_7va3Uakw2V-n6MZ5YY6sVdLSRNcQkNSq",
-            "wb6aqCBubAs9GHAZuq6ycBdzK38DdxpU5PAP9wWC",
-            "brt5oi5afuen3lbh1ij0",
-            "qyAaEMBS-1AZE_3RI-jnlAao6OvbbtT4e294zDM5",
-            "zxrsTxErt66ZvoTG5FBEKG8yHiqiCpfpA4XWybrn",
-            "P18WZHuqEJDnf7llLgmyOIhiLpwF-gLl3OlhT6sh",
-            "B-ZzfqeytWS-n3YHKRi77h6Ore1kQ7EuojJIm4b7",
-            "brogg3ipmtasecqj230g",
-        ])
+        suggestedID: "c3Z5QSdvOcybtFTY5uboDyvhm4W8mywvEyvCcdtU")
 
     public static var promotionalSpaceId =
         "-ysvXOiH2HWXsXeN_QaVFzwWEF_ASvtOW_yylJEM"
 
     private static var subscription: AnyCancellable? = nil
 
-    private var suggestedSpaceIDs: [String]? = nil
+    private var suggestedSpaceID: String? = nil
 
-    public init(suggestedIDs: [String]? = nil) {
-        self.suggestedSpaceIDs = suggestedIDs
+    public init(suggestedID: String? = nil) {
+        self.suggestedSpaceID = suggestedID
     }
 
     public static func createMock(_ spaces: [Space]) -> SpaceStore {
@@ -196,11 +177,11 @@ public class SpaceStore: ObservableObject {
     public func refresh() {
         if case .refreshing = state { return }
         if disableRefresh { return }
-        state = .refreshing
-        if let _ = suggestedSpaceIDs {
+        if let _ = suggestedSpaceID {
             fetchSuggestedSpaces()
             return
         }
+        state = .refreshing
         SpaceListController.getSpaces { result in
             switch result {
             case .success(let spaces):
@@ -223,6 +204,7 @@ public class SpaceStore: ObservableObject {
         }
         if disableRefresh { return }
         state = .refreshing
+
         fetch(spaces: [space])
 
         let indexSet: IndexSet = [index]
@@ -230,26 +212,18 @@ public class SpaceStore: ObservableObject {
     }
 
     private func fetchSuggestedSpaces() {
-        guard let ids = suggestedSpaceIDs else {
+        guard let id = suggestedSpaceID else {
             return
         }
 
         GraphQLAPI.shared.isAnonymous = true
-        SuggestedSpacesQueryController.getSpacesTitleInfo(spaceIds: ids) { result in
-            switch result {
-            case .success(let spaces):
-                for space in spaces {
-                    let fetchedSpace = Space(
-                        id: SpaceID(value: space.id), name: space.name, lastModifiedTs: "",
-                        thumbnail: space.thumbnail, resultCount: 1, isDefaultSpace: false,
-                        isShared: false, isPublic: true, userACL: .publicView)
-                    self.allSpaces.append(fetchedSpace)
-                }
-                self.state = .ready
-            case .failure(let error):
-                self.state = .failed(error)
-            }
-        }
+        allSpaces.append(
+            Space(
+                id: SpaceID(value: id), name: "", description: nil,
+                followers: nil, views: nil, lastModifiedTs: "", thumbnail: nil, resultCount: 1,
+                isDefaultSpace: false, isShared: false, isPublic: true, userACL: .publicView,
+                acls: []))
+        refreshSpace(spaceID: id)
         GraphQLAPI.shared.isAnonymous = false
     }
 
@@ -378,8 +352,10 @@ public class SpaceStore: ObservableObject {
                     /// when ListSpaces returned is short, and the downside of having a
                     /// stale `lastModifiedTs` stored in our cache is minor.
 
+                    let containerSpace = spacesToFetch.first { $0.id.value == space.id }!
+                    containerSpace.name = space.name
                     self.onUpdateSpaceURLs(
-                        space: spacesToFetch.first { $0.id.value == space.id }!,
+                        space: containerSpace,
                         description: space.description,
                         followers: space.followers,
                         views: space.views,

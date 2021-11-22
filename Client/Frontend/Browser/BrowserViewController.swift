@@ -408,7 +408,9 @@ class BrowserViewController: UIViewController {
                     }
                 }
             }
-        } else {
+        }
+
+        if FeatureFlag[.enableSuggestedSpaces] {
             DispatchQueue.main.async {
                 SpaceStore.suggested.refresh()
             }

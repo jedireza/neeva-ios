@@ -186,7 +186,7 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     typealias Manager = Space
 
     var manager: Space {
-        SpaceStore.shared.get(for: spaceID)!
+        SpaceStore.shared.get(for: spaceID) ?? SpaceStore.suggested.get(for: spaceID)!
     }
 
     let spaceID: String

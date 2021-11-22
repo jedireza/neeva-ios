@@ -63,6 +63,8 @@ extension Defaults.Keys {
         "profile.home.searches.expanded", default: true)
     fileprivate static let expandSpaces = Defaults.Key<Bool>(
         "profile.home.spaces.expanded", default: true)
+    fileprivate static let expandSuggestedSpace = Defaults.Key<Bool>(
+        "profile.home.suggestedSpace.expanded", default: true)
 }
 
 struct ZeroQueryHeader: View {
@@ -118,6 +120,7 @@ struct ZeroQueryView: View {
     @Default(.expandSuggestedSites) private var expandSuggestedSites
     @Default(.expandSearches) private var expandSearches
     @Default(.expandSpaces) private var expandSpaces
+    @Default(.expandSuggestedSpace) private var expandSuggestedSpace
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
@@ -139,6 +142,50 @@ struct ZeroQueryView: View {
     func isLandScape() -> Bool {
         return horizontalSizeClass == .regular
             || (horizontalSizeClass == .compact && verticalSizeClass == .compact)
+    }
+
+    @ViewBuilder var suggestedSpace: some View {
+        if let space = SpaceStore.suggested.allSpaces.first {
+            ZeroQueryHeader(
+                title: space.name,
+                action: { expandSuggestedSpace.toggle() },
+                label: "\(expandSuggestedSpace ? "hides" : "shows") this section",
+                icon: expandSuggestedSpace ? .chevronUp : .chevronDown
+            )
+            if expandSuggestedSpace {
+                CompactSpaceDetailList(
+                    primitive: SpaceCardDetails(
+                        space: space,
+                        manager: SpaceStore.suggested)
+                )
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 16)
+                .environment(
+                    \.onOpenURLForSpace,
+                    { url, _ in
+                        if url.absoluteString.starts(
+                            with: NeevaConstants.appSpacesURL.absoluteString),
+                            let navPath = NavigationPath.navigationPath(
+                                from: URL(
+                                    string: NeevaConstants.appDeepLinkURL.absoluteString
+                                        + "space?id="
+                                        + url.lastPathComponent)!,
+                                with: viewModel.bvc)
+                        {
+                            viewModel.bvc.hideZeroQuery()
+                            NavigationPath.handle(nav: navPath, with: viewModel.bvc)
+                        } else {
+                            viewModel.bvc.tabManager.createOrSwitchToTab(
+                                for: url)
+                            viewModel.bvc.hideZeroQuery()
+                        }
+                    }
+                )
+                .environmentObject(viewModel.bvc.gridModel)
+                .environmentObject(viewModel.bvc.gridModel.tabCardModel)
+                .environmentObject(viewModel.bvc.gridModel.spaceCardModel)
+            }
+        }
     }
 
     var body: some View {
@@ -179,18 +226,10 @@ struct ZeroQueryView: View {
                             ratingsCard(geom.size.width)
                         }
 
-                        if !NeevaUserInfo.shared.isUserLoggedIn,
-                            !SpaceStore.suggested.allSpaces.isEmpty
+                        if !SpaceStore.suggested.allSpaces.isEmpty,
+                            expandSuggestedSpace
                         {
-                            ZeroQueryHeader(
-                                title: "Spaces from Neeva community",
-                                action: { expandSpaces.toggle() },
-                                label: "\(expandSpaces ? "hides" : "shows") this section",
-                                icon: expandSpaces ? .chevronUp : .chevronDown
-                            )
-                            if expandSpaces {
-                                SuggestedSpacesView()
-                            }
+                            suggestedSpace
                         }
 
                         if !FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] {
@@ -236,6 +275,12 @@ struct ZeroQueryView: View {
                             if expandSpaces {
                                 SuggestedSpacesView()
                             }
+                        }
+
+                        if !SpaceStore.suggested.allSpaces.isEmpty,
+                            !expandSuggestedSpace
+                        {
+                            suggestedSpace
                         }
                     }
 
