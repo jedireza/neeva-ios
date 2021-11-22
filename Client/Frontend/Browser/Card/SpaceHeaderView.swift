@@ -21,10 +21,19 @@ struct SpaceHeaderView: View {
                 .lineLimit(2)
             SpaceACLView(isPublic: space.isPublic, acls: space.acls)
             if let description = space.description, !description.isEmpty {
-                Text(description)
-                    .withFont(.bodyLarge)
-                    .foregroundColor(.label)
-                    .fixedSize(horizontal: false, vertical: true)
+                if #available(iOS 15.0, *),
+                    let attributedDescription = try? AttributedString(markdown: description)
+                {
+                    Text(attributedDescription)
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.label)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    Text(description)
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.label)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             if space.isPublic {
                 if let followers = space.followers {

@@ -52,7 +52,7 @@ struct SpaceEntityDetailView: View {
         case .richEntity(let richEntity):
             return richEntity.description
         case .retailProduct(let product):
-            return product.description.first ?? details.description
+            return details.description ?? product.description.first
         case .newsItem(let newsItem):
             return newsItem.formattedDatePublished.capitalized + " - " + newsItem.snippet
         case .recipe(let _):
@@ -138,19 +138,25 @@ struct SpaceEntityDetailView: View {
                                 {
                                     Text(AttributedString(body))
                                         .withFont(.bodyLarge)
-                                        .foregroundColor(Color.secondaryLabel)
                                         .lineLimit(3)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                        .modifier(DescriptionTextModifier())
                                 } else if let snippet = snippetToDisplay,
                                     !showDescriptions, !snippet.isEmpty
                                 {
-                                    Text(snippet)
-                                        .withFont(.bodyLarge)
-                                        .lineLimit(3)
-                                        .fixedSize(horizontal: false, vertical: true)
-                                        .foregroundColor(Color.secondaryLabel)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                    if #available(iOS 15.0, *),
+                                        let attributedSnippet = try? AttributedString(
+                                            markdown: snippet)
+                                    {
+                                        Text(attributedSnippet)
+                                            .withFont(.bodyLarge)
+                                            .lineLimit(3)
+                                            .modifier(DescriptionTextModifier())
+                                    } else {
+                                        Text(snippet)
+                                            .withFont(.bodyLarge)
+                                            .lineLimit(3)
+                                            .modifier(DescriptionTextModifier())
+                                    }
                                 }
                             }
                         }
@@ -161,26 +167,27 @@ struct SpaceEntityDetailView: View {
                             ForEach(descriptions, id: \.self) { description in
                                 Text(description)
                                     .withFont(.bodyLarge)
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    .foregroundColor(Color.secondaryLabel)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .modifier(DescriptionTextModifier())
                             }
                         } else if showDescriptions, #available(iOS 15.0, *),
                             case .techDoc(let doc) = details.data.previewEntity, let body = doc.body
                         {
                             Text(AttributedString(body))
                                 .withFont(.bodyLarge)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .foregroundColor(Color.secondaryLabel)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .modifier(DescriptionTextModifier())
                         } else if let snippet = snippetToDisplay,
                             showDescriptions, !snippet.isEmpty
                         {
-                            Text(snippet)
-                                .withFont(.bodyLarge)
-                                .fixedSize(horizontal: false, vertical: true)
-                                .foregroundColor(Color.secondaryLabel)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                            if #available(iOS 15.0, *),
+                                let attributedSnippet = try? AttributedString(markdown: snippet)
+                            {
+                                Text(attributedSnippet)
+                                    .modifier(DescriptionTextModifier())
+                            } else {
+                                Text(snippet)
+                                    .withFont(.bodyLarge)
+                                    .modifier(DescriptionTextModifier())
+                            }
                         }
                     }
                 }
@@ -249,4 +256,13 @@ private func getLogCounterAttributesForSpaceEntities(details: SpaceEntityThumbna
 
     )
     return attributes
+}
+
+struct DescriptionTextModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .fixedSize(horizontal: false, vertical: true)
+            .foregroundColor(Color.secondaryLabel)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
 }

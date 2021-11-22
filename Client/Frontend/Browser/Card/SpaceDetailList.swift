@@ -252,11 +252,23 @@ struct CompactSeparatorModifier: ViewModifier {
 }
 
 struct ListStyleModifier: ViewModifier {
+    @Environment(\.onOpenURLForSpace) var openURLForSpace
+    @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var spaceModel: SpaceCardModel
+
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
             content
                 .listStyle(.plain)
                 .background(Color.TrayBackground)
+                .environment(
+                    \.openURL,
+                    OpenURLAction(handler: {
+                        gridModel.hideWithNoAnimation()
+                        openURLForSpace($0, spaceModel.detailedSpace!.id)
+                        spaceModel.detailedSpace = nil
+                        return .handled
+                    }))
         } else {
             content
         }
