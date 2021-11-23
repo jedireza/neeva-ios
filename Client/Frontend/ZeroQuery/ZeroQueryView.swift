@@ -232,7 +232,7 @@ struct ZeroQueryView: View {
                             suggestedSpace
                         }
 
-                        if !FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] {
+                        if !FeatureFlag[.enablePreviewMode] || (FeatureFlag[.enablePreviewMode] && Defaults[.signedInOnce]) {
                             ZeroQueryHeader(
                                 title: "Suggested sites",
                                 action: { expandSuggestedSites.advance() },
