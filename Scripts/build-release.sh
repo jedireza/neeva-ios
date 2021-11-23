@@ -1,6 +1,6 @@
 #!/bin/sh
 
-UPLOAD_BUILD=false
+EXPORT_BUILD=false
 while getopts ":e" option; do
   case $option in
     e) # export
