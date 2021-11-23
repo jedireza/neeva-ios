@@ -162,6 +162,7 @@ class TabManagerStore {
                 tabToSelect = tab
             }
         }
+        tabManager.didRestoreAllTabs = true
 
         if tabToSelect == nil {
             if !tabManager.normalTabs.isEmpty {

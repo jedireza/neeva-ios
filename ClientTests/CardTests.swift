@@ -42,6 +42,7 @@ class CardTests: XCTestCase {
 
         profile = TabManagerMockProfile()
         manager = TabManager(profile: profile, imageStore: nil)
+        manager.didRestoreAllTabs = true
         delegate = MockTabManagerDelegate()
         groupManager = TabGroupManager(tabManager: manager)
         tabCardModel = TabCardModel(manager: manager, groupManager: groupManager)

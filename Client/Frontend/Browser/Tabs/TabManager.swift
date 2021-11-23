@@ -77,6 +77,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     @Published fileprivate(set) var tabs = [Tab]()
+    var didRestoreAllTabs: Bool = false
 
     var selectedTabPublisher = PassthroughSubject<Tab?, Never>()
 
@@ -805,6 +806,7 @@ extension TabManager {
             !DebugSettingsBundleOptions.skipSessionRestore, hasTabsToRestoreAtStartup()
         else {
             log.info("Skipping tab restore")
+            didRestoreAllTabs = true
             return false
         }
 

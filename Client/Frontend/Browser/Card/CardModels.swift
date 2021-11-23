@@ -41,8 +41,10 @@ class TabCardModel: CardModel, TabEventHandler {
         register(self, forTabEvents: .didClose, .didChangeURL)
         onDataUpdated()
         self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
-            self?.onDataUpdated()
-            self?.objectWillChange.send()
+            if manager.didRestoreAllTabs {
+                self?.onDataUpdated()
+                self?.objectWillChange.send()
+            }
         }
     }
 
