@@ -24,6 +24,8 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case enableOldSuggestUI = "Enable Old Suggestion List UI"
     case enablePreviewMode = "Enable Preview Mode"
     case enableSuggestedSpaces = "Show Spaces from Neeva Community"
+    case enableMemorizedURLOnWiki = "Enable Memorized URL on Wiki Suggest"
+
 
     public init?(caseName: String) {
         for value in FeatureFlag.allCases where "\(value)" == caseName {

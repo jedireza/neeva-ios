@@ -147,7 +147,9 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         let standardQuerySuggestions =
             querySuggestions.filter {
                 $0.type == .standard
-                    && $0.annotation?.description == nil
+                    && ($0.annotation?.description == nil
+                        || (FeatureFlag[.enableMemorizedURLOnWiki]
+                            && AnnotationType(annotation: $0.annotation) == .wikipedia))
                     && $0.annotation?.stockInfo == nil
                     && $0.annotation?.dictionaryInfo == nil
                     && (AnnotationType(annotation: $0.annotation) != .contact
@@ -157,7 +159,9 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         var rowQuerySuggestions =
             querySuggestions.filter {
                 $0.type != .standard
-                    || $0.annotation?.description != nil
+                    || ($0.annotation?.description != nil
+                        && (!FeatureFlag[.enableMemorizedURLOnWiki]
+                            || AnnotationType(annotation: $0.annotation) != .wikipedia))
                     || $0.annotation?.stockInfo != nil
                     || $0.annotation?.dictionaryInfo != nil
             }
@@ -206,9 +210,27 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
                 }
             }
 
+            var numOfQuerySuggestions = 0
+            var filteredStandardQuerySuggestions = [SuggestionsQuery.Data.Suggest.QuerySuggestion]()
+            if FeatureFlag[.enableMemorizedURLOnWiki] {
+                for suggestion in standardQuerySuggestions {
+                    if AnnotationType(annotation: suggestion.annotation) != .wikipedia {
+                        if numOfQuerySuggestions == SuggestionsController.querySuggestionsCap {
+                            continue
+                        }
+                        numOfQuerySuggestions += 1
+                    }
+                    filteredStandardQuerySuggestions.append(suggestion)
+                }
+            } else {
+                filteredStandardQuerySuggestions = Array(
+                    standardQuerySuggestions
+                        .prefix(SuggestionsController.querySuggestionsCap)
+                )
+            }
+
             for (index, suggestion)
-                in standardQuerySuggestions
-                .prefix(SuggestionsController.querySuggestionsCap)
+                in filteredStandardQuerySuggestions
                 .enumerated()
             {
                 neevaSuggestions.append(Suggestion.query(suggestion))
