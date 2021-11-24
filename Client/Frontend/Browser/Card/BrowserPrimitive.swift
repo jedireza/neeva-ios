@@ -374,12 +374,10 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
         }
 
         // Filter out deleted tab group names
-        var temp = [String: String]()
-        tabGroups.filter {
-            group in tabGroups[group.key] != nil
+        tabGroupDict.filter {
+            group in tabGroups[group.key] == nil
         }.forEach { group in
-            temp[group.key] = tabGroupDict[group.key]
+            tabGroupDict.removeValue(forKey: group.key)
         }
-        tabGroupDict = temp
     }
 }
