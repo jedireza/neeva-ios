@@ -23,6 +23,7 @@ class GridModel: ObservableObject {
             }
         }
     }
+    @Published var refreshDetailedSpaceSubscription: AnyCancellable? = nil
 
     var isIncognito: Bool {
         tabCardModel.manager.isIncognito
@@ -95,15 +96,25 @@ class GridModel: ObservableObject {
     }
 
     func openSpace(spaceId: String, bvc: BrowserViewController, completion: @escaping () -> Void) {
+        let existingSpace = spaceCardModel.allDetails.first(where: { $0.id == spaceId })
         DispatchQueue.main.async { [self] in
             if isIncognito {
                 bvc.tabManager.toggleIncognitoMode()
             }
 
-            bvc.showTabTray()
-            bvc.gridModel.switcherState = .spaces
+            if let existingSpace = existingSpace {
+                openSpace(spaceID: existingSpace.id)
+                refreshDetailedSpace()
+            } else {
+                bvc.showTabTray()
+                switcherState = .spaces
 
-            isLoading = true
+                isLoading = true
+            }
+        }
+
+        guard existingSpace == nil else {
+            return
         }
 
         SpaceStore.openSpace(spaceId: spaceId) { [self] in
@@ -125,6 +136,26 @@ class GridModel: ObservableObject {
                 }
             }
         }
+    }
+
+    func refreshDetailedSpace() {
+        guard let detailedSpace = spaceCardModel.detailedSpace else {
+            return
+        }
+
+        refreshDetailedSpaceSubscription = detailedSpace.manager.$state.sink { state in
+            if case .ready = state {
+                if detailedSpace.manager.updatedSpacesFromLastRefresh.first?.id.id ?? ""
+                    == detailedSpace.id
+                {
+                    detailedSpace.updateDetails()
+                }
+                self.refreshDetailedSpaceSubscription?.cancel()
+                self.refreshDetailedSpaceSubscription = nil
+            }
+        }
+        detailedSpace.manager.refreshSpace(spaceID: detailedSpace.id)
+
     }
 
     func openSpace(spaceID: String, animate: Bool = true) {

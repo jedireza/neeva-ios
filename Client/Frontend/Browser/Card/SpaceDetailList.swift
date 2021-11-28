@@ -42,6 +42,9 @@ struct SpaceDetailList: View {
     }
 
     var body: some View {
+        if gridModel.refreshDetailedSpaceSubscription != nil {
+            ProgressView().padding(12)
+        }
         NavigationView {
             List {
                 if let promoCardType = promoCardType {
@@ -268,7 +271,11 @@ struct ListStyleModifier: ViewModifier {
                         openURLForSpace($0, spaceModel.detailedSpace!.id)
                         spaceModel.detailedSpace = nil
                         return .handled
-                    }))
+                    })
+                )
+                .refreshable {
+                    gridModel.refreshDetailedSpace()
+                }
         } else {
             content
         }
