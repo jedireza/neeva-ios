@@ -75,6 +75,12 @@ public struct LogConfig {
         case OptionClosePanel  // Click close on the first run under other options
         case AuthOptionClosePanel  // Click close on the auth panel under other options
         case RecommendedSpaceVisited  // Clicked a public space in zero query
+        case PreviewPromptClose  // Clicked close on preview prompt
+        case PreviewPromptSignupWithApple  // Clicked sign up with apple on preview prompt
+        case PreviewPromptOtherSignupOptions  // Clicked other signup options on preview prompt
+        case PreviewPromptSignIn  // Clicked sign in on preview prompt
+        case PreviewHomeImpression  // Preview home impression
+        case PreviewSampleQueryClicked  // Clicked on sample query on the home page
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -266,6 +272,12 @@ public struct LogConfig {
         case .OptionClosePanel: return .FirstRun
         case .AuthOptionClosePanel: return .FirstRun
         case .RecommendedSpaceVisited: return .FirstRun
+        case .PreviewPromptClose: return .FirstRun
+        case .PreviewPromptSignupWithApple: return .FirstRun
+        case .PreviewPromptOtherSignupOptions: return .FirstRun
+        case .PreviewPromptSignIn: return .FirstRun
+        case .PreviewHomeImpression: return .FirstRun
+        case .PreviewSampleQueryClicked: return .FirstRun
 
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard

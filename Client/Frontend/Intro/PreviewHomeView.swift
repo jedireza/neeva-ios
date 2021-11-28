@@ -12,7 +12,7 @@ struct QueryChip: View {
             HStack(alignment: .center) {
                 Label {
                     Text(query)
-                        .foregroundColor(Color.ui.gray20)
+                        .foregroundColor(Color(light: Color.ui.gray20, dark: Color.ui.gray99))
                 } icon: {
                     Symbol(decorative: .magnifyingglass)
                         .foregroundColor(Color.ui.gray70)
@@ -29,6 +29,12 @@ struct QueryChip: View {
 
     func onClick() {
         if let target = neevaSearchEngine.searchURLForQuery(query) {
+            var attributes = EnvironmentHelper.shared.getFirstRunAttributes()
+            attributes.append(
+                ClientLogCounterAttribute(
+                    key: "sample query",
+                    value: query))
+            ClientLogger.shared.logCounter(.PreviewSampleQueryClicked, attributes: attributes)
             onOpenURL(target)
         }
     }
@@ -168,6 +174,11 @@ struct PreviewHomeView: View {
                 bvc.chromeModel.triggerOverlay()
             }
         )
+        .onAppear(perform: {
+            ClientLogger.shared.logCounter(
+                .PreviewHomeImpression, attributes: EnvironmentHelper.shared.getFirstRunAttributes()
+            )
+        })
     }
 }
 

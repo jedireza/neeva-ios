@@ -109,12 +109,14 @@ struct SignUpButton: View {
 
 struct FirstRunCloseButton: View {
     var action: () -> Void
+    var weight: Font.Weight = .semibold
+    var size: CGFloat = 20
 
     var body: some View {
         HStack {
             Spacer()
             Button(action: action) {
-                Symbol(decorative: .xmark, size: 20, weight: .semibold)
+                Symbol(decorative: .xmark, size: size, weight: weight)
                     .foregroundColor(Color.ui.gray60)
             }
         }

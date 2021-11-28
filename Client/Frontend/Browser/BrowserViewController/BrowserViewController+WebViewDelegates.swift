@@ -1044,6 +1044,9 @@ extension BrowserViewController: WKNavigationDelegate {
                                     self.presentIntroViewController(
                                         true, onOtherOptionsPage: true,
                                         marketingEmailOptOut: marketingEmailOptOut)
+                                },
+                                openSignIn: {
+                                    self.presentIntroViewController(true, signInMode: true)
                                 }
                             )
                             .padding(.top, 4)

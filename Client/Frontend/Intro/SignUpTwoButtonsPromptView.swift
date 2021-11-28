@@ -8,10 +8,12 @@ struct SignUpTwoButtonsPromptViewOverlayContent: View {
     var query: String
     var skippable: Bool
     var openOtherSignUpOption: (Bool) -> Void
+    var openSignIn: () -> Void
 
     var body: some View {
         SignUpTwoButtonsPromptView(
-            query: query, skippable: skippable, openOtherSignUpOption: openOtherSignUpOption
+            query: query, skippable: skippable, openOtherSignUpOption: openOtherSignUpOption,
+            openSignIn: openSignIn
         )
         .overlayIsFixedHeight(isFixedHeight: true)
         .background(Color(.systemBackground))
@@ -29,40 +31,43 @@ struct SignUpTwoButtonsPromptView: View {
     var query: String
     var skippable: Bool
     var openOtherSignUpOption: (Bool) -> Void
+    var openSignIn: () -> Void
 
     @State var marketingEmailOptOut: Bool = false
 
+    var maxQueryCharacterCount = 28
+
     var skipButton: some View {
-        Button(action: hideOverlay) {
-            HStack {
-                Spacer()
-                Text("Skip for now")
-                    .withFont(.bodyMedium)
-                    .font(.system(size: 14))
-                    .foregroundColor(Color(light: Color.brand.blue, dark: Color.brand.variant.blue))
-            }
-        }
+        FirstRunCloseButton(
+            action: {
+                hideOverlay()
+                ClientLogger.shared.logCounter(
+                    .PreviewPromptClose,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+            },
+            weight: .regular,
+            size: 15
+        )
         .padding(.horizontal, 20)
         .padding(.vertical, 8)
     }
 
     var nonSkippableHeader: some View {
         VStack {
-            VStack {
-                Text("Thank you for trying")
-                Text("Neeva!")
-            }
-            .font(.roobert(size: 32))
-            .padding(.bottom, 6)
-            .padding(.top, 4)
+            Text("Thank you for trying Neeva!")
+                .font(.roobert(size: 24))
+                .padding(.bottom, 6)
+                .padding(.top, 4)
 
             VStack(spacing: 2) {
                 Text("Create your account for continued")
                 Text("access and to see results for")
-                Text("“\(query)“")
-                    .withFont(.labelLarge, weight: .medium)
-                    .foregroundColor(Color(light: Color(hex: 0x636366), dark: Color(hex: 0xAEAEB2)))
-                    .lineLimit(1)
+                Text(
+                    "“\(query.count > maxQueryCharacterCount ? query.prefix(maxQueryCharacterCount) + "..." : query)“"
+                )
+                .foregroundColor(.primary)
+                .lineLimit(1)
+                .withFont(unkerned: .headingLarge)
             }
             .withFont(unkerned: .bodyLarge)
             .foregroundColor(.secondaryLabel)
@@ -70,23 +75,49 @@ struct SignUpTwoButtonsPromptView: View {
     }
 
     var skippableHeader: some View {
-        VStack {
-            Text("Welcome to Neeva. Ad-free, private search.")
-                .font(.roobert(size: 16))
+        VStack(spacing: 0) {
+            Text("See results for")
+                .font(.roobert(size: 24))
                 .foregroundColor(Color(light: Color.brand.charcoal, dark: Color.brand.offwhite))
-                .padding(.top, 10)
-
-            VStack {
-                Text("See results for")
-                    .font(.roobert(size: 24))
-                    .foregroundColor(Color(light: Color.brand.charcoal, dark: Color.brand.offwhite))
-                Text("“\(query)”")
-                    .font(.roobert(.medium, size: 24))
-                    .foregroundColor(.primary)
-                    .lineLimit(1)
-            }
-            .padding(.top, 8)
+            Text(
+                "“\(query.count > maxQueryCharacterCount ? query.prefix(maxQueryCharacterCount) + "..." : query)”"
+            )
+            .font(.roobert(.medium, size: 24))
+            .foregroundColor(.primary)
+            .lineLimit(1)
+            Text("Create your Neeva account.")
+                .withFont(.bodyLarge)
+                .foregroundColor(.secondary)
+                .padding(.top, 8)
+                .padding(.bottom, 4)
         }
+        .padding(.top, 8)
+    }
+
+    var footer: some View {
+        VStack {
+            Text("By creating your Neeva account you acknowledge")
+                .padding(.bottom, 2)
+            HStack(spacing: 0) {
+                Text("Neeva's ")
+                Button(action: {
+                    hideOverlay()
+                    openInNewTab(NeevaConstants.appTermsURL, false)
+                }) {
+                    Text("Terms of Service").underline()
+                }
+                Text(" and ")
+                Button(action: {
+                    hideOverlay()
+                    openInNewTab(NeevaConstants.appPrivacyURL, false)
+                }) {
+                    Text("Privacy Policy").underline()
+                }
+            }
+        }
+        .foregroundColor(.secondary)
+        .font(.system(size: 13))
+        .padding(.bottom, 26)
     }
 
     var signUpWithAppleButton: some View {
@@ -109,6 +140,9 @@ struct SignUpTwoButtonsPromptView: View {
                                     serverAuthCode: authStr,
                                     marketingEmailOptOut: self.marketingEmailOptOut,
                                     signup: true)
+                                ClientLogger.shared.logCounter(
+                                    .PreviewPromptSignupWithApple,
+                                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                                 hideOverlay()
                                 openInNewTab(authURL, false)
                             }
@@ -125,11 +159,14 @@ struct SignUpTwoButtonsPromptView: View {
         .signInWithAppleButtonStyle(colorScheme == .light ? .black : .white)
         .clipShape(RoundedRectangle(cornerRadius: 100))
         .frame(width: 340, height: 55, alignment: .center)
-        .padding()
+        .padding(.vertical)
     }
 
     var otherSignUpOptionsButton: some View {
         Button(action: {
+            ClientLogger.shared.logCounter(
+                .PreviewPromptOtherSignupOptions,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
             hideOverlay()
             openOtherSignUpOption(marketingEmailOptOut)
         }) {
@@ -157,12 +194,30 @@ struct SignUpTwoButtonsPromptView: View {
                     : Symbol(decorative: .checkmarkCircleFill, size: 20)
                         .foregroundColor(Color.blue)
                 Text("Send me product & privacy tips")
-                    .font(.roobert(size: 13))
-                    .foregroundColor(Color(light: Color(hex: 0x636366), dark: Color(hex: 0xAEAEB2)))
+                    .withFont(.bodyMedium)
+                    .foregroundColor(.primary)
                     .multilineTextAlignment(.center)
             }
         }
-        .padding(.vertical, 30)
+        .padding(.vertical, 25)
+    }
+
+    var signInButton: some View {
+        Button(action: {
+            hideOverlay()
+            openSignIn()
+            ClientLogger.shared.logCounter(
+                .PreviewPromptSignIn, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        }) {
+            HStack(spacing: 0) {
+                Text("Already have an account? ")
+                Text("Sign In").withFont(.labelMedium).padding(.leading, 2)
+            }
+            .font(.system(size: 14))
+            .foregroundColor(.primary)
+            .accessibilityLabel("Sign In")
+        }
+        .padding(.bottom, 10)
     }
 
     var body: some View {
@@ -186,15 +241,17 @@ struct SignUpTwoButtonsPromptView: View {
                 signUpWithAppleButton
                 otherSignUpOptionsButton
                 emailOptionButton
+                footer
+                signInButton
             }
         }
-        .frame(height: horizontalSizeClass == .regular || verticalSizeClass == .regular ? 430 : 300)
+        .frame(height: horizontalSizeClass == .regular || verticalSizeClass == .regular ? 530 : 320)
     }
 }
 
 struct SignUpTwoButtonsPromptView_Previews: PreviewProvider {
     static var previews: some View {
         SignUpTwoButtonsPromptView(
-            query: "react hook", skippable: true, openOtherSignUpOption: { _ in })
+            query: "react hook", skippable: true, openOtherSignUpOption: { _ in }, openSignIn: {})
     }
 }

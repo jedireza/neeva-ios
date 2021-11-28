@@ -88,7 +88,7 @@ public class EnvironmentHelper {
 
         let attributes = [
             normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation,
-            deviceScreensSize, isUserSignedIn, getSessionUUID()
+            deviceScreensSize, isUserSignedIn, getSessionUUID(),
         ]
         return attributes
     }
@@ -111,7 +111,15 @@ public class EnvironmentHelper {
         let firstRunPath = ClientLogCounterAttribute(
             key: LogConfig.Attribute.FirstRunPath, value: Defaults[.firstRunPath])
 
-        return [getSessionUUID(), isUserSignedIn, deviceTheme, deviceName, firstRunPath]
+        // count of preview mode query
+        let previewQueryCount = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.FirstRunPath,
+            value: String(Defaults[.previewModeQueries].count))
+
+        return [
+            getSessionUUID(), isUserSignedIn, deviceTheme, deviceName, firstRunPath,
+            previewQueryCount,
+        ]
     }
 
     private func getSessionUUID() -> ClientLogCounterAttribute {
