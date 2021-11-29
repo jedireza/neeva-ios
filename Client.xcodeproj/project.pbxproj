@@ -410,6 +410,7 @@
 		C88F9D1426D961EC00FD0E04 /* UserInfoProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */; };
 		C894C5892735DAF40068B0BE /* CardTransitionModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C894C5882735DAF40068B0BE /* CardTransitionModifier.swift */; };
 		C8A4D2C4262886B900192B4D /* OverlaySheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */; };
+		C8A4E91B275567A700421040 /* TabContainerHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A4E91A275567A700421040 /* TabContainerHost.swift */; };
 		C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */; };
 		C8AB20C82669696600461C4E /* NeevaFeatureFlags.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */; };
 		C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */; };
@@ -540,7 +541,6 @@
 		C9DACFEB269CEFE600456020 /* KMCGeigerCounterTick.aiff in Resources */ = {isa = PBXBuildFile; fileRef = C9DACFE8269CEFE500456020 /* KMCGeigerCounterTick.aiff */; };
 		C9DACFEC269CEFE600456020 /* KMCGeigerCounter.m in Sources */ = {isa = PBXBuildFile; fileRef = C9DACFEA269CEFE500456020 /* KMCGeigerCounter.m */; };
 		C9DDC12026B9E24900F293AB /* WebViewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DDC11F26B9E24900F293AB /* WebViewContainer.swift */; };
-		C9DDC12226B9E44200F293AB /* TabContentHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DDC12126B9E44200F293AB /* TabContentHost.swift */; };
 		C9DF5691266A83F4009A2E6C /* ShareToView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5690266A83F4009A2E6C /* ShareToView.swift */; };
 		C9DF5699266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9DF5698266A84A4009A2E6C /* ShareTo_Preview_SupportApp.swift */; };
 		C9DF56A0266A84A5009A2E6C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C9DF569F266A84A5009A2E6C /* Preview Assets.xcassets */; };
@@ -1481,6 +1481,7 @@
 		C88F9D1326D961EC00FD0E04 /* UserInfoProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserInfoProvider.swift; sourceTree = "<group>"; };
 		C894C5882735DAF40068B0BE /* CardTransitionModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTransitionModifier.swift; sourceTree = "<group>"; };
 		C8A4D2C3262886B900192B4D /* OverlaySheetView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverlaySheetView.swift; sourceTree = "<group>"; };
+		C8A4E91A275567A700421040 /* TabContainerHost.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabContainerHost.swift; sourceTree = "<group>"; };
 		C8A50B8D268E7F7000E1392A /* NavigationLinkButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NavigationLinkButton.swift; sourceTree = "<group>"; };
 		C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaFeatureFlags.swift; sourceTree = "<group>"; };
 		C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaConstants.swift; sourceTree = "<group>"; };
@@ -1620,7 +1621,6 @@
 		C9DACFE9269CEFE500456020 /* KMCGeigerCounter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = KMCGeigerCounter.h; sourceTree = "<group>"; };
 		C9DACFEA269CEFE500456020 /* KMCGeigerCounter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KMCGeigerCounter.m; sourceTree = "<group>"; };
 		C9DDC11F26B9E24900F293AB /* WebViewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewContainer.swift; sourceTree = "<group>"; };
-		C9DDC12126B9E44200F293AB /* TabContentHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabContentHost.swift; sourceTree = "<group>"; };
 		C9DE0C5C26B2FE8400CB995A /* files-to-format.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "files-to-format.sh"; sourceTree = "<group>"; };
 		C9DE0C5D26B3054700CB995A /* swift-format-dirs.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "swift-format-dirs.txt"; sourceTree = "<group>"; };
 		C9DE0C5F26B305D900CB995A /* swift-format.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "swift-format.sh"; sourceTree = "<group>"; };
@@ -3118,8 +3118,8 @@
 		C9DDC11E26B9E22800F293AB /* Content */ = {
 			isa = PBXGroup;
 			children = (
+				C8A4E91A275567A700421040 /* TabContainerHost.swift */,
 				C9DDC11F26B9E24900F293AB /* WebViewContainer.swift */,
-				C9DDC12126B9E44200F293AB /* TabContentHost.swift */,
 			);
 			path = Content;
 			sourceTree = "<group>";
@@ -5289,6 +5289,7 @@
 				BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */,
 				C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */,
 				EB1C84BF212EFFBF001489DF /* BrowserViewController+ReaderMode.swift in Sources */,
+				C8A4E91B275567A700421040 /* TabContainerHost.swift in Sources */,
 				66ECB5DF26BB264700A1857E /* OverlayStepperModifier.swift in Sources */,
 				C9C18E0926559007004710CD /* Suggestion.swift in Sources */,
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,
@@ -5520,7 +5521,6 @@
 				D31F95E91AC226CB005C9F3B /* ScreenshotHelper.swift in Sources */,
 				66B7A0E726EAE10B00AB751A /* PopoverView.swift in Sources */,
 				C965BDD2268E71C500F02224 /* AppHostSetting.swift in Sources */,
-				C9DDC12226B9E44200F293AB /* TabContentHost.swift in Sources */,
 				C885659E2620366400B2C228 /* SwiftUIHelpers.swift in Sources */,
 				66AC64B326E8324500D7BA83 /* SystemsHelper.swift in Sources */,
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,

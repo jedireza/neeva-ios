@@ -10,7 +10,7 @@ import XCTest
 
 @testable import Client
 
-extension TabContentHost.Content: Inspectable {}
+extension TabContainerContent: Inspectable {}
 extension WebViewContainer: Inspectable {}
 extension ZeroQueryContent: Inspectable {}
 extension SuggestionsContent: Inspectable {}
@@ -23,7 +23,7 @@ class ZeroQueryTests: XCTestCase {
     var sQM = SearchQueryModel()
     var suggestionsModel: SuggestionModel!
     var tabManager: TabManager!
-    var tabContentHost: TabContentHost!
+    var tabContainerHost: TabContainerHost!
 
     override func setUp() {
         super.setUp()
@@ -34,7 +34,7 @@ class ZeroQueryTests: XCTestCase {
             bvc: SceneDelegate.getBVC(for: nil), profile: self.profile, shareURLHandler: { _, _ in }
         )
         self.tabManager = TabManager(profile: profile, imageStore: nil)
-        self.tabContentHost = TabContentHost(bvc: bvc)
+        self.tabContainerHost = TabContainerHost(bvc: bvc)
     }
 
     override func tearDown() {
@@ -47,7 +47,7 @@ class ZeroQueryTests: XCTestCase {
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
         waitForCondition(condition: {
-            switch tabContentHost.model.currentContentUI {
+            switch tabContainerHost.model.currentContentUI {
             case .webPage:
                 return true
             default:
@@ -56,11 +56,11 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContentHost.updateContent(
+        tabContainerHost.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContentHost.updateContent(.hideZeroQuery)
+        tabContainerHost.updateContent(.hideZeroQuery)
         try assertTabContentOnlyContainsWebContainer()
     }
 
@@ -69,7 +69,7 @@ class ZeroQueryTests: XCTestCase {
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
         waitForCondition(condition: {
-            switch tabContentHost.model.currentContentUI {
+            switch tabContainerHost.model.currentContentUI {
             case .webPage:
                 return true
             default:
@@ -78,11 +78,11 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContentHost.updateContent(
+        tabContainerHost.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContentHost.promoteToRealTabIfNecessary(url: .aboutBlank, tabManager: tabManager)
+        tabContainerHost.promoteToRealTabIfNecessary(url: .aboutBlank, tabManager: tabManager)
         waitForCondition(condition: { tabManager.tabs.count == 2 })
         try assertTabContentOnlyContainsWebContainer()
         XCTAssertNil(zQM.openedFrom)
@@ -93,7 +93,7 @@ class ZeroQueryTests: XCTestCase {
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
         waitForCondition(condition: {
-            switch tabContentHost.model.currentContentUI {
+            switch tabContainerHost.model.currentContentUI {
             case .webPage:
                 return true
             default:
@@ -102,11 +102,11 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContentHost.updateContent(
+        tabContainerHost.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContentHost.updateContent(.hideZeroQuery)
+        tabContainerHost.updateContent(.hideZeroQuery)
         try assertTabContentOnlyContainsWebContainer()
         XCTAssertNil(zQM.openedFrom)
     }
@@ -116,7 +116,7 @@ class ZeroQueryTests: XCTestCase {
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
         waitForCondition(condition: {
-            switch tabContentHost.model.currentContentUI {
+            switch tabContainerHost.model.currentContentUI {
             case .webPage:
                 return true
             default:
@@ -125,39 +125,39 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContentHost.updateContent(.showSuggestions)
+        tabContainerHost.updateContent(.showSuggestions)
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContentHost.updateContent(
+        tabContainerHost.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContentHost.updateContent(.showSuggestions)
+        tabContainerHost.updateContent(.showSuggestions)
         try assertTabContentOnlyContainsSuggestions()
 
-        tabContentHost.updateContent(.hideSuggestions)
+        tabContainerHost.updateContent(.hideSuggestions)
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContentHost.updateContent(.hideZeroQuery)
+        tabContainerHost.updateContent(.hideZeroQuery)
         try assertTabContentOnlyContainsWebContainer()
     }
 
     func assertTabContentOnlyContainsZeroQuery() throws {
-        let group = try tabContentHost.rootView.inspect().find(ViewType.Group.self)
+        let group = try tabContainerHost.rootView.inspect().find(ViewType.Group.self)
         let content = try group.view(ZeroQueryContent.self, 0).actualView()
         XCTAssertNotNil(content)
         XCTAssertEqual(group.count, 1)
     }
 
     func assertTabContentOnlyContainsSuggestions() throws {
-        let group = try tabContentHost.rootView.inspect().find(ViewType.Group.self)
+        let group = try tabContainerHost.rootView.inspect().find(ViewType.Group.self)
         let content = try group.view(SuggestionsContent.self, 0).actualView()
         XCTAssertNotNil(content)
         XCTAssertEqual(group.count, 1)
     }
 
     func assertTabContentOnlyContainsWebContainer() throws {
-        let group = try tabContentHost.rootView.inspect().find(ViewType.Group.self)
+        let group = try tabContainerHost.rootView.inspect().find(ViewType.Group.self)
         XCTAssertEqual(group.count, 1)
     }
 

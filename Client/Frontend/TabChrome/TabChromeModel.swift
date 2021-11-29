@@ -44,9 +44,9 @@ class TabChromeModel: ObservableObject {
                     let (isEditing, query) = current
                     if let delegate = topBarDelegate, (prevEditing, isEditing) == (true, true) {
                         if query.isEmpty {
-                            delegate.tabContentHost.updateContent(.hideSuggestions)
+                            delegate.tabContainerHost.updateContent(.hideSuggestions)
                         } else {
-                            delegate.tabContentHost.updateContent(.showSuggestions)
+                            delegate.tabContainerHost.updateContent(.showSuggestions)
                         }
                     }
                 }

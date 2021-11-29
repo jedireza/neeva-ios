@@ -16,7 +16,7 @@ protocol TopBarDelegate: ToolbarDelegate {
     func perform(neevaMenuAction: NeevaMenuAction)
     func updateFeedbackImage()
 
-    var tabContentHost: TabContentHost { get }
+    var tabContainerHost: TabContainerHost { get }
     var tabManager: TabManager { get }
     var searchQueryModel: SearchQueryModel { get }
 }

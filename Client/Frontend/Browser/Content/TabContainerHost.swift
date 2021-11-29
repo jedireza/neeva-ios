@@ -22,7 +22,7 @@ enum ContentUIVisibilityEvent {
     case showPreviewHome
 }
 
-class TabContentHostModel: ObservableObject {
+class TabContainerModel: ObservableObject {
     /// Holds the current webpage's WebView, so that when the state changes to be other content, we don't lose it.
     @Published var webContainerType: ContentUIType {
         didSet {
@@ -77,113 +77,113 @@ class TabContentHostModel: ObservableObject {
     }
 }
 
-class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
+struct TabContainerContent: View {
+    @ObservedObject var model: TabContainerModel
+    let bvc: BrowserViewController
     let zeroQueryModel: ZeroQueryModel
-    let model: TabContentHostModel
-    let tabCardModel: TabCardModel
+    let suggestionModel: SuggestionModel
+    let suggestedSearchesModel: SuggestedSearchesModel =
+        SuggestedSearchesModel(suggestedQueries: [])
+    let spaceContentSheetModel: SpaceContentSheetModel?
 
-    struct Content: View {
-        @ObservedObject var model: TabContentHostModel
-        let bvc: BrowserViewController
-        let zeroQueryModel: ZeroQueryModel
-        let suggestionModel: SuggestionModel
-        let suggestedSearchesModel: SuggestedSearchesModel =
-            SuggestedSearchesModel(suggestedQueries: [])
-        let spaceContentSheetModel: SpaceContentSheetModel?
+    var body: some View {
+        Group {
+            switch model.currentContentUI {
+            case .webPage(let currentWebView):
+                ZStack {
+                    WebViewContainer(webView: currentWebView)
+                        .ignoresSafeArea()
 
-        var body: some View {
-            Group {
-                switch model.currentContentUI {
-                case .webPage(let currentWebView):
-                    ZStack {
-                        WebViewContainer(webView: currentWebView)
-                            .ignoresSafeArea()
-
-                        if FeatureFlag[.cardStrip] {
-                            GeometryReader { geo in
-                                VStack {
-                                    Spacer()
-                                    CardStripContent(bvc: bvc, width: geo.size.width)
-                                }
+                    if FeatureFlag[.cardStrip] {
+                        GeometryReader { geo in
+                            VStack {
+                                Spacer()
+                                CardStripContent(bvc: bvc, width: geo.size.width)
                             }
                         }
-                        if FeatureFlag[.spaceComments] {
-                            SpaceContentSheet(
-                                model: spaceContentSheetModel!,
-                                scrollingController: bvc.scrollController
-                            )
-                            .environment(
-                                \.onOpenURLForSpace,
-                                { bvc.tabManager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
-                            )
-                        }
-                        if NeevaFeatureFlags[.recipeCheatsheet] && !bvc.tabManager.isIncognito
-                            && NeevaUserInfo.shared.hasLoginCookie()
-                        {
-                            GeometryReader { geo in
-                                VStack {
-                                    Spacer()
-                                    RecipeCheatsheetStripView(
-                                        tabManager: bvc.tabManager,
-                                        recipeModel: model.recipeModel,
-                                        scrollingController: bvc.scrollController,
-                                        height: geo.size.height,
-                                        chromeModel: bvc.chromeModel
-                                    )
-                                    .environment(\.onOpenURL) { url in
-                                        let bvc = zeroQueryModel.bvc
-                                        bvc.tabManager.createOrSwitchToTab(for: url)
-                                    }
+                    }
+                    if FeatureFlag[.spaceComments] {
+                        SpaceContentSheet(
+                            model: spaceContentSheetModel!,
+                            scrollingController: bvc.scrollController
+                        )
+                        .environment(
+                            \.onOpenURLForSpace,
+                            { bvc.tabManager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
+                        )
+                    }
+                    if NeevaFeatureFlags[.recipeCheatsheet] && !bvc.tabManager.isIncognito
+                        && NeevaUserInfo.shared.hasLoginCookie()
+                    {
+                        GeometryReader { geo in
+                            VStack {
+                                Spacer()
+                                RecipeCheatsheetStripView(
+                                    tabManager: bvc.tabManager,
+                                    recipeModel: model.recipeModel,
+                                    scrollingController: bvc.scrollController,
+                                    height: geo.size.height,
+                                    chromeModel: bvc.chromeModel
+                                )
+                                .environment(\.onOpenURL) { url in
+                                    let bvc = zeroQueryModel.bvc
+                                    bvc.tabManager.createOrSwitchToTab(for: url)
                                 }
                             }
                         }
                     }
-                case .zeroQuery:
-                    ZeroQueryContent(model: zeroQueryModel)
-                        .environmentObject(suggestedSearchesModel)
-                case .suggestions:
-                    SuggestionsContent(suggestionModel: suggestionModel)
-                        .environment(\.onOpenURL) { url in
-                            let bvc = zeroQueryModel.bvc
-                            guard let tab = bvc.tabManager.selectedTab else { return }
-                            bvc.finishEditingAndSubmit(
-                                url, visitType: VisitType.typed, forTab: tab)
-                        }.environment(\.setSearchInput) { suggestion in
-                            suggestionModel.queryModel.value = suggestion
-                        }.environment(\.onSigninOrJoinNeeva) {
-                            ClientLogger.shared.logCounter(
-                                .SuggestionErrorSigninOrJoinNeeva,
-                                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                            let bvc = zeroQueryModel.bvc
-                            bvc.chromeModel.setEditingLocation(to: false)
-                            bvc.presentIntroViewController(
-                                true,
-                                onDismiss: {
-                                    bvc.hideCardGrid(withAnimation: true)
-                                }
-                            )
-                        }
-                case .blank:
-                    ZeroQueryContent(model: zeroQueryModel)
-                        .environmentObject(suggestedSearchesModel)
-                case .previewHome:
-                    PreviewHomeView(bvc: bvc)
-                        .environment(\.onOpenURL) { url in
-                            bvc.tabManager.createOrSwitchToTab(for: url)
-                        }
                 }
-            }.useEffect(deps: model.currentContentUI) { _ in
-                zeroQueryModel.profile.panelDataObservers.activityStream.refreshIfNeeded(
-                    forceTopSites: true)
-                self.zeroQueryModel.updateSuggestedSites()
-                self.suggestedSearchesModel.reload(from: zeroQueryModel.profile)
+            case .zeroQuery:
+                ZeroQueryContent(model: zeroQueryModel)
+                    .environmentObject(suggestedSearchesModel)
+            case .suggestions:
+                SuggestionsContent(suggestionModel: suggestionModel)
+                    .environment(\.onOpenURL) { url in
+                        let bvc = zeroQueryModel.bvc
+                        guard let tab = bvc.tabManager.selectedTab else { return }
+                        bvc.finishEditingAndSubmit(
+                            url, visitType: VisitType.typed, forTab: tab)
+                    }.environment(\.setSearchInput) { suggestion in
+                        suggestionModel.queryModel.value = suggestion
+                    }.environment(\.onSigninOrJoinNeeva) {
+                        ClientLogger.shared.logCounter(
+                            .SuggestionErrorSigninOrJoinNeeva,
+                            attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                        let bvc = zeroQueryModel.bvc
+                        bvc.chromeModel.setEditingLocation(to: false)
+                        bvc.presentIntroViewController(
+                            true,
+                            onDismiss: {
+                                bvc.hideCardGrid(withAnimation: true)
+                            }
+                        )
+                    }
+            case .blank:
+                ZeroQueryContent(model: zeroQueryModel)
+                    .environmentObject(suggestedSearchesModel)
+            case .previewHome:
+                PreviewHomeView(bvc: bvc)
+                    .environment(\.onOpenURL) { url in
+                        bvc.tabManager.createOrSwitchToTab(for: url)
+                    }
             }
+        }.useEffect(deps: model.currentContentUI) { _ in
+            zeroQueryModel.profile.panelDataObservers.activityStream.refreshIfNeeded(
+                forceTopSites: true)
+            self.zeroQueryModel.updateSuggestedSites()
+            self.suggestedSearchesModel.reload(from: zeroQueryModel.profile)
         }
     }
+}
+
+class TabContainerHost: IncognitoAwareHostingController<TabContainerContent> {
+    let zeroQueryModel: ZeroQueryModel
+    let model: TabContainerModel
+    let tabCardModel: TabCardModel
 
     init(bvc: BrowserViewController) {
         let tabManager = bvc.tabManager
-        let model = TabContentHostModel(bvc: bvc)
+        let model = TabContainerModel(bvc: bvc)
         let zeroQueryModel = bvc.zeroQueryModel
         let suggestionModel = bvc.suggestionModel
 
@@ -195,7 +195,7 @@ class TabContentHost: IncognitoAwareHostingController<TabContentHost.Content> {
         self.tabCardModel = tabCardModel
 
         super.init(isIncognito: tabManager.isIncognito) {
-            Content(
+            TabContainerContent(
                 model: model,
                 bvc: bvc,
                 zeroQueryModel: zeroQueryModel,

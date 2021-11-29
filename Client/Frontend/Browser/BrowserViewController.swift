@@ -118,7 +118,7 @@ class BrowserViewController: UIViewController {
             tabManager: self.tabManager,
             chromeModel: chromeModel,
             swipeDirection: .forward,
-            contentView: tabContentHost.view)
+            contentView: tabContainerHost.view)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -130,15 +130,15 @@ class BrowserViewController: UIViewController {
             tabManager: self.tabManager,
             chromeModel: chromeModel,
             swipeDirection: .back,
-            contentView: tabContentHost.view)
+            contentView: tabContainerHost.view)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
         return host
     }()
 
-    private(set) lazy var tabContentHost: TabContentHost = {
-        return TabContentHost(bvc: self)
+    private(set) lazy var tabContainerHost: TabContainerHost = {
+        return TabContainerHost(bvc: self)
     }()
 
     private(set) lazy var trackingStatsViewModel: TrackingStatsViewModel = {
@@ -332,7 +332,7 @@ class BrowserViewController: UIViewController {
 
         displayedPopoverController?.dismiss(animated: true, completion: nil)
 
-        if tabContentHost.model.currentContentUI != .previewHome {
+        if tabContainerHost.model.currentContentUI != .previewHome {
             coordinator.animate { context in
                 self.scrollController.showToolbars(animated: false)
             }
@@ -369,7 +369,7 @@ class BrowserViewController: UIViewController {
 
         view.bringSubviewToFront(webViewContainerBackdrop)
         webViewContainerBackdrop.alpha = 1
-        tabContentHost.view.alpha = 0
+        tabContainerHost.view.alpha = 0
         presentedViewController?.popoverPresentationController?.containerView?.alpha = 0
         presentedViewController?.view.alpha = 0
     }
@@ -380,7 +380,7 @@ class BrowserViewController: UIViewController {
         UIView.animate(
             withDuration: 0.2, delay: 0, options: UIView.AnimationOptions(),
             animations: {
-                self.tabContentHost.view.alpha = 1
+                self.tabContainerHost.view.alpha = 1
                 self.presentedViewController?.popoverPresentationController?.containerView?.alpha =
                     1
                 self.presentedViewController?.view.alpha = 1
@@ -392,7 +392,7 @@ class BrowserViewController: UIViewController {
             })
 
         // Re-show toolbar which might have been hidden during scrolling (prior to app moving into the background)
-        if tabContentHost.model.currentContentUI != .previewHome {
+        if tabContainerHost.model.currentContentUI != .previewHome {
             scrollController.showToolbars(animated: false)
         }
 
@@ -438,9 +438,9 @@ class BrowserViewController: UIViewController {
         webViewContainerBackdrop.alpha = 0
         view.addSubview(webViewContainerBackdrop)
 
-        tabContentHost.willMove(toParent: self)
-        view.addSubview(tabContentHost.view)
-        addChild(tabContentHost)
+        tabContainerHost.willMove(toParent: self)
+        view.addSubview(tabContainerHost.view)
+        addChild(tabContainerHost)
 
         topTouchArea = UIButton()
         topTouchArea.isAccessibilityElement = false
@@ -541,16 +541,16 @@ class BrowserViewController: UIViewController {
 
         if FeatureFlag[.swipePlusPlus] {
             simulateForwardViewController?.view.snp.makeConstraints { make in
-                make.top.bottom.equalTo(tabContentHost.view)
-                make.width.equalTo(tabContentHost.view).offset(SwipeUX.EdgeWidth)
-                make.leading.equalTo(tabContentHost.view.snp.trailing).offset(-SwipeUX.EdgeWidth)
+                make.top.bottom.equalTo(tabContainerHost.view)
+                make.width.equalTo(tabContainerHost.view).offset(SwipeUX.EdgeWidth)
+                make.leading.equalTo(tabContainerHost.view.snp.trailing).offset(-SwipeUX.EdgeWidth)
             }
         }
 
         simulateBackViewController?.view.snp.makeConstraints { make in
-            make.top.bottom.equalTo(tabContentHost.view)
-            make.width.equalTo(tabContentHost.view).offset(SwipeUX.EdgeWidth)
-            make.trailing.equalTo(tabContentHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
+            make.top.bottom.equalTo(tabContainerHost.view)
+            make.width.equalTo(tabContainerHost.view).offset(SwipeUX.EdgeWidth)
+            make.trailing.equalTo(tabContainerHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
         }
     }
 
@@ -718,7 +718,7 @@ class BrowserViewController: UIViewController {
             make.height.equalTo(BrowserViewControllerUX.ShowHeaderTapAreaHeight)
         }
 
-        tabContentHost.view.snp.remakeConstraints { make in
+        tabContainerHost.view.snp.remakeConstraints { make in
             make.left.right.equalTo(self.view)
 
             if UIConstants.enableBottomURLBar {
@@ -767,7 +767,7 @@ class BrowserViewController: UIViewController {
 
         searchQueryModel.value = ""
 
-        self.tabContentHost.updateContent(
+        self.tabContainerHost.updateContent(
             .showZeroQuery(
                 isIncognito: tabManager.isIncognito,
                 isLazyTab: isLazyTab,
@@ -804,15 +804,15 @@ class BrowserViewController: UIViewController {
         zeroQueryModel.reset(bvc: self)
 
         DispatchQueue.main.async { [self] in
-            tabContentHost.updateContent(.hideZeroQuery)
-            if tabContentHost.model.currentContentUI == .previewHome {
+            tabContainerHost.updateContent(.hideZeroQuery)
+            if tabContainerHost.model.currentContentUI == .previewHome {
                 scrollController.hideToolbars(animated: true)
             }
         }
     }
 
     public func showPreviewHome() {
-        tabContentHost.updateContent(.showPreviewHome)
+        tabContainerHost.updateContent(.showPreviewHome)
         self.scrollController.hideToolbars(animated: false)
     }
 
@@ -930,7 +930,7 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        if !tabContentHost.promoteToRealTabIfNecessary(
+        if !tabContainerHost.promoteToRealTabIfNecessary(
             url: url, tabManager: tabManager, selectedTabIsNil: tab == nil)
         {
             if zeroQueryModel.targetTab == .existingOrNewTab {
@@ -1440,7 +1440,7 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didCreateWebView webView: WKWebView) {
-        webView.frame = tabContentHost.view.frame
+        webView.frame = tabContainerHost.view.frame
         webView.uiDelegate = self
 
         self.subscribe(to: webView, for: tab)
@@ -1666,7 +1666,7 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func applyUIMode(isIncognito: Bool) {
-        let ui: [IncognitoModeUI?] = [toolbar, topBar, tabContentHost]
+        let ui: [IncognitoModeUI?] = [toolbar, topBar, tabContainerHost]
         ui.forEach { $0?.applyUIMode(isIncognito: isIncognito) }
     }
 }
