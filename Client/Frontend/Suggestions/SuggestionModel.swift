@@ -30,7 +30,6 @@ class SuggestionModel: ObservableObject {
     @Published var tabSuggestions: [Suggestion] = []
     @Published var autocompleteSuggestion: Suggestion?
     @Published var topSuggestions: [Suggestion] = []
-    @Published var chipQuerySuggestions: [Suggestion] = []
     @Published var rowQuerySuggestions: [Suggestion] = []
     @Published var urlSuggestions: [Suggestion] = []
     @Published var navSuggestions: [Suggestion] = []
@@ -46,8 +45,6 @@ class SuggestionModel: ObservableObject {
         bvc.tabManager.isIncognito
     }
 
-    private var chipQueryRange: ClosedRange<Int>?
-
     var shouldShowSuggestions: Bool {
         !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions]
             && !searchQuery.looksLikeAURL
@@ -57,9 +54,6 @@ class SuggestionModel: ObservableObject {
 
     var suggestions: [Suggestion] {
         let top = tabSuggestions + topSuggestions
-        if !chipQuerySuggestions.isEmpty {
-            chipQueryRange = top.count...top.count + chipQuerySuggestions.count - 1
-        }
         rowQuerySuggestions = rowQuerySuggestions.filter { suggestion in
             if case let .navigation(autocompleteNavSuggestion) = autocompleteSuggestion,
                 case let .url(urlSuggestion) = suggestion
@@ -78,12 +72,12 @@ class SuggestionModel: ObservableObject {
                 return false
             }.count > 0
 
-        let mid = chipQuerySuggestions + rowQuerySuggestions + urlSuggestions
+        let mid = rowQuerySuggestions + urlSuggestions
         return top + mid + navCombinedSuggestions
     }
 
     var shouldShowPlaceholderSuggestions: Bool {
-        [topSuggestions, chipQuerySuggestions, rowQuerySuggestions].allSatisfy {
+        [topSuggestions, rowQuerySuggestions].allSatisfy {
             $0?.isEmpty == true
         } && shouldShowSuggestions
     }
@@ -138,7 +132,6 @@ class SuggestionModel: ObservableObject {
 
         guard shouldShowSuggestions else {
             topSuggestions = []
-            chipQuerySuggestions = []
             rowQuerySuggestions = []
             urlSuggestions = []
             navSuggestions = []
@@ -165,13 +158,12 @@ class SuggestionModel: ObservableObject {
                 }
             case .success(
                 let (
-                    topSuggestions, chipQuerySuggestions,
+                    topSuggestions,
                     rowQuerySuggestions, urlSuggestions, navSuggestions, lensOrBang,
                     memorizedSuggestionMap, querySuggestionIndexMap
                 )):
                 self.error = nil
                 self.topSuggestions = topSuggestions
-                self.chipQuerySuggestions = chipQuerySuggestions
                 self.rowQuerySuggestions = rowQuerySuggestions
 
                 // Add a search query suggestion for the URL if it doesn't exist
@@ -237,11 +229,7 @@ class SuggestionModel: ObservableObject {
                             source: .unknown
                         )
                     )
-                    if FeatureFlag[.enableOldSuggestUI] {
-                        self.chipQuerySuggestions = [emptyQuerySuggestion]
-                    } else {
-                        self.rowQuerySuggestions = [emptyQuerySuggestion]
-                    }
+                    self.rowQuerySuggestions = [emptyQuerySuggestion]
                 }
             }
         }
@@ -420,15 +408,6 @@ class SuggestionModel: ObservableObject {
     // MARK: - Suggestion Location Logging Attributes
     private func findSuggestionLocationInfo(_ suggestion: Suggestion) -> SuggestionPositionInfo? {
         if let idx = suggestions.firstIndex(of: suggestion) {
-            if let chipQueryRange = chipQueryRange {
-                if chipQueryRange.contains(idx) {
-                    return SuggestionPositionInfo(
-                        positionIndex: chipQueryRange.lowerBound,
-                        chipSuggestionIndex: idx - chipQueryRange.lowerBound)
-                } else if idx > chipQueryRange.lowerBound {
-                    return SuggestionPositionInfo(positionIndex: idx - chipQueryRange.count)
-                }
-            }
             return SuggestionPositionInfo(positionIndex: idx)
         }
 
@@ -654,13 +633,12 @@ class SuggestionModel: ObservableObject {
         queryModel: SearchQueryModel = SearchQueryModel(previewValue: ""),
         searchQueryForTesting: String = "",
         previewLensBang: ActiveLensBangInfo? = nil, topSuggestions: [Suggestion] = [],
-        chipQuerySuggestions: [Suggestion] = [], rowQuerySuggestions: [Suggestion] = []
+        rowQuerySuggestions: [Suggestion] = []
     ) {
         self.init(bvc: bvc, profile: BrowserProfile(localName: "profile"), queryModel: queryModel)
         self.sites = previewSites
         self.completion = previewCompletion
         self.topSuggestions = topSuggestions
-        self.chipQuerySuggestions = chipQuerySuggestions
         self.rowQuerySuggestions = rowQuerySuggestions
         self.activeLensBang = previewLensBang
         self.searchQuery = searchQueryForTesting
@@ -705,7 +683,6 @@ extension SuggestionModel: KeyboardHelperDelegate {
 extension SuggestionModel {
     enum SuggestionLoggingType: String {
         case tabSuggestion = "TabSuggestion"
-        case chipSuggestion = "ChipSuggestion"
         case rowQuerySuggestion = "RowQuerySuggestion"
         case personalSuggestion = "PersonalSuggestion"
         case memorizedSuggestion = "MemorizedSuggestion"
@@ -727,7 +704,6 @@ extension SuggestionModel {
         var numberOfStockAnnotations = 0
 
         suggestions.enumerated().forEach { (index, suggestion) in
-            var isChipQuery = false
             switch suggestion {
             case .tabSuggestion(_):
                 implLogAttributes.append(
@@ -747,28 +723,13 @@ extension SuggestionModel {
                 default:
                     break
                 }
-                if index >= chipQueryRange?.lowerBound ?? -1
-                    && index <= chipQueryRange?.upperBound ?? -1
-                {
-                    if index == chipQueryRange?.lowerBound {
-                        implLogAttributes.append(
-                            ClientLogCounterAttribute(
-                                key:
-                                    "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
-                                value: SuggestionLoggingType.chipSuggestion.rawValue)
-                        )
-                        suggestionIdx += 1
-                    }
-                    isChipQuery = true
-                } else {
-                    implLogAttributes.append(
-                        ClientLogCounterAttribute(
-                            key:
-                                "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
-                            value: SuggestionLoggingType.rowQuerySuggestion.rawValue
-                        )
+                implLogAttributes.append(
+                    ClientLogCounterAttribute(
+                        key:
+                            "\(LogConfig.SuggestionAttribute.suggestionTypePosition)\(suggestionIdx)",
+                        value: SuggestionLoggingType.rowQuerySuggestion.rawValue
                     )
-                }
+                )
                 if let attribute = annotationTypeAttribute(
                     suggestion: suggestion,
                     suggestionIdx: suggestionIdx
@@ -828,9 +789,7 @@ extension SuggestionModel {
             default:
                 break
             }
-            if !isChipQuery {
-                suggestionIdx += 1
-            }
+            suggestionIdx += 1
         }
 
         snapshotLogAttributes.append(
@@ -862,11 +821,6 @@ extension SuggestionModel {
             ClientLogCounterAttribute(
                 key: LogConfig.SuggestionAttribute.numberOfStockAnnotations,
                 value: String(numberOfStockAnnotations))
-        )
-        snapshotLogAttributes.append(
-            ClientLogCounterAttribute(
-                key: LogConfig.SuggestionAttribute.numberOfChipSuggestions,
-                value: String(chipQuerySuggestions.count))
         )
 
         // we only log the first 6 positions which should cover what's appear on most screens without scrolling

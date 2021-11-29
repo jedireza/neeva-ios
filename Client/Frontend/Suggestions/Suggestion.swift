@@ -93,7 +93,7 @@ extension Suggestion: Identifiable, Equatable {
 
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
 public typealias SuggestionsQueryResult = (
-    [Suggestion], [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?,
+    [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?,
     [String: String], [String: Int]
 )
 extension ActiveLensBangInfo: Equatable {
@@ -168,7 +168,7 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
 
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
         // Move all nav suggestions out of url suggestions.
-        var navSuggestions = urlSuggestions.filter { !($0.subtitle?.isEmpty ?? true) }
+        let navSuggestions = urlSuggestions.filter { !($0.subtitle?.isEmpty ?? true) }
         urlSuggestions.removeAll(where: { !($0.subtitle?.isEmpty ?? true) })
         // Top suggestion is either the first memorized suggestion or the first query shown in rows.
         var topSuggestions = [Suggestion]()
@@ -185,8 +185,6 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
             if !rowQuerySuggestions.isEmpty {
                 topSuggestions = [rowQuerySuggestions.removeFirst()].map(Suggestion.query)
             }
-        } else if FeatureFlag[.enableOldSuggestUI] {
-            topSuggestions = [navSuggestions.removeFirst()].map(Suggestion.url)
         }
 
         var neevaSuggestions = [Suggestion]()
@@ -194,86 +192,71 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         var memorizedSuggestionMap = [String: String]()
         var querySuggestionIndexMap = [String: Int]()
 
-        if !FeatureFlag[.enableOldSuggestUI] {
-            let navSuggestionMap = navSuggestions.reduce(
-                into: [String: [SuggestionsQuery.Data.Suggest.UrlSuggestion]]()
-            ) {
-                if let sourceQueryIndex = $1.sourceQueryIndex,
-                    sourceQueryIndex < querySuggestions.count
-                {
-                    let suggestedQuery = querySuggestions[sourceQueryIndex].suggestedQuery
-                    if let _ = $0[suggestedQuery] {
-                        $0[suggestedQuery]?.append($1)
-                    } else {
-                        $0[suggestedQuery] = [$1]
-                    }
-                }
-            }
-
-            var numOfQuerySuggestions = 0
-            var filteredStandardQuerySuggestions = [SuggestionsQuery.Data.Suggest.QuerySuggestion]()
-            if FeatureFlag[.enableMemorizedURLOnWiki] {
-                for suggestion in standardQuerySuggestions {
-                    if AnnotationType(annotation: suggestion.annotation) != .wikipedia {
-                        if numOfQuerySuggestions == SuggestionsController.querySuggestionsCap {
-                            continue
-                        }
-                        numOfQuerySuggestions += 1
-                    }
-                    filteredStandardQuerySuggestions.append(suggestion)
-                }
-            } else {
-                filteredStandardQuerySuggestions = Array(
-                    standardQuerySuggestions
-                        .prefix(SuggestionsController.querySuggestionsCap)
-                )
-            }
-
-            for (index, suggestion)
-                in filteredStandardQuerySuggestions
-                .enumerated()
+        let navSuggestionMap = navSuggestions.reduce(
+            into: [String: [SuggestionsQuery.Data.Suggest.UrlSuggestion]]()
+        ) {
+            if let sourceQueryIndex = $1.sourceQueryIndex,
+                sourceQueryIndex < querySuggestions.count
             {
-                neevaSuggestions.append(Suggestion.query(suggestion))
-                if let urlSuggestions = navSuggestionMap[suggestion.suggestedQuery] {
-                    neevaSuggestions.append(contentsOf: urlSuggestions.map(Suggestion.url))
-                    urlSuggestions.forEach { urlSuggestion in
-                        memorizedSuggestionMap[urlSuggestion.suggestedUrl] =
-                            suggestion.suggestedQuery
-                    }
+                let suggestedQuery = querySuggestions[sourceQueryIndex].suggestedQuery
+                if let _ = $0[suggestedQuery] {
+                    $0[suggestedQuery]?.append($1)
+                } else {
+                    $0[suggestedQuery] = [$1]
                 }
-                querySuggestionIndexMap[suggestion.suggestedQuery] = index
             }
-            neevaSuggestions.append(contentsOf: rowQuerySuggestions.map(Suggestion.query))
         }
+
+        var numOfQuerySuggestions = 0
+        var filteredStandardQuerySuggestions = [SuggestionsQuery.Data.Suggest.QuerySuggestion]()
+        if FeatureFlag[.enableMemorizedURLOnWiki] {
+            for suggestion in standardQuerySuggestions {
+                if AnnotationType(annotation: suggestion.annotation) != .wikipedia {
+                    if numOfQuerySuggestions == SuggestionsController.querySuggestionsCap {
+                        continue
+                    }
+                    numOfQuerySuggestions += 1
+                }
+                filteredStandardQuerySuggestions.append(suggestion)
+            }
+        } else {
+            filteredStandardQuerySuggestions = Array(
+                standardQuerySuggestions
+                    .prefix(SuggestionsController.querySuggestionsCap)
+            )
+        }
+
+        for (index, suggestion)
+            in filteredStandardQuerySuggestions
+            .enumerated()
+        {
+            neevaSuggestions.append(Suggestion.query(suggestion))
+            if let urlSuggestions = navSuggestionMap[suggestion.suggestedQuery] {
+                neevaSuggestions.append(contentsOf: urlSuggestions.map(Suggestion.url))
+                urlSuggestions.forEach { urlSuggestion in
+                    memorizedSuggestionMap[urlSuggestion.suggestedUrl] =
+                        suggestion.suggestedQuery
+                }
+            }
+            querySuggestionIndexMap[suggestion.suggestedQuery] = index
+        }
+
+        neevaSuggestions.append(contentsOf: rowQuerySuggestions.map(Suggestion.query))
 
         let bangSuggestions = data.suggest?.bangSuggestion ?? []
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
 
-        if !FeatureFlag[.enableOldSuggestUI] {
-            return (
-                topSuggestions, [],
-                neevaSuggestions
-                    + bangSuggestions.compactMap(Suggestion.init(bang:))
-                    + lensSuggestions.compactMap(Suggestion.init(lens:)),
-                NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
-                [],
-                data.suggest?.activeLensBangInfo,
-                memorizedSuggestionMap,
-                querySuggestionIndexMap
-            )
-        } else {
-            return (
-                topSuggestions, standardQuerySuggestions.map(Suggestion.query),
-                rowQuerySuggestions.map(Suggestion.query)
-                    + bangSuggestions.compactMap(Suggestion.init(bang:))
-                    + lensSuggestions.compactMap(Suggestion.init(lens:)),
-                NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
-                navSuggestions.map(Suggestion.url),
-                data.suggest?.activeLensBangInfo,
-                memorizedSuggestionMap,
-                querySuggestionIndexMap
-            )
-        }
+        return (
+            topSuggestions,
+            neevaSuggestions
+                + bangSuggestions.compactMap(Suggestion.init(bang:))
+                + lensSuggestions.compactMap(Suggestion.init(lens:)),
+            NeevaFeatureFlags[.personalSuggestion] ? urlSuggestions.map(Suggestion.url) : [],
+            [],
+            data.suggest?.activeLensBangInfo,
+            memorizedSuggestionMap,
+            querySuggestionIndexMap
+        )
     }
 
     @discardableResult public static func getSuggestions(

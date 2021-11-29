@@ -388,14 +388,10 @@ public struct LogConfig {
     public struct SuggestionAttribute {
         /// suggestion position
         public static let suggestionPosition = "suggestionPosition"
-        /// chip suggestion position
-        public static let chipSuggestionPosition = "chipSuggestionPosition"
         /// number of characters typed in url bar
         public static let urlBarNumOfCharsTyped = "urlBarNumOfCharsTyped"
         /// suggestion impression position index
         public static let suggestionTypePosition = "SuggestionTypeAtPosition"
-        /// number of total chip suggestions
-        public static let numberOfChipSuggestions = "NumberOfChipSuggestions"
         /// annotation type at position
         public static let annotationTypeAtPosition = "AnnotationTypeAtPosition"
         public static let numberOfMemorizedSuggestions = "NumberOfMemorizedSuggestions"

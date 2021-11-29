@@ -11,8 +11,6 @@ enum SuggestionViewUX {
     static let Padding: CGFloat = 12
     static let DictionaryIconTopPadding: CGFloat = 5
     static let DictionaryLabelPadding: CGFloat = 5
-    static let ChipPadding: CGFloat = 8
-    static let ChipInnerPadding: CGFloat = 10
     static let RowHeight: CGFloat = 58
     static let FaviconSize: CGFloat = 18
     static let IconSize: CGFloat = 20
@@ -68,7 +66,6 @@ public struct SearchSuggestionView: View {
 
 public enum SuggestionConfig {
     case row
-    case chip
     case dictionary
 }
 
@@ -83,12 +80,6 @@ struct SuggestionSpec: ViewModifier {
                 .frame(minHeight: SuggestionViewUX.RowHeight)
                 .padding(.horizontal, SuggestionViewUX.Padding)
                 .background(suggestionState.color)
-                .hoverEffect()
-        case .chip:
-            content.padding(SuggestionViewUX.ChipInnerPadding)
-                .background(suggestionState.color)
-                .overlay(Capsule().stroke(Color.ui.adaptive.separator, lineWidth: 1))
-                .contentShape(Capsule())
                 .hoverEffect()
         case .dictionary:
             content.padding(.horizontal, SuggestionViewUX.Padding)
@@ -106,8 +97,6 @@ struct ClipShape: ViewModifier {
         switch config {
         case .row:
             content.clipped()
-        case .chip:
-            content.clipShape(Capsule())
         case .dictionary:
             content.clipped()
         }
@@ -175,9 +164,7 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                     secondaryLabel
                 }.padding(
                     .leading,
-                    (config == .row || config == .dictionary)
-                        ? SuggestionViewUX.Padding
-                        : SuggestionViewUX.ChipPadding)
+                    SuggestionViewUX.Padding)
                 if case .row = config {
                     Spacer(minLength: 0)
                     detail

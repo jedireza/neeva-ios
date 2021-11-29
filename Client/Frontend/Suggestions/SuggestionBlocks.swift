@@ -7,11 +7,8 @@ import SwiftUI
 enum SuggestionBlockUX {
     static let TopSpacing: CGFloat = 2
     static let SeparatorSpacing: CGFloat = 8
-    static let ChipBlockSpacing: CGFloat = 10
-    static let ChipBlockPadding: CGFloat = 8
     static let TopBlockVerticalPadding: CGFloat = 6
     static let BlockVerticalPadding: CGFloat = 4
-    static let ChipBlockHeight: CGFloat = 108
 
     static let HeaderLeadPadding: CGFloat = 13
     static let HeaderTopPadding: CGFloat = 6
@@ -41,55 +38,6 @@ struct SuggestionsHeader: View {
                     trailing: 0)
             )
             .background(Color.secondaryBackground)
-    }
-}
-
-struct ChipPlaceholderModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .redacted(reason: .placeholder)
-            .disabled(true).padding(
-                .vertical, SuggestionBlockUX.BlockVerticalPadding)
-    }
-}
-
-struct SuggestionChipView: View {
-    @State var suggestions = [Suggestion]()
-    @EnvironmentObject private var suggestionModel: SuggestionModel
-
-    var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            VStack(alignment: .leading, spacing: SuggestionBlockUX.ChipBlockSpacing) {
-                LazyHStack(spacing: SuggestionBlockUX.ChipBlockSpacing) {
-                    ForEach(
-                        stride(from: 0, to: suggestions.count, by: 2)
-                            .map { suggestions[$0] }
-                    ) { suggestion in
-                        if suggestionModel.shouldShowSuggestions {
-                            SearchSuggestionView(suggestion)
-                                .environment(\.suggestionConfig, .chip)
-                        }
-                    }
-                }
-                LazyHStack(spacing: SuggestionBlockUX.ChipBlockSpacing) {
-                    ForEach(
-                        stride(from: 1, to: suggestions.count, by: 2)
-                            .map { suggestions[$0] }
-                    ) { suggestion in
-                        if suggestionModel.shouldShowSuggestions {
-                            SearchSuggestionView(suggestion)
-                                .environment(\.suggestionConfig, .chip)
-                        }
-                    }
-                }
-            }.padding(.horizontal, SuggestionBlockUX.ChipBlockSpacing)
-                .padding(.vertical, SuggestionBlockUX.ChipBlockPadding)
-                .frame(height: SuggestionBlockUX.ChipBlockHeight)
-        }.useEffect(deps: suggestionModel.chipQuerySuggestions) { _ in
-            if !suggestionModel.chipQuerySuggestions.isEmpty {
-                suggestions = suggestionModel.chipQuerySuggestions
-            }
-        }
     }
 }
 
@@ -140,40 +88,25 @@ struct QuerySuggestionsList: View {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if !(suggestionModel.chipQuerySuggestions + suggestionModel.rowQuerySuggestions).isEmpty {
+        if !suggestionModel.rowQuerySuggestions.isEmpty {
+            SuggestionsHeader(header: "Neeva Search")
 
-            if !FeatureFlag[.enableOldSuggestUI] {
-                SuggestionsHeader(header: "Neeva Search")
-            }
-            if !FeatureFlag[.enableOldSuggestUI] {
-                ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
-                    index, suggestion in
-                    SearchSuggestionView(suggestion)
+            ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
+                index, suggestion in
+                SearchSuggestionView(suggestion)
 
-                    if index != suggestionModel.rowQuerySuggestions.count - 1,
-                        suggestionModel.hasMemorizedResult
+                if index != suggestionModel.rowQuerySuggestions.count - 1,
+                    suggestionModel.hasMemorizedResult
+                {
+                    // insert separator only if two rows later is another query suggestion
+                    // and there is at least one memorized result
+                    if index + 1 < suggestionModel.rowQuerySuggestions.count,
+                        case let .query(querySuggestion) =
+                            suggestionModel.rowQuerySuggestions[index + 1],
+                        querySuggestion.type == .standard
                     {
-                        // insert separator only if two rows later is another query suggestion
-                        // and there is at least one memorized result
-                        if index + 1 < suggestionModel.rowQuerySuggestions.count,
-                            case let .query(querySuggestion) =
-                                suggestionModel.rowQuerySuggestions[index + 1],
-                            querySuggestion.type == .standard
-                        {
-                            SuggestionsDivider(height: 8)
-                        }
+                        SuggestionsDivider(height: 8)
                     }
-                }
-            } else {
-                SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-
-                if !suggestionModel.chipQuerySuggestions.isEmpty {
-                    SuggestionChipView()
-                        .padding(.vertical, SuggestionBlockUX.BlockVerticalPadding)
-                }
-
-                ForEach(suggestionModel.rowQuerySuggestions) { suggestion in
-                    SearchSuggestionView(suggestion)
                 }
             }
         }
@@ -197,12 +130,8 @@ struct NavSuggestionsList: View {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if !FeatureFlag[.enableOldSuggestUI] {
-            if suggestionModel.navCombinedSuggestions.count > 0 {
-                SuggestionsHeader(header: "History")
-            }
-        } else {
-            SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
+        if suggestionModel.navCombinedSuggestions.count > 0 {
+            SuggestionsHeader(header: "History")
         }
         ForEach(suggestionModel.navCombinedSuggestions) { suggestion in
             SearchSuggestionView(suggestion)
@@ -211,48 +140,18 @@ struct NavSuggestionsList: View {
 }
 
 struct PlaceholderSuggestions: View {
-    let placeholderSuggestions = [
-        Suggestion.query(Suggestion.placeholderQuery("chip1")),
-        Suggestion.query(Suggestion.placeholderQuery("chip2")),
-        Suggestion.query(Suggestion.placeholderQuery("chip3")),
-        Suggestion.query(Suggestion.placeholderQuery("chip4")),
-        Suggestion.query(Suggestion.placeholderQuery("chip5")),
-    ]
-
     var body: some View {
-        if !FeatureFlag[.enableOldSuggestUI] {
-            SuggestionsHeader(header: "Neeva Search")
-            ForEach(0..<4) { i in
-                if i > 0 && i % 2 == 0 {
-                    SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-                }
-                QuerySuggestionView(
-                    suggestion:
-                        Suggestion.placeholderQuery("PlaceholderLongTitleOneWord")
-                )
-                .redacted(reason: .placeholder)
-                .disabled(true)
+        SuggestionsHeader(header: "Neeva Search")
+        ForEach(0..<4) { i in
+            if i > 0 && i % 2 == 0 {
+                SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
             }
-        } else {
-            SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
-            NavSuggestionView(suggestion: SuggestionsList.placeholderNavSuggestion)
-                .redacted(reason: .placeholder)
-                .disabled(true).padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
-            SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-            if FeatureFlag[.enableOldSuggestUI] {
-                SuggestionChipView(suggestions: placeholderSuggestions)
-                    .modifier(
-                        ChipPlaceholderModifier())
-            } else {
-                ForEach(0..<3) { _ in
-                    QuerySuggestionView(
-                        suggestion:
-                            Suggestion.placeholderQuery("PlaceholderLongTitleOneWord")
-                    )
-                    .redacted(reason: .placeholder)
-                    .disabled(true)
-                }
-            }
+            QuerySuggestionView(
+                suggestion:
+                    Suggestion.placeholderQuery("PlaceholderLongTitleOneWord")
+            )
+            .redacted(reason: .placeholder)
+            .disabled(true)
         }
     }
 }

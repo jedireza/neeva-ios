@@ -47,11 +47,7 @@ struct SuggestionsList: View {
                 NavSuggestionsList()
 
                 if let findInPageSuggestion = suggestionModel.findInPageSuggestion {
-                    if !FeatureFlag[.enableOldSuggestUI] {
-                        SuggestionsHeader(header: "Find on this page")
-                    } else {
-                        SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)
-                    }
+                    SuggestionsHeader(header: "Find on this page")
                     SearchSuggestionView(findInPageSuggestion)
                 }
             }
@@ -79,8 +75,7 @@ struct SuggestionsList_Previews: PreviewProvider {
         .environmentObject(
             SuggestionModel(
                 bvc: SceneDelegate.getBVC(for: nil),
-                previewSites: history,
-                chipQuerySuggestions: suggestions)
+                previewSites: history)
         )
         .previewLayout(.fixed(width: 375, height: 250))
     }

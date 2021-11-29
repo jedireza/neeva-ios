@@ -9,14 +9,11 @@ import UIKit
 
 struct SuggestionPositionInfo {
     let positionIndex: Int
-    let chipSuggestionIndex: Int?
 
     init(
-        positionIndex: Int,
-        chipSuggestionIndex: Int? = nil
+        positionIndex: Int
     ) {
         self.positionIndex = positionIndex
-        self.chipSuggestionIndex = chipSuggestionIndex
     }
 
     public func loggingAttributes() -> [ClientLogCounterAttribute] {
@@ -25,12 +22,6 @@ struct SuggestionPositionInfo {
         clientLogAttributes.append(
             ClientLogCounterAttribute(
                 key: LogConfig.SuggestionAttribute.suggestionPosition, value: String(positionIndex)))
-        if let chipSuggestionIndex = chipSuggestionIndex {
-            clientLogAttributes.append(
-                ClientLogCounterAttribute(
-                    key: LogConfig.SuggestionAttribute.chipSuggestionPosition,
-                    value: String(chipSuggestionIndex)))
-        }
 
         let bvc = SceneDelegate.getBVC(for: nil)
         clientLogAttributes.append(
