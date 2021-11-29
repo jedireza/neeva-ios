@@ -21,7 +21,6 @@ struct CardGrid: View {
 
     @State private var cardSize: CGFloat = CardUX.DefaultCardSize
     @State private var columnCount = 2
-    @State private var geom: (size: CGSize, safeAreaInsets: EdgeInsets)?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -160,12 +159,6 @@ struct CardGrid: View {
             .useEffect(
                 deps: geom.size.width, topToolbar, perform: updateCardSize
             )
-            .useEffect(deps: geom.size, geom.safeAreaInsets) { self.geom = ($0, $1) }
-            .onReceive(
-                NotificationCenter.default.publisher(for: UIDevice.orientationDidChangeNotification)
-            ) { _ in
-                self.geom = (geom.size, geom.safeAreaInsets)
-            }
         }
         .ignoresSafeArea(.keyboard)
         .accessibilityAction(.escape) {
