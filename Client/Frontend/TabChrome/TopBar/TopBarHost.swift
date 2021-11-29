@@ -91,7 +91,7 @@ struct TopBarContent: View {
 class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
     var chromeModel: TabChromeModel
 
-    private var height: NSLayoutConstraint!
+    private var height: NSLayoutConstraint?
     private var inlineToolbarHeight: CGFloat {
         return SceneDelegate.getKeyWindow(for: view).safeAreaInsets.top
             + UIConstants.TopToolbarHeightWithToolbarButtonsShowing
@@ -135,7 +135,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
             // Prevents the top bar from shrinking in portait mode and from being to tall in landscape
             self.height = self.view.heightAnchor.constraint(
                 equalToConstant: chromeModel.inlineToolbar ? inlineToolbarHeight : portaitHeight)
-            self.height.isActive = true
+            self.height!.isActive = true
         }
 
         self.view.backgroundColor = .clear
@@ -149,7 +149,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         coordinator.animate(
             alongsideTransition: {
                 [self] (UIViewControllerTransitionCoordinatorContext) -> Void in
-                height.constant = chromeModel.inlineToolbar ? inlineToolbarHeight : portaitHeight
+                height?.constant = chromeModel.inlineToolbar ? inlineToolbarHeight : portaitHeight
             },
             completion: { (UIViewControllerTransitionCoordinatorContext) -> Void in
                 print("rotation completed")
