@@ -46,9 +46,19 @@ struct InternalSettingsView: View {
                 Toggle("didFirstNavigation", isOn: $didFirstNavigation)
                 Toggle("signedInOnce", isOn: $signedInOnce)
                 HStack {
-                    Text("previewModeQueries")
+                    VStack(alignment: .leading) {
+                        Text("previewModeQueries")
+                        Text(
+                            "\(previewModeQueries.count)"
+                        )
+                        .foregroundColor(.secondaryLabel)
+                        .font(.caption)
+                    }
                     Spacer()
-                    Text("\(previewModeQueries.count)")
+                    Button("Clear") { previewModeQueries.removeAll() }
+                        .font(.body)
+                        .accentColor(.red)
+                        .buttonStyle(BorderlessButtonStyle())
                 }
                 NumberField(
                     "signupPromptInterval", number: $signupPromptInterval)
