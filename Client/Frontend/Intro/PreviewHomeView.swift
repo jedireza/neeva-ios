@@ -83,7 +83,7 @@ struct PreviewHomeView: View {
     }
 
     var signInButton: some View {
-        Button(action: { bvc.presentIntroViewController(true) }) {
+        Button(action: { bvc.presentIntroViewController(true, signInMode: true) }) {
             HStack {
                 Spacer()
                 Text("Sign in")
