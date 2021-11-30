@@ -20,7 +20,7 @@ enum NavigationPath {
     case widgetUrl(webURL: URL?, uuid: String)
     case text(String)
     case closePrivateTabs
-    case space(String, [String]?)
+    case space(String, [String]?, Bool)
     case fastTap(String, Bool)
     case configNewsProvider(isPrivate: Bool)
 
@@ -61,11 +61,12 @@ enum NavigationPath {
         } else if urlString.starts(with: "\(scheme)://space"),
             let spaceId = components.valueForQuery("id")
         {
+            let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             var updatedItemIds: [String]?
             if let ids = components.valueForQuery("updatedItemIds") {
                 updatedItemIds = ids.components(separatedBy: ",")
             }
-            self = .space(spaceId, updatedItemIds)
+            self = .space(spaceId, updatedItemIds, isPrivate)
         } else if urlString.starts(with: "\(scheme)://fast-tap"),
             let query =
                 components.valueForQuery("query")?.replacingOccurrences(of: "+", with: " ")
@@ -89,8 +90,8 @@ enum NavigationPath {
             NavigationPath.handleClosePrivateTabs(with: bvc)
         case .widgetUrl(let webURL, let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
-        case .space(let spaceId, let updatedItemIds):
-            NavigationPath.handleSpace(spaceId: spaceId, updatedItemIds: updatedItemIds, with: bvc)
+        case .space(let spaceId, let updatedItemIds, let isPrivate):
+            NavigationPath.handleSpace(spaceId: spaceId, updatedItemIds: updatedItemIds, isPrivate: isPrivate, with: bvc)
         case .fastTap(let query, let noDelay):
             NavigationPath.handleFastTap(query: query, with: bvc, noDelay: noDelay)
         case .configNewsProvider(let isPrivate):
@@ -203,14 +204,14 @@ enum NavigationPath {
     }
 
     private static func handleSpace(
-        spaceId: String, updatedItemIds: [String]?, with bvc: BrowserViewController
+        spaceId: String, updatedItemIds: [String]?, isPrivate: Bool, with bvc: BrowserViewController
     ) {
         // navigate to SpaceId
         let gridModel = bvc.gridModel
         if let updatedItemIDs = updatedItemIds, !updatedItemIDs.isEmpty {
             gridModel.spaceCardModel.updatedItemIDs = updatedItemIDs
         }
-        gridModel.openSpace(spaceId: spaceId, bvc: bvc, completion: {})
+        gridModel.openSpace(spaceId: spaceId, bvc: bvc, isPrivate:isPrivate, completion: {})
     }
 
     private static func handleFastTap(query: String, with bvc: BrowserViewController, noDelay: Bool)

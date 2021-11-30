@@ -95,7 +95,13 @@ class GridModel: ObservableObject {
         }
     }
 
-    func openSpace(spaceId: String, bvc: BrowserViewController, completion: @escaping () -> Void) {
+    func openSpace(spaceId: String, bvc: BrowserViewController, isPrivate: Bool = false, completion: @escaping () -> Void) {
+        if !NeevaUserInfo.shared.hasLoginCookie() {
+            var spaceURL = NeevaConstants.appSpacesURL
+            spaceURL.appendPathComponent(spaceId)
+            bvc.switchToTabForURLOrOpen(spaceURL, isPrivate: isPrivate)
+            return
+        }
         let existingSpace = spaceCardModel.allDetails.first(where: { $0.id == spaceId })
         DispatchQueue.main.async { [self] in
             if isIncognito {
