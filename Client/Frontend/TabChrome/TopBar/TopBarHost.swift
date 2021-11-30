@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Combine
+import Shared
 import SwiftUI
 
 // For sharing to work, this must currently be the BrowserViewController
@@ -95,11 +96,15 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
     private var inlineToolbarHeight: CGFloat {
         return SceneDelegate.getKeyWindow(for: view).safeAreaInsets.top
             + UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+            + (chromeModel.showTopCardStrip ? CardControllerUX.Height : 0)
     }
-    private var portaitHeight: CGFloat {
+    private var portraitHeight: CGFloat {
         return SceneDelegate.getKeyWindow(for: view).safeAreaInsets.top
             + UIConstants.PortraitToolbarHeight
+            + (chromeModel.showTopCardStrip ? CardControllerUX.Height : 0)
     }
+
+    private var isEditingListener: AnyCancellable?
 
     init(
         isIncognito: Bool,
@@ -134,8 +139,14 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         DispatchQueue.main.async { [self] in
             // Prevents the top bar from shrinking in portait mode and from being to tall in landscape
             self.height = self.view.heightAnchor.constraint(
-                equalToConstant: chromeModel.inlineToolbar ? inlineToolbarHeight : portaitHeight)
-            self.height!.isActive = true
+                equalToConstant: chromeModel.inlineToolbar ? inlineToolbarHeight : portraitHeight)
+            self.height?.isActive = true
+        }
+
+        isEditingListener = chromeModel.$isEditingLocation.sink { [weak self] _ in
+            DispatchQueue.main.async {
+                self?.updateHeight()
+            }
         }
 
         self.view.backgroundColor = .clear
@@ -149,13 +160,17 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         coordinator.animate(
             alongsideTransition: {
                 [self] (UIViewControllerTransitionCoordinatorContext) -> Void in
-                height?.constant = chromeModel.inlineToolbar ? inlineToolbarHeight : portaitHeight
+                height?.constant = chromeModel.inlineToolbar ? inlineToolbarHeight : portraitHeight
             },
             completion: { (UIViewControllerTransitionCoordinatorContext) -> Void in
                 print("rotation completed")
             })
 
         super.viewWillTransition(to: size, with: coordinator)
+    }
+
+    func updateHeight() {
+        height?.constant = chromeModel.inlineToolbar ? inlineToolbarHeight : portraitHeight
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {

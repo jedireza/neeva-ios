@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Combine
+import Shared
 import SwiftUI
 
 enum ToolbarContentView {
@@ -19,6 +20,11 @@ class TabChromeModel: ObservableObject {
     @Published var controlOpacity: Double = 1
 
     @Published var isPage: Bool
+
+    var showTopCardStrip: Bool {
+        FeatureFlag[.cardStrip] && FeatureFlag[.topCardStrip] && inlineToolbar
+            && !isEditingLocation
+    }
 
     var appActiveRefreshSubscription: AnyCancellable? = nil
     private var subscriptions: Set<AnyCancellable> = []

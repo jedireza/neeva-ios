@@ -113,7 +113,8 @@ struct CardGrid: View {
                         gridModel.animationThumbnailState == .hidden
                             ? Color.TrayBackground : Color.clear
                     )
-                    .modifier(SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
+                    .modifier(
+                        SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
 
                 if gridModel.isLoading {
                     loadingIndicator
@@ -269,7 +270,9 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
                         let horizontalAmount = value.translation.width as CGFloat
                         let verticalAmount = value.translation.height as CGFloat
 
-                        if abs(horizontalAmount) > abs(verticalAmount) && !tabModel.manager.isIncognito {
+                        if abs(horizontalAmount) > abs(verticalAmount)
+                            && !tabModel.manager.isIncognito
+                        {
                             gridModel.switcherState = horizontalAmount < 0 ? .spaces : .tabs
                         }
                     })

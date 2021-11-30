@@ -140,8 +140,10 @@ struct InternalSettingsView: View {
 
                 NumberField(
                     "productSearchPromoTimeInterval", number: $productSearchPromoTimeInterval)
+
                 NumberField(
                     "newsProviderPromoTimeInterval", number: $newsProviderPromoTimeInterval)
+                
                 NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
             }
         }

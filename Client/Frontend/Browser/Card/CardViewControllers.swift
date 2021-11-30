@@ -7,7 +7,7 @@ import SwiftUI
 
 public enum CardControllerUX {
     static let BottomPadding: CGFloat = 50
-    static let Height: CGFloat = 275
+    static let Height: CGFloat = 75
     static let HandleWidth: CGFloat = 50
 }
 
@@ -93,6 +93,7 @@ struct CardStripContent: View {
     let tabCardModel: TabCardModel
     let spaceCardModel: SpaceCardModel
     let sitesCardModel: SiteCardModel
+    let gridModel: GridModel
     @ObservedObject var cardStripModel: CardStripModel
 
     var width: CGFloat
@@ -103,6 +104,7 @@ struct CardStripContent: View {
             .environmentObject(spaceCardModel)
             .environmentObject(sitesCardModel)
             .environmentObject(cardStripModel)
+            .environmentObject(gridModel)
             .offset(x: !cardStripModel.isVisible ? 0 : width - 50)
             .frame(height: CardControllerUX.Height)
     }
@@ -115,6 +117,7 @@ struct CardStripContent: View {
         self.spaceCardModel = SpaceCardModel()
         self.sitesCardModel = SiteCardModel(urls: [], tabManager: tabManager)
         self.cardStripModel = CardStripModel()
+        self.gridModel = bvc.cardGridViewController.gridModel
         self.width = width
     }
 }

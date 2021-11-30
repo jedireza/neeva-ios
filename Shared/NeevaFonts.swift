@@ -129,7 +129,7 @@ extension FontStyle {
         }
     }
 
-    func uiFont(for category: ContentSizeCategory, weight: UIFont.Weight? = nil) -> UIFont {
+    public func uiFont(for category: ContentSizeCategory, weight: UIFont.Weight? = nil) -> UIFont {
         return UIFont.systemFont(ofSize: size(in: category), weight: weight ?? fontWeight)
     }
 

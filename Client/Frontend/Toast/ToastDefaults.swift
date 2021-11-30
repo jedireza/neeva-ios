@@ -213,7 +213,9 @@ class ToastDefaults: NSObject {
         toastViewManager.enqueue(toast: toastView)
     }
 
-    func showToastForSetPreferredProvider(request: PreferredProviderRequest, toastViewManager: ToastViewManager) {
+    func showToastForSetPreferredProvider(
+        request: PreferredProviderRequest, toastViewManager: ToastViewManager
+    ) {
         resetProgress()
 
         requestListener = request.$state.sink { [weak self] updatedState in
@@ -231,7 +233,8 @@ class ToastDefaults: NSObject {
 
         let failedAction = {
             request.setPreferredProvider()
-            self.showToastForSetPreferredProvider(request: request, toastViewManager: toastViewManager)
+            self.showToastForSetPreferredProvider(
+                request: request, toastViewManager: toastViewManager)
         }
 
         let normalContent = ToastStateContent(text: "Saving preference")
