@@ -142,6 +142,10 @@ extension Defaults.Keys {
     public static let seenBlackFridayNotifyPromo = Defaults.Key<Bool>(
         "seenBlackFridayNotifyPromo", default: false)
 
+    // Feedback
+    public static let feedbackBeingSent = Defaults.Key<Bool>(
+        "feedbackBeingSent", default: false)
+
     // preview mode
     public static let previewModeQueries = Defaults.Key<Set<String>>(
         "previewModeQueries", default: Set<String>())
@@ -149,7 +153,6 @@ extension Defaults.Keys {
         "signupPromptInterval", default: 5)
     public static let maxQueryLimit = Defaults.Key<Int>(
         "maxQueryLimit", default: 25)
-
 }
 
 extension Defaults {

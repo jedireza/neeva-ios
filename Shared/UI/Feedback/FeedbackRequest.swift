@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Foundation
+import Defaults
 
 public enum FeedbackRequestState {
     case inProgress
@@ -16,7 +17,11 @@ public class FeedbackRequest: ObservableObject {
     private var feedback: SendFeedbackMutation
 
     public func sendFeedback() {
+        Defaults[.feedbackBeingSent] = true
+
         feedback.perform { [weak self] result in
+            Defaults[.feedbackBeingSent] = false
+
             guard let self = self else { return }
 
             switch result {

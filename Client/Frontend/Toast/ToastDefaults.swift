@@ -176,39 +176,13 @@ class ToastDefaults: NSObject {
     }
 
     func showToastForFeedback(request: FeedbackRequest, toastViewManager: ToastViewManager) {
-        resetProgress()
-
-        requestListener = request.$state.sink { [weak self] updatedState in
-            guard let self = self else { return }
-
-            switch updatedState {
-            case .inProgress:
-                self.toastProgressViewModel?.status = .inProgress
-            case .success:
-                self.toastProgressViewModel?.status = .success
-            case .failed:
-                self.toastProgressViewModel?.status = .failed
-            }
-        }
-
-        let failedAction = {
-            request.sendFeedback()
-            self.showToastForFeedback(request: request, toastViewManager: toastViewManager)
-        }
-
-        let normalContent = ToastStateContent(text: "Submitting Feedback")
-        let completedContent = ToastStateContent(text: "Feedback Submitted")
-        let failedContent = ToastStateContent(
-            text: "Failed to Submit Feedback",
-            buttonText: "try again",
-            buttonAction: failedAction)
+        let normalContent = ToastStateContent(text: "Feedback Submitted!")
         let toastContent = ToastViewContent(
-            normalContent: normalContent, completedContent: completedContent,
-            failedContent: failedContent)
+            normalContent: normalContent)
 
         let toastView = toastViewManager.makeToast(
             content: toastContent,
-            toastProgressViewModel: toastProgressViewModel, autoDismiss: false)
+            toastProgressViewModel: toastProgressViewModel)
         toast = toastView
         toastViewManager.enqueue(toast: toastView)
     }

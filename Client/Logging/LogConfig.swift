@@ -168,6 +168,9 @@ public struct LogConfig {
         case tabGroupClosed
         case tabInTabGroupClicked
         case tabRemovedFromGroup
+
+        // feedback
+        case FeedbackFailedToSend
     }
 
     // Specify a comma separated string with these values to
@@ -187,6 +190,7 @@ public struct LogConfig {
         case Notification = "Notification"
         case RecipeCheatsheet = "RecipeCheatsheet"
         case TabGroup = "TabGroup"
+        case Feedback = "Feedback"
     }
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
@@ -357,6 +361,8 @@ public struct LogConfig {
         case .tabGroupClosed: return .TabGroup
         case .tabInTabGroupClicked: return .TabGroup
         case .tabRemovedFromGroup: return .TabGroup
+
+        case .FeedbackFailedToSend: return .Feedback
         }
     }
 

@@ -49,6 +49,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         cleanlyBackgroundedLastTime = Defaults[.applicationCleanlyBackgrounded]
         Defaults[.applicationCleanlyBackgrounded] = false  // Reset for this session.
 
+
+        // If feedback did not finish sending before app closed, record that here
+        if !Defaults[.feedbackBeingSent] {
+            ClientLogger.shared.logCounter(.FeedbackFailedToSend)
+        }
+        Defaults[.feedbackBeingSent] = false
+
         lateInitializedProfile = createProfile()
 
         // Set up a web server that serves us static content. Do this early so that it is ready when the UI is presented.
