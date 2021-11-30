@@ -153,27 +153,6 @@ class ZeroQueryModel: ObservableObject {
                     Defaults[.seenBlackFridayFollowPromo] = true
                     self.promoCard = nil
                 })
-        } else if !Defaults[.seenNotificationPermissionPromo]
-            && NotificationPermissionHelper.shared.permissionStatus == .undecided
-        {
-            promoCard = .notificationPermission(
-                action: {
-                    ClientLogger.shared.logCounter(
-                        .PromoEnableNotification)
-                    NotificationPermissionHelper.shared.requestPermissionIfNeeded(
-                        completion: { authorized in
-                            Defaults[.seenNotificationPermissionPromo] = true
-                            self.promoCard = nil
-                        },
-                        callSite: .promoCard
-                    )
-                },
-                onClose: {
-                    ClientLogger.shared.logCounter(
-                        .CloseEnableNotificationPromo)
-                    Defaults[.seenNotificationPermissionPromo] = true
-                    self.promoCard = nil
-                })
         } else if !Defaults[.didDismissDefaultBrowserCard] {
             promoCard = .defaultBrowser {
                 ClientLogger.shared.logCounter(
