@@ -151,6 +151,9 @@ struct PreviewHomeView: View {
                             offsetY = -frame.minY
                             opacity = 0
                         }
+                        ClientLogger.shared.logCounter(
+                            .PreviewTapFakeSearchInput,
+                            attributes: EnvironmentHelper.shared.getFirstRunAttributes())
                     }) {
                         fakeBox
                             .opacity(opacity * 2)

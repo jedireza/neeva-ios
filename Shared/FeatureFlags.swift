@@ -21,8 +21,8 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case spacify = "Enable button to turn a page into a Space"
     case swipePlusPlus = "Additional forward and back swipe gestures"
     case tabGroupsPinning = "Enable support for pinning tabs"
-    case enablePreviewMode = "Enable Preview Mode"
     case enableSuggestedSpaces = "Show Spaces from Neeva Community"
+    case enableMemorizedURLOnWiki = "Enable Memorized URL on Wiki Suggest"
 
     public init?(caseName: String) {
         for value in FeatureFlag.allCases where "\(value)" == caseName {

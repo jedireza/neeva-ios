@@ -116,20 +116,6 @@ public class NeevaUserInfo: ObservableObject {
         }
     }
 
-    public func updatePreviewCookieFromWebKitCookieStore(completion: @escaping () -> Void) {
-        WKWebsiteDataStore.default().httpCookieStore.getAllCookies { cookies in
-            if let previewCookie = cookies.first(where: Self.matchesPreviewCookie) {
-                self.setPreviewCookie(previewCookie.value)
-            }
-        }
-    }
-
-    public func setPreviewCookie(_ value: String) {
-        if self.getPreviewCookie() != value {
-            try? NeevaConstants.keychain.set(value, key: NeevaConstants.previewKeychainKey)
-        }
-    }
-
     public func getPreviewCookie() -> String? {
         return try? NeevaConstants.keychain.getString(NeevaConstants.previewKeychainKey)
     }

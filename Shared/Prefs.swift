@@ -146,9 +146,9 @@ extension Defaults.Keys {
     public static let previewModeQueries = Defaults.Key<Set<String>>(
         "previewModeQueries", default: Set<String>())
     public static let signupPromptInterval = Defaults.Key<Int>(
-        "signupPromptInterval", default: 3)
+        "signupPromptInterval", default: 5)
     public static let maxQueryLimit = Defaults.Key<Int>(
-        "maxQueryLimit", default: 7)
+        "maxQueryLimit", default: 25)
 
 }
 

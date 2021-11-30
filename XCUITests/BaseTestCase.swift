@@ -24,7 +24,7 @@ class BaseTestCase: XCTestCase {
     // These are used during setUp(). Change them prior to setUp() for the app to launch with different args,
     // or, use restart() to re-launch with custom args.
     var launchArguments = [
-        LaunchArguments.ClearProfile, LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
+        LaunchArguments.ClearProfile, LaunchArguments.SkipIntro, LaunchArguments.SetSignInOnce, LaunchArguments.SetDidFirstNavigation, LaunchArguments.SkipWhatsNew,
         LaunchArguments.SkipETPCoverSheet, LaunchArguments.DeviceName,
         "\(LaunchArguments.ServerPort)\(serverPort)",
     ]

@@ -89,11 +89,6 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         } else {
             // Else, let this request fail with an authentication error.
             clearCookie()
-
-            if FeatureFlag[.enablePreviewMode] {
-                // set up preview mode cookie
-                setPreviewCookie()
-            }
         }
         return req
     }

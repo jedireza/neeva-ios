@@ -17,15 +17,7 @@ extension BrowserViewController {
         case .home:
             ClientLogger.shared.logCounter(
                 .OpenHome, attributes: EnvironmentHelper.shared.getAttributes())
-
-            if FeatureFlag[.enablePreviewMode] {
-                // when preview mode enabled, visit
-                // search path to get preview token
-                switchToTabForURLOrOpen(NeevaConstants.appSearchURL)
-            } else {
-                switchToTabForURLOrOpen(NeevaConstants.appHomeURL)
-            }
-
+            switchToTabForURLOrOpen(NeevaConstants.appSearchURL)
         case .spaces:
             ClientLogger.shared.logCounter(
                 .OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())

@@ -73,7 +73,7 @@ class TabContainerModel: ObservableObject {
     static var defaultType: ContentUIType {
         // TODO(darin): We should get rid of the notion of .blank. We should be showing the empty
         // card grid in this case instead.
-        (FeatureFlag[.enablePreviewMode] && !Defaults[.didFirstNavigation]) ? .previewHome : .blank
+        !Defaults[.didFirstNavigation] ? .previewHome : .blank
     }
 }
 
@@ -251,7 +251,7 @@ class TabContainerHost: IncognitoAwareHostingController<TabContainerContent> {
                 zeroQueryModel.targetTab = .defaultValue
             }
         case .hideZeroQuery:
-            if FeatureFlag[.enablePreviewMode] && !Defaults[.didFirstNavigation] {
+            if !Defaults[.didFirstNavigation] {
                 model.currentContentUI = .previewHome
             } else {
                 model.currentContentUI = model.webContainerType

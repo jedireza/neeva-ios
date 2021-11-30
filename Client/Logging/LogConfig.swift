@@ -81,6 +81,7 @@ public struct LogConfig {
         case PreviewPromptSignIn  // Clicked sign in on preview prompt
         case PreviewHomeImpression  // Preview home impression
         case PreviewSampleQueryClicked  // Clicked on sample query on the home page
+        case PreviewTapFakeSearchInput  // Clicked on the fake search input box on preview home page
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -278,6 +279,7 @@ public struct LogConfig {
         case .PreviewPromptSignIn: return .FirstRun
         case .PreviewHomeImpression: return .FirstRun
         case .PreviewSampleQueryClicked: return .FirstRun
+        case .PreviewTapFakeSearchInput: return .FirstRun
 
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard

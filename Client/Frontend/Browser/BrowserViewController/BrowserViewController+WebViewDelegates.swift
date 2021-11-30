@@ -673,7 +673,7 @@ extension BrowserViewController: WKNavigationDelegate {
                         && query["q"] != nil
                         && !NeevaUserInfo.shared.hasLoginCookie()
                         && !NeevaUserInfo.shared.hasPreviewCookie())
-                        && (Defaults[.signedInOnce] || !FeatureFlag[.enablePreviewMode])
+                        && Defaults[.signedInOnce]
                 {
                     self.presentIntroViewController(true, signInMode: true)
                     decisionHandler(.cancel)
@@ -903,9 +903,8 @@ extension BrowserViewController: WKNavigationDelegate {
                             key: LogConfig.Attribute.FirstRunSearchPathQuery,
                             value: url.path + query))
 
-                    // if in preview mode, increase counter for preview mode queries
-                    if FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] && !query.isEmpty
-                    {
+                    // for preview mode, increase counter for preview mode queries
+                    if !Defaults[.signedInOnce] && !query.isEmpty {
                         Defaults[.previewModeQueries].insert(query)
                     }
                 }
@@ -1020,42 +1019,44 @@ extension BrowserViewController: WKNavigationDelegate {
                         }
                     }
                 }
+            }
+        }
 
-                // get httpd~preview cookie for preview mode
-                if FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] {
-                    // show sign up prompt with query when on a search path
-                    if let query = neevaSearchEngine.queryForSearchURL(url),
-                        Defaults[.previewModeQueries].count == Defaults[.maxQueryLimit]
-                            || Defaults[.previewModeQueries].count % Defaults[.signupPromptInterval]
-                                == 0
-                    {
-                        self.showModal(
-                            style: OverlayStyle(
-                                showTitle: false,
-                                backgroundColor: .systemBackground,
-                                nonDismissible: true
-                            )
-                        ) {
-                            SignUpTwoButtonsPromptViewOverlayContent(
-                                query: query,
-                                skippable: Defaults[.previewModeQueries].count
-                                    != Defaults[.maxQueryLimit],
-                                openOtherSignUpOption: { marketingEmailOptOut in
-                                    self.presentIntroViewController(
-                                        true, onOtherOptionsPage: true,
-                                        marketingEmailOptOut: marketingEmailOptOut)
-                                },
-                                openSignIn: {
-                                    self.presentIntroViewController(true, signInMode: true)
-                                }
-                            )
-                            .padding(.top, 4)
-                            .environment(\.openInNewTab) { url, _ in
-                                self.openURLInNewTab(url)
+        // if on neeva search result path and never signed in, user is in preview
+        // mode, and we will show the preview mode sign up prompt
+        // we will show the promp for both incognito and normal mode
+        if let url = webView.url, url.origin == NeevaConstants.appURL.origin {
+            if !Defaults[.signedInOnce] {
+                if let query = neevaSearchEngine.queryForSearchURL(url),
+                    Defaults[.previewModeQueries].count == Defaults[.maxQueryLimit]
+                        || Defaults[.previewModeQueries].count % Defaults[.signupPromptInterval]
+                            == 0
+                {
+                    self.showModal(
+                        style: OverlayStyle(
+                            showTitle: false,
+                            backgroundColor: .systemBackground,
+                            nonDismissible: true
+                        )
+                    ) {
+                        SignUpTwoButtonsPromptViewOverlayContent(
+                            query: query,
+                            skippable: Defaults[.previewModeQueries].count
+                                != Defaults[.maxQueryLimit],
+                            openOtherSignUpOption: { marketingEmailOptOut in
+                                self.presentIntroViewController(
+                                    true, onOtherOptionsPage: true,
+                                    marketingEmailOptOut: marketingEmailOptOut)
+                            },
+                            openSignIn: {
+                                self.presentIntroViewController(true, signInMode: true)
                             }
+                        )
+                        .padding(.top, 4)
+                        .environment(\.openInNewTab) { url, _ in
+                            self.openURLInNewTab(url)
                         }
                     }
-                    userInfo.updatePreviewCookieFromWebKitCookieStore {}
                 }
             }
         }

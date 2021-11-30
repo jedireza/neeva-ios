@@ -622,7 +622,7 @@ class BrowserViewController: UIViewController {
                     guard let self = self else { return }
                     if Defaults[.createNewTabOnStart] {
                         self.tabManager.select(self.tabManager.addTab())
-                    } else if FeatureFlag[.enablePreviewMode] && !Defaults[.didFirstNavigation] {
+                    } else if !Defaults[.didFirstNavigation] {
                         self.showPreviewHome()
                     } else {
                         self.showTabTray()
@@ -785,7 +785,7 @@ class BrowserViewController: UIViewController {
         DispatchQueue.main.async {
             switch self.zeroQueryModel.openedFrom {
             case .tabTray:
-                if !FeatureFlag[.enablePreviewMode] || Defaults[.didFirstNavigation] {
+                if Defaults[.didFirstNavigation] {
                     self.showTabTray()
                 }
             case .createdTab:
@@ -1776,9 +1776,6 @@ extension BrowserViewController {
                 case .skipToBrowser:
                     if let onDismiss = onDismiss {
                         onDismiss()
-                    }
-                    if !FeatureFlag[.enablePreviewMode] {
-                        createOrSwitchToTabFromAuth(NeevaConstants.appSearchURL)
                     }
                     break
                 case .oktaSignin(let email):

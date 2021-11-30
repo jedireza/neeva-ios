@@ -163,6 +163,16 @@ class TestAppDelegate: AppDelegate {
             Defaults[.introSeen] = true
         }
 
+        // Set signInOnce
+        if launchArguments.contains(LaunchArguments.SetSignInOnce) {
+            Defaults[.signedInOnce] = true
+        }
+
+        // Set didFirstNavigation
+        if launchArguments.contains(LaunchArguments.SetDidFirstNavigation) {
+            Defaults[.didFirstNavigation] = true
+        }
+
         if !launchArguments.contains(LaunchArguments.DontAddTabOnLaunch) {
             Defaults[.createNewTabOnStart] = true
         } else {

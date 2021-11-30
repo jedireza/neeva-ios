@@ -13,6 +13,8 @@ public struct LaunchArguments {
     public static let ClearProfile = "FIREFOX_CLEAR_PROFILE"
     public static let DeviceName = "DEVICE_NAME"
     public static let ServerPort = "GCDWEBSERVER_PORT:"
+    public static let SetSignInOnce = "SIGN_IN_ONCE"
+    public static let SetDidFirstNavigation = "DID_FIRST_NAVIGATION"
 
     // After the colon, put the name of the file to load from test bundle
     public static let LoadDatabasePrefix = "FIREFOX_LOAD_DB_NAMED:"

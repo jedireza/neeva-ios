@@ -63,7 +63,8 @@ class ZeroQueryModel: ObservableObject {
     }
 
     let bvc: BrowserViewController
-    @ObservedObject var suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(sites: [])
+    @ObservedObject var suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(
+        sites: [])
     let profile: Profile
     let shareURLHandler: (URL, UIView) -> Void
     var delegate: ZeroQueryPanelDelegate?
@@ -107,7 +108,7 @@ class ZeroQueryModel: ObservableObject {
             Defaults[.didDismissDefaultBrowserCard] = true
         }
 
-        if FeatureFlag[.enablePreviewMode] && !Defaults[.signedInOnce] {
+        if !Defaults[.signedInOnce] {
             promoCard = nil
         } else if NeevaFeatureFlags[.referralPromo] && !Defaults[.didDismissReferralPromoCard] {
             promoCard = .referralPromo {
