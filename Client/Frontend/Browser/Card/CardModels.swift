@@ -470,6 +470,9 @@ class TabGroupCardModel: CardModel {
         self.manager = manager
         onDataUpdated()
         self.anyCancellable = self.manager.objectWillChange.sink { [weak self] (_) in
+            guard manager.tabManager.didRestoreAllTabs else {
+                return
+            }
             DispatchQueue.main.async {
                 guard let self = self else {
                     return
