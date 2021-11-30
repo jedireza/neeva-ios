@@ -127,12 +127,16 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     var id: String
     var manager: TabManager
 
+    var isPinned: Bool {
+        manager.get(for: id)?.isPinned ?? false
+    }
+
     var url: URL? {
         manager.get(for: id)?.url
     }
 
     var closeButtonImage: UIImage? {
-        FeatureFlag[.tabGroupsPinning] && manager.get(for: id)?.isPinned == true
+        FeatureFlag[.tabGroupsPinning] && isPinned
             ? UIImage(systemName: "pin.fill") : UIImage(systemName: "xmark")
     }
 

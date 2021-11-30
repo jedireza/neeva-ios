@@ -10,6 +10,7 @@ enum CardUX {
     static let DefaultCardSize: CGFloat = 160
     static let ShadowRadius: CGFloat = 2
     static let CornerRadius: CGFloat = 16
+    static let CompactCornerRadius: CGFloat = 8
     static let FaviconCornerRadius: CGFloat = 4
     static let ButtonSize: CGFloat = 28
     static let FaviconSize: CGFloat = 18
@@ -19,16 +20,17 @@ enum CardUX {
     static let DefaultTabCardRatio: CGFloat = 200 / 164
 }
 
-private struct BorderTreatment: ViewModifier {
+struct BorderTreatment: ViewModifier {
     let isSelected: Bool
     let thumbnailDrawsHeader: Bool
     let isIncognito: Bool
+    var cornerRadius: CGFloat = CardUX.CornerRadius
 
     func body(content: Content) -> some View {
         content
             .shadow(radius: thumbnailDrawsHeader ? 0 : CardUX.ShadowRadius)
             .overlay(
-                RoundedRectangle(cornerRadius: CardUX.CornerRadius)
+                RoundedRectangle(cornerRadius: cornerRadius)
                     .stroke(
                         isSelected
                             ? (isIncognito ? Color.label : Color.ui.adaptive.blue) : Color.clear,
@@ -38,7 +40,7 @@ private struct BorderTreatment: ViewModifier {
     }
 }
 
-private struct DragToCloseInteraction: ViewModifier {
+struct DragToCloseInteraction: ViewModifier {
     let action: () -> Void
     @State private var hasExceededThreshold = false
 

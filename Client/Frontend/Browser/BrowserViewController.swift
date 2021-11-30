@@ -1277,8 +1277,6 @@ class BrowserViewController: UIViewController {
         Sentry.shared.clearBreadcrumbs()
 
         updateFindInPageVisibility(visible: false)
-        gridModel.pickerHeight =
-            topBar.view.frame.height - view.safeAreaInsets.top
 
         if zeroQueryModel.isLazyTab {
             gridModel.showWithNoAnimation()

@@ -80,12 +80,6 @@ struct TopBarView: View {
                         buildMenu: buildTabsMenu
                     )
                     .tapTargetFrame()
-
-                    if FeatureFlag[.cardStrip] {
-                        Button(action: newTab) {
-                            Symbol(.plusApp, label: "New Tab")
-                        }
-                    }
                 }
             }
             /// Unfortunately `.opacity(chrome.controlOpacity)` doesn't work consistently.
@@ -97,6 +91,14 @@ struct TopBarView: View {
             .opacity(opacity)
             .padding(.horizontal, shouldInsetHorizontally ? 12 : 0)
             .padding(.bottom, chrome.estimatedProgress == nil ? 0 : -1)
+
+            if chrome.showTopCardStrip {
+                GeometryReader { geo in
+                    CardStripContent(
+                        bvc: SceneDelegate.getBVC(with: chrome.topBarDelegate?.tabManager.scene),
+                        width: geo.size.width)
+                }
+            }
 
             Group {
                 if let progress = chrome.estimatedProgress {

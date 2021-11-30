@@ -205,6 +205,7 @@
 		665879CE26C3408700B53EB7 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665879CD26C3408700B53EB7 /* WindowManager.swift */; };
 		665CA48626F04FA4006E2F4D /* NotificationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665CA48526F04FA4006E2F4D /* NotificationBadge.swift */; };
 		665CA48826F054CC006E2F4D /* NotificationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665CA48726F054CC006E2F4D /* NotificationRow.swift */; };
+		66634E072735931D0047D336 /* CompactCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66634E062735931D0047D336 /* CompactCard.swift */; };
 		6664890726D9829200A4C493 /* EmptyTabTrayTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6664890626D9829200A4C493 /* EmptyTabTrayTests.swift */; };
 		666CFD8A26C735DC009ED9CF /* EmptyCardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */; };
 		6670187126BB678700960CF3 /* SuggestionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6670187026BB678700960CF3 /* SuggestionModel.swift */; };
@@ -1283,6 +1284,7 @@
 		665CA48526F04FA4006E2F4D /* NotificationBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationBadge.swift; sourceTree = "<group>"; };
 		665CA48726F054CC006E2F4D /* NotificationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationRow.swift; sourceTree = "<group>"; };
 		665CE64726DDA7E70069EFDD /* FeedbackRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackRequest.swift; sourceTree = "<group>"; };
+		66634E062735931D0047D336 /* CompactCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactCard.swift; sourceTree = "<group>"; };
 		6664890626D9829200A4C493 /* EmptyTabTrayTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyTabTrayTests.swift; sourceTree = "<group>"; };
 		6666D8C626D40278001AD43F /* LazyTabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LazyTabTests.swift; sourceTree = "<group>"; };
 		666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyCardGrid.swift; sourceTree = "<group>"; };
@@ -2392,6 +2394,7 @@
 				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
 				4A3D2992268583710082F293 /* CardModels.swift */,
+				66634E062735931D0047D336 /* CompactCard.swift */,
 				4A88F97426630EFC007C203D /* CardDetails.swift */,
 				4A3D299026850CB60082F293 /* CardGrid.swift */,
 				4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */,
@@ -5444,6 +5447,7 @@
 				C98E406326585F01003AC0E2 /* DebugSettingsSection.swift in Sources */,
 				4A1D05502669715B00D63333 /* CardViewControllers.swift in Sources */,
 				F84B22041A0910F600AAB793 /* AppDelegate.swift in Sources */,
+				66634E072735931D0047D336 /* CompactCard.swift in Sources */,
 				D8C75DF3207584C400BB8AD0 /* UIImageViewAligned.m in Sources */,
 				C832BF7F26E1543A00B9A1F8 /* NeevaMenuOverlayContent.swift in Sources */,
 				E653422D1C5944F90039DD9E /* BrowserPrompts.swift in Sources */,

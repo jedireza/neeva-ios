@@ -9,21 +9,44 @@ import SwiftUI
 
 private struct CardStrip<Model: CardModel>: View {
     @ObservedObject var model: Model
-    let onLongPress: (String) -> Void
+    let gridModel: GridModel
+    let isTop = FeatureFlag[.topCardStrip]
+
+    var pinnedDetails: [TabCardDetails] {
+        let tabCardDetails = model.allDetails.compactMap { $0 as? TabCardDetails }
+        return tabCardDetails.filter { $0.isPinned }
+    }
+
+    var unpinnedDetails: [TabCardDetails] {
+        let tabCardDetails = model.allDetails.compactMap { $0 as? TabCardDetails }
+        return tabCardDetails.filter { !$0.isPinned }
+    }
 
     var body: some View {
-        LazyHStack(spacing: 32) {
-            ForEach(model.allDetails.indices, id: \.self) { index in
-                let details = model.allDetails[index]
-                Card(details: details)
-                    .aspectRatio(1, contentMode: .fit)
-                    .environment(\.selectionCompletion) {}
-                    .environment(\.cardSize, CardUX.DefaultCardSize)
-                    .onLongPressGesture {
-                        onLongPress(model.allDetails[index].id)
-                    }
+        HStack(spacing: 16) {
+            HStack(spacing: isTop ? 0 : 8) {
+                ForEach(pinnedDetails.indices, id: \.self) { index in
+                    let details = pinnedDetails[index]
+                    CompactCard(details: details)
+                        .environment(\.selectionCompletion) {}
+                        .environment(\.cardSize, CardUX.DefaultCardSize)
+                        .environmentObject(gridModel)
+                        .padding(.trailing, (pinnedDetails.count - 1 == index && isTop) ? -16 : 0)
+                }
             }
-        }.padding().frame(height: 275)
+
+            HStack(spacing: isTop ? 0 : 8) {
+                ForEach(unpinnedDetails.indices, id: \.self) { index in
+                    let details = unpinnedDetails[index]
+                    CompactCard(details: details)
+                        .environment(\.selectionCompletion) {}
+                        .environment(\.cardSize, CardUX.DefaultCardSize)
+                        .environmentObject(gridModel)
+                }
+            }
+
+            Spacer()
+        }.padding()
     }
 }
 
@@ -51,49 +74,34 @@ struct CardStripView: View {
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var sitesModel: SiteCardModel
     @EnvironmentObject var cardStripModel: CardStripModel
-    @State var showingSpaces: Bool = false
-    @State var showingSites: Bool = false
+    @EnvironmentObject var gridModel: GridModel
+
+    let isTop = FeatureFlag[.topCardStrip]
+
+    var cardStrip: some View {
+        CardStrip(
+            model: tabModel, gridModel: gridModel
+        ).fixedSize(horizontal: false, vertical: true)
+    }
 
     var body: some View {
-        ZStack {
-            if showingSites {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        DismissButton {
-                            withAnimation {
-                                showingSites.toggle()
-                            }
-                        }.modifier(CardStripButtonSpec())
-                        CardStrip(model: self.sitesModel, onLongPress: { _ in })
-                    }
-                }
+        VStack {
+            if !isTop {
+                Spacer()
+            }
+
+            if isTop {
+                cardStrip.background(Color.white)
             } else {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack {
-                        VStack(spacing: 12) {
-                            ToggleSpacesButton(showingSpaces: $showingSpaces)
-                            DismissButton {
-                                cardStripModel.toggleVisible()
-                            }
-                        }.modifier(CardStripButtonSpec())
-                            .onTapGesture {
-                                cardStripModel.toggleVisible()
-                            }
-                        if showingSpaces {
-                            CardStrip(model: spaceModel, onLongPress: { _ in })
-                        }
-                        CardStrip(
-                            model: tabModel,
-                            onLongPress: { id in
-                                showingSites = true
-                                let urls: [URL] =
-                                    (tabModel.manager.get(for: id)?.backList?.map {
-                                        $0.url
-                                    })!
-                                self.sitesModel.refresh(urls: urls)
-                            })
-                    }
+                if #available(iOS 15.0, *) {
+                    cardStrip.background(.regularMaterial)
+                } else {
+                    cardStrip.background(Color.groupedBackground)
                 }
+            }
+
+            if isTop {
+                Spacer()
             }
         }.onAppear {
             tabModel.onDataUpdated()
