@@ -7,6 +7,7 @@ import SDWebImageSwiftUI
 import Shared
 import Storage
 import SwiftUI
+import Network
 
 /// The intention for a browser primitive is to represent any metadata or entity tied to a url with a card in a heterogenous UI. Tabs are
 /// the canonical browser primitive, but Spaces, a single entry in a Space, a History entry, a product in a web page can be a browser
@@ -374,10 +375,9 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
         }
 
         // Filter out deleted tab group names
-        tabGroupDict.filter {
-            group in tabGroups[group.key] == nil
-        }.forEach { group in
-            tabGroupDict.removeValue(forKey: group.key)
+        tabGroupDict.removeAll()
+        tabGroups.forEach { group in
+            tabGroupDict[group.key] = group.value.displayTitle
         }
     }
 }
