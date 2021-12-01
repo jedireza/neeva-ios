@@ -42,7 +42,7 @@ class ScreenshotHelper {
             if let image = image, image.size.width != .zero && image.size.height != .zero {
                 tab?.setScreenshot(image)
                 if FeatureFlag[.cardStrip] {
-                    self.controller?.tabContainerHost.tabCardModel.onDataUpdated()
+                    self.controller?.tabContainerModel.tabCardModel.onDataUpdated()
                 }
             } else if let error = error {
                 Sentry.shared.send(

@@ -43,13 +43,21 @@ class TabContainerModel: ObservableObject {
 
     var subscription: AnyCancellable? = nil
 
+    let zeroQueryModel: ZeroQueryModel
+    let tabCardModel: TabCardModel
+
     init(bvc: BrowserViewController) {
         let tabManager = bvc.tabManager
         let webView = tabManager.selectedTab?.webView
         let type = webView.map(ContentUIType.webPage) ?? Self.defaultType
+
         self.webContainerType = type
         self.currentContentUI = type
         self.recipeModel = RecipeViewModel(tabManager: tabManager)
+        self.zeroQueryModel = bvc.zeroQueryModel
+        self.tabCardModel = TabCardModel(
+            manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
+
         self.subscription = tabManager.selectedTabPublisher.sink { [weak self] tab in
             guard let self = self else { return }
             guard let webView = tab?.webView else {
@@ -74,6 +82,45 @@ class TabContainerModel: ObservableObject {
         // TODO(darin): We should get rid of the notion of .blank. We should be showing the empty
         // card grid in this case instead.
         !Defaults[.didFirstNavigation] ? .previewHome : .blank
+    }
+
+    @discardableResult public func promoteToRealTabIfNecessary(
+        url: URL, tabManager: TabManager, selectedTabIsNil: Bool = false
+    ) -> Bool {
+        let result = zeroQueryModel.promoteToRealTabIfNecessary(url: url, tabManager: tabManager)
+        if result {
+            updateContent(.hideZeroQuery)
+        }
+
+        return selectedTabIsNil || result
+    }
+
+    func updateContent(_ event: ContentUIVisibilityEvent) {
+        switch event {
+        case .showZeroQuery(let isIncognito, let isLazyTab, let openedFrom):
+            currentContentUI = .zeroQuery
+            zeroQueryModel.isPrivate = isIncognito
+            zeroQueryModel.isLazyTab = isLazyTab
+            zeroQueryModel.openedFrom = openedFrom
+        case .showSuggestions:
+            if case .zeroQuery = currentContentUI {
+                currentContentUI = .suggestions
+            }
+        case .hideSuggestions:
+            if case .suggestions = currentContentUI {
+                currentContentUI = .zeroQuery
+                zeroQueryModel.targetTab = .defaultValue
+            }
+        case .hideZeroQuery:
+            if !Defaults[.didFirstNavigation] {
+                currentContentUI = .previewHome
+            } else {
+                currentContentUI = webContainerType
+                zeroQueryModel.reset(bvc: nil)
+            }
+        case .showPreviewHome:
+            currentContentUI = .previewHome
+        }
     }
 }
 
@@ -177,36 +224,20 @@ struct TabContainerContent: View {
 }
 
 class TabContainerHost: IncognitoAwareHostingController<TabContainerContent> {
-    let zeroQueryModel: ZeroQueryModel
-    let model: TabContainerModel
-    let tabCardModel: TabCardModel
-
-    init(bvc: BrowserViewController) {
-        let tabManager = bvc.tabManager
-        let model = TabContainerModel(bvc: bvc)
-        let zeroQueryModel = bvc.zeroQueryModel
-        let suggestionModel = bvc.suggestionModel
-
-        self.model = model
-        self.zeroQueryModel = bvc.zeroQueryModel
-
-        let tabCardModel = TabCardModel(
-            manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
-        self.tabCardModel = tabCardModel
-
-        super.init(isIncognito: tabManager.isIncognito) {
+    init(model: TabContainerModel, bvc: BrowserViewController) {
+        super.init(isIncognito: bvc.tabManager.isIncognito) {
             TabContainerContent(
                 model: model,
                 bvc: bvc,
-                zeroQueryModel: zeroQueryModel,
-                suggestionModel: suggestionModel,
+                zeroQueryModel: bvc.zeroQueryModel,
+                suggestionModel: bvc.suggestionModel,
                 spaceContentSheetModel: FeatureFlag[.spaceComments]
                     ? SpaceContentSheetModel(
                         tabManager: bvc.tabManager,
                         spaceModel: bvc.gridModel.spaceCardModel) : nil)
         }
 
-        suggestionModel.getKeyboardHeight = {
+        bvc.suggestionModel.getKeyboardHeight = {
             if let view = self.view,
                 let currentState = KeyboardHelper.defaultHelper.currentState
             {
@@ -222,44 +253,5 @@ class TabContainerHost: IncognitoAwareHostingController<TabContainerContent> {
 
     @objc required dynamic init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    @discardableResult public func promoteToRealTabIfNecessary(
-        url: URL, tabManager: TabManager, selectedTabIsNil: Bool = false
-    ) -> Bool {
-        let result = zeroQueryModel.promoteToRealTabIfNecessary(url: url, tabManager: tabManager)
-        if result {
-            updateContent(.hideZeroQuery)
-        }
-
-        return selectedTabIsNil || result
-    }
-
-    func updateContent(_ event: ContentUIVisibilityEvent) {
-        switch event {
-        case .showZeroQuery(let isIncognito, let isLazyTab, let openedFrom):
-            model.currentContentUI = .zeroQuery
-            zeroQueryModel.isPrivate = isIncognito
-            zeroQueryModel.isLazyTab = isLazyTab
-            zeroQueryModel.openedFrom = openedFrom
-        case .showSuggestions:
-            if case .zeroQuery = model.currentContentUI {
-                model.currentContentUI = .suggestions
-            }
-        case .hideSuggestions:
-            if case .suggestions = model.currentContentUI {
-                model.currentContentUI = .zeroQuery
-                zeroQueryModel.targetTab = .defaultValue
-            }
-        case .hideZeroQuery:
-            if !Defaults[.didFirstNavigation] {
-                model.currentContentUI = .previewHome
-            } else {
-                model.currentContentUI = model.webContainerType
-                self.zeroQueryModel.reset(bvc: nil)
-            }
-        case .showPreviewHome:
-            model.currentContentUI = .previewHome
-        }
     }
 }

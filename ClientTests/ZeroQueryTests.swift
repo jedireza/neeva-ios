@@ -23,6 +23,7 @@ class ZeroQueryTests: XCTestCase {
     var sQM = SearchQueryModel()
     var suggestionsModel: SuggestionModel!
     var tabManager: TabManager!
+    var tabContainerModel: TabContainerModel!
     var tabContainerHost: TabContainerHost!
 
     override func setUp() {
@@ -34,7 +35,8 @@ class ZeroQueryTests: XCTestCase {
             bvc: SceneDelegate.getBVC(for: nil), profile: self.profile, shareURLHandler: { _, _ in }
         )
         self.tabManager = TabManager(profile: profile, imageStore: nil)
-        self.tabContainerHost = TabContainerHost(bvc: bvc)
+        self.tabContainerModel = TabContainerModel(bvc: bvc)
+        self.tabContainerHost = TabContainerHost(model: self.tabContainerModel, bvc: bvc)
     }
 
     override func tearDown() {
@@ -47,7 +49,7 @@ class ZeroQueryTests: XCTestCase {
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
         waitForCondition(condition: {
-            switch tabContainerHost.model.currentContentUI {
+            switch tabContainerModel.currentContentUI {
             case .webPage:
                 return true
             default:
@@ -56,11 +58,11 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContainerHost.updateContent(
+        tabContainerModel.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContainerHost.updateContent(.hideZeroQuery)
+        tabContainerModel.updateContent(.hideZeroQuery)
         try assertTabContentOnlyContainsWebContainer()
     }
 
@@ -69,7 +71,7 @@ class ZeroQueryTests: XCTestCase {
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
         waitForCondition(condition: {
-            switch tabContainerHost.model.currentContentUI {
+            switch tabContainerModel.currentContentUI {
             case .webPage:
                 return true
             default:
@@ -78,11 +80,11 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContainerHost.updateContent(
+        tabContainerModel.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContainerHost.promoteToRealTabIfNecessary(url: .aboutBlank, tabManager: tabManager)
+        tabContainerModel.promoteToRealTabIfNecessary(url: .aboutBlank, tabManager: tabManager)
         waitForCondition(condition: { tabManager.tabs.count == 2 })
         try assertTabContentOnlyContainsWebContainer()
         XCTAssertNil(zQM.openedFrom)
@@ -93,7 +95,7 @@ class ZeroQueryTests: XCTestCase {
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
         waitForCondition(condition: {
-            switch tabContainerHost.model.currentContentUI {
+            switch tabContainerModel.currentContentUI {
             case .webPage:
                 return true
             default:
@@ -102,11 +104,11 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContainerHost.updateContent(
+        tabContainerModel.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContainerHost.updateContent(.hideZeroQuery)
+        tabContainerModel.updateContent(.hideZeroQuery)
         try assertTabContentOnlyContainsWebContainer()
         XCTAssertNil(zQM.openedFrom)
     }
@@ -116,7 +118,7 @@ class ZeroQueryTests: XCTestCase {
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
         waitForCondition(condition: {
-            switch tabContainerHost.model.currentContentUI {
+            switch tabContainerModel.currentContentUI {
             case .webPage:
                 return true
             default:
@@ -125,20 +127,20 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContainerHost.updateContent(.showSuggestions)
+        tabContainerModel.updateContent(.showSuggestions)
         try assertTabContentOnlyContainsWebContainer()
 
-        tabContainerHost.updateContent(
+        tabContainerModel.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContainerHost.updateContent(.showSuggestions)
+        tabContainerModel.updateContent(.showSuggestions)
         try assertTabContentOnlyContainsSuggestions()
 
-        tabContainerHost.updateContent(.hideSuggestions)
+        tabContainerModel.updateContent(.hideSuggestions)
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContainerHost.updateContent(.hideZeroQuery)
+        tabContainerModel.updateContent(.hideZeroQuery)
         try assertTabContentOnlyContainsWebContainer()
     }
 

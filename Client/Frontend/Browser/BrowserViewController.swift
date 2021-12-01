@@ -137,8 +137,12 @@ class BrowserViewController: UIViewController {
         return host
     }()
 
+    private(set) lazy var tabContainerModel: TabContainerModel = {
+        return TabContainerModel(bvc: self)
+    }()
+
     private(set) lazy var tabContainerHost: TabContainerHost = {
-        return TabContainerHost(bvc: self)
+        return TabContainerHost(model: tabContainerModel, bvc: self)
     }()
 
     private(set) lazy var trackingStatsViewModel: TrackingStatsViewModel = {
@@ -332,7 +336,7 @@ class BrowserViewController: UIViewController {
 
         displayedPopoverController?.dismiss(animated: true, completion: nil)
 
-        if tabContainerHost.model.currentContentUI != .previewHome {
+        if tabContainerModel.currentContentUI != .previewHome {
             coordinator.animate { context in
                 self.scrollController.showToolbars(animated: false)
             }
@@ -392,7 +396,7 @@ class BrowserViewController: UIViewController {
             })
 
         // Re-show toolbar which might have been hidden during scrolling (prior to app moving into the background)
-        if tabContainerHost.model.currentContentUI != .previewHome {
+        if tabContainerModel.currentContentUI != .previewHome {
             scrollController.showToolbars(animated: false)
         }
 
@@ -767,7 +771,7 @@ class BrowserViewController: UIViewController {
 
         searchQueryModel.value = ""
 
-        self.tabContainerHost.updateContent(
+        self.tabContainerModel.updateContent(
             .showZeroQuery(
                 isIncognito: tabManager.isIncognito,
                 isLazyTab: isLazyTab,
@@ -804,15 +808,15 @@ class BrowserViewController: UIViewController {
         zeroQueryModel.reset(bvc: self)
 
         DispatchQueue.main.async { [self] in
-            tabContainerHost.updateContent(.hideZeroQuery)
-            if tabContainerHost.model.currentContentUI == .previewHome {
+            tabContainerModel.updateContent(.hideZeroQuery)
+            if tabContainerModel.currentContentUI == .previewHome {
                 scrollController.hideToolbars(animated: true)
             }
         }
     }
 
     public func showPreviewHome() {
-        tabContainerHost.updateContent(.showPreviewHome)
+        tabContainerModel.updateContent(.showPreviewHome)
         self.scrollController.hideToolbars(animated: false)
     }
 
@@ -930,7 +934,7 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        if !tabContainerHost.promoteToRealTabIfNecessary(
+        if !tabContainerModel.promoteToRealTabIfNecessary(
             url: url, tabManager: tabManager, selectedTabIsNil: tab == nil)
         {
             if zeroQueryModel.targetTab == .existingOrNewTab {
