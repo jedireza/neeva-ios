@@ -272,8 +272,10 @@ extension BrowserViewController: WKUIDelegate {
                             title: "Add to Space", image: UIImage(systemName: "bookmark"),
                             identifier: UIAction.Identifier("linkContextMenu.addToSpace")
                         ) { _ in
-                            self.showAddToSpacesSheet(
-                                url: url, title: elements.title, webView: clonedWebView)
+                            if NeevaUserInfo.shared.hasLoginCookie() {
+                                self.showAddToSpacesSheet(
+                                    url: url, title: elements.title, webView: clonedWebView)
+                            }
                         })
 
                     actions.append(

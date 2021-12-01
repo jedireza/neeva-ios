@@ -145,7 +145,7 @@ enum TabToolbarButtons {
                     size: 20, weight: weight, label: "Add To Space"),
                 action: action
             )
-            .disabled(isIncognito || !model.isPage)
+                .disabled(isIncognito || !model.isPage || !NeevaUserInfo.shared.hasLoginCookie())
         }
     }
 
