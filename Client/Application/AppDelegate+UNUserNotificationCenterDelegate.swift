@@ -31,11 +31,15 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
             Void
     ) {
         let content = notification.request.content
-        NotificationManager.shared.handleReceivedNotification(
-            BaseNotification(
-                title: content.title, subtitle: content.subtitle, body: content.body,
-                dateReceived: notification.date)
-        )
+        let receivedNotification = BaseNotification(
+            title: content.title, subtitle: content.subtitle, body: content.body,
+            dateReceived: notification.date)
+        NotificationManager.shared.handleReceivedNotification(receivedNotification)
+
+        let state = application?.applicationState
+        if state == .active {
+            NotificationManager.shared.showInAppNotification(notification: receivedNotification)
+        }
     }
 
     func userNotificationCenter(

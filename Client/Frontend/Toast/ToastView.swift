@@ -162,8 +162,8 @@ struct ToastView: View {
         }
     }
 
-    public func enqueue(at location: ToastQueueLocation = .last, manager: ToastViewManager) {
-        manager.enqueue(toast: self, at: location)
+    public func enqueue(at location: QueuedViewLocation = .last, manager: ToastViewManager) {
+        manager.enqueue(view: self, at: location)
     }
 }
 

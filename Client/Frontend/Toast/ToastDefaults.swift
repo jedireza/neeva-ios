@@ -40,7 +40,7 @@ class ToastDefaults: NSObject {
 
             let toastView = toastViewManager.makeToast(content: toastContent)
             toast = toastView
-            toastViewManager.enqueue(toast: toastView)
+            toastViewManager.enqueue(view: toastView)
         }
     }
 
@@ -65,7 +65,7 @@ class ToastDefaults: NSObject {
             content: toastContent, toastProgressViewModel: toastProgressViewModel,
             autoDismiss: false)
         toast = toastView
-        toastViewManager.enqueue(toast: toastView, at: .first)
+        toastViewManager.enqueue(view: toastView, at: .first)
     }
 
     func showToastForAddToSpaceUI(bvc: BrowserViewController, request: AddToSpaceRequest) {
@@ -131,7 +131,7 @@ class ToastDefaults: NSObject {
             content: toastContent, toastProgressViewModel: toastProgressViewModel,
             autoDismiss: false)
         toast = toastView
-        toastViewManager.enqueue(toast: toastView)
+        toastViewManager.enqueue(view: toastView)
     }
 
     func showToastForRemoveFromSpace(
@@ -172,7 +172,7 @@ class ToastDefaults: NSObject {
             content: toastContent, toastProgressViewModel: toastProgressViewModel,
             autoDismiss: false)
         toast = toastView
-        toastViewManager.enqueue(toast: toastView)
+        toastViewManager.enqueue(view: toastView)
     }
 
     func showToastForFeedback(request: FeedbackRequest, toastViewManager: ToastViewManager) {
@@ -184,7 +184,7 @@ class ToastDefaults: NSObject {
             content: toastContent,
             toastProgressViewModel: toastProgressViewModel)
         toast = toastView
-        toastViewManager.enqueue(toast: toastView)
+        toastViewManager.enqueue(view: toastView)
     }
 
     func showToastForSetPreferredProvider(
@@ -226,7 +226,7 @@ class ToastDefaults: NSObject {
             content: toastContent,
             toastProgressViewModel: toastProgressViewModel, autoDismiss: false)
         toast = toastView
-        toastViewManager.enqueue(toast: toastView)
+        toastViewManager.enqueue(view: toastView)
     }
 
     private func resetProgress() {

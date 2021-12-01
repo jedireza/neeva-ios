@@ -231,6 +231,7 @@
 		66B7A0E926EAF5B000AB751A /* OverlayGenerics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B7A0E826EAF5B000AB751A /* OverlayGenerics.swift */; };
 		66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
+		66C2B6312748AA020074B695 /* QueuedViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C2B6302748AA020074B695 /* QueuedViewManager.swift */; };
 		66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C763267A8858002B50B1 /* ToastView.swift */; };
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
@@ -1314,6 +1315,7 @@
 		66B9570D26AF827E004C6117 /* AppClipHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipHelper.swift; sourceTree = "<group>"; };
 		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
 		66BEFDC826A7678200AA32EF /* GroupedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCell.swift; sourceTree = "<group>"; };
+		66C2B6302748AA020074B695 /* QueuedViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueuedViewManager.swift; sourceTree = "<group>"; };
 		66C3C763267A8858002B50B1 /* ToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
 		66C3C766267A8858002B50B1 /* ToastProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastProgressView.swift; sourceTree = "<group>"; };
 		66C3C767267A8858002B50B1 /* ToastViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastViewManager.swift; sourceTree = "<group>"; };
@@ -3838,6 +3840,7 @@
 				66BB89D226A64BA4000C4BDF /* Overlay */,
 				2C49854D206173C800893DAE /* photon-colors.swift */,
 				BC85E224264F29660068092F /* Prompt */,
+				66C2B6302748AA020074B695 /* QueuedViewManager.swift */,
 				F84B21F51A0910F600AAB793 /* Reader */,
 				2F44FC551A9E83E200FD20CC /* Settings */,
 				D3972BF01C22412B00035B87 /* Share */,
@@ -5429,6 +5432,7 @@
 				D0625CA8208FC47A0081F3B2 /* BrowserViewController+DownloadQueueDelegate.swift in Sources */,
 				4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */,
 				66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */,
+				66C2B6312748AA020074B695 /* QueuedViewManager.swift in Sources */,
 				39A359E41BFCCE94006B9E87 /* UserActivityHandler.swift in Sources */,
 				C894C5892735DAF40068B0BE /* CardTransitionModifier.swift in Sources */,
 				67AA22F226C476F300F33D09 /* BrowserViewController+OverflowMenu.swift in Sources */,

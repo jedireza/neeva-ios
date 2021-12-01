@@ -150,7 +150,7 @@ class ClipboardBarDisplayHandler: NSObject {
                         self.bvc?.openURLInNewTabPreservingIncognitoState(url)
                     })
 
-                toastManager.enqueue(toast: toastView)
+                toastView.enqueue(manager: toastManager)
             }
         }
     }

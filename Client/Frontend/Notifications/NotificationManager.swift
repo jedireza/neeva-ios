@@ -300,6 +300,10 @@ class NotificationManager: ObservableObject {
         }
     }
 
+    func showInAppNotification(notification: BaseNotification) {
+        // Present banner here
+    }
+
     // MARK: - Init
     init() {
         notifications = retrieveNotificationsFromDevice()
