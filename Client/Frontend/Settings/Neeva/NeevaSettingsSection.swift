@@ -45,7 +45,9 @@ struct NeevaSettingsSection: View {
             }.onDisappear {
                 loaderOpacity = 0
             }
-        } else if userInfo.isUserLoggedIn && Defaults[.signedInOnce] {
+        } else if userInfo.isUserLoggedIn && Defaults[.signedInOnce] && userInfo.email != nil
+            && !userInfo.email!.isEmpty
+        {
             NavigationLink(
                 destination: NeevaAccountInfoView(
                     userInfo: userInfo, isPresented: $showingAccountDetails),
