@@ -30,6 +30,12 @@ struct SuggestedPreviewSearchesView: View {
 
     func onClick(input: String) {
         if let target = neevaSearchEngine.searchURLForQuery(input) {
+            var attributes = EnvironmentHelper.shared.getFirstRunAttributes()
+            attributes.append(
+                ClientLogCounterAttribute(
+                    key: "sample query",
+                    value: input))
+            ClientLogger.shared.logCounter(.PreviewSampleQueryClicked, attributes: attributes)
             openURL(target)
         }
     }
