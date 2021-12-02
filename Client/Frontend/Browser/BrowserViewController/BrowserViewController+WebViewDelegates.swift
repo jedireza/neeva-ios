@@ -993,19 +993,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
                 userInfo.updateLoginCookieFromWebKitCookieStore {
                     // We have a fresh login cookie.
-
-                    // Delay showing the prompt in case there is a redirect.
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        if let url = tab.url, url == NeevaConstants.appHomeURL {
-                            // delaying showing tour prompt until user visited home page
-                            // with login cookie at least once
-                            if Defaults[.signedInOnce] {
-                                self.showSearchBarTourPromptIfNeeded(for: url)
-                            }
-                            // Mark user has signed in at least once
-                            Defaults[.signedInOnce] = true
-                        }
-                    }
+                    Defaults[.signedInOnce] = true
 
                     if url.absoluteString.starts(with: NeevaConstants.appSpacesURL.absoluteString)
                         && url != NeevaConstants.appSpacesURL
