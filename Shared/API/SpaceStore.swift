@@ -28,10 +28,13 @@ public struct SpaceCommentData {
         let originalDateFormatter = DateFormatter()
         originalDateFormatter.locale = Locale(identifier: "en_US_POSIX")
         originalDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
-        let convertedDate = originalDateFormatter.date(from: createdTs)
+        guard let convertedDate = originalDateFormatter.date(from: createdTs) else {
+            return ""
+        }
+
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
-        let relativeDate = formatter.localizedString(for: convertedDate!, relativeTo: Date())
+        let relativeDate = formatter.localizedString(for: convertedDate, relativeTo: Date())
         return relativeDate
     }
 }

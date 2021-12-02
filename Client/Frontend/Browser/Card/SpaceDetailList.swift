@@ -15,6 +15,7 @@ struct SpaceDetailList: View {
     @Environment(\.shareURL) var shareURL
 
     @ObservedObject var primitive: SpaceCardDetails
+    let spaceCommentsModel = SpaceCommentsModel()
     @Binding var headerVisible: Bool
 
     var space: Space? {
@@ -153,6 +154,10 @@ struct SpaceDetailList: View {
                         SpaceGeneratorView(generator: generator)
                             .modifier(ListSeparatorModifier())
                     }
+                }
+                if let space = space {
+                    SpaceCommentsView(space: space, model: spaceCommentsModel)
+                        .modifier(ListSeparatorModifier())
                 }
             }
             .modifier(ListStyleModifier())

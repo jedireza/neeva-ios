@@ -130,6 +130,7 @@
 		4A1D054B26642BF400D63333 /* SimulatedSwipeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */; };
 		4A1D054D266430DA00D63333 /* SimulatedSwipeAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */; };
 		4A1D05502669715B00D63333 /* CardViewControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A1D054F2669715B00D63333 /* CardViewControllers.swift */; };
+		4A227BE82758BE5B00A89322 /* SpaceComments.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A227BE72758BE5B00A89322 /* SpaceComments.swift */; };
 		4A22DCFA26574AA4009BE9FC /* TrackingEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */; };
 		4A22DD0826575FD6009BE9FC /* TrackingEntity.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */; };
 		4A255AB2265C48EC00422839 /* TrackingPreventionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AAF265C48EB00422839 /* TrackingPreventionUtils.swift */; };
@@ -1208,6 +1209,7 @@
 		4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeController.swift; sourceTree = "<group>"; };
 		4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeAnimator.swift; sourceTree = "<group>"; };
 		4A1D054F2669715B00D63333 /* CardViewControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViewControllers.swift; sourceTree = "<group>"; };
+		4A227BE72758BE5B00A89322 /* SpaceComments.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceComments.swift; sourceTree = "<group>"; };
 		4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingEntity.swift; sourceTree = "<group>"; };
 		4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = TrackingEntity.xcassets; sourceTree = "<group>"; };
 		4A255AAF265C48EB00422839 /* TrackingPreventionUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionUtils.swift; sourceTree = "<group>"; };
@@ -2411,6 +2413,7 @@
 				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
 				4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */,
 				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
+				4A227BE72758BE5B00A89322 /* SpaceComments.swift */,
 				4AD771B32734F06800B6769D /* EntityInfoView.swift */,
 				4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */,
 				4AD771B727387B1F00B6769D /* SpaceGeneratorView.swift */,
@@ -5517,6 +5520,7 @@
 				67942DD826F14F2A0023F623 /* NotificationPromptView.swift in Sources */,
 				D34DC8531A16C40C00D49B7B /* Profile.swift in Sources */,
 				661AFF1A2727A4840099B3E4 /* CardGridOverflowMenuView.swift in Sources */,
+				4A227BE82758BE5B00A89322 /* SpaceComments.swift in Sources */,
 				C9BED4B92667D5D3001D9C77 /* Roobert.swift in Sources */,
 				67F2A52E27306AE900CAE11A /* NotificationSettingsView.swift in Sources */,
 				E65075541E37F6FC006961AC /* DynamicFontHelper.swift in Sources */,
