@@ -160,7 +160,7 @@ where
     }
 
     @ViewBuilder var shareButton: some View {
-        if let space = space {
+        if let space = space, !space.isDefaultSpace {
             Button(
                 action: {
                     if case .owner = space.userACL {
@@ -299,7 +299,9 @@ where
     @ViewBuilder var menuButton: some View {
         Menu(
             content: {
-                deleteButton
+                if let space = space, !space.isDefaultSpace {
+                    deleteButton
+                }
                 if !headerVisible {
                     addButton
                     editButton
