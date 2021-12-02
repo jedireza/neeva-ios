@@ -78,16 +78,6 @@ class BaseTestCase: XCTestCase {
         app.activate()
     }
 
-    //If it is a first run, first run window should be gone
-    func dismissFirstRunUI() {
-        let firstRunUI = XCUIApplication().scrollViews["IntroViewController.scrollView"]
-
-        if firstRunUI.exists {
-            firstRunUI.swipeLeft()
-            XCUIApplication().buttons["Start Browsing"].tap()
-        }
-    }
-
     func waitForExistence(
         _ element: XCUIElement, timeout: TimeInterval = 5.0, file: String = #file,
         line: UInt = #line

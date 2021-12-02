@@ -197,6 +197,8 @@ class BrowserViewController: UIViewController {
 
     private(set) var feedbackImage: UIImage?
 
+    static var createNewTabOnStartForTesting: Bool = false
+
     /// Update the screenshot sent along with feedback. Called before opening the Neeva Menu.
     func updateFeedbackImage() {
         UIGraphicsBeginImageContextWithOptions(view.window!.bounds.size, true, 0)
@@ -624,7 +626,7 @@ class BrowserViewController: UIViewController {
             } else {
                 DispatchQueue.main.async { [weak self] in
                     guard let self = self else { return }
-                    if Defaults[.createNewTabOnStart] {
+                    if Self.createNewTabOnStartForTesting {
                         self.tabManager.select(self.tabManager.addTab())
                     } else if !Defaults[.didFirstNavigation] {
                         self.showPreviewHome()

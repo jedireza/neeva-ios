@@ -91,9 +91,6 @@ extension Defaults.Keys {
 
     public static let ratingsCardHidden = Defaults.Key<Bool>("RatingsCardHidden", default: false)
 
-    public static let createNewTabOnStart = Defaults.Key<Bool>(
-        "CreateNewTabOnStart", default: false)
-
     public static let notificationToken = Defaults.Key<String?>(
         "notificationToken", default: nil)
 

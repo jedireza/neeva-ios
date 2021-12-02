@@ -174,9 +174,7 @@ class TestAppDelegate: AppDelegate {
         }
 
         if !launchArguments.contains(LaunchArguments.DontAddTabOnLaunch) {
-            Defaults[.createNewTabOnStart] = true
-        } else {
-            Defaults[.createNewTabOnStart] = false
+            BrowserViewController.createNewTabOnStartForTesting = true
         }
 
         // Deferred to here in case the ClearProfile argument was set.
