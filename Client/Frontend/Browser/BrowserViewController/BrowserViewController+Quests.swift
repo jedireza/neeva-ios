@@ -10,22 +10,6 @@ import Shared
 import SwiftUI
 
 extension BrowserViewController {
-    func showSearchBarTourPromptIfNeeded(for url: URL) {
-        guard NeevaConstants.isNeevaHome(url: url), !Defaults[.searchInputPromptDismissed],
-            NeevaUserInfo.shared.hasLoginCookie()
-        else {
-            return
-        }
-
-        let prompt = SearchBarTourPromptViewController(delegate: self, source: topBar.view)
-        prompt.view.backgroundColor = UIColor.Tour.Background
-        prompt.preferredContentSize = prompt.sizeThatFits(in: CGSize(width: 260, height: 165))
-
-        if self.presentedViewController == nil {
-            present(prompt, animated: true, completion: nil)
-        }
-    }
-
     func showQuestNeevaMenuPrompt() {
         guard TourManager.shared.hasActiveStep() else { return }
         var target: UIView
