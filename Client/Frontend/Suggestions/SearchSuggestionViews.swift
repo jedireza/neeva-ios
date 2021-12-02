@@ -199,7 +199,8 @@ struct QuerySuggestionView: View {
     @ViewBuilder
     var dictionaryLabelView: some View {
         if let annotation = suggestion.annotation,
-           let dictionaryInfo = suggestion.annotation?.dictionaryInfo {
+            let dictionaryInfo = suggestion.annotation?.dictionaryInfo
+        {
             HStack(spacing: 0) {
                 Text(dictionaryInfo.word ?? "")
                     .withFont(.bodyLarge)

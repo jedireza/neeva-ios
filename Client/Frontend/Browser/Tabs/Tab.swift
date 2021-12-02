@@ -50,17 +50,6 @@ class Tab: NSObject, ObservableObject {
 
     var tabUUID: String = UUID().uuidString
 
-    // To check if current URL is the starting page i.e. either blank page or internal page like topsites
-    var isURLStartingPage: Bool {
-        guard url != nil else {
-            return true
-        }
-        if url!.absoluteString.hasPrefix("internal://") {
-            return true
-        }
-        return false
-    }
-
     var canonicalURL: URL? {
         if let siteURL = pageMetadata?.siteURL {
             // If the canonical URL from the page metadata doesn't contain the
@@ -115,6 +104,7 @@ class Tab: NSObject, ObservableObject {
         }
     }
 
+    var queryForNavigation: QueryForNavigation = QueryForNavigation()
     var backList: [WKBackForwardListItem]? { webView?.backForwardList.backList }
     var forwardList: [WKBackForwardListItem]? { webView?.backForwardList.forwardList }
 
@@ -246,7 +236,6 @@ class Tab: NSObject, ObservableObject {
                 })
             webView.scrollView.refreshControl = rc
             webView.scrollView.bringSubviewToFront(rc)
-
             webView.allowsLinkPreview = true
 
             // Turning off masking allows the web content to flow outside of the scrollView's frame
@@ -258,10 +247,10 @@ class Tab: NSObject, ObservableObject {
 
             self.webView = webView
 
+            send(webView: \.title, to: \.title)
             send(webView: \.isLoading, to: \.isLoading)
             send(webView: \.canGoBack, to: \.canGoBack)
             send(webView: \.canGoForward, to: \.canGoForward)
-            send(webView: \.title, to: \.title)
 
             $isLoading
                 .combineLatest(webView.publisher(for: \.estimatedProgress, options: .new))
@@ -340,7 +329,6 @@ class Tab: NSObject, ObservableObject {
             }
 
             let currentPage = sessionData.currentPage
-            self.sessionData = nil
             var jsonDict = [String: AnyObject]()
             jsonDict["history"] = urls as AnyObject?
             jsonDict["currentPage"] = currentPage as AnyObject?
@@ -428,7 +416,31 @@ class Tab: NSObject, ObservableObject {
     }
 
     func goBack() {
-        _ = webView?.goBack()
+        // Check if user launched the current URL from the suggestion UI.
+        // If true, show the suggest UI with that query loaded.
+        // Else just perform a regular back navigation.
+        if let navigation = webView?.backForwardList.currentItem,
+            let query = queryForNavigation.findQueryFor(navigation: navigation),
+            let bvc = browserViewController,
+            FeatureFlag[.suggestionBackButton]
+        {
+            DispatchQueue.main.async {
+                bvc.chromeModel.setEditingLocation(to: true)
+
+                // Small delayed needed to prevent animation intefernce
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    bvc.searchQueryModel.value = query
+                    bvc.tabContainerModel.updateContent(
+                        .showZeroQuery(
+                            isIncognito: bvc.tabManager.isIncognito, isLazyTab: false,
+                            .backButton))
+                    bvc.tabContainerModel.updateContent(.showSuggestions)
+                    bvc.zeroQueryModel.targetTab = .currentTab
+                }
+            }
+        } else {
+            webView?.goBack()
+        }
     }
 
     func goForward() {

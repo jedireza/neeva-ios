@@ -29,6 +29,18 @@ class SessionRestoreHelper: TabContentScript {
             if params["name"] as! String == "didRestoreSession" {
                 DispatchQueue.main.async {
                     self.delegate?.sessionRestoreHelper(self, didRestoreSessionForTab: tab)
+
+                    if let navigationList = tab.webView?.backForwardList.all {
+                        for (index, item) in navigationList.enumerated() {
+                            guard tab.sessionData?.queries.indices.contains(index) ?? false,
+                                let query = tab.sessionData?.queries[index]
+                            else { return }
+
+                            tab.queryForNavigation.queryForNavigations[item] = query
+                        }
+                    }
+
+                    tab.sessionData = nil
                 }
             }
         }

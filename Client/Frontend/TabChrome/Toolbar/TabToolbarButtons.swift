@@ -48,7 +48,7 @@ enum TabToolbarButtons {
                     action: onBack,
                     longPressAction: onLongPress
                 )
-                .disabled(!model.canGoBack)
+                .disabled(!model.canGoBack && !model.canReturnToSuggestions)
             }
         }
     }
@@ -195,11 +195,16 @@ enum TabToolbarButtons {
                         .cornerRadius(6),
                     action: action
                 )
-            } else if let currentURLInitial = model.currentCheatsheetURL?.baseDomain?.asURL?.absoluteString.first?.description {
+            } else if let currentURLInitial = model.currentCheatsheetURL?.baseDomain?.asURL?
+                .absoluteString.first?.description
+            {
                 TabToolbarButton(
                     label: Circle()
                         .fill(Color.gray)
-                        .overlay(Text(currentURLInitial).foregroundColor(Color.brand.white).padding(.bottom, 2))
+                        .overlay(
+                            Text(currentURLInitial).foregroundColor(Color.brand.white).padding(
+                                .bottom, 2)
+                        )
                         .frame(width: 24, height: 24),
                     action: action
                 )

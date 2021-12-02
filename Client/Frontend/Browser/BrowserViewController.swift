@@ -935,14 +935,27 @@ class BrowserViewController: UIViewController {
         }
 
         if !tabContainerModel.promoteToRealTabIfNecessary(
-            url: url, tabManager: tabManager, selectedTabIsNil: tab == nil)
+            url: url, tabManager: tabManager, selectedTabIsNil: tab == nil,
+            searchQuery: searchQueryModel.value)
         {
             if zeroQueryModel.targetTab == .existingOrNewTab {
                 hideZeroQuery()
                 tabManager.createOrSwitchToTab(for: url)
+            } else if zeroQueryModel.openedFrom == .backButton, let tab = tab {
+                // Once user changes current URL from the back button, the forward history list needs to be overriden.
+                // Going back, and THEN loading the request accomplishes that.
+                tab.webView?.goBack()
+
+                guard let nav = tab.loadRequest(URLRequest(url: url)) else {
+                    return
+                }
+
+                self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             } else if let tab = tab, let nav = tab.loadRequest(URLRequest(url: url)) {
                 self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             }
+
+            tab?.queryForNavigation.currentSearchQuery = searchQueryModel.value
         }
 
         locationModel.url = url

@@ -46,7 +46,8 @@ class TabManagerStoreTests: XCTestCase {
         manager.configureTab(
             tab, request: URLRequest(url: tab.url!), flushToDisk: false, zombie: false)
         tab.sessionData = SessionData(
-            currentPage: 0, urls: [tab.url!], lastUsedTime: Date.nowMilliseconds())
+            currentPage: 0, urls: [tab.url!], queries: [nil],
+            lastUsedTime: Date.nowMilliseconds())
     }
 
     func testNoData() {

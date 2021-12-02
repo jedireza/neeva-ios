@@ -48,13 +48,18 @@ private func migrate(urls: [URL]) -> [URL] {
 class SessionData: NSObject, NSCoding {
     let currentPage: Int
     let urls: [URL]
+
+    /// For each URL there is a corresponding query or nil.
+    /// If a query is nil, there is not a query for that specific navigation.
+    let queries: [String?]
     let lastUsedTime: Timestamp
 
     var jsonDictionary: [String: Any] {
         return [
             "currentPage": String(self.currentPage),
-            "lastUsedTime": String(self.lastUsedTime),
             "urls": urls.map { $0.absoluteString },
+            "queries": queries,
+            "lastUsedTime": String(self.lastUsedTime),
         ]
     }
 
@@ -70,24 +75,28 @@ class SessionData: NSObject, NSCoding {
     ///                  where 1-N is the first page in history, and 0 is the last.
     ///   - urls: The sequence of URLs in this tab's session history.
     ///   - lastUsedTime: The last time this tab was modified.
-    init(currentPage: Int, urls: [URL], lastUsedTime: Timestamp) {
+    init(currentPage: Int, urls: [URL], queries: [String?], lastUsedTime: Timestamp) {
         self.currentPage = currentPage
         self.urls = migrate(urls: urls)
+        self.queries = queries
         self.lastUsedTime = lastUsedTime
 
         assert(urls.count > 0, "Session has at least one entry")
         assert(currentPage > -urls.count && currentPage <= 0, "Session index is valid")
+        assert(urls.count == queries.count, "The number of queries should match the number of URLs")
     }
 
     required init?(coder: NSCoder) {
         self.currentPage = coder.decodeInteger(forKey: "currentPage")
         self.urls = migrate(urls: coder.decodeObject(forKey: "urls") as? [URL] ?? [URL]())
+        self.queries = coder.decodeObject(forKey: "queries") as? [String?] ?? [String]()
         self.lastUsedTime = Timestamp(coder.decodeInt64(forKey: "lastUsedTime"))
     }
 
     func encode(with coder: NSCoder) {
         coder.encode(currentPage, forKey: "currentPage")
         coder.encode(migrate(urls: urls), forKey: "urls")
+        coder.encode(queries, forKey: "queries")
         coder.encode(Int64(lastUsedTime), forKey: "lastUsedTime")
     }
 }

@@ -17,6 +17,7 @@ enum ZeroQueryOpenedLocation: Equatable {
     case tabTray
     case openTab(Tab?)
     case createdTab
+    case backButton
 
     var openedTab: Tab? {
         switch self {
@@ -63,6 +64,7 @@ class ZeroQueryModel: ObservableObject {
     }
 
     let bvc: BrowserViewController
+
     @ObservedObject var suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(
         sites: [])
     let profile: Profile
@@ -220,15 +222,19 @@ class ZeroQueryModel: ObservableObject {
     }
 
     @discardableResult public func promoteToRealTabIfNecessary(
-        url: URL, tabManager: TabManager
+        url: URL, tabManager: TabManager, searchQuery: String?
     ) -> Bool {
         guard isLazyTab else {
             return false
         }
         // TODO(darin): Handle the case of targetTab == .existingOrNewTab here. Might make
         // sense to refactor with BVC.finishEditingAndSubmit so we don't duplicate logic.
-        tabManager.select(tabManager.addTab(URLRequest(url: url), isPrivate: isPrivate))
+        let tab = tabManager.addTab(URLRequest(url: url), isPrivate: isPrivate)
+        tabManager.select(tab)
         reset(bvc: nil, createdLazyTab: true)
+
+        tab.queryForNavigation.currentSearchQuery = searchQuery
+
         return true
     }
 
@@ -237,6 +243,12 @@ class ZeroQueryModel: ObservableObject {
             isLazyTab && !createdLazyTab
         {
             bvc.cardGridViewController.toolbarModel.onToggleIncognito()
+        }
+
+        // This can occur if a taps back and the Suggestion UI is shown.
+        // If the user cancels out of that UI, we should navigate the tab back, like a complete undo.
+        if let bvc = bvc, openedFrom == .backButton {
+            bvc.tabManager.selectedTab?.webView?.goBack()
         }
 
         isLazyTab = false

@@ -11,6 +11,18 @@ enum ToolbarContentView {
 
 class TabChromeModel: ObservableObject {
     @Published var canGoBack: Bool
+
+    var canReturnToSuggestions: Bool {
+        guard let selectedTab = topBarDelegate?.tabManager.selectedTab,
+            let currentItem = selectedTab.webView?.backForwardList.currentItem
+        else {
+            return false
+        }
+
+        return FeatureFlag[.suggestionBackButton]
+            && selectedTab.queryForNavigation.findQueryFor(navigation: currentItem) != nil
+    }
+
     @Published var canGoForward: Bool
     @Published var urlInSpace: Bool = false
 
@@ -100,6 +112,7 @@ class TabChromeModel: ObservableObject {
         if value {
             toolBarContentView = .regularContent
         }
+
         withAnimation(TabLocationViewUX.animation.delay(0.08)) {
             isEditingLocation = value
         }

@@ -76,3 +76,9 @@ extension WKUserScript {
         }
     }
 }
+
+extension WKBackForwardList {
+    public var all: [WKBackForwardListItem] {
+        return (backList + [currentItem] + forwardList).compactMap { $0 }
+    }
+}

@@ -84,7 +84,8 @@ class ZeroQueryTests: XCTestCase {
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
 
-        tabContainerModel.promoteToRealTabIfNecessary(url: .aboutBlank, tabManager: tabManager)
+        tabContainerModel.promoteToRealTabIfNecessary(
+            url: .aboutBlank, tabManager: tabManager, searchQuery: nil)
         waitForCondition(condition: { tabManager.tabs.count == 2 })
         try assertTabContentOnlyContainsWebContainer()
         XCTAssertNil(zQM.openedFrom)

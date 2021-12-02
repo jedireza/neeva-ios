@@ -62,7 +62,8 @@ struct TopSuggestionsList: View {
             SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
             ForEach(suggestionModel.topSuggestions) { suggestion in
                 if case let .query(querySuggestion) = suggestion,
-                   AnnotationType(annotation: querySuggestion.annotation) == .dictionary {
+                    AnnotationType(annotation: querySuggestion.annotation) == .dictionary
+                {
                     SearchSuggestionView(suggestion)
                         .environment(\.suggestionConfig, .dictionary)
                 } else {

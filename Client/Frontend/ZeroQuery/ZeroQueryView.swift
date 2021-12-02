@@ -192,8 +192,7 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
-                    if let searchQuery = viewModel.searchQuery, let url = viewModel.tabURL
-                    {
+                    if let searchQuery = viewModel.searchQuery, let url = viewModel.tabURL {
                         SearchSuggestionView(
                             Suggestion.editCurrentQuery(searchQuery, url)
                         )
@@ -238,6 +237,7 @@ struct ZeroQueryView: View {
                                 label: "\(expandSuggestedSites.verb) this section",
                                 icon: expandSuggestedSites.icon
                             )
+
                             if expandSuggestedSites != .hidden {
                                 SuggestedSitesView(
                                     isExpanded: expandSuggestedSites == .expanded,

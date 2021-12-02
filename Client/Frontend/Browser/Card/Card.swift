@@ -161,7 +161,9 @@ struct Card<Details>: View where Details: CardDetails {
     }
 
     var titleInMainGrid: String {
-        if let rootUUID = tabCardDetail?.manager.get(for: details.id)?.rootUUID, Defaults[.tabGroupNames][rootUUID] != nil {
+        if let rootUUID = tabCardDetail?.manager.get(for: details.id)?.rootUUID,
+            Defaults[.tabGroupNames][rootUUID] != nil
+        {
             return Defaults[.tabGroupNames][rootUUID]!
         } else {
             return details.title
@@ -206,7 +208,9 @@ struct Card<Details>: View where Details: CardDetails {
                 )
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
-                        if let favicon = details.favicon, !(gridModel.animationThumbnailState == .visibleForTrayShow) {
+                        if let favicon = details.favicon,
+                            !(gridModel.animationThumbnailState == .visibleForTrayShow)
+                        {
                             favicon
                                 .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
                                 .cornerRadius(CardUX.FaviconCornerRadius)
@@ -217,7 +221,10 @@ struct Card<Details>: View where Details: CardDetails {
                                 .cornerRadius(CardUX.FaviconCornerRadius)
                                 .padding(5)
                         }
-                        Text(gridModel.animationThumbnailState == .visibleForTrayShow ? titleInMainGrid: details.title).withFont(.labelMedium)
+                        Text(
+                            gridModel.animationThumbnailState == .visibleForTrayShow
+                                ? titleInMainGrid : details.title
+                        ).withFont(.labelMedium)
                             .frame(alignment: .center)
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     }

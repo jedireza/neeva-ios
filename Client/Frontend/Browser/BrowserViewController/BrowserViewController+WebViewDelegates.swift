@@ -944,6 +944,8 @@ extension BrowserViewController: WKNavigationDelegate {
         if tabManager.selectedTab === tab {
             updateUIForReaderHomeStateForTab(tab)
         }
+
+        tab.queryForNavigation.attachCurrentSearchQueryToCurrentNavigation(webView: webView)
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {

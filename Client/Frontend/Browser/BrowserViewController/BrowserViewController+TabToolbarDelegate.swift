@@ -28,6 +28,7 @@ extension BrowserViewController: ToolbarDelegate {
                 if self.simulateBackViewController?.goBack() ?? false {
                     return
                 }
+
                 self.tabManager.selectedTab?.goBack()
             case .forward:
                 if self.simulateBackViewController?.goForward() ?? false {
@@ -166,7 +167,7 @@ extension BrowserViewController: ToolbarDelegate {
             ? tabManager.privateTabs.count : tabManager.normalTabs.count
 
         if let tab = self.tabManager.selectedTab {
-            if tabCount > 0 || !tab.isURLStartingPage {
+            if tabCount > 0 {
                 let closeTabAction = UIAction(
                     title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark)
                 ) { _ in

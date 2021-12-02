@@ -481,6 +481,7 @@ class SuggestionModel: ObservableObject {
                     suggestedUrl = suggestion.suggestedUrl
                 }
             }
+
             if let suggestedUrl = URL(string: suggestion.suggestedUrl) {
                 finishEditingAndSubmit(url: suggestedUrl)
             } else {
@@ -488,6 +489,7 @@ class SuggestionModel: ObservableObject {
                     "Malformed memorized url \(suggestion.suggestedUrl) for query \(suggestedQuery ?? "empty")"
                 )
             }
+
         case .lens(let suggestion):
             hideZeroQuery = false
 
@@ -843,7 +845,7 @@ extension SuggestionModel {
                 ClientLogCounterAttribute(
                     key: LogConfig.SuggestionAttribute.fromSearchHistory,
                     value: String(isFromSearchHistory)
-                )
+                ),
             ]
 
         if let suggestedQuery = suggestedQuery {

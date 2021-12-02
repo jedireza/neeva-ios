@@ -85,9 +85,10 @@ class TabContainerModel: ObservableObject {
     }
 
     @discardableResult public func promoteToRealTabIfNecessary(
-        url: URL, tabManager: TabManager, selectedTabIsNil: Bool = false
+        url: URL, tabManager: TabManager, selectedTabIsNil: Bool = false, searchQuery: String?
     ) -> Bool {
-        let result = zeroQueryModel.promoteToRealTabIfNecessary(url: url, tabManager: tabManager)
+        let result = zeroQueryModel.promoteToRealTabIfNecessary(
+            url: url, tabManager: tabManager, searchQuery: searchQuery)
         if result {
             updateContent(.hideZeroQuery)
         }

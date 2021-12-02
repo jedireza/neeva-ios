@@ -270,8 +270,10 @@ class NotificationManager: ObservableObject {
                 return
             } else {
                 if let urlStr =
-                    request.content.userInfo[NotificationManager.notificationKey.localNotificationURL] as? String,
-                    let url = URL(string: urlStr) {
+                    request.content.userInfo[
+                        NotificationManager.notificationKey.localNotificationURL] as? String,
+                    let url = URL(string: urlStr)
+                {
                     bvc.openURLInNewTab(url)
                 } else {
                     bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)

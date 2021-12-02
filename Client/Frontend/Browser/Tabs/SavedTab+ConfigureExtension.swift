@@ -19,13 +19,15 @@ extension SavedTab {
             // Freshly created web views won't have any history entries at all.
             // If we have no history, abort.
             if currentItem != nil {
-                // The back & forward list keep track of the users history within the session
-                let backList = tab.webView?.backForwardList.backList ?? []
-                let forwardList = tab.webView?.backForwardList.forwardList ?? []
-                let urls = (backList + [currentItem] + forwardList).map { $0.url }
-                let currentPage = -forwardList.count
+                let navigationList = tab.webView?.backForwardList.all ?? []
+                let urls = navigationList.compactMap { $0.url }
+                let currentPage = -(tab.webView?.backForwardList.forwardList ?? []).count
+                let queries = navigationList.map {
+                    tab.queryForNavigation.findQueryFor(navigation: $0)
+                }
+
                 sessionData = SessionData(
-                    currentPage: currentPage, urls: urls,
+                    currentPage: currentPage, urls: urls, queries: queries,
                     lastUsedTime: tab.lastExecutedTime ?? Date.nowMilliseconds())
             }
         }
