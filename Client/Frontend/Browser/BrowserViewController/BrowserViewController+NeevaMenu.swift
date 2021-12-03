@@ -9,6 +9,7 @@ enum NeevaMenuAction {
     case history
     case feedback
     case referralPromo
+    case cryptoWallet
 }
 
 extension BrowserViewController {
@@ -75,6 +76,14 @@ extension BrowserViewController {
                 .OpenReferralPromo, attributes: attributes)
             switchToTabForURLOrOpen(NeevaConstants.appReferralsURL)
             presentedViewController?.dismiss(animated: true)
+        case .cryptoWallet:
+            let cryptoWalletPanel = CryptoWalletController(onDismiss: {
+                self.dismiss(animated: true, completion: nil)
+            })
+            let navigationController = UINavigationController(rootViewController: cryptoWalletPanel)
+            navigationController.modalPresentationStyle = .formSheet
+
+            present(navigationController, animated: true, completion: nil)
         }
     }
 }

@@ -323,6 +323,9 @@
 		BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC264BC126746098001527B6 /* ViewExtensions.swift */; };
 		BC423EA626CE391D007E2C01 /* CompactNeevaMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */; };
 		BC4E98012669572A00A8FBD6 /* TourManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43CC265F49EA007E2F61 /* TourManager.swift */; };
+		BC5310182759D714005AF524 /* web3swift in Frameworks */ = {isa = PBXBuildFile; productRef = BC5310172759D714005AF524 /* web3swift */; };
+		BC53101B2759E38C005AF524 /* CryptoWalletController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC53101A2759E38C005AF524 /* CryptoWalletController.swift */; };
+		BC53101D2759E6F4005AF524 /* CryptoWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC53101C2759E6F4005AF524 /* CryptoWalletView.swift */; };
 		BC5740A226BB699A0047D29B /* PerformanceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5740A126BB699A0047D29B /* PerformanceLogger.swift */; };
 		BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */; };
 		BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */; };
@@ -1423,6 +1426,8 @@
 		BC248769273382E5003A6867 /* RelatedSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedSearchesView.swift; sourceTree = "<group>"; };
 		BC264BC126746098001527B6 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactNeevaMenuView.swift; sourceTree = "<group>"; };
+		BC53101A2759E38C005AF524 /* CryptoWalletController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoWalletController.swift; sourceTree = "<group>"; };
+		BC53101C2759E6F4005AF524 /* CryptoWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoWalletView.swift; sourceTree = "<group>"; };
 		BC5740A126BB699A0047D29B /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceLogger.swift; sourceTree = "<group>"; };
 		BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebUIMessageHelper.swift; sourceTree = "<group>"; };
 		BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptViewController.swift; sourceTree = "<group>"; };
@@ -1945,6 +1950,7 @@
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
 				C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */,
+				BC5310182759D714005AF524 /* web3swift in Frameworks */,
 				7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */,
 				3B4988CE1E42B01800A12FDA /* SwiftyJSON.framework in Frameworks */,
 				7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */,
@@ -2805,6 +2811,15 @@
 				BC248769273382E5003A6867 /* RelatedSearchesView.swift */,
 			);
 			path = Cheatsheet;
+			sourceTree = "<group>";
+		};
+		BC5310192759DBED005AF524 /* CryptoWallet */ = {
+			isa = PBXGroup;
+			children = (
+				BC53101A2759E38C005AF524 /* CryptoWalletController.swift */,
+				BC53101C2759E6F4005AF524 /* CryptoWalletView.swift */,
+			);
+			path = CryptoWallet;
 			sourceTree = "<group>";
 		};
 		BC85E224264F29660068092F /* Prompt */ = {
@@ -3833,6 +3848,7 @@
 		F84B21F11A0910F600AAB793 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
+				BC5310192759DBED005AF524 /* CryptoWallet */,
 				C8CF648C26F907BB00C3816F /* Favicons */,
 				67942DD626F14F140023F623 /* Notification */,
 				D3A994941A368691008AD1AC /* Browser */,
@@ -4297,6 +4313,7 @@
 			);
 			name = Client;
 			packageProductDependencies = (
+				BC5310172759D714005AF524 /* web3swift */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -4489,6 +4506,7 @@
 				C9D4565826558F400047267A /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */,
+				BC5310162759D714005AF524 /* XCRemoteSwiftPackageReference "web3swift" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -5289,6 +5307,7 @@
 				4AB50DA726FA8CC300B75AFA /* ShareAddedSpaceView.swift in Sources */,
 				C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */,
 				31ADB5DA1E58CEC300E87909 /* ClipboardBarDisplayHandler.swift in Sources */,
+				BC53101B2759E38C005AF524 /* CryptoWalletController.swift in Sources */,
 				C9C18DE526558FF3004710CD /* PullToRefresh.swift in Sources */,
 				EB9A179D20E69A7F00B12184 /* Theme.swift in Sources */,
 				66EE7D9526CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift in Sources */,
@@ -5593,6 +5612,7 @@
 				E663D5781BB341C4001EF30E /* IncognitoButton.swift in Sources */,
 				E6327A641BF6438E008D12E0 /* DebugSettingsBundleOptions.swift in Sources */,
 				D8FDEB57220CFE970069A582 /* UIImage+ImageEffects.m in Sources */,
+				BC53101D2759E6F4005AF524 /* CryptoWalletView.swift in Sources */,
 				EBB89506219398E500EB91A0 /* TabContentBlocker.swift in Sources */,
 				BC24876A273382E5003A6867 /* RelatedSearchesView.swift in Sources */,
 				C9299E382694DF5800758795 /* BrowserViewController+TopBarDelegate.swift in Sources */,
@@ -7508,6 +7528,14 @@
 				minimumVersion = 0.8.1;
 			};
 		};
+		BC5310162759D714005AF524 /* XCRemoteSwiftPackageReference "web3swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/skywinder/web3swift";
+			requirement = {
+				kind = revision;
+				revision = 691eb069e4aaee66a759e12a691e20bb3aa37258;
+			};
+		};
 		C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/neevaco/sindresorhus-Defaults";
@@ -7571,6 +7599,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */;
 			productName = ViewInspector;
+		};
+		BC5310172759D714005AF524 /* web3swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC5310162759D714005AF524 /* XCRemoteSwiftPackageReference "web3swift" */;
+			productName = web3swift;
 		};
 		C82719EC26FE734500EC9EF9 /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
