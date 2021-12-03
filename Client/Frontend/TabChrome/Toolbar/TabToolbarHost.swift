@@ -49,18 +49,20 @@ class TabToolbarHost: IncognitoAwareHostingController<TabToolbarContent> {
         NotificationCenter.default.removeObserver(
             view, name: UIApplication.keyboardDidHideNotification, object: nil)
 
-        // Grab window now when we can be sure to find it.
-        let window = SceneDelegate.getKeyWindow(for: view)
-        DispatchQueue.main.async { [self] in
-            self.view.heightAnchor.constraint(
-                equalToConstant: window.safeAreaInsets.bottom
-                    + UIConstants.TopToolbarHeightWithToolbarButtonsShowing
-            ).isActive = true
-        }
-
         self.view.backgroundColor = .clear
         self.view.translatesAutoresizingMaskIntoConstraints = false
         self.view.setContentHuggingPriority(.required, for: .vertical)
+    }
+
+    // Use viewDidAppear as we can reliably access the view and it's window
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        let window = self.view.window!
+        self.view.heightAnchor.constraint(
+            equalToConstant: window.safeAreaInsets.bottom
+                + UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+        ).isActive = true
     }
 
     @objc required dynamic init?(coder aDecoder: NSCoder) {
