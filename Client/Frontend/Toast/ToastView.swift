@@ -3,12 +3,6 @@
 import SwiftUI
 import UIKit
 
-protocol ToastViewDelegate: AnyObject {
-    func dismiss()
-    func draggingUpdated()
-    func draggingEnded(dismissing: Bool)
-}
-
 public enum ToastViewUX {
     static let defaultDisplayTime = 4.5
     static let height: CGFloat = 53
@@ -57,7 +51,7 @@ class ToastViewContent: ObservableObject {
 }
 
 struct ToastView: View {
-    weak var viewDelegate: ToastViewDelegate?
+    weak var viewDelegate: BannerViewDelegate?
 
     // how long the Toast is shown
     var displayTime = ToastViewUX.defaultDisplayTime
@@ -66,33 +60,6 @@ struct ToastView: View {
     // content
     @ObservedObject var content: ToastViewContent
     var toastProgressViewModel: ToastProgressViewModel?
-
-    @State var offset: CGFloat = 0
-    var opacity: CGFloat {
-        let delta = abs(offset) - ToastViewUX.threshold
-        return delta > 0 ? 1 - delta / (ToastViewUX.threshold * 3) : 1
-    }
-
-    var drag: some Gesture {
-        DragGesture()
-            .onChanged {
-                self.offset = $0.translation.height
-                viewDelegate?.draggingUpdated()
-            }
-            .onEnded {
-                var dismissing = false
-                if abs($0.predictedEndTranslation.height) > ToastViewUX.height * 1.5 {
-                    self.offset = $0.predictedEndTranslation.height
-                    dismissing = true
-                } else if abs($0.translation.height) > ToastViewUX.height {
-                    dismissing = true
-                } else {
-                    self.offset = 0
-                }
-
-                viewDelegate?.draggingEnded(dismissing: dismissing)
-            }
-    }
 
     var body: some View {
         VStack {
@@ -151,10 +118,11 @@ struct ToastView: View {
                 }.padding(.horizontal, 16).colorScheme(.dark)
             }.frame(height: 53).padding(.horizontal)
         }
-        .offset(y: offset)
-        .gesture(drag)
-        .opacity(Double(opacity))
-        .animation(.interactiveSpring(), value: offset)
+        .modifier(
+            DraggableBannerModifier(
+                draggingUpdated: viewDelegate?.draggingUpdated,
+                draggingEnded: viewDelegate?.draggingEnded(dismissing:))
+        )
         .onAppear {
             if let toastProgressViewModel = toastProgressViewModel {
                 content.updateStatus(with: toastProgressViewModel.status)
@@ -164,13 +132,5 @@ struct ToastView: View {
 
     public func enqueue(at location: QueuedViewLocation = .last, manager: ToastViewManager) {
         manager.enqueue(view: self, at: location)
-    }
-}
-
-struct ToastView_Previews: PreviewProvider {
-    static var previews: some View {
-        ToastView(
-            content: ToastViewContent(
-                normalContent: ToastStateContent(text: "Tab Closed", buttonText: "restore")))
     }
 }

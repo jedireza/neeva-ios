@@ -57,7 +57,7 @@ open class QueuedViewManager<View: SwiftUI.View> {
 
         // creates new window to display View in
         windowManager.createWindow(
-            with: viewHostingController, height: height, alignToBottom: false
+            with: viewHostingController, placement: .bottomToolbarPadding, height: height
         ) { [weak self] in
             guard let self = self else { return }
             self.startViewDismissTimer(for: view)
@@ -110,5 +110,24 @@ open class QueuedViewManager<View: SwiftUI.View> {
 
     init(window: UIWindow) {
         self.windowManager = WindowManager(parentWindow: window)
+    }
+}
+
+// MARK: QueuedViewManager
+extension QueuedViewManager: BannerViewDelegate {
+    func draggingUpdated() {
+        currentViewIsDragging = true
+    }
+
+    func draggingEnded(dismissing: Bool) {
+        currentViewIsDragging = false
+
+        if dismissing || !(currentViewTimer?.isValid ?? true) {
+            dismissCurrentView()
+        }
+    }
+
+    func dismiss() {
+        dismissCurrentView()
     }
 }

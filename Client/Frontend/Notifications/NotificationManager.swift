@@ -41,8 +41,39 @@ class NotificationManager: ObservableObject {
     }
 
     // MARK: - Updates
-    func handleReceivedNotification(_ notification: BaseNotification) {
+    func handleReceivedNotification(_ notification: UNNotification, present: Bool = false) {
+        let request = notification.request
+        let content = request.content
+        let deeplinkURL = content.userInfo[notificationKey.deeplinkURL] as? String
+        let campaignID = content.userInfo[notificationKey.campaignID] as? String
+
+        let notification: BaseNotification = {
+            if let type = NotificationType(rawValue: request.identifier) {
+                return NeevaPromoNotification(
+                    id: request.identifier,
+                    promoId: request.content.userInfo[NotificationManager.promoIdKey] as? String,
+                    localURL:
+                        request.content.userInfo[
+                            NotificationManager.notificationKey.localNotificationURL] as? String,
+                    type: type, title: content.title, subtitle: content.subtitle,
+                    body: content.body,
+                    deeplinkUrl: deeplinkURL, campaignID: campaignID,
+                    dateReceived: notification.date)
+            } else {
+                return BaseNotification(
+                    id: request.identifier,
+                    type: nil,
+                    title: content.title, subtitle: content.subtitle, body: content.body,
+                    deeplinkUrl: deeplinkURL, campaignID: campaignID,
+                    dateReceived: notification.date)
+            }
+        }()
+
         notifications.insert(notification, at: 0)
+
+        if present {
+            showInAppNotification(notification: notification)
+        }
     }
 
     // MARK: - Storage
@@ -151,7 +182,7 @@ class NotificationManager: ObservableObject {
                 completionHandler(.failure(error))
             } else {
                 let baseNotification = NeevaPromoNotification(
-                    id: identifier, promoId: promoId,
+                    id: identifier, promoId: promoId, localURL: nil,
                     type: type, title: title,
                     subtitle: subtitle, body: body,
                     deeplinkUrl: deeplinkUrl,
@@ -215,71 +246,50 @@ class NotificationManager: ObservableObject {
     }
 
     // MARK: - Notification Handler
+    func handleNotification(notification: BaseNotification, bvc: BrowserViewController) {
+        notification.markNotificationAsRead()
+
+        if let notification = notification as? NeevaPromoNotification, let type = notification.type
+        {
+            switch type {
+            case .neevaPromo:
+                handleNeevaPromoNotification(
+                    promoId: notification.promoId, urlStr: notification.localURL, bvc: bvc)
+            case .neevaOnboardingNewsProvider, .neevaOnboardingProductSearch,
+                .neevaOnboardingFastTap:
+                handleOnboardingNotification(
+                    promoId: notification.promoId, urlStr: notification.localURL, bvc: bvc)
+            }
+        }
+
+        if let urlStr = notification.deeplinkUrl,
+            let deeplink = URL(string: urlStr),
+            let routerpath = NavigationPath(bvc: bvc, url: deeplink)
+        {
+            NavigationPath.handle(nav: routerpath, with: bvc)
+        }
+
+        if let campaignID = notification.campaignID {
+            let attributes = [
+                ClientLogCounterAttribute(
+                    key: LogConfig.NotificationAttribute.notificationCampaignId,
+                    value: campaignID)
+            ]
+            ClientLogger.shared.logCounter(.OpenNotification, attributes: attributes)
+        }
+    }
+
     func handleNotification(request: UNNotificationRequest, bvc: BrowserViewController) {
+        let promoId = request.content.userInfo[NotificationManager.promoIdKey] as? String
+        let urlStr =
+            request.content.userInfo[
+                NotificationManager.notificationKey.localNotificationURL] as? String
+
         switch NotificationType(rawValue: request.identifier) {
         case .neevaPromo:
-            var tapAction: LocalNotitifications.LocalNotificationTapAction
-            if !NeevaUserInfo.shared.isUserLoggedIn {
-                bvc.presentIntroViewController(true)
-                tapAction = LocalNotitifications.LocalNotificationTapAction.openIntroView
-            } else {
-                if let urlStr =
-                    request.content.userInfo[
-                        NotificationManager.notificationKey.localNotificationURL] as? String,
-                    let url = URL(string: urlStr)
-                {
-                    bvc.openURLInNewTab(url)
-                    tapAction = LocalNotitifications.LocalNotificationTapAction.openCustomURL
-                } else {
-                    bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
-                    tapAction = LocalNotitifications.LocalNotificationTapAction.openWelcomeTour
-                }
-            }
-            var attributes = [
-                ClientLogCounterAttribute(
-                    key: LogConfig.NotificationAttribute.localNotificationTapAction,
-                    value: tapAction.rawValue)
-            ]
-            if let promoId = request.content.userInfo[NotificationManager.promoIdKey] as? String {
-                attributes.append(
-                    ClientLogCounterAttribute(
-                        key: LogConfig.NotificationAttribute.localNotificationPromoId,
-                        value: promoId)
-                )
-            }
-            ClientLogger.shared.logCounter(
-                .OpenLocalNotification,
-                attributes: attributes
-            )
+            handleNeevaPromoNotification(promoId: promoId, urlStr: urlStr, bvc: bvc)
         case .neevaOnboardingNewsProvider, .neevaOnboardingProductSearch, .neevaOnboardingFastTap:
-            var attributes: [ClientLogCounterAttribute] = []
-            if let promoId = request.content.userInfo[NotificationManager.promoIdKey] as? String {
-                attributes.append(
-                    ClientLogCounterAttribute(
-                        key: LogConfig.NotificationAttribute.localNotificationPromoId,
-                        value: promoId)
-                )
-            }
-            ClientLogger.shared.logCounter(
-                .OpenLocalNotification,
-                attributes: attributes
-            )
-
-            if !NeevaUserInfo.shared.isUserLoggedIn {
-                bvc.presentIntroViewController(true)
-                return
-            } else {
-                if let urlStr =
-                    request.content.userInfo[
-                        NotificationManager.notificationKey.localNotificationURL] as? String,
-                    let url = URL(string: urlStr)
-                {
-                    bvc.openURLInNewTab(url)
-                } else {
-                    bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
-                }
-            }
-            break
+            handleOnboardingNotification(promoId: promoId, urlStr: urlStr, bvc: bvc)
         case .none:
             break
         }
@@ -302,8 +312,84 @@ class NotificationManager: ObservableObject {
         }
     }
 
+    private func handleNeevaPromoNotification(
+        promoId: String?, urlStr: String?, bvc: BrowserViewController
+    ) {
+        var tapAction: LocalNotitifications.LocalNotificationTapAction
+        if !NeevaUserInfo.shared.isUserLoggedIn {
+            bvc.presentIntroViewController(true)
+            tapAction = LocalNotitifications.LocalNotificationTapAction.openIntroView
+        } else {
+            if let urlStr = urlStr, let url = URL(string: urlStr) {
+                bvc.openURLInNewTab(url)
+                tapAction = LocalNotitifications.LocalNotificationTapAction.openCustomURL
+            } else {
+                bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
+                tapAction = LocalNotitifications.LocalNotificationTapAction.openWelcomeTour
+            }
+        }
+
+        var attributes = [
+            ClientLogCounterAttribute(
+                key: LogConfig.NotificationAttribute.localNotificationTapAction,
+                value: tapAction.rawValue)
+        ]
+
+        if let promoId = promoId {
+            attributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.NotificationAttribute.localNotificationPromoId,
+                    value: promoId)
+            )
+        }
+
+        ClientLogger.shared.logCounter(
+            .OpenLocalNotification,
+            attributes: attributes
+        )
+    }
+
+    private func handleOnboardingNotification(
+        promoId: String?, urlStr: String?, bvc: BrowserViewController
+    ) {
+        var attributes: [ClientLogCounterAttribute] = []
+        if let promoId = promoId {
+            attributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.NotificationAttribute.localNotificationPromoId,
+                    value: promoId)
+            )
+        }
+
+        ClientLogger.shared.logCounter(
+            .OpenLocalNotification,
+            attributes: attributes
+        )
+
+        if !NeevaUserInfo.shared.isUserLoggedIn {
+            bvc.presentIntroViewController(true)
+        } else {
+            if let urlStr = urlStr, let url = URL(string: urlStr) {
+                bvc.openURLInNewTab(url)
+            } else {
+                bvc.openURLInNewTab(NeevaConstants.appWelcomeToursURL)
+            }
+        }
+    }
+
     func showInAppNotification(notification: BaseNotification) {
-        // Present banner here
+        guard let sceneDelegate = SceneDelegate.getCurrentSceneDelegateOrNil(),
+            let bvc = SceneDelegate.getBVCOrNil()
+        else {
+            return
+        }
+
+        sceneDelegate.notificationViewManager.enqueue(
+            view: NotificationRow(
+                notification: notification, showUnreadBadge: false,
+                action: {
+                    self.handleNotification(notification: notification, bvc: bvc)
+                }))
     }
 
     // MARK: - Init

@@ -7,12 +7,8 @@ struct FindInPageRootView: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        VStack {
-            FindInPageView(onDismiss: onDismiss)
-                .environmentObject(model)
-
-            Spacer()
-        }
+        FindInPageView(onDismiss: onDismiss)
+            .environmentObject(model)
     }
 }
 

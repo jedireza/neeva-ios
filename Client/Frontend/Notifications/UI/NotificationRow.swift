@@ -1,35 +1,56 @@
 // Copyright Neeva. All rights reserved.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct NotificationRow: View {
+    weak var viewDelegate: BannerViewDelegate?
+
     let notification: BaseNotification
+    var showUnreadBadge = true
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
-            HStack {
-                if notification.isUnread {
-                    NotificationBadge(count: nil)
-                        .padding(.trailing)
-                }
+        VStack {
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 16)
+                    .foregroundColor(Color.DefaultBackground)
+                    .shadow(
+                        color: Color(red: 0, green: 0, blue: 0, opacity: 0.40), radius: 48, x: 0,
+                        y: 16
+                    )
+                    .frame(minHeight: ToastViewUX.height)
 
-                GenericNotificationRow(notification: notification)
+                HStack {
+                    if notification.isUnread && showUnreadBadge {
+                        NotificationBadge(count: nil)
+                            .padding(.trailing)
+                    }
 
-                VStack {
-                    Text("\(notification.dateReceived.timeFromNowString())")
-                        .withFont(.bodyMedium)
-                    Spacer()
+                    GenericNotificationRow(notification: notification)
+
+                    VStack {
+                        Text("\(notification.dateReceived.timeFromNowString())")
+                            .withFont(.bodyMedium)
+                        Spacer()
+                    }
                 }
+                .padding()
             }
-            .padding()
+            .padding(.horizontal, 16)
+            .fixedSize(horizontal: false, vertical: true)
+            .onTapGesture {
+                action()
+                viewDelegate?.dismiss()
+            }
+
+            Spacer()
         }
-        .fixedSize(horizontal: false, vertical: true)
-        .buttonStyle(TableCellButtonStyle())
-        .background(Color.background)
-        .cornerRadius(12)
-        .padding(.horizontal)
+        .modifier(
+            DraggableBannerModifier(
+                draggingUpdated: viewDelegate?.draggingUpdated,
+                draggingEnded: viewDelegate?.draggingEnded(dismissing:))
+        )
     }
 }
 
@@ -47,13 +68,5 @@ struct GenericNotificationRow: View {
 
             Spacer()
         }
-    }
-}
-
-struct NotificationRow_Previews: PreviewProvider {
-    static let mockNotification = BaseNotification(title: "Test", body: "This is a test!", dateReceived: Date())
-
-    static var previews: some View {
-        NotificationRow(notification: mockNotification, action: {})
     }
 }

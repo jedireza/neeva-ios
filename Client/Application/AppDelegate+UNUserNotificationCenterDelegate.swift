@@ -30,16 +30,9 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) ->
             Void
     ) {
-        let content = notification.request.content
-        let receivedNotification = BaseNotification(
-            title: content.title, subtitle: content.subtitle, body: content.body,
-            dateReceived: notification.date)
-        NotificationManager.shared.handleReceivedNotification(receivedNotification)
-
         let state = application?.applicationState
-        if state == .active {
-            NotificationManager.shared.showInAppNotification(notification: receivedNotification)
-        }
+        NotificationManager.shared.handleReceivedNotification(
+            notification, present: state == .active)
     }
 
     func userNotificationCenter(

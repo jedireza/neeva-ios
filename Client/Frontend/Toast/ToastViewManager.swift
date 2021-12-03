@@ -1,7 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
 import Shared
-import SnapKit
 import SwiftUI
 import UIKit
 
@@ -34,12 +33,12 @@ class ToastViewManager: QueuedViewManager<ToastView> {
         currentView = view
         currentView?.viewDelegate = self
 
-        let toastViewHostingController = UIHostingController(rootView: view)
+        let toastViewHostingController = UIHostingController(rootView: currentView)
         toastViewHostingController.view.backgroundColor = .clear
 
         // creates new window to display Toast in
         windowManager.createWindow(
-            with: toastViewHostingController, height: height, alignToBottom: false
+            with: toastViewHostingController, placement: .bottomToolbarPadding, height: height
         ) { [weak self] in
             guard let self = self else { return }
 
@@ -55,24 +54,5 @@ class ToastViewManager: QueuedViewManager<ToastView> {
 
     override func getDisplayTime(for view: ToastView) -> Double {
         return view.displayTime
-    }
-}
-
-// MARK: ToastViewDelegate
-extension ToastViewManager: ToastViewDelegate {
-    func draggingUpdated() {
-        currentViewIsDragging = true
-    }
-
-    func draggingEnded(dismissing: Bool) {
-        currentViewIsDragging = false
-
-        if dismissing || !(currentViewTimer?.isValid ?? true) {
-            dismissCurrentView()
-        }
-    }
-
-    func dismiss() {
-        dismissCurrentView()
     }
 }

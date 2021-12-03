@@ -189,6 +189,7 @@
 		6614C9F727190618003ACE0E /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = 6614C9F627190617003ACE0E /* background.js */; };
 		6614C9F827191AD5003ACE0E /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = 6614C9F627190617003ACE0E /* background.js */; };
 		661519D726A9C3A6008E2725 /* AppClipTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661519D626A9C3A6008E2725 /* AppClipTests.swift */; };
+		6617174B27573C80005E05F4 /* NotificationViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6617174A27573C80005E05F4 /* NotificationViewManager.swift */; };
 		6618B51C26AB3CBD00ED51C9 /* BaseTestCase+GoToExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6618B51B26AB3CBD00ED51C9 /* BaseTestCase+GoToExtension.swift */; };
 		6618B51E26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6618B51D26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift */; };
 		661A3955271E48A2002F32F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 661A3954271E48A2002F32F5 /* Main.storyboard */; };
@@ -238,6 +239,7 @@
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
+		66C423E22758652900C7E6EE /* DraggableBannerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */; };
 		66E2502C270FDDB20085AA35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2502B270FDDB20085AA35 /* AppDelegate.swift */; };
 		66E25030270FDDB20085AA35 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 66E2502E270FDDB20085AA35 /* Main.html */; };
 		66E25034270FDDB20085AA35 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 66E25033270FDDB20085AA35 /* Style.css */; };
@@ -1269,6 +1271,7 @@
 		661519D226A9C3A6008E2725 /* AppClipTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppClipTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		661519D626A9C3A6008E2725 /* AppClipTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipTests.swift; sourceTree = "<group>"; };
 		661519D826A9C3A6008E2725 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6617174A27573C80005E05F4 /* NotificationViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewManager.swift; sourceTree = "<group>"; };
 		6618B51B26AB3CBD00ED51C9 /* BaseTestCase+GoToExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaseTestCase+GoToExtension.swift"; sourceTree = "<group>"; };
 		6618B51D26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaseTestCase+ActionExtension.swift"; sourceTree = "<group>"; };
 		661A3954271E48A2002F32F5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -1324,6 +1327,7 @@
 		66C3C766267A8858002B50B1 /* ToastProgressView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastProgressView.swift; sourceTree = "<group>"; };
 		66C3C767267A8858002B50B1 /* ToastViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastViewManager.swift; sourceTree = "<group>"; };
 		66C3C772267A8909002B50B1 /* TabMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabMenu.swift; sourceTree = "<group>"; };
+		66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableBannerModifier.swift; sourceTree = "<group>"; };
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E25029270FDDB20085AA35 /* NeevaForSafari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NeevaForSafari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E2502B270FDDB20085AA35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -2484,6 +2488,7 @@
 				66E34CD92710E83600F30A3D /* LocalNotificiations.swift */,
 				6650585F26E68F2F00C9CD51 /* NotificationManager.swift */,
 				66888B1D26E19A5100DDF2D4 /* NotificationPermissionHelper.swift */,
+				67942DD726F14F2A0023F623 /* NotificationPromptView.swift */,
 				665CA48426F04F97006E2F4D /* UI */,
 			);
 			path = Notifications;
@@ -2495,6 +2500,7 @@
 				665CA48726F054CC006E2F4D /* NotificationRow.swift */,
 				6614ACAF26F16F30003E244C /* NotificationList.swift */,
 				665CA48526F04FA4006E2F4D /* NotificationBadge.swift */,
+				6617174A27573C80005E05F4 /* NotificationViewManager.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -2502,6 +2508,7 @@
 		668CA09726797E9800BA756F /* Toast */ = {
 			isa = PBXGroup;
 			children = (
+				66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */,
 				66C3C763267A8858002B50B1 /* ToastView.swift */,
 				66C3C766267A8858002B50B1 /* ToastProgressView.swift */,
 				66C3C767267A8858002B50B1 /* ToastViewManager.swift */,
@@ -2720,14 +2727,6 @@
 				66E25052270FDDB30085AA35 /* NeevaForSafariUITests */,
 			);
 			path = NeevaForSafari;
-			sourceTree = "<group>";
-		};
-		67942DD626F14F140023F623 /* Notification */ = {
-			isa = PBXGroup;
-			children = (
-				67942DD726F14F2A0023F623 /* NotificationPromptView.swift */,
-			);
-			path = Notification;
 			sourceTree = "<group>";
 		};
 		7B604FC11C496005006EEEC3 /* Frameworks */ = {
@@ -3834,7 +3833,6 @@
 			isa = PBXGroup;
 			children = (
 				C8CF648C26F907BB00C3816F /* Favicons */,
-				67942DD626F14F140023F623 /* Notification */,
 				D3A994941A368691008AD1AC /* Browser */,
 				C9098F5C26AF485400D2B5F4 /* TabChrome */,
 				23ED80FD25C899D700D0E9D5 /* DefaultBrowserOnboarding */,
@@ -5307,6 +5305,7 @@
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,
 				C9FD1B1F26C1AD7C00926A70 /* TopBarHost.swift in Sources */,
 				C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */,
+				6617174B27573C80005E05F4 /* NotificationViewManager.swift in Sources */,
 				BCA4D73127226E8000AE5A15 /* RelatedRecipeView.swift in Sources */,
 				C8CF648F26FA7DE900C3816F /* FaviconResolver.swift in Sources */,
 				E4B423DD1ABA0318007E66C8 /* ReaderModeHandlers.swift in Sources */,
@@ -5496,6 +5495,7 @@
 				C98E40572658504C003AC0E2 /* NeevaSettingsSection.swift in Sources */,
 				4ADF3F3D2692A73300CB1B98 /* SwitcherToolbarView.swift in Sources */,
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
+				66C423E22758652900C7E6EE /* DraggableBannerModifier.swift in Sources */,
 				4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */,
 				4A9F65412703CA2B00B7C06E /* SpaceContentSheetModel.swift in Sources */,
 				4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */,

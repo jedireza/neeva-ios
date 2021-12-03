@@ -3,49 +3,51 @@
 import Shared
 import SwiftUI
 
+struct FindInPageViewUX {
+    static let height: CGFloat = 75
+}
+
 struct FindInPageView: View {
     @EnvironmentObject var model: FindInPageModel
-    @State var bottomPadding: CGFloat = 1
-
     let onDismiss: () -> Void
 
     public var body: some View {
-        HStack {
-            SingleLineTextField(
-                icon: Symbol(decorative: .magnifyingglass, style: .labelLarge),
-                placeholder: "Search Page",
-                text: $model.searchValue,
-                alwaysShowClearButton: false,
-                detailText: model.matchIndex,
-                focusTextField: true
-            ) { isEditing in
-                bottomPadding = isEditing ? 10 : 1
-            }
-            .accessibilityIdentifier("FindInPage_TextField")
-
+        VStack {
             HStack {
-                OverlayStepperButton(
-                    action: model.previous,
-                    symbol: Symbol(.chevronUp, style: .headingMedium, label: "Previous"),
-                    foregroundColor: .ui.adaptive.blue
-                )
-                .accessibilityIdentifier("FindInPage_Previous")
+                SingleLineTextField(
+                    icon: Symbol(decorative: .magnifyingglass, style: .labelLarge),
+                    placeholder: "Search Page",
+                    text: $model.searchValue,
+                    alwaysShowClearButton: false,
+                    detailText: model.matchIndex,
+                    focusTextField: true
+                ).accessibilityIdentifier("FindInPage_TextField")
 
-                OverlayStepperButton(
-                    action: model.next,
-                    symbol: Symbol(.chevronDown, style: .headingMedium, label: "Next"),
-                    foregroundColor: .ui.adaptive.blue
-                )
-                .accessibilityIdentifier("FindInPage_Next")
-            }
+                HStack {
+                    OverlayStepperButton(
+                        action: model.previous,
+                        symbol: Symbol(.chevronUp, style: .headingMedium, label: "Previous"),
+                        foregroundColor: .ui.adaptive.blue
+                    )
+                    .accessibilityIdentifier("FindInPage_Previous")
 
-            Button(action: onDismiss) {
-                Text("Done")
+                    OverlayStepperButton(
+                        action: model.next,
+                        symbol: Symbol(.chevronDown, style: .headingMedium, label: "Next"),
+                        foregroundColor: .ui.adaptive.blue
+                    )
+                    .accessibilityIdentifier("FindInPage_Next")
+                }
+
+                Button(action: onDismiss) {
+                    Text("Done")
+                }
+                .accessibilityIdentifier("FindInPage_Done")
             }
-            .accessibilityIdentifier("FindInPage_Done")
-        }
-        .padding(.horizontal)
-        .padding(.bottom, bottomPadding + 10)
+            .padding(.horizontal)
+
+            Spacer()
+        }.frame(height: FindInPageViewUX.height).padding(.bottom, 28)
     }
 }
 

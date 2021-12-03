@@ -13,6 +13,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private var scene: UIScene?
 
     public var toastViewManager: ToastViewManager!
+    public var notificationViewManager: NotificationViewManager!
     private var tabManager: TabManager!
 
     private var bvc: BrowserViewController!
@@ -31,6 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = .init(windowScene: scene)
         window!.makeKeyAndVisible()
         toastViewManager = ToastViewManager(window: window!)
+        notificationViewManager = NotificationViewManager(window: window!)
 
         setupRootViewController(scene)
 

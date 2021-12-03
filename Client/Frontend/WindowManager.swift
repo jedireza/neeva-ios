@@ -80,20 +80,27 @@ class PopoverWindow: UIWindow {
     }
 }
 
+enum WindowPlacement {
+    case top
+    case bottomToolbarPadding
+    case findInPage
+}
+
 class WindowManager: KeyboardReadable {
     private let parentWindow: UIWindow
 
     private let inOutAnimationDuration = 0.3
     private var openWindow: UIWindow?
+    private var placement: WindowPlacement = .bottomToolbarPadding
+    private var viewHeight: CGFloat = 0
 
     let keyboardHelper = KeyboardHelper.defaultHelper
     private var keyboardHeightListener: AnyCancellable?
     private var keyboardVisibleListener: AnyCancellable?
 
     public func createWindow(
-        with rootViewController: UIViewController, height: CGFloat, addShadow: Bool = false,
-        checkKeyboard: Bool = true, alignToBottom: Bool,
-        completionHandler: @escaping () -> Void = {}
+        with rootViewController: UIViewController, placement: WindowPlacement, height: CGFloat,
+        addShadow: Bool = false, checkKeyboard: Bool = true, completionHandler: @escaping () -> Void = {}
     ) {
         guard let scene = parentWindow.windowScene else {
             return
@@ -116,9 +123,8 @@ class WindowManager: KeyboardReadable {
                         deadline: .now() + KeyboardHelper.keyboardAnimationTime
                     ) {
                         self.createWindow(
-                            with: rootViewController, height: height, addShadow: addShadow,
-                            checkKeyboard: false, alignToBottom: alignToBottom,
-                            completionHandler: completionHandler)
+                            with: rootViewController, placement: placement, height: height, addShadow: addShadow,
+                            checkKeyboard: false, completionHandler: completionHandler)
                     }
                 }
             }
@@ -131,12 +137,12 @@ class WindowManager: KeyboardReadable {
         // add extra height to extend the window under the view
         // prevents taps from going to the view underneath the window
         openWindow?.frame = CGRect(
-            x: 0, y: calculateY(viewHeight: height, alignToBottom: alignToBottom),
+            x: 0, y: calculateY(viewHeight: height, placement: placement),
             width: parentWindow.bounds.width, height: height + 30)
         openWindow?.rootViewController = UIViewController()
         openWindow?.windowLevel = .alert
         openWindow?.alpha = 0
-        openWindow?.center.y += height
+        openWindow?.center.y += placement == .top ? -height : height
         openWindow?.makeKeyAndVisible()
 
         if addShadow {
@@ -148,75 +154,85 @@ class WindowManager: KeyboardReadable {
             openWindow?.layer.shadowOpacity = 0
         }
 
-        setWindowRootViewController(rootViewController, height: height)
+        setWindowRootViewController(rootViewController, placement: placement, height: height)
 
         // Tells caller that the window was displayed
         completionHandler()
     }
 
     private func setWindowRootViewController(
-        _ rootViewController: UIViewController, height: CGFloat
+        _ rootViewController: UIViewController, placement: WindowPlacement, height: CGFloat
     ) {
         UIView.animate(withDuration: inOutAnimationDuration) {
             self.openWindow?.alpha = 1
-            self.openWindow?.center.y -= height
+            self.openWindow?.center.y += placement == .top ? height : -height
+
+            self.openWindow?.layoutIfNeeded()
         }
 
         rootViewController.modalPresentationStyle = .overFullScreen
         openWindow?.rootViewController?.present(
             rootViewController, animated: false, completion: nil)
+        viewHeight = height
+        self.placement = placement
 
         SceneDelegate.getBVC(for: rootViewController.view).becomeFirstResponder()
     }
 
     public func removeCurrentWindow() {
-        UIView.animate(withDuration: inOutAnimationDuration) {
-            self.openWindow?.alpha = 0
+        UIView.animate(withDuration: inOutAnimationDuration) { [self] in
+            openWindow?.alpha = 0
+            openWindow?.center.y += placement == .top ? -viewHeight : viewHeight
+
+            openWindow?.layoutIfNeeded()
+        } completion: { [self] _ in
+            openWindow?.rootViewController?.dismiss(
+                animated: false,
+                completion: {
+                    openWindow?.isHidden = true
+
+                    // setting to nil removes UIWindow from stack
+                    // (removes all references, ARC takes care of the rest)
+                    openWindow = nil
+                })
         }
-
-        openWindow?.rootViewController?.dismiss(
-            animated: true,
-            completion: { [self] in
-                openWindow?.isHidden = true
-
-                // setting to nil removes UIWindow from stack
-                // (removes all references, ARC takes care of the rest)
-                openWindow = nil
-            })
     }
 
-    private func calculateY(viewHeight: CGFloat, alignToBottom: Bool) -> CGFloat {
-        let height =
-            alignToBottom
-            ? UIScreen.main.bounds.height - viewHeight + 25
-            : UIScreen.main.bounds.height - viewHeight
-        let bottomConstraint = alignToBottom ? 0 : bottomConstraint()
-        let safeAreaPadding: CGFloat = 24
+    private func calculateY(viewHeight: CGFloat, placement: WindowPlacement) -> CGFloat {
+        let safeAreaInsets = parentWindow.safeAreaInsets
+        let height = UIScreen.main.bounds.height
+        let padding: CGFloat = 12
+        var y: CGFloat = 0
 
-        keyboardHeightListener = keyboardPublisher.sink(receiveValue: { keyboardHeight in
-            UIView.animate(withDuration: 0.3) {
-                if keyboardHeight > 0 {
-                    self.openWindow?.center.y = height - (bottomConstraint / 2) - keyboardHeight
-                } else {
-                    self.openWindow?.center.y = height - bottomConstraint
+        switch placement {
+        case .top:
+            y = safeAreaInsets.top + padding
+        case .bottomToolbarPadding:
+            y = height - safeAreaInsets.bottom - viewHeight - bottomConstraint()
+        case .findInPage:
+            y = height - viewHeight + 28
+        }
+
+        if placement != .top {
+            keyboardHeightListener = keyboardPublisher.sink(receiveValue: { keyboardHeight in
+                UIView.animate(withDuration: 0.3) {
+                    if keyboardHeight > 0 {
+                        self.openWindow?.center.y = y - keyboardHeight + 28
+                    } else {
+                        // Push find in page down a bit more when keyboard hidden
+                        self.openWindow?.center.y = y + (placement == .findInPage ? 12 : 0)
+                    }
+
+                    self.openWindow?.layoutIfNeeded()
                 }
+            })
+        }
 
-                // have to add back half of the viewHeight as this is from the center not the top
-                if !alignToBottom {
-                    self.openWindow?.center.y += (viewHeight / 2)
-                } else if keyboardHeight <= 0 {
-                    self.openWindow?.center.y -= safeAreaPadding
-                }
-
-                self.openWindow?.layoutIfNeeded()
-            }
-        })
-
-        return height - bottomConstraint - safeAreaPadding
+        return y
     }
 
     private func bottomConstraint() -> CGFloat {
-        let safeArea = openWindow?.safeAreaInsets.bottom ?? 0
+        let safeArea = parentWindow.safeAreaInsets.bottom
         return safeArea + UIConstants.BottomToolbarHeight
     }
 
