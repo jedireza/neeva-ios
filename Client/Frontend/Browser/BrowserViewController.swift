@@ -942,7 +942,7 @@ class BrowserViewController: UIViewController {
         {
             if zeroQueryModel.targetTab == .existingOrNewTab {
                 hideZeroQuery()
-                tabManager.createOrSwitchToTab(for: url)
+                tabManager.createOrSwitchToTab(for: url, query: searchQueryModel.value)
             } else if zeroQueryModel.openedFrom == .backButton, let tab = tab {
                 // Once user changes current URL from the back button, the forward history list needs to be overriden.
                 // Going back, and THEN loading the request accomplishes that.

@@ -400,14 +400,19 @@ class TabManager: NSObject, ObservableObject {
         case switchedToExistingTab
     }
 
-    @discardableResult func createOrSwitchToTab(for url: URL) -> CreateOrSwitchToTabResult {
+    @discardableResult func createOrSwitchToTab(for url: URL, query: String? = nil)
+        -> CreateOrSwitchToTabResult
+    {
         if let existingTab = getTabFor(url) {
             select(existingTab)
             return .switchedToExistingTab
         } else {
             let newTab = addTab(
                 URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
+            newTab.queryForNavigation.currentSearchQuery = query
+
             select(newTab)
+
             return .createdNewTab
         }
     }
