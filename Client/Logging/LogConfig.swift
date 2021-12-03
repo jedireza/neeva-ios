@@ -109,6 +109,7 @@ public struct LogConfig {
 
         // performance
         case AppCrashWithPageLoad  // App Crash # With Page load #
+        case AppCrashWithCrashReporter  // App Crash # With Crash Reporter
         case LowMemoryWarning  // memory warning with memory footprint
         case AppEnterForeground  // session start = app enter foreground
 
@@ -307,6 +308,7 @@ public struct LogConfig {
         case .CloseReferralPromo: return .ReferralPromo
 
         case .AppCrashWithPageLoad: return .Performance
+        case .AppCrashWithCrashReporter: return .Performance
         case .LowMemoryWarning: return .Performance
         case .AppEnterForeground: return .Performance
 

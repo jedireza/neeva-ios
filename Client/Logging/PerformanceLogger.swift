@@ -25,7 +25,7 @@ public class PerformanceLogger {
     }
 
     // sent last crash status with page load number
-    public func logPageLoadWithCrashedStatus(crashed: Bool) {
+    public func logPageLoadWithCrashedStatus(crashed: Bool, forCrashReporter: Bool = false) {
         var attributes = [ClientLogCounterAttribute]()
         let pageLoadedCount = Defaults[.pageLoadedCounter]
         attributes.append(
@@ -41,7 +41,12 @@ public class PerformanceLogger {
             ClientLogCounterAttribute(
                 key: PerformanceLoggerAttribute.pageLoaded.rawValue,
                 value: String(pageLoadedCount)))
-        ClientLogger.shared.logCounter(.AppCrashWithPageLoad, attributes: attributes)
-        reset()
+        ClientLogger.shared.logCounter(
+            forCrashReporter ? .AppCrashWithCrashReporter : .AppCrashWithPageLoad,
+            attributes: attributes
+        )
+        if !forCrashReporter {
+            reset()
+        }
     }
 }

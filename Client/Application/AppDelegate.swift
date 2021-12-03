@@ -5,6 +5,7 @@
 import AVFoundation
 import BackgroundTasks
 import CoreSpotlight
+import CrashReporter
 import Defaults
 import LocalAuthentication
 import MessageUI
@@ -48,7 +49,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         // is backgrounded.
         cleanlyBackgroundedLastTime = Defaults[.applicationCleanlyBackgrounded]
         Defaults[.applicationCleanlyBackgrounded] = false  // Reset for this session.
-
 
         // If feedback did not finish sending before app closed, record that here
         if !Defaults[.feedbackBeingSent] {
@@ -99,6 +99,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         PerformanceLogger.shared.logPageLoadWithCrashedStatus(
             crashed: !cleanlyBackgroundedLastTime)
 
+        #if !DEBUG
+            if !startCrashReporter() {
+                log.info("Failed to start crash reporter")
+            }
+        #endif
+
         // set session UUID and timestamp if not set
         if Defaults[.sessionUUID].isEmpty {
             Defaults[.sessionUUID] = UUID().uuidString
@@ -128,6 +134,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
 
         log.info("startApplication end")
 
+        return true
+    }
+
+    func startCrashReporter() -> Bool {
+        let config = PLCrashReporterConfig(signalHandlerType: .mach, symbolicationStrategy: [])
+        guard let crashReporter = PLCrashReporter(configuration: config) else {
+            print("Could not create an instance of PLCrashReporter")
+            return false
+        }
+
+        do {
+            try crashReporter.enableAndReturnError()
+        } catch let error {
+            print("Warning: Could not enable crash reporter: \(error)")
+            return false
+        }
+
+        PerformanceLogger.shared.logPageLoadWithCrashedStatus(
+            crashed: crashReporter.hasPendingCrashReport(), forCrashReporter: true)
+
+        crashReporter.purgePendingCrashReport()
         return true
     }
 
