@@ -97,7 +97,7 @@ struct NeevaMenuView: View {
                 VStack(spacing: 0) {
                    // TODO: Macy - uncomment below feature flag check before merging to main
                    // if FeatureFlag[.enableCryptoWallet] {
-                    NeevaMenuRowButtonView(label: "Cryto Wallet", symbol: .creditcard) {
+                    NeevaMenuRowButtonView(label: "Crypto Wallet", symbol: .creditcard) {
                         self.menuAction(.cryptoWallet)
                     }
                     .accentColor(Color.brand.adaptive.orange)
