@@ -64,7 +64,7 @@ struct WalletDashboard: View {
 
         }
         .padding(.top, 10)
-        .padding(.vertical, 25)
+        .padding(.horizontal, 25)
         .onAppear(perform: getData)
     }
 
