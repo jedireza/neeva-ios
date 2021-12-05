@@ -5,7 +5,8 @@ import SwiftUI
 import web3swift
 
 struct WelcomeStarterView: View {
-    @Binding var isCreatingWallet: Bool
+    @State var isCreatingWallet: Bool = false
+    @Binding var viewState: ViewState
 
     var body: some View {
         VStack {
@@ -18,10 +19,13 @@ struct WelcomeStarterView: View {
             .padding(.bottom, 20)
 
             VStack {
-                Text(isCreatingWallet ? "Creating your wallet" : "Let's get set up!")
+                Text("Let's get set up!")
                     .font(.roobert(size: 22))
                     .frame(width: 300, height: 50, alignment: .leading)
-                Button(action: { isCreatingWallet = true }) {
+                Button(action: {
+                    isCreatingWallet = true
+                    createWallet()
+                }) {
                     Text(isCreatingWallet ? "Creating ... " : "Create a wallet")
                         .font(.roobert(.semibold, size: 18))
                 }
@@ -64,6 +68,42 @@ struct WelcomeStarterView: View {
                 RoundedRectangle(cornerRadius: 10).stroke(Color.ui.gray91, lineWidth: 0.5)
             )
             .background(Color.white.opacity(0.8))
+        }
+    }
+
+    func createWallet() {
+        if let url = URL(string: CryptoConfig.shared.getNodeURL()) {
+            do {
+                print("🍎 creating wallet")
+               // let web3 = try Web3.new(url)
+                let password = "NeevaCrypto"
+                let bitsOfEntropy: Int = 128
+                let mnemonics = try! BIP39.generateMnemonics(bitsOfEntropy: bitsOfEntropy)!
+                print("🍎 phrases: \(mnemonics)")
+                Defaults[.cryptoPhrases] = mnemonics
+
+                let keystore = try! BIP32Keystore(
+                    mnemonics: mnemonics,
+                    password: password,
+                    mnemonicsPassword: "",
+                    language: .english)!
+                let name = "My Neeva Crypto Wallet"
+                let keyData = try! JSONEncoder().encode(keystore.keystoreParams)
+
+                let address = keystore.addresses!.first!.address
+                let wallet = Wallet(address: address, data: keyData, name: name, isHD: true)
+                print("🍎 first wallet: \(wallet.address)")
+
+                let privateKey = try keystore.UNSAFE_getPrivateKeyData(password: password, account: EthereumAddress(address)!).toHexString()
+                print("🍎 private key: \(privateKey)")
+                Defaults[.cryptoPrivateKey] = privateKey
+
+                Defaults[.cryptoPublicKey] = wallet.address
+                isCreatingWallet = false
+                viewState = .showPhrases
+            } catch {
+                print("🔥 Unexpected error: \(error).")
+            }
         }
     }
 }

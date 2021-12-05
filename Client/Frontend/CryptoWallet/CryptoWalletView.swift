@@ -20,12 +20,12 @@ enum ViewState {
     case starter
     case dashboard
     case transaction
+    case showPhrases
 }
 
 struct CryptoWalletView: View {
-    @State var viewState: ViewState = .starter
-    @State var isCreatingWallet: Bool = false
-
+    @State var viewState: ViewState = Defaults[.cryptoPhrases].isEmpty ? .starter : .showPhrases
+    // @State var viewState: ViewState = .starter
     var onDismiss: () -> Void
 
     var body: some View {
@@ -35,14 +35,15 @@ struct CryptoWalletView: View {
                     Spacer()
                     Button(action: onDismiss) {
                         Text("Close")
-                            .frame(minWidth: 50, minHeight: 30)
+                            .frame(minWidth: 60, minHeight: 45, alignment: .center)
                     }
-                    .padding(2)
                     .background(Color.ui.gray91)
+                    .contentShape(Rectangle())
                     .cornerRadius(10)
                 }
                 .padding()
                 .padding(.trailing, 20)
+                .padding(.top, 15)
 
                 ZStack {
                     VStack {
@@ -61,12 +62,14 @@ struct CryptoWalletView: View {
                     .frame(maxWidth: .infinity, maxHeight: 400)
 
                     if viewState == .starter {
-                        WelcomeStarterView(isCreatingWallet: $isCreatingWallet)
+                        WelcomeStarterView(viewState: $viewState)
                             .padding(.horizontal, 25)
                     } else if viewState == .dashboard {
                         WalletDashboard()
                     } else if viewState == .transaction {
 
+                    } else if viewState == .showPhrases {
+                        ShowPhrasesView(viewState: $viewState)
                     }
                 }
             }

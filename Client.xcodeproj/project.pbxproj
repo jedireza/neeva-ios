@@ -343,6 +343,8 @@
 		BC7D47D42720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D47D32720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift */; };
 		BC8438DD275B077200611745 /* WelcomeStarterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8438DC275B077200611745 /* WelcomeStarterView.swift */; };
 		BC8438DF275B09FD00611745 /* WalletDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8438DE275B09FD00611745 /* WalletDashboard.swift */; };
+		BC8438E1275B485900611745 /* CryptoConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8438E0275B485900611745 /* CryptoConfig.swift */; };
+		BC8438E3275BE51700611745 /* ShowPhrasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8438E2275BE51700611745 /* ShowPhrasesView.swift */; };
 		BC85E226264F407C0068092F /* TourPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E225264F407C0068092F /* TourPromptView.swift */; };
 		BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */; };
 		BC86023B26E9B7F300D1C188 /* ProductClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */; };
@@ -1448,6 +1450,8 @@
 		BC7D47D32720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetLogManager.swift; sourceTree = "<group>"; };
 		BC8438DC275B077200611745 /* WelcomeStarterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStarterView.swift; sourceTree = "<group>"; };
 		BC8438DE275B09FD00611745 /* WalletDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDashboard.swift; sourceTree = "<group>"; };
+		BC8438E0275B485900611745 /* CryptoConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoConfig.swift; sourceTree = "<group>"; };
+		BC8438E2275BE51700611745 /* ShowPhrasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPhrasesView.swift; sourceTree = "<group>"; };
 		BC85E225264F407C0068092F /* TourPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptView.swift; sourceTree = "<group>"; };
 		BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTourPromptViewController.swift; sourceTree = "<group>"; };
 		BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClusterView.swift; sourceTree = "<group>"; };
@@ -2824,6 +2828,8 @@
 				BC53101C2759E6F4005AF524 /* CryptoWalletView.swift */,
 				BC8438DC275B077200611745 /* WelcomeStarterView.swift */,
 				BC8438DE275B09FD00611745 /* WalletDashboard.swift */,
+				BC8438E0275B485900611745 /* CryptoConfig.swift */,
+				BC8438E2275BE51700611745 /* ShowPhrasesView.swift */,
 			);
 			path = CryptoWallet;
 			sourceTree = "<group>";
@@ -5302,6 +5308,7 @@
 				D38F02D11C05127100175932 /* Authenticator.swift in Sources */,
 				C9299E3B2695EA4B00758795 /* TextSizeView.swift in Sources */,
 				D0FCF7F51FE45842004A7995 /* UserScriptManager.swift in Sources */,
+				BC8438E3275BE51700611745 /* ShowPhrasesView.swift in Sources */,
 				F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */,
 				E4A960061ABB9C450069AD6F /* ReaderModeUtils.swift in Sources */,
 				4A9F654B27229E3400B7C06E /* BottomSheetView.swift in Sources */,
@@ -5332,6 +5339,7 @@
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,
 				C9FD1B1F26C1AD7C00926A70 /* TopBarHost.swift in Sources */,
 				C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */,
+				BC8438E1275B485900611745 /* CryptoConfig.swift in Sources */,
 				BCA4D73127226E8000AE5A15 /* RelatedRecipeView.swift in Sources */,
 				C8CF648F26FA7DE900C3816F /* FaviconResolver.swift in Sources */,
 				E4B423DD1ABA0318007E66C8 /* ReaderModeHandlers.swift in Sources */,

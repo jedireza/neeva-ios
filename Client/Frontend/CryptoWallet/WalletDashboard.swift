@@ -1,58 +1,81 @@
 // Copyright Neeva. All rights reserved.
 
 import Defaults
+import MobileCoreServices
 import SwiftUI
 import web3swift
 
 struct WalletDashboard: View {
+    @State var copyButtonText: String = "Copy"
     @State var accountBalance: String = ""
 
     var body: some View {
         VStack(spacing: 8) {
-            Text("Welcome to Neeva Crypto Wallet")
-            Text("Your current balance")
-            Text("\(accountBalance)")
+            Image("ethLogo")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 40, height: 40)
+                .padding(4)
+                .background(
+                    Circle().stroke(Color.ui.gray80)
+                )
+            Text("\(accountBalance) ETH")
+                .font(.roobert(size: 32))
+
+            Text("$\(CryptoConfig.shared.etherToUSD(ether: accountBalance)) USD")
+                .font(.system(size: 18))
+                .foregroundColor(.secondary)
+
+            Button(action: getData) {
+                Text("Refresh")
+                    .font(.system(size: 14))
+            }
+            .frame(minWidth: 70, minHeight: 30, alignment: .center)
+            .foregroundColor(Color.brand.white)
+            .background(Color(hex: 0xA6C294))
+            .cornerRadius(35)
+
+            VStack {
+                Text("Account")
+                HStack {
+                    ScrollView(.horizontal) {
+                        Text("\(Defaults[.cryptoPublicKey])")
+                    }
+                    Button(action: {
+                        copyButtonText = "Copied!"
+                        UIPasteboard.general.setValue(Defaults[.cryptoPublicKey], forPasteboardType: kUTTypePlainText as String)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                            copyButtonText = "Copy"
+                        }
+                    }) {
+                        Text("\(copyButtonText)")
+                    }
+                    .padding(12)
+                    .foregroundColor(Color.brand.white)
+                    .background(Color.brand.charcoal)
+                    .cornerRadius(10)
+                }
+                .padding(10)
+                .background(
+                    RoundedRectangle(cornerRadius: 10).stroke(Color.ui.gray91, lineWidth: 0.5)
+                )
+                .background(Color.white.opacity(0.8))
+            }
+
         }
         .padding(.top, 10)
+        .padding(.vertical, 25)
+        .onAppear(perform: getData)
     }
 
     func getData() {
-        print("🍎 page loaded")
-        // enter your own nodeURL
-        //let nodeURL = "https://mainnet.infura.io/v3/83f94ab9ec72404096d4fa53182c7e80"
-
-        // testing network
-        let nodeURL = "https://ropsten.infura.io/v3/83f94ab9ec72404096d4fa53182c7e80"
-        
-        if let url = URL(string: nodeURL) {
+        if let url = URL(string: CryptoConfig.shared.getNodeURL()) {
             do {
                 print("🍎 connecting")
                 let web3 = try Web3.new(url)
 
-                let password = "NeevaCrypto"
-                let bitsOfEntropy: Int = 128
-                let mnemonics = try! BIP39.generateMnemonics(bitsOfEntropy: bitsOfEntropy)!
-                Defaults[.cryptoPhrases] = mnemonics
-                print("🍎 mnemonics: \(mnemonics)")
-
-                let keystore = try! BIP32Keystore(
-                    mnemonics: mnemonics,
-                    password: password,
-                    mnemonicsPassword: "",
-                    language: .english)!
-                let name = "My Neeva Crypto Wallet"
-                let keyData = try! JSONEncoder().encode(keystore.keystoreParams)
-                let address = keystore.addresses!.first!.address
-                print("🍎 first wallet: \(address)")
-                let wallet = Wallet(address: address, data: keyData, name: name, isHD: true)
-
-                Defaults[.cryptoPublicKey] = wallet.address
-
-                print("🍎 wallet.address: \(wallet.address)")
-                print("🍎 wallet.name: \(wallet.name)")
-
-
-                let testAccountAddress = EthereumAddress("0xBE0eB53F46cd790Cd13851d5EFf43D12404d33E8")!
+                let testAccountAddress = EthereumAddress("\(Defaults[.cryptoPublicKey])")!
+                print("🍎 public address: \(Defaults[.cryptoPublicKey])")
                 let balance = try web3.eth.getBalancePromise(address: testAccountAddress).wait()
 
                 print("🍎 balance(wei): \(balance)")
