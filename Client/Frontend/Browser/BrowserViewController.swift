@@ -946,13 +946,15 @@ class BrowserViewController: UIViewController {
             } else if zeroQueryModel.openedFrom == .backButton, let tab = tab {
                 // Once user changes current URL from the back button, the forward history list needs to be overriden.
                 // Going back, and THEN loading the request accomplishes that.
-                tab.webView?.goBack()
+                DispatchQueue.main.async {
+                    tab.webView?.goBack()
 
-                guard let nav = tab.loadRequest(URLRequest(url: url)) else {
-                    return
+                    guard let nav = tab.loadRequest(URLRequest(url: url)) else {
+                        return
+                    }
+
+                    self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
                 }
-
-                self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             } else if let tab = tab, let nav = tab.loadRequest(URLRequest(url: url)) {
                 self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             }
