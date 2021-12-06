@@ -618,21 +618,23 @@ class BrowserViewController: UIViewController {
             displayedRestoreTabsAlert = true
             showRestoreTabsAlert()
         } else {
-            if tabManager.restoreTabs() {
-                // Handle the case of an existing user upgrading to a version of the app
-                // that supports preview mode. They will have tabs already, so we don't
-                // want to show them the preview home experience.
+            let _ = tabManager.restoreTabs()
+
+            // Handle the case of an existing user upgrading to a version of the app
+            // that supports preview mode. They will have tabs already, so we don't
+            // want to show them the preview home experience.
+            // TODO: This is flawed as an existing user may have closed their tabs.
+            if !tabManager.tabs.isEmpty {
                 Defaults[.didFirstNavigation] = true
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    if Self.createNewTabOnStartForTesting {
-                        self.tabManager.select(self.tabManager.addTab())
-                    } else if !Defaults[.didFirstNavigation] {
-                        self.showPreviewHome()
-                    } else {
-                        self.showTabTray()
-                    }
+            }
+
+            DispatchQueue.main.async {
+                if Self.createNewTabOnStartForTesting {
+                    self.tabManager.select(self.tabManager.addTab())
+                } else if !Defaults[.didFirstNavigation] {
+                    self.showPreviewHome()
+                } else if self.tabManager.normalTabs.isEmpty {
+                    self.showTabTray()
                 }
             }
         }
@@ -676,9 +678,9 @@ class BrowserViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         presentIntroViewController()
+
         screenshotHelper.viewIsVisible = true
         screenshotHelper.takePendingScreenshots(tabManager.tabs)
-
         overlayWindowManager = WindowManager(parentWindow: view.window!)
 
         super.viewDidAppear(animated)
@@ -819,7 +821,7 @@ class BrowserViewController: UIViewController {
 
     public func showPreviewHome() {
         tabContainerModel.updateContent(.showPreviewHome)
-        self.scrollController.hideToolbars(animated: false)
+        scrollController.hideToolbars(animated: false)
     }
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
@@ -1111,6 +1113,18 @@ class BrowserViewController: UIViewController {
     fileprivate func popToBVC() {
         if !gridModel.isHidden {
             gridModel.hideWithNoAnimation()
+        }
+
+        if let introViewController = introViewController {
+            // Undo the alpha change from `viewWillAppear`.
+            view.alpha = 1
+
+            // Do not show the IntroViewController again.
+            Defaults[.introSeen] = true
+
+            introViewController.dismiss(animated: true) {
+                self.introViewController = nil
+            }
         }
 
         if let presentedViewController = presentedViewController {
