@@ -453,4 +453,8 @@ public struct LogConfig {
         public static let numTabGroupsTotal = "NumTabGroupsTotal"
         public static let numTabsInTabGroup = "NumTabsInTabGroup"
     }
+
+    public struct DeeplinkAttribute {
+        public static let searchRedirect = "SearchRedirect"
+    }
 }

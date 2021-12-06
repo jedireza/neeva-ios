@@ -56,7 +56,7 @@ enum NavigationPath {
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .url(
-                webURL: NavigationPath.maybeRewriteURL(url, components), isPrivate: isPrivate)
+                webURL: NavigationPath.maybeRewriteURL(url, components) ?? url, isPrivate: isPrivate)
         } else if urlString.starts(with: "\(scheme)://space"),
             let spaceId = components.valueForQuery("id")
         {
@@ -210,7 +210,7 @@ enum NavigationPath {
         }
     }
 
-    public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
+    public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL? {
         // Intercept and rewrite search queries incoming from e.g. SpotLight.
         //
         // Example of what components looks like:
@@ -268,7 +268,7 @@ enum NavigationPath {
                     value = queryItems.first(where: { $0.name == "query" })?.value
                 }
             default:
-                return url
+                return nil
             }
         }
 
@@ -277,7 +277,7 @@ enum NavigationPath {
         {
             return newURL
         } else {
-            return url
+            return nil
         }
     }
 }
