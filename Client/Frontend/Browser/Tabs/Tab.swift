@@ -496,6 +496,26 @@ class Tab: NSObject, ObservableObject {
         }
     }
 
+    func getMostRecentQuery(restrictToCurrentNavigation: Bool = false) -> String? {
+        guard let webView = webView else {
+            return nil
+        }
+
+        if restrictToCurrentNavigation {
+            guard let navigation = webView.backForwardList.currentItem else {
+                return nil
+            }
+
+            return queryForNavigation.findQueryFor(navigation: navigation)
+        } else {
+            for navigation in ([webView.backForwardList.currentItem] + webView.backForwardList.backList.reversed()).compactMap({ $0 }) {
+                return queryForNavigation.findQueryFor(navigation: navigation)
+            }
+        }
+
+        return nil
+    }
+
     func addContentScript(_ helper: TabContentScript, name: String) {
         contentScriptManager.addContentScript(helper, name: name, forTab: self)
     }

@@ -20,6 +20,7 @@ class QueryForNavigation {
             let query = currentSearchQuery, !query.isEmpty
         {
             queryForNavigations[navigation] = query
+            currentSearchQuery = nil
 
             let backForwardList = webView.backForwardList.all
             queryForNavigations = queryForNavigations.filter {
