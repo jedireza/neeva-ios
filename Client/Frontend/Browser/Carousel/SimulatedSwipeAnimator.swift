@@ -19,8 +19,8 @@ private let DefaultParameters =
         totalScale: 0.9,
         totalAlpha: 0,
         minExitVelocity: 800,
-        recenterAnimationDuration: 1.5,
-        cancelAnimationDuration: 0.5)
+        recenterAnimationDuration: 0.3,
+        cancelAnimationDuration: 0.3)
 
 protocol SimulateForwardAnimatorDelegate: AnyObject {
     func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator)
