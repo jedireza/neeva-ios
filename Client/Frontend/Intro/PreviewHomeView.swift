@@ -31,7 +31,11 @@ struct PreviewHomeView: View {
     }
 
     var signInButton: some View {
-        Button(action: { bvc.presentIntroViewController(true, signInMode: true) }) {
+        Button(action: {
+            ClientLogger.shared.logCounter(
+                .PreviewHomeSignin, attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+            bvc.presentIntroViewController(true, signInMode: true)
+        }) {
             HStack {
                 Spacer()
                 Text("Sign in")

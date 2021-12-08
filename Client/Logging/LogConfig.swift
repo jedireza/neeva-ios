@@ -82,6 +82,7 @@ public struct LogConfig {
         case PreviewHomeImpression  // Preview home impression
         case PreviewSampleQueryClicked  // Clicked on sample query on the home page
         case PreviewTapFakeSearchInput  // Clicked on the fake search input box on preview home page
+        case PreviewHomeSignin // Click sign in on preview home
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -285,6 +286,7 @@ public struct LogConfig {
         case .PreviewHomeImpression: return .FirstRun
         case .PreviewSampleQueryClicked: return .FirstRun
         case .PreviewTapFakeSearchInput: return .FirstRun
+        case .PreviewHomeSignin: return .FirstRun
 
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
@@ -393,6 +395,8 @@ public struct LogConfig {
         public static let FirstRunPath = "FirstRunPath"
         /// First session uuid when user open the app
         public static let FirstSessionUUID = "FirstSessionUUID"
+        /// Preview mode query count
+        public static let PreviewModeQueryCount = "PreviewModeQueryCount"
     }
 
     public struct SuggestionAttribute {

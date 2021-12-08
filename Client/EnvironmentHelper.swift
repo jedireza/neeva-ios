@@ -113,7 +113,7 @@ public class EnvironmentHelper {
 
         // count of preview mode query
         let previewQueryCount = ClientLogCounterAttribute(
-            key: LogConfig.Attribute.FirstRunPath,
+            key: LogConfig.Attribute.PreviewModeQueryCount,
             value: String(Defaults[.previewModeQueries].count))
 
         return [
