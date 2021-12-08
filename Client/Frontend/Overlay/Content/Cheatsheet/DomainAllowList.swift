@@ -43,7 +43,7 @@ public enum DomainAllowList {
         "chowhound.com": true,
         "cookiesandcups.com": true,
         "cookieandkate.com": true,
-        "cooking.nytimes.com": true,
+        "cooking.nytimes.com": false,
         "cookingchanneltv.com": true,
         "cookingclassy.com": true,
         "cookinglight.com": true,
