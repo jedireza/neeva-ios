@@ -9,7 +9,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     // in alphabetical order to reduce merge conflicts.
 
     case bottomURLBar = "Bottom URL Bar"
-    case cardStrip = "Carousel of cards instead of tab strip"
+    case cardStrip = "Card Strip"
     case topCardStrip = "Top Card Strip"
     case createOrSwitchToTab = "Create new tab or open exisiting tab"
     case debugURLBar = "URL Bar Debug Mode"

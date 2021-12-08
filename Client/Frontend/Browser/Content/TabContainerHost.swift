@@ -142,12 +142,13 @@ struct TabContainerContent: View {
                     WebViewContainer(webView: currentWebView)
                         .ignoresSafeArea()
 
-                    if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip] {
-                        GeometryReader { geo in
-                            VStack {
-                                Spacer()
-                                CardStripContent(bvc: bvc, width: geo.size.width)
-                            }
+                    if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip]
+                        && UIDevice.current.userInterfaceIdiom == .pad
+                    {
+                        VStack {
+                            Spacer()
+                            CardStripContent(bvc: bvc)
+                                .environmentObject(bvc.gridModel.cardStripModel)
                         }
                     }
                     if FeatureFlag[.spaceComments] {

@@ -24,6 +24,7 @@ class GridModel: ObservableObject {
         }
     }
     @Published var refreshDetailedSpaceSubscription: AnyCancellable? = nil
+    @ObservedObject var cardStripModel = CardStripModel()
 
     var isIncognito: Bool {
         tabCardModel.manager.isIncognito
@@ -53,6 +54,7 @@ class GridModel: ObservableObject {
         animationThumbnailState = .visibleForTrayShow
         updateVisibility(false)
         updateSpaces()
+        cardStripModel.setVisible(to: false)
     }
 
     func showWithNoAnimation() {
@@ -60,6 +62,7 @@ class GridModel: ObservableObject {
         isHidden = false
         updateVisibility(false)
         updateSpaces()
+        cardStripModel.setVisible(to: false)
     }
 
     func showSpaces(forceUpdate: Bool = true) {
@@ -70,10 +73,12 @@ class GridModel: ObservableObject {
         if forceUpdate {
             updateSpaces()
         }
+        cardStripModel.setVisible(to: false)
     }
 
     func hideWithAnimation() {
         self.animationThumbnailState = .visibleForTrayHidden
+        cardStripModel.setVisible(to: true)
     }
 
     func hideWithNoAnimation() {
@@ -82,6 +87,7 @@ class GridModel: ObservableObject {
         isHidden = true
         switcherState = .tabs
         animateDetailTransitions = true
+        cardStripModel.setVisible(to: true)
     }
 
     func setVisibilityCallback(updateVisibility: @escaping (Bool) -> Void) {
@@ -95,7 +101,10 @@ class GridModel: ObservableObject {
         }
     }
 
-    func openSpace(spaceId: String, bvc: BrowserViewController, isPrivate: Bool = false, completion: @escaping () -> Void) {
+    func openSpace(
+        spaceId: String, bvc: BrowserViewController, isPrivate: Bool = false,
+        completion: @escaping () -> Void
+    ) {
         if !NeevaUserInfo.shared.hasLoginCookie() {
             var spaceURL = NeevaConstants.appSpacesURL
             spaceURL.appendPathComponent(spaceId)

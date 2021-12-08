@@ -35,7 +35,7 @@ class TabChromeModel: ObservableObject {
 
     var showTopCardStrip: Bool {
         FeatureFlag[.cardStrip] && FeatureFlag[.topCardStrip] && inlineToolbar
-            && !isEditingLocation
+            && !isEditingLocation && UIDevice.current.userInterfaceIdiom == .pad
     }
 
     var appActiveRefreshSubscription: AnyCancellable? = nil

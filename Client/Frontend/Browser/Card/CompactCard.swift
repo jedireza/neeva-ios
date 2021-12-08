@@ -65,6 +65,30 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
         }
     }
 
+    var menuItems: some View {
+        Group {
+            if !details.isPinned {
+                Button {
+                    details.manager.get(for: details.id)?.isPinned.toggle()
+                } label: {
+                    Label("Pin tab", systemSymbol: .pin)
+                }
+
+                Button {
+                    details.onClose()
+                } label: {
+                    Label("Close tab", systemSymbol: .xmark)
+                }
+            } else {
+                Button {
+                    details.manager.get(for: details.id)?.isPinned.toggle()
+                } label: {
+                    Label("Unpin tab", systemSymbol: .pinSlash)
+                }
+            }
+        }
+    }
+
     var card: some View {
         Button(action: {
             details.onSelect()
@@ -88,6 +112,9 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
                     }
             }
         )
+        .contextMenu {
+            menuItems
+        }
     }
 
     var body: some View {

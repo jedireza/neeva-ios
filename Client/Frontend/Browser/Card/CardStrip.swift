@@ -60,11 +60,13 @@ private struct CardStripButtonSpec: ViewModifier {
 }
 
 class CardStripModel: ObservableObject {
-    @Published var isVisible: Bool = false
+    @Published var isVisible: Bool = true
 
-    func toggleVisible() {
+    func setVisible(to: Bool) {
         withAnimation {
-            isVisible.toggle()
+            DispatchQueue.main.asyncAfter(deadline: .now() + (!to ? 1 : 0)) {
+                self.isVisible = to
+            }
         }
     }
 }
@@ -73,7 +75,6 @@ struct CardStripView: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var sitesModel: SiteCardModel
-    @EnvironmentObject var cardStripModel: CardStripModel
     @EnvironmentObject var gridModel: GridModel
 
     let isTop = FeatureFlag[.topCardStrip]
@@ -106,44 +107,5 @@ struct CardStripView: View {
         }.onAppear {
             tabModel.onDataUpdated()
         }.frame(maxWidth: .infinity)
-    }
-}
-
-private struct ToggleSpacesButton: View {
-    @EnvironmentObject var spaceModel: SpaceCardModel
-    @Binding var showingSpaces: Bool
-
-    var body: some View {
-        Button {
-            spaceModel.onDataUpdated()
-            withAnimation {
-                showingSpaces.toggle()
-            }
-        } label: {
-            Symbol(.bookmark, size: 18, weight: .semibold, label: "Show Spaces")
-                .foregroundColor(
-                    Color(showingSpaces ? UIColor.DefaultBackground : UIColor.label)
-                )
-                .aspectRatio(contentMode: .fit)
-                .tapTargetFrame()
-                .background(Color(showingSpaces ? UIColor.label : UIColor.DefaultBackground))
-                .clipShape(Circle()).animation(.spring())
-        }
-    }
-}
-
-private struct DismissButton: View {
-    var onDismiss: () -> Void
-
-    var body: some View {
-        Button(action: onDismiss) {
-            Symbol(.xmark, size: 18, weight: .semibold, label: "Dismiss View")
-                .foregroundColor(
-                    Color(UIColor.label)
-                )
-                .aspectRatio(contentMode: .fit)
-                .tapTargetFrame()
-                .animation(.spring())
-        }
     }
 }

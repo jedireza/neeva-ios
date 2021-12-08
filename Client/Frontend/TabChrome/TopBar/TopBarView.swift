@@ -24,6 +24,10 @@ struct TopBarView: View {
     @EnvironmentObject private var chrome: TabChromeModel
     @EnvironmentObject private var location: LocationViewModel
 
+    var bvc: BrowserViewController {
+        SceneDelegate.getBVC(with: chrome.topBarDelegate?.tabManager.scene)
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             HStack(spacing: chrome.inlineToolbar ? 12 : 0) {
@@ -93,11 +97,8 @@ struct TopBarView: View {
             .padding(.bottom, chrome.estimatedProgress == nil ? 0 : -1)
 
             if chrome.showTopCardStrip {
-                GeometryReader { geo in
-                    CardStripContent(
-                        bvc: SceneDelegate.getBVC(with: chrome.topBarDelegate?.tabManager.scene),
-                        width: geo.size.width)
-                }
+                CardStripContent(bvc: bvc)
+                    .environmentObject(bvc.gridModel.cardStripModel)
             }
 
             Group {
