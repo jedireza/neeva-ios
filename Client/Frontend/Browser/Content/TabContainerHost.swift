@@ -242,10 +242,11 @@ class TabContainerHost: IncognitoAwareHostingController<TabContainerContent> {
             if let view = self.view,
                 let currentState = KeyboardHelper.defaultHelper.currentState
             {
-                // Minus extra padding which is added by the system above the keyboard in landscape mode
-                return currentState.intersectionHeightForView(view)
-                    - (UIDevice.current.orientation.isLandscape
-                        ? (UIDevice.current.userInterfaceIdiom == .pad ? 28 : 16) : 0)
+                let height =
+                    currentState.intersectionHeightForView(view)
+                    - self.view.safeAreaInsets.bottom
+
+                return height > 0 ? height : 0
             } else {
                 return 0
             }

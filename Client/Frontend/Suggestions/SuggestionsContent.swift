@@ -33,7 +33,8 @@ struct SuggestionsContent: View {
                 }
 
                 Spacer()
-                    .frame(height: suggestionModel.getKeyboardHeight())
+                    .frame(
+                        height: suggestionModel.getKeyboardHeight())
             }
             .ignoresSafeArea(edges: [.bottom])
         }.onAppear {

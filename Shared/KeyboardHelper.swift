@@ -35,6 +35,7 @@ public struct KeyboardState {
             let intersection = convertedKeyboardFrame.intersection(view.bounds)
             return intersection.size.height
         }
+
         return 0
     }
 
