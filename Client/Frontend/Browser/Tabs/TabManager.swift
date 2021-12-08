@@ -544,10 +544,14 @@ class TabManager: NSObject, ObservableObject {
         if closedLastNormalTab {
             bvc.showTabTray()
         } else if closedLastPrivateTab {
-            if let tab = mostRecentTab(inTabs: normalTabs) {
-                select(tab)
+            if !FeatureFlag[.segmentedPicker] {
+                if let tab = mostRecentTab(inTabs: normalTabs) {
+                    select(tab)
+                } else {
+                    toggleIncognitoMode()
+                    bvc.showTabTray()
+                }
             } else {
-                toggleIncognitoMode()
                 bvc.showTabTray()
             }
         } else if tab == selectedTab {

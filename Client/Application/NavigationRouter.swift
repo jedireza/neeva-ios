@@ -90,7 +90,8 @@ enum NavigationPath {
         case .widgetUrl(let webURL, let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
         case .space(let spaceId, let updatedItemIds, let isPrivate):
-            NavigationPath.handleSpace(spaceId: spaceId, updatedItemIds: updatedItemIds, isPrivate: isPrivate, with: bvc)
+            NavigationPath.handleSpace(
+                spaceId: spaceId, updatedItemIds: updatedItemIds, isPrivate: isPrivate, with: bvc)
         case .fastTap(let query, let noDelay):
             NavigationPath.handleFastTap(query: query, with: bvc, noDelay: noDelay)
         case .configNewsProvider(let isPrivate):
@@ -199,7 +200,7 @@ enum NavigationPath {
         if let updatedItemIDs = updatedItemIds, !updatedItemIDs.isEmpty {
             gridModel.spaceCardModel.updatedItemIDs = updatedItemIDs
         }
-        gridModel.openSpace(spaceId: spaceId, bvc: bvc, isPrivate:isPrivate, completion: {})
+        gridModel.openSpace(spaceId: spaceId, bvc: bvc, isPrivate: isPrivate, completion: {})
     }
 
     private static func handleFastTap(query: String, with bvc: BrowserViewController, noDelay: Bool)

@@ -7,7 +7,8 @@ enum NeevaMenuAction {
     case spaces
     case settings
     case history
-    case feedback
+    case support
+    case downloads
     case referralPromo
 }
 
@@ -61,7 +62,7 @@ extension BrowserViewController {
 
             present(navigationController, animated: true, completion: nil)
 
-        case .feedback:
+        case .support:
             ClientLogger.shared.logCounter(
                 .OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
             TourManager.shared.userReachedStep(tapTarget: .feedbackMenu)
@@ -75,6 +76,10 @@ extension BrowserViewController {
                 .OpenReferralPromo, attributes: attributes)
             switchToTabForURLOrOpen(NeevaConstants.appReferralsURL)
             presentedViewController?.dismiss(animated: true)
+        case .downloads:
+            ClientLogger.shared.logCounter(
+                .OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
+            openDownloadsFolderInFilesApp()
         }
     }
 }

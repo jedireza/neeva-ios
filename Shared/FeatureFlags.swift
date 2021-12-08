@@ -18,6 +18,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case overflowMenuInCardGrid = "Overflow Menu in Card Grid"
     case pinToTopSites = "Pin to Top Sites"
     case recommendedSpaces = "Recommended Spaces"
+    case segmentedPicker = "Segmented Picker in Card Grid"
     case spaceComments = "Comments from space on pages"
     case spacify = "Enable button to turn a page into a Space"
     case suggestionBackButton = "Suggestion Back Button"

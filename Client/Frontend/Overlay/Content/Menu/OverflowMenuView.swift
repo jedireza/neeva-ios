@@ -115,7 +115,7 @@ public struct OverflowMenuView: View {
                         .accessibilityIdentifier("OverflowMenu.NewTab")
                     } else {
                         OverflowMenuButtonView(label: "Support", symbol: .bubbleLeft) {
-                            menuAction(.feedback)
+                            menuAction(.support)
                         }
                         .accessibilityIdentifier("OverflowMenu.Feedback")
                     }
@@ -142,7 +142,7 @@ public struct OverflowMenuView: View {
                                 label: "Support",
                                 symbol: .bubbleLeft
                             ) {
-                                menuAction(.feedback)
+                                menuAction(.support)
                             }
                             .accessibilityIdentifier("OverflowMenu.Feedback")
 

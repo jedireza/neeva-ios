@@ -53,47 +53,52 @@ struct SwitcherToolbarView: View {
 
             HStack(spacing: 0) {
                 if FeatureFlag[.overflowMenuInCardGrid] {
-                    if case .tabs = gridModel.switcherState {
-                        if top {
-                            TopBarOverflowMenuButton(
-                                changedUserAgent: bvc.tabManager.selectedTab?.showRequestDesktop,
-                                onOverflowMenuAction: { action, view in
-                                    bvc.perform(overflowMenuAction: action, targetButtonView: view)
-                                },
-                                onLongPress: { _ in
-                                }, location: .cardGrid
-                            )
-                            .tapTargetFrame()
-                            .environmentObject(bvc.chromeModel)
-                            .environmentObject(bvc.locationModel)
-                        } else {
-                            TabToolbarButtons.OverflowMenu(
-                                weight: .medium,
-                                action: {
-                                    bvc.showModal(style: .grouped) {
-                                        OverflowMenuOverlayContent(
-                                            menuAction: { action in
-                                                bvc.perform(
-                                                    overflowMenuAction: action,
-                                                    targetButtonView: nil)
-                                            },
-                                            changedUserAgent: bvc.tabManager.selectedTab?
-                                                .showRequestDesktop,
-                                            chromeModel: bvc.chromeModel,
-                                            locationModel: bvc.locationModel,
-                                            location: .cardGrid
-                                        )
-                                    }
-                                },
-                                onLongPress: {}
-                            )
-                            .tapTargetFrame()
-                        }
+                    if top && FeatureFlag[.segmentedPicker] {
+                        GridPicker(isInToolbar: true).fixedSize()
+                        Spacer()
                     }
 
                     if top {
-                        GridPicker()
-                    } else if case .tabs = gridModel.switcherState {
+                        TopBarOverflowMenuButton(
+                            changedUserAgent: bvc.tabManager.selectedTab?.showRequestDesktop,
+                            onOverflowMenuAction: { action, view in
+                                bvc.perform(overflowMenuAction: action, targetButtonView: view)
+                            },
+                            onLongPress: { _ in
+                            }, location: .cardGrid
+                        )
+                        .tapTargetFrame()
+                        .environmentObject(bvc.chromeModel)
+                        .environmentObject(bvc.locationModel)
+                    } else {
+                        TabToolbarButtons.OverflowMenu(
+                            weight: .medium,
+                            action: {
+                                bvc.showModal(style: .grouped) {
+                                    OverflowMenuOverlayContent(
+                                        menuAction: { action in
+                                            bvc.perform(
+                                                overflowMenuAction: action,
+                                                targetButtonView: nil)
+                                        },
+                                        changedUserAgent: bvc.tabManager.selectedTab?
+                                            .showRequestDesktop,
+                                        chromeModel: bvc.chromeModel,
+                                        locationModel: bvc.locationModel,
+                                        location: .cardGrid
+                                    )
+                                }
+                            },
+                            onLongPress: {}
+                        )
+                        .tapTargetFrame()
+                    }
+
+                    if top {
+                        if !FeatureFlag[.segmentedPicker] {
+                            GridPicker(isInToolbar: true)
+                        }
+                    } else {
                         Spacer()
                     }
                 } else if top {
@@ -125,7 +130,7 @@ struct SwitcherToolbarView: View {
                         .padding(.top, 13)  // height of the arrow
                     }
                     .tapTargetFrame()
-                    GridPicker()
+                    GridPicker(isInToolbar: true)
 
                     if case .tabs = gridModel.switcherState {
                         IncognitoButton(
@@ -157,7 +162,7 @@ struct SwitcherToolbarView: View {
                         toolbarModel.createNewSpace()
                     }
                 }) {
-                    $0.setImage(Symbol.uiImage(.plusApp, size: 20), for: .normal)
+                    $0.setImage(Symbol.uiImage(.plus, size: 20), for: .normal)
                     $0.tintColor = UIColor.label
                     $0.accessibilityIdentifier = "TabTrayController.addTabButton"
                     $0.setDynamicMenu(gridModel.buildRecentlyClosedTabsMenu)
@@ -166,7 +171,11 @@ struct SwitcherToolbarView: View {
                 }
                 .tapTargetFrame()
                 .accessibilityLabel(String.TabTrayAddTabAccessibilityLabel)
-                Spacer()
+
+                if !FeatureFlag[.segmentedPicker] || !top {
+                    Spacer()
+                }
+
                 SecondaryMenuButton(action: {
                     switch gridModel.switcherState {
                     case .tabs:

@@ -32,10 +32,9 @@ public struct CardGridOverflowMenuView: View {
                 .accessibilityIdentifier("CardGridOverflowMenu.Settings")
 
                 OverflowMenuButtonView(
-                    label: "Incognito Mode", nicon: .incognito,
-                    isIncognito: chromeModel.topBarDelegate?.tabManager.isIncognito ?? false
+                    label: "Support", nicon: .bubbleLeft
                 ) {
-                    menuAction(.toggleIncognitoMode)
+                    menuAction(.support)
                 }
                 .accessibilityIdentifier("CardGridOverflowMenu.ToogleIncognito")
             }
