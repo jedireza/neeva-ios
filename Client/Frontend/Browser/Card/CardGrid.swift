@@ -340,7 +340,7 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
                         let verticalAmount = value.translation.height as CGFloat
 
                         if abs(horizontalAmount) > abs(verticalAmount) {
-                            let swipedLeft = horizontalAmount > 0 ? true : false
+                            let swipedLeft = horizontalAmount < 0 ? true : false
 
                             switch gridModel.switcherState {
                             case .tabs:
@@ -350,7 +350,7 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
                                     gridModel.tabCardModel.manager.toggleIncognitoMode(
                                         fromTabTray: true, openLazyTab: false)
                                 } else {
-                                    if swipedLeft && FeatureFlag[.segmentedPicker] {
+                                    if swipedLeft && !gridModel.isIncognito && FeatureFlag[.segmentedPicker] {
                                         gridModel.tabCardModel.manager.toggleIncognitoMode(
                                             fromTabTray: true, openLazyTab: false)
                                     } else if !swipedLeft {
