@@ -241,6 +241,7 @@
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
 		66C423E22758652900C7E6EE /* DraggableBannerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */; };
+		66C5224927604533003C7F2D /* SuggestionBackButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C5224827604533003C7F2D /* SuggestionBackButtonTests.swift */; };
 		66E2502C270FDDB20085AA35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2502B270FDDB20085AA35 /* AppDelegate.swift */; };
 		66E25030270FDDB20085AA35 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 66E2502E270FDDB20085AA35 /* Main.html */; };
 		66E25034270FDDB20085AA35 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 66E25033270FDDB20085AA35 /* Style.css */; };
@@ -1331,6 +1332,7 @@
 		66C3C767267A8858002B50B1 /* ToastViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastViewManager.swift; sourceTree = "<group>"; };
 		66C3C772267A8909002B50B1 /* TabMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabMenu.swift; sourceTree = "<group>"; };
 		66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableBannerModifier.swift; sourceTree = "<group>"; };
+		66C5224827604533003C7F2D /* SuggestionBackButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBackButtonTests.swift; sourceTree = "<group>"; };
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E25029270FDDB20085AA35 /* NeevaForSafari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NeevaForSafari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E2502B270FDDB20085AA35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -2389,6 +2391,7 @@
 				C80A3D4326A25A9C0001E8A1 /* NeevaSignInTests.swift */,
 				66E34CDB2711118900F30A3D /* ReaderModeTests.swift */,
 				2C3406C71E719F00000FD889 /* SettingsTest.swift */,
+				66C5224827604533003C7F2D /* SuggestionBackButtonTests.swift */,
 				C850CD57269A00C40096F122 /* TabMenuTests.swift */,
 				66DA9E48268E8EFB001EFF13 /* ToastTests.swift */,
 				2CB56E3E1E926BFB00AF7586 /* ToolbarTest.swift */,
@@ -5145,6 +5148,7 @@
 				C832BF7526E0B31B00B9A1F8 /* ToastTests.swift in Sources */,
 				C832BF6F26E0B31500B9A1F8 /* DownloadFilesTests.swift in Sources */,
 				C832BF7026E0B31500B9A1F8 /* ClipBoardTests.swift in Sources */,
+				66C5224927604533003C7F2D /* SuggestionBackButtonTests.swift in Sources */,
 				C832BF7A26E0B31B00B9A1F8 /* NeevaSignInTests.swift in Sources */,
 				C832BF7126E0B31500B9A1F8 /* DatabaseFixtureTest.swift in Sources */,
 				66E34CDC2711118900F30A3D /* ReaderModeTests.swift in Sources */,

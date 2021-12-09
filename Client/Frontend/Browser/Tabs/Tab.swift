@@ -421,8 +421,7 @@ class Tab: NSObject, ObservableObject {
         // Else just perform a regular back navigation.
         if let navigation = webView?.backForwardList.currentItem,
             let query = queryForNavigation.findQueryFor(navigation: navigation),
-            let bvc = browserViewController,
-            FeatureFlag[.suggestionBackButton]
+            let bvc = browserViewController
         {
             DispatchQueue.main.async {
                 bvc.chromeModel.setEditingLocation(to: true)

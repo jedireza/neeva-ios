@@ -116,7 +116,7 @@ struct FirstRunCloseButton: View {
         HStack {
             Spacer()
             Button(action: action) {
-                Symbol(decorative: .xmark, size: size, weight: weight)
+                Symbol(.xmark, size: size, weight: weight, label: "Close")
                     .foregroundColor(Color.ui.gray60)
             }
         }
