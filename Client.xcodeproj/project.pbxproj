@@ -241,8 +241,8 @@
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
 		66C423E22758652900C7E6EE /* DraggableBannerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */; };
-		66C5224C27607965003C7F2D /* UIDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */; };
 		66C5224927604533003C7F2D /* SuggestionBackButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C5224827604533003C7F2D /* SuggestionBackButtonTests.swift */; };
+		66C5224C27607965003C7F2D /* UIDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */; };
 		66E2502C270FDDB20085AA35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2502B270FDDB20085AA35 /* AppDelegate.swift */; };
 		66E25030270FDDB20085AA35 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 66E2502E270FDDB20085AA35 /* Main.html */; };
 		66E25034270FDDB20085AA35 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 66E25033270FDDB20085AA35 /* Style.css */; };
@@ -289,6 +289,7 @@
 		677858C726CB377800274BC3 /* APIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677858C626CB377700274BC3 /* APIExtension.swift */; };
 		677F4D6C272B622C00332759 /* NeevaForSafariExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66E2505B270FDDB30085AA35 /* NeevaForSafariExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6786EA772759545A00B53127 /* CrashReporter in Frameworks */ = {isa = PBXBuildFile; productRef = 6786EA762759545A00B53127 /* CrashReporter */; };
+		6786EA792761C58300B53127 /* libswift_Concurrency.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 6786EA782761C58300B53127 /* libswift_Concurrency.tbd */; settings = {ATTRIBUTES = (Weak, ); }; };
 		67942DD826F14F2A0023F623 /* NotificationPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67942DD726F14F2A0023F623 /* NotificationPromptView.swift */; };
 		679BB17C2714D069002F60FE /* easy_privacy.json in Resources */ = {isa = PBXBuildFile; fileRef = 679BB17B2714D069002F60FE /* easy_privacy.json */; };
 		67AA22F226C476F300F33D09 /* BrowserViewController+OverflowMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67AA22F126C476F300F33D09 /* BrowserViewController+OverflowMenu.swift */; };
@@ -1333,8 +1334,8 @@
 		66C3C767267A8858002B50B1 /* ToastViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastViewManager.swift; sourceTree = "<group>"; };
 		66C3C772267A8909002B50B1 /* TabMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabMenu.swift; sourceTree = "<group>"; };
 		66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableBannerModifier.swift; sourceTree = "<group>"; };
-		66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeviceExtension.swift; sourceTree = "<group>"; };
 		66C5224827604533003C7F2D /* SuggestionBackButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBackButtonTests.swift; sourceTree = "<group>"; };
+		66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeviceExtension.swift; sourceTree = "<group>"; };
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E25029270FDDB20085AA35 /* NeevaForSafari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NeevaForSafari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E2502B270FDDB20085AA35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -1389,6 +1390,7 @@
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
 		675EEDD226D9AF1700473332 /* LongPressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressButton.swift; sourceTree = "<group>"; };
 		677858C626CB377700274BC3 /* APIExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIExtension.swift; sourceTree = "<group>"; };
+		6786EA782761C58300B53127 /* libswift_Concurrency.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswift_Concurrency.tbd; path = usr/lib/swift/libswift_Concurrency.tbd; sourceTree = SDKROOT; };
 		67942DD726F14F2A0023F623 /* NotificationPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationPromptView.swift; sourceTree = "<group>"; };
 		679BB17B2714D069002F60FE /* easy_privacy.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = easy_privacy.json; sourceTree = "<group>"; };
 		67AA22F126C476F300F33D09 /* BrowserViewController+OverflowMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+OverflowMenu.swift"; sourceTree = "<group>"; };
@@ -1943,6 +1945,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6786EA792761C58300B53127 /* libswift_Concurrency.tbd in Frameworks */,
 				F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */,
 				C877037A25222F30006E38EB /* Shared.framework in Frameworks */,
 				C8E18F20222EDED000E30E52 /* SafariServices.framework in Frameworks */,
@@ -2741,6 +2744,7 @@
 		7B604FC11C496005006EEEC3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6786EA782761C58300B53127 /* libswift_Concurrency.tbd */,
 				C8E18F1D222EDE4400E30E52 /* Accelerate.framework */,
 				E4B334891BBF23F9004E2BFF /* AdSupport.framework */,
 				D39FA16B1A83E17800EE869C /* CoreGraphics.framework */,
@@ -6888,6 +6892,10 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
+				);
 				OTHER_SWIFT_FLAGS = "$(OTHER_SWIFT_FLAGS_common) -DMOZ_CHANNEL_NEEVA -DPROD";
 				PRODUCT_BUNDLE_IDENTIFIER = "$(NEEVA_ROOT_BUNDLE_INDENTIFIER)";
 				PRODUCT_MODULE_NAME = Client;
@@ -7158,6 +7166,10 @@
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SDKROOT)/usr/lib/swift",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "$(NEEVA_ROOT_BUNDLE_INDENTIFIER)";
 				PRODUCT_MODULE_NAME = Client;
