@@ -25,6 +25,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case tabGroupsPinning = "Enable support for pinning tabs"
     case enableSuggestedSpaces = "Show Spaces from Neeva Community"
     case enableMemorizedURLOnWiki = "Enable Memorized URL on Wiki Suggest"
+    case tabGroupDetailMRU = "Sort tab group detail by MRU"
 
     public init?(caseName: String) {
         for value in FeatureFlag.allCases where "\(value)" == caseName {

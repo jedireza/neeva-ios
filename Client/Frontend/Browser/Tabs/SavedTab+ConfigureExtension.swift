@@ -37,7 +37,9 @@ extension SavedTab {
             title: tab.title ?? tab.lastTitle, isPrivate: tab.isIncognito, isPinned: tab.isPinned,
             faviconURL: tab.displayFavicon?.url, url: tab.url, sessionData: sessionData,
             uuid: tab.tabUUID, rootUUID: tab.rootUUID, parentUUID: tab.parentUUID ?? "",
-            tabIndex: tabIndex, parentSpaceID: tab.parentSpaceID ?? "")
+            tabIndex: tabIndex, parentSpaceID: tab.parentSpaceID ?? "",
+            lastExecutedTime: tab.lastExecutedTime
+        )
     }
 
     func configureSavedTabUsing(_ tab: Tab, imageStore: DiskImageStore? = nil) -> Tab {
@@ -68,6 +70,7 @@ extension SavedTab {
         tab.tabUUID = UUID ?? ""
         tab.rootUUID = rootUUID ?? ""
         tab.parentSpaceID = parentSpaceID ?? ""
+        tab.lastExecutedTime = lastExecutedTime
 
         return tab
     }

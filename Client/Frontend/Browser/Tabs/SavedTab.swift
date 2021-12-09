@@ -20,6 +20,7 @@ class SavedTab: NSObject, NSCoding {
     var parentUUID: String?
     var tabIndex: Int?
     var parentSpaceID: String?
+    var lastExecutedTime: Timestamp?
 
     var jsonDictionary: [String: AnyObject] {
         let title: String = self.title ?? "null"
@@ -50,7 +51,7 @@ class SavedTab: NSObject, NSCoding {
     init(
         screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, isPinned: Bool,
         faviconURL: URL?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String,
-        parentUUID: String, tabIndex: Int?, parentSpaceID: String
+parentUUID: String, tabIndex: Int?, parentSpaceID: String, lastExecutedTime: Timestamp?
     ) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
@@ -65,6 +66,7 @@ class SavedTab: NSObject, NSCoding {
         self.parentUUID = parentUUID
         self.tabIndex = tabIndex
         self.parentSpaceID = parentSpaceID
+        self.lastExecutedTime = lastExecutedTime
 
         super.init()
     }
@@ -83,6 +85,8 @@ class SavedTab: NSObject, NSCoding {
         self.parentUUID = coder.decodeObject(forKey: "parentUUID") as? String
         self.tabIndex = coder.decodeObject(forKey: "tabIndex") as? Int
         self.parentSpaceID = coder.decodeObject(forKey: "parentSpaceID") as? String
+        self.title = coder.decodeObject(forKey: "title") as? String
+        self.lastExecutedTime = coder.decodeObject(forKey: "lastExecutedTime") as? Timestamp
     }
 
     func encode(with coder: NSCoder) {
@@ -99,5 +103,6 @@ class SavedTab: NSObject, NSCoding {
         coder.encode(parentUUID, forKey: "parentUUID")
         coder.encode(tabIndex, forKey: "tabIndex")
         coder.encode(parentSpaceID, forKey: "parentSpaceID")
+        coder.encode(lastExecutedTime, forKey: "lastExecutedTime")
     }
 }

@@ -474,7 +474,7 @@ where
             ScrollView(.vertical, showsIndicators: false) {
                 ScrollViewReader { scrollProxy in
                     LazyVGrid(columns: gridColumns, spacing: CardGridUX.GridSpacing) {
-                        ForEach(tabGroupDetail!.allDetails, id: \.id) { details in
+                        ForEach(tabGroupDetailContent, id: \.id) { details in
                             FittedCard(details: details)
                                 .contextMenu {
                                     FeatureFlag[.tabGroupsPinning]
@@ -507,6 +507,24 @@ where
             .environment(\.columns, gridColumns)
         }
         .ignoresSafeArea(edges: topToolbar ? [.bottom] : [])
+    }
+
+    var tabGroupDetailContent: [TabCardDetails] {
+        if FeatureFlag[.tabGroupDetailMRU] {
+                return tabGroupDetail!.allDetails.sorted(by: {
+                    let lhs = $0.manager.get(for: $0.id)!
+                    let rhs = $1.manager.get(for: $1.id)!
+                    if lhs.isPinned && !rhs.isPinned {
+                        return true
+                    } else if !lhs.isPinned && rhs.isPinned {
+                        return false
+                    } else {
+                        return lhs.lastExecutedTime ?? 0 > rhs.lastExecutedTime ?? 0
+                    }
+            })
+        } else {
+            return tabGroupDetail!.allDetails
+        }
     }
 }
 
