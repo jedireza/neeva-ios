@@ -875,6 +875,8 @@ extension SuggestionModel {
             )
         }
 
+        queryAttributes.append(EnvironmentHelper.shared.getSessionUUID())
+
         return queryAttributes
     }
 }

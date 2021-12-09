@@ -198,7 +198,7 @@ public struct LogConfig {
     public static var enabledLoggingCategories: Set<InteractionCategory>?
 
     public static func featureFlagEnabled(for category: InteractionCategory) -> Bool {
-        if category == .FirstRun || category == .Notification {
+        if category == .FirstRun || category == .Notification || category == .Suggestions {
             return true
         }
 

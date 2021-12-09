@@ -122,7 +122,7 @@ public class EnvironmentHelper {
         ]
     }
 
-    private func getSessionUUID() -> ClientLogCounterAttribute {
+    public func getSessionUUID() -> ClientLogCounterAttribute {
         // Rotate session UUID every 30 mins
         if Defaults[.sessionUUIDExpirationTime].minutesFromNow() > 30 {
             Defaults[.sessionUUID] = UUID().uuidString
