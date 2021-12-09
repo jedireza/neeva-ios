@@ -2,52 +2,73 @@
 
 import SwiftUI
 
-private struct CompletionForAnimation: AnimatableModifier {
-    var targetValue: Double
-
-    var animatableData: Double {
+/// An animatable modifier that is used for observing animations for a given animatable value.
+/// From https://www.avanderlee.com/swiftui/withanimation-completion-callback/
+struct AnimationCompletionObserverModifier<Value>: AnimatableModifier
+where Value: VectorArithmetic {
+    /// While animating, SwiftUI changes the old input value to the new target value using this
+    /// property. This value is set to the old value until the animation completes.
+    var animatableData: Value {
         didSet {
-            maybeRunCompletion()
+            notifyCompletionIfFinished()
         }
     }
 
-    var afterTrueToFalse: () -> Void
-    var afterFalseToTrue: () -> Void
+    /// The target value for which we're observing. This value is directly set once the animation
+    /// starts. During animation, `animatableData` will hold the oldValue and is only updated to
+    /// the target value once the animation completes.
+    private var targetValue: Value
 
-    init(
-        toggleValue: Bool,
-        afterTrueToFalse: @escaping () -> Void, afterFalseToTrue: @escaping () -> Void
-    ) {
-        self.afterTrueToFalse = afterTrueToFalse
-        self.afterFalseToTrue = afterFalseToTrue
+    /// The completion callback which is called once the animation completes.
+    private var completion: () -> Void
 
-        self.animatableData = toggleValue ? 1 : 0
-        self.targetValue = toggleValue ? 1 : 0
+    init(observedValue: Value, completion: @escaping () -> Void) {
+        self.completion = completion
+        self.animatableData = observedValue
+        targetValue = observedValue
     }
 
-    func maybeRunCompletion() {
-        if animatableData == targetValue {
-            DispatchQueue.main.async {
-                targetValue == 1 ? self.afterFalseToTrue() : self.afterTrueToFalse()
-            }
+    /// Verifies whether the current animation is finished and calls the completion callback if true.
+    private func notifyCompletionIfFinished() {
+        guard animatableData == targetValue else { return }
+
+        /// Dispatching is needed to take the next runloop for the completion callback.
+        /// This prevents errors like "Modifying state during view update, this will cause undefined
+        /// behavior."
+        DispatchQueue.main.async {
+            self.completion()
         }
     }
 
     func body(content: Content) -> some View {
-        content
+        /// We're not really modifying the view so we can directly return the original input value.
+        return content
     }
 }
 
 extension View {
-    func runAfter(
-        toggling: Bool,
-        fromTrueToFalse: @escaping () -> Void = {},
-        fromFalseToTrue: @escaping () -> Void = {}
-    ) -> some View {
-        self.modifier(
-            CompletionForAnimation(
-                toggleValue: toggling,
-                afterTrueToFalse: fromTrueToFalse,
-                afterFalseToTrue: fromFalseToTrue))
+    /// Calls the completion handler whenever an animation on the given value completes.
+    /// - Parameters:
+    ///   - value: The value to observe for animations.
+    ///   - completion: The completion callback to call once the animation completes.
+    /// - Returns: A modified `View` instance with the observer attached.
+    func onAnimationCompleted<Value: VectorArithmetic>(
+        for value: Value, completion: @escaping () -> Void
+    ) -> ModifiedContent<Self, AnimationCompletionObserverModifier<Value>> {
+        return modifier(
+            AnimationCompletionObserverModifier(observedValue: value, completion: completion))
+    }
+
+    /// Calls the completion handler whenever an animation on the given value completes.
+    /// - Parameters:
+    ///   - value: The boolean value to observe for animations.
+    ///   - completion: The completion callback to call once the animation completes.
+    /// - Returns: A modified `View` instance with the observer attached.
+    func onAnimationCompleted(
+        for value: Bool, completion: @escaping () -> Void
+    ) -> ModifiedContent<Self, AnimationCompletionObserverModifier<Double>> {
+        return modifier(
+            AnimationCompletionObserverModifier<Double>(
+                observedValue: value ? 1 : 0, completion: completion))
     }
 }

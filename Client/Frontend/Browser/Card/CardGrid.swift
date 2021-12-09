@@ -165,30 +165,25 @@ struct CardGrid: View {
         .accessibilityAction(.escape) {
             gridModel.hideWithAnimation()
         }
-        .runAfter(
-            toggling: gridModel.isHidden,
-            fromTrueToFalse: {  // Done with animation to show the CardGrid
-                gridModel.animationThumbnailState = .hidden
-                gridModel.animateDetailTransitions = true
-            },
-            fromFalseToTrue: {  // Done with animation to hide the CardGrid
-                gridModel.hideWithNoAnimation()
-                gridModel.animateDetailTransitions = false
-                tabGroupModel.detailedTabGroup = nil
-            }
-        )
+        .onAnimationCompleted(for: gridModel.isHidden) {
+            gridModel.onCompletedCardTransition()
+        }
         .useEffect(deps: gridModel.animationThumbnailState) { _ in
             // Ensure that the `Card` for the selected tab is visible. This way its
-            // `CardTransitionModifier` will kick-in and run the animation and
-            // toggle `gridModel.isHidden`. Update directly if there are no tabs.
+            // `CardTransitionModifier` will be visible and run the animation.
             if gridModel.animationThumbnailState != .hidden {
-                if tabModel.allDetails.isEmpty {
-                    withAnimation {
-                        gridModel.isHidden =
-                            (gridModel.animationThumbnailState == .visibleForTrayHidden)
-                    }
-                } else {
+                if !tabModel.allDetails.isEmpty {
                     gridModel.scrollToSelectedTab()
+                }
+                // Allow some time for the `Card` to get created if it was previously
+                // not visible.
+                DispatchQueue.main.async {
+                    if gridModel.animationThumbnailState != .hidden {
+                        withAnimation(CardTransitionUX.animation) {
+                            gridModel.isHidden =
+                                (gridModel.animationThumbnailState == .visibleForTrayHidden)
+                        }
+                    }
                 }
             }
         }
@@ -206,14 +201,13 @@ private struct DraggableDetail: ViewModifier {
     func body(content: Content) -> some View {
         content
             .offset(x: detailDragOffset, y: 0)
-            .runAfter(
-                toggling: detailDragOffset == width, fromTrueToFalse: {},
-                fromFalseToTrue: {
+            .onAnimationCompleted(for: detailDragOffset) {
+                if detailDragOffset == width {
                     spaceModel.detailedSpace = nil
                     tabGroupModel.detailedTabGroup = nil
                     detailDragOffset = 0
                 }
-            )
+            }
             .simultaneousGesture(
                 DragGesture(minimumDistance: DraggableDetail.DraggableWidth)
                     .onChanged { value in

@@ -11,6 +11,7 @@ class GridModel: ObservableObject {
     let spaceCardModel: SpaceCardModel
 
     @Published var isHidden = true
+
     @Published var animationThumbnailState: AnimationThumbnailState = .hidden
     @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
     @Published var isLoading = false
@@ -50,9 +51,13 @@ class GridModel: ObservableObject {
     }
 
     func show() {
-        animationThumbnailState = .visibleForTrayShow
-        updateVisibility(false)
-        updateSpaces()
+        if tabCardModel.allDetails.isEmpty {
+            showWithNoAnimation()
+        } else {
+            animationThumbnailState = .visibleForTrayShow
+            updateVisibility(false)
+            updateSpaces()
+        }
     }
 
     func showWithNoAnimation() {
@@ -73,6 +78,7 @@ class GridModel: ObservableObject {
     }
 
     func hideWithAnimation() {
+        assert(!tabCardModel.allDetails.isEmpty)
         self.animationThumbnailState = .visibleForTrayHidden
     }
 
@@ -82,6 +88,17 @@ class GridModel: ObservableObject {
         isHidden = true
         switcherState = .tabs
         animateDetailTransitions = true
+    }
+
+    func onCompletedCardTransition() {
+        if isHidden {
+            hideWithNoAnimation()
+            animateDetailTransitions = false
+            tabGroupCardModel.detailedTabGroup = nil
+        } else {
+            animationThumbnailState = .hidden
+            animateDetailTransitions = true
+        }
     }
 
     func setVisibilityCallback(updateVisibility: @escaping (Bool) -> Void) {
@@ -95,7 +112,10 @@ class GridModel: ObservableObject {
         }
     }
 
-    func openSpace(spaceId: String, bvc: BrowserViewController, isPrivate: Bool = false, completion: @escaping () -> Void) {
+    func openSpace(
+        spaceId: String, bvc: BrowserViewController, isPrivate: Bool = false,
+        completion: @escaping () -> Void
+    ) {
         if !NeevaUserInfo.shared.hasLoginCookie() {
             var spaceURL = NeevaConstants.appSpacesURL
             spaceURL.appendPathComponent(spaceId)
