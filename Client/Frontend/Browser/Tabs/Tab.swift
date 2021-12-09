@@ -138,7 +138,7 @@ class Tab: NSObject, ObservableObject {
     var showRequestDesktop: Bool {
         changedUserAgentHasChanged
             ? changedUserAgent
-            : UIDevice.current.userInterfaceIdiom == .pad
+            : UIDevice.current.useTabletInterface
     }
 
     var readerModeAvailableOrActive: Bool {

@@ -23,7 +23,7 @@ class DynamicFontHelper: NSObject {
             UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).pointSize
         deviceFontSize =
             defaultStandardFontSize
-            * (UIDevice.current.userInterfaceIdiom == .pad ? iPadFactor : iPhoneFactor)
+            * (UIDevice.current.useTabletInterface ? iPadFactor : iPhoneFactor)
         // 11pt -> 12pt -> 17pt
         defaultSmallFontSize =
             UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption1).pointSize
@@ -82,7 +82,7 @@ class DynamicFontHelper: NSObject {
             UIFontDescriptor.preferredFontDescriptor(withTextStyle: .body).pointSize
         deviceFontSize =
             defaultStandardFontSize
-            * (UIDevice.current.userInterfaceIdiom == .pad ? iPadFactor : iPhoneFactor)
+            * (UIDevice.current.useTabletInterface ? iPadFactor : iPhoneFactor)
         defaultSmallFontSize =
             UIFontDescriptor.preferredFontDescriptor(withTextStyle: .caption2).pointSize
     }

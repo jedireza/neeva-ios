@@ -142,7 +142,9 @@ struct TabContainerContent: View {
                     WebViewContainer(webView: currentWebView)
                         .ignoresSafeArea()
 
-                    if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip] {
+                    if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip]
+                        && UIDevice.current.useTabletInterface
+                    {
                         GeometryReader { geo in
                             VStack {
                                 Spacer()

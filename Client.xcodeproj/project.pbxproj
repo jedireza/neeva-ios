@@ -241,6 +241,7 @@
 		66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C767267A8858002B50B1 /* ToastViewManager.swift */; };
 		66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C772267A8909002B50B1 /* TabMenu.swift */; };
 		66C423E22758652900C7E6EE /* DraggableBannerModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */; };
+		66C5224C27607965003C7F2D /* UIDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */; };
 		66C5224927604533003C7F2D /* SuggestionBackButtonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C5224827604533003C7F2D /* SuggestionBackButtonTests.swift */; };
 		66E2502C270FDDB20085AA35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2502B270FDDB20085AA35 /* AppDelegate.swift */; };
 		66E25030270FDDB20085AA35 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 66E2502E270FDDB20085AA35 /* Main.html */; };
@@ -1332,6 +1333,7 @@
 		66C3C767267A8858002B50B1 /* ToastViewManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastViewManager.swift; sourceTree = "<group>"; };
 		66C3C772267A8909002B50B1 /* TabMenu.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabMenu.swift; sourceTree = "<group>"; };
 		66C423E12758652900C7E6EE /* DraggableBannerModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DraggableBannerModifier.swift; sourceTree = "<group>"; };
+		66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeviceExtension.swift; sourceTree = "<group>"; };
 		66C5224827604533003C7F2D /* SuggestionBackButtonTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBackButtonTests.swift; sourceTree = "<group>"; };
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E25029270FDDB20085AA35 /* NeevaForSafari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NeevaForSafari.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -3106,6 +3108,7 @@
 				66B379D926DDACDC00087B04 /* Feedback */,
 				C996466726569AF0005FFE83 /* Util */,
 				C996466626569AC9005FFE83 /* Spaces */,
+				66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */,
 				665451DE2759B9B50077CA1F /* SegmentedPicker.swift */,
 				C9C18DD526558FF3004710CD /* Symbol.swift */,
 			);
@@ -5045,6 +5048,7 @@
 				C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */,
 				7B9BF91C1E43472E00CB24F4 /* JSONExtensions.swift in Sources */,
 				C9C18E51265597B0004710CD /* Symbol.swift in Sources */,
+				66C5224C27607965003C7F2D /* UIDeviceExtension.swift in Sources */,
 				66B379DB26DDAD1800087B04 /* FeedbackRequest.swift in Sources */,
 				E65075BD1E37F7AB006961AC /* SystemUtils.swift in Sources */,
 			);

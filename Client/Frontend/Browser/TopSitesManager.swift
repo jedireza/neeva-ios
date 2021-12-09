@@ -15,7 +15,7 @@ struct TopSitesHandler {
     }
 
     static func getTopSites(profile: Profile) -> Deferred<[Site]> {
-        let maxItems = UIDevice.current.userInterfaceIdiom == .pad ? 32 : 16
+        let maxItems = UIDevice.current.useTabletInterface ? 32 : 16
         return profile.history.getTopSitesWithLimit(maxItems).both(
             profile.history.getPinnedTopSites()
         ).bindQueue(.main) { (topsites, pinnedSites) in

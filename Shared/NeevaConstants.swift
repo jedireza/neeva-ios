@@ -66,7 +66,14 @@ public struct NeevaConstants {
     public static let keychain = Keychain(service: "Neeva", accessGroup: appGroup)
 
     public static var deviceTypeValue: String {
-        UIDevice.current.userInterfaceIdiom == .pad ? "tablet" : "phone"
+        switch UIDevice.current.userInterfaceIdiom {
+        case .pad:
+            return "tablet"
+        case .mac:
+            return "desktop"
+        default:
+            return "phone"
+        }
     }
 
     public static var deviceNameValue: String = DeviceInfo.specificModelName

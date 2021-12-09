@@ -21,7 +21,7 @@ class TabManagerStoreTests: XCTestCase {
         manager = TabManager(profile: profile, imageStore: nil)
         configuration.processPool = WKProcessPool()
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if UIDevice.current.useTabletInterface {
             // BVC.viewWillAppear() calls restoreTabs() which interferes with these tests. (On iPhone, ClientTests never dismiss the intro screen, on iPad the intro is a popover on the BVC).
             // Wait for this to happen (UIView.window only gets assigned after viewWillAppear()), then begin testing.
             let predicate = XCTNSPredicateExpectation(
