@@ -462,8 +462,10 @@ extension BrowserViewController: WKNavigationDelegate {
         return false
     }
 
-    fileprivate func isICSFile(_ url: URL) -> Bool {
-        return url.pathExtension == "ics"
+    /// Checks if a file is a special format for Apple Devices (ex. .ics, .mobileconfig).
+    /// These URLs should be opened in a SafariViewController
+    fileprivate func isAppleFormatFile(_ url: URL) -> Bool {
+        return url.pathExtension == "ics" || url.pathExtension == "mobileconfig"
     }
 
     fileprivate func getAppStoreID(_ url: URL) -> String? {
@@ -562,10 +564,19 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
-        // Prompt user to add event to the Calendar app
-        if isICSFile(url) {
-            // Open ICS file in Safari Controller to show iOS Calendar modal
-            let safariVC = SFSafariViewController(url: url)
+        if isAppleFormatFile(url) {
+            // Open URL in SafariViewController as only Safari can properly handle URL
+            var safariVC: SFSafariViewController!
+
+            if url.pathExtension == "mobileconfig" && url.host?.hasSuffix("developer.apple.com") ?? false {
+                // .mobileconfig files from Apple Developer have to be redirected to root page to be downloaded
+                // If we try to open the specific download URL, the user will see an auth error
+                safariVC = SFSafariViewController(
+                    url: URL(string: "https://developer.apple.com/download/")!)
+            } else {
+                safariVC = SFSafariViewController(url: url)
+            }
+
             safariVC.modalPresentationStyle = .formSheet
             present(safariVC, animated: true, completion: nil)
 

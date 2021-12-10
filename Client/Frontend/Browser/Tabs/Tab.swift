@@ -507,7 +507,10 @@ class Tab: NSObject, ObservableObject {
 
             return queryForNavigation.findQueryFor(navigation: navigation)
         } else {
-            for navigation in ([webView.backForwardList.currentItem] + webView.backForwardList.backList.reversed()).compactMap({ $0 }) {
+            for navigation
+                in ([webView.backForwardList.currentItem]
+                + webView.backForwardList.backList.reversed()).compactMap({ $0 })
+            {
                 return queryForNavigation.findQueryFor(navigation: navigation)
             }
         }
