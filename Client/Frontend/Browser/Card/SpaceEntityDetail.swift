@@ -188,6 +188,13 @@ struct SpaceEntityDetailView: View {
                                     .withFont(.bodyLarge)
                                     .modifier(DescriptionTextModifier())
                             }
+                        } else if details.manager.ACL >= .edit,
+                            snippetToDisplay?.isEmpty != false
+                        {
+                            Text("Click to add description")
+                                .withFont(.bodyLarge)
+                                .foregroundColor(.tertiaryLabel)
+                                .highPriorityGesture(TapGesture().onEnded({ editSpaceItem() }))
                         }
                     }
                 }
