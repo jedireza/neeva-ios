@@ -14,7 +14,7 @@ struct EmptyCardGrid: View {
                 .withFont(.bodyMedium)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(UIColor.TrayBackground).ignoresSafeArea())
+        .background(Color.DefaultBackground.ignoresSafeArea())
     }
 }
 
