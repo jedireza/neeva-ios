@@ -111,7 +111,16 @@ class ZeroQueryModel: ObservableObject {
         }
 
         if !Defaults[.signedInOnce] {
-            promoCard = nil
+            if Defaults[.didFirstNavigation] {
+                promoCard = .previewModeSignUp {
+                    ClientLogger.shared.logCounter(
+                        .PreviewModePromoSignup,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                    self.signIn()
+                }
+            } else {
+                promoCard = nil
+            }
         } else if NeevaFeatureFlags[.referralPromo] && !Defaults[.didDismissReferralPromoCard] {
             promoCard = .referralPromo {
                 self.handleReferralPromo()

@@ -57,6 +57,7 @@ public struct LogConfig {
         case LoginAfterFirstRun  // Login after first run
         case FirstRunPageLoad  // Page load at first run and before login
         case PromoSignin  // Sign in from promo card
+        case PreviewModePromoSignup  // Sign up on preview promo card
         case SettingSignin  // Sign in from setting
         case SuggestionErrorLoginViewImpression  // Error login view triggered by suggestion
         case SuggestionErrorSigninOrJoinNeeva  // Click Sign in or Join Neeva on suggestion error login page
@@ -82,7 +83,7 @@ public struct LogConfig {
         case PreviewHomeImpression  // Preview home impression
         case PreviewSampleQueryClicked  // Clicked on sample query on the home page
         case PreviewTapFakeSearchInput  // Clicked on the fake search input box on preview home page
-        case PreviewHomeSignin // Click sign in on preview home
+        case PreviewHomeSignin  // Click sign in on preview home
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -261,6 +262,7 @@ public struct LogConfig {
         case .LoginAfterFirstRun: return .FirstRun
         case .FirstRunPageLoad: return .FirstRun
         case .PromoSignin: return .FirstRun
+        case .PreviewModePromoSignup: return .FirstRun
         case .SettingSignin: return .FirstRun
         case .SuggestionErrorLoginViewImpression: return .FirstRun
         case .SuggestionErrorSigninOrJoinNeeva: return .FirstRun

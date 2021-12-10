@@ -4,6 +4,7 @@ import Shared
 import SwiftUI
 
 enum PromoCardType {
+    case previewModeSignUp(action: () -> Void)
     case neevaSignIn(action: () -> Void)
     case defaultBrowser(action: () -> Void, onClose: () -> Void)
     case referralPromo(action: () -> Void, onClose: () -> Void)
@@ -13,7 +14,7 @@ enum PromoCardType {
 
     var action: () -> Void {
         switch self {
-        case .neevaSignIn(let action):
+        case .previewModeSignUp(let action), .neevaSignIn(let action):
             return action
         case .defaultBrowser(let action, _):
             return action
@@ -31,6 +32,8 @@ enum PromoCardType {
     @ViewBuilder
     var title: some View {
         switch self {
+        case .previewModeSignUp:
+            Text("Welcome to Neeva. The only ad-free, private search engine.")
         case .neevaSignIn:
             Text("Get safer, richer and better\nsearch when you sign in")
         case .defaultBrowser:
@@ -52,7 +55,7 @@ enum PromoCardType {
     @ViewBuilder
     var buttonLabel: some View {
         switch self {
-        case .neevaSignIn:
+        case .previewModeSignUp, .neevaSignIn:
             HStack(spacing: 8) {
                 Image("neevaMenuIcon")
                     .renderingMode(.template)
@@ -78,7 +81,7 @@ enum PromoCardType {
 
     var color: Color {
         switch self {
-        case .neevaSignIn:
+        case .previewModeSignUp, .neevaSignIn:
             return .brand.adaptive.polar
         case .defaultBrowser:
             return .brand.adaptive.pistachio
