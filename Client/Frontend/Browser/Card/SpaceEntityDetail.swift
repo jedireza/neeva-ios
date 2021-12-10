@@ -60,6 +60,18 @@ struct SpaceEntityDetailView: View {
         case .techDoc(let doc):
             return doc.body?.string
         default:
+            let searchPrefix = "](@"
+            if let description = details.description, description.contains(searchPrefix) {
+                let index = description.firstIndex(of: "@")
+                var substring = description.suffix(from: index!)
+                guard let endIndex = substring.firstIndex(of: ")") else {
+                    return description
+                }
+                substring = substring[..<endIndex]
+                return description.replacingOccurrences(
+                    of: substring,
+                    with: neevaSearchEngine.searchURLForQuery(String(substring))!.absoluteString)
+            }
             return details.description
         }
     }
