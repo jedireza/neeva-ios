@@ -119,6 +119,7 @@ struct FirstRunCloseButton: View {
                 Symbol(.xmark, size: size, weight: weight, label: "Close")
                     .foregroundColor(Color.ui.gray60)
             }
+            .frame(width: 40, height: 40, alignment: .center)
         }
     }
 }
