@@ -340,7 +340,7 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
                         let verticalAmount = value.translation.height as CGFloat
 
                         if abs(horizontalAmount) > abs(verticalAmount) {
-                            let swipedLeft = horizontalAmount < 0 ? true : false
+                            let swipedLeft = horizontalAmount > 0 ? true : false
 
                             switch gridModel.switcherState {
                             case .tabs:
