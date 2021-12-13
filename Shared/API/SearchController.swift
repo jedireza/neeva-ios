@@ -29,14 +29,26 @@ public struct Product {
     public let priceLow: Double?
 }
 
+public struct WebResult {
+    public let faviconURL: String
+    public let displayURLHost: String
+    public let displayURLPath: String
+    public let actionURL: URL
+    public let title: String
+    public let snippet: String?
+    public let publicationDate: String?
+}
+
 public typealias ProductClusterResult = ([Product])
 public typealias RecipeBlockResult = ([RelatedRecipe])
 public typealias RelatedSearchesResult = ([String])
+public typealias WebResults = ([WebResult])
 
 public enum RichResultType {
     case ProductCluster(result: ProductClusterResult)
     case RecipeBlock(result: RecipeBlockResult)
     case RelatedSearches(result: RelatedSearchesResult)
+    case WebGroup(result: WebResults)
 }
 
 public class SearchController:
@@ -185,7 +197,9 @@ public class SearchController:
 
                                 }
                             } else if typename == "RelatedSearches" {
-                                if let relatedSearches = typeSpecific.asRelatedSearches?.relatedSearches?.entries {
+                                if let relatedSearches = typeSpecific.asRelatedSearches?
+                                    .relatedSearches?.entries
+                                {
 
                                     var relatedSearchesResult: [String] = []
 
@@ -195,8 +209,58 @@ public class SearchController:
                                         }
                                     }
 
-                                    let finalResult = RichResultType.RelatedSearches(result: relatedSearchesResult)
+                                    let finalResult = RichResultType.RelatedSearches(
+                                        result: relatedSearchesResult)
                                     richResult.append(RichResult(resultType: finalResult))
+                                }
+                            } else if typename == "Web" {
+                                if let web = typeSpecific.asWeb?.web {
+                                    var webResultList: [WebResult] = []
+
+                                    if let faviconURL = web.favIconUrl,
+                                        let actionURL = item?.actionUrl, let title = item?.title,
+                                        let hostname = web.structuredUrl?.hostname,
+                                        let paths = web.structuredUrl?.paths
+                                    {
+                                        let displayURLHost = hostname
+                                        var displayURLPath = ""
+                                        for p in paths {
+                                            displayURLPath += " › " + p
+                                        }
+
+                                        var snippet = ""
+                                        if let snippetSegments = web.highlightedSnippet?.segments {
+                                            for segment in snippetSegments {
+                                                if let segmentText = segment.text {
+                                                    snippet += segmentText
+                                                }
+                                            }
+                                        }
+
+                                        let webResult = WebResult(
+                                            faviconURL: faviconURL, displayURLHost: displayURLHost,
+                                            displayURLPath: displayURLPath,
+                                            actionURL: URL(string: actionURL)!, title: title,
+                                            snippet: snippet, publicationDate: web.publicationDate)
+
+                                        if richResult.count > 0 {
+                                            for (index, item) in richResult.enumerated() {
+                                                switch item.resultType {
+                                                case .WebGroup(let existingResult):
+                                                    webResultList += existingResult
+                                                    richResult.remove(at: index)
+                                                default:
+                                                    break
+                                                }
+                                            }
+                                        }
+
+                                        webResultList.append(webResult)
+
+                                        let finalResult = RichResultType.WebGroup(
+                                            result: webResultList)
+                                        richResult.append(RichResult(resultType: finalResult))
+                                    }
                                 }
                             }
                         }

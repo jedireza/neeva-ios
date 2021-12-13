@@ -19,6 +19,7 @@ struct CheatsheetOverlayContent: View {
             menuAction(action)
             hideOverlay()
         }
+        .background(Color.DefaultBackground)
         .overlayIsFixedHeight(isFixedHeight: false)
         .environmentObject(model)
         .environment(\.isIncognito, isIncognito)

@@ -181,7 +181,7 @@ extension SpaceACLLevel: Comparable {
             return rhs == .owner
         case .comment:
             return rhs == .owner || rhs == .edit
-        case .view, .publicView:
+        case .view, .publicView, .publicIndexed:
             return rhs == .owner || rhs == .edit || rhs == .comment
         case .__unknown(let rawValue):
             fatalError("Cannot compare unknown ACL level \(rawValue)")

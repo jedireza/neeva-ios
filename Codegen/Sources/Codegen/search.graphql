@@ -11,6 +11,23 @@ query Search($query: String!) {
         snippet
         typeSpecific {
           __typename
+          ... on Web {
+            web {
+              favIconURL
+              displayUrl
+              publicationDate
+              structuredUrl {
+                paths
+                hostname
+              }
+              highlightedSnippet {
+                segments {
+                  text
+                  isHighlighted
+                }
+              }
+            }
+          }
           ... on ProductClusters {
             __typename
             productClusters {

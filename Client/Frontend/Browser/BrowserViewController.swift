@@ -2196,7 +2196,7 @@ extension BrowserViewController {
         updateFeedbackImage()
 
         if NeevaFeatureFlags[.cheatsheetQuery] {
-            showModal(style: .grouped) { [self] in
+            showModal(style: .spaces) { [self] in
                 CheatsheetOverlayContent(
                     menuAction: perform(neevaMenuAction:),
                     tabManager: tabManager)

@@ -119,8 +119,7 @@ public class AddToSpaceRequest: ObservableObject {
                 title: self.title,
                 data: self.description,
                 mediaType: "text/plain",
-                isBase64: false,
-                snapshotExpected: false
+                isBase64: false
             )
         ).perform { result in
             self.cancellable = nil
