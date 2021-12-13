@@ -243,74 +243,63 @@ struct GridPicker: View {
 
     @ViewBuilder
     var picker: some View {
-        if FeatureFlag[.segmentedPicker] {
-            HStack {
-                Spacer()
+        HStack {
+            Spacer()
 
-                SegmentedPicker(
-                    segments: [
-                        Segment(
-                            symbol: Symbol(decorative: .incognito, weight: .medium),
-                            selectedIconColor: .background,
-                            selectedColor: .label,
-                            selectedAction: {
-                                gridModel.switcherState = .tabs
+            SegmentedPicker(
+                segments: [
+                    Segment(
+                        symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
+                        selectedIconColor: .background,
+                        selectedColor: .label,
+                        selectedAction: {
+                            gridModel.switcherState = .tabs
 
-                                if !gridModel.isIncognito {
-                                    gridModel.tabCardModel.manager.toggleIncognitoMode(
-                                        fromTabTray: true, openLazyTab: false)
-                                }
-                            }),
-                        Segment(
-                            symbol: Symbol(decorative: .squareOnSquare, weight: .medium),
-                            selectedIconColor: .white,
-                            selectedColor: .brand.blue,
-                            selectedAction: {
-                                gridModel.switcherState = .tabs
+                            if !gridModel.isIncognito {
+                                gridModel.tabCardModel.manager.toggleIncognitoMode(
+                                    fromTabTray: true, openLazyTab: false)
+                            }
+                        }),
+                    Segment(
+                        symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
+                        selectedIconColor: .white,
+                        selectedColor: .brand.blue,
+                        selectedAction: {
+                            gridModel.switcherState = .tabs
 
-                                if gridModel.isIncognito {
-                                    gridModel.tabCardModel.manager.toggleIncognitoMode(
-                                        fromTabTray: true, openLazyTab: false)
-                                }
-                            }),
-                        Segment(
-                            symbol: Symbol(decorative: .bookmarkOnBookmark),
-                            selectedIconColor: .white, selectedColor: .brand.blue,
-                            selectedAction: {
-                                gridModel.switcherState = .spaces
-                            }),
-                    ], selectedSegmentIndex: $selectedIndex
-                )
-                .useEffect(deps: gridModel.switcherState) { _ in
-                    switch gridModel.switcherState {
-                    case .tabs:
-                        selectedIndex = 1
-                    case .spaces:
-                        selectedIndex = 2
+                            if gridModel.isIncognito {
+                                gridModel.tabCardModel.manager.toggleIncognitoMode(
+                                    fromTabTray: true, openLazyTab: false)
+                            }
+                        }),
+                    Segment(
+                        symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
+                        selectedIconColor: .white, selectedColor: .brand.blue,
+                        selectedAction: {
+                            gridModel.switcherState = .spaces
+                        }),
+                ], selectedSegmentIndex: $selectedIndex
+            )
+            .useEffect(deps: gridModel.switcherState) { _ in
+                switch gridModel.switcherState {
+                case .tabs:
+                    selectedIndex = 1
+                case .spaces:
+                    selectedIndex = 2
 
-                        if gridModel.isIncognito {
-                            gridModel.tabCardModel.manager.toggleIncognitoMode(
-                                fromTabTray: true, openLazyTab: false)
-                        }
+                    if gridModel.isIncognito {
+                        gridModel.tabCardModel.manager.toggleIncognitoMode(
+                            fromTabTray: true, openLazyTab: false)
                     }
                 }
-                .useEffect(deps: gridModel.isIncognito) { isIncognito in
-                    if gridModel.switcherState == .tabs {
-                        selectedIndex = isIncognito ? 0 : 1
-                    }
+            }
+            .useEffect(deps: gridModel.isIncognito) { isIncognito in
+                if gridModel.switcherState == .tabs {
+                    selectedIndex = isIncognito ? 0 : 1
                 }
+            }
 
-                Spacer()
-            }
-        } else {
-            Picker("", selection: $gridModel.switcherState) {
-                ForEach(SwitcherViews.allCases, id: \.rawValue) { view in
-                    Text(view.rawValue).tag(view)
-                }
-            }
-            .pickerStyle(SegmentedPickerStyle())
-            .padding(CardGridUX.PickerPadding)
-            .disabled(tabModel.manager.isIncognito)
+            Spacer()
         }
     }
 
@@ -344,13 +333,11 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
 
                             switch gridModel.switcherState {
                             case .tabs:
-                                if gridModel.isIncognito && !swipedLeft
-                                    && FeatureFlag[.segmentedPicker]
-                                {
+                                if gridModel.isIncognito && !swipedLeft {
                                     gridModel.tabCardModel.manager.toggleIncognitoMode(
                                         fromTabTray: true, openLazyTab: false)
                                 } else {
-                                    if swipedLeft && !gridModel.isIncognito && FeatureFlag[.segmentedPicker] {
+                                    if swipedLeft && !gridModel.isIncognito {
                                         gridModel.tabCardModel.manager.toggleIncognitoMode(
                                             fromTabTray: true, openLazyTab: false)
                                     } else if !swipedLeft {

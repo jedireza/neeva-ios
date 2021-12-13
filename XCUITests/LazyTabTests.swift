@@ -4,7 +4,7 @@ import XCTest
 
 class LazyTabTests: BaseTestCase {
     func testCancelURLBarReturnsToWebsite() {
-        openURL()
+        openURLInNewTab()
         waitForExistence(app.staticTexts["Example Domain"])
 
         app.buttons["Address Bar"].tap()
@@ -87,21 +87,20 @@ class LazyTabTests: BaseTestCase {
     // MARK: Incognito Mode
     func testNoTabAddedWhenCancelingNewTabFromIncognito() {
         goToTabTray()
-        toggleIncognito(shouldOpenURL: false)
+        setIncognitoMode(enabled: true, shouldOpenURL: false)
 
+        newTab()
         waitForExistence(app.buttons["Cancel"])
         app.buttons["Cancel"].tap()
 
         // confirms that the tab tray is open and that the non-incognito tab is shown
-        XCTAssertEqual(
-            getTabs().firstMatch.label, ", Tab",
-            "Expected label of remaining tab is not correct")
+        waitForExistence(app.staticTexts["Incognito Tabs"])
+        waitForExistence(app.images["EmptyTabTrayIncognito"])
     }
 
     func testLazyTabCreatedFromIncognito() {
-        openURL(path(forTestPage: "test-mozilla-book.html"))
-        goToTabTray()
-        toggleIncognito()
+        openURLInNewTab(path(forTestPage: "test-mozilla-book.html"))
+        setIncognitoMode(enabled: true)
 
         goToTabTray()
 
@@ -110,35 +109,22 @@ class LazyTabTests: BaseTestCase {
         XCTAssertEqual(
             getTabs().firstMatch.label, "Example Domain, Tab",
             "Expected label of remaining tab is not correct")
-
-        toggleIncognito(closeTabTray: false)
-
-        // confirms that non-incognito tab is shown
-        waitForExistence(app.buttons["The Book of Mozilla, Tab"])
-        XCTAssertEqual(
-            getTabs().firstMatch.label, "The Book of Mozilla, Tab",
-            "Expected label of remaining tab is not correct")
     }
 
     func testLazyTabNotCreatedWhenIncognitoTabOpen() {
         // create normal tab and open incognito tab
-        openURL(path(forTestPage: "test-mozilla-book.html"))
-        goToTabTray()
-        toggleIncognito()
+        openURLInNewTab(path(forTestPage: "test-mozilla-book.html"))
+        setIncognitoMode(enabled: true)
 
         // switch back to normal mode
         goToTabTray()
-        toggleIncognito(closeTabTray: false)
+        setIncognitoMode(enabled: false, closeTabTray: false)
 
         // switch back to incognito mode
-        toggleIncognito(closeTabTray: false)
+        setIncognitoMode(enabled: true, shouldOpenURL: false, closeTabTray: false)
 
         // confirms that non-incognito tab is shown
         XCTAssert(!app.buttons["Cancel"].exists)
-
         waitForExistence(app.buttons["Example Domain, Tab"])
-        XCTAssertEqual(
-            getTabs().firstMatch.label, "Example Domain, Tab",
-            "Expected label of remaining tab is not correct")
     }
 }

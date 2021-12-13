@@ -99,7 +99,7 @@ class HistoryTests: BaseTestCase {
         app.buttons["Done"].tap()
 
         // This option should be enabled on private mode too
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
 
         goToRecentlyClosedPage()
         waitForExistence(app.tables["Recently Closed Tabs List"])
@@ -160,7 +160,7 @@ class HistoryTests: BaseTestCase {
         app.tables.cells.staticTexts[closedWebPageLabel].tap()
     }
 
-    func testOpenInNewPrivateTabRecentlyClosedItem() {
+    func testOpenInNewIncognitoTabRecentlyClosedItem() {
         // Open the default website
         openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
@@ -176,9 +176,9 @@ class HistoryTests: BaseTestCase {
         XCTAssertEqual(getNumberOfTabs(), 1)
     }
 
-    func testPrivateClosedSiteDoesNotAppearOnRecentlyClosedMenu() {
+    func testIncognitoClosedSiteDoesNotAppearOnRecentlyClosedMenu() {
         waitForExistence(app.buttons["Show Tabs"], timeout: 15)
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
 
         // Open the default website
         openURL(path(forTestPage: "test-mozilla-book.html"))
@@ -189,9 +189,9 @@ class HistoryTests: BaseTestCase {
         XCTAssertFalse(app.buttons["The Book of Mozilla"].exists)
     }
 
-    func testPrivateClosedSiteDoesNotAppearOnRecentlyClosed() {
+    func testIncognitoClosedSiteDoesNotAppearOnRecentlyClosed() {
         waitForExistence(app.buttons["Show Tabs"], timeout: 15)
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
 
         // Open the default website
         openURL(path(forTestPage: "test-mozilla-book.html"))

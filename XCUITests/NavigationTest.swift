@@ -82,8 +82,8 @@ class NavigationTest: BaseTestCase {
         XCTAssertTrue(app.buttons["Add to Space"].exists, "The option is not shown")
     }
 
-    func testLongPressLinkOptionsPrivateMode() {
-        toggleIncognito()
+    func testLongPressLinkOptionsIncognitoMode() {
+        setIncognitoMode(enabled: true)
 
         openURL(path(forTestPage: "test-example.html"))
         waitForExistence(app.webViews.links[website_2["link"]!], timeout: 5)
@@ -101,9 +101,8 @@ class NavigationTest: BaseTestCase {
         XCTAssertEqual(UIPasteboard.general.url?.absoluteString, website_2["moreLinkLongPressUrl"]!)
     }
 
-    func testCopyLinkPrivateMode() {
-        toggleIncognito()
-
+    func testCopyLinkIncognitoMode() {
+        setIncognitoMode(enabled: true)
         longPressLinkOptions(optionSelected: "Copy Link")
 
         XCTAssertEqual(
@@ -204,9 +203,9 @@ class NavigationTest: BaseTestCase {
         XCTAssertTrue(app.buttons["Copy"].exists, "The share menu is not shown")
     }
 
-    func testShareLinkPrivateMode() {
+    func testShareLinkIncognitoMode() {
         waitForExistence(app.buttons["Show Tabs"], timeout: 30)
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
 
         longPressLinkOptions(optionSelected: "Share Link")
         waitForExistence(app.buttons["Copy"], timeout: 3)

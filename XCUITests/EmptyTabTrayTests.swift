@@ -53,20 +53,20 @@ class EmptyTabTrayTests: BaseTestCase {
 
     /// Tests that when closing all incognito tabs, and no normal tabs exist that empty tab tray is shown
     func testEmptyTabTrayShowsAfterClosingAllIncognitoTabs() {
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
         openThreeTabs()
         closeAllTabs(createNewTab: false)
 
-        waitForExistence(app.images["EmptyTabTray"])
+        waitForExistence(app.images["EmptyTabTrayIncognito"])
     }
 
     func testEmptyTabTrayShowsAfterClosingAllIncognitoTabsFromTabTray() {
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
         openThreeTabs()
         goToTabTray()
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
 
-        waitForExistence(app.images["EmptyTabTray"])
+        waitForExistence(app.images["EmptyTabTrayIncognito"])
     }
 
     func testTabTrayShowsTabs() {

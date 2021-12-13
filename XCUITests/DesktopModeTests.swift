@@ -89,10 +89,10 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
 
-    func testPrivateModeOffAlsoRemovesFromNormalMode() throws {
+    func testIncognitoModeOffAlsoRemovesFromNormalMode() throws {
         try skipIfNeeded()
 
-        openURL(path(forTestPage: "test-user-agent.html"))
+        openURLInNewTab(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
         requestDesktopSite()
@@ -100,30 +100,29 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
         // is now on in normal mode
-
-        toggleIncognito(urlToOpen: path(forTestPage: "test-user-agent.html"))
+        setIncognitoMode(enabled: true, urlToOpen: path(forTestPage: "test-user-agent.html"))
         // Workaround to be sure the snackbar dissapers
         reloadPage()
         requestMobileSite()
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
-        // is now off in private, mode, confirm it is off in normal mode
-        toggleIncognito(closeTabTray: false)
+        // is now off in incognito, mode, confirm it is off in normal mode
+        setIncognitoMode(enabled: false, closeTabTray: false)
         app.buttons["Add Tab"].tap()
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }
 
-    func testPrivateModeOnHasNoAffectOnNormalMode() throws {
+    func testIncognitoModeOnHasNoAffectOnNormalMode() throws {
         try skipIfNeeded()
 
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
         openURL(path(forTestPage: "test-user-agent.html"))
 
         waitUntilPageLoad()
@@ -133,7 +132,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "DESKTOP_UA").count > 0)
 
-        toggleIncognito(closeTabTray: false)
+        setIncognitoMode(enabled: false, closeTabTray: false)
         app.buttons["Add Tab"].tap()
         openURL(path(forTestPage: "test-user-agent.html"))
         waitUntilPageLoad()

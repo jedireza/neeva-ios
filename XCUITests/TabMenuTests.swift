@@ -38,7 +38,7 @@ class TabMenuTests: BaseTestCase {
     }
 
     func testCloseIncognitoTabFromTab() {
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
         openURLInNewTab(secondWebsite.url)
 
         waitForExistence(app.buttons["Show Tabs"], timeout: 3)
@@ -56,11 +56,11 @@ class TabMenuTests: BaseTestCase {
     }
 
     func testCloseAllIncognitoTabsFromTab() {
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
         openURLInNewTab(secondWebsite.url)
 
         closeAllTabs(createNewTab: false)
-        goToTabTray()
+        setIncognitoMode(enabled: false, shouldOpenURL: false, closeTabTray: false)
 
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
         XCTAssertEqual(
@@ -79,11 +79,12 @@ class TabMenuTests: BaseTestCase {
 
     func testCloseAllIncognitoTabsFromSwitcher() {
         openURL()
-        toggleIncognito()
+        setIncognitoMode(enabled: true)
         openURLInNewTab(secondWebsite.url)
         goToTabTray()
 
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
+        setIncognitoMode(enabled: false, shouldOpenURL: false, closeTabTray: false)
 
         waitForExistence(app.buttons["Example Domain, Tab"])
         XCTAssertEqual(getTabs().count, 1, "Expected number of tabs remaining is not correct")
