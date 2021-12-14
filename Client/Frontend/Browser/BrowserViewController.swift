@@ -1122,9 +1122,8 @@ class BrowserViewController: UIViewController {
             // Do not show the IntroViewController again.
             Defaults[.introSeen] = true
 
-            introViewController.dismiss(animated: true) {
-                self.introViewController = nil
-            }
+            self.introViewController = nil
+            introViewController.dismiss(animated: true)
         }
 
         if let presentedViewController = presentedViewController {
@@ -1789,14 +1788,17 @@ extension BrowserViewController {
             }
         }
 
-        introViewController = IntroViewController(
+        let controller = IntroViewController(
             signInMode: signInMode, onOtherOptionsPage: onOtherOptionsPage,
             marketingEmailOptOut: marketingEmailOptOut)
+        // Keep a reference to this controller so we can also clear from `popToBVC`.
+        self.introViewController = controller
 
-        introViewController!.didFinishClosure = { action in
+        controller.didFinishClosure = { [weak controller] action in
             Defaults[.introSeen] = true
 
-            self.introViewController?.dismiss(animated: true) { [self] in
+            self.introViewController = nil
+            controller?.dismiss(animated: true) { [self] in
                 switch action {
                 case .signin:
                     break
@@ -1829,7 +1831,6 @@ extension BrowserViewController {
                 case .oktaAccountCreated(let token):
                     setTokenAndOpenURL(token: token, url: NeevaConstants.verificationRequiredURL)
                 }
-                self.introViewController = nil
             }
 
             if NeevaUserInfo.shared.hasLoginCookie() {
@@ -1840,7 +1841,7 @@ extension BrowserViewController {
             }
         }
 
-        self.introVCPresentHelper(introViewController: introViewController!, completion: completion)
+        self.introVCPresentHelper(introViewController: controller, completion: completion)
     }
 
     private func introVCPresentHelper(
