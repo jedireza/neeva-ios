@@ -25,7 +25,7 @@ class GridModel: ObservableObject {
         }
     }
     @Published var refreshDetailedSpaceSubscription: AnyCancellable? = nil
-    @ObservedObject var cardStripModel = CardStripModel()
+    var cardStripModel = CardStripModel()
 
     var isIncognito: Bool {
         tabCardModel.manager.isIncognito

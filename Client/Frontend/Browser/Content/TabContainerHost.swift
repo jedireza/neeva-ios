@@ -148,7 +148,8 @@ struct TabContainerContent: View {
                         GeometryReader { geo in
                             VStack {
                                 Spacer()
-                                CardStripContent(bvc: bvc, width: geo.size.width)
+                                CardStripContent(bvc: bvc)
+                                    .environmentObject(bvc.gridModel.cardStripModel)
                             }
                         }
                     }

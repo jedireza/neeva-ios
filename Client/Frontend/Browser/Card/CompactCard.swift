@@ -67,11 +67,13 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
 
     var menuItems: some View {
         Group {
-            if !details.isPinned {
-                Button {
-                    details.manager.get(for: details.id)?.isPinned.toggle()
-                } label: {
-                    Label("Pin tab", systemSymbol: .pin)
+            if !details.isPinned || !FeatureFlag[.tabGroupsPinning] {
+                if FeatureFlag[.tabGroupsPinning] {
+                    Button {
+                        details.manager.get(for: details.id)?.isPinned.toggle()
+                    } label: {
+                        Label("Pin tab", systemSymbol: .pin)
+                    }
                 }
 
                 Button {
