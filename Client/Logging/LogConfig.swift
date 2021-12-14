@@ -428,6 +428,10 @@ public struct LogConfig {
         public static let autocompleteSelectedFromRow = "AutocompleteSelectedFromRow"
         // searchHistory
         public static let fromSearchHistory = "FromSearchHistory"
+        // latency
+        public static let numberOfCanceledRequest = "NumberOfCanceledRequest"
+        public static let timeToFirstScreen = "TimeToFirstScreen"
+        public static let timeToSelectSuggestion = "TimeToSelectSuggestion"
     }
 
     public struct SpacesAttribute {

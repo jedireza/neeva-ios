@@ -21,9 +21,23 @@ class SuggestionModel: ObservableObject {
 
     private var searchQuery: String = "" {
         didSet {
-            if searchQuery != oldValue { reload() }
+            if searchQuery != oldValue {
+                if searchQuery.count == 0 {
+                    canceledSuggestRequestCount = 0
+                    suggestStartTime = nil
+                    timeToFirstScreen = nil
+                }
+                if suggestionQuery != nil {
+                    canceledSuggestRequestCount += 1
+                }
+                reload()
+            }
         }
     }
+
+    private var canceledSuggestRequestCount = 0
+    private var suggestStartTime: Date?
+    private var timeToFirstScreen: Int?
 
     // MARK: Neeva Suggestions
     // Displayed in linear order
@@ -145,6 +159,9 @@ class SuggestionModel: ObservableObject {
 
         let searchQuery = searchQuery
 
+        if suggestStartTime == nil {
+            suggestStartTime = Date()
+        }
         suggestionQuery = SuggestionsController.getSuggestions(for: searchQuery) { result in
             self.suggestionQuery = nil
             switch result {
@@ -162,6 +179,12 @@ class SuggestionModel: ObservableObject {
                     rowQuerySuggestions, urlSuggestions, navSuggestions, lensOrBang,
                     memorizedSuggestionMap, querySuggestionIndexMap
                 )):
+                if let suggestStartTime = self.suggestStartTime,
+                    self.timeToFirstScreen == nil
+                {
+                    self.timeToFirstScreen =
+                        suggestStartTime.timeDiffInMilliseconds(from: Date())
+                }
                 self.error = nil
                 self.topSuggestions = topSuggestions
                 self.rowQuerySuggestions = rowQuerySuggestions
@@ -876,6 +899,31 @@ extension SuggestionModel {
         }
 
         queryAttributes.append(EnvironmentHelper.shared.getSessionUUID())
+
+        if let suggestStartTime = suggestStartTime {
+            if let timeToFirstScreen = timeToFirstScreen {
+                queryAttributes.append(
+                    ClientLogCounterAttribute(
+                        key: LogConfig.SuggestionAttribute.timeToFirstScreen,
+                        value: String(timeToFirstScreen)
+                    )
+                )
+            }
+            let timeToSelectSuggestionInMs =
+                suggestStartTime.timeDiffInMilliseconds(from: Date())
+            queryAttributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.SuggestionAttribute.timeToSelectSuggestion,
+                    value: String(timeToSelectSuggestionInMs)
+                )
+            )
+            queryAttributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.SuggestionAttribute.numberOfCanceledRequest,
+                    value: String(canceledSuggestRequestCount)
+                )
+            )
+        }
 
         return queryAttributes
     }
