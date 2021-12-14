@@ -11,7 +11,7 @@ import UIKit
 
 enum FirstRunButtonActions {
     case signin
-    case signupWithApple(Bool?, URL?)
+    case signupWithApple(Bool?, String?)
     case signupWithOther
     case skipToBrowser
     case oktaSignup(String, String, String, Bool)  //email, first name, password, marketing option
@@ -234,11 +234,8 @@ extension IntroViewController: ASAuthorizationControllerDelegate {
 
             if token != nil {
                 if let authStr = String(data: token!, encoding: .utf8) {
-                    let authURL = NeevaConstants.appleAuthURL(
-                        serverAuthCode: authStr,
-                        marketingEmailOptOut: self.marketingEmailOptOut,
-                        signup: true)
-                    self.didFinishClosure?(.signupWithApple(nil, authURL))
+
+                    self.didFinishClosure?(.signupWithApple(self.marketingEmailOptOut, authStr))
                 }
             }
             break

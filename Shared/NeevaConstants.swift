@@ -165,6 +165,21 @@ public struct NeevaConstants {
         ])!
     }
 
+    /// Generates a serverAuthCodeCookie cookie from the given cookie value.
+    public static func serverAuthCodeCookie(for value: String) -> HTTPCookie {
+        HTTPCookie(properties: [
+            .name: "serverAuthCode",
+            .value: value,
+            .domain: NeevaConstants.appHost,
+            .path: "/",
+            .expires: Date() + 1 * 60,
+            .secure: true,
+            .sameSitePolicy: HTTPCookieStringPolicy.sameSiteLax,
+            // ! potentially undocumented API
+            .init("HttpOnly"): true,
+        ])!
+    }
+
     public static let sharedBundle = Bundle(for: BundleHookClass.self)
 
     public static func isNeevaHome(url: URL?) -> Bool {
@@ -218,7 +233,6 @@ public struct NeevaConstants {
                 + String(marketingEmailOptOut ? "oo" : "oi")
                 + "&e=" + encodedEmail
                 + "&q=i"
-
         }
         return URL(string: oktaURL)!
     }

@@ -1800,9 +1800,16 @@ extension BrowserViewController {
                 switch action {
                 case .signin:
                     break
-                case .signupWithApple(_, let url):
-                    if let url = url {
-                        self.openURLInNewTab(url)
+                case .signupWithApple(let marketingEmailOptOut, let serverAuthCode):
+                    if let serverAuthCode = serverAuthCode {
+                        let authURL = NeevaConstants.appleAuthURL(
+                            serverAuthCode: serverAuthCode,
+                            marketingEmailOptOut: marketingEmailOptOut ?? false,
+                            signup: true)
+                        let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
+                        httpCookieStore.setCookie(NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)) {
+                            self.openURLInNewTab(authURL)
+                        }
                     }
                 case .signupWithOther:
                     break
