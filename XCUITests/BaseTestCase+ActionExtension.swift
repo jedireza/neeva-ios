@@ -3,19 +3,24 @@
 import XCTest
 
 extension BaseTestCase {
-    /// Launches from tab page, or runs if already in tab tray.
-    /// Switches between incognito modes by clicking incognito button
-    func toggleIncognito(
-        urlToOpen: String = "example.com", shouldOpenURL: Bool = true, closeTabTray: Bool = true
+    /// Launches from tab page, or runs if already in tab tray
+    func setIncognitoMode(
+        enabled: Bool, urlToOpen: String = "example.com",
+        shouldOpenURL: Bool = true, closeTabTray: Bool = true
     ) {
-        if !app.buttons["Incognito Mode"].exists {
+        if !app.staticTexts["Incognito Tabs"].exists {
             goToTabTray()
         }
 
-        app.buttons["Incognito Mode"].tap()
+        print(app.debugDescription)
+        if enabled {
+            app.staticTexts["Incognito Tabs"].tap()
 
-        if app.buttons["Cancel"].exists && shouldOpenURL {
-            openURL(urlToOpen)
+            if shouldOpenURL {
+                openURLInNewTab(urlToOpen)
+            }
+        } else {
+            app.images["Normal Tabs"].tap()
         }
 
         if app.buttons["Done"].exists && app.buttons["Done"].isHittable && closeTabTray {

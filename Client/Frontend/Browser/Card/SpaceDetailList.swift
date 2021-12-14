@@ -289,7 +289,7 @@ struct ListStyleModifier: ViewModifier {
 
 struct iPadOnlyStackNavigation: ViewModifier {
     func body(content: Content) -> some View {
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if UIDevice.current.useTabletInterface {
             content
                 .navigationViewStyle(.stack)
         } else {
@@ -301,7 +301,7 @@ struct iPadOnlyStackNavigation: ViewModifier {
 
 extension View {
     @ViewBuilder func iPadOnlyID() -> some View {
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if UIDevice.current.useTabletInterface {
             self.id(UUID())
         } else {
             self

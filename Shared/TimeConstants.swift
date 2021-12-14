@@ -176,6 +176,13 @@ extension Date {
         return "now"
     }
 }
+
+extension Date {
+    public func timeDiffInMilliseconds(from: Date) -> Int {
+        return Int(from.timeIntervalSince1970 * 1000 - timeIntervalSince1970 * 1000)
+    }
+}
+
 let MaxTimestampAsDouble = Double(UInt64.max)
 
 /// This is just like decimalSecondsStringToTimestamp, but it looks for values that seem to be

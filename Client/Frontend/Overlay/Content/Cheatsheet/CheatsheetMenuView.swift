@@ -73,7 +73,8 @@ struct QueryButton: View {
         if let encodedQuery = query.addingPercentEncoding(
             withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
         {
-            ClientLogger.shared.logCounter(.RelatedSearchClick, attributes: EnvironmentHelper.shared.getAttributes())
+            ClientLogger.shared.logCounter(
+                .RelatedSearchClick, attributes: EnvironmentHelper.shared.getAttributes())
             let target = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")!
             onOpenURL(target)
         }
@@ -121,7 +122,6 @@ public struct CheatsheetMenuView: View {
         GeometryReader { geom in
             ScrollView(.vertical) {
                 VStack(alignment: .leading) {
-                    CompactNeevaMenuView(menuAction: menuAction)
                     recipeView
                         .padding()
                     if let richResults = model.searchRichResults {
@@ -197,6 +197,8 @@ public struct CheatsheetMenuView: View {
             )
         case .RelatedSearches(let relatedSearches):
             return AnyView(RelatedSearchesView(relatedSearches: relatedSearches, onDismiss: nil))
+        case .WebGroup(let result):
+            return AnyView(WebResultList(webResult: result))
         }
     }
 

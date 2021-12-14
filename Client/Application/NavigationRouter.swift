@@ -44,10 +44,9 @@ enum NavigationPath {
         }
 
         if urlString.starts(with: "\(scheme)://open-url") {
-            self = .openUrlFromComponents(bvc: bvc, components: components)
+            self = .openUrlFromComponents(components: components)
         } else if let widgetKitNavPath = NavigationPath.handleWidgetKitQuery(
-            bvc: bvc, urlString: urlString,
-            scheme: scheme, components: components)
+            urlString: urlString, scheme: scheme, components: components)
         {
             self = widgetKitNavPath
         } else if urlString.starts(with: "\(scheme)://open-text") {
@@ -57,7 +56,7 @@ enum NavigationPath {
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .url(
-                webURL: NavigationPath.maybeRewriteURL(url, components), isPrivate: isPrivate)
+                webURL: NavigationPath.maybeRewriteURL(url, components) ?? url, isPrivate: isPrivate)
         } else if urlString.starts(with: "\(scheme)://space"),
             let spaceId = components.valueForQuery("id")
         {
@@ -115,17 +114,17 @@ enum NavigationPath {
     }
 
     private static func handleWidgetKitQuery(
-        bvc: BrowserViewController, urlString: String, scheme: String, components: URLComponents
+        urlString: String, scheme: String, components: URLComponents
     ) -> NavigationPath? {
         if urlString.starts(with: "\(scheme)://widget-medium-topsites-open-url") {
             // Widget Top sites - open url
-            return .openUrlFromComponents(bvc: bvc, components: components)
+            return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-url") {
             // Widget Quick links - small - open url private or regular
-            return .openUrlFromComponents(bvc: bvc, components: components)
+            return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-url") {
             // Widget Quick Actions - medium - open url private or regular
-            return .openUrlFromComponents(bvc: bvc, components: components)
+            return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-copied")
             || urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-copied")
         {
@@ -141,21 +140,10 @@ enum NavigationPath {
         return nil
     }
 
-    private static func openUrlFromComponents(bvc: BrowserViewController, components: URLComponents)
+    private static func openUrlFromComponents(components: URLComponents)
         -> NavigationPath
     {
         let url = components.valueForQuery("url")?.asURL
-
-        // If attempting to sign in, skip first run screen
-        if let url = url, NeevaConstants.isAppHost(url.host), url.path.starts(with: "/login") {
-            Defaults[.introSeen] = true
-
-            if let introVC = bvc.introViewController {
-                bvc.view.alpha = 1
-                introVC.dismiss(animated: true, completion: nil)
-            }
-        }
-
         // Unless the `open-url` URL specifies a `private` parameter,
         // use the last browsing mode the user was in.
         let isPrivate =
@@ -223,7 +211,7 @@ enum NavigationPath {
         }
     }
 
-    public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL {
+    public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL? {
         // Intercept and rewrite search queries incoming from e.g. SpotLight.
         //
         // Example of what components looks like:
@@ -281,7 +269,7 @@ enum NavigationPath {
                     value = queryItems.first(where: { $0.name == "query" })?.value
                 }
             default:
-                return url
+                return nil
             }
         }
 
@@ -290,7 +278,7 @@ enum NavigationPath {
         {
             return newURL
         } else {
-            return url
+            return nil
         }
     }
 }

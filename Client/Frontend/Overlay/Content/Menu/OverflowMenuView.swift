@@ -108,14 +108,14 @@ public struct OverflowMenuView: View {
                     }
                     .accessibilityIdentifier("OverflowMenu.Reload")
 
-                    if !FeatureFlag[.overflowMenuInCardGrid] {
+                    if !FeatureFlag[.updatedTabOverflowMenu] {
                         OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
                             menuAction(.newTab)
                         }
                         .accessibilityIdentifier("OverflowMenu.NewTab")
                     } else {
                         OverflowMenuButtonView(label: "Support", symbol: .bubbleLeft) {
-                            menuAction(.feedback)
+                            menuAction(.support)
                         }
                         .accessibilityIdentifier("OverflowMenu.Feedback")
                     }
@@ -125,7 +125,7 @@ public struct OverflowMenuView: View {
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
                     if chromeModel.inlineToolbar {
-                        if !FeatureFlag[.overflowMenuInCardGrid] {
+                        if !FeatureFlag[.updatedTabOverflowMenu] {
                             NeevaMenuRowButtonView(
                                 label: "New Tab",
                                 symbol: .plus
@@ -137,12 +137,12 @@ public struct OverflowMenuView: View {
 
                         Color.groupedBackground.frame(height: 1)
 
-                        if FeatureFlag[.overflowMenuInCardGrid] {
+                        if FeatureFlag[.updatedTabOverflowMenu] {
                             NeevaMenuRowButtonView(
                                 label: "Support",
                                 symbol: .bubbleLeft
                             ) {
-                                menuAction(.feedback)
+                                menuAction(.support)
                             }
                             .accessibilityIdentifier("OverflowMenu.Feedback")
 

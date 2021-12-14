@@ -140,7 +140,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
             components.scheme == "http" || components.scheme == "https"
         {
-            ClientLogger.shared.logCounter(.OpenDefaultBrowserURL)
+            var attributes = [ClientLogCounterAttribute]()
+            if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
+                let _ = NavigationPath.maybeRewriteURL(url, components)
+            {
+                attributes.append(
+                    ClientLogCounterAttribute(
+                        key: LogConfig.DeeplinkAttribute.searchRedirect,
+                        value: "1"
+                    )
+                )
+            }
+            ClientLogger.shared.logCounter(.OpenDefaultBrowserURL, attributes: attributes)
         }
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {

@@ -141,28 +141,6 @@ class TabManagerTests: XCTestCase {
         XCTAssertEqual(manager.selectedTab, tab, "There should be selected first tab")
     }
 
-    func testDidDeleteLastPrivateTab() {
-        //create the tab before adding the mock delegate. So we don't have to check delegate calls we dont care about
-        let tab = manager.addTab()
-        manager.selectTab(tab)
-        let privateTab = manager.addTab(isPrivate: true)
-        manager.selectTab(privateTab)
-        manager.addDelegate(delegate)
-
-        let didSelect = MethodSpy(functionName: spyDidSelectedTabChange) { tabs in
-            let next = tabs[0]!
-            let previous = tabs[1]!
-            XCTAssertTrue(previous != next)
-            XCTAssertTrue(previous == privateTab)
-            XCTAssertTrue(next == tab)
-            XCTAssertTrue(previous.isIncognito)
-            XCTAssertTrue(self.manager.selectedTab == next)
-        }
-        delegate.expect([didRemove, didSelect])
-        manager.removeTabAndUpdateSelectedTab(privateTab)
-        delegate.verify("Not all delegate methods were called")
-    }
-
     func testDeletePrivateTabsOnExit() {
         Defaults[.closePrivateTabs] = true
 

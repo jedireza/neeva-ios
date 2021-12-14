@@ -41,9 +41,9 @@ struct CardGrid: View {
 
     @ViewBuilder var cardContainerBackground: some View {
         if tabModel.isCardGridEmpty, case .tabs = gridModel.switcherState {
-            EmptyCardGrid()
+            EmptyCardGrid(isIncognito: gridModel.isIncognito)
         } else {
-            Color(UIColor.TrayBackground).ignoresSafeArea()
+            Color.background.ignoresSafeArea()
         }
     }
 
@@ -165,30 +165,25 @@ struct CardGrid: View {
         .accessibilityAction(.escape) {
             gridModel.hideWithAnimation()
         }
-        .runAfter(
-            toggling: gridModel.isHidden,
-            fromTrueToFalse: {  // Done with animation to show the CardGrid
-                gridModel.animationThumbnailState = .hidden
-                gridModel.animateDetailTransitions = true
-            },
-            fromFalseToTrue: {  // Done with animation to hide the CardGrid
-                gridModel.hideWithNoAnimation()
-                gridModel.animateDetailTransitions = false
-                tabGroupModel.detailedTabGroup = nil
-            }
-        )
+        .onAnimationCompleted(for: gridModel.isHidden) {
+            gridModel.onCompletedCardTransition()
+        }
         .useEffect(deps: gridModel.animationThumbnailState) { _ in
             // Ensure that the `Card` for the selected tab is visible. This way its
-            // `CardTransitionModifier` will kick-in and run the animation and
-            // toggle `gridModel.isHidden`. Update directly if there are no tabs.
+            // `CardTransitionModifier` will be visible and run the animation.
             if gridModel.animationThumbnailState != .hidden {
-                if tabModel.allDetails.isEmpty {
-                    withAnimation {
-                        gridModel.isHidden =
-                            (gridModel.animationThumbnailState == .visibleForTrayHidden)
-                    }
-                } else {
+                if !tabModel.allDetails.isEmpty {
                     gridModel.scrollToSelectedTab()
+                }
+                // Allow some time for the `Card` to get created if it was previously
+                // not visible.
+                DispatchQueue.main.async {
+                    if gridModel.animationThumbnailState != .hidden {
+                        withAnimation(CardTransitionUX.animation) {
+                            gridModel.isHidden =
+                                (gridModel.animationThumbnailState == .visibleForTrayHidden)
+                        }
+                    }
                 }
             }
         }
@@ -206,14 +201,13 @@ private struct DraggableDetail: ViewModifier {
     func body(content: Content) -> some View {
         content
             .offset(x: detailDragOffset, y: 0)
-            .runAfter(
-                toggling: detailDragOffset == width, fromTrueToFalse: {},
-                fromFalseToTrue: {
+            .onAnimationCompleted(for: detailDragOffset) {
+                if detailDragOffset == width {
                     spaceModel.detailedSpace = nil
                     tabGroupModel.detailedTabGroup = nil
                     detailDragOffset = 0
                 }
-            )
+            }
             .simultaneousGesture(
                 DragGesture(minimumDistance: DraggableDetail.DraggableWidth)
                     .onChanged { value in
@@ -240,19 +234,83 @@ private struct DraggableDetail: ViewModifier {
 }
 
 struct GridPicker: View {
+    var isInToolbar = false
+
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
 
-    var body: some View {
-        Picker("", selection: $gridModel.switcherState) {
-            ForEach(SwitcherViews.allCases, id: \.rawValue) { view in
-                Text(view.rawValue).tag(view)
+    @State var selectedIndex: Int = 1
+
+    @ViewBuilder
+    var picker: some View {
+        HStack {
+            Spacer()
+
+            SegmentedPicker(
+                segments: [
+                    Segment(
+                        symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
+                        selectedIconColor: .background,
+                        selectedColor: .label,
+                        selectedAction: {
+                            gridModel.switcherState = .tabs
+
+                            if !gridModel.isIncognito {
+                                gridModel.tabCardModel.manager.toggleIncognitoMode(
+                                    fromTabTray: true, openLazyTab: false)
+                            }
+                        }),
+                    Segment(
+                        symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
+                        selectedIconColor: .white,
+                        selectedColor: .brand.blue,
+                        selectedAction: {
+                            gridModel.switcherState = .tabs
+
+                            if gridModel.isIncognito {
+                                gridModel.tabCardModel.manager.toggleIncognitoMode(
+                                    fromTabTray: true, openLazyTab: false)
+                            }
+                        }),
+                    Segment(
+                        symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
+                        selectedIconColor: .white, selectedColor: .brand.blue,
+                        selectedAction: {
+                            gridModel.switcherState = .spaces
+                        }),
+                ], selectedSegmentIndex: $selectedIndex
+            )
+            .useEffect(deps: gridModel.switcherState) { _ in
+                switch gridModel.switcherState {
+                case .tabs:
+                    selectedIndex = 1
+                case .spaces:
+                    selectedIndex = 2
+
+                    if gridModel.isIncognito {
+                        gridModel.tabCardModel.manager.toggleIncognitoMode(
+                            fromTabTray: true, openLazyTab: false)
+                    }
+                }
             }
-        }.pickerStyle(SegmentedPickerStyle())
-            .padding(CardGridUX.PickerPadding)
-            .disabled(tabModel.manager.isIncognito)
+            .useEffect(deps: gridModel.isIncognito) { isIncognito in
+                if gridModel.switcherState == .tabs {
+                    selectedIndex = isIncognito ? 0 : 1
+                }
+            }
+
+            Spacer()
+        }
+    }
+
+    var body: some View {
+        picker
             .frame(height: gridModel.pickerHeight)
-            .background(Color.DefaultBackground)
+            .background(
+                (gridModel.spaceCardModel.detailedSpace == nil && !isInToolbar
+                    ? Color.background : Color.clear)
+                    .ignoresSafeArea()
+            )
             .opacity(gridModel.isHidden ? 0 : 1)
             .animation(.easeOut)
     }
@@ -270,10 +328,27 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
                         let horizontalAmount = value.translation.width as CGFloat
                         let verticalAmount = value.translation.height as CGFloat
 
-                        if abs(horizontalAmount) > abs(verticalAmount)
-                            && !tabModel.manager.isIncognito
-                        {
-                            gridModel.switcherState = horizontalAmount < 0 ? .spaces : .tabs
+                        if abs(horizontalAmount) > abs(verticalAmount) {
+                            let swipedLeft = horizontalAmount > 0 ? true : false
+
+                            switch gridModel.switcherState {
+                            case .tabs:
+                                if gridModel.isIncognito && !swipedLeft {
+                                    gridModel.tabCardModel.manager.toggleIncognitoMode(
+                                        fromTabTray: true, openLazyTab: false)
+                                } else {
+                                    if swipedLeft && !gridModel.isIncognito {
+                                        gridModel.tabCardModel.manager.toggleIncognitoMode(
+                                            fromTabTray: true, openLazyTab: false)
+                                    } else if !swipedLeft {
+                                        gridModel.switcherState = .spaces
+                                    }
+                                }
+                            case .spaces:
+                                if swipedLeft {
+                                    gridModel.switcherState = .tabs
+                                }
+                            }
                         }
                     })
     }

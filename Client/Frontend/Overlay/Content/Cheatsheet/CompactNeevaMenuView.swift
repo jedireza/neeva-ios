@@ -45,19 +45,19 @@ struct CompactNeevaMenuView: View {
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
                 CompactNeevaMenuButtonView(label: "Support", symbol: .bubbleLeft) {
-                    self.menuAction(.feedback)
+                    self.menuAction(.support)
                 }
                 .accessibilityIdentifier("NeevaMenu.Feedback")
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
                 CompactNeevaMenuButtonView(label: "History", symbol: .clock) {
-                    self.menuAction(.feedback)
+                    self.menuAction(.history)
                 }
                 .accessibilityIdentifier("NeevaMenu.History")
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
                 CompactNeevaMenuButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
-                    self.menuAction(.feedback)
+                    self.menuAction(.downloads)
                 }
                 .accessibilityIdentifier("NeevaMenu.Downloads")
                 .frame(width: CompactNeevaMenuUX.buttonWidth)

@@ -57,6 +57,7 @@ public struct LogConfig {
         case LoginAfterFirstRun  // Login after first run
         case FirstRunPageLoad  // Page load at first run and before login
         case PromoSignin  // Sign in from promo card
+        case PreviewModePromoSignup  // Sign up on preview promo card
         case SettingSignin  // Sign in from setting
         case SuggestionErrorLoginViewImpression  // Error login view triggered by suggestion
         case SuggestionErrorSigninOrJoinNeeva  // Click Sign in or Join Neeva on suggestion error login page
@@ -82,6 +83,7 @@ public struct LogConfig {
         case PreviewHomeImpression  // Preview home impression
         case PreviewSampleQueryClicked  // Clicked on sample query on the home page
         case PreviewTapFakeSearchInput  // Clicked on the fake search input box on preview home page
+        case PreviewHomeSignin  // Click sign in on preview home
 
         // promo card
         case PromoDefaultBrowser  // Click set default browser from promo
@@ -197,7 +199,10 @@ public struct LogConfig {
     public static var enabledLoggingCategories: Set<InteractionCategory>?
 
     public static func featureFlagEnabled(for category: InteractionCategory) -> Bool {
-        if category == .FirstRun || category == .Notification {
+        if category == .FirstRun
+            || category == .Notification
+            || category == .Suggestions
+            || category == .Performance {
             return true
         }
 
@@ -260,6 +265,7 @@ public struct LogConfig {
         case .LoginAfterFirstRun: return .FirstRun
         case .FirstRunPageLoad: return .FirstRun
         case .PromoSignin: return .FirstRun
+        case .PreviewModePromoSignup: return .FirstRun
         case .SettingSignin: return .FirstRun
         case .SuggestionErrorLoginViewImpression: return .FirstRun
         case .SuggestionErrorSigninOrJoinNeeva: return .FirstRun
@@ -285,6 +291,7 @@ public struct LogConfig {
         case .PreviewHomeImpression: return .FirstRun
         case .PreviewSampleQueryClicked: return .FirstRun
         case .PreviewTapFakeSearchInput: return .FirstRun
+        case .PreviewHomeSignin: return .FirstRun
 
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
@@ -393,6 +400,8 @@ public struct LogConfig {
         public static let FirstRunPath = "FirstRunPath"
         /// First session uuid when user open the app
         public static let FirstSessionUUID = "FirstSessionUUID"
+        /// Preview mode query count
+        public static let PreviewModeQueryCount = "PreviewModeQueryCount"
     }
 
     public struct SuggestionAttribute {
@@ -419,6 +428,10 @@ public struct LogConfig {
         public static let autocompleteSelectedFromRow = "AutocompleteSelectedFromRow"
         // searchHistory
         public static let fromSearchHistory = "FromSearchHistory"
+        // latency
+        public static let numberOfCanceledRequest = "NumberOfCanceledRequest"
+        public static let timeToFirstScreen = "TimeToFirstScreen"
+        public static let timeToSelectSuggestion = "TimeToSelectSuggestion"
     }
 
     public struct SpacesAttribute {
@@ -452,5 +465,9 @@ public struct LogConfig {
         public static let numTabsRemoved = "NumTabsRemoved"
         public static let numTabGroupsTotal = "NumTabGroupsTotal"
         public static let numTabsInTabGroup = "NumTabsInTabGroup"
+    }
+
+    public struct DeeplinkAttribute {
+        public static let searchRedirect = "SearchRedirect"
     }
 }

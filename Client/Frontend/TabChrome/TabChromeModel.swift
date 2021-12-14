@@ -19,8 +19,7 @@ class TabChromeModel: ObservableObject {
             return false
         }
 
-        return FeatureFlag[.suggestionBackButton]
-            && selectedTab.queryForNavigation.findQueryFor(navigation: currentItem) != nil
+        return selectedTab.queryForNavigation.findQueryFor(navigation: currentItem) != nil
     }
 
     @Published var canGoForward: Bool

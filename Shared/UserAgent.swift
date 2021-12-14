@@ -67,7 +67,7 @@ open class UserAgent {
     public static func getUserAgent(domain: String = "") -> String {
         // As of iOS 13 using a hidden webview method does not return the correct UA on
         // iPad (it returns mobile UA). We should consider that method no longer reliable.
-        if UIDevice.current.userInterfaceIdiom == .pad {
+        if UIDevice.current.useTabletInterface {
             return getUserAgent(domain: domain, platform: .Desktop)
         } else {
             return getUserAgent(domain: domain, platform: .Mobile)

@@ -618,21 +618,23 @@ class BrowserViewController: UIViewController {
             displayedRestoreTabsAlert = true
             showRestoreTabsAlert()
         } else {
-            if tabManager.restoreTabs() {
-                // Handle the case of an existing user upgrading to a version of the app
-                // that supports preview mode. They will have tabs already, so we don't
-                // want to show them the preview home experience.
+            let _ = tabManager.restoreTabs()
+
+            // Handle the case of an existing user upgrading to a version of the app
+            // that supports preview mode. They will have tabs already, so we don't
+            // want to show them the preview home experience.
+            // TODO: This is flawed as an existing user may have closed their tabs.
+            if !tabManager.tabs.isEmpty {
                 Defaults[.didFirstNavigation] = true
-            } else {
-                DispatchQueue.main.async { [weak self] in
-                    guard let self = self else { return }
-                    if Self.createNewTabOnStartForTesting {
-                        self.tabManager.select(self.tabManager.addTab())
-                    } else if !Defaults[.didFirstNavigation] {
-                        self.showPreviewHome()
-                    } else {
-                        self.showTabTray()
-                    }
+            }
+
+            DispatchQueue.main.async {
+                if Self.createNewTabOnStartForTesting {
+                    self.tabManager.select(self.tabManager.addTab())
+                } else if !Defaults[.didFirstNavigation] {
+                    self.showPreviewHome()
+                } else if self.tabManager.normalTabs.isEmpty {
+                    self.showTabTray()
                 }
             }
         }
@@ -676,9 +678,9 @@ class BrowserViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         presentIntroViewController()
+
         screenshotHelper.viewIsVisible = true
         screenshotHelper.takePendingScreenshots(tabManager.tabs)
-
         overlayWindowManager = WindowManager(parentWindow: view.window!)
 
         super.viewDidAppear(animated)
@@ -819,7 +821,7 @@ class BrowserViewController: UIViewController {
 
     public func showPreviewHome() {
         tabContainerModel.updateContent(.showPreviewHome)
-        self.scrollController.hideToolbars(animated: false)
+        scrollController.hideToolbars(animated: false)
     }
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
@@ -946,13 +948,15 @@ class BrowserViewController: UIViewController {
             } else if zeroQueryModel.openedFrom == .backButton, let tab = tab {
                 // Once user changes current URL from the back button, the forward history list needs to be overriden.
                 // Going back, and THEN loading the request accomplishes that.
-                tab.webView?.goBack()
+                DispatchQueue.main.async {
+                    tab.webView?.goBack()
 
-                guard let nav = tab.loadRequest(URLRequest(url: url)) else {
-                    return
+                    guard let nav = tab.loadRequest(URLRequest(url: url)) else {
+                        return
+                    }
+
+                    self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
                 }
-
-                self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             } else if let tab = tab, let nav = tab.loadRequest(URLRequest(url: url)) {
                 self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             }
@@ -1109,6 +1113,18 @@ class BrowserViewController: UIViewController {
     fileprivate func popToBVC() {
         if !gridModel.isHidden {
             gridModel.hideWithNoAnimation()
+        }
+
+        if let introViewController = introViewController {
+            // Undo the alpha change from `viewWillAppear`.
+            view.alpha = 1
+
+            // Do not show the IntroViewController again.
+            Defaults[.introSeen] = true
+
+            introViewController.dismiss(animated: true) {
+                self.introViewController = nil
+            }
         }
 
         if let presentedViewController = presentedViewController {
@@ -1784,9 +1800,16 @@ extension BrowserViewController {
                 switch action {
                 case .signin:
                     break
-                case .signupWithApple(_, let url):
-                    if let url = url {
-                        self.openURLInNewTab(url)
+                case .signupWithApple(let marketingEmailOptOut, let serverAuthCode):
+                    if let serverAuthCode = serverAuthCode {
+                        let authURL = NeevaConstants.appleAuthURL(
+                            serverAuthCode: serverAuthCode,
+                            marketingEmailOptOut: marketingEmailOptOut ?? false,
+                            signup: true)
+                        let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
+                        httpCookieStore.setCookie(NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)) {
+                            self.openURLInNewTab(authURL)
+                        }
                     }
                 case .signupWithOther:
                     break
@@ -2180,7 +2203,7 @@ extension BrowserViewController {
         updateFeedbackImage()
 
         if NeevaFeatureFlags[.cheatsheetQuery] {
-            showModal(style: .grouped) { [self] in
+            showModal(style: .spaces) { [self] in
                 CheatsheetOverlayContent(
                     menuAction: perform(neevaMenuAction:),
                     tabManager: tabManager)

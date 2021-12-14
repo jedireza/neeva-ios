@@ -541,15 +541,8 @@ class TabManager: NSObject, ObservableObject {
         let viableTabs: [Tab] = tab.isIncognito ? privateTabs : normalTabs
         let bvc = SceneDelegate.getBVC(with: scene)
 
-        if closedLastNormalTab {
+        if closedLastNormalTab || closedLastPrivateTab {
             bvc.showTabTray()
-        } else if closedLastPrivateTab {
-            if let tab = mostRecentTab(inTabs: normalTabs) {
-                select(tab)
-            } else {
-                toggleIncognitoMode()
-                bvc.showTabTray()
-            }
         } else if tab == selectedTab {
             if !selectParentTab(afterRemoving: tab) {
                 if let rightOrLeftTab = viableTabs[safe: deletedIndex]

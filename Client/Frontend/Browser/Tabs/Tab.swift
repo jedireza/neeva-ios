@@ -138,7 +138,7 @@ class Tab: NSObject, ObservableObject {
     var showRequestDesktop: Bool {
         changedUserAgentHasChanged
             ? changedUserAgent
-            : UIDevice.current.userInterfaceIdiom == .pad
+            : UIDevice.current.useTabletInterface
     }
 
     var readerModeAvailableOrActive: Bool {
@@ -421,8 +421,7 @@ class Tab: NSObject, ObservableObject {
         // Else just perform a regular back navigation.
         if let navigation = webView?.backForwardList.currentItem,
             let query = queryForNavigation.findQueryFor(navigation: navigation),
-            let bvc = browserViewController,
-            FeatureFlag[.suggestionBackButton]
+            let bvc = browserViewController
         {
             DispatchQueue.main.async {
                 bvc.chromeModel.setEditingLocation(to: true)
@@ -494,6 +493,29 @@ class Tab: NSObject, ObservableObject {
             print("restoring webView from scratch")
             restore(webView)
         }
+    }
+
+    func getMostRecentQuery(restrictToCurrentNavigation: Bool = false) -> String? {
+        guard let webView = webView else {
+            return nil
+        }
+
+        if restrictToCurrentNavigation {
+            guard let navigation = webView.backForwardList.currentItem else {
+                return nil
+            }
+
+            return queryForNavigation.findQueryFor(navigation: navigation)
+        } else {
+            for navigation
+                in ([webView.backForwardList.currentItem]
+                + webView.backForwardList.backList.reversed()).compactMap({ $0 })
+            {
+                return queryForNavigation.findQueryFor(navigation: navigation)
+            }
+        }
+
+        return nil
     }
 
     func addContentScript(_ helper: TabContentScript, name: String) {

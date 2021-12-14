@@ -2,6 +2,10 @@
 
 import SwiftUI
 
+struct CardTransitionUX {
+    static let animation = Animation.interpolatingSpring(stiffness: 425, damping: 30)
+}
+
 struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
     let details: Details
     let containerGeometry: GeometryProxy
@@ -10,8 +14,6 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
-
-    let animation = Animation.interpolatingSpring(stiffness: 425, damping: 30)
 
     func body(content: Content) -> some View {
         content
@@ -28,21 +30,8 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
                 overlayCard
                     .offset(x: rect.minX, y: rect.minY)
                     .frame(width: rect.width, height: rect.height)
-                    .animation(animation)
+                    .animation(CardTransitionUX.animation)
                     .transition(.identity)
-                    .useEffect(deps: gridModel.animationThumbnailState) { _ in
-                        /// This needs to run after `CardGrid` has called `gridModel.scrollToSelectedTab()`,
-                        /// which is also triggered by observing `gridModel.animationThumbnailState`. A trip
-                        /// through `DispatchQueue.main` does the trick.
-                        DispatchQueue.main.async {
-                            if gridModel.animationThumbnailState != .hidden {
-                                withAnimation(animation) {
-                                    gridModel.isHidden =
-                                        (gridModel.animationThumbnailState == .visibleForTrayHidden)
-                                }
-                            }
-                        }
-                    }
             }
         }
         .ignoresSafeArea(edges: [.bottom])

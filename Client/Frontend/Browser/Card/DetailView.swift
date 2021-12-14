@@ -402,7 +402,7 @@ where
             }
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
-            .background(Color.DefaultBackground.edgesIgnoringSafeArea(.horizontal))
+            .background(Color.DefaultBackground.ignoresSafeArea())
     }
 
     var tabGroupEditButton: some View {
