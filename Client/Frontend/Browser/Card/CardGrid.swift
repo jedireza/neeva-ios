@@ -263,7 +263,7 @@ struct GridPicker: View {
                     Segment(
                         symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
                         selectedIconColor: .white,
-                        selectedColor: .brand.blue,
+                        selectedColor: Color.ui.adaptive.blue,
                         selectedAction: {
                             gridModel.switcherState = .tabs
 
@@ -274,7 +274,7 @@ struct GridPicker: View {
                         }),
                     Segment(
                         symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
-                        selectedIconColor: .white, selectedColor: .brand.blue,
+                        selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
                         selectedAction: {
                             gridModel.switcherState = .spaces
                         }),
