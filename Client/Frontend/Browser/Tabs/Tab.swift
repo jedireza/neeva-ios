@@ -283,22 +283,33 @@ class Tab: NSObject, ObservableObject {
                 self.cheatsheetData = cheatsheetInfo[0]
                 // when cheatsheet data fetched successfully
                 // fetch other rich result
-                if let queries = cheatsheetInfo[0].memorizedQuery {
-                    if queries.count > 0 {
-                        let query = queries[0]
-                        SearchController.getRichResult(query: query) { searchResult in
-                            switch searchResult {
-                            case .success(let richResult):
-                                self.searchRichResults = richResult
-                            case .failure(let error):
-                                print("Error: \(error)")
-                            }
-                        }
-
-                    }
+                let query: String
+                if let queries = cheatsheetInfo[0].memorizedQuery, queries.count > 0 {
+                    query = queries[0]
+                } else if let recentQuery = self.getMostRecentQuery(
+                    restrictToCurrentNavigation: true)
+                {
+                    // if we don't have memorized query from the url
+                    // use last tab query
+                    query = recentQuery
+                } else {
+                    // use current url as query for fallback
+                    query = url.absoluteString
                 }
+                self.getRichResultByQuery(query)
             case .failure(let error):
-                print("Error: \(error)")
+                Logger.browser.error("Error: \(error)")
+            }
+        }
+    }
+
+    private func getRichResultByQuery(_ query: String) {
+        SearchController.getRichResult(query: query) { searchResult in
+            switch searchResult {
+            case .success(let richResult):
+                self.searchRichResults = richResult
+            case .failure(let error):
+                Logger.browser.error("Error: \(error)")
             }
         }
     }

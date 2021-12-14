@@ -2206,7 +2206,8 @@ extension BrowserViewController {
             showModal(style: .spaces) { [self] in
                 CheatsheetOverlayContent(
                     menuAction: perform(neevaMenuAction:),
-                    tabManager: tabManager)
+                    tabManager: tabManager
+                )
             }
         } else {
             showModal(style: .grouped) { [self] in

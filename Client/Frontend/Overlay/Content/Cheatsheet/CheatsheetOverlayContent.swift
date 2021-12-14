@@ -7,11 +7,13 @@ struct CheatsheetOverlayContent: View {
     private let menuAction: (NeevaMenuAction) -> Void
     private let model: CheatsheetMenuViewModel
     private let isIncognito: Bool
+    private let tabManager: TabManager
 
     init(menuAction: @escaping (NeevaMenuAction) -> Void, tabManager: TabManager) {
         self.menuAction = menuAction
         self.model = CheatsheetMenuViewModel(tabManager: tabManager)
         self.isIncognito = tabManager.isIncognito
+        self.tabManager = tabManager
     }
 
     var body: some View {
@@ -23,5 +25,9 @@ struct CheatsheetOverlayContent: View {
         .overlayIsFixedHeight(isFixedHeight: false)
         .environmentObject(model)
         .environment(\.isIncognito, isIncognito)
+        .environment(\.onOpenURL) { url in
+            hideOverlay()
+            self.tabManager.createOrSwitchToTab(for: url)
+        }
     }
 }

@@ -185,7 +185,10 @@ public struct CheatsheetMenuView: View {
     func renderRichResult(for richResult: SearchController.RichResult) -> AnyView {
         switch richResult.resultType {
         case .ProductCluster(let productCluster):
-            return AnyView(ProductClusterList(products: productCluster))
+            return AnyView(
+                ProductClusterList(
+                    products: productCluster, currentURL: model.currentPageURL?.absoluteString ?? ""
+                ))
         case .RecipeBlock(let recipes):
             // filter out result already showing on the current page
             return AnyView(
@@ -198,7 +201,11 @@ public struct CheatsheetMenuView: View {
         case .RelatedSearches(let relatedSearches):
             return AnyView(RelatedSearchesView(relatedSearches: relatedSearches, onDismiss: nil))
         case .WebGroup(let result):
-            return AnyView(WebResultList(webResult: result))
+            // filter out result already showing on the current page
+            return AnyView(
+                WebResultList(
+                    webResult: result.filter { $0.actionURL != model.currentPageURL }
+                ))
         }
     }
 
