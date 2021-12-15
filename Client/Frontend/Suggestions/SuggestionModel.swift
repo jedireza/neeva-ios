@@ -727,6 +727,7 @@ extension SuggestionModel {
         var numberOfCalculatorAnnotations = 0
         var numberOfWikiAnnotations = 0
         var numberOfStockAnnotations = 0
+        var numberOfDictionaryAnnotations = 0
 
         suggestions.enumerated().forEach { (index, suggestion) in
             switch suggestion {
@@ -745,6 +746,8 @@ extension SuggestionModel {
                     numberOfWikiAnnotations += 1
                 case .stock:
                     numberOfStockAnnotations += 1
+                case .dictionary:
+                    numberOfDictionaryAnnotations += 1
                 default:
                     break
                 }
@@ -846,6 +849,11 @@ extension SuggestionModel {
             ClientLogCounterAttribute(
                 key: LogConfig.SuggestionAttribute.numberOfStockAnnotations,
                 value: String(numberOfStockAnnotations))
+        )
+        snapshotLogAttributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.SuggestionAttribute.numberOfDictionaryAnnotations,
+                value: String(numberOfDictionaryAnnotations))
         )
 
         // we only log the first 6 positions which should cover what's appear on most screens without scrolling

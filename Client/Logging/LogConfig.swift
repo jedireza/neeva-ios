@@ -419,6 +419,7 @@ public struct LogConfig {
         public static let numberOfCalculatorAnnotations = "NumberOfCalculatorAnnotations"
         public static let numberOfWikiAnnotations = "NumberOfWikiAnnotations"
         public static let numberOfStockAnnotations = "NumberOfStockAnnotations"
+        public static let numberOfDictionaryAnnotations = "NumberOfDictionaryAnnotations"
         // query info
         public static let queryInputForSelectedSuggestion = "QueryInputForSelectedSuggestion"
         public static let querySuggestionPosition = "QuerySuggestionPosition"
