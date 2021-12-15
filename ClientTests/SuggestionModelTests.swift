@@ -86,7 +86,7 @@ class SuggestionModelTests: XCTestCase {
 
         XCTAssertNotNil(attributes)
 
-        XCTAssertEqual(attributes.count, 13)
+        XCTAssertEqual(attributes.count, 14)
 
         let expectedResult =
             [
@@ -96,6 +96,7 @@ class SuggestionModelTests: XCTestCase {
                 LogConfig.SuggestionAttribute.numberOfCalculatorAnnotations: "1",
                 LogConfig.SuggestionAttribute.numberOfWikiAnnotations: "0",
                 LogConfig.SuggestionAttribute.numberOfStockAnnotations: "0",
+                LogConfig.SuggestionAttribute.numberOfDictionaryAnnotations: "0",
                 LogConfig.SuggestionAttribute.suggestionTypePosition + "0":
                     SuggestionModel.SuggestionLoggingType.memorizedSuggestion.rawValue,
                 LogConfig.SuggestionAttribute.suggestionTypePosition + "1":
