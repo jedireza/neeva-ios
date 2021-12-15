@@ -13,33 +13,66 @@ struct SpaceCardsView: View {
     }
 }
 
-struct TabCardsView: View {
+struct MainGridComponent: View{
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
 
-    let containerGeometry: GeometryProxy
-    
+    let subarray: ArraySlice<TabCardDetails>
+
     var hGridLayout = [
         GridItem(.flexible())
     ]
 
     var body: some View {
+        let firstDetail = subarray.first!
+        Group {
+            if tabModel.allDetailsWithExclusionList.contains{$0.id == subarray.first?.id} {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: CardGridUX.GridSpacing) {
+                    ForEach(subarray, id: \.id){ details in
+                        FittedCard(details: details)
+                            .id(details.id)
+                    }
+                }
+            } else {
+                if let rootID = firstDetail.manager.get(for: firstDetail.id)?.rootUUID, let groupDetails = tabGroupModel.allDetails.first {$0.id == rootID }
+                {
+                    ScrollView(.horizontal) {
+                        LazyHGrid(rows: hGridLayout) {
+                            ForEach(groupDetails.allDetails, id: \.id) { details in
+                                FittedCard(details: details)
+                                    .contextMenu {
+                                        FeatureFlag[.tabGroupsPinning]
+                                            ? TabGroupContextMenu(details: details) : nil
+                                    }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct TabCardsView: View {
+    @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+
+    let containerGeometry: GeometryProxy
+
+    var body: some View {
         Group {
             ForEach(
-                tabModel.finalAllDetails
-//                tabModel.allDetails.filter { tabCard in
-//                    (tabGroupModel.representativeTabs.contains(
-//                        tabCard.manager.get(for: tabCard.id)!)
-//                        || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
-//                }
+                tabModel.allDetails.filter { tabCard in
+                    (tabGroupModel.representativeTabs.contains(
+                        tabCard.manager.get(for: tabCard.id)!)
+                        || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
+                }
                 , id: \.id
             ) { details in
                 if let rootID = details.manager.get(for: details.id)?.rootUUID,
                     let groupDetails = tabGroupModel.allDetails.first { $0.id == rootID }
                 {
                     //Tab group enters here
-                    
-                    
                     FittedCard(details: groupDetails)
                         .modifier(
                             CardTransitionModifier(
@@ -60,18 +93,6 @@ struct TabCardsView: View {
 
                             ClientLogger.shared.logCounter(.tabGroupClicked, attributes: attributes)
                         }
-                     
-//                    ScrollView(.horizontal) {
-//                        LazyHGrid(rows: hGridLayout) {
-//                            ForEach(groupDetails.allDetails, id: \.id) { details in
-//                                FittedCard(details: details)
-//                                    .contextMenu {
-//                                        FeatureFlag[.tabGroupsPinning]
-//                                            ? TabGroupContextMenu(details: details) : nil
-//                                    }
-//                            }
-//                        }
-//                    }
                 } else {
                     FittedCard(details: details)
                         .modifier(

@@ -314,6 +314,7 @@
 		7BEFC6801BFF68C30059C952 /* QuickActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BEFC67F1BFF68C30059C952 /* QuickActions.swift */; };
 		7BF5A1EA1B41640500EA9DD8 /* SyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF5A1E91B41640500EA9DD8 /* SyncQueue.swift */; };
 		8A169F3327680A150068BE83 /* TabGroupHorizontalScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A169F3227680A150068BE83 /* TabGroupHorizontalScrollView.swift */; };
+		8A169F39276A66EA0068BE83 /* Algorithms in Frameworks */ = {isa = PBXBuildFile; productRef = 8A169F38276A66EA0068BE83 /* Algorithms */; };
 		8A2401CB26BB4D75006ABF7D /* RatingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2401CA26BB4D75006ABF7D /* RatingsCard.swift */; };
 		8A422E9B26E19783005CC814 /* AddOrUpdateSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A422E9A26E19783005CC814 /* AddOrUpdateSpaceView.swift */; };
 		8AA97E4026AF36F300ACCCCF /* ZeroQueryCommonContextMenuActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AA97E3F26AF36F300ACCCCF /* ZeroQueryCommonContextMenuActions.swift */; };
@@ -1959,6 +1960,7 @@
 				7BA4A9471C4CED900091D032 /* GCDWebServers.framework in Frameworks */,
 				0B8E0FF41A932BD500161DC3 /* ImageIO.framework in Frameworks */,
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
+				8A169F39276A66EA0068BE83 /* Algorithms in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
 				C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */,
 				7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */,
@@ -4314,6 +4316,7 @@
 			name = Client;
 			packageProductDependencies = (
 				6786EA762759545A00B53127 /* CrashReporter */,
+				8A169F38276A66EA0068BE83 /* Algorithms */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -4507,6 +4510,7 @@
 				4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */,
 				6786EA752759545A00B53127 /* XCRemoteSwiftPackageReference "plcrashreporter" */,
+				8A169F37276A66E90068BE83 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -7548,6 +7552,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		8A169F37276A66E90068BE83 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/neevaco/sindresorhus-Defaults";
@@ -7616,6 +7628,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6786EA752759545A00B53127 /* XCRemoteSwiftPackageReference "plcrashreporter" */;
 			productName = CrashReporter;
+		};
+		8A169F38276A66EA0068BE83 /* Algorithms */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8A169F37276A66E90068BE83 /* XCRemoteSwiftPackageReference "swift-algorithms" */;
+			productName = Algorithms;
 		};
 		C82719EC26FE734500EC9EF9 /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;

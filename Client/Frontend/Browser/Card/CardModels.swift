@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import Algorithms
 import Combine
 import Defaults
 import Shared
@@ -59,31 +60,15 @@ class TabCardModel: CardModel, TabEventHandler {
             .reduce(into: [Tab]()) { $0.append(contentsOf: $1.children) }
         allDetails = manager.getAll().reversed()
             .map { TabCardDetails(tab: $0, manager: manager) }
-        
-        var representativeTabs = groupManager.getAll()
+        let representativeTabs = groupManager.getAll()
             .reduce(into: [Tab]()) { $0.append($1.children.first!) }
         ///All individual tabs
         allDetailsWithExclusionList = manager.getAll().reversed().filter { !childTabs.contains($0) }
             .map { TabCardDetails(tab: $0, manager: manager) }
-        
         finalAllDetails = allDetails.filter { tabCard in
             (representativeTabs.contains(
                 tabCard.manager.get(for: tabCard.id)!) || allDetailsWithExclusionList.contains {$0.id == tabCard.id })
         }
-        
-        print("Charles finalAllDetails before insertion \(finalAllDetails)")
-
-        for i in 0..<finalAllDetails.count {
-            print("Charles finalAllDetails.count \(finalAllDetails.count)")
-            if !allDetailsWithExclusionList.contains{$0.id == finalAllDetails[i].id} {
-                var temp = TabCardDetails(tab: manager.get(for: finalAllDetails[i].id)!, manager: manager)
-                temp.isDummy = true
-//                finalAllDetails.insert(temp, at: i)                
-            }
-        }
-
-        print("Charles finalAllDetails \(finalAllDetails)")
-        
         selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()
     }

@@ -119,8 +119,16 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
 }
 
 public class TabCardDetails: CardDetails, AccessingManagerProvider,
-    ClosingManagerProvider, SelectingManagerProvider
+    ClosingManagerProvider, SelectingManagerProvider, Hashable
 {
+    public static func == (lhs: TabCardDetails, rhs: TabCardDetails) -> Bool {
+        lhs.id == rhs.id
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+
     typealias Item = Tab
     typealias Manager = TabManager
 

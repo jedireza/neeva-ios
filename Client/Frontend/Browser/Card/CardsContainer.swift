@@ -70,11 +70,12 @@ struct CardsContainer: View {
 
                 GeometryReader { scrollGeometry in
                     ScrollView(.vertical, showsIndicators: false) {
-                        ScrollViewReader { scrollProxy in
+                        ScrollViewReader { scrollProxy in                            
+                            /*
                             LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                                
-                                
-                                
+
+
+
                                 TabCardsView(containerGeometry: scrollGeometry)
                                     .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                                     .environment(\.selectionCompletion) {
@@ -90,13 +91,20 @@ struct CardsContainer: View {
                                                     })))
                                         gridModel.hideWithAnimation()
                                     }
-                                 
+
                             }
                             .padding(.vertical, CardGridUX.GridSpacing)
                             .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
                                 if let selectedCardID = selectedCardID {
                                     scrollProxy.scrollTo(selectedCardID)
                                 }
+                            }
+                            */
+                            VStack{
+                                ForEach(tabModel.finalAllDetails.chunked(by: {x, y in tabModel.allDetailsWithExclusionList.contains{x.id == $0.id} && tabModel.allDetailsWithExclusionList.contains{y.id == $0.id} }), id: \.self) { subarray in
+                                    MainGridComponent(subarray: subarray)
+                                }
+
                             }
                         }
                     }
