@@ -159,8 +159,6 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     var thumbnailDrawsHeader: Bool {
         false
     }
-    
-    var isDummy: Bool = false
 
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
