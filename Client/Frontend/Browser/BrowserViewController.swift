@@ -1222,7 +1222,7 @@ class BrowserViewController: UIViewController {
         let notificationCenter = NotificationCenter.default
         var info = [AnyHashable: Any]()
         info["url"] = tab.url?.displayURL
-        info["title"] = tab.title
+        info["title"] = tab.title ?? ""
         if let visitType = self.getVisitTypeForTab(tab, navigation: navigation)?.rawValue {
             info["visitType"] = visitType
         }

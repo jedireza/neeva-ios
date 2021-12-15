@@ -853,6 +853,8 @@ extension TabManager: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         guard let tab = self[webView] else { return }
 
+        tab.hasContentProcess = true
+
         if let url = webView.url, let blocker = tab.contentBlocker {
             // Initialize to the cached stats for this page. If the page is being fetched
             // from WebKit's page cache, then this will pick up stats from when that page
@@ -880,7 +882,11 @@ extension TabManager: WKNavigationDelegate {
     /// Called when the WKWebView's content process has gone away. If this happens for the currently selected tab
     /// then we immediately reload it.
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
-        if let tab = selectedTab, tab.webView == webView {
+        guard let tab = self[webView] else { return }
+
+        tab.hasContentProcess = false
+
+        if tab == selectedTab {
             tab.consecutiveCrashes += 1
 
             // Only automatically attempt to reload the crashed

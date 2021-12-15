@@ -46,6 +46,7 @@ class Tab: NSObject, ObservableObject {
     // rest of the tab.
     var pageMetadata: PageMetadata?
 
+    var hasContentProcess: Bool = false
     var consecutiveCrashes: UInt = 0
 
     var tabUUID: String = UUID().uuidString
@@ -247,7 +248,9 @@ class Tab: NSObject, ObservableObject {
 
             self.webView = webView
 
-            send(webView: \.title, to: \.title)
+            send(
+                webView: \.title, to: \.title,
+                provided: { [weak self] in self?.hasContentProcess ?? false })
             send(webView: \.isLoading, to: \.isLoading)
             send(webView: \.canGoBack, to: \.canGoBack)
             send(webView: \.canGoForward, to: \.canGoForward)
@@ -319,9 +322,11 @@ class Tab: NSObject, ObservableObject {
     /// for future disposal in `close()`
     private func send<T>(
         webView keyPath: KeyPath<WKWebView, T>,
-        to localKeyPath: ReferenceWritableKeyPath<Tab, T>
+        to localKeyPath: ReferenceWritableKeyPath<Tab, T>,
+        provided filter: @escaping () -> Bool = { true }
     ) {
         webView?.publisher(for: keyPath, options: [.initial, .new])
+            .filter { _ in filter() }
             .assign(to: localKeyPath, on: self)
             .store(in: &webViewSubscriptions)
     }
