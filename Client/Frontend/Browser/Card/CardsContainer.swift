@@ -72,6 +72,9 @@ struct CardsContainer: View {
                     ScrollView(.vertical, showsIndicators: false) {
                         ScrollViewReader { scrollProxy in
                             LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
+                                
+                                
+                                
                                 TabCardsView(containerGeometry: scrollGeometry)
                                     .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                                     .environment(\.selectionCompletion) {
@@ -87,6 +90,7 @@ struct CardsContainer: View {
                                                     })))
                                         gridModel.hideWithAnimation()
                                     }
+                                 
                             }
                             .padding(.vertical, CardGridUX.GridSpacing)
                             .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in

@@ -151,6 +151,8 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     var thumbnailDrawsHeader: Bool {
         false
     }
+    
+    var isDummy: Bool = false
 
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
@@ -477,9 +479,20 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
                     manager: manager.tabManager)
             }) ?? []
     }
+    
+    var hGridLayout = [
+        GridItem(.flexible())
+    ]
 
     var thumbnail: some View {
-        return ThumbnailGroupView(model: self)
+        ScrollView(.horizontal) {
+            LazyHGrid(rows: hGridLayout) {
+                ForEach(allDetails, id: \.id) { details in
+                    FittedCard(details: details)
+                }
+            }
+        }
+        //return ThumbnailGroupView(model: self)
     }
 
     func onSelect() {

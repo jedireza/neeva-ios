@@ -255,7 +255,7 @@ struct Card<Details>: View where Details: CardDetails {
                     },
                     alignment: .topTrailing
                 )
-                .modifier(DragToCloseInteraction(action: details.onClose))
+                //.modifier(DragToCloseInteraction(action: details.onClose))
         }
         .scaleEffect(isPressed ? 0.95 : 1)
     }

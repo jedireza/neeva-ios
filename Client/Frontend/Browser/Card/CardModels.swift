@@ -28,6 +28,7 @@ class TabCardModel: CardModel, TabEventHandler {
     var anyCancellable: AnyCancellable? = nil
 
     @Published var allDetails: [TabCardDetails] = []
+    var finalAllDetails: [TabCardDetails] = []
     @Published var allDetailsWithExclusionList: [TabCardDetails] = []
     @Published var selectedTabID: String? = nil
 
@@ -56,10 +57,33 @@ class TabCardModel: CardModel, TabEventHandler {
         groupManager.updateTabGroups()
         let childTabs = groupManager.getAll()
             .reduce(into: [Tab]()) { $0.append(contentsOf: $1.children) }
-        allDetails = manager.getAll()
+        allDetails = manager.getAll().reversed()
             .map { TabCardDetails(tab: $0, manager: manager) }
-        allDetailsWithExclusionList = manager.getAll().filter { !childTabs.contains($0) }
+        
+        var representativeTabs = groupManager.getAll()
+            .reduce(into: [Tab]()) { $0.append($1.children.first!) }
+        ///All individual tabs
+        allDetailsWithExclusionList = manager.getAll().reversed().filter { !childTabs.contains($0) }
             .map { TabCardDetails(tab: $0, manager: manager) }
+        
+        finalAllDetails = allDetails.filter { tabCard in
+            (representativeTabs.contains(
+                tabCard.manager.get(for: tabCard.id)!) || allDetailsWithExclusionList.contains {$0.id == tabCard.id })
+        }
+        
+        print("Charles finalAllDetails before insertion \(finalAllDetails)")
+
+        for i in 0..<finalAllDetails.count {
+            print("Charles finalAllDetails.count \(finalAllDetails.count)")
+            if !allDetailsWithExclusionList.contains{$0.id == finalAllDetails[i].id} {
+                var temp = TabCardDetails(tab: manager.get(for: finalAllDetails[i].id)!, manager: manager)
+                temp.isDummy = true
+//                finalAllDetails.insert(temp, at: i)                
+            }
+        }
+
+        print("Charles finalAllDetails \(finalAllDetails)")
+        
         selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()
     }

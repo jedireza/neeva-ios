@@ -337,8 +337,8 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
     init(tabManager: TabManager) {
         self.tabManager = tabManager
         updateTabGroups()
-        self.anyCancellable = tabManager.objectWillChange.sink { [weak self] (_) in
-            self?.updateTabGroups()
+        self.anyCancellable = tabManager.$tabs.sink { [weak self] (_) in
+            self?.updateTabGroups()            
         }
     }
 
