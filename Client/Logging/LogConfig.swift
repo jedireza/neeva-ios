@@ -131,6 +131,7 @@ public struct LogConfig {
         case BlackFridayNotifyPromo
         case CloseBlackFridayNotifyPromo
         case ViewSpacesFromSheet
+        case SpaceFilterClicked
 
         // ratings card
         case RatingsRateExperience
@@ -335,6 +336,7 @@ public struct LogConfig {
         case .BlackFridayNotifyPromo: return .Spaces
         case .CloseBlackFridayNotifyPromo: return .Spaces
         case .ViewSpacesFromSheet: return .Spaces
+        case .SpaceFilterClicked: return .Spaces
 
         case .RatingsRateExperience: return .RatingsCard
         case .RatingsPromptFeedback: return .RatingsCard

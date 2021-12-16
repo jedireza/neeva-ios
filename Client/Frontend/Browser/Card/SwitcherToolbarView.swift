@@ -58,39 +58,54 @@ struct SwitcherToolbarView: View {
                 }
 
                 if top {
-                    TopBarOverflowMenuButton(
-                        changedUserAgent: bvc.tabManager.selectedTab?.showRequestDesktop,
-                        onOverflowMenuAction: { action, view in
-                            bvc.perform(overflowMenuAction: action, targetButtonView: view)
-                        },
-                        onLongPress: { _ in
-                        }, location: .cardGrid
-                    )
-                    .tapTargetFrame()
-                    .environmentObject(bvc.chromeModel)
-                    .environmentObject(bvc.locationModel)
+                    if gridModel.switcherState == .spaces {
+                        TopBarSpaceFilterButton()
+                            .tapTargetFrame()
+                            .environmentObject(gridModel.spaceCardModel)
+                    } else {
+                        TopBarOverflowMenuButton(
+                            changedUserAgent: bvc.tabManager.selectedTab?.showRequestDesktop,
+                            onOverflowMenuAction: { action, view in
+                                bvc.perform(overflowMenuAction: action, targetButtonView: view)
+                            },
+                            onLongPress: { _ in
+                            }, location: .cardGrid
+                        )
+                        .tapTargetFrame()
+                        .environmentObject(bvc.chromeModel)
+                        .environmentObject(bvc.locationModel)
+                    }
                 } else {
-                    TabToolbarButtons.OverflowMenu(
-                        weight: .medium,
-                        action: {
+                    if gridModel.switcherState == .spaces {
+                        TabToolbarButtons.SpaceFilter(weight: .medium) {
                             bvc.showModal(style: .grouped) {
-                                OverflowMenuOverlayContent(
-                                    menuAction: { action in
-                                        bvc.perform(
-                                            overflowMenuAction: action,
-                                            targetButtonView: nil)
-                                    },
-                                    changedUserAgent: bvc.tabManager.selectedTab?
-                                        .showRequestDesktop,
-                                    chromeModel: bvc.chromeModel,
-                                    locationModel: bvc.locationModel,
-                                    location: .cardGrid
-                                )
+                                SpacesFilterView()
+                                    .environmentObject(gridModel.spaceCardModel)
                             }
-                        },
-                        onLongPress: {}
-                    )
-                    .tapTargetFrame()
+                        }.tapTargetFrame()
+                    } else {
+                        TabToolbarButtons.OverflowMenu(
+                            weight: .medium,
+                            action: {
+                                bvc.showModal(style: .grouped) {
+                                    OverflowMenuOverlayContent(
+                                        menuAction: { action in
+                                            bvc.perform(
+                                                overflowMenuAction: action,
+                                                targetButtonView: nil)
+                                        },
+                                        changedUserAgent: bvc.tabManager.selectedTab?
+                                            .showRequestDesktop,
+                                        chromeModel: bvc.chromeModel,
+                                        locationModel: bvc.locationModel,
+                                        location: .cardGrid
+                                    )
+                                }
+                            },
+                            onLongPress: {}
+                        )
+                        .tapTargetFrame()
+                    }
                 }
 
                 if !top {

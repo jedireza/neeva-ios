@@ -129,6 +129,16 @@ class SpaceCardModel: CardModel {
         }
     }
     @Published var updatedItemIDs = [String]()
+    @Published var filterState: SpaceFilterState = .allSpaces
+
+    var detailsMatchingFilter: [SpaceCardDetails] {
+        switch filterState {
+        case .allSpaces:
+            return allDetails
+        case .ownedByMe:
+            return allDetails.filter { $0.space?.userACL == .owner }
+        }
+    }
 
     var onViewUpdate: () -> Void = {}
     var thumbnailURLCandidates = [URL: [URL]]()

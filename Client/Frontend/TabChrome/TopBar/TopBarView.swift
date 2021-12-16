@@ -50,8 +50,7 @@ struct TopBarView: View {
                             chrome.topBarDelegate?.tabManager.selectedTab?.showRequestDesktop,
                         onOverflowMenuAction: onOverflowMenuAction,
                         onLongPress: onLongPressOverflowButton,
-                        location: .tab,
-                        inTopBar: true
+                        location: .tab
                     )
                 }
                 TabLocationView(

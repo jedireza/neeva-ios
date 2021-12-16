@@ -6,7 +6,7 @@ import SwiftUI
 struct SpaceCardsView: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
     var body: some View {
-        ForEach(spacesModel.allDetails, id: \.id) { details in
+        ForEach(spacesModel.detailsMatchingFilter, id: \.id) { details in
             FittedCard(details: details)
                 .id(details.id)
         }.accessibilityHidden(spacesModel.detailedSpace != nil)

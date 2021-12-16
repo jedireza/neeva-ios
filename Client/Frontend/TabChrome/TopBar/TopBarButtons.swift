@@ -76,7 +76,6 @@ struct TopBarOverflowMenuButton: View {
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
     let onLongPress: (UIView) -> Void
     let location: OverflowMenuLocation
-    var inTopBar: Bool = false
 
     @Environment(\.isIncognito) private var isIncognito
 
@@ -111,7 +110,7 @@ struct TopBarOverflowMenuButton: View {
 
     var body: some View {
         TabToolbarButtons.OverflowMenu(
-            weight: inTopBar ? .regular : .medium,
+            weight: .regular,
             action: {
                 presenting = true
                 chromeModel.hideZeroQuery()
@@ -140,6 +139,32 @@ struct TopBarOverflowMenuButton: View {
                     .environmentObject(chromeModel)
                     .environmentObject(locationModel)
             }.frame(minWidth: 340, minHeight: 285)
+        }
+    }
+}
+
+struct TopBarSpaceFilterButton: View {
+    @EnvironmentObject var spaceCardModel: SpaceCardModel
+    @State private var presenting = false
+
+    var body: some View {
+        TabToolbarButtons.SpaceFilter(weight: .regular) {
+            presenting = true
+        }
+        .tapTargetFrame()
+        .presentAsPopover(
+            isPresented: $presenting,
+            arrowDirections: .up,
+            dismissOnTransition: true,
+            onDismiss: {
+                presenting = false
+            }
+        ) {
+            VerticalScrollViewIfNeeded {
+                SpacesFilterView()
+                    .padding(.bottom, 16)
+                    .environmentObject(spaceCardModel)
+            }.frame(minWidth: 325, minHeight: 128)
         }
     }
 }

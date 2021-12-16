@@ -93,6 +93,21 @@ enum TabToolbarButtons {
         }
     }
 
+    struct SpaceFilter: View {
+        let weight: Font.Weight
+        let action: () -> Void
+
+        var body: some View {
+            TabToolbarButton(
+                label: Symbol(
+                    .lineHorizontal3DecreaseCircle,
+                    size: 20, weight: weight,
+                    label: "Space Filter"),
+                action: action
+            )
+        }
+    }
+
     struct OverflowMenu: View {
         let weight: Font.Weight
         let action: () -> Void

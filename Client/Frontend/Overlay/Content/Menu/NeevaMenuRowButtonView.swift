@@ -14,7 +14,7 @@ public struct NeevaMenuRowButtonView: View {
     /// - Parameters:
     ///   - label: The text displayed on the button
     ///   - nicon: The Nicon to use
-    public init(label: String, nicon: Nicon, action: @escaping () -> Void) {
+    public init(label: String, nicon: Nicon?, action: @escaping () -> Void) {
         self.label = label
         self.nicon = nicon
         self.symbol = nil
@@ -25,7 +25,7 @@ public struct NeevaMenuRowButtonView: View {
     /// - Parameters:
     ///   - label: The text displayed on the button
     ///   - symbol: The SFSymbol to use
-    public init(label: String, symbol: SFSymbol, action: @escaping () -> Void) {
+    public init(label: String, symbol: SFSymbol?, action: @escaping () -> Void) {
         self.label = label
         self.nicon = nil
         self.symbol = symbol
