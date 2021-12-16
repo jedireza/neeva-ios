@@ -11,6 +11,7 @@ struct SpaceEntityDetailView: View {
     @EnvironmentObject var spaceCardModel: SpaceCardModel
     let details: SpaceEntityThumbnail
     let onSelected: () -> Void
+    let onDelete: (Int) -> Void
     let addToAnotherSpace: (URL, String?, String?) -> Void
     let editSpaceItem: () -> Void
     let index: Int
@@ -55,7 +56,7 @@ struct SpaceEntityDetailView: View {
             return details.description ?? product.description.first
         case .newsItem(let newsItem):
             return newsItem.formattedDatePublished.capitalized + " - " + newsItem.snippet
-        case .recipe(let _):
+        case .recipe(_):
             return details.description
         case .techDoc(let doc):
             return doc.body?.string
@@ -117,7 +118,7 @@ struct SpaceEntityDetailView: View {
                 } else {
                     VStack(spacing: DetailsViewUX.ItemPadding) {
                         HStack(alignment: .top, spacing: DetailsViewUX.ItemPadding) {
-                            if case .techDoc(let _) = details.data.previewEntity {
+                            if case .techDoc(_) = details.data.previewEntity {
                                 EmptyView()
                             } else {
                                 details.thumbnail.frame(
@@ -217,31 +218,17 @@ struct SpaceEntityDetailView: View {
                     shouldHighlightAsUpdated
                         ? Color.ui.adaptive.blue.opacity(0.1) : Color.DefaultBackground)
             Spacer(minLength: 0)
-        }.scaleEffect(isPressed ? 0.95 : 1)
-            .contextMenu(
-                ContextMenu(menuItems: {
-                    if details.ACL >= .edit {
-                        Button(
-                            action: {
-                                editSpaceItem()
-                            },
-                            label: {
-                                Label("Edit item", systemSymbol: .squareAndPencil)
-                            })
-                    }
-                    Button(
-                        action: {
-                            addToAnotherSpace(
-                                (details.data.url)!,
-                                details.title, details.description)
-                        },
-                        label: {
-                            Label("Add to another Space", systemSymbol: .docOnDoc)
-                        })
-                })
-            )
-            .accessibilityLabel(details.title)
-            .accessibilityHint("Space Item")
+        }
+        .modifier(
+            SpaceActionsModifier(
+                details: details,
+                onDelete: {
+                    onDelete(index)
+                }, addToAnotherSpace: addToAnotherSpace, editSpaceItem: editSpaceItem)
+        )
+        .scaleEffect(isPressed ? 0.95 : 1)
+        .accessibilityLabel(details.title)
+        .accessibilityHint("Space Item")
     }
 }
 
@@ -283,5 +270,63 @@ struct DescriptionTextModifier: ViewModifier {
             .fixedSize(horizontal: false, vertical: true)
             .foregroundColor(Color.secondaryLabel)
             .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+struct SpaceActionsModifier: ViewModifier {
+    let details: SpaceEntityThumbnail
+    let onDelete: () -> Void
+    let addToAnotherSpace: (URL, String?, String?) -> Void
+    let editSpaceItem: () -> Void
+
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        onDelete()
+                    } label: {
+                        Label("Delete", systemImage: "")
+                    }
+
+                    Button {
+                        addToAnotherSpace(
+                            (details.data.url)!,
+                            details.title, details.description)
+                    } label: {
+                        Label("Add To", systemImage: "")
+                    }.tint(.gray)
+
+                    Button {
+                        editSpaceItem()
+                    } label: {
+                        Label("Edit", systemImage: "")
+                    }.tint(.blue)
+                }
+        } else {
+            content
+                .contextMenu(
+                    ContextMenu(menuItems: {
+                        if details.ACL >= .edit {
+                            Button(
+                                action: {
+                                    editSpaceItem()
+                                },
+                                label: {
+                                    Label("Edit item", systemSymbol: .squareAndPencil)
+                                })
+                        }
+                        Button(
+                            action: {
+                                addToAnotherSpace(
+                                    (details.data.url)!,
+                                    details.title, details.description)
+                            },
+                            label: {
+                                Label("Add to another Space", systemSymbol: .docOnDoc)
+                            })
+                    })
+                )
+        }
     }
 }

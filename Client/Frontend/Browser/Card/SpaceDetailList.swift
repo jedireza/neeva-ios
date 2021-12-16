@@ -97,6 +97,9 @@ struct SpaceDetailList: View {
                                 gridModel.hideWithNoAnimation()
                                 spacesModel.detailedSpace = nil
                             },
+                            onDelete: { index in
+                                onDelete(offsets: IndexSet([index]))
+                            },
                             addToAnotherSpace: { url, title, description in
                                 spacesModel.detailedSpace = nil
                                 SceneDelegate.getBVC(with: tabModel.manager.scene)
