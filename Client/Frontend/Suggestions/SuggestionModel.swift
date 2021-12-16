@@ -11,6 +11,7 @@ private let URLBeforePathRegex = try! NSRegularExpression(
     pattern: "^https?://([^/]+)/", options: [])
 private let defaultRecencyDuration: UInt64 = 2 * OneDayInMilliseconds * 1000
 private let numSuggestionsToFetch: Int = 40
+private let maxSuggestRequestCount: Int = 5
 
 class SuggestionModel: ObservableObject {
     let bvc: BrowserViewController
@@ -65,6 +66,8 @@ class SuggestionModel: ObservableObject {
     }
 
     fileprivate var suggestionQuery: Apollo.Cancellable?
+
+    fileprivate var suggestionQueryQueue = [(query: String, suggestionQuery: Apollo.Cancellable)]()
 
     var suggestions: [Suggestion] {
         let top = tabSuggestions + topSuggestions
@@ -139,7 +142,10 @@ class SuggestionModel: ObservableObject {
 
     // MARK: - Loading Suggestions
     func reload() {
-        suggestionQuery?.cancel()
+        // cap the # of queries in the sliding window
+        if suggestionQueryQueue.count >= maxSuggestRequestCount {
+            suggestionQueryQueue[maxSuggestRequestCount - 1].suggestionQuery.cancel()
+        }
 
         keyboardFocusedSuggestion = nil
         keyboardFocusedSuggestionIndex = -1
@@ -162,8 +168,19 @@ class SuggestionModel: ObservableObject {
         if suggestStartTime == nil {
             suggestStartTime = Date()
         }
-        suggestionQuery = SuggestionsController.getSuggestions(for: searchQuery) { result in
-            self.suggestionQuery = nil
+        let suggestionQuery = SuggestionsController.getSuggestions(for: searchQuery) { result in
+            // cancel and remove any pending requests that's older than the current one
+            if let requestIdx =
+                self.suggestionQueryQueue.firstIndex(where: { query, _ in
+                    return searchQuery == query
+                })
+            {
+                let oldRequestRange = requestIdx..<self.suggestionQueryQueue.count
+                self.suggestionQueryQueue[oldRequestRange].forEach { _, suggestionQuery in
+                    suggestionQuery.cancel()
+                }
+                self.suggestionQueryQueue.removeSubrange(oldRequestRange)
+            }
             switch result {
             case .failure(let error):
                 ClientLogger.shared.logCounter(
@@ -188,7 +205,6 @@ class SuggestionModel: ObservableObject {
                 self.error = nil
                 self.topSuggestions = topSuggestions
                 self.rowQuerySuggestions = rowQuerySuggestions
-
                 // Add a search query suggestion for the URL if it doesn't exist
                 if URIFixup.getURL(searchQuery) != nil,
                     !(rowQuerySuggestions.compactMap {
@@ -256,6 +272,9 @@ class SuggestionModel: ObservableObject {
                 }
             }
         }
+
+        // always insert the most recent query to the beginning of the array
+        suggestionQueryQueue.insert((searchQuery, suggestionQuery), at: 0)
     }
 
     private func subscribe() {
