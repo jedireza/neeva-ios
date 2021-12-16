@@ -85,6 +85,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
     @Published var cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?
     @Published var searchRichResults: [SearchController.RichResult]?
     @Published var currentPageURL: URL?
+    @Published var cheatsheetDataLoading: Bool
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -92,16 +93,16 @@ public class CheatsheetMenuViewModel: ObservableObject {
         self.cheatsheetInfo = tabManager.selectedTab?.cheatsheetData
         self.searchRichResults = tabManager.selectedTab?.searchRichResults
         self.currentPageURL = tabManager.selectedTab?.webView?.url
+        self.cheatsheetDataLoading = tabManager.selectedTab?.cheatsheetDataLoading ?? false
 
-        tabManager.selectedTabPublisher
-            .compactMap { $0?.cheatsheetData }
-            .assign(to: \.cheatsheetInfo, on: self)
+        tabManager.selectedTab?.$cheatsheetDataLoading.assign(to: \.cheatsheetDataLoading, on: self)
             .store(in: &subscriptions)
 
-        tabManager.selectedTabPublisher
-            .compactMap { $0?.searchRichResults }
-            .assign(to: \.searchRichResults, on: self)
-            .store(in: &subscriptions)
+        tabManager.selectedTab?.$cheatsheetData.assign(to: \.cheatsheetInfo, on: self).store(
+            in: &subscriptions)
+
+        tabManager.selectedTab?.$searchRichResults.assign(to: \.searchRichResults, on: self).store(
+            in: &subscriptions)
 
         tabManager.selectedTabPublisher
             .compactMap { $0?.webView?.url }
@@ -121,21 +122,45 @@ public struct CheatsheetMenuView: View {
     public var body: some View {
         GeometryReader { geom in
             ScrollView(.vertical) {
-                VStack(alignment: .leading) {
-                    recipeView
-                        .padding()
-                    if let richResults = model.searchRichResults {
+                if model.currentPageURL?.origin == NeevaConstants.appURL.origin {
+                    VStack(alignment: .center) {
                         VStack(alignment: .leading) {
-                            ForEach(richResults) { richResult in
-                                renderRichResult(for: richResult)
-                            }
+                            Text("What is Neeva Cheatsheet?").withFont(.headingXLarge).padding(.top, 32)
+                            Text("Cheatsheet will show you information about the website you're visiting.")
+                                .withFont(.bodyLarge)
+                                .foregroundColor(.secondaryLabel)
+                            Text("Try it by visiting a website outside of Neeva and tap this Neeva logo again!")
+                                .withFont(.bodyLarge)
+                                .foregroundColor(.secondaryLabel)
                         }
-                        .padding()
+                        .padding(.horizontal, 32)
+                        .fixedSize(horizontal: false, vertical: true)
+                        Image("notification-prompt", bundle: .main)
+                            .resizable()
+                            .frame(width: 160, height: 140)
+                            .padding(24)
                     }
-                    priceHistorySection
-                    reviewURLSection
-                    memorizedQuerySection
-                }.frame(width: geom.size.width)
+                } else if model.cheatsheetDataLoading {
+                    VStack(alignment: .center) {
+                        LoadingView("something good on it's way")
+                    }
+                } else {
+                    VStack(alignment: .leading) {
+                        recipeView
+                            .padding()
+                        if let richResults = model.searchRichResults {
+                            VStack(alignment: .leading) {
+                                ForEach(richResults) { richResult in
+                                    renderRichResult(for: richResult)
+                                }
+                            }
+                            .padding()
+                        }
+                        priceHistorySection
+                        reviewURLSection
+                        memorizedQuerySection
+                    }.frame(width: geom.size.width)
+                }
             }
             .frame(minHeight: 200)
         }

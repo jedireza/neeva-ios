@@ -568,7 +568,9 @@ extension BrowserViewController: WKNavigationDelegate {
             // Open URL in SafariViewController as only Safari can properly handle URL
             var safariVC: SFSafariViewController!
 
-            if url.pathExtension == "mobileconfig" && url.host?.hasSuffix("developer.apple.com") ?? false {
+            if url.pathExtension == "mobileconfig"
+                && url.host?.hasSuffix("developer.apple.com") ?? false
+            {
                 // .mobileconfig files from Apple Developer have to be redirected to root page to be downloaded
                 // If we try to open the specific download URL, the user will see an auth error
                 safariVC = SFSafariViewController(
@@ -926,11 +928,6 @@ extension BrowserViewController: WKNavigationDelegate {
 
             // increment page load count
             PerformanceLogger.shared.incrementPageLoad(url: url)
-
-            if NeevaFeatureFlags[.cheatsheetQuery] {
-                // fetch cheatsheet info
-                tab.fetchCheatsheetInfo()
-            }
 
             if NeevaFeatureFlags[.recipeCheatsheet] && !self.tabManager.isIncognito {
                 self.tabContainerModel.recipeModel.updateContentWithURL(url: url)

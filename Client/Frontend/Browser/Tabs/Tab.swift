@@ -96,6 +96,7 @@ class Tab: NSObject, ObservableObject {
     /// Cheatsheet info for current url
     @Published private(set) var cheatsheetData: CheatsheetQueryController.CheatsheetInfo?
     @Published private(set) var searchRichResults: [SearchController.RichResult]?
+    @Published private(set) var cheatsheetDataLoading: Bool = false
 
     func setURL(_ newValue: URL?) {
         if let internalUrl = InternalURL(newValue), internalUrl.isAuthorized {
@@ -272,6 +273,7 @@ class Tab: NSObject, ObservableObject {
 
     // fetch cheatsheet info for current url
     func fetchCheatsheetInfo() {
+        self.cheatsheetDataLoading = true
         guard let url = self.url else { return }
         self.searchRichResults = nil
         self.cheatsheetData = nil
@@ -302,6 +304,7 @@ class Tab: NSObject, ObservableObject {
                 self.getRichResultByQuery(query)
             case .failure(let error):
                 Logger.browser.error("Error: \(error)")
+                self.cheatsheetDataLoading = false
             }
         }
     }
@@ -314,6 +317,7 @@ class Tab: NSObject, ObservableObject {
             case .failure(let error):
                 Logger.browser.error("Error: \(error)")
             }
+            self.cheatsheetDataLoading = false
         }
     }
 
