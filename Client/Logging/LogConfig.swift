@@ -202,7 +202,8 @@ public struct LogConfig {
         if category == .FirstRun
             || category == .Notification
             || category == .Suggestions
-            || category == .Performance {
+            || category == .Performance
+        {
             return true
         }
 

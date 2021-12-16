@@ -2,12 +2,17 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import Combine
 import WebKit
 
 protocol ContextMenuHelperDelegate: AnyObject {
     func contextMenuHelper(
         _ contextMenuHelper: ContextMenuHelper,
         didLongPressElements elements: ContextMenuHelper.Elements,
+        gestureRecognizer: UIGestureRecognizer)
+    func contextMenuHelper(
+        _ contextMenuHelper: ContextMenuHelper,
+        didLongPressImage elements: ContextMenuHelper.Elements,
         gestureRecognizer: UIGestureRecognizer)
     func contextMenuHelper(
         _ contextMenuHelper: ContextMenuHelper, didCancelGestureRecognizer: UIGestureRecognizer)
@@ -26,16 +31,10 @@ class ContextMenuHelper: NSObject {
     fileprivate weak var tab: Tab?
 
     weak var delegate: ContextMenuHelperDelegate?
+    var resetGestureTimer: Timer?
+    var scrolling = false
 
     fileprivate var nativeHighlightLongPressRecognizer: UILongPressGestureRecognizer?
-
-    lazy var gestureRecognizer: UILongPressGestureRecognizer = {
-        let g = UILongPressGestureRecognizer(
-            target: self, action: #selector(self.longPressGestureDetected))
-        g.delegate = self
-        return g
-    }()
-
     fileprivate(set) var elements: Elements?
 
     required init(tab: Tab) {
@@ -44,7 +43,7 @@ class ContextMenuHelper: NSObject {
     }
 }
 
-extension ContextMenuHelper: UIGestureRecognizerDelegate {
+extension ContextMenuHelper: UIGestureRecognizerDelegate, UIScrollViewDelegate {
     func gestureRecognizer(
         _ gestureRecognizer: UIGestureRecognizer,
         shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer
@@ -67,56 +66,65 @@ extension ContextMenuHelper: UIGestureRecognizerDelegate {
     private func replaceWebViewLongPress() {
         // WebKit installs gesture handlers async. If `replaceWebViewLongPress` is called after a wkwebview in most cases a small delay is sufficient
         // See also https://bugs.webkit.org/show_bug.cgi?id=193366
+        nativeHighlightLongPressRecognizer =
+            gestureRecognizerWithDescriptionFragment(
+                "action=_highlightLongPressRecognized:") as? UILongPressGestureRecognizer
 
-        nativeHighlightLongPressRecognizer = gestureRecognizerWithDescriptionFragment(
-            "action=_highlightLongPressRecognized:")
-
-        if let nativeLongPressRecognizer = gestureRecognizerWithDescriptionFragment(
-            "action=_longPressRecognized:")
-        {
-            nativeLongPressRecognizer.removeTarget(nil, action: nil)
-            nativeLongPressRecognizer.addTarget(
-                self, action: #selector(self.longPressGestureDetected))
-        }
+        let imageLongPressGestureRecognizer = UILongPressGestureRecognizer(
+            target: self, action: #selector(self.handleImageLongPress))
+        tab?.webView?.scrollView.addGestureRecognizer(imageLongPressGestureRecognizer)
     }
 
     private func gestureRecognizerWithDescriptionFragment(_ descriptionFragment: String)
-        -> UILongPressGestureRecognizer?
+        -> UIGestureRecognizer?
     {
         let result = tab?.webView?.scrollView.subviews.compactMap({ $0.gestureRecognizers })
             .joined().first(where: {
-                (($0 as? UILongPressGestureRecognizer) != nil)
-                    && $0.description.contains(descriptionFragment)
+                $0.description.contains(descriptionFragment)
             })
-        return result as? UILongPressGestureRecognizer
+        return result
     }
 
-    @objc func longPressGestureDetected(_ sender: UIGestureRecognizer) {
-        if sender.state == .cancelled {
-            delegate?.contextMenuHelper(self, didCancelGestureRecognizer: sender)
-            return
-        }
-
+    @objc func handleImageLongPress(_ sender: UIGestureRecognizer) {
         guard sender.state == .began else {
             return
         }
 
-        // To prevent the tapped link from proceeding with navigation, "cancel" the native WKWebView
-        // `_highlightLongPressRecognizer`. This preserves the original behavior as seen here:
-        // https://github.com/WebKit/webkit/blob/d591647baf54b4b300ca5501c21a68455429e182/Source/WebKit/UIProcess/ios/WKContentViewInteraction.mm#L1600-L1614
-        if let nativeHighlightLongPressRecognizer = self.nativeHighlightLongPressRecognizer,
-            nativeHighlightLongPressRecognizer.isEnabled
-        {
-            nativeHighlightLongPressRecognizer.isEnabled = false
-            nativeHighlightLongPressRecognizer.isEnabled = true
-        }
-
-        if let elements = self.elements {
+        if let elements = self.elements, elements.link == nil, elements.image != nil && !scrolling {
             delegate?.contextMenuHelper(
-                self, didLongPressElements: elements, gestureRecognizer: sender)
+                self, didLongPressImage: elements, gestureRecognizer: sender)
+            resetGestureTimer?.invalidate()
+
+            // This prevents the image from going full screen when the user ends the long press
+            if let imageTapRecongnizer = gestureRecognizerWithDescriptionFragment(
+                "target= <(action=_singleTapRecognized:, target=<WKContentView")
+            {
+                imageTapRecongnizer.isEnabled = false
+
+                resetGestureTimer = Timer.scheduledTimer(
+                    withTimeInterval: 1, repeats: false,
+                    block: { _ in
+                        imageTapRecongnizer.isEnabled = true
+                    })
+            }
 
             self.elements = nil
         }
+
+        if let imageLongPressRecongnizer = gestureRecognizerWithDescriptionFragment(
+            "(com.apple.UIKit.longPressClickDriverPrimary);")
+        {
+            imageLongPressRecongnizer.isEnabled = true
+        }
+    }
+
+    func scrollDragStarted() {
+        scrolling = true
+        UIMenuController.shared.hideMenu()
+    }
+
+    func scrollDragEnded() {
+        scrolling = false
     }
 }
 
@@ -161,6 +169,21 @@ extension ContextMenuHelper: TabContentScript {
             let title = data["title"] as? String
             let alt = data["alt"] as? String
             elements = Elements(link: linkURL, image: imageURL, title: title, alt: alt)
+
+            if imageURL != nil && linkURL == nil,
+                let imageLongPressRecongnizer = gestureRecognizerWithDescriptionFragment(
+                    "(com.apple.UIKit.longPressClickDriverPrimary);")
+            {
+                imageLongPressRecongnizer.isEnabled = false
+
+                // Suppress the system context menu for images
+                resetGestureTimer?.invalidate()
+                resetGestureTimer = Timer.scheduledTimer(
+                    withTimeInterval: 1, repeats: false,
+                    block: { _ in
+                        imageLongPressRecongnizer.isEnabled = true
+                    })
+            }
         } else {
             elements = nil
         }

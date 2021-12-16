@@ -302,7 +302,23 @@ extension TabScrollingController: UIGestureRecognizerDelegate {
 }
 
 extension TabScrollingController: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        if let helper = chromeModel.topBarDelegate?.tabManager.selectedTab?.getContentScript(
+            name: ContextMenuHelper.name())
+            as? ContextMenuHelper
+        {
+            helper.scrollDragStarted()
+        }
+    }
+
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if let helper = chromeModel.topBarDelegate?.tabManager.selectedTab?.getContentScript(
+            name: ContextMenuHelper.name())
+            as? ContextMenuHelper
+        {
+            helper.scrollDragEnded()
+        }
+
         if tabIsLoading || isBouncingAtBottom {
             return
         }

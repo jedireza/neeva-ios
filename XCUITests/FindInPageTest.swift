@@ -10,7 +10,7 @@ class FindInPageTests: BaseTestCase {
     ) {
         openURL(url)
         goToFindOnPage()
-        
+
         waitForExistence(app.buttons["FindInPage_Next"])
         waitForExistence(app.buttons["FindInPage_Previous"])
         XCTAssertTrue(app.textFields["FindInPage_TextField"].exists)
@@ -21,14 +21,14 @@ class FindInPageTests: BaseTestCase {
 
         // Enter some text to start finding
         app.textFields["FindInPage_TextField"].typeText("Book")
-        
+
         waitForExistence(app.staticTexts["1 of 500+"])
     }
 
     // Smoketest
     func testFindFromMenu() throws {
         try skipTest(issue: 1387, "Can't find the next/previous disabled button")
-        
+
         openFindInPageFromMenu(path(forTestPage: "test-mozilla-book.html"))
 
         // Enter some text to start finding
@@ -109,13 +109,13 @@ class FindInPageTests: BaseTestCase {
     }
 
     func testFindFromSelection() {
-        let textToFind = "from"
+        let textToFind = "tremble"
         openURL(path(forTestPage: "test-mozilla-book.html"))
-        waitForExistence(app.webViews.staticTexts[textToFind])
+        waitForExistence(app.webViews.staticTexts[textToFind].firstMatch)
 
-        let stringToFind = app.webViews.staticTexts.matching(identifier: textToFind)
-        let firstStringToFind = stringToFind.element(boundBy: 0)
-        firstStringToFind.press(forDuration: 1)
+        print(app.debugDescription)
+        let stringToFind = app.webViews.staticTexts[textToFind].firstMatch
+        stringToFind.press(forDuration: 1)
         waitForExistence(app.menuItems["Copy"], timeout: 5)
 
         // Find in page is correctly launched, bar with text pre-filled and

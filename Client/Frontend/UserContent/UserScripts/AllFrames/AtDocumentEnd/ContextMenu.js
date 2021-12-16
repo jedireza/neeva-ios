@@ -8,34 +8,34 @@
 // Ensure this module only gets included once. This is
 // required for user scripts injected into all frames.
 window.__firefox__.includeOnce("ContextMenu", function() {
-  window.addEventListener("touchstart", function(evt) {
-    var target = evt.target;
+    window.addEventListener("touchstart", function(evt) {
+        var target = evt.target;
 
-    var targetLink = target.closest("a");
-    var targetImage = target.closest("img");
+        var targetLink = target.closest("a");
+        var targetImage = target.closest("img");
 
-    if (!targetLink && !targetImage) {
-      return;
-    }
+        if (!targetLink && !targetImage) {
+            return;
+        }
 
-    var data = {};
+        var data = {};
 
-    data.touchX = evt.changedTouches[0].pageX - window.scrollX;
-    data.touchY = evt.changedTouches[0].pageY - window.scrollY;
+        data.touchX = evt.changedTouches[0].pageX - window.scrollX;
+        data.touchY = evt.changedTouches[0].pageY - window.scrollY;
 
-    if (targetLink) {
-      data.link = targetLink.href;
-      data.title = targetLink.textContent;
-    }
+        if (targetLink) {
+            data.link = targetLink.href;
+            data.title = targetLink.textContent;
+        }
 
-    if (targetImage) {
-      data.image = targetImage.src;
-      data.title = data.title || targetImage.title;
-      data.alt = targetImage.alt;
-    }
+        if (targetImage) {
+            data.image = targetImage.src;
+            data.title = data.title || targetImage.title;
+            data.alt = targetImage.alt;
+        }
 
-    if (data.link || data.image) {
-      webkit.messageHandlers.contextMenuMessageHandler.postMessage(data);
-    }
-  }, true);
+        if (data.link || data.image) {
+            webkit.messageHandlers.contextMenuMessageHandler.postMessage(data);
+        }
+    }, true);
 });

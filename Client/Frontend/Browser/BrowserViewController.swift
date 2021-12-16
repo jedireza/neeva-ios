@@ -1808,8 +1808,11 @@ extension BrowserViewController {
                             serverAuthCode: serverAuthCode,
                             marketingEmailOptOut: marketingEmailOptOut ?? false,
                             signup: true)
-                        let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
-                        httpCookieStore.setCookie(NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)) {
+                        let httpCookieStore = self.tabManager.configuration.websiteDataStore
+                            .httpCookieStore
+                        httpCookieStore.setCookie(
+                            NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)
+                        ) {
                             self.openURLInNewTab(authURL)
                         }
                     }
@@ -1861,6 +1864,8 @@ extension BrowserViewController {
 }
 
 extension BrowserViewController: ContextMenuHelperDelegate {
+    fileprivate static var contextMenuElements: ContextMenuHelper.Elements?
+
     func contextMenuHelper(
         _ contextMenuHelper: ContextMenuHelper,
         didLongPressElements elements: ContextMenuHelper.Elements,
@@ -1937,67 +1942,6 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                 shareAction, accessibilityIdentifier: "linkContextMenu.share")
         }
 
-        if let url = elements.image {
-            if dialogTitle == nil {
-                dialogTitle = elements.title ?? url.absoluteString
-            }
-
-            let saveImageAction = UIAlertAction(
-                title: Strings.ContextMenuSaveImage, style: .default
-            ) { _ in
-                self.getImageData(url) { data in
-                    guard let image = UIImage(data: data) else { return }
-                    self.writeToPhotoAlbum(image: image)
-                }
-            }
-            actionSheetController.addAction(
-                saveImageAction, accessibilityIdentifier: "linkContextMenu.saveImage")
-
-            let copyAction = UIAlertAction(title: Strings.ContextMenuCopyImage, style: .default) {
-                _ in
-                // put the actual image on the clipboard
-                // do this asynchronously just in case we're in a low bandwidth situation
-                let pasteboard = UIPasteboard.general
-                pasteboard.url = url as URL
-                let changeCount = pasteboard.changeCount
-                let application = UIApplication.shared
-                var taskId = UIBackgroundTaskIdentifier(rawValue: 0)
-                taskId = application.beginBackgroundTask(expirationHandler: {
-                    application.endBackgroundTask(taskId)
-                })
-
-                makeURLSession(
-                    userAgent: UserAgent.getUserAgent(),
-                    configuration: URLSessionConfiguration.default
-                ).dataTask(with: url) { (data, response, error) in
-                    guard let _ = validatedHTTPResponse(response, statusCode: 200..<300) else {
-                        application.endBackgroundTask(taskId)
-                        return
-                    }
-
-                    // Only set the image onto the pasteboard if the pasteboard hasn't changed since
-                    // fetching the image; otherwise, in low-bandwidth situations,
-                    // we might be overwriting something that the user has subsequently added.
-                    if changeCount == pasteboard.changeCount, let imageData = data, error == nil {
-                        pasteboard.addImageWithData(imageData, forURL: url)
-                    }
-
-                    application.endBackgroundTask(taskId)
-                }.resume()
-
-            }
-            actionSheetController.addAction(
-                copyAction, accessibilityIdentifier: "linkContextMenu.copyImage")
-
-            let copyImageLinkAction = UIAlertAction(
-                title: Strings.ContextMenuCopyImageLink, style: .default
-            ) { _ in
-                UIPasteboard.general.url = url as URL
-            }
-            actionSheetController.addAction(
-                copyImageLinkAction, accessibilityIdentifier: "linkContextMenu.copyImageLink")
-        }
-
         let setupPopover = { [weak self] in
             guard let self = self else { return }
 
@@ -2032,6 +1976,93 @@ extension BrowserViewController: ContextMenuHelperDelegate {
             title: Strings.CancelString, style: UIAlertAction.Style.cancel, handler: nil)
         actionSheetController.addAction(cancelAction)
         self.present(actionSheetController, animated: true, completion: nil)
+    }
+
+    func contextMenuHelper(
+        _ contextMenuHelper: ContextMenuHelper,
+        didLongPressImage elements: ContextMenuHelper.Elements,
+        gestureRecognizer: UIGestureRecognizer
+    ) {
+        BrowserViewController.contextMenuElements = elements
+        let touchPoint = gestureRecognizer.location(in: view)
+        let touchSize = CGSize(width: 0, height: 16)
+
+        let saveImage = UIMenuItem(title: "Save Image", action: #selector(saveImage))
+        let copyImage = UIMenuItem(title: "Copy Image", action: #selector(copyImage))
+        let copyImageLink = UIMenuItem(title: "Copy Image Link", action: #selector(copyImageLink))
+        let addToSpace = UIMenuItem(title: "Add To Space", action: #selector(addImageToSpace))
+
+        tabManager.selectedTab?.webView?.stopLoading()
+
+        UIMenuController.shared.menuItems = [saveImage, copyImage, copyImageLink, addToSpace]
+        UIMenuController.shared.showMenu(
+            from: self.view, rect: CGRect(origin: touchPoint, size: touchSize))
+    }
+
+    @objc func saveImage() {
+        guard let url = BrowserViewController.contextMenuElements?.image else { return }
+        BrowserViewController.contextMenuElements = nil
+
+        self.getImageData(url) { data in
+            guard let image = UIImage(data: data) else { return }
+            self.writeToPhotoAlbum(image: image)
+        }
+    }
+
+    @objc func copyImage() {
+        guard let url = BrowserViewController.contextMenuElements?.image else { return }
+        BrowserViewController.contextMenuElements = nil
+
+        // put the actual image on the clipboard
+        // do this asynchronously just in case we're in a low bandwidth situation
+        let pasteboard = UIPasteboard.general
+        pasteboard.url = url as URL
+        let changeCount = pasteboard.changeCount
+        let application = UIApplication.shared
+        var taskId = UIBackgroundTaskIdentifier(rawValue: 0)
+        taskId = application.beginBackgroundTask(expirationHandler: {
+            application.endBackgroundTask(taskId)
+        })
+
+        makeURLSession(
+            userAgent: UserAgent.getUserAgent(),
+            configuration: URLSessionConfiguration.default
+        ).dataTask(with: url) { (data, response, error) in
+            guard let _ = validatedHTTPResponse(response, statusCode: 200..<300) else {
+                application.endBackgroundTask(taskId)
+                return
+            }
+
+            // Only set the image onto the pasteboard if the pasteboard hasn't changed since
+            // fetching the image; otherwise, in low-bandwidth situations,
+            // we might be overwriting something that the user has subsequently added.
+            if changeCount == pasteboard.changeCount, let imageData = data, error == nil {
+                pasteboard.addImageWithData(imageData, forURL: url)
+            }
+
+            application.endBackgroundTask(taskId)
+        }.resume()
+    }
+
+    @objc func copyImageLink() {
+        guard let url = BrowserViewController.contextMenuElements?.image else { return }
+        BrowserViewController.contextMenuElements = nil
+
+        UIPasteboard.general.url = url as URL
+    }
+
+    @objc func addImageToSpace() {
+        guard let url = BrowserViewController.contextMenuElements?.image,
+            let webView = tabManager.selectedTab?.webView
+        else {
+            return
+        }
+
+        showAddToSpacesSheet(
+            url: url,
+            title: BrowserViewController.contextMenuElements?.title, webView: webView)
+
+        BrowserViewController.contextMenuElements = nil
     }
 
     fileprivate func getImageData(_ url: URL, success: @escaping (Data) -> Void) {

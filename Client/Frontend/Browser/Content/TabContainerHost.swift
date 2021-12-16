@@ -141,6 +141,9 @@ struct TabContainerContent: View {
                 ZStack {
                     WebViewContainer(webView: currentWebView)
                         .ignoresSafeArea()
+                        .onTapGesture {
+                            UIMenuController.shared.hideMenu()
+                        }
 
                     if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip]
                         && UIDevice.current.useTabletInterface

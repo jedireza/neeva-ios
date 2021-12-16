@@ -161,13 +161,19 @@ extension Date {
 
     /// - Returns:
     ///   - Time from now as a string (e.g. 1 min, 2 hours, 3 days)
-   public func timeFromNowString() -> String {
+    public func timeFromNowString() -> String {
         let date = Date()
-        let difference  = Calendar.current.dateComponents([.day, .hour, .minute, .second], from: date, to: Date())
+        let difference = Calendar.current.dateComponents(
+            [.day, .hour, .minute, .second], from: date, to: Date())
 
-        let minutes = difference.minute ?? 0 > 1 ? "\(difference.minute ?? 0) mins" : "\(difference.minute ?? 0) min"
-        let hours = difference.hour ?? 0 > 1 ? "\(difference.hour ?? 0) hours" : "\(difference.hour ?? 0) hour"
-        let days = difference.day ?? 0 > 1 ? "\(difference.day ?? 0) days" : "\(difference.day ?? 0) day"
+        let minutes =
+            difference.minute ?? 0 > 1
+            ? "\(difference.minute ?? 0) mins" : "\(difference.minute ?? 0) min"
+        let hours =
+            difference.hour ?? 0 > 1
+            ? "\(difference.hour ?? 0) hours" : "\(difference.hour ?? 0) hour"
+        let days =
+            difference.day ?? 0 > 1 ? "\(difference.day ?? 0) days" : "\(difference.day ?? 0) day"
 
         if let day = difference.day, day > 0 { return days }
         if let hour = difference.hour, hour > 0 { return hours }
