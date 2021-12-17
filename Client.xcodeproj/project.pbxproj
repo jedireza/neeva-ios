@@ -378,6 +378,8 @@
 		BCF248472670967C00ACAD11 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF248462670967C00ACAD11 /* ViewExtensions.swift */; };
 		BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */; };
 		BCF864C72763FF9400E94B3A /* WebResultView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF864C62763FF9400E94B3A /* WebResultView.swift */; };
+		BCF864CB276C328300E94B3A /* InlineSearchProductView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF864CA276C328300E94B3A /* InlineSearchProductView.swift */; };
+		BCF864CD276C5FDC00E94B3A /* BuyingGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF864CC276C5FDC00E94B3A /* BuyingGuideView.swift */; };
 		C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */; };
 		C40046FA1CF8E0B200B08303 /* BackForwardListAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = C40046F91CF8E0B200B08303 /* BackForwardListAnimator.swift */; };
 		C4EFEECF1CEBB6F2009762A4 /* BackForwardTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4EFEECE1CEBB6F2009762A4 /* BackForwardTableViewCell.swift */; };
@@ -1481,6 +1483,8 @@
 		BCF248462670967C00ACAD11 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+Quests.swift"; sourceTree = "<group>"; };
 		BCF864C62763FF9400E94B3A /* WebResultView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebResultView.swift; sourceTree = "<group>"; };
+		BCF864CA276C328300E94B3A /* InlineSearchProductView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InlineSearchProductView.swift; sourceTree = "<group>"; };
+		BCF864CC276C5FDC00E94B3A /* BuyingGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuyingGuideView.swift; sourceTree = "<group>"; };
 		C1114054A20B1072F603BD52 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ClearHistoryConfirm.strings; sourceTree = "<group>"; };
 		C2CB4D369C756DA6836BC4A3 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/3DTouchActions.strings; sourceTree = "<group>"; };
 		C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BackForwardListViewController.swift; sourceTree = "<group>"; };
@@ -2820,6 +2824,8 @@
 				BCA4D73027226E8000AE5A15 /* RelatedRecipeView.swift */,
 				BC248769273382E5003A6867 /* RelatedSearchesView.swift */,
 				BCF864C62763FF9400E94B3A /* WebResultView.swift */,
+				BCF864CA276C328300E94B3A /* InlineSearchProductView.swift */,
+				BCF864CC276C5FDC00E94B3A /* BuyingGuideView.swift */,
 			);
 			path = Cheatsheet;
 			sourceTree = "<group>";
@@ -5439,6 +5445,7 @@
 				C832BF5B26E0A7A400B9A1F8 /* OpenInAppOverlayContent.swift in Sources */,
 				4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */,
 				EBB8950C21939E4100EB91A0 /* NeevaTabContentBlocker.swift in Sources */,
+				BCF864CD276C5FDC00E94B3A /* BuyingGuideView.swift in Sources */,
 				BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */,
 				BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */,
 				C9DDC12026B9E24900F293AB /* WebViewContainer.swift in Sources */,
@@ -5598,6 +5605,7 @@
 				67B0AAF626BA08A4000731E0 /* OverflowMenuView.swift in Sources */,
 				D0625C98208E87F10081F3B2 /* DownloadQueue.swift in Sources */,
 				66C3C773267A8909002B50B1 /* TabMenu.swift in Sources */,
+				BCF864CB276C328300E94B3A /* InlineSearchProductView.swift in Sources */,
 				59A68B280D62462B85CF57A4 /* HistoryPanel.swift in Sources */,
 				C965BDD6268E729000F02224 /* InternalSettingsView.swift in Sources */,
 				4AD771B42734F06900B6769D /* EntityInfoView.swift in Sources */,

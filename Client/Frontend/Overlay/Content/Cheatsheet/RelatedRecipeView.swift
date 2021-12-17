@@ -75,9 +75,8 @@ struct RelatedRecipeItem: View {
             .frame(width: 175, height: 240)
             .overlay(
                 RoundedRectangle(cornerRadius: 11)
-                    .stroke(Color.ui.gray91, lineWidth: 1)
+                    .stroke(Color(light: Color.ui.gray91, dark: Color(hex: 0x383b3f)), lineWidth: 1)
             )
-
         }
     }
 
@@ -85,7 +84,8 @@ struct RelatedRecipeItem: View {
         if let onDismiss = onDismiss {
             onDismiss()
         }
-        ClientLogger.shared.logCounter(.RelatedRecipeClick, attributes: EnvironmentHelper.shared.getAttributes())
+        ClientLogger.shared.logCounter(
+            .RelatedRecipeClick, attributes: EnvironmentHelper.shared.getAttributes())
         onOpenURL(recipe.url)
     }
 }

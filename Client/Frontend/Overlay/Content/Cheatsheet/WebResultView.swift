@@ -4,44 +4,67 @@ import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 
+struct WebResultHeader: View {
+    let item: WebResult
+
+    var body: some View {
+        VStack(alignment: .leading) {
+            HStack {
+                WebImage(url: URL(string: item.faviconURL))
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 14, height: 14, alignment: .center)
+                    .clipped()
+                    .cornerRadius(2)
+                ScrollView(.horizontal) {
+                    HStack(spacing: 2) {
+                        Text(item.displayURLHost)
+                            .foregroundColor(
+                                Color(light: Color.ui.gray40, dark: Color(hex: 0xdee6e6)))
+                        Text(item.displayURLPath)
+                            .foregroundColor(
+                                Color(light: Color.ui.gray60, dark: Color(hex: 0x8f989a)))
+                    }
+                    .font(.system(size: 12))
+                }
+            }
+            Text("\(item.title)")
+                .font(.system(size: 18))
+                .foregroundColor(Color(light: .brand.variant.blue, dark: Color(hex: 0x7cabe4)))
+                .lineLimit(1)
+                .padding(.bottom, 1)
+        }
+    }
+}
+
 struct WebResultItem: View {
     let item: WebResult
     @Environment(\.onOpenURL) var onOpenURL
 
     var body: some View {
-        Button(action: onClick) {
-            VStack(alignment: .leading) {
-                HStack {
-                    WebImage(url: URL(string: item.faviconURL))
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 14, height: 14, alignment: .center)
-                        .clipped()
-                        .cornerRadius(2)
-                    ScrollView(.horizontal) {
-                        HStack(spacing: 2) {
-                            Text(item.displayURLHost)
-                                .foregroundColor(Color.ui.gray40)
-                            Text(item.displayURLPath)
-                                .foregroundColor(Color.ui.gray60)
-                        }
-                        .font(.system(size: 12))
+        VStack(alignment: .leading) {
+            if item.buyingGuides.count > 0 {
+                Button(action: onClick) {
+                    WebResultHeader(item: item)
+                }
+                BuyingGuideList(buyingGuides: item.buyingGuides)
+            } else if item.inlineSearchProducts.count > 0 {
+                Button(action: onClick) {
+                    WebResultHeader(item: item)
+                }
+                InlineSearchProductList(inlineSearchProducts: item.inlineSearchProducts)
+            } else if let snippet = item.snippet {
+                Button(action: onClick) {
+                    VStack(alignment: .leading) {
+                        WebResultHeader(item: item)
+                        Text(snippet)
+                            .font(.system(size: 13))
+                            .foregroundColor(
+                                Color(light: Color.ui.gray40, dark: Color(hex: 0xd0dada))
+                            )
+                            .lineLimit(3)
+                            .multilineTextAlignment(.leading)
                     }
-                }
-                Text("\(item.title)")
-                    .font(.system(size: 18))
-                    .foregroundColor(.brand.variant.blue)
-                    .lineLimit(1)
-                    .padding(.bottom, 1)
-                if let publicationDate = item.publicationDate {
-                    Text("\(publicationDate)")
-                }
-                if let snippet = item.snippet {
-                    Text(snippet)
-                        .font(.system(size: 13))
-                        .foregroundColor(Color.ui.gray40)
-                        .lineLimit(3)
-                        .multilineTextAlignment(.leading)
                 }
             }
         }
@@ -55,13 +78,22 @@ struct WebResultItem: View {
 
 struct WebResultList: View {
     let webResult: [WebResult]
+    let currentCheatsheetQuery: String?
+    @Environment(\.onOpenURL) var onOpenURL
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Neeva Search")
-                .withFont(.headingXLarge)
-                .foregroundColor(.label)
+            Button(action: onClick) {
+                HStack(alignment: .center) {
+                    Text("Neeva Search")
+                        .withFont(.headingXLarge)
+                        .foregroundColor(.label)
+                    Symbol(decorative: .arrowUpForward)
+                        .foregroundColor(.label)
+                        .frame(width: 18, height: 18, alignment: .center)
+                }
                 .padding(.bottom, 8)
+            }
             VStack(alignment: .leading) {
                 ForEach(webResult, id: \.actionURL) { web in
                     WebResultItem(item: web)
@@ -69,5 +101,17 @@ struct WebResultList: View {
             }
         }
         .padding(.bottom, 18)
+    }
+
+    func onClick() {
+        if let query = currentCheatsheetQuery {
+            if let encodedQuery = query.addingPercentEncoding(
+                withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
+            {
+                if let url = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)") {
+                    onOpenURL(url)
+                }
+            }
+        }
     }
 }

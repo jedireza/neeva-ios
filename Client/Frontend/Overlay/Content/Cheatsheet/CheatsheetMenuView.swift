@@ -86,6 +86,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
     @Published var searchRichResults: [SearchController.RichResult]?
     @Published var currentPageURL: URL?
     @Published var cheatsheetDataLoading: Bool
+    @Published var currentCheatsheetQuery: String?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -94,8 +95,12 @@ public class CheatsheetMenuViewModel: ObservableObject {
         self.searchRichResults = tabManager.selectedTab?.searchRichResults
         self.currentPageURL = tabManager.selectedTab?.webView?.url
         self.cheatsheetDataLoading = tabManager.selectedTab?.cheatsheetDataLoading ?? false
+        self.currentCheatsheetQuery = tabManager.selectedTab?.currentCheatsheetQuery
 
         tabManager.selectedTab?.$cheatsheetDataLoading.assign(to: \.cheatsheetDataLoading, on: self)
+            .store(in: &subscriptions)
+
+        tabManager.selectedTab?.$currentCheatsheetQuery.assign(to: \.currentCheatsheetQuery, on: self)
             .store(in: &subscriptions)
 
         tabManager.selectedTab?.$cheatsheetData.assign(to: \.cheatsheetInfo, on: self).store(
@@ -229,7 +234,8 @@ public struct CheatsheetMenuView: View {
             // filter out result already showing on the current page
             return AnyView(
                 WebResultList(
-                    webResult: result.filter { $0.actionURL != model.currentPageURL }
+                    webResult: result.filter { $0.actionURL != model.currentPageURL },
+                    currentCheatsheetQuery: model.currentCheatsheetQuery
                 ))
         }
     }

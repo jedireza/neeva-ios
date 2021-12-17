@@ -12,28 +12,38 @@ struct ProductClusterItem: View {
 
     var body: some View {
         Button(action: onClick) {
-            VStack(alignment: .center) {
+            VStack(alignment: .leading) {
                 WebImage(url: URL(string: product.thumbnailURL))
+                    .placeholder {
+                        Rectangle().foregroundColor(.gray)
+                    }
                     .resizable()
-                    .scaledToFit()
-                    .frame(width: 100, height: 80, alignment: .center)
+                    .scaledToFill()
+                    .frame(width: 160, height: 100, alignment: .center)
                     .clipped()
+                    .cornerRadius(11, corners: [.topLeft, .topRight])
                 Text(product.productName)
-                    .font(.system(size: 8))
-                    .frame(width: 100, height: 20)
+                    .withFont(.headingMedium)
+                    .foregroundColor(Color.label)
                     .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .padding(.horizontal, 12)
+                Spacer()
                 if let priceLow = product.priceLow {
                     Text("$\(priceLow, specifier: "%.2f")")
-                        .font(.system(size: 10))
+                        .font(.system(size: 14))
+                        .foregroundColor(Color.label)
                         .bold()
                         .foregroundColor(Color.brand.charcoal)
-                        .padding(.top, 2)
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 12)
                 }
             }
-            .padding(EdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6))
-            .background(Color.brand.white)
-            .cornerRadius(15)
-            .shadow(color: .gray, radius: 2, x: 1, y: 2)
+            .frame(width: 160, height: 200)
+            .overlay(
+                RoundedRectangle(cornerRadius: 11)
+                    .stroke(Color(light: Color.ui.gray91, dark: Color(hex: 0x383b3f)), lineWidth: 1)
+            )
         }
     }
 
@@ -76,5 +86,6 @@ struct ProductClusterList: View {
                 .padding([.leading, .bottom], 12)
             }
         }
+        .padding(.bottom, 16)
     }
 }

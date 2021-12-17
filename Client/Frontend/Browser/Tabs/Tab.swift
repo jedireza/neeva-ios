@@ -97,6 +97,7 @@ class Tab: NSObject, ObservableObject {
     @Published private(set) var cheatsheetData: CheatsheetQueryController.CheatsheetInfo?
     @Published private(set) var searchRichResults: [SearchController.RichResult]?
     @Published private(set) var cheatsheetDataLoading: Bool = false
+    @Published private(set) var currentCheatsheetQuery: String?
 
     func setURL(_ newValue: URL?) {
         if let internalUrl = InternalURL(newValue), internalUrl.isAuthorized {
@@ -277,6 +278,7 @@ class Tab: NSObject, ObservableObject {
         guard let url = self.url else { return }
         self.searchRichResults = nil
         self.cheatsheetData = nil
+        self.currentCheatsheetQuery = ""
 
         if url.host == NeevaConstants.appHost || url.scheme != "https" {
             return
@@ -301,6 +303,7 @@ class Tab: NSObject, ObservableObject {
                     // use current url as query for fallback
                     query = url.absoluteString
                 }
+                self.currentCheatsheetQuery = query
                 self.getRichResultByQuery(query)
             case .failure(let error):
                 Logger.browser.error("Error: \(error)")

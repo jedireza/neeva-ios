@@ -26,6 +26,22 @@ query Search($query: String!) {
                   isHighlighted
                 }
               }
+              buyingGuideProducts {
+                reviewTitle
+                reviewType
+                productName
+                reviewHighlights
+                reviewSummary
+                reviewURL
+                priceLow
+                thumbnailURL
+              }
+              inlineSearchProducts {
+                productName
+                priceLow
+                thumbnailURL
+                actionURL
+              }
             }
           }
           ... on ProductClusters {
@@ -147,6 +163,39 @@ query Search($query: String!) {
                 displayText {
                   segments {
                     isHighlighted
+                    text
+                  }
+                }
+              }
+            }
+          }
+          ... on TechDoc {
+            techDoc {
+              name
+              actionURL
+              isCollapsed
+              languageID
+              useFixedWidth
+              poweredBy
+              domain
+              favIconURL
+              visualSpec
+              snippet {
+                name
+                body
+                url
+              }
+              sections {
+                name
+                rhsTitle
+                body
+                url
+                votes
+                subsections {
+                  name
+                  body
+                  url
+                  metadata {
                     text
                   }
                 }

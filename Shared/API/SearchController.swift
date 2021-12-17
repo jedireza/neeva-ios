@@ -29,6 +29,22 @@ public struct Product {
     public let priceLow: Double?
 }
 
+public struct InlineSearchProduct {
+    public let productName: String
+    public let thumbnailURL: String
+    public let actionURL: URL
+    public let price: String?
+}
+
+public struct BuyingGuide {
+    public let reviewType: String?
+    public let thumbnailURL: String
+    public let productName: String
+    public let actionURL: URL
+    public let reviewSummary: String?
+    public let price: String?
+}
+
 public struct WebResult {
     public let faviconURL: String
     public let displayURLHost: String
@@ -37,6 +53,8 @@ public struct WebResult {
     public let title: String
     public let snippet: String?
     public let publicationDate: String?
+    public let inlineSearchProducts: [InlineSearchProduct]
+    public let buyingGuides: [BuyingGuide]
 }
 
 public typealias ProductClusterResult = ([Product])
@@ -237,11 +255,54 @@ public class SearchController:
                                             }
                                         }
 
+                                        var inlineSearchProducts: [InlineSearchProduct] = []
+                                        if let ispList = web.inlineSearchProducts {
+                                            if ispList.count > 0 {
+                                                for item in ispList {
+                                                    if let productName = item.productName,
+                                                        let thumbnailURL = item.thumbnailUrl,
+                                                        let productActionURL = item.actionUrl
+                                                    {
+                                                        inlineSearchProducts.append(
+                                                            InlineSearchProduct(
+                                                                productName: productName,
+                                                                thumbnailURL: thumbnailURL,
+                                                                actionURL: URL(
+                                                                    string: productActionURL)!,
+                                                                price: item.priceLow))
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        var buyingGuides: [BuyingGuide] = []
+                                        if let bgList = web.buyingGuideProducts {
+                                            if bgList.count > 0 {
+                                                for item in bgList {
+                                                    if let productName = item.productName,
+                                                        let thumbnailURL = item.thumbnailUrl
+                                                    {
+                                                        buyingGuides.append(
+                                                            BuyingGuide(
+                                                                reviewType: item.reviewType,
+                                                                thumbnailURL: thumbnailURL,
+                                                                productName: productName,
+                                                                actionURL: URL(string: actionURL)!,
+                                                                reviewSummary: item.reviewSummary,
+                                                                price: item.priceLow))
+                                                    }
+                                                }
+                                            }
+                                        }
+
                                         let webResult = WebResult(
                                             faviconURL: faviconURL, displayURLHost: displayURLHost,
                                             displayURLPath: displayURLPath,
                                             actionURL: URL(string: actionURL)!, title: title,
-                                            snippet: snippet, publicationDate: web.publicationDate)
+                                            snippet: snippet, publicationDate: web.publicationDate,
+                                            inlineSearchProducts: inlineSearchProducts,
+                                            buyingGuides: buyingGuides
+                                        )
 
                                         if richResult.count > 0 {
                                             for (index, item) in richResult.enumerated() {
