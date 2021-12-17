@@ -18,6 +18,7 @@ enum ZeroQueryOpenedLocation: Equatable {
     case openTab(Tab?)
     case createdTab
     case backButton
+    case newTabButton
 
     var openedTab: Tab? {
         switch self {
@@ -35,6 +36,9 @@ enum ZeroQueryTarget {
 
     /// Navigate to an existing tab matching the URL or create a new tab.
     case existingOrNewTab
+
+    /// Navigate in a new tab.
+    case newTab
 
     static var defaultValue: ZeroQueryTarget {
         FeatureFlag[.createOrSwitchToTab] ? .existingOrNewTab : .currentTab
@@ -233,11 +237,10 @@ class ZeroQueryModel: ObservableObject {
     @discardableResult public func promoteToRealTabIfNecessary(
         url: URL, tabManager: TabManager, searchQuery: String?
     ) -> Bool {
-        guard isLazyTab else {
+        guard isLazyTab, targetTab != .existingOrNewTab else {
             return false
         }
-        // TODO(darin): Handle the case of targetTab == .existingOrNewTab here. Might make
-        // sense to refactor with BVC.finishEditingAndSubmit so we don't duplicate logic.
+        // TODO(darin): Refactor with BVC.finishEditingAndSubmit to simplify logic.
         let tab = tabManager.addTab(URLRequest(url: url), isPrivate: isPrivate)
         tabManager.select(tab)
         reset(bvc: nil, createdLazyTab: true)

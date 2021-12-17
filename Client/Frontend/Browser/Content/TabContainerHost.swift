@@ -103,6 +103,9 @@ class TabContainerModel: ObservableObject {
             zeroQueryModel.isPrivate = isIncognito
             zeroQueryModel.isLazyTab = isLazyTab
             zeroQueryModel.openedFrom = openedFrom
+            if openedFrom == .newTabButton {
+                zeroQueryModel.targetTab = .newTab
+            }
         case .showSuggestions:
             if case .zeroQuery = currentContentUI {
                 currentContentUI = .suggestions

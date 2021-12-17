@@ -155,7 +155,7 @@ extension BrowserViewController: ToolbarDelegate {
             handler: switchPrivacyMode)
         let newTabAction = UIAction(title: newTabTitle, image: newTabImage) { _ in
             DispatchQueue.main.async {
-                self.openLazyTab(openedFrom: .openTab(self.tabManager.selectedTab))
+                self.openLazyTab(openedFrom: .newTabButton)
             }
         }
         newTabAction.accessibilityLabel = newTabAccessibilityLabel

@@ -113,7 +113,6 @@ class FindInPageTests: BaseTestCase {
         openURL(path(forTestPage: "test-mozilla-book.html"))
         waitForExistence(app.webViews.staticTexts[textToFind].firstMatch)
 
-        print(app.debugDescription)
         let stringToFind = app.webViews.staticTexts[textToFind].firstMatch
         stringToFind.press(forDuration: 1)
         waitForExistence(app.menuItems["Copy"], timeout: 5)
