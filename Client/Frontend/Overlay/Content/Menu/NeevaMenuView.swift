@@ -95,17 +95,8 @@ struct NeevaMenuView: View {
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
-                   // TODO: Macy - uncomment below feature flag check before merging to main
-                   // if FeatureFlag[.enableCryptoWallet] {
-                    NeevaMenuRowButtonView(label: "Crypto Wallet", symbol: .creditcard) {
-                        self.menuAction(.cryptoWallet)
-                    }
-                    .accentColor(Color.brand.adaptive.orange)
-                    .accessibilityIdentifier("Neeva Crypto Wallet")
-
                     Color.groupedBackground.frame(height: 1)
-                    // }
-
+                    
                     if NeevaFeatureFlags[.referralPromo] {
                         NeevaMenuRowButtonView(
                             label: "Win $5000 by inviting friends", isPromo: true
