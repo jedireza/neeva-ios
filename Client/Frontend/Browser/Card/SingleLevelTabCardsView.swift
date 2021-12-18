@@ -72,7 +72,11 @@ struct SingleLevelTabCardsView: View {
                             + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
                     )
                     .background(Color.secondarySystemFill)
-                    .cornerRadius(24, corners: [.topLeft, .bottomLeft])
+                    .cornerRadius(
+                        24,
+                        corners: groupDetails.allDetails.count > 2
+                            ? [.topLeft, .bottomLeft] : [.allCorners]
+                    )
                     .padding(.horizontal, -CardGridUX.GridSpacing)
                     .id(groupDetails.id)
                     Color.clear.frame(width: size, height: size * aspectRatio + CardUX.HeaderSize)
