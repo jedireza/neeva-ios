@@ -323,6 +323,9 @@
 		BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC264BC126746098001527B6 /* ViewExtensions.swift */; };
 		BC423EA626CE391D007E2C01 /* CompactNeevaMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */; };
 		BC4E98012669572A00A8FBD6 /* TourManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43CC265F49EA007E2F61 /* TourManager.swift */; };
+		BC5310182759D714005AF524 /* web3swift in Frameworks */ = {isa = PBXBuildFile; productRef = BC5310172759D714005AF524 /* web3swift */; };
+		BC53101B2759E38C005AF524 /* CryptoWalletController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC53101A2759E38C005AF524 /* CryptoWalletController.swift */; };
+		BC53101D2759E6F4005AF524 /* CryptoWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC53101C2759E6F4005AF524 /* CryptoWalletView.swift */; };
 		BC5740A226BB699A0047D29B /* PerformanceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5740A126BB699A0047D29B /* PerformanceLogger.swift */; };
 		BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */; };
 		BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */; };
@@ -338,6 +341,10 @@
 		BC6D34892622D4DE0050DEC4 /* Roobert-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */; };
 		BC76F9192747182D0067C6A6 /* SuggestedPreviewSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC76F9182747182D0067C6A6 /* SuggestedPreviewSearchesView.swift */; };
 		BC7D47D42720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC7D47D32720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift */; };
+		BC8438DD275B077200611745 /* WelcomeStarterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8438DC275B077200611745 /* WelcomeStarterView.swift */; };
+		BC8438DF275B09FD00611745 /* WalletDashboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8438DE275B09FD00611745 /* WalletDashboard.swift */; };
+		BC8438E1275B485900611745 /* CryptoConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8438E0275B485900611745 /* CryptoConfig.swift */; };
+		BC8438E3275BE51700611745 /* ShowPhrasesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8438E2275BE51700611745 /* ShowPhrasesView.swift */; };
 		BC85E226264F407C0068092F /* TourPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E225264F407C0068092F /* TourPromptView.swift */; };
 		BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */; };
 		BC86023B26E9B7F300D1C188 /* ProductClusterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */; };
@@ -367,6 +374,9 @@
 		BCC7737B27443E7F008E7538 /* SignUpOneButtonPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC7737A27443E7F008E7538 /* SignUpOneButtonPromptView.swift */; };
 		BCC7CA482703E938004714C0 /* CompactNeevaMenuButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC7CA472703E938004714C0 /* CompactNeevaMenuButtonView.swift */; };
 		BCC7CA4A270401AC004714C0 /* RecipeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC7CA49270401AC004714C0 /* RecipeView.swift */; };
+		BCDC95B6275D4CDC00A6ACFF /* SendForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDC95B5275D4CDC00A6ACFF /* SendForm.swift */; };
+		BCDC95B8275D82E700A6ACFF /* TransactionHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDC95B7275D82E700A6ACFF /* TransactionHistoryView.swift */; };
+		BCDC95BA275DC9A200A6ACFF /* ImportWalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCDC95B9275DC9A200A6ACFF /* ImportWalletView.swift */; };
 		BCF248472670967C00ACAD11 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF248462670967C00ACAD11 /* ViewExtensions.swift */; };
 		BCF248492670973400ACAD11 /* BrowserViewController+Quests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */; };
 		C400467C1CF4E43E00B08303 /* BackForwardListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */; };
@@ -1423,6 +1433,8 @@
 		BC248769273382E5003A6867 /* RelatedSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedSearchesView.swift; sourceTree = "<group>"; };
 		BC264BC126746098001527B6 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactNeevaMenuView.swift; sourceTree = "<group>"; };
+		BC53101A2759E38C005AF524 /* CryptoWalletController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoWalletController.swift; sourceTree = "<group>"; };
+		BC53101C2759E6F4005AF524 /* CryptoWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoWalletView.swift; sourceTree = "<group>"; };
 		BC5740A126BB699A0047D29B /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceLogger.swift; sourceTree = "<group>"; };
 		BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebUIMessageHelper.swift; sourceTree = "<group>"; };
 		BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptViewController.swift; sourceTree = "<group>"; };
@@ -1439,6 +1451,10 @@
 		BC6D34832622D4DE0050DEC4 /* Roobert-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Roobert-Medium.otf"; sourceTree = "<group>"; };
 		BC76F9182747182D0067C6A6 /* SuggestedPreviewSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedPreviewSearchesView.swift; sourceTree = "<group>"; };
 		BC7D47D32720BDE700D21ED0 /* RecipeCheatsheetLogManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCheatsheetLogManager.swift; sourceTree = "<group>"; };
+		BC8438DC275B077200611745 /* WelcomeStarterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStarterView.swift; sourceTree = "<group>"; };
+		BC8438DE275B09FD00611745 /* WalletDashboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDashboard.swift; sourceTree = "<group>"; };
+		BC8438E0275B485900611745 /* CryptoConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoConfig.swift; sourceTree = "<group>"; };
+		BC8438E2275BE51700611745 /* ShowPhrasesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShowPhrasesView.swift; sourceTree = "<group>"; };
 		BC85E225264F407C0068092F /* TourPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptView.swift; sourceTree = "<group>"; };
 		BC85E23F264F40B80068092F /* SearchBarTourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchBarTourPromptViewController.swift; sourceTree = "<group>"; };
 		BC86023A26E9B7F300D1C188 /* ProductClusterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductClusterView.swift; sourceTree = "<group>"; };
@@ -1462,6 +1478,9 @@
 		BCC7737A27443E7F008E7538 /* SignUpOneButtonPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpOneButtonPromptView.swift; sourceTree = "<group>"; };
 		BCC7CA472703E938004714C0 /* CompactNeevaMenuButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactNeevaMenuButtonView.swift; sourceTree = "<group>"; };
 		BCC7CA49270401AC004714C0 /* RecipeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeView.swift; sourceTree = "<group>"; };
+		BCDC95B5275D4CDC00A6ACFF /* SendForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendForm.swift; sourceTree = "<group>"; };
+		BCDC95B7275D82E700A6ACFF /* TransactionHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionHistoryView.swift; sourceTree = "<group>"; };
+		BCDC95B9275DC9A200A6ACFF /* ImportWalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportWalletView.swift; sourceTree = "<group>"; };
 		BCF248462670967C00ACAD11 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BCF248482670973400ACAD11 /* BrowserViewController+Quests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+Quests.swift"; sourceTree = "<group>"; };
 		C1114054A20B1072F603BD52 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/ClearHistoryConfirm.strings; sourceTree = "<group>"; };
@@ -1945,6 +1964,7 @@
 				7BA4A94A1C4CEFC70091D032 /* OnePasswordExtension.framework in Frameworks */,
 				DABDA4AD20DA0FB900FBB0BD /* ObjcExceptionBridging.framework in Frameworks */,
 				C9A241CD269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */,
+				BC5310182759D714005AF524 /* web3swift in Frameworks */,
 				7B604FA21C495268006EEEC3 /* SnapKit.framework in Frameworks */,
 				3B4988CE1E42B01800A12FDA /* SwiftyJSON.framework in Frameworks */,
 				7B604FBB1C495D8A006EEEC3 /* XCGLogger.framework in Frameworks */,
@@ -2805,6 +2825,22 @@
 				BC248769273382E5003A6867 /* RelatedSearchesView.swift */,
 			);
 			path = Cheatsheet;
+			sourceTree = "<group>";
+		};
+		BC5310192759DBED005AF524 /* CryptoWallet */ = {
+			isa = PBXGroup;
+			children = (
+				BC53101A2759E38C005AF524 /* CryptoWalletController.swift */,
+				BC53101C2759E6F4005AF524 /* CryptoWalletView.swift */,
+				BC8438DC275B077200611745 /* WelcomeStarterView.swift */,
+				BC8438DE275B09FD00611745 /* WalletDashboard.swift */,
+				BC8438E0275B485900611745 /* CryptoConfig.swift */,
+				BC8438E2275BE51700611745 /* ShowPhrasesView.swift */,
+				BCDC95B5275D4CDC00A6ACFF /* SendForm.swift */,
+				BCDC95B7275D82E700A6ACFF /* TransactionHistoryView.swift */,
+				BCDC95B9275DC9A200A6ACFF /* ImportWalletView.swift */,
+			);
+			path = CryptoWallet;
 			sourceTree = "<group>";
 		};
 		BC85E224264F29660068092F /* Prompt */ = {
@@ -3833,6 +3869,7 @@
 		F84B21F11A0910F600AAB793 /* Frontend */ = {
 			isa = PBXGroup;
 			children = (
+				BC5310192759DBED005AF524 /* CryptoWallet */,
 				C8CF648C26F907BB00C3816F /* Favicons */,
 				67942DD626F14F140023F623 /* Notification */,
 				D3A994941A368691008AD1AC /* Browser */,
@@ -4297,6 +4334,7 @@
 			);
 			name = Client;
 			packageProductDependencies = (
+				BC5310172759D714005AF524 /* web3swift */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -4489,6 +4527,7 @@
 				C9D4565826558F400047267A /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */,
 				C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */,
+				BC5310162759D714005AF524 /* XCRemoteSwiftPackageReference "web3swift" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -5278,6 +5317,7 @@
 				D38F02D11C05127100175932 /* Authenticator.swift in Sources */,
 				C9299E3B2695EA4B00758795 /* TextSizeView.swift in Sources */,
 				D0FCF7F51FE45842004A7995 /* UserScriptManager.swift in Sources */,
+				BC8438E3275BE51700611745 /* ShowPhrasesView.swift in Sources */,
 				F0405D0E25FFCA5200A0A3B2 /* NeevaMenuButtonView.swift in Sources */,
 				E4A960061ABB9C450069AD6F /* ReaderModeUtils.swift in Sources */,
 				4A9F654B27229E3400B7C06E /* BottomSheetView.swift in Sources */,
@@ -5289,6 +5329,7 @@
 				4AB50DA726FA8CC300B75AFA /* ShareAddedSpaceView.swift in Sources */,
 				C94D409D268CADD4003A6766 /* LocationEditView.swift in Sources */,
 				31ADB5DA1E58CEC300E87909 /* ClipboardBarDisplayHandler.swift in Sources */,
+				BC53101B2759E38C005AF524 /* CryptoWalletController.swift in Sources */,
 				C9C18DE526558FF3004710CD /* PullToRefresh.swift in Sources */,
 				EB9A179D20E69A7F00B12184 /* Theme.swift in Sources */,
 				66EE7D9526CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift in Sources */,
@@ -5307,10 +5348,12 @@
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,
 				C9FD1B1F26C1AD7C00926A70 /* TopBarHost.swift in Sources */,
 				C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */,
+				BC8438E1275B485900611745 /* CryptoConfig.swift in Sources */,
 				BCA4D73127226E8000AE5A15 /* RelatedRecipeView.swift in Sources */,
 				C8CF648F26FA7DE900C3816F /* FaviconResolver.swift in Sources */,
 				E4B423DD1ABA0318007E66C8 /* ReaderModeHandlers.swift in Sources */,
 				745DAB301CDAAFAA00D44181 /* RecentlyClosedTabsPanel.swift in Sources */,
+				BC8438DD275B077200611745 /* WelcomeStarterView.swift in Sources */,
 				C91FA35E26B1959B00E82841 /* TopBarView.swift in Sources */,
 				C9F8EB372680E33B0042CFE7 /* TabToolbarButtons.swift in Sources */,
 				C9098F5E26AF48BC00D2B5F4 /* TabChromeModel.swift in Sources */,
@@ -5335,6 +5378,7 @@
 				C9F49CB9266FBFEA00F3408A /* DataManagementView.swift in Sources */,
 				C9BED4BB2667E3F8001D9C77 /* ZeroQuerySuggestionModels.swift in Sources */,
 				BC85E240264F40B80068092F /* SearchBarTourPromptViewController.swift in Sources */,
+				BCDC95BA275DC9A200A6ACFF /* ImportWalletView.swift in Sources */,
 				C9655DF126A09AC900925912 /* CompletionForAnimation.swift in Sources */,
 				C9E5F2C92678062300025A7F /* LocationTextField.swift in Sources */,
 				4A3D299126850CB60082F293 /* CardGrid.swift in Sources */,
@@ -5487,6 +5531,7 @@
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
 				3BB50E201D627539004B33DF /* ZeroQueryContent.swift in Sources */,
 				66FA64C4270E62A5008BAEAD /* ReaderModeBlocklist.swift in Sources */,
+				BCDC95B6275D4CDC00A6ACFF /* SendForm.swift in Sources */,
 				663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */,
 				39455F771FC83F430088A22C /* TabEventHandler.swift in Sources */,
 				C9C18E0826559007004710CD /* SearchSuggestionViews.swift in Sources */,
@@ -5507,6 +5552,7 @@
 				8AAB76FC2720B88A0015B2C1 /* TabGroupContextMenu.swift in Sources */,
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
+				BCDC95B8275D82E700A6ACFF /* TransactionHistoryView.swift in Sources */,
 				F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */,
 				C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */,
 				66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */,
@@ -5551,6 +5597,7 @@
 				C94D40682684CC35003A6766 /* PublisherExtensions.swift in Sources */,
 				D3A9949D1A3686BD008AD1AC /* Tab.swift in Sources */,
 				E65075571E37F714006961AC /* FaviconFetcher.swift in Sources */,
+				BC8438DF275B09FD00611745 /* WalletDashboard.swift in Sources */,
 				C9299E36268F9CF300758795 /* CloseButton.swift in Sources */,
 				C832BF5F26E0A9E400B9A1F8 /* HTTPAuthPromptOverlayContent.swift in Sources */,
 				BC8EE029271A046C00D6BE2A /* SetPreferredProviderView.swift in Sources */,
@@ -5593,6 +5640,7 @@
 				E663D5781BB341C4001EF30E /* IncognitoButton.swift in Sources */,
 				E6327A641BF6438E008D12E0 /* DebugSettingsBundleOptions.swift in Sources */,
 				D8FDEB57220CFE970069A582 /* UIImage+ImageEffects.m in Sources */,
+				BC53101D2759E6F4005AF524 /* CryptoWalletView.swift in Sources */,
 				EBB89506219398E500EB91A0 /* TabContentBlocker.swift in Sources */,
 				BC24876A273382E5003A6867 /* RelatedSearchesView.swift in Sources */,
 				C9299E382694DF5800758795 /* BrowserViewController+TopBarDelegate.swift in Sources */,
@@ -7508,6 +7556,14 @@
 				minimumVersion = 0.8.1;
 			};
 		};
+		BC5310162759D714005AF524 /* XCRemoteSwiftPackageReference "web3swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/skywinder/web3swift";
+			requirement = {
+				kind = revision;
+				revision = 691eb069e4aaee66a759e12a691e20bb3aa37258;
+			};
+		};
 		C82719EB26FE734500EC9EF9 /* XCRemoteSwiftPackageReference "sindresorhus-Defaults" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/neevaco/sindresorhus-Defaults";
@@ -7571,6 +7627,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 4A3D2996268993FE0082F293 /* XCRemoteSwiftPackageReference "ViewInspector" */;
 			productName = ViewInspector;
+		};
+		BC5310172759D714005AF524 /* web3swift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC5310162759D714005AF524 /* XCRemoteSwiftPackageReference "web3swift" */;
+			productName = web3swift;
 		};
 		C82719EC26FE734500EC9EF9 /* Defaults */ = {
 			isa = XCSwiftPackageProductDependency;
