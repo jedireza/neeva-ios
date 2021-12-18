@@ -72,21 +72,27 @@ struct CardsContainer: View {
                     ScrollView(.vertical, showsIndicators: false) {
                         ScrollViewReader { scrollProxy in
                             LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                                TabCardsView(containerGeometry: scrollGeometry)
-                                    .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                                    .environment(\.selectionCompletion) {
-                                        guard tabGroupModel.detailedTabGroup == nil else {
-                                            return
-                                        }
-                                        ClientLogger.shared.logCounter(
-                                            .SelectTab,
-                                            attributes: getLogCounterAttributesForTabs(
-                                                selectedTabIndex: tabModel.allDetails.firstIndex(
-                                                    where: {
-                                                        $0.id == tabModel.selectedTabID
-                                                    })))
-                                        gridModel.hideWithAnimation()
+                                Group {
+                                    if FeatureFlag[.tabGroupsNewDesign] {
+                                        SingleLevelTabCardsView(containerGeometry: scrollGeometry)
+                                    } else {
+                                        TabCardsView(containerGeometry: scrollGeometry)
                                     }
+                                }
+                                .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                                .environment(\.selectionCompletion) {
+                                    guard tabGroupModel.detailedTabGroup == nil else {
+                                        return
+                                    }
+                                    ClientLogger.shared.logCounter(
+                                        .SelectTab,
+                                        attributes: getLogCounterAttributesForTabs(
+                                            selectedTabIndex: tabModel.allDetails.firstIndex(
+                                                where: {
+                                                    $0.id == tabModel.selectedTabID
+                                                })))
+                                    gridModel.hideWithAnimation()
+                                }
                             }
                             .padding(.vertical, CardGridUX.GridSpacing)
                             .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in

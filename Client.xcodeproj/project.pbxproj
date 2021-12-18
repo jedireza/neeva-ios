@@ -160,6 +160,7 @@
 		4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4726F107BF00725E17 /* ProfileView.swift */; };
 		4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* ZeroQueryView.swift */; };
 		4AA9F66727478DB8005F6F81 /* SpaceDetailList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */; };
+		4AB07F29276C4E6300C85ED4 /* SingleLevelTabCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */; };
 		4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */; };
 		4AB50DA726FA8CC300B75AFA /* ShareAddedSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB50DA526FA8C3E00B75AFA /* ShareAddedSpaceView.swift */; };
 		4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */; };
@@ -1249,6 +1250,7 @@
 		4A9FCD4726F107BF00725E17 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* ZeroQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryView.swift; sourceTree = "<group>"; };
 		4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceDetailList.swift; sourceTree = "<group>"; };
+		4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLevelTabCardsView.swift; sourceTree = "<group>"; };
 		4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserPrimitive.swift; sourceTree = "<group>"; };
 		4AB50DA526FA8C3E00B75AFA /* ShareAddedSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareAddedSpaceView.swift; sourceTree = "<group>"; };
 		4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSpaceOverlayContent.swift; sourceTree = "<group>"; };
@@ -2430,6 +2432,7 @@
 				4A3D299026850CB60082F293 /* CardGrid.swift */,
 				4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */,
 				C9655DEE26A09A8600925912 /* CardListViews.swift */,
+				4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */,
 				C9655DEC26A09A6900925912 /* CardsContainer.swift */,
 				4A88F9722662AEAB007C203D /* CardStrip.swift */,
 				4A1D054F2669715B00D63333 /* CardViewControllers.swift */,
@@ -5332,6 +5335,7 @@
 				C98E405D26585709003AC0E2 /* PrivacySettingsSection.swift in Sources */,
 				EB1C84BF212EFFBF001489DF /* BrowserViewController+ReaderMode.swift in Sources */,
 				C8A4E91B275567A700421040 /* TabContainerHost.swift in Sources */,
+				4AB07F29276C4E6300C85ED4 /* SingleLevelTabCardsView.swift in Sources */,
 				66ECB5DF26BB264700A1857E /* OverlayStepperModifier.swift in Sources */,
 				C9C18E0926559007004710CD /* Suggestion.swift in Sources */,
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,

@@ -35,7 +35,7 @@ struct CardGrid: View {
             repeating:
                 GridItem(
                     .fixed(cardSize),
-                    spacing: CardGridUX.GridSpacing),
+                    spacing: CardGridUX.GridSpacing, alignment: .leading),
             count: columnCount)
     }
 

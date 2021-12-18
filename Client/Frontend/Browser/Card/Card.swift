@@ -95,8 +95,9 @@ struct DragToCloseInteraction: ViewModifier {
                                 action()
 
                                 // work around reopening tabs causing the state to not be reset
-                                DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500))
-                                {
+                                DispatchQueue.main.asyncAfter(
+                                    deadline: .now() + .milliseconds(500)
+                                ) {
                                     offset = 0
                                 }
                             } else {
@@ -139,12 +140,13 @@ extension EnvironmentValues {
 /// A card that constrains itself to the default height and provided width.
 struct FittedCard<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
+    var dragToClose: Bool = true
 
     @Environment(\.cardSize) private var cardSize
     @Environment(\.aspectRatio) private var aspectRatio
 
     var body: some View {
-        Card(details: details)
+        Card(details: details, dragToClose: dragToClose)
             .frame(width: cardSize, height: cardSize * aspectRatio + CardUX.HeaderSize)
     }
 }
@@ -152,6 +154,7 @@ struct FittedCard<Details>: View where Details: CardDetails {
 /// A flexible card that takes up as much space as it is allotted.
 struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
+    var dragToClose = true
     /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
     var animate = false
@@ -255,7 +258,9 @@ struct Card<Details>: View where Details: CardDetails {
                     },
                     alignment: .topTrailing
                 )
-                .modifier(DragToCloseInteraction(action: details.onClose))
+                .if(dragToClose) { view in
+                    view.modifier(DragToCloseInteraction(action: details.onClose))
+                }
         }
         .scaleEffect(isPressed ? 0.95 : 1)
     }

@@ -20,6 +20,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case spaceComments = "Comments from space on pages"
     case spacify = "Enable button to turn a page into a Space"
     case swipePlusPlus = "Additional forward and back swipe gestures"
+    case tabGroupsNewDesign = "Enable new design for tabgroups"
     case tabGroupsPinning = "Enable support for pinning tabs"
     case updatedTabOverflowMenu = "Update Tab Overflow Menu"
     case enableSuggestedSpaces = "Show Spaces from Neeva Community"
