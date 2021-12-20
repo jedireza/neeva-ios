@@ -9,6 +9,7 @@ public class AddToSpaceRequest: ObservableObject {
     public let title: String
     public let description: String?  // meta description
     public let url: URL
+    public let thumbnail: UIImage?
     public let updater: SocialInfoUpdater?
 
     public enum Mode {
@@ -71,11 +72,16 @@ public class AddToSpaceRequest: ObservableObject {
     ///   - title: The title of the newly created entity
     ///   - description: The description/snippet of the newly created entity
     ///   - url: The URL of the newly created entity
-    public init(title: String, description: String?, url: URL, updater: SocialInfoUpdater? = nil) {
+    public init(
+        title: String, description: String?, url: URL,
+        thumbnail: UIImage? = nil, updater: SocialInfoUpdater? = nil
+    ) {
         self.title = title
         self.description = description
         self.url = url
+        self.thumbnail = thumbnail
         self.updater = updater
+
         SpaceStore.shared.refresh()
     }
 
@@ -106,37 +112,63 @@ public class AddToSpaceRequest: ObservableObject {
         }
     }
 
+    private func getThumbnailString(completion: @escaping (String?) -> Void) {
+        guard let thumbnail = thumbnail else {
+            completion(nil)
+            return
+        }
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            guard
+                let data = thumbnail.jpegData(
+                    compressionQuality: 0.7
+                        - min(
+                            0.4,
+                            0.2 * floor(thumbnail.size.width / 1000)))
+            else {
+                completion(nil)
+                return
+            }
+
+            completion(data.base64EncodedString())
+        }
+    }
+
     public func addToExistingSpace(id: String, name: String) {
         self.targetSpaceName = name
 
-        // Note: This creates a reference cycle between self and the mutation.
-        // This means even if all other references are dropped to self, then
-        // the mutation will attempt to run to completion.
-        self.cancellable = AddToSpaceMutation(
-            input: AddSpaceResultByURLInput(
-                spaceId: id,
-                url: self.url.absoluteString,
-                title: self.title,
-                data: self.description,
-                mediaType: "text/plain",
-                isBase64: false
-            )
-        ).perform { result in
-            self.cancellable = nil
-            switch result {
-            case .failure(let error):
-                self.error = error
-                withAnimation {
-                    self.state = .failed
-                }
-                break
-            case .success(_):
-                self.targetSpaceID = id
-                withAnimation {
-                    self.state = .savedToSpace
+        getThumbnailString { thumbnailString in
+            // Note: This creates a reference cycle between self and the mutation.
+            // This means even if all other references are dropped to self, then
+            // the mutation will attempt to run to completion.
+            self.cancellable = AddToSpaceMutation(
+                input: AddSpaceResultByURLInput(
+                    spaceId: id,
+                    url: self.url.absoluteString,
+                    title: self.title,
+                    thumbnail: thumbnailString,
+                    data: self.description,
+                    mediaType: "text/plain",
+                    isBase64: false
+                )
+            ).perform { result in
+                self.cancellable = nil
+                switch result {
+                case .failure(let error):
+                    self.error = error
+                    withAnimation {
+                        self.state = .failed
+                    }
+                    break
+                case .success(_):
+                    self.targetSpaceID = id
+                    withAnimation {
+                        self.state = .savedToSpace
+                    }
                 }
             }
         }
+
         withAnimation {
             self.state = .savingToSpace
         }

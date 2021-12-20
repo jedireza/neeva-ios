@@ -1991,10 +1991,14 @@ extension BrowserViewController: ContextMenuHelperDelegate {
         let copyImage = UIMenuItem(title: "Copy Image", action: #selector(copyImage))
         let copyImageLink = UIMenuItem(title: "Copy Image Link", action: #selector(copyImageLink))
         let addToSpace = UIMenuItem(title: "Add To Space", action: #selector(addImageToSpace))
+        let addToSpaceWithImage = UIMenuItem(
+            title: "Add Page To Space With Image", action: #selector(addToSpaceWithImage))
 
         tabManager.selectedTab?.webView?.stopLoading()
 
-        UIMenuController.shared.menuItems = [saveImage, copyImage, copyImageLink, addToSpace]
+        UIMenuController.shared.menuItems = [
+            saveImage, copyImage, copyImageLink, addToSpace, addToSpaceWithImage,
+        ]
         UIMenuController.shared.showMenu(
             from: self.view, rect: CGRect(origin: touchPoint, size: touchSize))
     }
@@ -2063,6 +2067,26 @@ extension BrowserViewController: ContextMenuHelperDelegate {
             title: BrowserViewController.contextMenuElements?.title, webView: webView)
 
         BrowserViewController.contextMenuElements = nil
+    }
+
+    @objc func addToSpaceWithImage() {
+        guard let pageURL = tabManager.selectedTab?.url,
+            let imageURL = BrowserViewController.contextMenuElements?.image,
+            let webView = tabManager.selectedTab?.webView
+        else {
+            return
+        }
+
+        getImageData(imageURL) { data in
+            let thumbnail = UIImage(data: data)
+
+            self.showAddToSpacesSheet(
+                url: pageURL,
+                title: self.tabManager.selectedTab?.title, thumbnail: thumbnail,
+                webView: webView)
+
+            BrowserViewController.contextMenuElements = nil
+        }
     }
 
     fileprivate func getImageData(_ url: URL, success: @escaping (Data) -> Void) {
@@ -2140,7 +2164,7 @@ extension BrowserViewController: JSPromptAlertControllerDelegate {
 extension BrowserViewController {
     func showAddToSpacesSheet(
         url: URL, title: String?, description: String? = nil,
-        webView: WKWebView,
+        thumbnail: UIImage? = nil, webView: WKWebView,
         importData: SpaceImportHandler? = nil
     ) {
         // TODO: Inject this as a ContentScript to avoid the delay here.
@@ -2186,19 +2210,21 @@ extension BrowserViewController {
             self.showAddToSpacesSheet(
                 url: url, title: updater?.title ?? title,
                 description: description ?? updater?.description ?? output?.first?.first,
+                thumbnail: thumbnail,
                 importData: importData, updater: updater)
         }
     }
 
     func showAddToSpacesSheet(
         url: URL, title: String?,
-        description: String?,
+        description: String?, thumbnail: UIImage? = nil,
         importData: SpaceImportHandler? = nil,
         updater: SocialInfoUpdater? = nil
     ) {
         let title = (title ?? "").isEmpty ? url.absoluteString : title!
         let request = AddToSpaceRequest(
-            title: title, description: description, url: url, updater: updater)
+            title: title, description: description, url: url, thumbnail: thumbnail, updater: updater
+        )
 
         self.showModal(
             style: .withTitle,
