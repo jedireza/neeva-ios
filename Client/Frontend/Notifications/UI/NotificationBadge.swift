@@ -28,7 +28,7 @@ struct NotificationBadge: View {
                 Text(textOversized ? "\(maxCount)+" : String(count))
                     .font(.system(size: 10))
                     .padding(.vertical, 3)
-                    .padding(.horizontal, textOversized ? 10 : 5)
+                    .padding(.horizontal, textOversized ? 6 : 5)
                     .foregroundColor(.white)
             }
         }
