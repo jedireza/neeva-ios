@@ -25,6 +25,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case updatedTabOverflowMenu = "Update Tab Overflow Menu"
     case enableSuggestedSpaces = "Show Spaces from Neeva Community"
     case enableMemorizedURLOnWiki = "Enable Memorized URL on Wiki Suggest"
+    case enableCryptoWallet = "Enable crypto wallet"
 
     public init?(caseName: String) {
         for value in FeatureFlag.allCases where "\(value)" == caseName {
