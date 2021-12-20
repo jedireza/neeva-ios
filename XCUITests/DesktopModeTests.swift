@@ -92,7 +92,7 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
     func testIncognitoModeOffAlsoRemovesFromNormalMode() throws {
         try skipIfNeeded()
 
-        openURLInNewTab(path(forTestPage: "test-user-agent.html"))
+        openURLInNewTab(path(forTestPage: "test-user-agent.html?1"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
         requestDesktopSite()
@@ -107,10 +107,10 @@ class DesktopModeTestsIphone: IphoneOnlyTestCase {
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
 
-        // is now off in incognito, mode, confirm it is off in normal mode
+        // is now off in incognito, mode, confirm it is off in a new normal mode
         setIncognitoMode(enabled: false, closeTabTray: false)
         app.buttons["Add Tab"].tap()
-        openURL(path(forTestPage: "test-user-agent.html"))
+        openURL(path(forTestPage: "test-user-agent.html?2"))
         waitUntilPageLoad()
         XCTAssert(app.webViews.staticTexts.matching(identifier: "MOBILE_UA").count > 0)
     }

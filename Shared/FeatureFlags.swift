@@ -11,7 +11,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case bottomURLBar = "Bottom URL Bar"
     case cardStrip = "Carousel of cards instead of tab strip"
     case topCardStrip = "Top Card Strip"
-    case createOrSwitchToTab = "Create new tab or open exisiting tab"
     case debugURLBar = "URL Bar Debug Mode"
     case inlineAccountSettings = "Inline Account Settings"
     case newTrackingProtectionSettings = "New Tracking Protection Settings"

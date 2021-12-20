@@ -37,7 +37,7 @@ class HistoryTests: BaseTestCase {
         waitForNoExistence(app.buttons["Clear Data"])
 
         app.buttons["Settings"].tap()
-        app.buttons["Done"].tap()
+        app.navigationBars["Settings"].buttons["Done"].tap()
     }
 
     override func setUp() {
@@ -48,6 +48,7 @@ class HistoryTests: BaseTestCase {
                 LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix + historyDB,
             ]
         }
+        launchArguments.append(LaunchArguments.DontAddTabOnLaunch)
         super.setUp()
     }
 

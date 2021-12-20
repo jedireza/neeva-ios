@@ -92,6 +92,13 @@ class BaseTestCase: XCTestCase {
         waitFor(element, with: "exists != true", timeout: timeoutValue, file: file, line: line)
     }
 
+    func waitForHittable(
+        _ element: XCUIElement, timeout: TimeInterval = 5.0, file: String = #file,
+        line: UInt = #line
+    ) {
+        waitFor(element, with: "isHittable == true", timeout: timeout, file: file, line: line)
+    }
+
     func waitForValueContains(
         _ element: XCUIElement, value: String, timeout: TimeInterval = 5.0, file: String = #file,
         line: UInt = #line
@@ -129,6 +136,11 @@ class BaseTestCase: XCTestCase {
     }
 
     public func openURL(_ url: String = "example.com", waitForPageLoad: Bool = true) {
+        // If the tab tray is visible, then start a new tab.
+        if app.buttons["Add Tab"].exists {
+            app.buttons["Add Tab"].tap()
+        }
+
         UIPasteboard.general.string = url
 
         if app.buttons["Cancel"].exists {

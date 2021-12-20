@@ -68,8 +68,9 @@ extension BaseTestCase {
         // close settings
         app.buttons["Settings"].tap()
 
-        waitForExistence(app.buttons["Done"])
-        app.buttons["Done"].tap()
+        let navBar = app.navigationBars["Settings"]
+        waitForExistence(navBar.buttons["Done"])
+        navBar.buttons["Done"].tap()
     }
 
     /// Launches from tab page, ends with the URL bar focused and the URL as the query

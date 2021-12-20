@@ -112,8 +112,16 @@ enum TabToolbarButtons {
         let weight: Font.Weight
         let action: () -> Void
         let onLongPress: () -> Void
+        let identifier: String
 
         @Environment(\.isIncognito) private var isIncognito
+
+        init(weight: Font.Weight, action: @escaping () -> Void, onLongPress: @escaping () -> Void, identifier: String = "") {
+            self.weight = weight
+            self.action = action
+            self.onLongPress = onLongPress
+            self.identifier = identifier
+        }
 
         var body: some View {
             TabToolbarButton(
@@ -124,6 +132,7 @@ enum TabToolbarButtons {
                 action: action,
                 longPressAction: onLongPress
             )
+            .accessibilityIdentifier(identifier)
         }
     }
 

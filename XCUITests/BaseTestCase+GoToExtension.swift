@@ -14,12 +14,21 @@ extension BaseTestCase {
         }
     }
 
+    func showAppNavigationMenu(for button: String) {
+        if app.buttons["SwitcherOverflowButton"].exists {
+            waitForHittable(app.buttons["SwitcherOverflowButton"])
+            app.buttons["SwitcherOverflowButton"].tap()
+        } else if app.buttons["Neeva Menu"].exists {
+            app.buttons["Neeva Menu"].tap(force: true)
+        } else {
+            XCTFail("Cannot find tap target for menu to access \(button)")
+        }
+        waitForExistence(app.buttons[button])
+    }
+
     /// Launches from tab page
     func goToSettings() {
-        waitForExistence(app.buttons["Neeva Menu"], timeout: 30)
-        app.buttons["Neeva Menu"].tap(force: true)
-
-        waitForExistence(app.buttons["Settings"])
+        showAppNavigationMenu(for: "Settings")
         app.buttons["Settings"].tap()
 
         waitForExistence(app.tables.cells["Show Search Suggestions"])
@@ -52,12 +61,7 @@ extension BaseTestCase {
 
     /// Launches from tab page
     func goToHistory() {
-        waitForExistence(app.buttons["Neeva Menu"], timeout: 30)
-        app.buttons["Neeva Menu"].tap(force: true)
-
-        waitForExistence(app.buttons["Settings"])
-
-        waitForExistence(app.buttons["History"])
+        showAppNavigationMenu(for: "History")
         app.buttons["History"].tap()
     }
 
@@ -89,6 +93,7 @@ extension BaseTestCase {
         
         if shouldDismissOverlay {
             tapCoordinate(at: 5, and: 100)
+            waitForExistence(app.buttons["More"])
         }
     }
 

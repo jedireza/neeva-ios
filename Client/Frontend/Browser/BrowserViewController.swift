@@ -939,7 +939,7 @@ class BrowserViewController: UIViewController {
         }
 
         if !tabContainerModel.promoteToRealTabIfNecessary(
-            url: url, tabManager: tabManager, selectedTabIsNil: tab == nil,
+            url: url, tabManager: tabManager,
             searchQuery: searchQueryModel.value)
         {
             if zeroQueryModel.targetTab == .existingOrNewTab {

@@ -40,19 +40,20 @@ class NavigationTest: BaseTestCase {
             }*/
         }
 
-        // Once an url has been open, the back button is enabled but not the forward button
+        // The URL is opened in a new tab, so the back / forward buttons are disabled
         openURL(path(forTestPage: "test-example.html"))
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
-        XCTAssertTrue(app.buttons["Back"].isEnabled)
+        XCTAssertFalse(app.buttons["Back"].isEnabled)
         goToOverflowMenuButton(label: "Forward") { element in
             XCTAssertFalse(element.isEnabled)
         }
 
+        app.links["More information..."].tap()
+
         // Once a second url is open, back button is enabled but not the forward one till we go back to url_1
-        openURL(path(forTestPage: "test-mozilla-org.html"))
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["Address Bar"], value: "localhost")
+        waitForValueContains(app.buttons["Address Bar"], value: "www.iana.org")
         XCTAssertTrue(app.buttons["Back"].isEnabled)
         goToOverflowMenuButton(label: "Forward") { element in
             XCTAssertFalse(element.isEnabled)
@@ -64,7 +65,7 @@ class NavigationTest: BaseTestCase {
 
         goForward()
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["Address Bar"], value: "localhost")
+        waitForValueContains(app.buttons["Address Bar"], value: "www.iana.org")
     }
 
     // Smoketest

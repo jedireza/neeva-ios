@@ -31,9 +31,7 @@ class ZeroQueryTests: XCTestCase {
         let bvc = SceneDelegate.getBVC(for: nil)
         self.profile = MockProfile()
         self.suggestionsModel = SuggestionModel(bvc: bvc, profile: profile, queryModel: sQM)
-        self.zQM = ZeroQueryModel(
-            bvc: SceneDelegate.getBVC(for: nil), profile: self.profile, shareURLHandler: { _, _ in }
-        )
+        self.zQM = bvc.zeroQueryModel
         self.tabManager = TabManager(profile: profile, imageStore: nil)
         self.tabContainerModel = TabContainerModel(bvc: bvc)
         self.tabContainerHost = TabContainerHost(model: self.tabContainerModel, bvc: bvc)
@@ -80,6 +78,7 @@ class ZeroQueryTests: XCTestCase {
         })
         try assertTabContentOnlyContainsWebContainer()
 
+        tabContainerModel.zeroQueryModel.targetTab = .newTab
         tabContainerModel.updateContent(
             .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
         try assertTabContentOnlyContainsZeroQuery()
@@ -111,7 +110,6 @@ class ZeroQueryTests: XCTestCase {
 
         tabContainerModel.updateContent(.hideZeroQuery)
         try assertTabContentOnlyContainsWebContainer()
-        XCTAssertNil(zQM.openedFrom)
     }
 
     func testSuggestionUI() throws {

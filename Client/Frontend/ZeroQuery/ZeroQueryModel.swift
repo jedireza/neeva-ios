@@ -40,9 +40,7 @@ enum ZeroQueryTarget {
     /// Navigate in a new tab.
     case newTab
 
-    static var defaultValue: ZeroQueryTarget {
-        FeatureFlag[.createOrSwitchToTab] ? .existingOrNewTab : .currentTab
-    }
+    static var defaultValue: ZeroQueryTarget = .existingOrNewTab
 }
 
 class ZeroQueryModel: ObservableObject {

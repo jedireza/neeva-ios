@@ -69,7 +69,8 @@ struct SwitcherToolbarView: View {
                                 bvc.perform(overflowMenuAction: action, targetButtonView: view)
                             },
                             onLongPress: { _ in
-                            }, location: .cardGrid
+                            },
+                            location: .cardGrid
                         )
                         .tapTargetFrame()
                         .environmentObject(bvc.chromeModel)
@@ -102,7 +103,8 @@ struct SwitcherToolbarView: View {
                                     )
                                 }
                             },
-                            onLongPress: {}
+                            onLongPress: {},
+                            identifier: "SwitcherOverflowButton"
                         )
                         .tapTargetFrame()
                     }
