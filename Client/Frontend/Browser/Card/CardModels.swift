@@ -58,10 +58,68 @@ class TabCardModel: CardModel, TabEventHandler {
             .reduce(into: [Tab]()) { $0.append(contentsOf: $1.children) }
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
+
+        if FeatureFlag[.tabGroupsNewDesign] {
+            modifyAllDetailsAvoidingSingleTabs(childTabs)
+        }
+
         allDetailsWithExclusionList = manager.getAll().filter { !childTabs.contains($0) }
             .map { TabCardDetails(tab: $0, manager: manager) }
         selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()
+    }
+
+    func modifyAllDetailsAvoidingSingleTabs(_ childTabs: [Tab]) {
+        let tabGroupsFilter = manager.getAll().reduce(into: [Int]()) {
+            let numToAppend = !childTabs.contains($1) ? (($0.last ?? 0) + 1) : 0
+            $0.append(numToAppend)
+        }
+
+        var singleTabFilter = tabGroupsFilter.reduce(into: [Int]()) {
+            if $1 == 0 && ($0.last ?? 0) % 2 == 1 {
+                $0.append(-1)
+            } else {
+                $0.append($1)
+            }
+        }.map { $0 == -1 }.dropFirst()
+        singleTabFilter.append(false)
+
+        var index: Int = singleTabFilter.startIndex
+        while !singleTabFilter.isEmpty && index < allDetails.count {
+            var singleTabIndex = singleTabFilter[index...].firstIndex(where: { $0 })
+
+            if singleTabIndex == nil {
+                break
+            }
+
+            singleTabIndex = singleTabIndex! - 1
+
+            var afterGroupIndex = tabGroupsFilter[(singleTabIndex! + 1)...].firstIndex(where: {
+                $0 > 0
+            })
+
+            if afterGroupIndex == nil {
+                let detail = allDetails.remove(at: singleTabIndex!)
+                allDetails.append(detail)
+                break
+            }
+
+            let detail = allDetails.remove(at: singleTabIndex!)
+            allDetails.insert(detail, at: afterGroupIndex! - 1)
+
+            index = afterGroupIndex!
+
+            let closestSingleTab = singleTabFilter[index...].firstIndex(where: { $0 })
+            let closestTabGroup = tabGroupsFilter[index...].firstIndex(where: { $0 == 0 })
+            if let closestSingleTab = closestSingleTab, let closestTabGroup = closestTabGroup,
+                closestTabGroup == closestSingleTab
+            {
+                index = closestTabGroup + 1
+            } else if closestTabGroup != nil {
+                index = closestTabGroup!
+                singleTabFilter[closestTabGroup!] = true
+            }
+        }
     }
 }
 

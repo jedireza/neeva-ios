@@ -90,5 +90,6 @@ struct SingleLevelTabCardsView: View {
                 }
             }
         }
+        .transition(.identity)
     }
 }
