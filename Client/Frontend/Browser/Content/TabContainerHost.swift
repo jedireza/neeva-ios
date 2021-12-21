@@ -84,18 +84,6 @@ class TabContainerModel: ObservableObject {
         !Defaults[.didFirstNavigation] ? .previewHome : .blank
     }
 
-    @discardableResult public func promoteToRealTabIfNecessary(
-        url: URL, tabManager: TabManager, searchQuery: String?
-    ) -> Bool {
-        let result = zeroQueryModel.promoteToRealTabIfNecessary(
-            url: url, tabManager: tabManager, searchQuery: searchQuery)
-        if result {
-            updateContent(.hideZeroQuery)
-        }
-
-        return result
-    }
-
     func updateContent(_ event: ContentUIVisibilityEvent) {
         switch event {
         case .showZeroQuery(let isIncognito, let isLazyTab, let openedFrom):

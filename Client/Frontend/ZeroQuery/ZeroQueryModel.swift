@@ -232,22 +232,6 @@ class ZeroQueryModel: ObservableObject {
         }
     }
 
-    @discardableResult public func promoteToRealTabIfNecessary(
-        url: URL, tabManager: TabManager, searchQuery: String?
-    ) -> Bool {
-        guard isLazyTab, targetTab != .existingOrNewTab else {
-            return false
-        }
-        // TODO(darin): Refactor with BVC.finishEditingAndSubmit to simplify logic.
-        let tab = tabManager.addTab(URLRequest(url: url), isPrivate: isPrivate)
-        tabManager.select(tab)
-        reset(bvc: nil, createdLazyTab: true)
-
-        tab.queryForNavigation.currentSearchQuery = searchQuery
-
-        return true
-    }
-
     public func reset(bvc: BrowserViewController?, createdLazyTab: Bool = false) {
         if let bvc = bvc, bvc.tabManager.isIncognito, !(bvc.tabManager.privateTabs.count > 0),
             isLazyTab && !createdLazyTab

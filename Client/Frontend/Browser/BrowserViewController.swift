@@ -938,30 +938,27 @@ class BrowserViewController: UIViewController {
             return
         }
 
-        if !tabContainerModel.promoteToRealTabIfNecessary(
-            url: url, tabManager: tabManager,
-            searchQuery: searchQueryModel.value)
-        {
-            if zeroQueryModel.targetTab == .existingOrNewTab {
-                hideZeroQuery()
-                tabManager.createOrSwitchToTab(for: url, query: searchQueryModel.value)
-            } else if zeroQueryModel.openedFrom == .backButton, let tab = tab {
-                // Once user changes current URL from the back button, the forward history list needs to be overriden.
-                // Going back, and THEN loading the request accomplishes that.
+        if zeroQueryModel.isLazyTab || zeroQueryModel.targetTab == .newTab {
+            hideZeroQuery()
+            openURLInNewTab(url, isPrivate: zeroQueryModel.isPrivate, query: searchQueryModel.value)
+        } else if zeroQueryModel.targetTab == .existingOrNewTab {
+            hideZeroQuery()
+            tabManager.createOrSwitchToTab(for: url, query: searchQueryModel.value)
+        } else if let tab = tab {
+            if zeroQueryModel.openedFrom == .backButton {
+                // Once user changes current URL from the back button, the forward history list needs
+                // to be overriden. Going back, and THEN loading the request accomplishes that.
                 DispatchQueue.main.async {
                     tab.webView?.goBack()
-
                     guard let nav = tab.loadRequest(URLRequest(url: url)) else {
                         return
                     }
-
                     self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
                 }
-            } else if let tab = tab, let nav = tab.loadRequest(URLRequest(url: url)) {
-                self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
+            } else if let nav = tab.loadRequest(URLRequest(url: url)) {
+                tab.queryForNavigation.currentSearchQuery = searchQueryModel.value
+                recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             }
-
-            tab?.queryForNavigation.currentSearchQuery = searchQueryModel.value
         }
 
         locationModel.url = url
@@ -1027,7 +1024,7 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func openURLInNewTab(_ url: URL?, isPrivate: Bool = false) {
+    func openURLInNewTab(_ url: URL?, isPrivate: Bool = false, query: String? = nil) {
         if let selectedTab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(selectedTab)
         }
@@ -1040,7 +1037,8 @@ class BrowserViewController: UIViewController {
         }
 
         DispatchQueue.main.async {
-            self.tabManager.selectTab(self.tabManager.addTab(request, isPrivate: isPrivate))
+            self.tabManager.selectTab(
+                self.tabManager.addTab(request, isPrivate: isPrivate, query: query))
             self.hideCardGrid(withAnimation: false)
         }
     }

@@ -64,32 +64,6 @@ class ZeroQueryTests: XCTestCase {
         try assertTabContentOnlyContainsWebContainer()
     }
 
-    func testLazyTabPromotion() throws {
-        let tab = tabManager.addTab()
-        tab.loadRequest(URLRequest(url: .aboutBlank))
-        tabManager.selectTab(tab)
-        waitForCondition(condition: {
-            switch tabContainerModel.currentContentUI {
-            case .webPage:
-                return true
-            default:
-                return false
-            }
-        })
-        try assertTabContentOnlyContainsWebContainer()
-
-        tabContainerModel.zeroQueryModel.targetTab = .newTab
-        tabContainerModel.updateContent(
-            .showZeroQuery(isIncognito: false, isLazyTab: true, .tabTray))
-        try assertTabContentOnlyContainsZeroQuery()
-
-        tabContainerModel.promoteToRealTabIfNecessary(
-            url: .aboutBlank, tabManager: tabManager, searchQuery: nil)
-        waitForCondition(condition: { tabManager.tabs.count == 2 })
-        try assertTabContentOnlyContainsWebContainer()
-        XCTAssertNil(zQM.openedFrom)
-    }
-
     func testLazyTabCancel() throws {
         let tab = tabManager.addTab()
         tab.loadRequest(URLRequest(url: .aboutBlank))

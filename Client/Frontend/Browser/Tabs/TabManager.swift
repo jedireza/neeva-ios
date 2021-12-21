@@ -329,11 +329,11 @@ class TabManager: NSObject, ObservableObject {
 
     @discardableResult func addTab(
         _ request: URLRequest! = nil, configuration: WKWebViewConfiguration! = nil,
-        afterTab: Tab? = nil, isPrivate: Bool = false
+        afterTab: Tab? = nil, isPrivate: Bool = false, query: String? = nil
     ) -> Tab {
         return self.addTab(
             request, configuration: configuration, afterTab: afterTab, flushToDisk: true,
-            zombie: false, isPrivate: isPrivate)
+            zombie: false, isPrivate: isPrivate, query: query)
     }
 
     func addTabsForURLs(_ urls: [URL], zombie: Bool) {
@@ -360,7 +360,7 @@ class TabManager: NSObject, ObservableObject {
     func addTab(
         _ request: URLRequest? = nil, webView: WKWebView? = nil,
         configuration: WKWebViewConfiguration? = nil, atIndex: Int? = nil, afterTab: Tab? = nil,
-        flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false
+        flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false, query: String? = nil
     ) -> Tab {
         assert(Thread.isMainThread)
 
@@ -372,7 +372,7 @@ class TabManager: NSObject, ObservableObject {
         let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
         configureTab(
             tab, request: request, webView: webView, atIndex: atIndex, afterTab: afterTab,
-            flushToDisk: flushToDisk, zombie: zombie)
+            flushToDisk: flushToDisk, zombie: zombie, query: query)
 
         return tab
     }
@@ -407,12 +407,7 @@ class TabManager: NSObject, ObservableObject {
             select(existingTab)
             return .switchedToExistingTab
         } else {
-            let newTab = addTab(
-                URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
-            newTab.queryForNavigation.currentSearchQuery = query
-
-            select(newTab)
-
+            select(addTab(URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito, query: query))
             return .createdNewTab
         }
     }
@@ -467,7 +462,8 @@ class TabManager: NSObject, ObservableObject {
 
     func configureTab(
         _ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, atIndex: Int? = nil,
-        afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false
+        afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false,
+        query: String? = nil
     ) {
         assert(Thread.isMainThread)
 
@@ -484,6 +480,7 @@ class TabManager: NSObject, ObservableObject {
         }
 
         tab.navigationDelegate = self.navDelegate
+        tab.queryForNavigation.currentSearchQuery = query
 
         if let request = request {
             tab.loadRequest(request)
