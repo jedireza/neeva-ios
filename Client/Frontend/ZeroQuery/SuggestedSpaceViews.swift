@@ -35,6 +35,10 @@ struct SuggestedSpacesView: View {
                                 ClientLogger.shared.logCounter(
                                     .RecommendedSpaceVisited,
                                     attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                            } else {
+                                ClientLogger.shared.logCounter(
+                                    LogConfig.Interaction.OpenSuggestedSpace
+                                )
                             }
                             openURL(space.url)
                         }) {
