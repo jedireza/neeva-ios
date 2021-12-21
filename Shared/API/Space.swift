@@ -73,7 +73,8 @@ class SpacesDataQueryController: QueryController<
                                     title: spaceEntity.title,
                                     snippet: spaceEntity.snippet,
                                     thumbnail: spaceEntity.thumbnail,
-                                    previewEntity: SpaceEntityData.previewEntity(from: spaceEntity))
+                                    previewEntity: SpaceEntityData.previewEntity(from: spaceEntity),
+                                    generatorID: spaceEntity.generator?.id)
                             )
                         }
                     }

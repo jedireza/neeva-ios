@@ -25,10 +25,11 @@ public struct SpaceEntityData {
     public let snippet: String?
     public let thumbnail: String?
     public let previewEntity: PreviewEntity
+    public var generatorID: String?
 
     public init(
         id: String, url: URL?, title: String?, snippet: String?,
-        thumbnail: String?, previewEntity: PreviewEntity
+        thumbnail: String?, previewEntity: PreviewEntity, generatorID: String? = nil
     ) {
         self.id = id
         self.url = url
@@ -36,6 +37,7 @@ public struct SpaceEntityData {
         self.snippet = snippet
         self.thumbnail = thumbnail
         self.previewEntity = previewEntity
+        self.generatorID = generatorID
     }
 
     static func previewEntity(from entity: SpaceEntity) -> PreviewEntity {

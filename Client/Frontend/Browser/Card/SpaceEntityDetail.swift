@@ -222,6 +222,11 @@ struct SpaceEntityDetailView: View {
         .modifier(
             SpaceActionsModifier(
                 details: details,
+                keepNewsItem: {
+                    details.data.generatorID = nil
+                    spaceCardModel.claimGeneratedItem(
+                        spaceID: details.spaceID, entityID: details.id)
+                },
                 onDelete: {
                     onDelete(index)
                 }, addToAnotherSpace: addToAnotherSpace, editSpaceItem: editSpaceItem)
@@ -275,9 +280,19 @@ struct DescriptionTextModifier: ViewModifier {
 
 struct SpaceActionsModifier: ViewModifier {
     let details: SpaceEntityThumbnail
+    let keepNewsItem: () -> Void
     let onDelete: () -> Void
     let addToAnotherSpace: (URL, String?, String?) -> Void
     let editSpaceItem: () -> Void
+
+    var isNewsItem: Bool {
+        switch details.data.previewEntity {
+        case .newsItem(_):
+            return true
+        default:
+            return false
+        }
+    }
 
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
@@ -289,19 +304,27 @@ struct SpaceActionsModifier: ViewModifier {
                         Label("Delete", systemImage: "")
                     }
 
-                    Button {
-                        addToAnotherSpace(
-                            (details.data.url)!,
-                            details.title, details.description)
-                    } label: {
-                        Label("Add To", systemImage: "")
-                    }.tint(.gray)
+                    if details.data.generatorID != nil && isNewsItem {
+                        Button {
+                            keepNewsItem()
+                        } label: {
+                            Label("Keep", systemImage: "")
+                        }.tint(.blue)
+                    } else {
+                        Button {
+                            addToAnotherSpace(
+                                (details.data.url)!,
+                                details.title, details.description)
+                        } label: {
+                            Label("Add To", systemImage: "")
+                        }.tint(.gray)
 
-                    Button {
-                        editSpaceItem()
-                    } label: {
-                        Label("Edit", systemImage: "")
-                    }.tint(.blue)
+                        Button {
+                            editSpaceItem()
+                        } label: {
+                            Label("Edit", systemImage: "")
+                        }.tint(.blue)
+                    }
                 }
         } else {
             content
@@ -325,6 +348,47 @@ struct SpaceActionsModifier: ViewModifier {
                             label: {
                                 Label("Add to another Space", systemSymbol: .docOnDoc)
                             })
+                    })
+                )
+        }
+    }
+}
+
+struct EditSpaceActionModifier: ViewModifier {
+    let details: SpaceEntityThumbnail
+    let onDelete: (Int) -> Void
+    let editSpaceItem: () -> Void
+    let index: Int
+
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        onDelete(index)
+                    } label: {
+                        Label("Delete", systemImage: "")
+                    }
+
+                    Button {
+                        editSpaceItem()
+                    } label: {
+                        Label("Edit", systemImage: "")
+                    }.tint(.blue)
+                }
+        } else {
+            content
+                .contextMenu(
+                    ContextMenu(menuItems: {
+                        if details.ACL >= .edit {
+                            Button(
+                                action: {
+                                    editSpaceItem()
+                                },
+                                label: {
+                                    Label("Edit item", systemSymbol: .squareAndPencil)
+                                })
+                        }
                     })
                 )
         }

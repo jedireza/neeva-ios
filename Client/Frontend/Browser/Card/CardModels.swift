@@ -305,6 +305,15 @@ class SpaceCardModel: CardModel {
         }
     }
 
+    func claimGeneratedItem(spaceID: String, entityID: String) {
+        DispatchQueue.main.async {
+            let request = ClaimGeneratedItem(spaceID: spaceID, entityID: entityID)
+            request.$state.sink { state in
+                self.spaceNeedsRefresh = spaceID
+            }.cancel()
+        }
+    }
+
     func delete(
         space spaceID: String, entities: [SpaceEntityThumbnail], from scene: UIScene,
         undoDeletion: @escaping () -> Void

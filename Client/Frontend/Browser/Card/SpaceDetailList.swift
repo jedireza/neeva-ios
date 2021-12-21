@@ -128,16 +128,13 @@ struct SpaceDetailList: View {
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
-                        .contextMenu(
-                            ContextMenu(menuItems: {
-                                if details.ACL >= .edit {
-                                    Button(
-                                        action: editSpaceItem,
-                                        label: {
-                                            Label("Edit item", systemSymbol: .squareAndPencil)
-                                        })
-                                }
-                            })
+                        .modifier(
+                            EditSpaceActionModifier(
+                                details: details,
+                                onDelete: { index in
+                                    onDelete(offsets: IndexSet([index]))
+                                }, editSpaceItem: editSpaceItem,
+                                index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0)
                         )
                         .modifier(ListSeparatorModifier())
                         .frame(maxWidth: .infinity, alignment: .leading)

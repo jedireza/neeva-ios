@@ -82,6 +82,9 @@ query GetSpacesData($ids: [String!]) {
             title
             snippet
             thumbnail
+            generator {
+                id
+            }
             content {
               id
               title
@@ -219,5 +222,11 @@ mutation AddSpaceSoloACLs($input: AddSpaceSoloACLsInput!) {
   addSpaceSoloACLs(input: $input) {
         nonNeevanEmails
         changedACLCount
+    }
+}
+
+mutation ClaimGeneratedItem($input: ClaimGeneratedItemInput!) {
+  claimGeneratedItem(input: $input) {
+        applied
     }
 }

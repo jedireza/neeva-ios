@@ -194,7 +194,7 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     }
 
     let spaceID: String
-    let data: SpaceEntityData
+    var data: SpaceEntityData
 
     var id: String
     var closeButtonImage: UIImage? = nil

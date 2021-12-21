@@ -71,6 +71,14 @@ public class UpdateSpaceRequest: SpaceRequest<UpdateSpaceMutation> {
     }
 }
 
+public class ClaimGeneratedItem: SpaceRequest<ClaimGeneratedItemMutation> {
+    public init(spaceID: String, entityID: String) {
+        super.init(
+            mutation: ClaimGeneratedItemMutation(
+                input: ClaimGeneratedItemInput(spaceId: spaceID, resultId: entityID)))
+    }
+}
+
 public class AddSpaceCommentRequest: SpaceRequest<AddSpaceCommentMutation> {
     public init(spaceID: String, comment: String) {
         super.init(
