@@ -442,6 +442,7 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
 
     @Published var manager: TabGroupManager
     @Published var isShowingDetails = false
+    @Published var isExpanded = true
     var id: String
     var isSelected: Bool {
         manager.tabManager.selectedTab?.rootUUID == id
