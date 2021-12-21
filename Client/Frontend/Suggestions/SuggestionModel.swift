@@ -347,12 +347,24 @@ class SuggestionModel: ObservableObject {
 
                 let query = query.stringByTrimmingLeadingCharactersInSet(.whitespaces)
 
-                // First, see if the query matches any URLs from the user's search history.
+                // First, see if the query matches any URLs from the user's search history
+                // and it has a domain only site entry so that we have the correct title
                 for site in deferredHistorySites {
-                    if self.setCompletion(
-                        to: self.completionForURL(site.url, from: query, site: site), from: query)
+                    if let domainOnlySite =
+                        deferredHistorySites.first(where: { s in
+                            s.url.pathComponents.count == 1
+                                && s.url.domainURL == site.url.domainURL
+                        })
                     {
-                        return
+                        if self.setCompletion(
+                            to: self.completionForURL(
+                                domainOnlySite.url,
+                                from: query,
+                                site: domainOnlySite),
+                            from: query)
+                        {
+                            return
+                        }
                     }
                 }
 
