@@ -104,8 +104,10 @@ struct SingleLevelTabCardsView: View {
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @Environment(\.cardSize) private var size
     @Environment(\.aspectRatio) private var aspectRatio
+    @Environment(\.columns) private var columns
 
     let containerGeometry: GeometryProxy
+    //@State var listtt = tabGroupModel.allDetails.count
 
     var body: some View {
         Group {
@@ -135,7 +137,7 @@ struct SingleLevelTabCardsView: View {
                                 .foregroundColor(.label)
                             Spacer()
                             Button {
-                                groupDetails.isExpanded.toggle()
+                                groupDetails.isShowingDetails.toggle()
                             } label: {
                                 Label("caret", systemImage: "chevron.up")
                                     .foregroundColor(.label)
@@ -145,15 +147,19 @@ struct SingleLevelTabCardsView: View {
                             }
                         }.padding(.leading, CardGridUX.GridSpacing).frame(
                             height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                        if groupDetails.isExpanded {
+                        if groupDetails.isShowingDetails {
                             // plan to draw a lazVGrid here
-                            /*
-                             LazyVGrid(){
-                                ForEach(...){
-                             
-                                }
-                             }
-                             */
+                             LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing){
+                                 ForEach(groupDetails.allDetails, id: \.id) { childTabDetail in
+                                     FittedCard(details: childTabDetail, dragToClose: false)
+                                         .modifier(
+                                             CardTransitionModifier(
+                                                 details: childTabDetail,
+                                                 containerGeometry: containerGeometry)
+                                         )
+                                         .id(childTabDetail.id)
+                                 }
+                             }                             
                         } else {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 LazyHStack(
@@ -180,7 +186,7 @@ struct SingleLevelTabCardsView: View {
                     .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
                     .frame(
                         width: size * 2 + 3 * CardGridUX.GridSpacing,
-                        height: size * aspectRatio + CardUX.HeaderSize
+                        height: (size * aspectRatio + CardUX.HeaderSize) * (groupDetails.isShowingDetails ? groupDetails.allDetails.count/2 : 1)
                             + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
                             + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
                             + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
@@ -195,7 +201,7 @@ struct SingleLevelTabCardsView: View {
                     .padding(.horizontal, -CardGridUX.GridSpacing)
                     .id(groupDetails.id)
                     
-                    if groupDetails.isExpanded {
+                    if groupDetails.isShowingDetails {
                         ForEach((0..<numBlankCardsToDraw(groupDetails)), id: \.self) { _ in
                             Color.blue.frame(width: size, height: size * aspectRatio + CardUX.HeaderSize)
                         }

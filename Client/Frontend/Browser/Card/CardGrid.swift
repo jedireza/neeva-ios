@@ -136,21 +136,25 @@ struct CardGrid: View {
                         .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
                     }
 
-                    if let tabGroupDetails = tabGroupModel.detailedTabGroup {
-                        DetailView(primitive: tabGroupDetails) {
-                            withAnimation(.easeInOut(duration: 0.4)) {
-                                detailDragOffset = geom.size.width
+                    if !FeatureFlag[.tabGroupsNewDesign] {
+                        /*
+                        if let tabGroupDetails = tabGroupModel.detailedTabGroup {
+                            DetailView(primitive: tabGroupDetails) {
+                                withAnimation(.easeInOut(duration: 0.4)) {
+                                    detailDragOffset = geom.size.width
+                                }
                             }
+                            .frame(width: geom.size.width, height: geom.size.height)
+                            .background(
+                                Color.groupedBackground.edgesIgnoringSafeArea([
+                                    .bottom, .horizontal,
+                                ])
+                            )
+                            .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
+                            .environment(\.cardSize, cardSize)
+                            .environment(\.columns, columns)
                         }
-                        .frame(width: geom.size.width, height: geom.size.height)
-                        .background(
-                            Color.groupedBackground.edgesIgnoringSafeArea([
-                                .bottom, .horizontal,
-                            ])
-                        )
-                        .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
-                        .environment(\.cardSize, cardSize)
-                        .environment(\.columns, columns)
+                        */
                     }
                 }.modifier(
                     DraggableDetail(
