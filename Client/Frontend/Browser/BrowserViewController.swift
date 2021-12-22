@@ -940,11 +940,12 @@ class BrowserViewController: UIViewController {
 
         if !tabContainerModel.promoteToRealTabIfNecessary(
             url: url, tabManager: tabManager,
-            searchQuery: searchQueryModel.value)
+            searchQuery: searchQueryModel.value,
+            visitType: visitType)
         {
             if zeroQueryModel.targetTab == .existingOrNewTab {
                 hideZeroQuery()
-                tabManager.createOrSwitchToTab(for: url, query: searchQueryModel.value)
+                tabManager.createOrSwitchToTab(for: url, query: searchQueryModel.value, visitType: visitType)
             } else if zeroQueryModel.openedFrom == .backButton, let tab = tab {
                 // Once user changes current URL from the back button, the forward history list needs to be overriden.
                 // Going back, and THEN loading the request accomplishes that.
@@ -1218,12 +1219,15 @@ class BrowserViewController: UIViewController {
         present(controller, animated: true, completion: nil)
     }
 
-    fileprivate func postLocationChangeNotificationForTab(_ tab: Tab, navigation: WKNavigation?) {
+    func postLocationChangeNotificationForTab(
+        _ tab: Tab, navigation: WKNavigation? = nil, visitType: VisitType? = nil
+    ) {
         let notificationCenter = NotificationCenter.default
         var info = [AnyHashable: Any]()
         info["url"] = tab.url?.displayURL
         info["title"] = tab.title ?? ""
-        if let visitType = self.getVisitTypeForTab(tab, navigation: navigation)?.rawValue {
+        if let visitType = visitType?.rawValue
+            ?? self.getVisitTypeForTab(tab, navigation: navigation)?.rawValue {
             info["visitType"] = visitType
         }
         info["isPrivate"] = tabManager.isIncognito
