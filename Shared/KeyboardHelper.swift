@@ -60,6 +60,7 @@ public protocol KeyboardHelperDelegate: AnyObject {
 /// Convenience class for observing keyboard state.
 open class KeyboardHelper: NSObject, ObservableObject {
     @Published public var keyboardVisible = false
+    @Published public var keyboardHeight: CGFloat = 0
     open var currentState: KeyboardState?
 
     fileprivate var delegates = [WeakKeyboardDelegate]()
@@ -110,6 +111,13 @@ open class KeyboardHelper: NSObject, ObservableObject {
             currentState = KeyboardState(userInfo)
             keyboardVisible = true
 
+            if let keyboardFrame: NSValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey]
+                as? NSValue
+            {
+                let keyboardRectangle = keyboardFrame.cgRectValue
+                self.keyboardHeight = keyboardRectangle.height
+            }
+
             for weakDelegate in delegates {
                 weakDelegate.delegate?.keyboardHelper(
                     self, keyboardWillShowWithState: currentState!)
@@ -130,6 +138,8 @@ open class KeyboardHelper: NSObject, ObservableObject {
     @objc func keyboardWillHide(_ notification: Notification) {
         if let userInfo = notification.userInfo {
             currentState = KeyboardState(userInfo)
+
+            self.keyboardHeight = 0
 
             for weakDelegate in delegates {
                 weakDelegate.delegate?.keyboardHelper(
