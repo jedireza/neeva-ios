@@ -121,15 +121,9 @@ struct SingleLevelTabCardsView: View {
                 if let rootID = details.manager.get(for: details.id)?.rootUUID,
                     let groupDetails = tabGroupModel.allDetails.first { $0.id == rootID }
                 {
-                    /*
-                    SingleLevelTabGroupView(
-                        groupDetails: groupDetails,
-                        details: details,
-                        containerGeometry: containerGeometry
-                    )
-                    */
+                    
+//                    let _ = print("Charles groupDetails.isShowingDetails \(groupDetails.isShowingDetails)")
                     if groupDetails.isShowingDetails && groupDetails.allDetails.count > 2 {
-                        let _ = print("Charles Hello World")
                         //draw top left card
                         VStack(spacing: 0) {
                             HStack {
@@ -164,17 +158,20 @@ struct SingleLevelTabCardsView: View {
                             24, corners: .topLeft
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
-                        .id(groupDetails.id)
                         
                         //draw top right card
                         VStack(spacing: 0) {
                             HStack {
-                                Symbol(decorative: .squareGrid2x2Fill)
-                                    .foregroundColor(.label)
-                                Text(groupDetails.title)
-                                    .withFont(.labelLarge)
-                                    .foregroundColor(.label)
                                 Spacer()
+                                Button {
+                                    groupDetails.isShowingDetails.toggle()
+                                } label: {
+                                    Label("caret", systemImage: "chevron.up")
+                                        .foregroundColor(.label)
+                                        .labelStyle(.iconOnly)
+                                        .rotationEffect(.degrees(groupDetails.isShowingDetails ? -180 : 0))
+                                        .padding()
+                                }
                             }.padding(.leading, CardGridUX.GridSpacing).frame(
                                 height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
                             FittedCard(details: groupDetails.allDetails[1])
@@ -200,22 +197,35 @@ struct SingleLevelTabCardsView: View {
                             24, corners: .topRight
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
-                        .id(groupDetails.id)
                         
                         
-                        /*
-                        ForEach(groupDetails.allDetails, id: \.id) { childTabDetail in
-                            FittedCard(details: childTabDetail, dragToClose: false)
-                                .modifier(
-                                    CardTransitionModifier(
-                                        details: childTabDetail,
-                                        containerGeometry: containerGeometry)
-                                )
-                                .id(childTabDetail.id)
+                        ForEach(groupDetails.allDetails.indices.suffix(from: 2).prefix(groupDetails.allDetails.count - 4), id:\.self) { index in
+                            VStack(spacing: 0) {
+                                FittedCard(details: groupDetails.allDetails[index])
+                                    .modifier(
+                                        CardTransitionModifier(
+                                            details: details, containerGeometry: containerGeometry)
+                                    )
+                                    .id(details.id)
+                            }
+                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
+                            .frame(
+                                width: size * 1 + 1.5 * CardGridUX.GridSpacing,
+                                height: size * aspectRatio + CardUX.HeaderSize
+                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
+                                    + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
+                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
+                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
+                            )
+                            .background(Color.secondarySystemFill)
+                            .padding(.horizontal, -CardGridUX.GridSpacing)
                         }
-                        */
-                        
-                        if groupDetails.allDetails.count % 2 == 1 {
+                         
+                        if groupDetails.allDetails.count % 2 == 0 {
+                            //first draw bottom left, then bottom right
+                            
+                        } else {
+                            // draw bottom right, then bottom left, and the Color.clear at the bottom right
                             Color.blue.frame(width: size, height: size * aspectRatio + CardUX.HeaderSize)
                         }
                     }
@@ -239,7 +249,7 @@ struct SingleLevelTabCardsView: View {
                                 }
                             }.padding(.leading, CardGridUX.GridSpacing).frame(
                                 height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                            /*
+                            
                             ScrollView(.horizontal, showsIndicators: false) {
                                 LazyHStack(
                                     spacing: SingleLevelTabCardsViewUX.TabGroupCarouselTabSpacing
@@ -260,7 +270,7 @@ struct SingleLevelTabCardsView: View {
                             }
                             .padding(.bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding)
                             .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-                             */
+                             
                         }
                         .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
                         .frame(
