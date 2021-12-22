@@ -42,6 +42,20 @@ struct SpaceDetailList: View {
         space?.acls.first(where: { $0.acl == .owner })?.profile.displayName
     }
 
+    func descriptionForNote(_ details: SpaceEntityThumbnail) -> String? {
+        if let snippet = details.data.snippet, snippet.contains("](@") {
+            let index = snippet.firstIndex(of: "@")
+            var substring = snippet.suffix(from: index!)
+            if let endIndex = substring.firstIndex(of: ")") {
+                substring = substring[..<endIndex]
+                return snippet.replacingOccurrences(
+                    of: substring,
+                    with: neevaSearchEngine.searchURLForQuery(String(substring))!.absoluteString)
+            }
+        }
+        return details.data.snippet
+    }
+
     var body: some View {
         if gridModel.refreshDetailedSpaceSubscription != nil {
             ProgressView().padding(12)
@@ -120,10 +134,21 @@ struct SpaceDetailList: View {
                             Text(details.title)
                                 .withFont(.headingMedium)
                                 .foregroundColor(.label)
-                            if let description = details.data.snippet, !description.isEmpty {
-                                Text(description)
-                                    .withFont(.bodyLarge)
-                                    .foregroundColor(.secondaryLabel)
+                            if let description = descriptionForNote(details), !description.isEmpty {
+                                if #available(iOS 15.0, *),
+                                    let attributedSnippet = try? AttributedString(
+                                        markdown: description)
+                                {
+                                    Text(attributedSnippet)
+                                        .withFont(.bodyLarge)
+                                        .lineLimit(3)
+                                        .modifier(DescriptionTextModifier())
+                                } else {
+                                    Text(description)
+                                        .withFont(.bodyLarge)
+                                        .lineLimit(3)
+                                        .modifier(DescriptionTextModifier())
+                                }
                             }
                         }
                         .padding(.horizontal, 16)
