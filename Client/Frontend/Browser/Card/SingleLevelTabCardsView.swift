@@ -222,8 +222,31 @@ struct SingleLevelTabCardsView: View {
                         }
                          
                         if groupDetails.allDetails.count % 2 == 0 {
-                            //first draw bottom left, then bottom right
-                            
+                            // first draw bottom left, then bottom right.
+                            ForEach(groupDetails.allDetails.indices.suffix(2), id: \.self) { index in
+                                VStack(spacing: 0) {
+                                    FittedCard(details: groupDetails.allDetails[index])
+                                        .modifier(
+                                            CardTransitionModifier(
+                                                details: details, containerGeometry: containerGeometry)
+                                        )
+                                        .id(details.id)
+                                }
+                                .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
+                                .frame(
+                                    width: size * 1 + 1.5 * CardGridUX.GridSpacing,
+                                    height: size * aspectRatio + CardUX.HeaderSize
+                                        + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
+                                        + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
+                                        + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
+                                        + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
+                                )
+                                .background(Color.secondarySystemFill)
+                                .cornerRadius(
+                                    24, corners: (index == groupDetails.allDetails.count - 2) ? .bottomLeft : .bottomRight
+                                )
+                                .padding(.horizontal, -CardGridUX.GridSpacing)
+                            }
                         } else {
                             // draw bottom right, then bottom left, and the Color.clear at the bottom right
                             Color.blue.frame(width: size, height: size * aspectRatio + CardUX.HeaderSize)
