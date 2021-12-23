@@ -93,7 +93,12 @@ class ToastDefaults: NSObject {
         let (toastText, completedText, deleted) = request.textInfo
 
         let buttonAction = {
-            bvc.gridModel.showSpaces()
+            if let spaceID = request.targetSpaceID {
+                bvc.gridModel.openSpace(
+                    spaceID: spaceID)
+            } else {
+                bvc.gridModel.showSpaces()
+            }
         }
 
         let failedAction = {
