@@ -100,7 +100,8 @@ class WindowManager: KeyboardReadable {
 
     public func createWindow(
         with rootViewController: UIViewController, placement: WindowPlacement, height: CGFloat,
-        addShadow: Bool = false, checkKeyboard: Bool = true, completionHandler: @escaping () -> Void = {}
+        addShadow: Bool = false, checkKeyboard: Bool = true,
+        completionHandler: @escaping () -> Void = {}
     ) {
         guard let scene = parentWindow.windowScene else {
             return
@@ -123,7 +124,8 @@ class WindowManager: KeyboardReadable {
                         deadline: .now() + KeyboardHelper.keyboardAnimationTime
                     ) {
                         self.createWindow(
-                            with: rootViewController, placement: placement, height: height, addShadow: addShadow,
+                            with: rootViewController, placement: placement, height: height,
+                            addShadow: addShadow,
                             checkKeyboard: false, completionHandler: completionHandler)
                     }
                 }
@@ -138,7 +140,7 @@ class WindowManager: KeyboardReadable {
         // prevents taps from going to the view underneath the window
         openWindow?.frame = CGRect(
             x: 0, y: calculateY(viewHeight: height, placement: placement),
-            width: parentWindow.bounds.width, height: height + 30)
+            width: parentWindow.bounds.width, height: height + (placement == .findInPage ? 30 : 0))
         openWindow?.rootViewController = UIViewController()
         openWindow?.windowLevel = .alert
         openWindow?.alpha = 0
@@ -202,28 +204,36 @@ class WindowManager: KeyboardReadable {
         let safeAreaInsets = parentWindow.safeAreaInsets
         let height = UIScreen.main.bounds.height
         let padding: CGFloat = 12
+        let bottomSafeArea = safeAreaInsets.bottom == 0 ? padding : safeAreaInsets.bottom
         var y: CGFloat = 0
 
         switch placement {
         case .top:
             y = safeAreaInsets.top + padding
         case .bottomToolbarPadding:
-            y = height - safeAreaInsets.bottom - viewHeight - bottomConstraint()
+            y = height - bottomSafeArea - viewHeight - bottomConstraint()
         case .findInPage:
             y = height - viewHeight + 28
         }
 
         if placement != .top {
             keyboardHeightListener = keyboardPublisher.sink(receiveValue: { keyboardHeight in
-                UIView.animate(withDuration: 0.3) {
-                    if keyboardHeight > 0 {
-                        self.openWindow?.center.y = y - keyboardHeight + 28
-                    } else {
-                        // Push find in page down a bit more when keyboard hidden
-                        self.openWindow?.center.y = y + (placement == .findInPage ? 12 : 0)
-                    }
+                // Run on main thread to prevent runtime error.
+                // Caused by updating view from completion handler.
+                DispatchQueue.main.async {
+                    UIView.animate(withDuration: 0.3) {
+                        if keyboardHeight > 0 {
+                            self.openWindow?.center.y =
+                                y - keyboardHeight
+                                + (placement == .findInPage
+                                    ? 32 : self.bottomConstraint() + bottomSafeArea)
+                        } else {
+                            // Push find in page down a bit more when keyboard hidden
+                            self.openWindow?.center.y = y + (placement == .findInPage ? 12 : 0)
+                        }
 
-                    self.openWindow?.layoutIfNeeded()
+                        self.openWindow?.layoutIfNeeded()
+                    }
                 }
             })
         }
@@ -232,8 +242,7 @@ class WindowManager: KeyboardReadable {
     }
 
     private func bottomConstraint() -> CGFloat {
-        let safeArea = parentWindow.safeAreaInsets.bottom
-        return safeArea + UIConstants.BottomToolbarHeight
+        return UIConstants.BottomToolbarHeight
     }
 
     init(parentWindow: UIWindow) {

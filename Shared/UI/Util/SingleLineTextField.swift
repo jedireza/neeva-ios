@@ -91,11 +91,13 @@ public struct SingleLineTextField<Icon: View>: View {
                     if !errorMessage.isEmpty {
                         Text(errorMessage)
                             .withFont(useCapsuleBackground ? .bodyMedium : .bodyLarge)
+                            .lineLimit(1)
                             .foregroundColor(.red)
                             .accessibilityHidden(true)
                     } else {
                         Text(placeholder)
                             .withFont(useCapsuleBackground ? .bodyMedium : .bodyLarge)
+                            .lineLimit(1)
                             .foregroundColor(
                                 useCapsuleBackground
                                     ? .secondaryLabel : Color(UIColor.placeholderText)
