@@ -163,6 +163,7 @@ struct SingleLevelTabCardsView: View {
                                 Spacer()
                                 Button {
                                     groupDetails.isShowingDetails.toggle()
+                                    print("Charles collapsing tab groups")
                                 } label: {
                                     Label("caret", systemImage: "chevron.up")
                                         .foregroundColor(.label)
@@ -341,6 +342,7 @@ struct SingleLevelTabCardsView: View {
                                 Spacer()
                                 Button {
                                     groupDetails.isShowingDetails.toggle()
+//                                    print("Charles expanding tabgroups")
                                 } label: {
                                     Label("caret", systemImage: "chevron.up")
                                         .foregroundColor(.label)

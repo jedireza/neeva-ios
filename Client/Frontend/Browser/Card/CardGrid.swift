@@ -106,7 +106,7 @@ struct CardGrid: View {
                 grid
                     .offset(
                         x: (spaceModel.detailedSpace == nil
-                            && tabGroupModel.detailedTabGroup == nil)
+                            && (tabGroupModel.detailedTabGroup == nil || FeatureFlag[.tabGroupsNewDesign]))
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
                     .background(
@@ -137,7 +137,6 @@ struct CardGrid: View {
                     }
 
                     if !FeatureFlag[.tabGroupsNewDesign] {
-                        /*
                         if let tabGroupDetails = tabGroupModel.detailedTabGroup {
                             DetailView(primitive: tabGroupDetails) {
                                 withAnimation(.easeInOut(duration: 0.4)) {
@@ -154,7 +153,6 @@ struct CardGrid: View {
                             .environment(\.cardSize, cardSize)
                             .environment(\.columns, columns)
                         }
-                        */
                     }
                 }.modifier(
                     DraggableDetail(
