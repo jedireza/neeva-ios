@@ -940,10 +940,19 @@ class BrowserViewController: UIViewController {
 
         if zeroQueryModel.isLazyTab || zeroQueryModel.targetTab == .newTab {
             hideZeroQuery()
-            openURLInNewTab(url, isPrivate: zeroQueryModel.isPrivate, query: searchQueryModel.value)
+            openURLInNewTab(
+                url,
+                isPrivate: zeroQueryModel.isPrivate,
+                query: searchQueryModel.value,
+                visitType: visitType
+            )
         } else if zeroQueryModel.targetTab == .existingOrNewTab {
             hideZeroQuery()
-            tabManager.createOrSwitchToTab(for: url, query: searchQueryModel.value)
+            tabManager.createOrSwitchToTab(
+                for: url,
+                query: searchQueryModel.value,
+                visitType: visitType
+            )
         } else if let tab = tab {
             if zeroQueryModel.openedFrom == .backButton {
                 // Once user changes current URL from the back button, the forward history list needs
@@ -1024,7 +1033,9 @@ class BrowserViewController: UIViewController {
         }
     }
 
-    func openURLInNewTab(_ url: URL?, isPrivate: Bool = false, query: String? = nil) {
+    func openURLInNewTab(
+        _ url: URL?, isPrivate: Bool = false, query: String? = nil, visitType: VisitType? = nil
+    ) {
         if let selectedTab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(selectedTab)
         }
@@ -1038,7 +1049,13 @@ class BrowserViewController: UIViewController {
 
         DispatchQueue.main.async {
             self.tabManager.selectTab(
-                self.tabManager.addTab(request, isPrivate: isPrivate, query: query))
+                self.tabManager.addTab(
+                    request,
+                    isPrivate: isPrivate,
+                    query: query,
+                    visitType: visitType
+                )
+            )
             self.hideCardGrid(withAnimation: false)
         }
     }
@@ -1216,12 +1233,16 @@ class BrowserViewController: UIViewController {
         present(controller, animated: true, completion: nil)
     }
 
-    fileprivate func postLocationChangeNotificationForTab(_ tab: Tab, navigation: WKNavigation?) {
+    func postLocationChangeNotificationForTab(
+        _ tab: Tab, navigation: WKNavigation? = nil, visitType: VisitType? = nil
+    ) {
         let notificationCenter = NotificationCenter.default
         var info = [AnyHashable: Any]()
         info["url"] = tab.url?.displayURL
         info["title"] = tab.title ?? ""
-        if let visitType = self.getVisitTypeForTab(tab, navigation: navigation)?.rawValue {
+        if let visitType = visitType?.rawValue
+            ?? self.getVisitTypeForTab(tab, navigation: navigation)?.rawValue
+        {
             info["visitType"] = visitType
         }
         info["isPrivate"] = tabManager.isIncognito

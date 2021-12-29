@@ -329,11 +329,12 @@ class TabManager: NSObject, ObservableObject {
 
     @discardableResult func addTab(
         _ request: URLRequest! = nil, configuration: WKWebViewConfiguration! = nil,
-        afterTab: Tab? = nil, isPrivate: Bool = false, query: String? = nil
+        afterTab: Tab? = nil, isPrivate: Bool = false, query: String? = nil,
+        visitType: VisitType? = nil
     ) -> Tab {
         return self.addTab(
             request, configuration: configuration, afterTab: afterTab, flushToDisk: true,
-            zombie: false, isPrivate: isPrivate, query: query)
+            zombie: false, isPrivate: isPrivate, query: query, visitType: visitType)
     }
 
     func addTabsForURLs(_ urls: [URL], zombie: Bool) {
@@ -360,7 +361,8 @@ class TabManager: NSObject, ObservableObject {
     func addTab(
         _ request: URLRequest? = nil, webView: WKWebView? = nil,
         configuration: WKWebViewConfiguration? = nil, atIndex: Int? = nil, afterTab: Tab? = nil,
-        flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false, query: String? = nil
+        flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false, query: String? = nil,
+        visitType: VisitType? = nil
     ) -> Tab {
         assert(Thread.isMainThread)
 
@@ -372,7 +374,7 @@ class TabManager: NSObject, ObservableObject {
         let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
         configureTab(
             tab, request: request, webView: webView, atIndex: atIndex, afterTab: afterTab,
-            flushToDisk: flushToDisk, zombie: zombie, query: query)
+            flushToDisk: flushToDisk, zombie: zombie, query: query, visitType: visitType)
 
         return tab
     }
@@ -400,14 +402,27 @@ class TabManager: NSObject, ObservableObject {
         case switchedToExistingTab
     }
 
-    @discardableResult func createOrSwitchToTab(for url: URL, query: String? = nil)
+    @discardableResult func createOrSwitchToTab(
+        for url: URL, query: String? = nil, visitType: VisitType? = nil
+    )
         -> CreateOrSwitchToTabResult
     {
         if let existingTab = getTabFor(url) {
             select(existingTab)
+            existingTab.browserViewController?
+                .postLocationChangeNotificationForTab(existingTab, visitType: visitType)
             return .switchedToExistingTab
         } else {
-            select(addTab(URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito, query: query))
+            select(
+                addTab(
+                    URLRequest(url: url),
+                    flushToDisk: true,
+                    zombie: false,
+                    isPrivate: isIncognito,
+                    query: query,
+                    visitType: visitType
+                )
+            )
             return .createdNewTab
         }
     }
@@ -463,7 +478,7 @@ class TabManager: NSObject, ObservableObject {
     func configureTab(
         _ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, atIndex: Int? = nil,
         afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false,
-        query: String? = nil
+        query: String? = nil, visitType: VisitType? = nil
     ) {
         assert(Thread.isMainThread)
 
@@ -483,7 +498,11 @@ class TabManager: NSObject, ObservableObject {
         tab.queryForNavigation.currentSearchQuery = query
 
         if let request = request {
-            tab.loadRequest(request)
+            if let nav = tab.loadRequest(request), let visitType = visitType {
+                tab.browserViewController?.recordNavigationInTab(
+                    tab, navigation: nav, visitType: visitType
+                )
+            }
         } else if !isPopup {
             let url = InternalURL.baseUrl / "about" / "home"
             tab.loadRequest(PrivilegedRequest(url: url) as URLRequest)

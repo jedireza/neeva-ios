@@ -487,7 +487,7 @@ class SuggestionModel: ObservableObject {
     private func finishEditingAndSubmit(url: URL) {
         bvc.finishEditingAndSubmit(
             url,
-            visitType: VisitType.typed,
+            visitType: VisitType.link,
             forTab: bvc.tabManager.selectedTab)
     }
 

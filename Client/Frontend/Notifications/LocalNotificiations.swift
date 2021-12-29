@@ -68,7 +68,7 @@ class LocalNotitifications {
                     scheduled = createNeevaOnboardingCallback(notificationType: notificationType)
                 }
                 if scheduled {
-                    var attributes = [
+                    let attributes = [
                         ClientLogCounterAttribute(
                             key: LogConfig.NotificationAttribute.localNotificationPromoId,
                             value: notificationType.rawValue)
