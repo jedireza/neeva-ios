@@ -44,7 +44,6 @@ class SuggestionModel: ObservableObject {
     // Displayed in linear order
     @Published var tabSuggestions: [Suggestion] = []
     @Published var autocompleteSuggestion: Suggestion?
-    @Published var topSuggestions: [Suggestion] = []
     @Published var rowQuerySuggestions: [Suggestion] = []
     @Published var urlSuggestions: [Suggestion] = []
     @Published var navSuggestions: [Suggestion] = []
@@ -70,7 +69,7 @@ class SuggestionModel: ObservableObject {
     fileprivate var suggestionQueryQueue = [(query: String, suggestionQuery: Apollo.Cancellable)]()
 
     var suggestions: [Suggestion] {
-        let top = tabSuggestions + topSuggestions
+        let top = tabSuggestions
         rowQuerySuggestions = rowQuerySuggestions.filter { suggestion in
             if case let .navigation(autocompleteNavSuggestion) = autocompleteSuggestion,
                 case let .url(urlSuggestion) = suggestion
@@ -94,7 +93,7 @@ class SuggestionModel: ObservableObject {
     }
 
     var shouldShowPlaceholderSuggestions: Bool {
-        [topSuggestions, rowQuerySuggestions].allSatisfy {
+        [rowQuerySuggestions].allSatisfy {
             $0?.isEmpty == true
         } && shouldShowSuggestions
     }
@@ -151,7 +150,6 @@ class SuggestionModel: ObservableObject {
         keyboardFocusedSuggestionIndex = -1
 
         guard shouldShowSuggestions else {
-            topSuggestions = []
             rowQuerySuggestions = []
             urlSuggestions = []
             navSuggestions = []
@@ -192,7 +190,6 @@ class SuggestionModel: ObservableObject {
                 }
             case .success(
                 let (
-                    topSuggestions,
                     rowQuerySuggestions, urlSuggestions, navSuggestions, lensOrBang,
                     memorizedSuggestionMap, querySuggestionIndexMap
                 )):
@@ -203,7 +200,6 @@ class SuggestionModel: ObservableObject {
                         suggestStartTime.timeDiffInMilliseconds(from: Date())
                 }
                 self.error = nil
-                self.topSuggestions = topSuggestions
                 self.rowQuerySuggestions = rowQuerySuggestions
                 // Add a search query suggestion for the URL if it doesn't exist
                 if URIFixup.getURL(searchQuery) != nil,
@@ -688,13 +684,12 @@ class SuggestionModel: ObservableObject {
         bvc: BrowserViewController, previewSites: [Site]? = nil, previewCompletion: String? = nil,
         queryModel: SearchQueryModel = SearchQueryModel(previewValue: ""),
         searchQueryForTesting: String = "",
-        previewLensBang: ActiveLensBangInfo? = nil, topSuggestions: [Suggestion] = [],
+        previewLensBang: ActiveLensBangInfo? = nil,
         rowQuerySuggestions: [Suggestion] = []
     ) {
         self.init(bvc: bvc, profile: BrowserProfile(localName: "profile"), queryModel: queryModel)
         self.sites = previewSites
         self.completion = previewCompletion
-        self.topSuggestions = topSuggestions
         self.rowQuerySuggestions = rowQuerySuggestions
         self.activeLensBang = previewLensBang
         self.searchQuery = searchQueryForTesting

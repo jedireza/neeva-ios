@@ -38,7 +38,6 @@ struct SuggestionsList: View {
                     if suggestionModel.shouldShowPlaceholderSuggestions {
                         PlaceholderSuggestions()
                     } else {
-                        TopSuggestionsList()
                         QuerySuggestionsList()
                         UrlSuggestionsList()
                     }
@@ -57,11 +56,6 @@ struct SuggestionsList: View {
 
 struct SuggestionsList_Previews: PreviewProvider {
     static var previews: some View {
-        let suggestions = [
-            Suggestion.query(
-                .init(
-                    type: .standard, suggestedQuery: "hello world", boldSpan: [], source: .unknown))
-        ]
         let history = [
             Site(url: "https://neeva.com", title: "Neeva", id: 1),
             Site(url: "https://neeva.com", title: "", id: 2),

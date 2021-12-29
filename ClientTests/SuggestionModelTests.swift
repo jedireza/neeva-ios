@@ -73,7 +73,6 @@ class SuggestionModelTests: XCTestCase {
             bvc: SceneDelegate.getBVC(for: nil),
             previewSites: [site],
             previewLensBang: nil,
-            topSuggestions: [SuggestionModelTests.sampleNavURL],
             rowQuerySuggestions: [
                 SuggestionModelTests.sampleQuery2,
                 SuggestionModelTests.sampleCalculatorQuery,
@@ -86,11 +85,11 @@ class SuggestionModelTests: XCTestCase {
 
         XCTAssertNotNil(attributes)
 
-        XCTAssertEqual(attributes.count, 14)
+        XCTAssertEqual(attributes.count, 13)
 
         let expectedResult =
             [
-                LogConfig.SuggestionAttribute.numberOfMemorizedSuggestions: "2",
+                LogConfig.SuggestionAttribute.numberOfMemorizedSuggestions: "1",
                 LogConfig.SuggestionAttribute.numberOfHistorySuggestions: "1",
                 LogConfig.SuggestionAttribute.numberOfPersonalSuggestions: "1",
                 LogConfig.SuggestionAttribute.numberOfCalculatorAnnotations: "1",
@@ -98,18 +97,16 @@ class SuggestionModelTests: XCTestCase {
                 LogConfig.SuggestionAttribute.numberOfStockAnnotations: "0",
                 LogConfig.SuggestionAttribute.numberOfDictionaryAnnotations: "0",
                 LogConfig.SuggestionAttribute.suggestionTypePosition + "0":
-                    SuggestionModel.SuggestionLoggingType.memorizedSuggestion.rawValue,
+                    SuggestionModel.SuggestionLoggingType.rowQuerySuggestion.rawValue,
                 LogConfig.SuggestionAttribute.suggestionTypePosition + "1":
                     SuggestionModel.SuggestionLoggingType.rowQuerySuggestion.rawValue,
-                LogConfig.SuggestionAttribute.suggestionTypePosition + "2":
-                    SuggestionModel.SuggestionLoggingType.rowQuerySuggestion.rawValue,
-                LogConfig.SuggestionAttribute.annotationTypeAtPosition + "2":
+                LogConfig.SuggestionAttribute.annotationTypeAtPosition + "1":
                     "Calculator",
-                LogConfig.SuggestionAttribute.suggestionTypePosition + "3":
+                LogConfig.SuggestionAttribute.suggestionTypePosition + "2":
                     SuggestionModel.SuggestionLoggingType.personalSuggestion.rawValue,
-                LogConfig.SuggestionAttribute.suggestionTypePosition + "4":
+                LogConfig.SuggestionAttribute.suggestionTypePosition + "3":
                     SuggestionModel.SuggestionLoggingType.memorizedSuggestion.rawValue,
-                LogConfig.SuggestionAttribute.suggestionTypePosition + "5":
+                LogConfig.SuggestionAttribute.suggestionTypePosition + "4":
                     SuggestionModel.SuggestionLoggingType.historySuggestion.rawValue,
             ]
 

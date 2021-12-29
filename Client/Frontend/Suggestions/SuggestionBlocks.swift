@@ -45,30 +45,10 @@ struct TabSuggestionsList: View {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if !suggestionModel.topSuggestions.isEmpty {
+        if !suggestionModel.tabSuggestions.isEmpty {
             SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
             ForEach(suggestionModel.tabSuggestions) { suggestion in
                 SearchSuggestionView(suggestion)
-            }.padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
-        }
-    }
-}
-
-struct TopSuggestionsList: View {
-    @EnvironmentObject private var suggestionModel: SuggestionModel
-
-    var body: some View {
-        if !suggestionModel.topSuggestions.isEmpty {
-            SuggestionsDivider(height: SuggestionBlockUX.TopSpacing)
-            ForEach(suggestionModel.topSuggestions) { suggestion in
-                if case let .query(querySuggestion) = suggestion,
-                    AnnotationType(annotation: querySuggestion.annotation) == .dictionary
-                {
-                    SearchSuggestionView(suggestion)
-                        .environment(\.suggestionConfig, .dictionary)
-                } else {
-                    SearchSuggestionView(suggestion)
-                }
             }.padding(.vertical, SuggestionBlockUX.TopBlockVerticalPadding)
         }
     }
@@ -94,7 +74,14 @@ struct QuerySuggestionsList: View {
 
             ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
                 index, suggestion in
-                SearchSuggestionView(suggestion)
+                if case let .query(querySuggestion) = suggestion,
+                    AnnotationType(annotation: querySuggestion.annotation) == .dictionary
+                {
+                    SearchSuggestionView(suggestion)
+                        .environment(\.suggestionConfig, .dictionary)
+                } else {
+                    SearchSuggestionView(suggestion)
+                }
 
                 if index != suggestionModel.rowQuerySuggestions.count - 1,
                     suggestionModel.hasMemorizedResult

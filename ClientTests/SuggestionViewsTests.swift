@@ -13,7 +13,6 @@ extension SuggestionsList: Inspectable {}
 extension Kern: Inspectable {}
 extension PlaceholderSuggestions: Inspectable {}
 extension QuerySuggestionsList: Inspectable {}
-extension TopSuggestionsList: Inspectable {}
 extension SearchSuggestionView: Inspectable {}
 extension QuerySuggestionView: Inspectable {}
 extension NavSuggestionView: Inspectable {}
@@ -68,7 +67,7 @@ class SuggestionViewsTests: XCTestCase {
         let model = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
-            topSuggestions: [SuggestionModelTests.sampleNavURL])
+            rowQuerySuggestions: [SuggestionModelTests.sampleNavURL])
         let suggestionView = SearchSuggestionView(SuggestionModelTests.sampleNavURL)
             .environmentObject(
                 model)
@@ -109,7 +108,7 @@ class SuggestionViewsTests: XCTestCase {
         let suggestionModel = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil),
             previewLensBang: nil,
-            topSuggestions: [SuggestionModelTests.sampleNavURL])
+            rowQuerySuggestions: [SuggestionModelTests.sampleNavURL])
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let hStacks = try suggestionList.inspect().findAll(ViewType.HStack.self)
         XCTAssertNotNil(hStacks)

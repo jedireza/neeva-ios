@@ -66,7 +66,11 @@ extension Suggestion: Identifiable, Equatable {
     public var id: String {
         switch self {
         case .query(let query):
-            return "query-\(query.suggestedQuery)"
+            if let annotationType = query.annotation?.annotationType {
+                return "query-\(query.suggestedQuery)-\(annotationType)"
+            } else {
+                return "query-\(query.suggestedQuery)"
+            }
         case .url(let url):
             return "url-\(url.suggestedUrl)"
         case .bang(let bang):
@@ -93,7 +97,7 @@ extension Suggestion: Identifiable, Equatable {
 
 public typealias ActiveLensBangInfo = SuggestionsQuery.Data.Suggest.ActiveLensBangInfo
 public typealias SuggestionsQueryResult = (
-    [Suggestion], [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?,
+    [Suggestion], [Suggestion], [Suggestion], ActiveLensBangInfo?,
     [String: String], [String: Int]
 )
 extension ActiveLensBangInfo: Equatable {
@@ -147,43 +151,18 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         let standardQuerySuggestions =
             querySuggestions.filter {
                 $0.type == .standard
-                    && ($0.annotation?.description == nil
-                        || AnnotationType(annotation: $0.annotation) == .wikipedia)
-                    && $0.annotation?.stockInfo == nil
-                    && $0.annotation?.dictionaryInfo == nil
-                    && (AnnotationType(annotation: $0.annotation) != .contact
-                        || (AnnotationType(annotation: $0.annotation) == .contact
-                            && NeevaFeatureFlags[.personalSuggestion]))
+                    || $0.annotation?.dictionaryInfo != nil
             }
-        var rowQuerySuggestions =
+        let rowQuerySuggestions =
             querySuggestions.filter {
                 $0.type != .standard
-                    || ($0.annotation?.description != nil
-                        && AnnotationType(annotation: $0.annotation) != .wikipedia)
-                    || $0.annotation?.stockInfo != nil
-                    || $0.annotation?.dictionaryInfo != nil
+                    && $0.annotation?.dictionaryInfo == nil
             }
 
         var urlSuggestions = data.suggest?.urlSuggestion ?? []
         // Move all nav suggestions out of url suggestions.
         let navSuggestions = urlSuggestions.filter { !($0.subtitle?.isEmpty ?? true) }
         urlSuggestions.removeAll(where: { !($0.subtitle?.isEmpty ?? true) })
-        // Top suggestion is either the first memorized suggestion or the first query shown in rows.
-        var topSuggestions = [Suggestion]()
-        if let stockElementIdx =
-            (rowQuerySuggestions.firstIndex { $0.annotation?.stockInfo != nil })
-        {
-            topSuggestions = [rowQuerySuggestions.remove(at: stockElementIdx)].map(Suggestion.query)
-        } else if let dictionaryElementIdx =
-            (rowQuerySuggestions.firstIndex { $0.annotation?.dictionaryInfo != nil })
-        {
-            topSuggestions =
-                [rowQuerySuggestions.remove(at: dictionaryElementIdx)].map(Suggestion.query)
-        } else if navSuggestions.isEmpty {
-            if !rowQuerySuggestions.isEmpty {
-                topSuggestions = [rowQuerySuggestions.removeFirst()].map(Suggestion.query)
-            }
-        }
 
         var neevaSuggestions = [Suggestion]()
 
@@ -208,13 +187,11 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         var numOfQuerySuggestions = 0
         var filteredStandardQuerySuggestions = [SuggestionsQuery.Data.Suggest.QuerySuggestion]()
         for suggestion in standardQuerySuggestions {
-            if AnnotationType(annotation: suggestion.annotation) != .wikipedia {
-                if numOfQuerySuggestions == SuggestionsController.querySuggestionsCap {
-                    continue
-                }
-                numOfQuerySuggestions += 1
+            if numOfQuerySuggestions == SuggestionsController.querySuggestionsCap {
+                continue
             }
             filteredStandardQuerySuggestions.append(suggestion)
+            numOfQuerySuggestions += 1
         }
 
         for (index, suggestion)
@@ -238,7 +215,6 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
         let lensSuggestions = data.suggest?.lenseSuggestion ?? []
 
         return (
-            topSuggestions,
             neevaSuggestions
                 + bangSuggestions.compactMap(Suggestion.init(bang:))
                 + lensSuggestions.compactMap(Suggestion.init(lens:)),
