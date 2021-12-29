@@ -134,8 +134,11 @@ where
                         SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
                             style: .withTitle
                         ) {
-                            AddOrUpdateSpaceContent(space: space, config: .addSpaceItem)
-                                .environmentObject(spacesModel)
+                            AddOrUpdateSpaceContent(space: space, config: .addSpaceItem) {
+                                helpURL in
+                                SceneDelegate.getBVC(with: tabModel.manager.scene).openURLInNewTab(
+                                    helpURL)
+                            }.environmentObject(spacesModel)
                         }
                     }
                 },

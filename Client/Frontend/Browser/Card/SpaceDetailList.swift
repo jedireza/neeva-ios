@@ -92,11 +92,14 @@ struct SpaceDetailList: View {
                                     AddOrUpdateSpaceContent(
                                         space: space,
                                         config: .updateSpaceItem(details.id)
-                                    )
+                                    ) { helpURL in
+                                        SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                            .openURLInNewTab(helpURL)
+                                    }
                                     .environmentObject(spacesModel)
                                 }
                         }
-                                                             
+
                         if let url = details.data.url {
                             SpaceEntityDetailView(
                                 details: details,

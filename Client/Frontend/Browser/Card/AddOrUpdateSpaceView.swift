@@ -15,27 +15,33 @@ struct AddOrUpdateSpaceContent: View {
 
     let space: Space
     let config: AddOrUpdateSpaceConfig
+    let openMarkdownArticle: ((URL) -> Void)?
 
     var title: String {
         switch config {
         case .addSpaceItem:
             return "Add item"
-        case .updateSpaceItem(let _):
+        case .updateSpaceItem(_):
             return "Edit item"
         case .updateSpace:
             return "Update Space"
         }
     }
 
-    init(space: Space, config: AddOrUpdateSpaceConfig) {
+    init(space: Space, config: AddOrUpdateSpaceConfig, openMarkdownArticle: ((URL) -> Void)? = nil)
+    {
         self.space = space
         self.config = config
+        self.openMarkdownArticle = openMarkdownArticle
     }
 
     var body: some View {
-        AddOrUpdateSpaceView(space: space, config: config, dismiss: hideOverlay)
-            .overlayIsFixedHeight(isFixedHeight: true)
-            .overlayTitle(title: title)
+        AddOrUpdateSpaceView(
+            space: space, config: config, dismiss: hideOverlay,
+            openMarkdownArticle: openMarkdownArticle
+        )
+        .overlayIsFixedHeight(isFixedHeight: true)
+        .overlayTitle(title: title)
     }
 }
 
@@ -126,6 +132,7 @@ struct AddOrUpdateSpaceView: View {
     let space: Space
     let config: AddOrUpdateSpaceConfig
     let dismiss: () -> Void
+    let openMarkdownArticle: () -> Void
     let thumbnailModel = CustomThumbnailModel()
 
     @EnvironmentObject var spaceModel: SpaceCardModel
@@ -140,10 +147,21 @@ struct AddOrUpdateSpaceView: View {
         return true
     }
 
-    init(space: Space, config: AddOrUpdateSpaceConfig, dismiss: @escaping () -> Void) {
+    init(
+        space: Space, config: AddOrUpdateSpaceConfig, dismiss: @escaping () -> Void,
+        openMarkdownArticle: ((URL) -> Void)?
+    ) {
         self.space = space
         self.config = config
         self.dismiss = dismiss
+        self.openMarkdownArticle = {
+            dismiss()
+            openMarkdownArticle?(
+                URL(
+                    string:
+                        "https://help.neeva.com/hc/en-us/articles/4412938013203-Markdown-support-in-Spaces"
+                )!)
+        }
 
         switch config {
         case .addSpaceItem:
@@ -178,10 +196,24 @@ struct AddOrUpdateSpaceView: View {
         GroupedStack {
             inputField(
                 title: .titleField, bodyText: "Please provide a title", inputText: $titleText)
-            inputField(
-                title: .descriptionField,
-                bodyText: "Please provide a description",
-                inputText: $descriptionText)
+
+            ZStack(alignment: .topTrailing) {
+                inputField(
+                    title: .descriptionField,
+                    bodyText: "Please provide a description",
+                    inputText: $descriptionText)
+
+                Button {
+                    openMarkdownArticle()
+                } label: {
+                    Symbol(decorative: .rectangleAndPencilAndEllipsis)
+                        .padding(.horizontal, 5)
+                        .padding(.top, 8)
+                        .foregroundColor(Color.secondary)
+                        .scaleEffect(0.8)
+                }
+            }
+
             if let url = URL(string: urlText),
                 let thumbnails = spaceModel.thumbnailURLCandidates[url],
                 thumbnailModel.showing
