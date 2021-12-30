@@ -146,35 +146,36 @@ class HistoryTests: BaseTestCase {
         showRecentlyClosedTabs()
         app.buttons["The Book of Mozilla"].tap()
 
-        XCTAssertEqual(getTabs().count, 2)
+        XCTAssertEqual(getNumberOfTabs(openTabTray: false), 2)
     }
 
     func testOpenInNewTabRecentlyClosedItem() {
         // test the recently closed tab page
         openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
-        closeAllTabs()
+        closeAllTabs(createNewTab: false)
 
         goToRecentlyClosedPage()
 
         waitForExistence(app.tables["Recently Closed Tabs List"])
         app.tables.cells.staticTexts[closedWebPageLabel].tap()
+
+        XCTAssertEqual(getNumberOfTabs(openTabTray: false), 1)
     }
 
     func testOpenInNewIncognitoTabRecentlyClosedItem() {
         // Open the default website
-        openURL(path(forTestPage: "test-mozilla-book.html"))
+        openURLInNewTab(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
-        closeAllTabs()
+        closeAllTabs(createNewTab: false)
 
         goToRecentlyClosedPage()
 
         waitForExistence(app.tables["Recently Closed Tabs List"])
         app.tables.cells.staticTexts[closedWebPageLabel].press(forDuration: 1)
-
         app.buttons["Open in New Incognito Tab"].tap()
 
-        XCTAssertEqual(getNumberOfTabs(), 1)
+        XCTAssertEqual(getNumberOfTabs(openTabTray: false), 1)
     }
 
     func testIncognitoClosedSiteDoesNotAppearOnRecentlyClosedMenu() {

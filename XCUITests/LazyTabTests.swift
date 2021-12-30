@@ -35,8 +35,7 @@ class LazyTabTests: BaseTestCase {
         waitForExistence(app.buttons["Cancel"])
         openURL()
 
-        goToTabTray()
-        XCTAssertEqual(getTabs().count, 2)
+        XCTAssertEqual(getNumberOfTabs(), 2)
     }
 
     // MARK: Long Press Tab Tray Button
@@ -46,30 +45,27 @@ class LazyTabTests: BaseTestCase {
         app.buttons["Cancel"].tap()
 
         // Confirms that no tab was created
-        goToTabTray()
-        XCTAssertEqual(getTabs().count, 1)
+        XCTAssertEqual(getNumberOfTabs(), 1)
     }
 
     func testLazyTabCreatedFromLongPressTabTrayButton() {
         newTab()
         openURL()
 
-        goToTabTray()
-        XCTAssertEqual(getTabs().count, 2)
+        XCTAssertEqual(getNumberOfTabs(), 2)
     }
 
     // MARK: Overflow
     func testNoTabAddedWhenCancelingNewTabFromOverflow() {
-        goToOverflowMenu()
-
-        app.buttons["New Tab"].tap()
+        goToOverflowMenuButton(label: "New Tab") { element in
+            element.tap()
+        }
 
         waitForExistence(app.buttons["Cancel"])
         app.buttons["Cancel"].tap()
 
-        // Confirms that no tab was created
-        goToTabTray()
-        XCTAssertEqual(getTabs().count, 1)
+        // Confirms that no new tab was created
+        XCTAssertEqual(getNumberOfTabs(), 1)
     }
 
     func testLazyTabCreatedFromOverflow() {
@@ -80,20 +76,19 @@ class LazyTabTests: BaseTestCase {
         waitForExistence(app.buttons["Cancel"])
         openURL()
 
-        goToTabTray()
-        XCTAssertEqual(getTabs().count, 2)
+        XCTAssertEqual(getNumberOfTabs(), 2)
     }
 
     // MARK: Incognito Mode
     func testNoTabAddedWhenCancelingNewTabFromIncognito() {
         goToTabTray()
-        setIncognitoMode(enabled: true, shouldOpenURL: false)
+        setIncognitoMode(enabled: true, shouldOpenURL: false, closeTabTray: false)
 
         newTab()
         waitForExistence(app.buttons["Cancel"])
         app.buttons["Cancel"].tap()
 
-        // confirms that the tab tray is open and that the non-incognito tab is shown
+        // Confirms that the tab tray is open and that the incognito mode is still enabled.
         waitForExistence(app.staticTexts["Incognito Tabs"])
         waitForExistence(app.images["EmptyTabTrayIncognito"])
     }
@@ -102,13 +97,8 @@ class LazyTabTests: BaseTestCase {
         openURLInNewTab(path(forTestPage: "test-mozilla-book.html"))
         setIncognitoMode(enabled: true)
 
-        goToTabTray()
-
         // confirms incognito tab was created
-        waitForExistence(app.buttons["Example Domain, Tab"])
-        XCTAssertEqual(
-            getTabs().firstMatch.label, "Example Domain, Tab",
-            "Expected label of remaining tab is not correct")
+        XCTAssertEqual(getNumberOfTabs(), 1)
     }
 
     func testLazyTabNotCreatedWhenIncognitoTabOpen() {

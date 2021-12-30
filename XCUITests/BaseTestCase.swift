@@ -213,14 +213,20 @@ class BaseTestCase: XCTestCase {
         }
     }
 
-    /// Returns the number of open tabs. Must be called while the tab switcher is active.
-    public func getTabs() -> XCUIElementQuery {
-        app.buttons.matching(NSPredicate(format: "label ENDSWITH ', Tab'"))
-    }
+    /// Returns the number of open tabs
+    public func getNumberOfTabs(openTabTray: Bool = true) -> Int {
+        if openTabTray {
+            goToTabTray()
+        }
 
-    public func getNumberOfTabs() -> Int {
-        goToTabTray()
-        return getTabs().count
+        guard let numTabsString = app.scrollViews["CardGrid"].firstMatch.value as? String,
+            let numTabs = Int(
+                numTabsString.components(separatedBy: CharacterSet.decimalDigits.inverted).joined())
+        else {
+            return app.buttons.matching(NSPredicate(format: "label ENDSWITH ', Tab'")).count
+        }
+
+        return numTabs
     }
 
     func tapCoordinate(at xCoordinate: Double, and yCoordinate: Double) {

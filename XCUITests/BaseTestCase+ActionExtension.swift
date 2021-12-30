@@ -12,7 +12,6 @@ extension BaseTestCase {
             goToTabTray()
         }
 
-        print(app.debugDescription)
         if enabled {
             app.staticTexts["Incognito Tabs"].tap()
 

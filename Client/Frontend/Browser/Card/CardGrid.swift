@@ -70,6 +70,11 @@ struct CardGrid: View {
         VStack(spacing: 0) {
             topBar
             cardContainer
+                .accessibilityIdentifier("CardGrid")
+                .accessibilityValue(
+                    Text(
+                        "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
+                    ))
             if !topToolbar {
                 SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
                     .frame(height: UIConstants.ToolbarHeight)

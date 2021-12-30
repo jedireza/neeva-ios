@@ -108,14 +108,17 @@ class FindInPageTests: BaseTestCase {
         XCTAssertTrue(app.staticTexts["0 of 0"].exists, "There should not be any matches")
     }
 
-    func testFindFromSelection() {
-        let textToFind = "tremble"
+    func testFindFromSelection() throws {
+        try skipTest(issue: 2440, "Menu does not show when running on CI")
+
+        let textToFind = "cloud"
         openURL(path(forTestPage: "test-mozilla-book.html"))
         waitForExistence(app.webViews.staticTexts[textToFind].firstMatch)
 
         let stringToFind = app.webViews.staticTexts[textToFind].firstMatch
-        stringToFind.press(forDuration: 1)
-        waitForExistence(app.menuItems["Copy"], timeout: 5)
+        stringToFind.press(forDuration: 2)
+
+        waitForExistence(app.menuItems["Copy"], timeout: 30)
 
         // Find in page is correctly launched, bar with text pre-filled and
         // the buttons to find next and previous
