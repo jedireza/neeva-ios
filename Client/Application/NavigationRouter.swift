@@ -6,6 +6,8 @@ import Combine
 import Defaults
 import Foundation
 import Shared
+import SwiftUI
+import WalletConnectSwift
 
 extension URLComponents {
     // Return the first query parameter that matches
@@ -23,6 +25,7 @@ enum NavigationPath {
     case space(String, [String]?, Bool)
     case fastTap(String, Bool)
     case configNewsProvider(isPrivate: Bool)
+    case walletConnect(wcURL: WCURL)
 
     init?(bvc: BrowserViewController, url: URL) {
         let urlString = url.absoluteString
@@ -56,7 +59,8 @@ enum NavigationPath {
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .url(
-                webURL: NavigationPath.maybeRewriteURL(url, components) ?? url, isPrivate: isPrivate)
+                webURL: NavigationPath.maybeRewriteURL(url, components) ?? url, isPrivate: isPrivate
+            )
         } else if urlString.starts(with: "\(scheme)://space"),
             let spaceId = components.valueForQuery("id")
         {
@@ -74,6 +78,11 @@ enum NavigationPath {
         } else if urlString.starts(with: "\(scheme)://configure-news-provider") {
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .configNewsProvider(isPrivate: isPrivate)
+        } else if urlString.starts(with: "\(scheme)://wc?uri="),
+            let wcURL = WCURL(
+                urlString.dropFirst("\(scheme)://wc?uri=".count).removingPercentEncoding ?? "")
+        {
+            self = .walletConnect(wcURL: wcURL)
         } else {
             return nil
         }
@@ -97,6 +106,8 @@ enum NavigationPath {
         case .configNewsProvider(let isPrivate):
             NavigationPath.handleURL(
                 url: NeevaConstants.configureNewsProviderURL, isPrivate: isPrivate, with: bvc)
+        case .walletConnect(let wcURL):
+            bvc.connectWallet(to: wcURL)
         }
     }
 

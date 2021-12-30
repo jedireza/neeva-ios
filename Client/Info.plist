@@ -30,6 +30,8 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
 			<key>CFBundleURLName</key>
 			<string>co.neeva.Client</string>
 			<key>CFBundleURLSchemes</key>

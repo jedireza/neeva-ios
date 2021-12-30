@@ -119,6 +119,15 @@
         }
       },
       {
+        "package": "WalletConnectSwift",
+        "repositoryURL": "https://github.com/WalletConnect/WalletConnectSwift.git",
+        "state": {
+          "branch": null,
+          "revision": "f316e6dd91639d6e3e5a4c8860d823c08cc71bc3",
+          "version": "1.6.2"
+        }
+      },
+      {
         "package": "Web3swift",
         "repositoryURL": "https://github.com/skywinder/web3swift",
         "state": {

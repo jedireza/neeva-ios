@@ -28,7 +28,7 @@ public class CryptoConfig {
     public init() {
         // modify currentNode to switch between
         // real and testing eth network
-        self.currentNode = .ropsten
+        self.currentNode = .mainnet
     }
 
     public func getNodeURL() -> String {

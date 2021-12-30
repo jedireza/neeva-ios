@@ -160,6 +160,8 @@ extension Defaults.Keys {
         "cryptoPrivateKey", default: "")
     public static let cryptoTransactionHashStore = Defaults.Key<Set<String>>(
         "cryptoTransactionHashStore", default: Set<String>())
+    public static let sessionsPeerIDs = Defaults.Key<Set<String>>(
+        "web3SessionsPeerIDs", default: Set<String>())
 }
 
 extension Defaults {

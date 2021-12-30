@@ -14,6 +14,7 @@ import Storage
 import SwiftUI
 import SwiftyJSON
 import UIKit
+import WalletConnectSwift
 import WebKit
 import XCGLogger
 
@@ -28,7 +29,15 @@ struct UrlToOpenModel {
     var isPrivate: Bool
 }
 
-class BrowserViewController: UIViewController {
+protocol ModalPresenter {
+    func showModal<Content: View>(
+        style: OverlayStyle,
+        headerButton: OverlayHeaderButton?,
+        content: @escaping () -> Content,
+        onDismiss: (() -> Void)?)
+}
+
+class BrowserViewController: UIViewController, ModalPresenter {
     private(set) var introViewController: IntroViewController?
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
@@ -46,6 +55,7 @@ class BrowserViewController: UIViewController {
         model.delegate = self
         return model
     }()
+    let web3SessionModel = Web3SessionModel()
     private(set) lazy var suggestionModel: SuggestionModel = {
         return SuggestionModel(bvc: self, profile: self.profile, queryModel: self.searchQueryModel)
     }()
@@ -167,6 +177,7 @@ class BrowserViewController: UIViewController {
 
     let profile: Profile
     let tabManager: TabManager
+    var server: Server? = nil
 
     // This view wraps the toolbar to allow it to hide without messing up the layout
     private(set) var footer: UIView!
@@ -222,6 +233,9 @@ class BrowserViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         chromeModel.topBarDelegate = self
         chromeModel.toolbarDelegate = self
+        if FeatureFlag[.enableCryptoWallet] {
+            self.configureWalletServer()
+        }
         didInit()
     }
 
