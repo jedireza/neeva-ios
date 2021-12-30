@@ -144,7 +144,8 @@ struct SpaceDetailList: View {
                                 if let description = details.data.snippet, !description.isEmpty {
                                     Text(description)
                                         .withFont(.bodyLarge)
-                                        .foregroundColor(.secondaryLabel)
+                                        .lineLimit(showDescriptions ? nil : 3)
+                                        .modifier(DescriptionTextModifier())
                                 }
                             }
                             .padding(.horizontal, 16)
