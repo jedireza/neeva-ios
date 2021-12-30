@@ -381,6 +381,14 @@ struct QuerySuggestionView: View {
                 Symbol(decorative: .arrowUpLeft)
                     .foregroundColor(.tertiaryLabel)
             }.buttonStyle(BorderlessButtonStyle())
+        } else if AnnotationType(annotation: suggestion.annotation) == .calculator {
+            Button {
+                copySuggestion(
+                    value: suggestion.annotation?.description ?? "",
+                    scene: model.bvc.tabManager.scene)
+            } label: {
+                Symbol(decorative: .docOnDoc)
+            }
         }
     }
 
@@ -542,14 +550,7 @@ private struct EditCurrentURLSuggestionView: View {
     let suggestion: TabCardDetails
 
     func copy() {
-        UIPasteboard.general.string = suggestion.url?.absoluteString
-
-        if let toastManager = SceneDelegate.getCurrentSceneDelegate(
-            with: suggestion.manager.scene)?.toastViewManager
-        {
-            toastManager.makeToast(text: "URL copied to clipboard").enqueue(
-                manager: toastManager)
-        }
+        copySuggestion(value: suggestion.url?.absoluteString, scene: suggestion.manager.scene)
     }
 
     var url: URL? {
@@ -705,6 +706,17 @@ private struct FindInPageSuggestionView: View {
             suggestion: Suggestion.findInPage(query)
         )
         .environmentObject(model)
+    }
+}
+
+func copySuggestion(value: String?, scene: UIScene) {
+    UIPasteboard.general.string = value
+
+    if let toastManager = SceneDelegate.getCurrentSceneDelegate(
+        with: scene)?.toastViewManager
+    {
+        toastManager.makeToast(text: "Copied to clipboard").enqueue(
+            manager: toastManager)
     }
 }
 
