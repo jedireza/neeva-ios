@@ -10,18 +10,23 @@ import web3swift
 
 protocol ResponseRelay {
     func send(_ response: Response)
-    func askToSign(request: Request, message: String, sign: @escaping () -> String)
+    func askToSign(request: Request, sign: @escaping () -> String)
+    func askToTransact(request: Request, value: String, transact: @escaping () -> String)
 }
 
 extension Response {
     static func signature(_ signature: String, for request: Request) -> Response {
         return try! Response(url: request.url, value: signature, id: request.id!)
     }
+
+    static func transaction(_ transaction: String, for request: Request) -> Response {
+        return try! Response(url: request.url, value: transaction, id: request.id!)
+    }
 }
 
 class PersonalSignHandler: RequestHandler {
     let relay: ResponseRelay
-    let keyAccessor = WalletAccessor()
+    let wallet = WalletAccessor()
 
     init(relay: ResponseRelay) {
         self.relay = relay
@@ -37,17 +42,58 @@ class PersonalSignHandler: RequestHandler {
             let address = try request.parameter(of: String.self, at: 1)
 
             // Match only the address not the checksum (OpenSea sends them always lowercased :( )
-            guard address.lowercased() == keyAccessor.publicAddress.lowercased() else {
+            guard address.lowercased() == wallet.publicAddress.lowercased() else {
                 relay.send(.reject(request))
                 return
             }
 
-            relay.askToSign(request: request, message: messageBytes) {
-                return try! sign(message: messageBytes, using: self.keyAccessor.publicAddress)
+            relay.askToSign(request: request) {
+                return
+                    (try? self.wallet.sign(message: messageBytes, using: self.wallet.publicAddress))
+                    ?? ""
             }
         } catch {
             relay.send(.invalid(request))
             return
+        }
+    }
+}
+
+class SendTransactionHandler: RequestHandler {
+    let relay: ResponseRelay
+    let wallet = WalletAccessor()
+
+    init(relay: ResponseRelay) {
+        self.relay = relay
+    }
+
+    func canHandle(request: Request) -> Bool {
+        return request.method == "eth_sendTransaction"
+    }
+
+    func handle(request: Request) {
+        guard let requestData = request.jsonString.data(using: .utf8),
+            let requestDict = try? JSONSerialization.jsonObject(with: requestData, options: [])
+                as? [String: Any],
+            let params = (requestDict["params"] as? [[String: String]])?[0],
+            let from = params["from"],
+            from.lowercased() == wallet.publicAddress.lowercased(),
+            let fromAddress = EthereumAddress(from),
+            let to = params["to"],
+            let toAddress = EthereumAddress(to),
+            let value = params["value"]
+        else {
+            relay.send(.invalid(request))
+            return
+        }
+
+        let data = params["data"]
+        let gas = params["gas"]
+
+        relay.askToTransact(request: request, value: value) {
+            return
+                (try? self.wallet.send(
+                    eth: value, from: fromAddress, to: toAddress, for: gas, using: data)) ?? ""
         }
     }
 }

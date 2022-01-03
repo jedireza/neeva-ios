@@ -7,10 +7,11 @@ import SwiftUI
 import WalletConnectSwift
 import web3swift
 
-extension BrowserViewController: ServerDelegate, ResponseRelay {
-    func key(for sessionID: String) -> String {
-        "DataForSession" + sessionID
-    }
+func DappsSessionKey(for sessionID: String) -> String {
+    "DataForSession" + sessionID
+}
+
+extension BrowserViewController: ServerDelegate {
 
     @discardableResult func connectWallet(to wcURL: WCURL) -> Bool {
         guard FeatureFlag[.enableCryptoWallet] else {
@@ -22,7 +23,7 @@ extension BrowserViewController: ServerDelegate, ResponseRelay {
             showModal(
                 style: .spaces,
                 content: {
-                    WalletTransactionContent(model: self.web3SessionModel)
+                    WalletSequenceContent(model: self.web3SessionModel)
                 }, onDismiss: { self.web3SessionModel.reset() })
             return true
         } catch {
@@ -32,9 +33,12 @@ extension BrowserViewController: ServerDelegate, ResponseRelay {
 
     func configureWalletServer() {
         self.server = Server(delegate: self)
-        server!.register(handler: PersonalSignHandler(relay: self))
+        server!.register(handler: PersonalSignHandler(relay: self.web3SessionModel))
+        server!.register(handler: SendTransactionHandler(relay: self.web3SessionModel))
+        web3SessionModel.updateCurrentSession()
         for session in Defaults[.sessionsPeerIDs] {
-            if let oldSessionObject = UserDefaults.standard.object(forKey: key(for: session))
+            if let oldSessionObject = UserDefaults.standard.object(
+                forKey: DappsSessionKey(for: session))
                 as? Data,
                 let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject)
             {
@@ -55,7 +59,7 @@ extension BrowserViewController: ServerDelegate, ResponseRelay {
             "WC: Should Start from \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))")
         DispatchQueue.main.async {
             let wallet = WalletAccessor()
-            self.web3SessionModel.transaction = TransactionInfo(
+            self.web3SessionModel.currentSequence = SequenceInfo(
                 type: .sessionRequest,
                 thumbnailURL: session.dAppInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: session.dAppInfo.peerMeta,
@@ -93,70 +97,39 @@ extension BrowserViewController: ServerDelegate, ResponseRelay {
         // Add session to cached sessions if it is not there
         guard !Defaults[.sessionsPeerIDs].contains(session.dAppInfo.peerId) else { return }
         let sessionData = try! JSONEncoder().encode(session)
-        UserDefaults.standard.set(sessionData, forKey: key(for: session.dAppInfo.peerId))
+        UserDefaults.standard.set(
+            sessionData, forKey: DappsSessionKey(for: session.dAppInfo.peerId))
         Defaults[.sessionsPeerIDs].insert(session.dAppInfo.peerId)
+        self.web3SessionModel.updateCurrentSession()
     }
 
     func server(_ server: Server, didDisconnect session: Session) {
         LogService.shared.log(
-            "WC: Did connect session to \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))"
+            "WC: Did disconnect session to \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))"
         )
+        self.web3SessionModel.updateCurrentSession()
+        UserDefaults.standard.set(nil, forKey: DappsSessionKey(for: session.dAppInfo.peerId))
+        Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
+        DispatchQueue.main.async {
+            if let toastManager = self.getSceneDelegate()?.toastViewManager {
+                toastManager.makeToast(
+                    text:
+                        "Disconnected from \(session.dAppInfo.peerMeta.name)"
+                )
+                .enqueue(manager: toastManager)
+            }
+        }
     }
 
     func server(_ server: Server, didUpdate session: Session) {
         LogService.shared.log(
             "WC: Did update session to \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))"
         )
+        guard session.walletInfo!.approved else { return }
 
-        if session.walletInfo!.approved {
-            let sessionData = try! JSONEncoder().encode(session)
-            UserDefaults.standard.set(sessionData, forKey: key(for: session.dAppInfo.peerId))
-            Defaults[.sessionsPeerIDs].insert(session.dAppInfo.peerId)
-        } else {
-            UserDefaults.standard.set(nil, forKey: key(for: session.dAppInfo.peerId))
-            Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
-        }
-    }
-
-    func send(_ response: Response) {
-        server?.send(response)
-    }
-
-    func askToSign(request: Request, message: String, sign: @escaping () -> String) {
-        guard let server = server,
-            let dappInfo = server.openSessions().first(where: {
-                $0.dAppInfo.peerMeta.url.baseDomain == tabManager.selectedTab?.url?.baseDomain
-            })?.dAppInfo
-        else {
-            return
-        }
-
-        DispatchQueue.main.async {
-            self.web3SessionModel.transaction = TransactionInfo(
-                type: .personalSign,
-                thumbnailURL: dappInfo.peerMeta.icons.first ?? .aboutBlank,
-                dAppMeta: dappInfo.peerMeta,
-                message:
-                    "This will not make any transactions with your wallet. But Neeva will be using your private key to sign the message.",
-                onAccept: {
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        let signature = sign()
-                        server.send(.signature(signature, for: request))
-                    }
-                },
-                onReject: {
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        server.send(.reject(request))
-                    }
-                })
-            self.showModal(
-                style: .spaces,
-                content: {
-                    WalletTransactionContent(model: self.web3SessionModel)
-                },
-                onDismiss: {
-                    self.web3SessionModel.transaction = nil
-                })
-        }
+        let sessionData = try! JSONEncoder().encode(session)
+        UserDefaults.standard.set(
+            sessionData, forKey: DappsSessionKey(for: session.dAppInfo.peerId))
+        Defaults[.sessionsPeerIDs].insert(session.dAppInfo.peerId)
     }
 }

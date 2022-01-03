@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import CoreSpotlight
+import Defaults
 import Foundation
 import SDWebImage
 import Shared
@@ -104,6 +105,16 @@ class DownloadedFilesClearable: Clearable {
 
         NotificationCenter.default.post(name: .PrivateDataClearedDownloadedFiles, object: nil)
 
+        return succeed()
+    }
+}
+
+class ConnectedDAppsClearable: Clearable {
+    func clear() -> Success {
+        for session in Defaults[.sessionsPeerIDs] {
+            UserDefaults.standard.set(nil, forKey: DappsSessionKey(for: session))
+        }
+        Defaults[.sessionsPeerIDs].removeAll()
         return succeed()
     }
 }

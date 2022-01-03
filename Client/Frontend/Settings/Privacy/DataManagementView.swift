@@ -11,6 +11,7 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
     case cookies = "Cookies"
     case trackingProtection = "Tracking Protection"
     case downloads = "Downloaded Files"
+    case dapps = "Connected dApps"
 
     var id: String { rawValue }
 
@@ -35,6 +36,8 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
             return TrackingProtectionClearable()
         case .downloads:
             return DownloadedFilesClearable()
+        case .dapps:
+            return ConnectedDAppsClearable()
         }
     }
 }
@@ -70,7 +73,11 @@ struct DataManagementView: View {
             }
 
             Section(header: Text("Data on This Device")) {
-                ForEach(ClearableDataType.allCases) { dataType in
+                ForEach(
+                    ClearableDataType.allCases.filter {
+                        FeatureFlag[.enableCryptoWallet] || $0 != .dapps
+                    }
+                ) { dataType in
                     Toggle(
                         isOn: Binding {
                             clearDataTypes.contains(dataType)

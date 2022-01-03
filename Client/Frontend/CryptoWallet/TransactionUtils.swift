@@ -7,7 +7,21 @@ import WalletConnectSwift
 import secp256k1
 import web3swift
 
-struct WalletAccessor: AddressAccessor {
+struct WalletAccessor {
+    let keystore: EthereumKeystoreV3
+    let password: String
+    let web3: web3
+
+    init() {
+        self.web3 = try! Web3.new(URL(string: CryptoConfig.shared.getNodeURL())!)
+        self.password = CryptoConfig.shared.getPassword()
+        let key = Defaults[.cryptoPrivateKey]
+        let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
+        let dataKey = Data.fromHex(formattedKey)!
+        self.keystore = try! EthereumKeystoreV3(privateKey: dataKey, password: password)!
+        self.web3.addKeystoreManager(KeystoreManager([keystore]))
+    }
+
     var privateKey: [UInt8] {
         let key = Defaults[.cryptoPrivateKey]
         let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -23,34 +37,34 @@ struct WalletAccessor: AddressAccessor {
     }
 
     var publicAddress: String {
-        let password = CryptoConfig.shared.getPassword()
-        let key = Defaults[.cryptoPrivateKey]
-        let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
-        let dataKey = Data.fromHex(formattedKey)!
-        let keystore = try! EthereumKeystoreV3(privateKey: dataKey, password: password)!
         return keystore.addresses!.first!.address
     }
-}
 
-protocol AddressAccessor {
-    var privateKey: [UInt8] { get }
-    var publicAddress: String { get }
-}
+    func sign(message: String, using publicAddress: String) throws -> String {
+        return try "0x"
+            + web3.wallet.signPersonalMessage(
+                message, account: EthereumAddress(publicAddress)!, password: password
+            ).toHexString()
+    }
 
-enum WalletError: Error {
-    case internalError
-}
+    func send(
+        eth value: String, from fromAddress: EthereumAddress, to toAddress: EthereumAddress,
+        for gas: String?, using data: String?
+    ) throws -> String {
+        let contract = web3.contract(
+            Web3.Utils.coldWalletABI, at: toAddress, abiVersion: 2)!
 
-public func sign(message: String, using publicAddress: String) throws -> String {
-    let web3 = try Web3.new(URL(string: CryptoConfig.shared.getNodeURL())!)
-    let password = CryptoConfig.shared.getPassword()
-    let key = Defaults[.cryptoPrivateKey]
-    let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
-    let dataKey = Data.fromHex(formattedKey)!
-    let keystore = try! EthereumKeystoreV3(privateKey: dataKey, password: password)!
-    web3.addKeystoreManager(KeystoreManager([keystore]))
-    return try "0x"
-        + web3.wallet.signPersonalMessage(
-            message, account: EthereumAddress(publicAddress)!, password: password
-        ).toHexString()
+        var options = TransactionOptions.defaultOptions
+        options.value = Web3.Utils.hexToBigUInt(value)
+        options.from = fromAddress
+        options.gasPrice = .automatic
+        options.gasLimit = gas != nil ? .manual(Web3.Utils.hexToBigUInt(gas!)!) : .automatic
+        let tx = contract.write(
+            "fallback",
+            parameters: [AnyObject](),
+            extraData: data != nil ? Web3.Utils.hexToData(data!) ?? Data() : Data(),
+            transactionOptions: options)!
+
+        return try tx.send(password: password).transaction.txhash ?? ""
+    }
 }

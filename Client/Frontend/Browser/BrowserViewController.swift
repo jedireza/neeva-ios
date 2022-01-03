@@ -55,7 +55,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
         model.delegate = self
         return model
     }()
-    let web3SessionModel = Web3SessionModel()
+    private(set) lazy var web3SessionModel: Web3SessionModel = {
+        return Web3SessionModel(server: self.server, presenter: self, tabManager: self.tabManager)
+    }()
+
     private(set) lazy var suggestionModel: SuggestionModel = {
         return SuggestionModel(bvc: self, profile: self.profile, queryModel: self.searchQueryModel)
     }()
@@ -477,6 +480,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             trackingStatsViewModel: trackingStatsViewModel,
             chromeModel: chromeModel,
             readerModeModel: readerModeModel,
+            web3Model: web3SessionModel,
             delegate: self,
             newTab: { self.openURLInNewTab(nil) },
             onCancel: { [weak self] in

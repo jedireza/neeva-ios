@@ -152,9 +152,10 @@
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
 		4A93B53D2775909600CD5415 /* WalletConnectSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4A93B53C2775909600CD5415 /* WalletConnectSwift */; };
 		4A93B53F2776709400CD5415 /* WalletConnectHandlers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B53E2776709400CD5415 /* WalletConnectHandlers.swift */; };
-		4A93B541277A4A4E00CD5415 /* WalletTransactionContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B540277A4A4E00CD5415 /* WalletTransactionContent.swift */; };
+		4A93B541277A4A4E00CD5415 /* WalletSequenceContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */; };
 		4A93B54B277BC06C00CD5415 /* TransactionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54A277BC06C00CD5415 /* TransactionUtils.swift */; };
 		4A93B54D277D287300CD5415 /* BrowserViewController+ServerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54C277D287300CD5415 /* BrowserViewController+ServerDelegate.swift */; };
+		4A93B54F277EA7E100CD5415 /* SessionInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */; };
 		4A9F653F2702D2CE00B7C06E /* SpaceContentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F653E2702D2CE00B7C06E /* SpaceContentSheet.swift */; };
 		4A9F65412703CA2B00B7C06E /* SpaceContentSheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F65402703CA2B00B7C06E /* SpaceContentSheetModel.swift */; };
 		4A9F65432710A49000B7C06E /* CustomThumbnails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F65422710A49000B7C06E /* CustomThumbnails.swift */; };
@@ -1257,9 +1258,10 @@
 		4A88F97426630EFC007C203D /* CardDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetails.swift; sourceTree = "<group>"; };
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		4A93B53E2776709400CD5415 /* WalletConnectHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectHandlers.swift; sourceTree = "<group>"; };
-		4A93B540277A4A4E00CD5415 /* WalletTransactionContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletTransactionContent.swift; sourceTree = "<group>"; };
+		4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSequenceContent.swift; sourceTree = "<group>"; };
 		4A93B54A277BC06C00CD5415 /* TransactionUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionUtils.swift; sourceTree = "<group>"; };
 		4A93B54C277D287300CD5415 /* BrowserViewController+ServerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+ServerDelegate.swift"; sourceTree = "<group>"; };
+		4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionInfoView.swift; sourceTree = "<group>"; };
 		4A9F653E2702D2CE00B7C06E /* SpaceContentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceContentSheet.swift; sourceTree = "<group>"; };
 		4A9F65402703CA2B00B7C06E /* SpaceContentSheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceContentSheetModel.swift; sourceTree = "<group>"; };
 		4A9F65422710A49000B7C06E /* CustomThumbnails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomThumbnails.swift; sourceTree = "<group>"; };
@@ -2891,7 +2893,8 @@
 			children = (
 				BCAAA0D2276D9A070013223E /* CryptoWalletController.swift */,
 				4A93B53E2776709400CD5415 /* WalletConnectHandlers.swift */,
-				4A93B540277A4A4E00CD5415 /* WalletTransactionContent.swift */,
+				4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */,
+				4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */,
 				BCAAA0D4276D9B420013223E /* CryptoConfig.swift */,
 				BCAAA0D6276D9B800013223E /* CryptoWalletView.swift */,
 				4A93B54A277BC06C00CD5415 /* TransactionUtils.swift */,
@@ -5454,6 +5457,7 @@
 				E4CD9E911A6897FB00318571 /* ReaderMode.swift in Sources */,
 				74C027451B2A348C001B1E88 /* SessionData.swift in Sources */,
 				C9AFE6E726583F5A000C5A03 /* SettingsView.swift in Sources */,
+				4A93B54F277EA7E100CD5415 /* SessionInfoView.swift in Sources */,
 				4A46E4E426730D790001687E /* CarouselProgressView.swift in Sources */,
 				BCC39A1F26C6532B00EEC559 /* NeevaUserFlagSettingsView.swift in Sources */,
 				BC9478E32740FCCD00623D6C /* PreviewHomeView.swift in Sources */,
@@ -5703,7 +5707,7 @@
 				E663D5781BB341C4001EF30E /* IncognitoButton.swift in Sources */,
 				E6327A641BF6438E008D12E0 /* DebugSettingsBundleOptions.swift in Sources */,
 				D8FDEB57220CFE970069A582 /* UIImage+ImageEffects.m in Sources */,
-				4A93B541277A4A4E00CD5415 /* WalletTransactionContent.swift in Sources */,
+				4A93B541277A4A4E00CD5415 /* WalletSequenceContent.swift in Sources */,
 				EBB89506219398E500EB91A0 /* TabContentBlocker.swift in Sources */,
 				BC24876A273382E5003A6867 /* RelatedSearchesView.swift in Sources */,
 				C9299E382694DF5800758795 /* BrowserViewController+TopBarDelegate.swift in Sources */,

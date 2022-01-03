@@ -3,6 +3,7 @@
 import Combine
 import Shared
 import SwiftUI
+import web3swift
 
 // For sharing to work, this must currently be the BrowserViewController
 protocol TopBarDelegate: ToolbarDelegate {
@@ -30,6 +31,7 @@ struct TopBarContent: View {
     let trackingStatsViewModel: TrackingStatsViewModel
     let chromeModel: TabChromeModel
     let readerModeModel: ReaderModeModel
+    let web3Model: Web3SessionModel
 
     let newTab: () -> Void
     let onCancel: () -> Void
@@ -86,6 +88,7 @@ struct TopBarContent: View {
         .environmentObject(trackingStatsViewModel)
         .environmentObject(chromeModel)
         .environmentObject(readerModeModel)
+        .environmentObject(web3Model)
     }
 }
 
@@ -115,6 +118,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         trackingStatsViewModel: TrackingStatsViewModel,
         chromeModel: TabChromeModel,
         readerModeModel: ReaderModeModel,
+        web3Model: Web3SessionModel,
         delegate: TopBarDelegate,
         newTab: @escaping () -> Void,
         onCancel: @escaping () -> Void
@@ -131,6 +135,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
                 trackingStatsViewModel: trackingStatsViewModel,
                 chromeModel: chromeModel,
                 readerModeModel: readerModeModel,
+                web3Model: web3Model,
                 newTab: newTab,
                 onCancel: onCancel
             )

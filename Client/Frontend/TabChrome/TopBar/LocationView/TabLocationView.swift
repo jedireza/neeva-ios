@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Defaults
+import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 import UniformTypeIdentifiers
@@ -29,6 +30,7 @@ struct TabLocationView: View {
     @EnvironmentObject private var model: LocationViewModel
     @EnvironmentObject private var chromeModel: TabChromeModel
     @EnvironmentObject private var readerModeModel: ReaderModeModel
+    @EnvironmentObject private var web3Model: Web3SessionModel
     @EnvironmentObject private var queryModel: SearchQueryModel
     @EnvironmentObject private var gridModel: GridModel
     @EnvironmentObject private var trackingStatsModel: TrackingStatsViewModel
@@ -40,6 +42,7 @@ struct TabLocationView: View {
 
     @State var token = 0
     @State var showReaderModeSettings: Bool = false
+    @State var showdAppSessionControls: Bool = false
 
     private var copyAction: Action {
         Action("Copy", icon: .docOnDoc) {
@@ -127,7 +130,31 @@ struct TabLocationView: View {
                     if gridModel.isHidden {
                         Group {
                             if let url = model.url, !InternalURL.isValid(url: url) {
-                                if readerModeModel.state != .unavailable {
+                                if let dAppSession = web3Model.currentSession {
+                                    Button(
+                                        action: {
+                                            showdAppSessionControls = true
+                                        },
+                                        label: {
+                                            Image("ethLogo")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 16, height: 16)
+                                                .padding(2)
+                                                .background(
+                                                    Circle().stroke(Color.label)
+                                                )
+                                        }
+                                    ).presentAsPopover(
+                                        isPresented: $showdAppSessionControls,
+                                        dismissOnTransition: true
+                                    ) {
+                                        SessionInfoView(
+                                            dAppSession: dAppSession,
+                                            showdAppSessionControls: $showdAppSessionControls
+                                        ).environmentObject(web3Model)
+                                    }
+                                } else if readerModeModel.state != .unavailable {
                                     LongPressButton {
                                         if readerModeModel.state != .active {
                                             readerModeModel.enableReadingMode()
