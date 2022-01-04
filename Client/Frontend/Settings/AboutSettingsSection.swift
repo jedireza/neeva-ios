@@ -8,19 +8,20 @@ struct AboutSettingsSection: View {
     @Binding var showDebugSettings: Bool
     @Environment(\.onOpenURL) var openURL
     var body: some View {
-        let version = "Neeva Browser \(AppInfo.appVersion) (\(AppInfo.buildNumber))"
         Menu {
-            Button(action: { UIPasteboard.general.string = version }) {
+            Button(action: {
+                UIPasteboard.general.string = "Neeva Browser \(AppInfo.appVersion) (\(AppInfo.buildNumber))"
+            }) {
                 Label("Copy Version information", systemSymbol: .docOnDoc)
             }
             Button(action: { showDebugSettings.toggle() }) {
                 Label(
-                    "Toggle Debug Settings",
+                    String("Toggle Debug Settings"),
                     systemSymbol: showDebugSettings ? .checkmarkSquare : .square)
             }
         } label: {
             HStack {
-                Text(version)
+                Text("Neeva Browser \(AppInfo.appVersion) (\(AppInfo.buildNumber))")
                 Spacer()
             }.padding(.vertical, 3).contentShape(Rectangle())
         }.accentColor(.label)

@@ -21,7 +21,7 @@ class FindInPageModel: ObservableObject {
 
     @Published var currentIndex: Int = 0
     @Published var numberOfResults: Int = 0
-    var matchIndex: String {
+    var matchIndex: LocalizedStringKey {
         "\(currentIndex) of \(numberOfResults > 500 ? "500+" : String(numberOfResults))"
     }
 

@@ -20,7 +20,7 @@ public enum SSOProvider: String, CaseIterable {
     /// Okta is for Neeva Account
     case okta = "neeva.co/auth/oauth2/authenticators/okta"
 
-    public var displayName: String {
+    public var displayName: LocalizedStringKey {
         switch self {
         case .unknown: return "Unknown"
         case .google: return "Google"

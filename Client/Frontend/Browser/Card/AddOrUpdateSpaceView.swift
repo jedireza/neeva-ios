@@ -17,7 +17,7 @@ struct AddOrUpdateSpaceContent: View {
     let config: AddOrUpdateSpaceConfig
     let openMarkdownArticle: ((URL) -> Void)?
 
-    var title: String {
+    var title: LocalizedStringKey {
         switch config {
         case .addSpaceItem:
             return "Add item"

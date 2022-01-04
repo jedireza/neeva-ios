@@ -12,7 +12,7 @@ enum OverflowMenuUX {
 }
 
 public struct OverflowMenuButtonView: View {
-    let label: String
+    let label: LocalizedStringKey
     var symbol: SFSymbol? = nil
     var nicon: Nicon? = nil
     let action: () -> Void
@@ -22,7 +22,7 @@ public struct OverflowMenuButtonView: View {
     @Environment(\.isEnabled) private var isEnabled
 
     public init(
-        label: String, symbol: SFSymbol,
+        label: LocalizedStringKey, symbol: SFSymbol,
         isIncognito: Bool = false,
         longPressAction: (() -> Void)? = nil,
         action: @escaping () -> Void
@@ -35,7 +35,7 @@ public struct OverflowMenuButtonView: View {
     }
 
     public init(
-        label: String, nicon: Nicon,
+        label: LocalizedStringKey, nicon: Nicon,
         longPressAction: (() -> Void)? = nil,
         isIncognito: Bool = false,
         action: @escaping () -> Void
@@ -88,7 +88,7 @@ public struct OverflowMenuView: View {
             if !chromeModel.inlineToolbar {
                 HStack(spacing: OverflowMenuUX.innerSectionPadding) {
                     OverflowMenuButtonView(
-                        label: .TabToolbarForwardAccessibilityLabel,
+                        label: "Forward",
                         symbol: .arrowForward,
                         longPressAction: {
                             menuAction(.longPressForward)
@@ -173,8 +173,8 @@ public struct OverflowMenuView: View {
                     let hasHomeButton = UIConstants.safeArea.bottom == 0
                     NeevaMenuRowButtonView(
                         label: changedUserAgent == true
-                            ? Strings.AppMenuViewMobileSiteTitleString
-                            : Strings.AppMenuViewDesktopSiteTitleString,
+                            ? "Request Mobile Site"
+                            : "Request Desktop Site",
                         symbol: changedUserAgent == true
                             ? (hasHomeButton ? .iphoneHomebutton : .iphone)
                             : .desktopcomputer

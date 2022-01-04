@@ -9,15 +9,15 @@ struct AppHostSetting: View {
 
     var body: some View {
         HStack {
-            Text("appHost")
+            Text(String("appHost"))
                 .font(.system(.body, design: .monospaced))
-                + Text(": ")
+                + Text(String(": "))
                 + Text(NeevaConstants.appHost)
                 .font(.system(.body, design: .monospaced))
 
             Spacer()
 
-            Button("Change") {
+            Button(String("Change")) {
                 let alert = UIAlertController(
                     title: "Enter custom Neeva server", message: "Default is neeva.com",
                     preferredStyle: .alert)

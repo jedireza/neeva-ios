@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 struct PopoverView<Content: View>: View {
-    @State private var title: String = ""
+    @State private var title: LocalizedStringKey? = nil
 
     let style: OverlayStyle
     let onDismiss: () -> Void
@@ -27,7 +27,7 @@ struct PopoverView<Content: View>: View {
                 .accessibilitySortPriority(-1)
 
                 VStack {
-                    if style.showTitle {
+                    if style.showTitle, let title = title {
                         HStack(spacing: 0) {
                             Text(title)
                                 .withFont(.headingXLarge)

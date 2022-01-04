@@ -9,9 +9,9 @@ public struct SingleLineTextField<Icon: View>: View {
 
     let useCapsuleBackground: Bool
     let icon: Icon?
-    let placeholder: String
+    let placeholder: LocalizedStringKey
     @Binding var text: String
-    var detailText: String?
+    var detailText: LocalizedStringKey?
 
     @State private var textFieldWidth: CGFloat = 0
     private let alwaysShowClearButton: Bool
@@ -153,11 +153,11 @@ public struct SingleLineTextField<Icon: View>: View {
     public init(
         useCapsuleBackground: Bool = true,
         icon: Icon,
-        placeholder: String,
+        placeholder: LocalizedStringKey,
         text: Binding<String>,
         errorMessage: Binding<String> = .constant(""),
         alwaysShowClearButton: Bool = true,
-        detailText: String? = nil,
+        detailText: LocalizedStringKey? = nil,
         focusTextField: Bool = false,
         secureText: Bool = false,
         onEditingChanged: ((Bool) -> Void)? = nil
@@ -180,11 +180,11 @@ public struct SingleLineTextField<Icon: View>: View {
 extension SingleLineTextField where Icon == Never {
     init(
         useCapsuleBackground: Bool = true,
-        _ placeholder: String,
+        _ placeholder: LocalizedStringKey,
         text: Binding<String>,
         errorMessage: Binding<String> = .constant(""),
         alwaysShowClearButton: Bool = true,
-        detailText: String? = nil,
+        detailText: LocalizedStringKey? = nil,
         focusTextField: Bool = false,
         secureText: Bool = false,
         onEditingChanged: ((Bool) -> Void)? = nil

@@ -15,7 +15,19 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
 
     var id: String { rawValue }
 
-    var description: String? {
+    // duplication is currently unavoidable :(
+    var label: LocalizedStringKey {
+        switch self {
+        case .history: return "Browsing History"
+        case .cache: return "Cache"
+        case .cookies: return "Cookies"
+        case .trackingProtection: return "Tracking Protection"
+        case .downloads: return "Downloaded Files"
+        case .dapps: return "Connected dApps"
+        }
+    }
+
+    var description: LocalizedStringKey? {
         switch self {
         case .cookies:
             return "Clearing it will sign you out of most sites."
@@ -91,9 +103,9 @@ struct DataManagementView: View {
                     ) {
                         if let description = dataType.description {
                             DetailedSettingsLabel(
-                                title: dataType.rawValue, description: description)
+                                title: dataType.label, description: description)
                         } else {
-                            Text(dataType.rawValue)
+                            Text(dataType.label)
                         }
                     }
                 }

@@ -16,7 +16,7 @@ public class AddToSpaceRequest: ObservableObject {
         case saveToExistingSpace
         case saveToNewSpace
 
-        public var title: String {
+        public var title: LocalizedStringKey {
             switch self {
             case .saveToNewSpace:
                 return "Create Space"

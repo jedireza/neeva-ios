@@ -55,7 +55,7 @@ struct NavigationLinkButton<Label: View>: View {
 }
 
 extension NavigationLinkButton where Label == Text {
-    init(_ title: String, style: Style = .link, action: @escaping () -> Void) {
+    init(_ title: LocalizedStringKey, style: Style = .link, action: @escaping () -> Void) {
         self.label = { Text(title) }
         self.action = action
         self.style = style
