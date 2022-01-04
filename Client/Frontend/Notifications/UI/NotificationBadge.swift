@@ -59,7 +59,7 @@ struct NotificationBadgeOverlay<Content: View>: View {
     var horizontalPadding: CGFloat {
         let count = count ?? 0
         if count > 99 {
-            return -20
+            return -12
         } else if count > 9 {
             return 0
         } else {
