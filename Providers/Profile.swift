@@ -53,6 +53,7 @@ class ProfileFileAccessor: FileAccessor {
 /// A Profile manages access to the user's data.
 protocol Profile: AnyObject {
     var queue: TabQueue { get }
+    var searchEngines: SearchEngines { get }
     var files: FileAccessor { get }
     var history: BrowserHistory & ResettableSyncStorage { get }
     var metadata: Metadata { get }
@@ -276,6 +277,25 @@ open class BrowserProfile: Profile {
         return self.legacyPlaces
     }
 
+<<<<<<< HEAD
+=======
+    lazy var placesDbPath = URL(fileURLWithPath: (try! files.getAndEnsureDirectory()), isDirectory: true).appendingPathComponent("places.db").path
+
+    lazy var places = RustPlaces(databasePath: placesDbPath)
+
+    lazy var searchEngines: SearchEngines = {
+        return SearchEngines(prefs: self.prefs, files: self.files)
+    }()
+
+    func makePrefs() -> Prefs {
+        return NSUserDefaultsPrefs(prefix: self.localName())
+    }
+
+    lazy var prefs: Prefs = {
+        return self.makePrefs()
+    }()
+
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
     lazy var readingList: ReadingList = {
         return SQLiteReadingList(db: self.readingListDB)
     }()

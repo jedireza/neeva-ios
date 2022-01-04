@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // Copyright Neeva. All rights reserved.
 
 import Defaults
@@ -162,6 +163,66 @@ extension Defaults.Keys {
         "cryptoTransactionHashStore", default: Set<String>())
     public static let sessionsPeerIDs = Defaults.Key<Set<String>>(
         "web3SessionsPeerIDs", default: Set<String>())
+=======
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+import Foundation
+
+public struct PrefsKeys {
+    // When this pref is set (by the user) it overrides default behaviour which is just based on app locale.
+    public static let KeyEnableChinaSyncService = "useChinaSyncService"
+    public static let KeyLastRemoteTabSyncTime = "lastRemoteTabSyncTime"
+    public static let KeyLastSyncFinishTime = "lastSyncFinishTime"
+    public static let KeyDefaultHomePageURL = "KeyDefaultHomePageURL"
+    public static let KeyNoImageModeStatus = "NoImageModeStatus"
+    public static let KeyNightModeButtonIsInMenu = "NightModeButtonIsInMenuPrefKey"
+    public static let KeyNightModeStatus = "NightModeStatus"
+    public static let KeyNightModeEnabledDarkTheme = "NightModeEnabledDarkTheme"
+    public static let KeyMailToOption = "MailToOption"
+    public static let KeyLastVersionNumber = "KeyLastVersionNumber"
+    public static let HasFocusInstalled = "HasFocusInstalled"
+    public static let HasPocketInstalled = "HasPocketInstalled"
+    public static let IntroSeen = "IntroViewControllerSeen"
+    public static let HomePageTab = "HomePageTab"
+    public static let HomeButtonHomePageURL = "HomeButtonHomepageURL"
+    public static let NumberOfTopSiteRows = "NumberOfTopSiteRows"
+    public static let LoginsSaveEnabled = "saveLogins"
+    public static let LoginsShowShortcutMenuItem = "showLoginsInAppMenu"
+    public static let KeyInstallSession = "installSessionNumber"
+    public static let KeyETPCoverSheetShowType = "etpCoverSheetShowType"
+    public static let KeyDefaultBrowserCardShowType = "defaultBrowserCardShowType"
+    public static let KeyDidShowDefaultBrowserOnboarding = "didShowDefaultBrowserOnboarding"
+    public static let ShowNewTabToolbarButton = "newTabToolbarButton"
+    public static let ContextMenuShowLinkPreviews = "showLinkPreviews"
+    public static let NewTabCustomUrlPrefKey = "HomePageURLPref"
+    public static let ChronTabsPrefKey = "chronTabsPrefKey"
+    public static let SessionCount = "sessionCount"
+    
+    //Activity Stream
+    public static let KeyTopSitesCacheIsValid = "topSitesCacheIsValid"
+    public static let KeyTopSitesCacheSize = "topSitesCacheSize"
+    public static let KeyNewTab = "NewTabPrefKey"
+    public static let ASPocketStoriesVisible = "ASPocketStoriesVisible"
+    public static let ASRecentHighlightsVisible = "ASRecentHighlightsVisible"
+    public static let ASBookmarkHighlightsVisible = "ASBookmarkHighlightsVisible"
+    public static let ASLastInvalidation = "ASLastInvalidation"
+    public static let KeyUseCustomSyncTokenServerOverride = "useCustomSyncTokenServerOverride"
+    public static let KeyCustomSyncTokenServerOverride = "customSyncTokenServerOverride"
+    public static let KeyUseCustomFxAContentServer = "useCustomFxAContentServer"
+    public static let KeyCustomFxAContentServer = "customFxAContentServer"
+    public static let UseStageServer = "useStageSyncService"
+    public static let KeyFxALastCommandIndex = "FxALastCommandIndex"
+    public static let KeyFxAHandledCommands = "FxAHandledCommands"
+    public static let AppExtensionTelemetryOpenUrl = "AppExtensionTelemetryOpenUrl"
+    public static let AppExtensionTelemetryEventArray = "AppExtensionTelemetryEvents"
+    public static let KeyBlockPopups = "blockPopups"
+    
+    // Widgetkit Key
+    public static let WidgetKitSimpleTabKey = "WidgetKitSimpleTabKey"
+    public static let WidgetKitSimpleTopTab = "WidgetKitSimpleTopTab"
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
 }
 
 extension Defaults {

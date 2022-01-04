@@ -891,6 +891,20 @@ class BrowserViewController: UIViewController, ModalPresenter {
             overlaySheetViewController.removeFromParent()
             self.overlaySheetViewController = nil
         }
+<<<<<<< HEAD
+=======
+
+        let isPrivate = tabManager.selectedTab?.isPrivate ?? false
+        let searchController = SearchViewController(profile: profile, isPrivate: isPrivate)
+        searchController.searchEngines = profile.searchEngines
+        searchController.searchDelegate = self
+
+        let searchLoader = SearchLoader(profile: profile, urlBar: urlBar)
+        searchLoader.addListener(searchController)
+
+        self.searchController = searchController
+        self.searchLoader = searchLoader
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
     }
 
     func showModal<Content: View>(
@@ -1141,7 +1155,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     func openSearchNewTab(isPrivate: Bool = false, _ text: String) {
         popToBVC()
-        if let searchURL = neevaSearchEngine.searchURLForQuery(text) {
+        let engine = profile.searchEngines.defaultEngine
+        if let searchURL = engine.searchURLForQuery(text) {
             openURLInNewTab(searchURL, isPrivate: isPrivate)
         } else {
             // We still don't have a valid URL, so something is broken. Give up.
@@ -1462,6 +1477,7 @@ extension BrowserViewController: TabDelegate {
             }
             .store(in: &tab.webViewSubscriptions)
 
+<<<<<<< HEAD
         webView.publisher(for: \.url, options: .new)
             .forEach(updateGestureHandler)
             // Special case for "about:blank" popups, if the webView.url is nil, keep the tab url as "about:blank"
@@ -1472,6 +1488,183 @@ extension BrowserViewController: TabDelegate {
             .filter { tab.url?.origin == $0?.origin }
             .sink { [self] url in
                 tab.setURL(url)
+=======
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+        presentActivityViewController(url, tab: tab, sourceView: button, sourceRect: button.bounds, arrowDirection: .up)
+    }
+
+    func urlBarDidTapShield(_ urlBar: URLBarView) {
+        if let tab = self.tabManager.selectedTab {
+            let trackingProtectionMenu = self.getTrackingSubMenu(for: tab)
+            let title = String.localizedStringWithFormat(Strings.TPPageMenuTitle, tab.url?.host ?? "")
+            LeanPlumClient.shared.track(event: .trackingProtectionMenu)
+            TelemetryWrapper.recordEvent(category: .action, method: .press, object: .trackingProtectionMenu)
+            self.presentSheetWith(title: title, actions: trackingProtectionMenu, on: self, from: urlBar)
+        }
+    }
+
+    func urlBarDidPressStop(_ urlBar: URLBarView) {
+        tabManager.selectedTab?.stop()
+    }
+
+    func urlBarDidPressTabs(_ urlBar: URLBarView) {
+        showTabTray()
+    }
+
+    func urlBarDidPressReaderMode(_ urlBar: URLBarView) {
+        libraryDrawerViewController?.close()
+
+        guard let tab = tabManager.selectedTab, let readerMode = tab.getContentScript(name: "ReaderMode") as? ReaderMode else {
+            return
+        }
+        switch readerMode.state {
+        case .available:
+            enableReaderMode()
+            TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .readerModeOpenButton)
+            LeanPlumClient.shared.track(event: .useReaderView)
+        case .active:
+            disableReaderMode()
+            TelemetryWrapper.recordEvent(category: .action, method: .tap, object: .readerModeCloseButton)
+        case .unavailable:
+            break
+        }
+    }
+
+    func urlBarDidLongPressReaderMode(_ urlBar: URLBarView) -> Bool {
+        guard let tab = tabManager.selectedTab,
+               let url = tab.url?.displayURL
+            else {
+            UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: String.ReaderModeAddPageGeneralErrorAccessibilityLabel)
+                return false
+        }
+
+        let result = profile.readingList.createRecordWithURL(url.absoluteString, title: tab.title ?? "", addedBy: UIDevice.current.name)
+
+        switch result.value {
+        case .success:
+            UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: String.ReaderModeAddPageSuccessAcessibilityLabel)
+            SimpleToast().showAlertWithText(Strings.ShareAddToReadingListDone, bottomContainer: self.webViewContainer)
+        case .failure(let error):
+            UIAccessibility.post(notification: UIAccessibility.Notification.announcement, argument: String.ReaderModeAddPageMaybeExistsErrorAccessibilityLabel)
+            print("readingList.createRecordWithURL(url: \"\(url.absoluteString)\", ...) failed with error: \(error)")
+        }
+        return true
+    }
+
+    func urlBarDidLongPressReload(_ urlBar: URLBarView, from button: UIButton) {
+        guard let tab = tabManager.selectedTab else {
+            return
+        }
+        let urlActions = self.getRefreshLongPressMenu(for: tab)
+        guard !urlActions.isEmpty else {
+            return
+        }
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+        let shouldSuppress = !topTabsVisible && UIDevice.current.userInterfaceIdiom == .pad
+        presentSheetWith(actions: [urlActions], on: self, from: button, suppressPopover: shouldSuppress)
+    }
+
+    func locationActionsForURLBar(_ urlBar: URLBarView) -> [AccessibleAction] {
+        if UIPasteboard.general.string != nil {
+            return [pasteGoAction, pasteAction, copyAddressAction]
+        } else {
+            return [copyAddressAction]
+        }
+    }
+
+    func urlBarDisplayTextForURL(_ url: URL?) -> (String?, Bool) {
+        // use the initial value for the URL so we can do proper pattern matching with search URLs
+        var searchURL = self.tabManager.selectedTab?.url
+        if let url = searchURL, InternalURL.isValid(url: url) {
+            searchURL = url
+        }
+        if let query = profile.searchEngines.queryForSearchURL(searchURL as URL?) {
+            return (query, true)
+        } else {
+            return (url?.absoluteString, false)
+        }
+    }
+
+    func urlBarDidLongPressLocation(_ urlBar: URLBarView) {
+        let urlActions = self.getLongPressLocationBarActions(with: urlBar, webViewContainer: self.webViewContainer)
+        let generator = UIImpactFeedbackGenerator(style: .heavy)
+        generator.impactOccurred()
+        self.presentSheetWith(actions: [urlActions], on: self, from: urlBar)
+    }
+
+    func urlBarDidPressScrollToTop(_ urlBar: URLBarView) {
+        if let selectedTab = tabManager.selectedTab, firefoxHomeViewController == nil {
+            // Only scroll to top if we are not showing the home view controller
+            selectedTab.webView?.scrollView.setContentOffset(CGPoint.zero, animated: true)
+        }
+    }
+
+    func urlBarLocationAccessibilityActions(_ urlBar: URLBarView) -> [UIAccessibilityCustomAction]? {
+        return locationActionsForURLBar(urlBar).map { $0.accessibilityCustomAction }
+    }
+
+    func urlBar(_ urlBar: URLBarView, didRestoreText text: String) {
+        if text.isEmpty {
+            hideSearchController()
+        } else {
+            showSearchController()
+        }
+
+        searchController?.searchQuery = text
+        searchLoader?.setQueryWithoutAutocomplete(text)
+    }
+
+    func urlBar(_ urlBar: URLBarView, didEnterText text: String) {
+        if text.isEmpty {
+            hideSearchController()
+        } else {
+            showSearchController()
+        }
+
+        searchController?.searchQuery = text
+        searchLoader?.query = text
+    }
+
+    func urlBar(_ urlBar: URLBarView, didSubmitText text: String) {
+        guard let currentTab = tabManager.selectedTab else { return }
+
+        if let fixupURL = URIFixup.getURL(text) {
+            // The user entered a URL, so use it.
+            finishEditingAndSubmit(fixupURL, visitType: VisitType.typed, forTab: currentTab)
+            return
+        }
+
+        // We couldn't build a URL, so check for a matching search keyword.
+        let trimmedText = text.trimmingCharacters(in: .whitespaces)
+        guard let possibleKeywordQuerySeparatorSpace = trimmedText.firstIndex(of: " ") else {
+            submitSearchText(text, forTab: currentTab)
+            return
+        }
+
+        let possibleKeyword = String(trimmedText[..<possibleKeywordQuerySeparatorSpace])
+        let possibleQuery = String(trimmedText[trimmedText.index(after: possibleKeywordQuerySeparatorSpace)...])
+
+        self.submitSearchText(text, forTab: currentTab)
+    }
+
+    fileprivate func submitSearchText(_ text: String, forTab tab: Tab) {
+        let engine = profile.searchEngines.defaultEngine
+
+        if let searchURL = engine.searchURLForQuery(text) {
+            // We couldn't find a matching search keyword, so do a search query.
+            Telemetry.default.recordSearch(location: .actionBar, searchEngine: engine.engineID ?? "other")
+            GleanMetrics.Search.counts["\(engine.engineID ?? "custom").\(SearchesMeasurement.SearchLocation.actionBar.rawValue)"].add()
+            shouldSetUrlTypeSearch = true
+            finishEditingAndSubmit(searchURL, visitType: VisitType.typed, forTab: tab)
+        } else {
+            // We still don't have a valid URL, so something is broken. Give up.
+            print("Error handling URL entry: \"\(text)\".")
+            assertionFailure("Couldn't generate search URL: \(text)")
+        }
+    }
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
 
                 if tab === tabManager.selectedTab && !tab.restoring {
                     updateUIForReaderHomeStateForTab(tab)
@@ -1587,6 +1780,7 @@ extension BrowserViewController: TabDelegate {
 
 extension BrowserViewController: HistoryPanelDelegate {
     func libraryPanel(didSelectURL url: URL, visitType: VisitType) {
+<<<<<<< HEAD
         presentedViewController?.dismiss(
             animated: true,
             completion: {
@@ -1594,6 +1788,35 @@ extension BrowserViewController: HistoryPanelDelegate {
                     withAnimation: self.tabManager.createOrSwitchToTab(for: url)
                         == .switchedToExistingTab)
             })
+=======
+        guard let tab = tabManager.selectedTab else { return }
+        finishEditingAndSubmit(url, visitType: visitType, forTab: tab)
+        libraryDrawerViewController?.close()
+    }
+
+    func libraryPanel(didSelectURLString url: String, visitType: VisitType) {
+        guard let url = URIFixup.getURL(url) ?? profile.searchEngines.defaultEngine.searchURLForQuery(url) else {
+            Logger.browserLogger.warning("Invalid URL, and couldn't generate a search URL for it.")
+            return
+        }
+        return self.libraryPanel(didSelectURL: url, visitType: visitType)
+    }
+
+    func libraryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
+        let tab = self.tabManager.addTab(URLRequest(url: url), afterTab: self.tabManager.selectedTab, isPrivate: isPrivate)
+        // If we are showing toptabs a user can just use the top tab bar
+        // If in overlay mode switching doesnt correctly dismiss the homepanels
+        guard !topTabsVisible, !self.urlBar.inOverlayMode else {
+            return
+        }
+        // We're not showing the top tabs; show a toast to quick switch to the fresh new tab.
+        let toast = ButtonToast(labelText: Strings.ContextMenuButtonToastNewTabOpenedLabelText, buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText, completion: { buttonPressed in
+            if buttonPressed {
+                self.tabManager.selectTab(tab)
+            }
+        })
+        self.show(toast: toast)
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
     }
 }
 
@@ -1614,6 +1837,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
         finishEditingAndSubmit(url, visitType: visitType, forTab: tabManager.selectedTab)
     }
 
+<<<<<<< HEAD
     func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
         hideZeroQuery()
         openURLInBackground(url, isPrivate: isPrivate)
@@ -1622,6 +1846,23 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     func zeroQueryPanel(didEnterQuery query: String) {
         searchQueryModel.value = query
         chromeModel.setEditingLocation(to: true)
+=======
+    func searchViewController(_ searchViewController: SearchViewController, didLongPressSuggestion suggestion: String) {
+        self.urlBar.setLocation(suggestion, search: true)
+    }
+
+    func presentSearchSettingsController() {
+        let ThemedNavigationController = SearchSettingsTableViewController()
+        ThemedNavigationController.model = self.profile.searchEngines
+        ThemedNavigationController.profile = self.profile
+        let navController = ModalSettingsNavigationController(rootViewController: ThemedNavigationController)
+
+        self.present(navController, animated: true, completion: nil)
+    }
+
+    func searchViewController(_ searchViewController: SearchViewController, didHighlightText text: String, search: Bool) {
+        self.urlBar.setLocation(text, search: search)
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
     }
 }
 

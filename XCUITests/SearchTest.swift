@@ -172,7 +172,41 @@ class SearchTests: BaseTestCase {
         XCTAssertEqual(value as? String, "neeva.co")
     }
 
+<<<<<<< HEAD
     func testSearchWithNeevaOption() {
+=======
+    private func changeSearchEngine(searchEngine: String) {
+        navigator.goto(SearchSettings)
+        // Open the list of default search engines and select the desired
+        app.tables.cells.element(boundBy: 0).tap()
+        let tablesQuery2 = app.tables
+        tablesQuery2.staticTexts[searchEngine].tap()
+
+        navigator.openURL("foo")
+        // Workaroud needed after xcode 11.3 update Issue 5937
+        // waitForExistence(app.webViews.firstMatch, timeout: 3)
+        waitForValueContains(app.textFields["url"], value: searchEngine.lowercased())
+        }
+
+    // Smoketest
+    func testSearchEngine() {
+        // Change to the each search engine and verify the search uses it
+        changeSearchEngine(searchEngine: "Bing")
+        changeSearchEngine(searchEngine: "DuckDuckGo")
+        changeSearchEngine(searchEngine: "Google")
+        changeSearchEngine(searchEngine: "Twitter")
+        changeSearchEngine(searchEngine: "Wikipedia")
+        // Last check failing intermittently, temporary disabled
+        // changeSearchEngine(searchEngine: "Amazon.com")
+    }
+
+    func testDefaultSearchEngine() {
+        navigator.goto(SearchSettings)
+        XCTAssert(app.tables.staticTexts["Google"].exists)
+    }
+
+    func testSearchWithFirefoxOption() {
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
         navigator.openURL(path(forTestPage: "test-mozilla-book.html"))
         waitUntilPageLoad()
         waitForExistence(app.webViews.staticTexts["cloud"], timeout: 10)

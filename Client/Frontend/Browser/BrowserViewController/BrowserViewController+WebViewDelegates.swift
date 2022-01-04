@@ -9,8 +9,11 @@ import Shared
 import StoreKit
 import SwiftyJSON
 import UIKit
+<<<<<<< HEAD
 import WalletConnectSwift
 import WebKit
+=======
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
 
 private let log = Logger.browser
 
@@ -972,6 +975,7 @@ extension BrowserViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+<<<<<<< HEAD
         guard let tab = tabManager[webView] else { return }
 
         navigateInTab(tab: tab, to: navigation, webViewStatus: .finishedNavigation)
@@ -987,6 +991,10 @@ extension BrowserViewController: WKNavigationDelegate {
                 }
             }
         }
+=======
+        if let tab = tabManager[webView] {
+            navigateInTab(tab: tab, to: navigation, webViewStatus: .finishedNavigation)
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
 
         // Every time a user visits a Neeva page, we extract the login cookie and save it to the
         // keychain. If however we find that they are on the sign in page, then we need to assume

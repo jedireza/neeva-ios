@@ -6,8 +6,66 @@ import Combine
 import Defaults
 import Foundation
 import Shared
+<<<<<<< HEAD
 import SwiftUI
 import WalletConnectSwift
+=======
+import MozillaAppServices
+
+struct FxALaunchParams {
+    var query: [String: String]
+}
+
+// An enum to route to HomePanels
+enum HomePanelPath: String {
+    
+    case topSites = "top-sites"
+    case readingList = "reading-list"
+    case history = "history"
+    case downloads = "downloads"
+    case newPrivateTab = "new-private-tab"
+}
+
+// An enum to route to a settings page.
+// This could be extended to provide default values to pass to fxa
+enum SettingsPage: String {
+    case general = "general"
+    case newtab = "newtab"
+    case homepage = "homepage"
+    case mailto = "mailto"
+    case search = "search"
+    case clearPrivateData = "clear-private-data"
+    case fxa = "fxa"
+    case theme = "theme"
+}
+
+enum DefaultBrowserPath: String {
+    case systemSettings = "system-settings"
+}
+
+// Used by the App to navigate to different views.
+// To open a URL use /open-url or to open a blank tab use /open-url with no params
+enum DeepLink {
+    case settings(SettingsPage)
+    case homePanel(HomePanelPath)
+    case defaultBrowser(DefaultBrowserPath)
+    init?(urlString: String) {
+        let paths = urlString.split(separator: "/")
+        guard let component = paths[safe: 0], let componentPath = paths[safe: 1] else {
+            return nil
+        }
+        if component == "settings", let link = SettingsPage(rawValue: String(componentPath)) {
+            self = .settings(link)
+        } else if component == "homepanel", let link = HomePanelPath(rawValue: String(componentPath)) {
+            self = .homePanel(link)
+        } else if component == "default-browser", let link = DefaultBrowserPath(rawValue: String(componentPath)) {
+            self = .defaultBrowser(link)
+        } else {
+            return nil
+        }
+    }
+}
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
 
 extension URLComponents {
     // Return the first query parameter that matches
@@ -255,6 +313,7 @@ enum NavigationPath {
         // search query value
         var value: String?
 
+<<<<<<< HEAD
         if let host = components.host, let queryItems = components.percentEncodedQueryItems {
             switch host {
             case "www.google.com", "www.bing.com", "www.ecosia.org", "search.yahoo.com":
@@ -282,6 +341,37 @@ enum NavigationPath {
             default:
                 return nil
             }
+=======
+        switch settings {
+        case .general:
+            break // Intentional NOOP; Already displaying the general settings VC
+        case .newtab:
+            let viewController = NewTabContentSettingsViewController(prefs: baseSettingsVC.profile.prefs)
+            viewController.profile = profile
+            controller.pushViewController(viewController, animated: true)
+        case .homepage:
+            let viewController = HomePageSettingViewController(prefs: baseSettingsVC.profile.prefs)
+            viewController.profile = profile
+            controller.pushViewController(viewController, animated: true)
+        case .mailto:
+            let viewController = OpenWithSettingsViewController(prefs: profile.prefs)
+            controller.pushViewController(viewController, animated: true)
+        case .search:
+            let viewController = SearchSettingsTableViewController()
+            viewController.model = profile.searchEngines
+            viewController.profile = profile
+            controller.pushViewController(viewController, animated: true)
+        case .clearPrivateData:
+            let viewController = ClearPrivateDataTableViewController()
+            viewController.profile = profile
+            viewController.tabManager = tabManager
+            controller.pushViewController(viewController, animated: true)
+        case .fxa:
+            let viewController = bvc.getSignInOrFxASettingsVC(flowType: .emailLoginFlow, referringPage: .settings)
+            controller.pushViewController(viewController, animated: true)
+        case .theme:
+            controller.pushViewController(ThemeSettingsController(), animated: true)
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
         }
 
         if let value = value?.replacingOccurrences(of: "+", with: " ").removingPercentEncoding,

@@ -107,8 +107,12 @@ extension BrowserViewController {
         }
     }
 
+<<<<<<< HEAD
     @objc func showTabTrayKeyCommand() {
         showTabTray()
+=======
+        searchController.handleKeyCommands(sender: sender)
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
     }
 
     @objc func moveURLCompletionKeyCommand(sender: UIKeyCommand) {

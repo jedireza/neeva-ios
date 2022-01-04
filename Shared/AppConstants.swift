@@ -4,6 +4,18 @@
 
 import UIKit
 
+<<<<<<< HEAD
+=======
+public enum AppName: String, CustomStringConvertible {
+    case shortName = "Firefox"
+    case longName = "Firefox Daylight"
+
+    public var description: String {
+        return self.rawValue
+    }
+}
+
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
 public enum AppBuildChannel: String {
     case release
     case beta
@@ -30,6 +42,23 @@ public struct AppConstants {
         #endif
     }()
 
+<<<<<<< HEAD
+=======
+    public static let scheme: String = {
+        guard let identifier = Bundle.main.bundleIdentifier else {
+            return "unknown"
+        }
+
+        let scheme = identifier.replacingOccurrences(of: "org.mozilla.ios.", with: "")
+        if scheme == "FirefoxNightly.enterprise" {
+            return "FirefoxNightly"
+        }
+        return scheme
+    }()
+
+    public static let PrefSendUsageData = "settings.sendUsageData"
+
+>>>>>>> parent of 4e81b3f2d (Remove search engine switching, Neeva branding and Search Engine view modifications)
     /// Enables support for International Domain Names (IDN)
     /// Disabled because of https://bugzilla.mozilla.org/show_bug.cgi?id=1312294
     public static let MOZ_PUNYCODE: Bool = {
