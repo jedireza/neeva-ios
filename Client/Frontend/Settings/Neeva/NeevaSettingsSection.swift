@@ -58,17 +58,15 @@ struct NeevaSettingsSection: View {
 
             if FeatureFlag[.inlineAccountSettings] {
                 // TODO: fix adding connectors on this screen
-                NavigationLink(
-                    "Account Settings",
-                    destination: AccountSettingsView(webView: Self.webView)
+                makeNavigationLink(title: "Account Settings") {
+                    AccountSettingsView(webView: Self.webView)
                         .ignoresSafeArea(.all, edges: [.bottom, .horizontal])
-                        .navigationTitle("Account Settings")
                         .onAppear {
                             ClientLogger.shared.logCounter(
                                 .SettingAccountSettings,
                                 attributes: EnvironmentHelper.shared.getAttributes())
                         }
-                )
+                }
             } else {
                 NavigationLinkButton("Account Settings") {
                     ClientLogger.shared.logCounter(

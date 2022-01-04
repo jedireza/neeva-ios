@@ -25,9 +25,8 @@ struct PrivacySettingsSection: View {
             )
         }
         if FeatureFlag[.newTrackingProtectionSettings] {
-            NavigationLink(
-                "Tracking Protection",
-                destination: List {
+            makeNavigationLink(title: "Tracking Protection") {
+                List {
                     Section(header: Text("Global Privacy Settings").padding(.top, 21)) {
                         TrackingSettingsBlock()
                     }
@@ -35,13 +34,12 @@ struct PrivacySettingsSection: View {
                 }
                 .listStyle(GroupedListStyle())
                 .applyToggleStyle()
-                .navigationTitle("Tracking Protection")
                 .onAppear {
                     ClientLogger.shared.logCounter(
                         .ViewTrackingProtection,
                         attributes: EnvironmentHelper.shared.getAttributes())
                 }
-            )
+            }
         } else {
             Toggle("Tracking Protection", isOn: $contentBlockingEnabled)
         }

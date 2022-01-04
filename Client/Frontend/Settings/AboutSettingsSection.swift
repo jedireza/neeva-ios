@@ -26,12 +26,10 @@ struct AboutSettingsSection: View {
             }.padding(.vertical, 3).contentShape(Rectangle())
         }.accentColor(.label)
 
-        NavigationLink(
-            "Licenses",
-            destination: LicensesView()
+        makeNavigationLink(title: "Licenses") {
+            LicensesView()
                 .ignoresSafeArea(.all, edges: [.bottom, .horizontal])
-                .navigationTitle("Licenses")
-        )
+        }
 
         NavigationLinkButton("Terms") {
             ClientLogger.shared.logCounter(

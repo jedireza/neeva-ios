@@ -90,6 +90,17 @@ extension SheetNavigationLink where Label == Text {
     }
 }
 
+@ViewBuilder
+func makeNavigationLink<D: View>(title: LocalizedStringKey, destination: () -> D) -> some View {
+    NavigationLink(title, destination: destination().navigationTitle(title))
+}
+
+@_disfavoredOverload
+@ViewBuilder
+func makeNavigationLink<D: View, S: StringProtocol>(title: S, destination: () -> D) -> some View {
+    NavigationLink(title, destination: destination().navigationTitle(title))
+}
+
 struct NavigationLinkButton_Previews: PreviewProvider {
     static var previews: some View {
         List {
