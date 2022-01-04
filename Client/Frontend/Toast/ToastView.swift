@@ -11,8 +11,8 @@ public enum ToastViewUX {
 }
 
 struct ToastStateContent {
-    var text: String?
-    var buttonText: String?
+    var text: LocalizedStringKey?
+    var buttonText: LocalizedStringKey?
     var buttonAction: (() -> Void)?
 }
 

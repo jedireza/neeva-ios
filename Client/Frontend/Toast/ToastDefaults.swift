@@ -16,7 +16,7 @@ class ToastDefaults: NSObject {
             return
         }
 
-        var toastText = "Tab Closed"
+        var toastText: LocalizedStringKey = "Tab Closed"
 
         if savedTabs.count > 0 {
             if savedTabs.count > 1 {

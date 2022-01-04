@@ -94,8 +94,8 @@ public struct GroupedCellButton<Label: View>: View {
 }
 
 extension GroupedCellButton where Label == Text.WithFont {
-    public init<S: StringProtocol>(
-        _ label: S, style: FontStyle = .bodyLarge, weight: UIFont.Weight? = nil,
+    public init(
+        _ label: LocalizedStringKey, style: FontStyle = .bodyLarge, weight: UIFont.Weight? = nil,
         action: @escaping () -> Void, longPressAction: (() -> Void)? = nil,
         backgroundColor: Color = Color.secondaryGroupedBackground
     ) {

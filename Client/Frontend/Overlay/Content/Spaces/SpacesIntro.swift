@@ -56,11 +56,11 @@ struct SpacesShareIntroOverlayContent: View {
 struct SpacesIntroView: View {
     let dismiss: () -> Void
     let imageName: String
-    let imageAccessibilityLabel: String
-    let headlineText: String
-    let detailText: String
-    let firstButtonText: String
-    let secondButtonText: String
+    let imageAccessibilityLabel: LocalizedStringKey
+    let headlineText: LocalizedStringKey
+    let detailText: LocalizedStringKey
+    let firstButtonText: LocalizedStringKey
+    let secondButtonText: LocalizedStringKey
     let firstButtonPressed: () -> Void
     let secondButtonPressed: () -> Void
 
