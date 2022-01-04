@@ -5,7 +5,7 @@ import SwiftUI
 
 struct DebugDBSettingsSection: View {
     var body: some View {
-        Section(header: Text(String("Debug — Databases"))) {
+        Section(header: Text(verbatim: "Debug — Databases")) {
             Button(String("Copy Databases to App Container")) {
                 let documentsPath = NSSearchPathForDirectoriesInDomains(
                     .documentDirectory, .userDomainMask, true)[0]

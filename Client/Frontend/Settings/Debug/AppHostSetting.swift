@@ -9,9 +9,9 @@ struct AppHostSetting: View {
 
     var body: some View {
         HStack {
-            Text(String("appHost"))
+            Text(verbatim: "appHost")
                 .font(.system(.body, design: .monospaced))
-                + Text(String(": "))
+                + Text(verbatim: ": ")
                 + Text(NeevaConstants.appHost)
                 .font(.system(.body, design: .monospaced))
 

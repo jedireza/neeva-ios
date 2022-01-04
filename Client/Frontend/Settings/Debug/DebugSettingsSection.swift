@@ -10,7 +10,7 @@ struct DebugSettingsSection: View {
 
     var body: some View {
         Group {
-            Section(header: Text(String("Debug — Neeva"))) {
+            Section(header: Text(verbatim: "Debug — Neeva")) {
                 makeNavigationLink(title: String("Server Feature Flags")) {
                     NeevaFeatureFlagSettingsView()
                 }
@@ -22,7 +22,7 @@ struct DebugSettingsSection: View {
                     openURL(NeevaConstants.appHomeURL / "admin")
                 }
             }
-            Section(header: Text(String("Debug — Local"))) {
+            Section(header: Text(verbatim: "Debug — Local")) {
                 makeNavigationLink(title: String("Local Feature Flags")) {
                     FeatureFlagSettingsView()
                 }

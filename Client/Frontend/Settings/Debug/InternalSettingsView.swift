@@ -40,15 +40,15 @@ struct InternalSettingsView: View {
     
     var body: some View {
         List {
-            Section(header: Text(String("First Run"))) {
+            Section(header: Text(verbatim: "First Run")) {
                 Toggle(String("searchInputPromptDismissed"), isOn: $searchInputPromptDismissed)
                 Toggle(String("introSeen"), isOn: $introSeen)
                 Toggle(String("didFirstNavigation"), isOn: $didFirstNavigation)
                 Toggle(String("signedInOnce"), isOn: $signedInOnce)
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(String("previewModeQueries"))
-                        Text(String("\(previewModeQueries.count)"))
+                        Text(verbatim: "previewModeQueries")
+                        Text(verbatim: "\(previewModeQueries.count)")
                             .foregroundColor(.secondaryLabel)
                             .font(.caption)
                     }
@@ -63,11 +63,11 @@ struct InternalSettingsView: View {
                 NumberField(
                     String("maxQueryLimit"), number: $maxQueryLimit)
             }
-            Section(header: Text(String("Spaces"))) {
+            Section(header: Text(verbatim: "Spaces")) {
                 Toggle(String("spacesIntroSeen"), isOn: $seenSpacesIntro)
                 Toggle(String("spacesShareIntroSeen"), isOn: $seenSpacesShareIntro)
             }
-            Section(header: Text(String("Promo Cards"))) {
+            Section(header: Text(verbatim: "Promo Cards")) {
                 Toggle(String("didShowDefaultBrowserOnboarding"), isOn: $didShowDefaultBrowserOnboarding)
                 Toggle(String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
                 Toggle(String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
@@ -78,10 +78,10 @@ struct InternalSettingsView: View {
                 Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
                 Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
             }
-            Section(header: Text(String("User-generated"))) {
+            Section(header: Text(verbatim: "User-generated")) {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text(String("deletedSuggestedSites"))
+                        Text(verbatim: "deletedSuggestedSites")
                         Text(
                             String("\(deletedSuggestedSites.count) site\(deletedSuggestedSites.count == 1 ? "" : "s")")
                         )
@@ -97,7 +97,7 @@ struct InternalSettingsView: View {
                 OptionalDataKeyView("recentlyClosedTabs", data: $recentlyClosedTabs)
             }
 
-            Section(header: Text(String("Miscellaneous"))) {
+            Section(header: Text(verbatim: "Miscellaneous")) {
                 Toggle(String("saveLogins"), isOn: $saveLogins)
                 // comment this line out if you’re working on logins and need access
                     .disabled(!saveLogins)
@@ -108,9 +108,9 @@ struct InternalSettingsView: View {
                 OptionalStringField("lastVersionNumber", text: $lastVersionNumber)
             }
 
-            Section(header: Text(String("Top Sites Cache"))) {
+            Section(header: Text(verbatim: "Top Sites Cache")) {
                 HStack {
-                    Text(String("topSitesCacheIsValid"))
+                    Text(verbatim: "topSitesCacheIsValid")
                     Spacer()
                     Text(String(topSitesCacheIsValid))
                         .foregroundColor(.secondaryLabel)
@@ -118,12 +118,12 @@ struct InternalSettingsView: View {
                 OptionalNumberField("topSitesCacheSize", number: $topSitesCacheSize)
             }
 
-            Section(header: Text(String("WidgetKit"))) {
+            Section(header: Text(verbatim: "WidgetKit")) {
                 OptionalDataKeyView("widgetKitSimpleTabKey", data: $widgetKitSimpleTabKey)
                 OptionalDataKeyView("widgetKitSimpleTopTab", data: $widgetKitSimpleTopTab)
             }
 
-            Section(header: Text(String("Performance"))) {
+            Section(header: Text(verbatim: "Performance")) {
                 Toggle(String("applicationCleanlyBackgrounded"), isOn: $applicationCleanlyBackgrounded)
                 if let cleanlyBackgrounded = cleanlyBackgroundedLastTime {
                     let text =
@@ -136,7 +136,7 @@ struct InternalSettingsView: View {
                 }
             }
 
-            Section(header: Text(String("Notification"))) {
+            Section(header: Text(verbatim: "Notification")) {
                 OptionalStringField(
                     "lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
                 OptionalNumberField(
