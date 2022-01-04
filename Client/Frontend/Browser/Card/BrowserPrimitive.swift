@@ -302,10 +302,13 @@ extension TabGroup: BrowserPrimitive, Closeable {
     }
 
     var displayTitle: String {
-        if let spaceID = children.first?.parentSpaceID, spaceID == children.first?.rootUUID,
-            let spaceTitle = SpaceStore.shared.get(for: spaceID)?.displayTitle
-        {
-            return spaceTitle
+        if let spaceID = children.first?.parentSpaceID, spaceID == children.first?.rootUUID {
+            if let spaceTitle = SpaceStore.shared.get(for: spaceID)?.displayTitle {
+                return spaceTitle
+            } else if FeatureFlag[.enableCryptoWallet] && spaceID == WalletAccessor().publicAddress
+            {
+                return "Your NFTs"
+            }
         }
         return children.first?.displayTitle ?? "\(children.count) Tabs"
     }

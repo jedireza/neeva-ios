@@ -37,7 +37,7 @@ struct WalletAccessor {
     }
 
     var publicAddress: String {
-        return keystore.addresses!.first!.address
+        return keystore.addresses?.first?.address ?? ""
     }
 
     func sign(message: String, using publicAddress: String) throws -> String {

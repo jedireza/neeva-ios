@@ -23,8 +23,8 @@ extension BrowserViewController: ServerDelegate {
             showModal(
                 style: .spaces,
                 content: {
-                    WalletSequenceContent(model: self.web3SessionModel)
-                }, onDismiss: { self.web3SessionModel.reset() })
+                    WalletSequenceContent(model: self.web3Model)
+                }, onDismiss: { self.web3Model.reset() })
             return true
         } catch {
             return false
@@ -33,9 +33,9 @@ extension BrowserViewController: ServerDelegate {
 
     func configureWalletServer() {
         self.server = Server(delegate: self)
-        server!.register(handler: PersonalSignHandler(relay: self.web3SessionModel))
-        server!.register(handler: SendTransactionHandler(relay: self.web3SessionModel))
-        web3SessionModel.updateCurrentSession()
+        server!.register(handler: PersonalSignHandler(relay: self.web3Model))
+        server!.register(handler: SendTransactionHandler(relay: self.web3Model))
+        web3Model.updateCurrentSession()
         for session in Defaults[.sessionsPeerIDs] {
             if let oldSessionObject = UserDefaults.standard.object(
                 forKey: DappsSessionKey(for: session))
@@ -59,7 +59,7 @@ extension BrowserViewController: ServerDelegate {
             "WC: Should Start from \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))")
         DispatchQueue.main.async {
             let wallet = WalletAccessor()
-            self.web3SessionModel.currentSequence = SequenceInfo(
+            self.web3Model.currentSequence = SequenceInfo(
                 type: .sessionRequest,
                 thumbnailURL: session.dAppInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: session.dAppInfo.peerMeta,
@@ -100,14 +100,14 @@ extension BrowserViewController: ServerDelegate {
         UserDefaults.standard.set(
             sessionData, forKey: DappsSessionKey(for: session.dAppInfo.peerId))
         Defaults[.sessionsPeerIDs].insert(session.dAppInfo.peerId)
-        self.web3SessionModel.updateCurrentSession()
+        self.web3Model.updateCurrentSession()
     }
 
     func server(_ server: Server, didDisconnect session: Session) {
         LogService.shared.log(
             "WC: Did disconnect session to \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))"
         )
-        self.web3SessionModel.updateCurrentSession()
+        self.web3Model.updateCurrentSession()
         UserDefaults.standard.set(nil, forKey: DappsSessionKey(for: session.dAppInfo.peerId))
         Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
         DispatchQueue.main.async {

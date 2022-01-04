@@ -37,6 +37,15 @@ class CardTests: XCTestCase {
     fileprivate let spyRestoredTabs = "tabManagerDidRestoreTabs(_:)"
     fileprivate let spyAddTab = "tabManager(_:didAddTab:isRestoring:)"
 
+    private struct MockPresenter: ModalPresenter {
+        func showModal<Content>(
+            style: OverlayStyle, headerButton: OverlayHeaderButton?,
+            content: @escaping () -> Content, onDismiss: (() -> Void)?
+        ) where Content: View {
+            // Do nothing.
+        }
+    }
+
     override func setUp() {
         super.setUp()
 
@@ -181,6 +190,8 @@ class CardTests: XCTestCase {
         let model = GridModel(tabManager: manager)
         let cardGrid = CardGrid().environmentObject(tabCardModel).environmentObject(spaceCardModel)
             .environmentObject(tabGroupCardModel).environmentObject(model)
+            .environmentObject(
+                Web3Model(server: nil, presenter: MockPresenter(), tabManager: manager))
 
         let cardContainer = try cardGrid.inspect().find(CardsContainer.self)
         XCTAssertNotNil(cardContainer)

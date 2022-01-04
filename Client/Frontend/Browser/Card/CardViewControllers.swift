@@ -15,6 +15,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     struct Content: View {
         let gridModel: GridModel
         let toolbarModel: SwitcherToolbarModel
+        let web3Model: Web3Model
         let shareURL: (URL, UIView) -> Void
 
         var body: some View {
@@ -24,6 +25,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
                 .environmentObject(gridModel.spaceCardModel)
                 .environmentObject(gridModel.tabGroupCardModel)
                 .environmentObject(gridModel)
+                .environmentObject(web3Model)
                 .environment(
                     \.onOpenURL, { gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) }
                 )
@@ -43,7 +45,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     let toolbarModel: SwitcherToolbarModel
 
     init(
-        tabManager: TabManager, toolbarModel: SwitcherToolbarModel,
+        tabManager: TabManager, toolbarModel: SwitcherToolbarModel, web3Model: Web3Model,
         shareURL: @escaping (URL, UIView) -> Void
     ) {
         self.gridModel = GridModel(tabManager: tabManager)
@@ -52,6 +54,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
             rootView: Content(
                 gridModel: gridModel,
                 toolbarModel: toolbarModel,
+                web3Model: web3Model,
                 shareURL: shareURL
             )
         )

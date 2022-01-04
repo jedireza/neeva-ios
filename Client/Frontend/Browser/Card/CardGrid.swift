@@ -18,6 +18,7 @@ struct CardGrid: View {
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var web3Model: Web3Model
 
     @State private var cardSize: CGFloat = CardUX.DefaultCardSize
     @State private var columnCount = 2
@@ -111,7 +112,8 @@ struct CardGrid: View {
                 grid
                     .offset(
                         x: (spaceModel.detailedSpace == nil
-                            && tabGroupModel.detailedTabGroup == nil)
+                            && tabGroupModel.detailedTabGroup == nil
+                            && !web3Model.showingWalletDetails)
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
                     .background(
@@ -156,6 +158,20 @@ struct CardGrid: View {
                         .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
                         .environment(\.cardSize, cardSize)
                         .environment(\.columns, columns)
+                    }
+                    if web3Model.showingWalletDetails {
+                        WalletDetailView()
+                            .frame(width: geom.size.width, height: geom.size.height)
+                            .background(
+                                Color.groupedBackground.edgesIgnoringSafeArea([
+                                    .bottom, .horizontal,
+                                ])
+                            )
+                            .transition(
+                                gridModel.animateDetailTransitions ? .flipFromRight : .identity
+                            )
+                            .environment(\.cardSize, cardSize)
+                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                     }
                 }.modifier(
                     DraggableDetail(
@@ -202,6 +218,7 @@ private struct DraggableDetail: ViewModifier {
     let width: CGFloat
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    @EnvironmentObject var web3Model: Web3Model
 
     func body(content: Content) -> some View {
         content
@@ -210,6 +227,7 @@ private struct DraggableDetail: ViewModifier {
                 if detailDragOffset == width {
                     spaceModel.detailedSpace = nil
                     tabGroupModel.detailedTabGroup = nil
+                    web3Model.showingWalletDetails = false
                     detailDragOffset = 0
                 }
             }

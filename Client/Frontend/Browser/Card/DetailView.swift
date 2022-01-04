@@ -80,7 +80,6 @@ where
             Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
             if tabGroupCardModel.detailedTabGroup != nil {
                 tabGroupGrid
-
                 if editMode == .active {
                     Button(
                         action: {

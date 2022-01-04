@@ -31,7 +31,7 @@ struct TopBarContent: View {
     let trackingStatsViewModel: TrackingStatsViewModel
     let chromeModel: TabChromeModel
     let readerModeModel: ReaderModeModel
-    let web3Model: Web3SessionModel
+    let web3Model: Web3Model
 
     let newTab: () -> Void
     let onCancel: () -> Void
@@ -118,7 +118,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
         trackingStatsViewModel: TrackingStatsViewModel,
         chromeModel: TabChromeModel,
         readerModeModel: ReaderModeModel,
-        web3Model: Web3SessionModel,
+        web3Model: Web3Model,
         delegate: TopBarDelegate,
         newTab: @escaping () -> Void,
         onCancel: @escaping () -> Void

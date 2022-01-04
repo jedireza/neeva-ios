@@ -75,7 +75,7 @@ struct DataManagementView: View {
             Section(header: Text("Data on This Device")) {
                 ForEach(
                     ClearableDataType.allCases.filter {
-                        FeatureFlag[.enableCryptoWallet] || $0 != .dapps
+                        $0 == .dapps ? FeatureFlag[.enableCryptoWallet] : true
                     }
                 ) { dataType in
                     Toggle(

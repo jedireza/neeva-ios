@@ -55,8 +55,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
         model.delegate = self
         return model
     }()
-    private(set) lazy var web3SessionModel: Web3SessionModel = {
-        return Web3SessionModel(server: self.server, presenter: self, tabManager: self.tabManager)
+    private(set) lazy var web3Model: Web3Model = {
+        return Web3Model(server: self.server, presenter: self, tabManager: self.tabManager)
     }()
 
     private(set) lazy var suggestionModel: SuggestionModel = {
@@ -100,7 +100,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
                             .environmentObject(self.gridModel.spaceCardModel)
                     }
                 },
-                onNeevaMenuAction: self.perform(neevaMenuAction:))
+                onNeevaMenuAction: self.perform(neevaMenuAction:)),
+            web3Model: self.web3Model
         ) { url, view in
             let helper = ShareExtensionHelper(url: url, tab: nil)
             let controller = helper.createActivityViewController({ (_, _) in })
@@ -438,6 +439,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 SpaceStore.suggested.refresh()
             }
         }
+
+        if FeatureFlag[.enableCryptoWallet] {
+            DispatchQueue.main.async {
+                AssetStore.shared.refresh()
+            }
+        }
     }
 
     override func viewDidLoad() {
@@ -480,7 +487,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             trackingStatsViewModel: trackingStatsViewModel,
             chromeModel: chromeModel,
             readerModeModel: readerModeModel,
-            web3Model: web3SessionModel,
+            web3Model: web3Model,
             delegate: self,
             newTab: { self.openURLInNewTab(nil) },
             onCancel: { [weak self] in
