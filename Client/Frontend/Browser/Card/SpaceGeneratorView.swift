@@ -44,25 +44,24 @@ struct SpaceGeneratorView: View {
                     .foregroundColor(.label)
                 Spacer()
                 if canEdit {
-                    Button(
-                        action: {
-                            guard let space = spaceCardModel.detailedSpace?.space,
-                                let index = space.generators?.index(
-                                    where: { $0.id == generator.id })
-                            else {
-                                return
-                            }
+                    Button(action: {
+                        guard
+                            let space = spaceCardModel.detailedSpace?.space,
+                            let index = space.generators?.firstIndex(where: {
+                                $0.id == generator.id
+                            })
+                        else {
+                            return
+                        }
 
-                            space.generators?.remove(at: index)
-                            spaceCardModel.detailedSpace?.objectWillChange.send()
-                            spaceCardModel.deleteGeneratorFromSpace(
-                                spaceID: space.id.id, generatorID: generator.id)
-
-                        },
-                        label: {
-                            Symbol(decorative: .trash, style: .headingSmall)
-                                .foregroundColor(.secondaryLabel)
-                        })
+                        space.generators?.remove(at: index)
+                        spaceCardModel.detailedSpace?.objectWillChange.send()
+                        spaceCardModel.deleteGeneratorFromSpace(
+                            spaceID: space.id.id, generatorID: generator.id)
+                    }) {
+                        Symbol(decorative: .trash, style: .headingSmall)
+                            .foregroundColor(.secondaryLabel)
+                    }
                 }
             }
             .padding(.vertical, 12)

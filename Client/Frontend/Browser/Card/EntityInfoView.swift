@@ -14,11 +14,11 @@ struct EntityInfoView: View {
             NewsInfoView(newsItem: newsItem)
         case .retailProduct(let product):
             ProductInfoView(product: product, url: url)
-        case .richEntity(let _):
+        case .richEntity:
             EmptyView()
         case .recipe(let recipe):
             RecipeInfoView(recipe: recipe, url: url)
-        case .techDoc(let _):
+        case .techDoc:
             ProviderInfo(url: url)
         case .webPage:
             URLDisplayView(url: url)

@@ -86,38 +86,36 @@ class TabCardModel: CardModel, TabEventHandler {
 
         var index: Int = singleTabFilter.startIndex
         while !singleTabFilter.isEmpty && index < allDetails.count {
-            var singleTabIndex = singleTabFilter[index...].firstIndex(where: { $0 })
-
-            if singleTabIndex == nil {
+            guard var singleTabIndex = singleTabFilter[index...].firstIndex(where: { $0 }) else {
                 break
             }
 
-            singleTabIndex = singleTabIndex! - 1
+            singleTabIndex = singleTabIndex - 1
 
-            var afterGroupIndex = tabGroupsFilter[(singleTabIndex! + 1)...].firstIndex(where: {
+            let afterGroupIndex = tabGroupsFilter[(singleTabIndex + 1)...].firstIndex(where: {
                 $0 > 0
             })
 
-            if afterGroupIndex == nil {
-                let detail = allDetails.remove(at: singleTabIndex!)
+            guard let afterGroupIndex = afterGroupIndex else {
+                let detail = allDetails.remove(at: singleTabIndex)
                 allDetails.append(detail)
                 break
             }
 
-            let detail = allDetails.remove(at: singleTabIndex!)
-            allDetails.insert(detail, at: afterGroupIndex! - 1)
+            let detail = allDetails.remove(at: singleTabIndex)
+            allDetails.insert(detail, at: afterGroupIndex - 1)
 
-            index = afterGroupIndex!
+            index = afterGroupIndex
 
             let closestSingleTab = singleTabFilter[index...].firstIndex(where: { $0 })
             let closestTabGroup = tabGroupsFilter[index...].firstIndex(where: { $0 == 0 })
-            if let closestSingleTab = closestSingleTab, let closestTabGroup = closestTabGroup,
-                closestTabGroup == closestSingleTab
-            {
-                index = closestTabGroup + 1
-            } else if closestTabGroup != nil {
-                index = closestTabGroup!
-                singleTabFilter[closestTabGroup!] = true
+            if let closestTabGroup = closestTabGroup {
+                if closestTabGroup == closestSingleTab {
+                    index = closestTabGroup + 1
+                } else {
+                    index = closestTabGroup
+                    singleTabFilter[closestTabGroup] = true
+                }
             }
         }
     }

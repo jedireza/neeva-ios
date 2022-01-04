@@ -166,18 +166,16 @@ extension BrowserViewController: ToolbarDelegate {
             tabManager.isIncognito
             ? tabManager.privateTabs.count : tabManager.normalTabs.count
 
-        if let tab = self.tabManager.selectedTab {
-            if tabCount > 0 {
-                let closeTabAction = UIAction(
-                    title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark)
-                ) { _ in
-                    if let tab = self.tabManager.selectedTab {
-                        self.tabManager.removeTabAndUpdateSelectedTab(tab)
-                    }
+        if self.tabManager.selectedTab != nil && tabCount > 0 {
+            let closeTabAction = UIAction(
+                title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark)
+            ) { _ in
+                if let tab = self.tabManager.selectedTab {
+                    self.tabManager.removeTabAndUpdateSelectedTab(tab)
                 }
-                closeTabAction.accessibilityIdentifier = "Close Tab Action"
-                actions.insert(closeTabAction, at: 0)
             }
+            closeTabAction.accessibilityIdentifier = "Close Tab Action"
+            actions.insert(closeTabAction, at: 0)
         }
 
         if tabCount > 1 {
