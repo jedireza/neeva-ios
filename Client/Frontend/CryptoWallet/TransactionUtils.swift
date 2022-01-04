@@ -8,7 +8,7 @@ import secp256k1
 import web3swift
 
 struct WalletAccessor {
-    let keystore: EthereumKeystoreV3
+    let keystore: EthereumKeystoreV3?
     let password: String
     let web3: web3
 
@@ -18,8 +18,10 @@ struct WalletAccessor {
         let key = Defaults[.cryptoPrivateKey]
         let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
         let dataKey = Data.fromHex(formattedKey)!
-        self.keystore = try! EthereumKeystoreV3(privateKey: dataKey, password: password)!
-        self.web3.addKeystoreManager(KeystoreManager([keystore]))
+        self.keystore = try? EthereumKeystoreV3(privateKey: dataKey, password: password)
+        if let keystore = keystore {
+            self.web3.addKeystoreManager(KeystoreManager([keystore]))
+        }
     }
 
     var privateKey: [UInt8] {
@@ -37,7 +39,7 @@ struct WalletAccessor {
     }
 
     var publicAddress: String {
-        return keystore.addresses?.first?.address ?? ""
+        return keystore?.addresses?.first?.address ?? ""
     }
 
     func sign(message: String, using publicAddress: String) throws -> String {

@@ -14,7 +14,7 @@ func DappsSessionKey(for sessionID: String) -> String {
 extension BrowserViewController: ServerDelegate {
 
     @discardableResult func connectWallet(to wcURL: WCURL) -> Bool {
-        guard FeatureFlag[.enableCryptoWallet] else {
+        guard FeatureFlag[.enableCryptoWallet], !WalletAccessor().publicAddress.isEmpty else {
             return false
         }
 
