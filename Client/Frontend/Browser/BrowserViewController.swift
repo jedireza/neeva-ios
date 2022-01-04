@@ -1097,19 +1097,18 @@ class BrowserViewController: UIViewController, ModalPresenter {
             URLRequest(url: url), afterTab: tabManager.selectedTab, isPrivate: isIncognito
         )
 
-        var toastLabelText: String
+        var toastLabelText: LocalizedStringKey
 
         if isIncognito {
-            toastLabelText =
-                Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
+            toastLabelText = "New Incognito Tab opened"
         } else {
-            toastLabelText = Strings.ContextMenuButtonToastNewTabOpenedLabelText
+            toastLabelText = "New Tab opened"
         }
 
         if let toastManager = self.getSceneDelegate()?.toastViewManager {
             toastManager.makeToast(
                 text: toastLabelText,
-                buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                buttonText: "Switch",
                 buttonAction: {
                     self.tabManager.selectTab(tab)
                 }
@@ -1201,9 +1200,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
                             if let toastManager = self.getSceneDelegate()?.toastViewManager {
-                                toastManager.makeToast(
-                                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage
-                                ).enqueue(manager: toastManager)
+                                toastManager.makeToast(text: "Pinned To Top Sites").enqueue(manager: toastManager)
                             }
                         }
                     }
@@ -1223,9 +1220,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
                             if let toastManager = self.getSceneDelegate()?.toastViewManager {
-                                toastManager.makeToast(
-                                    text: Strings.AppMenuRemovePinFromTopSitesConfirmMessage
-                                ).enqueue(manager: toastManager)
+                                toastManager.makeToast(text: "Removed From Top Sites").enqueue(manager: toastManager)
                             }
                         }
                     }

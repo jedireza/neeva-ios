@@ -162,7 +162,7 @@ struct ShareToSocialView: View {
 struct SocialShareButton: View {
     let imageName: String
     let isSystemImage: Bool
-    let label: String
+    let label: LocalizedStringKey
     let onClick: () -> Void
     @State var isPressed: Bool = false
 

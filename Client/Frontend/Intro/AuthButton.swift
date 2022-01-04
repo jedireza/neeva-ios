@@ -6,7 +6,8 @@ import SwiftUI
 public struct AuthButton: View {
     var action: () -> Void
     var icon: String
-    var label: String
+    var isSignIn: Bool
+    var service: String
     var textColor: Color
     var backgroundColor: Color
     var tintIcon: Bool = false
@@ -18,7 +19,7 @@ public struct AuthButton: View {
                     .renderingMode(tintIcon ? .template : .none)
                     .padding(.leading, 28)
                 Spacer()
-                Text(label)
+                Text(isSignIn ? "Sign in with \(service)" : "Sign up with \(service)")
                 Spacer()
                 Spacer()
             }
@@ -40,7 +41,8 @@ public struct SignUpWithAppleButton: View {
         AuthButton(
             action: action,
             icon: "apple",
-            label: "Sign \(onSignInMode ? "in" : "up") with Apple",
+            isSignIn: onSignInMode,
+            service: "Apple",
             textColor: .brand.white,
             backgroundColor: Color.black,
             tintIcon: true)
@@ -55,7 +57,8 @@ public struct SignUpWithGoogleButton: View {
         AuthButton(
             action: action,
             icon: "google_icon",
-            label: "Sign \(onSignInMode ? "in" : "up") with Google",
+            isSignIn: onSignInMode,
+            service: "Google",
             textColor: Color.ui.gray20,
             backgroundColor: .brand.white)
     }
@@ -69,7 +72,8 @@ public struct SignUpWithMicrosoftButton: View {
         AuthButton(
             action: action,
             icon: "microsoft",
-            label: "Sign \(onSignInMode ? "in" : "up") with Microsoft",
+            isSignIn: onSignInMode,
+            service: "Microsoft",
             textColor: Color.ui.gray20,
             backgroundColor: .brand.white)
     }

@@ -7,7 +7,7 @@ import UIKit
 class ToastViewManager: QueuedViewManager<ToastView> {
     /// Creates Toast that can then be displayed
     public func makeToast(
-        text: String, buttonText: String? = nil,
+        text: LocalizedStringKey, buttonText: LocalizedStringKey? = nil,
         toastProgressViewModel: ToastProgressViewModel? = nil, displayTime: Double = 4.5,
         autoDismiss: Bool = true, buttonAction: (() -> Void)? = nil
     ) -> ToastView {

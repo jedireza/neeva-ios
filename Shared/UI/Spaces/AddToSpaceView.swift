@@ -44,11 +44,10 @@ public class AddToSpaceRequest: ObservableObject {
     @Published public var targetSpaceID: String?
     @Published public var error: Error?
 
-    public var textInfo: (String, String, Bool) {
+    public var textInfo: (LocalizedStringKey, LocalizedStringKey, Bool) {
         switch self.state {
         case .initial:
-            assert(false)  // Should not be reached
-            return ("", "", false)
+            fatalError()
         case .creatingSpace, .savingToSpace:
             return ("Saving...", "Saved to \"\(self.targetSpaceName!)\"", false)
         case .savedToSpace:

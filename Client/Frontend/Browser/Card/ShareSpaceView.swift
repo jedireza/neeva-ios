@@ -179,7 +179,7 @@ struct ShareSpaceView: View {
                         pictureURL: acl.profile.pictureUrl,
                         displayName: acl.profile.displayName, email: acl.profile.email)
                     Spacer(minLength: 0)
-                    Text(acl.acl.rawValue)
+                    Text(LocalizedStringKey(acl.acl.rawValue))
                         .withFont(.labelMedium)
                         .lineLimit(1)
                         .foregroundColor(Color.label)
