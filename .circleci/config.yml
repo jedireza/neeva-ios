@@ -146,7 +146,7 @@ jobs:
     # info on using Xcode 13.0.0 at this time.
     macos:
       xcode: "13.0.0"
-    resource_class: m2.medium
+    resource_class: macos.x86.medium.gen2
     steps:
       - bootstrap
       - build-codegen
@@ -161,7 +161,7 @@ jobs:
     # info on using Xcode 13.0.0 at this time.
     macos:
       xcode: "13.0.0"
-    resource_class: m2.medium
+    resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - build-swift-format
@@ -174,7 +174,7 @@ jobs:
     # info on using Xcode 13.0.0 at this time.
     macos:
       xcode: "13.0.0"
-    resource_class: m2.medium
+    resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - ui-tests
@@ -183,7 +183,7 @@ jobs:
     # info on using Xcode 13.0.0 at this time.
     macos:
       xcode: "13.0.0"
-    resource_class: m2.medium
+    resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - xcui-tests
@@ -192,7 +192,7 @@ jobs:
     # info on using Xcode 13.0.0 at this time.
     macos:
       xcode: "13.0.0"
-    resource_class: m2.medium
+    resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - xcui-tests-ipad
