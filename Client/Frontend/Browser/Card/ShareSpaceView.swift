@@ -10,7 +10,7 @@ enum ShareSpaceViewUX {
 }
 
 extension SpaceACLLevel {
-    var editText: String {
+    var editText: LocalizedStringKey {
         switch self {
         case .comment:
             return "Can comment"
@@ -179,7 +179,7 @@ struct ShareSpaceView: View {
                         pictureURL: acl.profile.pictureUrl,
                         displayName: acl.profile.displayName, email: acl.profile.email)
                     Spacer(minLength: 0)
-                    Text(LocalizedStringKey(acl.acl.rawValue))
+                    Text(acl.acl.editText)
                         .withFont(.labelMedium)
                         .lineLimit(1)
                         .foregroundColor(Color.label)
