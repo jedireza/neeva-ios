@@ -56,7 +56,8 @@ enum NavigationPath {
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .url(
-                webURL: NavigationPath.maybeRewriteURL(url, components) ?? url, isPrivate: isPrivate)
+                webURL: NavigationPath.maybeRewriteURL(url, components) ?? url, isPrivate: isPrivate
+            )
         } else if urlString.starts(with: "\(scheme)://space"),
             let spaceId = components.valueForQuery("id")
         {

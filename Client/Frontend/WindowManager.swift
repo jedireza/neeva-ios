@@ -100,7 +100,8 @@ class WindowManager: KeyboardReadable {
 
     public func createWindow(
         with rootViewController: UIViewController, placement: WindowPlacement, height: CGFloat,
-        addShadow: Bool = false, checkKeyboard: Bool = true, completionHandler: @escaping () -> Void = {}
+        addShadow: Bool = false, checkKeyboard: Bool = true,
+        completionHandler: @escaping () -> Void = {}
     ) {
         guard let scene = parentWindow.windowScene else {
             return
@@ -123,7 +124,8 @@ class WindowManager: KeyboardReadable {
                         deadline: .now() + KeyboardHelper.keyboardAnimationTime
                     ) {
                         self.createWindow(
-                            with: rootViewController, placement: placement, height: height, addShadow: addShadow,
+                            with: rootViewController, placement: placement, height: height,
+                            addShadow: addShadow,
                             checkKeyboard: false, completionHandler: completionHandler)
                     }
                 }

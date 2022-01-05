@@ -100,8 +100,10 @@ public class CheatsheetMenuViewModel: ObservableObject {
         tabManager.selectedTab?.$cheatsheetDataLoading.assign(to: \.cheatsheetDataLoading, on: self)
             .store(in: &subscriptions)
 
-        tabManager.selectedTab?.$currentCheatsheetQuery.assign(to: \.currentCheatsheetQuery, on: self)
-            .store(in: &subscriptions)
+        tabManager.selectedTab?.$currentCheatsheetQuery.assign(
+            to: \.currentCheatsheetQuery, on: self
+        )
+        .store(in: &subscriptions)
 
         tabManager.selectedTab?.$cheatsheetData.assign(to: \.cheatsheetInfo, on: self).store(
             in: &subscriptions)
@@ -130,13 +132,18 @@ public struct CheatsheetMenuView: View {
                 if model.currentPageURL?.origin == NeevaConstants.appURL.origin {
                     VStack(alignment: .center) {
                         VStack(alignment: .leading) {
-                            Text("What is Neeva Cheatsheet?").withFont(.headingXLarge).padding(.top, 32)
-                            Text("Cheatsheet will show you information about the website you're visiting.")
-                                .withFont(.bodyLarge)
-                                .foregroundColor(.secondaryLabel)
-                            Text("Try it by visiting a website outside of Neeva and tap this Neeva logo again!")
-                                .withFont(.bodyLarge)
-                                .foregroundColor(.secondaryLabel)
+                            Text("What is Neeva Cheatsheet?").withFont(.headingXLarge).padding(
+                                .top, 32)
+                            Text(
+                                "Cheatsheet will show you information about the website you're visiting."
+                            )
+                            .withFont(.bodyLarge)
+                            .foregroundColor(.secondaryLabel)
+                            Text(
+                                "Try it by visiting a website outside of Neeva and tap this Neeva logo again!"
+                            )
+                            .withFont(.bodyLarge)
+                            .foregroundColor(.secondaryLabel)
                         }
                         .padding(.horizontal, 32)
                         .fixedSize(horizontal: false, vertical: true)

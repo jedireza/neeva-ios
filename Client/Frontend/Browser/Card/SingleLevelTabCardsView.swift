@@ -19,7 +19,7 @@ struct SingleLevelTabCardsView: View {
     @Environment(\.columns) private var columns
 
     let containerGeometry: GeometryProxy
-    
+
     var body: some View {
         Group {
             ForEach(
@@ -33,15 +33,18 @@ struct SingleLevelTabCardsView: View {
                     let groupDetails = tabGroupModel.allDetails.first { $0.id == rootID }
                 {
                     if groupDetails.isShowingDetails {
-                        ForEach((0..<getTotalCards(groupDetails.allDetails.count, columns.count)), id:\.self) { index in
-                             VStack(spacing: 0) {
+                        ForEach(
+                            (0..<getTotalCards(groupDetails.allDetails.count, columns.count)),
+                            id: \.self
+                        ) { index in
+                            VStack(spacing: 0) {
                                 HStack {
                                     if isTopLeft(index, groupDetails.allDetails.count) {
                                         Symbol(decorative: .squareGrid2x2Fill)
                                             .foregroundColor(.label)
-                                            Text(groupDetails.title)
-                                                .withFont(.labelLarge)
-                                                .foregroundColor(.label)
+                                        Text(groupDetails.title)
+                                            .withFont(.labelLarge)
+                                            .foregroundColor(.label)
                                     }
                                     Spacer()
                                     if isTopRight(index, groupDetails.allDetails.count) {
@@ -51,250 +54,53 @@ struct SingleLevelTabCardsView: View {
                                             Label("caret", systemImage: "chevron.up")
                                                 .foregroundColor(.label)
                                                 .labelStyle(.iconOnly)
-                                                .rotationEffect(.degrees(groupDetails.isShowingDetails ? -180 : 0))
+                                                .rotationEffect(
+                                                    .degrees(
+                                                        groupDetails.isShowingDetails ? -180 : 0)
+                                                )
                                                 .padding()
                                         }
                                     }
                                 }.padding(.leading, CardGridUX.GridSpacing).frame(
                                     height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                                 if index < groupDetails.allDetails.count {
-                                     FittedCard(details: groupDetails.allDetails[index])
-                                        .modifier(
-                                            CardTransitionModifier(
-                                                details: details, containerGeometry: containerGeometry)
-                                        )
-                                        .id(details.id)
-                                        .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-                                 }
-                            }
-                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                            .frame(
-                                width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                                height: size * aspectRatio + CardUX.HeaderSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                            )
-                            .background(Color.secondarySystemFill)
-                            .cornerRadius(
-                                24, corners: isTopLeft(index, groupDetails.allDetails.count) ? .topLeft : (isTopRight(index, groupDetails.allDetails.count) ? .topRight : (isBottomLeft(index, groupDetails.allDetails.count) ? .bottomLeft : (isBottomRight(index, groupDetails.allDetails.count) ? .bottomRight : [])) )
-                            )
-                            .padding(.horizontal, -CardGridUX.GridSpacing)
-                        
-                        }
-                    /*
-                    if groupDetails.isShowingDetails && groupDetails.allDetails.count > 2 {
-                        //draw top left card
-                        VStack(spacing: 0) {
-                            HStack {
-                                Symbol(decorative: .squareGrid2x2Fill)
-                                    .foregroundColor(.label)
-                                Text(groupDetails.title)
-                                    .withFont(.labelLarge)
-                                    .foregroundColor(.label)
-                                Spacer()
-                            }.padding(.leading, CardGridUX.GridSpacing).frame(
-                                height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                            FittedCard(details: groupDetails.allDetails[0])
-                                .modifier(
-                                    CardTransitionModifier(
-                                        details: details, containerGeometry: containerGeometry)
-                                )
-                                .id(details.id)
-                                .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-
-                        }
-                        .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                        .frame(
-                            width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                            height: size * aspectRatio + CardUX.HeaderSize
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                        )
-                        .background(Color.secondarySystemFill)
-                        .cornerRadius(
-                            24, corners: .topLeft
-                        )
-                        .padding(.horizontal, -CardGridUX.GridSpacing)
-                        
-                        //draw top right card
-                        VStack(spacing: 0) {
-                            HStack {
-                                Spacer()
-                                Button {
-                                    groupDetails.isShowingDetails.toggle()
-                                } label: {
-                                    Label("caret", systemImage: "chevron.up")
-                                        .foregroundColor(.label)
-                                        .labelStyle(.iconOnly)
-                                        .rotationEffect(.degrees(groupDetails.isShowingDetails ? -180 : 0))
-                                        .padding()
-                                }
-                            }.padding(.leading, CardGridUX.GridSpacing).frame(
-                                height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                            FittedCard(details: groupDetails.allDetails[1])
-                                .modifier(
-                                    CardTransitionModifier(
-                                        details: details, containerGeometry: containerGeometry)
-                                )
-                                .id(details.id)
-                                .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-
-                        }
-                        .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                        .frame(
-                            width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                            height: size * aspectRatio + CardUX.HeaderSize
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                        )
-                        .background(Color.secondarySystemFill)
-                        .cornerRadius(
-                            24, corners: .topRight
-                        )
-                        .padding(.horizontal, -CardGridUX.GridSpacing)
-
-                        if groupDetails.allDetails.count > 4 {
-                            ForEach(groupDetails.allDetails.indices.suffix(from: 2).prefix(groupDetails.allDetails.count - 4), id:\.self) { index in
-                                VStack(spacing: 0) {
+                                if index < groupDetails.allDetails.count {
                                     FittedCard(details: groupDetails.allDetails[index])
                                         .modifier(
                                             CardTransitionModifier(
-                                                details: details, containerGeometry: containerGeometry)
+                                                details: details,
+                                                containerGeometry: containerGeometry)
                                         )
                                         .id(details.id)
+                                        .padding(
+                                            .top,
+                                            SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
                                 }
-                                .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                                .frame(
-                                    width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                                    height: size * aspectRatio + CardUX.HeaderSize
-                                        + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                        + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                        + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                        + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                                )
-                                .background(Color.secondarySystemFill)
-                                .padding(.horizontal, -CardGridUX.GridSpacing)
                             }
-                        }
+                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
+                            .frame(
+                                width: size * 1 + 1.5 * CardGridUX.GridSpacing,
+                                height: size * aspectRatio + CardUX.HeaderSize
+                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
+                                    + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
+                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
+                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
+                            )
+                            .background(Color.secondarySystemFill)
+                            .cornerRadius(
+                                24,
+                                corners: isTopLeft(index, groupDetails.allDetails.count)
+                                    ? .topLeft
+                                    : (isTopRight(index, groupDetails.allDetails.count)
+                                        ? .topRight
+                                        : (isBottomLeft(index, groupDetails.allDetails.count)
+                                            ? .bottomLeft
+                                            : (isBottomRight(index, groupDetails.allDetails.count)
+                                                ? .bottomRight : [])))
+                            )
+                            .padding(.horizontal, -CardGridUX.GridSpacing)
 
-                        if groupDetails.allDetails.count % 2 == 0 {
-                            // first draw bottom left, then bottom right.
-                            VStack(spacing: 0) {
-                                HStack {
-                                    Spacer()
-                                }.padding(.leading, CardGridUX.GridSpacing).frame(
-                                    height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                                FittedCard(details: groupDetails.allDetails[groupDetails.allDetails.count-2])
-                                    .modifier(
-                                        CardTransitionModifier(
-                                            details: details, containerGeometry: containerGeometry)
-                                    )
-                                    .id(details.id)
-                                    .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-                            }
-                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                            .frame(
-                                width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                                height: size * aspectRatio + CardUX.HeaderSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                            )
-                            .background(Color.secondarySystemFill)
-                            .cornerRadius(
-                                24, corners: .bottomLeft
-                            )
-                            .padding(.horizontal, -CardGridUX.GridSpacing)
-                            //draw bottom right card
-                            VStack(spacing: 0) {
-                                HStack {
-                                    Spacer()
-                                }.padding(.leading, CardGridUX.GridSpacing).frame(
-                                    height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                                FittedCard(details: groupDetails.allDetails[groupDetails.allDetails.count-1])
-                                    .modifier(
-                                        CardTransitionModifier(
-                                            details: details, containerGeometry: containerGeometry)
-                                    )
-                                    .id(details.id)
-                                    .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-                                
-                            }
-                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                            .frame(
-                                width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                                height: size * aspectRatio + CardUX.HeaderSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                            )
-                            .background(Color.secondarySystemFill)
-                            .cornerRadius(
-                                24, corners: .bottomRight
-                            )
-                            .padding(.horizontal, -CardGridUX.GridSpacing)
-                        } else {
-                            //bottom left
-                            VStack(spacing: 0) {
-                                HStack {
-                                    Spacer()
-                                }.padding(.leading, CardGridUX.GridSpacing).frame(
-                                    height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                                FittedCard(details: groupDetails.allDetails[groupDetails.allDetails.count-1])
-                                    .modifier(
-                                        CardTransitionModifier(
-                                            details: details, containerGeometry: containerGeometry)
-                                    )
-                                    .id(details.id)
-                                    .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-                            }
-                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                            .frame(
-                                width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                                height: size * aspectRatio + CardUX.HeaderSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                            )
-                            .background(Color.secondarySystemFill)
-                            .cornerRadius(
-                                24, corners: .bottomLeft
-                            )
-                            .padding(.horizontal, -CardGridUX.GridSpacing)
-                            //bottom right blank card
-                            VStack(spacing: 0) {
-                                HStack {
-                                    Spacer()
-                                }.padding(.leading, CardGridUX.GridSpacing).frame(
-                                    height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                            }
-                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                            .frame(
-                                width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                                height: size * aspectRatio + CardUX.HeaderSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                            )
-                            .background(Color.secondarySystemFill)
-                            .cornerRadius(
-                                24, corners: .bottomRight
-                            )
-                            .padding(.horizontal, -CardGridUX.GridSpacing)
                         }
-                     */
-                    }
-                    else {
+                    } else {
                         VStack(spacing: 0) {
                             HStack {
                                 Symbol(decorative: .squareGrid2x2Fill)
@@ -309,12 +115,14 @@ struct SingleLevelTabCardsView: View {
                                     Label("caret", systemImage: "chevron.up")
                                         .foregroundColor(.label)
                                         .labelStyle(.iconOnly)
-                                        .rotationEffect(.degrees(groupDetails.isShowingDetails ? -180 : 0))
+                                        .rotationEffect(
+                                            .degrees(groupDetails.isShowingDetails ? -180 : 0)
+                                        )
                                         .padding()
                                 }
                             }.padding(.leading, CardGridUX.GridSpacing).frame(
                                 height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                            
+
                             ScrollView(.horizontal, showsIndicators: false) {
                                 LazyHStack(
                                     spacing: SingleLevelTabCardsViewUX.TabGroupCarouselTabSpacing
@@ -333,9 +141,11 @@ struct SingleLevelTabCardsView: View {
                                     }
                                 }
                             }
-                            .padding(.bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding)
+                            .padding(
+                                .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
+                            )
                             .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-                             
+
                         }
                         .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
                         .frame(
@@ -354,8 +164,9 @@ struct SingleLevelTabCardsView: View {
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
                         .id(groupDetails.id)
-                        
-                        Color.clear.frame(width: size, height: size * aspectRatio + CardUX.HeaderSize)
+
+                        Color.clear.frame(
+                            width: size, height: size * aspectRatio + CardUX.HeaderSize)
                     }
                 } else {
                     FittedCard(details: details)
@@ -370,27 +181,27 @@ struct SingleLevelTabCardsView: View {
     }
 
     func getTotalCards(_ total: Int, _ columns: Int) -> Int {
-        return Int(round((total*1.0)/columns))*columns
+        return Int(round((total * 1.0) / columns)) * columns
     }
-    
+
     func isTopLeft(_ index: Int, _ total: Int) -> Bool {
-        let row = Int(round((total*1.0)/columns.count))
-        return index/row == 0 && index%columns.count==0
-        
+        let row = Int(round((total * 1.0) / columns.count))
+        return index / row == 0 && index % columns.count == 0
+
     }
-    
+
     func isTopRight(_ index: Int, _ total: Int) -> Bool {
-        let row = Int(round((total*1.0)/columns.count))
-        return index/row == 0 && index%columns.count == columns.count-1
+        let row = Int(round((total * 1.0) / columns.count))
+        return index / row == 0 && index % columns.count == columns.count - 1
     }
-    
+
     func isBottomLeft(_ index: Int, _ total: Int) -> Bool {
-        let row = Int(round((total*1.0)/columns.count))
-        return index/row == row-1 && index%columns.count == 0
+        let row = Int(round((total * 1.0) / columns.count))
+        return index / row == row - 1 && index % columns.count == 0
     }
-    
+
     func isBottomRight(_ index: Int, _ total: Int) -> Bool {
-        let row = Int(round((total*1.0)/columns.count))
-        return index/row == row-1 && index%columns.count == columns.count-1
+        let row = Int(round((total * 1.0) / columns.count))
+        return index / row == row - 1 && index % columns.count == columns.count - 1
     }
 }

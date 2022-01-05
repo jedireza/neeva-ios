@@ -106,7 +106,8 @@ struct CardGrid: View {
                 grid
                     .offset(
                         x: (spaceModel.detailedSpace == nil
-                            && (tabGroupModel.detailedTabGroup == nil || FeatureFlag[.tabGroupsNewDesign]))
+                            && (tabGroupModel.detailedTabGroup == nil
+                                || FeatureFlag[.tabGroupsNewDesign]))
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
                     .background(
@@ -149,7 +150,9 @@ struct CardGrid: View {
                                     .bottom, .horizontal,
                                 ])
                             )
-                            .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
+                            .transition(
+                                gridModel.animateDetailTransitions ? .flipFromRight : .identity
+                            )
                             .environment(\.cardSize, cardSize)
                             .environment(\.columns, columns)
                         }

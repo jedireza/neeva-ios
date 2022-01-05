@@ -90,7 +90,7 @@ extension BaseTestCase {
         app.buttons["More"].tap(force: true)
         waitForExistence(app.buttons[label], timeout: 30)
         action(app.buttons[label])
-        
+
         if shouldDismissOverlay {
             tapCoordinate(at: 5, and: 100)
             waitForExistence(app.buttons["More"])

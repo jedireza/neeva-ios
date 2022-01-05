@@ -475,7 +475,7 @@ class TabGroupCardModel: CardModel {
                 }
                 tabgroup.isShowingDetails = false
             }
-        }        
+        }
     }
     @Published var representativeTabs: [Tab] = []
 
