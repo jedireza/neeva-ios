@@ -226,8 +226,9 @@ struct ShareSpaceView: View {
                             with: tabModel.manager.scene)?.toastViewManager
                     {
                         toastManager.makeToast(
-                            text:
-                                "Success! Space shared with \(sharedUsers) \(sharedUsers == 1 ? "person" : "people")"
+                            text: sharedUsers == 1
+                                ? "Success! Space shared with 1 person"
+                                : "Success! Space shared with \(sharedUsers) people"
                         )
                         .enqueue(manager: toastManager)
                     }
