@@ -207,6 +207,7 @@
 		6618B51E26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6618B51D26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift */; };
 		661A3955271E48A2002F32F5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 661A3954271E48A2002F32F5 /* Main.storyboard */; };
 		661AFF1A2727A4840099B3E4 /* CardGridOverflowMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661AFF192727A4840099B3E4 /* CardGridOverflowMenuView.swift */; };
+		661E829A2783FF2100040C3E /* CGFloatExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661E82982783FDD500040C3E /* CGFloatExtension.swift */; };
 		661F4FB5269CAAE00078238B /* DownloadOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 661F4FB4269CAAE00078238B /* DownloadOverlayView.swift */; };
 		6626BC9526B9B1A400EE0760 /* FindInPageOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6626BC9426B9B1A400EE0760 /* FindInPageOverlayView.swift */; };
 		6626BC9726B9B1AC00EE0760 /* FindInPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6626BC9626B9B1AC00EE0760 /* FindInPageViewController.swift */; };
@@ -1321,6 +1322,7 @@
 		6618B51D26AB48D200ED51C9 /* BaseTestCase+ActionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BaseTestCase+ActionExtension.swift"; sourceTree = "<group>"; };
 		661A3954271E48A2002F32F5 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Main.storyboard; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		661AFF192727A4840099B3E4 /* CardGridOverflowMenuView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardGridOverflowMenuView.swift; sourceTree = "<group>"; };
+		661E82982783FDD500040C3E /* CGFloatExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGFloatExtension.swift; sourceTree = "<group>"; };
 		661F4FB4269CAAE00078238B /* DownloadOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownloadOverlayView.swift; sourceTree = "<group>"; };
 		6626BC9426B9B1A400EE0760 /* FindInPageOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindInPageOverlayView.swift; sourceTree = "<group>"; };
 		6626BC9626B9B1AC00EE0760 /* FindInPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindInPageViewController.swift; sourceTree = "<group>"; };
@@ -3642,6 +3644,7 @@
 			children = (
 				E65075711E37F7AB006961AC /* ArrayExtensions.swift */,
 				C9BED4C226680A33001D9C77 /* ColorExtensions.swift */,
+				661E82982783FDD500040C3E /* CGFloatExtension.swift */,
 				E683F0C11E93D4E90035D990 /* DictionaryExtensions.swift */,
 				C9E5F2BB2674025700025A7F /* EdgeInsetsExtensions.swift */,
 				C9F49CC5266FFB8200F3408A /* Environment.swift */,
@@ -5120,6 +5123,7 @@
 				C9C18E5B265598D1004710CD /* TestSpaces.swift in Sources */,
 				E65075B31E37F7AB006961AC /* KeyboardHelper.swift in Sources */,
 				BCC39A2126C7258600EEC559 /* UserFlagStore.swift in Sources */,
+				661E829A2783FF2100040C3E /* CGFloatExtension.swift in Sources */,
 				E65075AA1E37F7AB006961AC /* URLProtectionSpaceExtensions.swift in Sources */,
 				EB7FFFC820A9D38D003E1E34 /* AlertController.swift in Sources */,
 				C9BED4BF2667F83E001D9C77 /* SSOProvider.swift in Sources */,

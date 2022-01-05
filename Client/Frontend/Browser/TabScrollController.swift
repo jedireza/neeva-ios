@@ -224,13 +224,13 @@ extension TabScrollingController {
         }
 
         var updatedOffset = headerTopOffset - delta
-        headerTopOffset = clamp(updatedOffset, min: -topScrollHeight, max: 0)
+        headerTopOffset = updatedOffset.clamp(min: -topScrollHeight, max: 0)
         if isHeaderDisplayedForGivenOffset(updatedOffset) {
             scrollView?.contentOffset = CGPoint(x: contentOffset.x, y: contentOffset.y - delta)
         }
 
         updatedOffset = footerBottomOffset + delta
-        footerBottomOffset = clamp(updatedOffset, min: 0, max: bottomScrollHeight)
+        footerBottomOffset = updatedOffset.clamp(min: 0, max: bottomScrollHeight)
 
         let alpha = 1 - abs(headerTopOffset / topScrollHeight)
         chromeModel.controlOpacity = Double(alpha)
@@ -238,15 +238,6 @@ extension TabScrollingController {
 
     fileprivate func isHeaderDisplayedForGivenOffset(_ offset: CGFloat) -> Bool {
         return offset > -topScrollHeight && offset < 0
-    }
-
-    fileprivate func clamp(_ y: CGFloat, min: CGFloat, max: CGFloat) -> CGFloat {
-        if y >= max {
-            return max
-        } else if y <= min {
-            return min
-        }
-        return y
     }
 
     fileprivate func animateToolbarsWithOffsets(

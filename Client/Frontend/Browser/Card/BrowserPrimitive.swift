@@ -135,7 +135,7 @@ extension TabManager: ClosingManager, SelectingManager, AccessingManager {
     }
 
     func getAll() -> [Tab] {
-        return tabs.filter { $0.isIncognito == isIncognito }
+        return tabs
     }
 }
 

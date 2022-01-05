@@ -26,6 +26,7 @@ struct CardGrid: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     @State var detailDragOffset: CGFloat = 0
+    @State var dragOffset: CGFloat? = nil
 
     var topToolbar: Bool {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
@@ -61,21 +62,31 @@ struct CardGrid: View {
 
     @ViewBuilder var topBar: some View {
         if topToolbar {
-            SwitcherToolbarView(top: true, isEmpty: tabModel.isCardGridEmpty)
+            SwitcherToolbarView(
+                top: true, isEmpty: tabModel.isCardGridEmpty, dragOffset: dragOffset)
         } else {
-            GridPicker()
+            GridPicker(dragOffset: dragOffset)
         }
     }
 
     @ViewBuilder var grid: some View {
         VStack(spacing: 0) {
             topBar
+                .modifier(
+                    SwipeToSwitchToSpacesGesture(
+                        gridModel: gridModel, tabModel: tabModel, fromPicker: true
+                    ) {
+                        offset in
+                        self.dragOffset = offset
+                    })
+
             cardContainer
                 .accessibilityIdentifier("CardGrid")
                 .accessibilityValue(
                     Text(
                         "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
                     ))
+
             if !topToolbar {
                 SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
                     .frame(height: UIConstants.ToolbarHeight)
@@ -121,7 +132,10 @@ struct CardGrid: View {
                             ? Color.TrayBackground : Color.clear
                     )
                     .modifier(
-                        SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
+                        SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel) {
+                            offset in
+                            self.dragOffset = offset
+                        })
 
                 if gridModel.isLoading {
                     loadingIndicator
@@ -258,6 +272,7 @@ private struct DraggableDetail: ViewModifier {
 
 struct GridPicker: View {
     var isInToolbar = false
+    var dragOffset: CGFloat? = nil
 
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
@@ -301,14 +316,18 @@ struct GridPicker: View {
                         selectedAction: {
                             gridModel.switcherState = .spaces
                         }),
-                ], selectedSegmentIndex: $selectedIndex
+                ], selectedSegmentIndex: $selectedIndex, dragOffset: dragOffset
             )
             .useEffect(deps: gridModel.switcherState) { _ in
                 switch gridModel.switcherState {
                 case .tabs:
-                    selectedIndex = 1
+                    if dragOffset == nil {
+                        selectedIndex = 1
+                    }
                 case .spaces:
-                    selectedIndex = 2
+                    if dragOffset == nil {
+                        selectedIndex = 2
+                    }
 
                     if gridModel.isIncognito {
                         gridModel.tabCardModel.manager.toggleIncognitoMode(
@@ -317,7 +336,7 @@ struct GridPicker: View {
                 }
             }
             .useEffect(deps: gridModel.isIncognito) { isIncognito in
-                if gridModel.switcherState == .tabs {
+                if gridModel.switcherState == .tabs && dragOffset == nil {
                     selectedIndex = isIncognito ? 0 : 1
                 }
             }
@@ -342,37 +361,22 @@ struct GridPicker: View {
 struct SwipeToSwitchToSpacesGesture: ViewModifier {
     let gridModel: GridModel
     let tabModel: TabCardModel
+    let horizontalOffsetChanged: (CGFloat?) -> Void
+    var fromPicker: Bool = false
 
     func body(content: Content) -> some View {
         content
             .gesture(
                 DragGesture(minimumDistance: 20, coordinateSpace: .global)
-                    .onEnded { value in
+                    .onChanged({ value in
                         let horizontalAmount = value.translation.width as CGFloat
-                        let verticalAmount = value.translation.height as CGFloat
 
-                        if abs(horizontalAmount) > abs(verticalAmount) {
-                            let swipedLeft = horizontalAmount > 0 ? true : false
-
-                            switch gridModel.switcherState {
-                            case .tabs:
-                                if gridModel.isIncognito && !swipedLeft {
-                                    gridModel.tabCardModel.manager.toggleIncognitoMode(
-                                        fromTabTray: true, openLazyTab: false)
-                                } else {
-                                    if swipedLeft && !gridModel.isIncognito {
-                                        gridModel.tabCardModel.manager.toggleIncognitoMode(
-                                            fromTabTray: true, openLazyTab: false)
-                                    } else if !swipedLeft {
-                                        gridModel.switcherState = .spaces
-                                    }
-                                }
-                            case .spaces:
-                                if swipedLeft {
-                                    gridModel.switcherState = .tabs
-                                }
-                            }
-                        }
+                        // Divide by 2.5 to follow drag more accurately
+                        horizontalOffsetChanged(
+                            fromPicker ? horizontalAmount : (-horizontalAmount / 2.5))
+                    })
+                    .onEnded { value in
+                        horizontalOffsetChanged(nil)
                     })
     }
 }

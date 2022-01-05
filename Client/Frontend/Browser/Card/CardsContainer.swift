@@ -21,6 +21,94 @@ extension EnvironmentValues {
     }
 }
 
+enum GridScrollContainerCategory {
+    case incognitoTabs
+    case normalTabs
+    case spaces
+}
+
+struct ScrollContainer: View {
+    let columns: [GridItem]
+    let category: GridScrollContainerCategory
+
+    @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    @EnvironmentObject var spacesModel: SpaceCardModel
+    @EnvironmentObject var gridModel: GridModel
+
+    var selectedCardID: String? {
+        if let details = tabModel.allDetailsWithExclusionList.first(where: \.isSelected) {
+            return details.id
+        }
+        if let details = tabGroupModel.allDetails.first(where: \.isSelected) {
+            return details.id
+        }
+        return nil
+    }
+
+    var body: some View {
+        GeometryReader { scrollGeometry in
+            ScrollView(.vertical, showsIndicators: false) {
+                ScrollViewReader { scrollProxy in
+                    switch category {
+                    case .incognitoTabs, .normalTabs:
+                        LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
+                            Group {
+                                if FeatureFlag[.tabGroupsNewDesign] {
+                                    SingleLevelTabCardsView(
+                                        containerGeometry: scrollGeometry,
+                                        incognito: category == .incognitoTabs)
+                                } else {
+                                    TabCardsView(
+                                        containerGeometry: scrollGeometry,
+                                        incognito: category == .incognitoTabs)
+                                }
+                            }
+                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                            .environment(\.selectionCompletion) {
+                                guard tabGroupModel.detailedTabGroup == nil else {
+                                    return
+                                }
+                                ClientLogger.shared.logCounter(
+                                    .SelectTab,
+                                    attributes: getLogCounterAttributesForTabs(
+                                        selectedTabIndex: tabModel.allDetails.firstIndex(
+                                            where: {
+                                                $0.id == tabModel.selectedTabID
+                                            })))
+                                gridModel.hideWithAnimation()
+                            }
+                        }
+                        .padding(.vertical, CardGridUX.GridSpacing)
+                        .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
+                            if let selectedCardID = selectedCardID {
+                                scrollProxy.scrollTo(selectedCardID)
+                            }
+                        }
+                    case .spaces:
+                        VStack(alignment: .leading) {
+                            LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
+                                SpaceCardsView()
+                                    .environment(\.columns, columns)
+                            }.animation(nil)
+                        }
+                        .padding(.vertical, CardGridUX.GridSpacing)
+                        .useEffect(
+                            deps: gridModel.isHidden
+                        ) { _ in
+                            scrollProxy.scrollTo(
+                                spacesModel.allDetails.first?.id ?? ""
+                            )
+                        }
+                    }
+                }
+            }
+        }
+        .environment(\.columns, columns)
+        .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+    }
+}
+
 struct CardsContainer: View {
     @Default(.seenSpacesIntro) var seenSpacesIntro: Bool
 
@@ -35,83 +123,34 @@ struct CardsContainer: View {
 
     let columns: [GridItem]
 
-    var selectedCardID: String? {
-        if let details = tabModel.allDetailsWithExclusionList.first(where: \.isSelected) {
-            return details.id
-        }
-        if let details = tabGroupModel.allDetails.first(where: \.isSelected) {
-            return details.id
-        }
-        return nil
-    }
-
     var body: some View {
         ZStack {
             GeometryReader { geom in
-                ScrollView(.vertical, showsIndicators: false) {
-                    ScrollViewReader { spaceScrollValue in
-                        VStack(alignment: .leading) {
-                            LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                                SpaceCardsView()
-                                    .environment(\.columns, columns)
-                            }.animation(nil)
-                        }.padding(.vertical, CardGridUX.GridSpacing)
-                            .useEffect(
-                                deps: gridModel.isHidden
-                            ) { _ in
-                                spaceScrollValue.scrollTo(
-                                    spacesModel.allDetails.first?.id ?? ""
-                                )
-                            }
-                    }
-                }
-                .offset(x: gridModel.switcherState == .spaces ? 0 : geom.size.width)
-                .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+                ScrollContainer(columns: columns, category: .spaces)
+                    .offset(
+                        x: (gridModel.switcherState == .spaces ? 0 : geom.size.width))
 
-                GeometryReader { scrollGeometry in
-                    ScrollView(.vertical, showsIndicators: false) {
-                        ScrollViewReader { scrollProxy in
-                            LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                                Group {
-                                    if FeatureFlag[.tabGroupsNewDesign] {
-                                        SingleLevelTabCardsView(containerGeometry: scrollGeometry)
-                                    } else {
-                                        TabCardsView(containerGeometry: scrollGeometry)
-                                    }
-                                }
-                                .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                                .environment(\.selectionCompletion) {
-                                    guard tabGroupModel.detailedTabGroup == nil else {
-                                        return
-                                    }
-                                    ClientLogger.shared.logCounter(
-                                        .SelectTab,
-                                        attributes: getLogCounterAttributesForTabs(
-                                            selectedTabIndex: tabModel.allDetails.firstIndex(
-                                                where: {
-                                                    $0.id == tabModel.selectedTabID
-                                                })))
-                                    gridModel.hideWithAnimation()
-                                }
-                            }
-                            .padding(.vertical, CardGridUX.GridSpacing)
-                            .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
-                                if let selectedCardID = selectedCardID {
-                                    scrollProxy.scrollTo(selectedCardID)
-                                }
-                            }
-                        }
-                    }
-                    .environment(\.columns, columns)
-                    .offset(x: gridModel.switcherState == .tabs ? 0 : -geom.size.width)
-                    .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+                ScrollContainer(columns: columns, category: .normalTabs)
+                    .offset(
+                        x: (gridModel.switcherState == .tabs
+                            ? (gridModel.isIncognito ? geom.size.width : 0) : -geom.size.width)
+                    )
                     .onAppear {
                         gridModel.scrollToSelectedTab()
                     }
-                }
-                // So that in landscape mode `scrollGeometry` includes the safe area, which is
-                // needed by the `CardTransitionModifier`.
-                .ignoresSafeArea(edges: [.bottom])
+
+                ScrollContainer(columns: columns, category: .incognitoTabs)
+                    .offset(
+                        x: (gridModel.switcherState == .tabs
+                            ? (gridModel.isIncognito ? 0 : -geom.size.width) : -geom.size.width)
+                    )
+                    .onAppear {
+                        gridModel.scrollToSelectedTab()
+                    }
+
+                    // So that in landscape mode `scrollGeometry` includes the safe area, which is
+                    // needed by the `CardTransitionModifier`.
+                    .ignoresSafeArea(edges: [.bottom])
             }
         }
         .id(generationId)

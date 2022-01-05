@@ -36,9 +36,12 @@ class SwitcherToolbarModel: ObservableObject {
 struct SwitcherToolbarView: View {
     let top: Bool
     var isEmpty: Bool
+    var dragOffset: CGFloat? = nil
+
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
+
     @State var presentingMenu: Bool = false
     @State private var action: NeevaMenuAction? = nil
 
@@ -53,7 +56,7 @@ struct SwitcherToolbarView: View {
 
             HStack(spacing: 0) {
                 if top {
-                    GridPicker(isInToolbar: true).fixedSize()
+                    GridPicker(isInToolbar: true, dragOffset: dragOffset).fixedSize()
                     Spacer()
                 }
 
@@ -170,6 +173,5 @@ struct SwitcherToolbarView: View {
         .background(Color.DefaultBackground.ignoresSafeArea())
         .opacity(gridModel.isHidden ? 0 : 1)
         .animation(.easeOut)
-        .modifier(SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
     }
 }

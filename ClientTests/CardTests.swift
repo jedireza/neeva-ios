@@ -10,6 +10,11 @@ import XCTest
 
 extension CardGrid: Inspectable {}
 extension CardsContainer: Inspectable {}
+extension ScrollContainer: Inspectable {}
+extension SingleLevelTabCardsView: Inspectable {}
+extension GridPicker: Inspectable {}
+extension FaviconView: Inspectable {}
+extension SwitcherToolbarView: Inspectable {}
 extension TabCardsView: Inspectable {}
 extension SpaceCardsView: Inspectable {}
 extension FittedCard: Inspectable {}
@@ -195,17 +200,15 @@ class CardTests: XCTestCase {
 
         let cardContainer = try cardGrid.inspect().find(CardsContainer.self)
         XCTAssertNotNil(cardContainer)
-        let tabCardsView = try cardGrid.inspect().find(TabCardsView.self)
-        XCTAssertNotNil(tabCardsView)
 
-        let tabCards = tabCardsView.findAll(FittedCard<TabCardDetails>.self)
+        let tabCards = try cardGrid.inspect().findAll(FaviconView.self)
         XCTAssertEqual(tabCards.count, 3)
 
         manager.addTab()
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 5 })
         XCTAssertEqual(manager.tabs.count, 5)
-        XCTAssertEqual(tabCardsView.findAll(FittedCard<TabCardDetails>.self).count, 5)
+        XCTAssertEqual(try cardGrid.inspect().findAll(FaviconView.self).count, 5)
     }
 
     func testCardGridWithSpaces() throws {

@@ -32,7 +32,25 @@ class TabCardModel: CardModel, TabEventHandler {
     @Published var selectedTabID: String? = nil
 
     var isCardGridEmpty: Bool {
-        allDetails.isEmpty && allDetailsWithExclusionList.isEmpty
+        return allDetailsMatchingIncognitoState.isEmpty
+    }
+
+    var allDetailsMatchingIncognitoState: [TabCardDetails] {
+        allDetails.filter {
+            manager.get(for: $0.id)?.isIncognito ?? false == manager.isIncognito
+        }
+    }
+
+    var normalDetails: [TabCardDetails] {
+        allDetails.filter {
+            manager.get(for: $0.id)?.isIncognito == false
+        }
+    }
+
+    var incognitoDetails: [TabCardDetails] {
+        allDetails.filter {
+            manager.get(for: $0.id)?.isIncognito == true
+        }
     }
 
     init(manager: TabManager, groupManager: TabGroupManager) {
@@ -117,6 +135,14 @@ class TabCardModel: CardModel, TabEventHandler {
                     singleTabFilter[closestTabGroup] = true
                 }
             }
+        }
+    }
+
+    func getAllDetails(matchingIncognitoState: Bool?) -> [TabCardDetails] {
+        if let matchingIncognitoState = matchingIncognitoState {
+            return matchingIncognitoState ? incognitoDetails : normalDetails
+        } else {
+            return allDetails
         }
     }
 }

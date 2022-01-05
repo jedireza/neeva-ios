@@ -18,11 +18,12 @@ struct SingleLevelTabCardsView: View {
     @Environment(\.aspectRatio) private var aspectRatio
 
     let containerGeometry: GeometryProxy
+    let incognito: Bool
 
     var body: some View {
         Group {
             ForEach(
-                tabModel.allDetails.filter { tabCard in
+                tabModel.getAllDetails(matchingIncognitoState: incognito).filter { tabCard in
                     (tabGroupModel.representativeTabs.contains(
                         tabCard.manager.get(for: tabCard.id)!)
                         || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
