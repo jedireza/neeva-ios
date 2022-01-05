@@ -32,7 +32,7 @@ struct TrackingMenuSettingsView: View {
                     Button("Done") {}
                 }
             }
-            .listStyle(GroupedListStyle())
+            .listStyle(InsetGroupedListStyle())
             .applyToggleStyle()
         }.navigationViewStyle(StackNavigationViewStyle()).onAppear {
             domainIsNotSafelisted = !unblockedDomains.contains(domain)

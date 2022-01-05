@@ -20,7 +20,7 @@ struct NeevaUserFlagSettingsView: View {
                 }
             }
         }
-        .listStyle(GroupedListStyle())
+        .listStyle(InsetGroupedListStyle())
     }
 }
 

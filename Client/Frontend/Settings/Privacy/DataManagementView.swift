@@ -68,9 +68,7 @@ struct DataManagementView: View {
 
     var body: some View {
         List {
-            DecorativeSection {
-                NavigationLink("Website Data", destination: WebsiteDataView())
-            }
+            NavigationLink("Website Data", destination: WebsiteDataView())
 
             Section(header: Text("Data on This Device")) {
                 ForEach(
@@ -137,7 +135,7 @@ struct DataManagementView: View {
             }
         }
         .navigationTitle("Clear Browsing Data")
-        .listStyle(GroupedListStyle())
+        .listStyle(InsetGroupedListStyle())
         .applyToggleStyle()
     }
 }

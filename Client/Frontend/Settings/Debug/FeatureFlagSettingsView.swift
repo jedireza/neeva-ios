@@ -27,7 +27,7 @@ struct FeatureFlagSettingsView: View {
                     ))
             }
         }
-        .listStyle(GroupedListStyle())
+        .listStyle(InsetGroupedListStyle())
         .overlay(DebugSettingsRestartPromptView(isVisible: needsRestart), alignment: .bottom)
         .applyToggleStyle()
     }

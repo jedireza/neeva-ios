@@ -48,7 +48,7 @@ struct SettingsView: View {
                     DebugSettingsSection()
                 }
             }
-            .listStyle(GroupedListStyle())
+            .listStyle(InsetGroupedListStyle())
             .applyToggleStyle()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -57,26 +57,9 @@ struct SettingsView: View {
                     Button("Done", action: dismiss)
                 }
             }
-        }.navigationViewStyle(StackNavigationViewStyle())
-            .onDisappear(perform: viewDidDisappear)
-            .onAppear(perform: viewOnAppear)
-    }
-
-    private func viewDidDisappear() {
-        TourManager.shared.notifyCurrentViewClose()
-        if #available(iOS 15.0, *) {
-            UINavigationBar.appearance().scrollEdgeAppearance = scrollViewAppearance
         }
-    }
-
-    private func viewOnAppear() {
-        // On iOS 15, looks like they have changed the scrollEdgeAppearance
-        // to add a transparent bar to navigation view with scroll view
-        // https://developer.apple.com/forums/thread/682420?answerId=678641022#678641022
-        if #available(iOS 15.0, *) {
-            let appearance = UINavigationBarAppearance()
-            UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        }
+        .navigationViewStyle(StackNavigationViewStyle())
+        .onDisappear(perform: TourManager.shared.notifyCurrentViewClose)
     }
 }
 
@@ -90,7 +73,7 @@ struct SettingPreviewWrapper<Content: View>: View {
             List {
                 content()
             }
-            .listStyle(GroupedListStyle())
+            .listStyle(InsetGroupedListStyle())
             .applyToggleStyle()
             .navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)

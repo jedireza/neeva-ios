@@ -18,6 +18,7 @@ struct NeevaAccountInfoView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 20, height: 20)
                         .padding(.trailing, 14)
+                        .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
                         Text(userInfo.authProvider?.displayName ?? "Unknown")
                         Text(userInfo.email ?? "")
@@ -52,7 +53,7 @@ struct NeevaAccountInfoView: View {
                     }
             }
         }
-        .listStyle(GroupedListStyle())
+        .listStyle(InsetGroupedListStyle())
         .navigationTitle(userInfo.displayName ?? "Neeva Account")
     }
 }

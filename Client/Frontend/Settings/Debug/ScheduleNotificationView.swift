@@ -36,7 +36,7 @@ struct ScheduleNotificationView: View {
                 Text("Schedule")
             }
         }
-        .listStyle(GroupedListStyle())
+        .listStyle(InsetGroupedListStyle())
     }
 }
 
