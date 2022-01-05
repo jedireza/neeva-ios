@@ -109,6 +109,7 @@ class SuggestionModel: ObservableObject {
     // `weak` usage here allows deferred queue to be the owner. The deferred is always filled and this set to nil,
     // this is defensive against any changes to queue (or cancellation) behaviour in future.
     private weak var currentDeferredHistoryQuery: CancellableDeferred<Maybe<Cursor<Site?>>>?
+    private weak var currentDeferredTypedHistoryQuery: CancellableDeferred<Maybe<Cursor<Site?>>>?
     private var searchTextSubscription: AnyCancellable?
 
     // MARK: - Nav Suggestions
@@ -278,98 +279,142 @@ class SuggestionModel: ObservableObject {
             [weak self] oldQuery, query in
             guard let self = self else { return }
 
-            self.currentDeferredHistoryQuery?.cancel()
+            self.fetchHistorySites(query: query)
+            self.fetchAutocompleteSites(query: query)
+        }
+    }
 
-            if query.isEmpty {
-                self.sites = []
-                self.completion = nil
+    private func fetchHistorySites(query: String) {
+        self.currentDeferredHistoryQuery?.cancel()
+
+        if query.isEmpty {
+            self.sites = []
+            return
+        }
+
+        guard
+            let deferredHistory = self.frecentHistory.getSites(
+                matchingSearchQuery: query, limit: numSuggestionsToFetch, whereData: nil)
+                as? CancellableDeferred
+        else {
+            assertionFailure("FrecentHistory query should be cancellable")
+            return
+        }
+
+        self.currentDeferredHistoryQuery = deferredHistory
+
+        deferredHistory.uponQueue(.main) { result in
+            defer {
+                self.currentDeferredHistoryQuery = nil
+            }
+
+            guard !deferredHistory.cancelled else {
+                return
+            }
+
+            // Exclude Neeva search url suggestions from history suggest, since they should
+            // readily be coming as query suggestions.
+            let deferredHistorySites = (result.successValue?.asArray() ?? [])
+                .compactMap { $0 }
+                .filter {
+                    !($0.url.absoluteString.hasPrefix(
+                        NeevaConstants.appSearchURL.absoluteString))
+                }
+
+            // Split the data to frequent visits from recent history and everything else
+            self.recentSites =
+                deferredHistorySites
+                .filter {
+                    $0.latestVisit != nil
+                        && $0.latestVisit!.date
+                            > (Date.nowMicroseconds() - defaultRecencyDuration)
+                }
+            self.sites =
+                deferredHistorySites
+                .filter {
+                    $0.latestVisit == nil
+                        || $0.latestVisit!.date
+                            <= (Date.nowMicroseconds() - defaultRecencyDuration)
+                }
+        }
+    }
+
+    private func fetchAutocompleteSites(query: String) {
+        self.currentDeferredTypedHistoryQuery?.cancel()
+
+        if query.isEmpty {
+            self.completion = nil
+            self.shouldSkipNextAutocomplete = false
+            self.autocompleteSuggestion = nil
+            return
+        }
+
+        guard
+            let deferredTypedHistory = self.frecentHistory.getSites(
+                matchingSearchQuery: query, limit: numSuggestionsToFetch,
+                whereData: "visits.type = 2")
+                as? CancellableDeferred
+        else {
+            assertionFailure("FrecentHistory query should be cancellable")
+            return
+        }
+
+        self.currentDeferredTypedHistoryQuery = deferredTypedHistory
+
+        deferredTypedHistory.uponQueue(.main) { result in
+            defer {
+                self.currentDeferredTypedHistoryQuery = nil
+            }
+
+            guard !deferredTypedHistory.cancelled else {
+                return
+            }
+
+            // Exclude Neeva search url suggestions from history suggest, since they should
+            // readily be coming as query suggestions.
+            let deferredTypedHistorySites = (result.successValue?.asArray() ?? [])
+                .compactMap { $0 }
+                .filter {
+                    !($0.url.absoluteString.hasPrefix(
+                        NeevaConstants.appSearchURL.absoluteString))
+                }
+
+            // If we should skip the next autocomplete, reset
+            // the flag and bail out here.
+            guard !self.shouldSkipNextAutocomplete else {
+                self.autocompleteSuggestion = nil
                 self.shouldSkipNextAutocomplete = false
-                self.autocompleteSuggestion = nil
                 return
             }
 
-            guard
-                let deferredHistory = self.frecentHistory.getSites(
-                    matchingSearchQuery: query, limit: numSuggestionsToFetch)
-                    as? CancellableDeferred
-            else {
-                assertionFailure("FrecentHistory query should be cancellable")
-                return
-            }
+            let query = query.stringByTrimmingLeadingCharactersInSet(.whitespaces)
 
-            self.currentDeferredHistoryQuery = deferredHistory
-
-            deferredHistory.uponQueue(.main) { result in
-                defer {
-                    self.currentDeferredHistoryQuery = nil
-                }
-
-                guard !deferredHistory.cancelled else {
-                    return
-                }
-
-                // Exclude Neeva search url suggestions from history suggest, since they should
-                // readily be coming as query suggestions.
-                let deferredHistorySites = (result.successValue?.asArray() ?? [])
-                    .compactMap { $0 }
-                    .filter {
-                        !($0.url.absoluteString.hasPrefix(
-                            NeevaConstants.appSearchURL.absoluteString))
-                    }
-
-                // Split the data to frequent visits from recent history and everything else
-                self.recentSites =
-                    deferredHistorySites
-                    .filter {
-                        $0.latestVisit != nil
-                            && $0.latestVisit!.date
-                                > (Date.nowMicroseconds() - defaultRecencyDuration)
-                    }
-                self.sites =
-                    deferredHistorySites
-                    .filter {
-                        $0.latestVisit == nil
-                            || $0.latestVisit!.date
-                                <= (Date.nowMicroseconds() - defaultRecencyDuration)
-                    }
-
-                // If we should skip the next autocomplete, reset
-                // the flag and bail out here.
-                guard !self.shouldSkipNextAutocomplete else {
-                    self.autocompleteSuggestion = nil
-                    self.shouldSkipNextAutocomplete = false
-                    return
-                }
-
-                let query = query.stringByTrimmingLeadingCharactersInSet(.whitespaces)
-
-                // First, see if the query matches any URLs from the user's search history
-                // and it has a domain only site entry so that we have the correct title
-                for site in deferredHistorySites {
-                    if let domainOnlySite =
-                        deferredHistorySites.first(where: { s in
-                            s.url.pathComponents.count == 1
-                                && s.url.domainURL == site.url.domainURL
-                        })
+            // First, see if the query matches any URLs from the user's search history
+            // and it has a domain only site entry so that we have the correct title
+            for site in deferredTypedHistorySites {
+                if let domainOnlySite =
+                    deferredTypedHistorySites.first(where: { s in
+                        s.url.pathComponents.count == 1
+                            && s.url.domainURL == site.url.domainURL
+                    })
+                {
+                    if self.setCompletion(
+                        to: self.completionForURL(
+                            domainOnlySite.url,
+                            from: query,
+                            site: domainOnlySite),
+                        from: query)
                     {
-                        if self.setCompletion(
-                            to: self.completionForURL(
-                                domainOnlySite.url,
-                                from: query,
-                                site: domainOnlySite),
-                            from: query)
-                        {
-                            return
-                        }
+                        return
                     }
                 }
-
-                if self.completion != nil {
-                    self.completion = nil
-                }
-
-                self.autocompleteSuggestion = nil
             }
+
+            if self.completion != nil {
+                self.completion = nil
+            }
+
+            self.autocompleteSuggestion = nil
         }
     }
 

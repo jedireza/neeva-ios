@@ -180,12 +180,12 @@ private struct SQLiteFrecentHistory: FrecentHistory {
         }
     }
 
-    func getSites(matchingSearchQuery filter: String?, limit: Int) -> Deferred<Maybe<Cursor<Site?>>>
+    func getSites(matchingSearchQuery filter: String?, limit: Int, whereData: String? = nil) -> Deferred<Maybe<Cursor<Site?>>>
     {
         let factory = SQLiteHistory.iconHistoryColumnFactory
 
         let params = FrecencyQueryParams.urlCompletion(
-            whereURLContains: filter ?? "", groupClause: "GROUP BY historyID ")
+            whereURLContains: filter ?? "", groupClause: "GROUP BY historyID ", whereData: whereData)
         let (query, args) = getFrecencyQuery(limit: limit, params: params)
 
         return db.runQueryConcurrently(query, args: args, factory: factory)
@@ -217,7 +217,7 @@ private struct SQLiteFrecentHistory: FrecentHistory {
     }
 
     enum FrecencyQueryParams {
-        case urlCompletion(whereURLContains: String, groupClause: String)
+        case urlCompletion(whereURLContains: String, groupClause: String, whereData: String?)
         case topSites(groupClause: String, whereData: String)
     }
 
@@ -227,10 +227,10 @@ private struct SQLiteFrecentHistory: FrecentHistory {
         let urlFilter: String?
 
         switch params {
-        case let .urlCompletion(filter, group):
+        case let .urlCompletion(filter, group, whereArg):
             urlFilter = filter
             groupClause = group
-            whereData = nil
+            whereData = whereArg
         case let .topSites(group, whereArg):
             urlFilter = nil
             whereData = whereArg

@@ -39,7 +39,7 @@ class SuggestedSearchesModel: ObservableObject {
     func reload(from profile: Profile, completion: (() -> Void)? = nil) {
         guard
             let deferredHistory = profile.history.getFrecentHistory().getSites(
-                matchingSearchQuery: searchUrlForQuery, limit: 100) as? CancellableDeferred
+                matchingSearchQuery: searchUrlForQuery, limit: 100, whereData: nil) as? CancellableDeferred
         else {
             assertionFailure("FrecentHistory query should be cancellable")
             return
