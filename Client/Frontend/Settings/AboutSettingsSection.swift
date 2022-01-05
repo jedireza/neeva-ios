@@ -8,9 +8,10 @@ struct AboutSettingsSection: View {
     @Binding var showDebugSettings: Bool
     @Environment(\.onOpenURL) var openURL
     var body: some View {
+        let versionString: LocalizedStringKey = "Neeva Browser \(AppInfo.appVersion) (\(AppInfo.buildNumber))"
         Menu {
             Button(action: {
-                UIPasteboard.general.string = "Neeva Browser \(AppInfo.appVersion) (\(AppInfo.buildNumber))"
+                UIPasteboard.general.string = versionString.stringValue
             }) {
                 Label("Copy Version information", systemSymbol: .docOnDoc)
             }
@@ -21,7 +22,7 @@ struct AboutSettingsSection: View {
             }
         } label: {
             HStack {
-                Text("Neeva Browser \(AppInfo.appVersion) (\(AppInfo.buildNumber))")
+                Text(versionString)
                 Spacer()
             }.padding(.vertical, 3).contentShape(Rectangle())
         }.accentColor(.label)
