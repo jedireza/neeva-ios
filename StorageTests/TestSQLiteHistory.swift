@@ -1113,7 +1113,10 @@ class TestSQLiteHistory: XCTestCase {
 
         func checkSitesByFrecency(_ f: @escaping (Cursor<Site?>) -> Success) -> () -> Success {
             return {
-                history.getFrecentHistory().getSites(matchingSearchQuery: nil, limit: 10)
+                history.getFrecentHistory().getSites(
+                    matchingSearchQuery: nil,
+                    limit: 10,
+                    whereData: nil)
                     >>== f
             }
         }
@@ -1129,7 +1132,10 @@ class TestSQLiteHistory: XCTestCase {
             -> Success
         {
             return {
-                history.getFrecentHistory().getSites(matchingSearchQuery: filter, limit: 10)
+                history.getFrecentHistory().getSites(
+                    matchingSearchQuery: filter,
+                    limit: 10,
+                    whereData: nil)
                     >>== f
             }
         }
