@@ -88,14 +88,7 @@ struct SingleLevelTabCardsView: View {
                             .background(Color.secondarySystemFill)
                             .cornerRadius(
                                 24,
-                                corners: isTopLeft(index, groupDetails.allDetails.count)
-                                    ? .topLeft
-                                    : (isTopRight(index, groupDetails.allDetails.count)
-                                        ? .topRight
-                                        : (isBottomLeft(index, groupDetails.allDetails.count)
-                                            ? .bottomLeft
-                                            : (isBottomRight(index, groupDetails.allDetails.count)
-                                                ? .bottomRight : [])))
+                                corners: cornersToRound(index, groupDetails.allDetails.count)
                             )
                             .padding(.horizontal, -CardGridUX.GridSpacing)
 
@@ -192,7 +185,8 @@ struct SingleLevelTabCardsView: View {
 
     func isTopRight(_ index: Int, _ total: Int) -> Bool {
         let row = Int(round((total * 1.0) / columns.count))
-        return index / row == 0 && index % columns.count == columns.count - 1
+        return (index / row == 0 && index % columns.count == columns.count - 1)
+            || (row == 1 && index == total - 1)
     }
 
     func isBottomLeft(_ index: Int, _ total: Int) -> Bool {
@@ -202,6 +196,29 @@ struct SingleLevelTabCardsView: View {
 
     func isBottomRight(_ index: Int, _ total: Int) -> Bool {
         let row = Int(round((total * 1.0) / columns.count))
-        return index / row == row - 1 && index % columns.count == columns.count - 1
+        return (index / row == row - 1 && index % columns.count == columns.count - 1)
+            || (row == 1 && index == total - 1)
+    }
+
+    func cornersToRound(_ index: Int, _ total: Int) -> UIRectCorner {
+        if isTopLeft(index, total) && isBottomLeft(index, total) {
+            return [.topLeft, .bottomLeft]
+        }
+        if isTopRight(index, total) && isBottomRight(index, total) {
+            return [.topRight, .bottomRight]
+        }
+        if isTopLeft(index, total) {
+            return .topLeft
+        }
+        if isTopRight(index, total) {
+            return .topRight
+        }
+        if isBottomLeft(index, total) {
+            return .bottomLeft
+        }
+        if isBottomRight(index, total) {
+            return .bottomRight
+        }
+        return []
     }
 }
