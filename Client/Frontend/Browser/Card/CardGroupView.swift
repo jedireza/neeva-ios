@@ -51,21 +51,6 @@ struct RoundedCorners: Shape {
     }
 }
 
-private struct CustomRadius: ViewModifier {
-    let index: Int
-
-    var corners: [CGFloat] {
-        var temp: [CGFloat] = Array.init(
-            repeating: ThumbnailGroupViewUX.ThumbnailCornerRadius, count: 4)
-        temp[index] = ThumbnailGroupViewUX.ThumbnailsContainerRadius
-        return temp
-    }
-
-    func body(content: Content) -> some View {
-        content.clipShape(RoundedCorners(corners: corners))
-    }
-}
-
 struct ThumbnailGroupView<Model: ThumbnailModel>: View {
     @ObservedObject var model: Model
     @Environment(\.cardSize) private var size
@@ -100,46 +85,47 @@ struct ThumbnailGroupView<Model: ThumbnailModel>: View {
         return (model.allDetails as? [SpaceEntityThumbnail])?.filter { $0.data.url != nil }
     }
 
-    func itemFor(_ index: Int) -> some View {
-        Group {
-            if index >= numItems {
-                Color.DefaultBackground.frame(width: itemSize, height: itemSize * aspectRatio)
-                    .modifier(CustomRadius(index: index))
-            } else if let eligibleSpaceEntities = eligibleSpaceEntities {
-                let item = eligibleSpaceEntities[index]
-                item.thumbnail.frame(width: itemSize, height: itemSize * aspectRatio)
-                    .modifier(CustomRadius(index: index))
-            } else {
-                let item = model.allDetails[index]
-                item.thumbnail.frame(width: itemSize, height: itemSize * aspectRatio)
-                    .modifier(CustomRadius(index: index))
-            }
+    @ViewBuilder func itemFor(_ index: Int) -> some View {
+        if index >= numItems {
+            Color.DefaultBackground.frame(width: itemSize, height: itemSize * aspectRatio)
+                .cornerRadius(ThumbnailGroupViewUX.ThumbnailCornerRadius)
+        } else if let eligibleSpaceEntities = eligibleSpaceEntities {
+            let item = eligibleSpaceEntities[index]
+            item.thumbnail.frame(width: itemSize, height: itemSize * aspectRatio)
+                .cornerRadius(ThumbnailGroupViewUX.ThumbnailCornerRadius)
+        } else {
+            let item = model.allDetails[index]
+            item.thumbnail.frame(width: itemSize, height: itemSize * aspectRatio)
+                .cornerRadius(ThumbnailGroupViewUX.ThumbnailCornerRadius)
         }
     }
 
     var body: some View {
-        LazyVGrid(
-            columns: columns, alignment: .center,
-            spacing: ThumbnailGroupViewUX.Spacing * aspectRatio
-        ) {
-            ForEach(0...2, id: \.self) { index in
-                itemFor(index)
+        let vSpacing = ThumbnailGroupViewUX.Spacing * aspectRatio
+        VStack(spacing: ThumbnailGroupViewUX.Spacing) {
+            HStack(spacing: vSpacing) {
+                itemFor(0)
+                itemFor(1)
             }
-            if numItems <= 4 {
-                itemFor(3)
-            } else if numItems > 4 {
-                Text("+\(numItems - 3)")
-                    .foregroundColor(Color.secondaryLabel)
-                    .withFont(.labelLarge)
-                    .frame(width: itemSize, height: itemSize * aspectRatio)
-                    .background(Color.DefaultBackground)
-                    .modifier(CustomRadius(index: 3))
+            HStack(spacing: vSpacing) {
+                itemFor(2)
+                if numItems <= 4 {
+                    itemFor(3)
+                } else if numItems > 4 {
+                    Text("+\(numItems - 3)")
+                        .foregroundColor(Color.secondaryLabel)
+                        .withFont(.labelLarge)
+                        .frame(width: itemSize, height: itemSize * aspectRatio)
+                        .background(Color.DefaultBackground)
+                        .cornerRadius(ThumbnailGroupViewUX.ThumbnailCornerRadius)
+                }
             }
-        }.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .background(Color.clear)
-            .drawingGroup()
-            .shadow(color: Color.black.opacity(0.25), radius: 1)
-            .shadow(color: Color.black.opacity(0.1), radius: 2, y: 1)
+        }
+        .cornerRadius(ThumbnailGroupViewUX.ThumbnailsContainerRadius)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .drawingGroup()
+        .shadow(color: Color.black.opacity(0.25), radius: 1)
+        .shadow(color: Color.black.opacity(0.1), radius: 2, y: 1)
     }
 }
 

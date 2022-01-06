@@ -75,8 +75,7 @@ struct SingleLevelTabCardsView: View {
                     .background(Color.secondarySystemFill)
                     .cornerRadius(
                         24,
-                        corners: groupDetails.allDetails.count > 2
-                            ? [.topLeft, .bottomLeft] : [.allCorners]
+                        corners: groupDetails.allDetails.count > 2 ? .leading : .all
                     )
                     .padding(.horizontal, -CardGridUX.GridSpacing)
                     .id(groupDetails.id)

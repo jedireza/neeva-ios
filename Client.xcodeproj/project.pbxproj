@@ -43,6 +43,7 @@
 		0BF42D4F1A7CD09600889E28 /* TestFavicons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BF42D4E1A7CD09600889E28 /* TestFavicons.swift */; };
 		0BF8F8DA1AEFF1C900E90BC2 /* noTitle.html in Resources */ = {isa = PBXBuildFile; fileRef = 0BF8F8D91AEFF1C900E90BC2 /* noTitle.html */; };
 		122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE37125FA3CF100599A0D /* PinToTopSitesActivity.swift */; };
+		1A840EB027861F95005F6003 /* LayoutDirectionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A840EAF27861F95005F6003 /* LayoutDirectionExtensions.swift */; };
 		1D06AE6624FEE4D5000B092B /* TopSitesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D06AE6524FEE4D5000B092B /* TopSitesProvider.swift */; };
 		1D0BA05C24F46A0400D731B5 /* TopSitesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0BA05B24F46A0400D731B5 /* TopSitesManager.swift */; };
 		1D9E1FE524FEF56C006E561D /* TopSites in Resources */ = {isa = PBXBuildFile; fileRef = 3BC659481E5BA4AE006D560F /* TopSites */; };
@@ -1145,6 +1146,7 @@
 		122DE37125FA3CF100599A0D /* PinToTopSitesActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinToTopSitesActivity.swift; sourceTree = "<group>"; };
 		149C4A2A90EB137DCD917726 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Search.strings; sourceTree = "<group>"; };
 		17904C639D55070AB7AFF43A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		1A840EAF27861F95005F6003 /* LayoutDirectionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutDirectionExtensions.swift; sourceTree = "<group>"; };
 		1D06AE6524FEE4D5000B092B /* TopSitesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopSitesProvider.swift; sourceTree = "<group>"; };
 		1D0BA05B24F46A0400D731B5 /* TopSitesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopSitesManager.swift; sourceTree = "<group>"; };
 		1DA3CE5E24EEE7C600422BB2 /* SiteArchiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteArchiver.swift; sourceTree = "<group>"; };
@@ -3665,6 +3667,7 @@
 				CD1CE85E24EDE66A00006DFB /* WKWebViewExtensions.swift */,
 				C90860512666BEE30049C072 /* SpacerExtensions.swift */,
 				BCF248462670967C00ACAD11 /* ViewExtensions.swift */,
+				1A840EAF27861F95005F6003 /* LayoutDirectionExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -5133,6 +5136,7 @@
 				E65075BF1E37F7AB006961AC /* UserAgent.swift in Sources */,
 				C9C18E5D265598EA004710CD /* AbstractController.swift in Sources */,
 				C9C18E3E26559504004710CD /* ErrorView.swift in Sources */,
+				1A840EB027861F95005F6003 /* LayoutDirectionExtensions.swift in Sources */,
 				4AD771AE2729C4C000B6769D /* PreviewEntities.swift in Sources */,
 				C9C18E60265599E5004710CD /* LoadingView.swift in Sources */,
 				E65075C01E37F7AB006961AC /* WeakList.swift in Sources */,

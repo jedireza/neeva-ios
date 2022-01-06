@@ -20,7 +20,7 @@ struct InlineSearchProductItem: View {
                         .scaledToFill()
                         .frame(width: 140, height: 130, alignment: .center)
                         .clipped()
-                        .cornerRadius(11, corners: [.topLeft, .topRight])
+                        .cornerRadius(11, corners: .top)
 
                     Text(product.productName)
                         .font(.system(size: 14))

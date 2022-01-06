@@ -348,7 +348,7 @@ where
             Button(
                 action: dismissWithAnimation,
                 label: {
-                    Symbol(decorative: .arrowLeft)
+                    Symbol(decorative: .arrowBackward)
                         .foregroundColor(Color.label)
                         .tapTargetFrame()
                 })

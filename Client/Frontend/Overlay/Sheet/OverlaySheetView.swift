@@ -199,7 +199,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 }
                 .background(
                     Color(style.backgroundColor)
-                        .cornerRadius(16, corners: [.topLeft, .topRight])
+                        .cornerRadius(16, corners: .top)
                         .ignoresSafeArea(edges: .bottom)
                         .gesture(topDrag)
                 )

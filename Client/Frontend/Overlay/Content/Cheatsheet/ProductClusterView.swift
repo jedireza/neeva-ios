@@ -21,7 +21,7 @@ struct ProductClusterItem: View {
                     .scaledToFill()
                     .frame(width: 160, height: 100, alignment: .center)
                     .clipped()
-                    .cornerRadius(11, corners: [.topLeft, .topRight])
+                    .cornerRadius(11, corners: .top)
                 Text(product.productName)
                     .withFont(.headingMedium)
                     .foregroundColor(Color.label)

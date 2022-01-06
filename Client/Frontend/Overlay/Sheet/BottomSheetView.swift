@@ -84,7 +84,7 @@ struct BottomSheetView<Content: View>: View {
             }
             .background(
                 Color.DefaultBackground
-                    .cornerRadius(16, corners: [.topLeft, .topRight])
+                    .cornerRadius(16, corners: .top)
                     .ignoresSafeArea(edges: .bottom)
             )
             .onAppear {

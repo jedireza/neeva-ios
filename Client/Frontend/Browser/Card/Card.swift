@@ -45,6 +45,7 @@ struct DragToCloseInteraction: ViewModifier {
     @State private var hasExceededThreshold = false
 
     @Environment(\.cardSize) private var cardSize
+    @Environment(\.layoutDirection) private var layoutDirection
     @State private var offset = CGFloat.zero
 
     private var dragToCloseThreshold: CGFloat {
@@ -57,14 +58,14 @@ struct DragToCloseInteraction: ViewModifier {
         abs(offset) / (dragToCloseThreshold * 1.5)
     }
     private var angle: Angle {
-        .radians(Double(progress * (.pi / 10)).withSign(offset.sign))
+        .radians(Double(progress * (.pi / 10)).withSign(offset.sign) * layoutDirection.xSign)
     }
 
     func body(content: Content) -> some View {
         content
             .scaleEffect(1 - (progress / 5))
             .rotation3DEffect(angle, axis: (x: 0.0, y: 1.0, z: 0.0))
-            .offset(x: offset)
+            .translate(x: offset)
             .opacity(Double(1 - progress))
             .highPriorityGesture(
                 DragGesture()

@@ -4,7 +4,7 @@ import Shared
 import SwiftUI
 
 struct TextSizeStepper: View {
-    var roundedCorners: UIRectCorner = .allCorners
+    var roundedCorners: CornerSet = .all
     @ObservedObject var model: TextSizeModel
 
     var body: some View {

@@ -39,11 +39,11 @@ public struct GroupedStack<Content: View>: View {
 public struct GroupedCell<Content: View>: View {
     let alignment: GroupedCellAlignment
     let content: () -> Content
-    let roundedCorners: UIRectCorner
+    let roundedCorners: CornerSet
 
     public init(
         alignment: GroupedCellAlignment = .center, @ViewBuilder content: @escaping () -> Content,
-        roundedCorners: UIRectCorner = .allCorners
+        roundedCorners: CornerSet = .all
     ) {
         self.alignment = alignment
         self.content = content
@@ -111,12 +111,12 @@ extension GroupedCellButton where Label == Text.WithFont {
 extension GroupedCell {
     /// Adds the standard background and rounded corners to the content.
     public struct Decoration: View {
-        var roundedCorners: UIRectCorner
+        var roundedCorners: CornerSet
         var backgroundColor: Color
         let content: () -> Content
 
         public init(
-            roundedCorners: UIRectCorner = .allCorners,
+            roundedCorners: CornerSet = .all,
             backgroundColor: Color = Color.secondaryGroupedBackground,
             @ViewBuilder content: @escaping () -> Content
         ) {
