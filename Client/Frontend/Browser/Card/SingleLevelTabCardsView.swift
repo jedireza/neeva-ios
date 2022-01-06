@@ -67,10 +67,9 @@ struct SingleLevelTabCardsView: View {
                                     FittedCard(details: groupDetails.allDetails[index])
                                         .modifier(
                                             CardTransitionModifier(
-                                                details: details,
+                                                details: groupDetails.allDetails[index],
                                                 containerGeometry: containerGeometry)
                                         )
-                                        .id(details.id)
                                         .padding(
                                             .top,
                                             SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
@@ -85,12 +84,13 @@ struct SingleLevelTabCardsView: View {
                                     + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
                                     + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
                             )
-                            .background(Color.secondarySystemFill)
+                            //.background(Color.secondarySystemFill)
                             .cornerRadius(
                                 24,
                                 corners: cornersToRound(index, groupDetails.allDetails.count)
                             )
                             .padding(.horizontal, -CardGridUX.GridSpacing)
+                            .id(groupDetails.allDetails[index].id)
 
                         }
                     } else {
