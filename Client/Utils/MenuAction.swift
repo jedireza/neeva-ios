@@ -6,7 +6,7 @@ import SwiftUI
 
 /// An action that’s able to be represented both as a button/menu item
 /// and an accessibility action for VoiceOver users.
-public struct Action: Identifiable {
+public struct MenuAction: Identifiable {
     /// The display name of the string
     let name: String
     /// The SF Symbol name of the icon displayed next to the name
@@ -17,21 +17,21 @@ public struct Action: Identifiable {
     public var id: String { name }
 
     /// The standard “Edit” action
-    static func edit(handler: @escaping () -> Void) -> Action {
-        Action("Edit", icon: .pencil, handler: handler)
+    static func edit(handler: @escaping () -> Void) -> MenuAction {
+        MenuAction("Edit", icon: .pencil, handler: handler)
     }
     /// The standard “Edit” action
-    static func edit(condition: Bool, handler: @escaping () -> Void) -> Action? {
-        Action("Edit", icon: .pencil, condition: condition, handler: handler)
+    static func edit(condition: Bool, handler: @escaping () -> Void) -> MenuAction? {
+        MenuAction("Edit", icon: .pencil, condition: condition, handler: handler)
     }
 
     /// The standard “Delete” action
-    static func delete(handler: @escaping () -> Void) -> Action {
-        Action("Delete", icon: .trash, handler: handler)
+    static func delete(handler: @escaping () -> Void) -> MenuAction {
+        MenuAction("Delete", icon: .trash, handler: handler)
     }
     /// The standard “Delete” action
-    static func delete(condition: Bool = true, handler: @escaping () -> Void) -> Action? {
-        Action("Delete", icon: .trash, condition: condition, handler: handler)
+    static func delete(condition: Bool = true, handler: @escaping () -> Void) -> MenuAction? {
+        MenuAction("Delete", icon: .trash, condition: condition, handler: handler)
     }
 
     init(_ name: String, icon: SFSymbol, handler: @escaping () -> Void) {
@@ -67,13 +67,13 @@ public struct Action: Identifiable {
 }
 
 extension View {
-    func accessibilityAction(_ action: Action) -> some View {
+    func accessibilityAction(_ action: MenuAction) -> some View {
         accessibilityAction(named: action.name, action.handler)
     }
 }
 
-/// Use an array of `Action?` as a view, or access its `menu` property to create a pop-up menu
-extension Array: View where Element == Action? {
+/// Use an array of `MenuAction?` as a view, or access its `menu` property to create a pop-up menu
+extension Array: View where Element == MenuAction? {
     public var body: some View {
         ForEach(self.compactMap { $0 }) { $0.view }
     }

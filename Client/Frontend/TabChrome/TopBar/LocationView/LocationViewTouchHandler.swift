@@ -13,9 +13,9 @@ struct LocationViewTouchHandler: UIViewRepresentable {
     let isSecure: Bool?
     let background: Color
     let onTap: () -> Void
-    let copyAction: Action
-    let pasteAction: Action
-    let pasteAndGoAction: Action
+    let copyAction: MenuAction
+    let pasteAction: MenuAction
+    let pasteAndGoAction: MenuAction
 
     func makeUIView(context: Context) -> InteractionView {
         InteractionView(wrapper: self)

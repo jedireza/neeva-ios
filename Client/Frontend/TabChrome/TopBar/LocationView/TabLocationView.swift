@@ -43,13 +43,13 @@ struct TabLocationView: View {
     @State var token = 0
     @State var showReaderModeSettings: Bool = false
 
-    private var copyAction: Action {
-        Action("Copy", icon: .docOnDoc) {
+    private var copyAction: MenuAction {
+        MenuAction("Copy", icon: .docOnDoc) {
             UIPasteboard.general.url = model.url
         }
     }
-    private var pasteAction: Action {
-        Action("Paste", icon: .docOnClipboard) {
+    private var pasteAction: MenuAction {
+        MenuAction("Paste", icon: .docOnClipboard) {
             UIPasteboard.general.asyncString()
                 .uponQueue(.main) {
                     if let query = $0.successValue as? String {
@@ -59,8 +59,8 @@ struct TabLocationView: View {
                 }
         }
     }
-    private var pasteAndGoAction: Action {
-        Action("Paste & Go", icon: .docOnClipboardFill) {
+    private var pasteAndGoAction: MenuAction {
+        MenuAction("Paste & Go", icon: .docOnClipboardFill) {
             UIPasteboard.general.asyncString()
                 .uponQueue(.main) { ($0.successValue as? String).map(onSubmit) }
         }
