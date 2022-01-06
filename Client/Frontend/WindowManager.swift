@@ -87,7 +87,7 @@ enum WindowPlacement {
 }
 
 class WindowManager: KeyboardReadable {
-    private let parentWindow: UIWindow
+    let parentWindow: UIWindow
 
     private let inOutAnimationDuration = 0.3
     private var openWindow: UIWindow?

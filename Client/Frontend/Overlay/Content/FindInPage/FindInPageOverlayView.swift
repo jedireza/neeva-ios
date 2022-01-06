@@ -8,7 +8,7 @@ struct FindInPageViewUX {
 }
 
 struct FindInPageView: View {
-    @EnvironmentObject var model: FindInPageModel
+    @ObservedObject var model: FindInPageModel
     let onDismiss: () -> Void
 
     public var body: some View {
@@ -45,15 +45,17 @@ struct FindInPageView: View {
                 .accessibilityIdentifier("FindInPage_Done")
             }
             .padding(.horizontal)
+            .padding(.top, FeatureFlag[.enableBrowserView] ? 4 : 0)
 
             Spacer()
-        }.frame(height: FindInPageViewUX.height).padding(.bottom, 28)
+        }.frame(height: FindInPageViewUX.height)
+            .background(Color(UIColor.systemGroupedBackground))
+            .padding(.bottom, FeatureFlag[.enableBrowserView] ? 0 : 28)
     }
 }
 
 struct FindInPageView_Previews: PreviewProvider {
     static var previews: some View {
-        FindInPageView(onDismiss: {})
-            .environmentObject(FindInPageModel(tab: nil))
+        FindInPageView(model: FindInPageModel(tab: nil), onDismiss: {})
     }
 }

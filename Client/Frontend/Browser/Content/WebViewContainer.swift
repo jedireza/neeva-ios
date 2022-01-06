@@ -11,10 +11,13 @@ struct WebViewContainer: UIViewRepresentable {
 
     func updateUIView(_ view: UIView, context: Context) {
         guard view.subviews.count != 1 || view.subviews.first != webView else { return }
-        view.subviews.forEach { $0.removeFromSuperview() }
-        view.addSubview(webView)
-        webView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+
+        DispatchQueue.main.async {
+            view.subviews.forEach { $0.removeFromSuperview() }
+            view.addSubview(webView)
+            webView.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
         }
     }
 }

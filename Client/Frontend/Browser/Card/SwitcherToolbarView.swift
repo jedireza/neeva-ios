@@ -171,7 +171,7 @@ struct SwitcherToolbarView: View {
             }
         }
         .background(Color.DefaultBackground.ignoresSafeArea())
-        .opacity(gridModel.isHidden ? 0 : 1)
+        .opacity(FeatureFlag[.enableBrowserView] ? 1 : (gridModel.isHidden ? 0 : 1))
         .animation(.easeOut)
     }
 }

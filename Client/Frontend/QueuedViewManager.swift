@@ -12,6 +12,10 @@ public enum QueuedViewLocation {
 
 open class QueuedViewManager<View: SwiftUI.View> {
     let windowManager: WindowManager
+    /// For use with BrowserView only
+    lazy var overlayManager: OverlayManager = {
+        SceneDelegate.getBVC(with: windowManager.parentWindow.windowScene).overlayManager
+    }()
     var queuedViews = [View]()
 
     let animationTime = 0.5
@@ -72,15 +76,21 @@ open class QueuedViewManager<View: SwiftUI.View> {
             })
     }
 
-    func dismissCurrentView(moveToNext: Bool = true, overrideDrag: Bool = false) {
+    func dismissCurrentView(
+        moveToNext: Bool = true, overrideDrag: Bool = false, animate: Bool = true
+    ) {
         guard !currentViewIsDragging || overrideDrag else {
             return
         }
 
         currentViewTimer?.invalidate()
 
-        // removes View from window
-        windowManager.removeCurrentWindow()
+        if FeatureFlag[.enableBrowserView] {
+            overlayManager.hideCurrentOverlay(animate: animate)
+        } else {
+            // removes View from window
+            windowManager.removeCurrentWindow()
+        }
 
         self.currentView = nil
         self.currentViewTimer = nil
@@ -123,11 +133,11 @@ extension QueuedViewManager: BannerViewDelegate {
         currentViewIsDragging = false
 
         if dismissing || !(currentViewTimer?.isValid ?? true) {
-            dismissCurrentView()
+            dismissCurrentView(animate: !dismissing)
         }
     }
 
     func dismiss() {
-        dismissCurrentView()
+        dismissCurrentView(animate: false)
     }
 }

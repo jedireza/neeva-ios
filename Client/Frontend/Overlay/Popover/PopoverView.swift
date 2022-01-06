@@ -8,6 +8,7 @@ struct PopoverView<Content: View>: View {
 
     let style: OverlayStyle
     let onDismiss: () -> Void
+    let headerButton: OverlayHeaderButton?
     let content: () -> Content
 
     var body: some View {
@@ -27,34 +28,59 @@ struct PopoverView<Content: View>: View {
                 .accessibilitySortPriority(-1)
 
                 VStack {
-                    if style.showTitle, let title = title {
+                    if let headerButton = headerButton {
                         HStack(spacing: 0) {
-                            Text(title)
-                                .withFont(.headingXLarge)
-                                .foregroundColor(.label)
-                                .padding(.leading, 16)
-
-                            Spacer()
-
-                            Button(action: onDismiss) {
-                                Symbol(.xmark, style: .headingXLarge, label: "Close")
-                                    .foregroundColor(.tertiaryLabel)
-                                    .tapTargetFrame()
-                                    .padding(.trailing, 4.5)
-                            }
+                            Spacer().layoutPriority(0.5)
+                            Button(
+                                action: {
+                                    headerButton.action()
+                                    onDismiss()
+                                },
+                                label: {
+                                    HStack(spacing: 10) {
+                                        Text(headerButton.text)
+                                            .withFont(.labelLarge)
+                                        Symbol(decorative: headerButton.icon)
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                }
+                            )
+                            .buttonStyle(NeevaButtonStyle(.primary))
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 6)
+                            .layoutPriority(0.5)
                         }
                     }
 
-                    content()
-                        .onPreferenceChange(OverlayTitlePreferenceKey.self) { self.title = $0 }
-                }
-                .frame(width: geo.size.width / 1.5)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .background(
-                    Color(style.backgroundColor)
-                        .cornerRadius(16)
-                )
-                .padding()
+                    VStack {
+                        if style.showTitle, let title = title {
+                            HStack(spacing: 0) {
+                                Text(title)
+                                    .withFont(.headingXLarge)
+                                    .foregroundColor(.label)
+                                    .padding(.leading, 16)
+
+                                Spacer()
+
+                                Button(action: onDismiss) {
+                                    Symbol(.xmark, style: .headingXLarge, label: "Close")
+                                        .foregroundColor(.tertiaryLabel)
+                                        .tapTargetFrame()
+                                        .padding(.trailing, 4.5)
+                                }
+                            }.padding(.top)
+                        }
+
+                        content()
+                            .onPreferenceChange(OverlayTitlePreferenceKey.self) { self.title = $0 }
+                    }
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .background(
+                        Color(style.backgroundColor)
+                            .cornerRadius(16)
+                    )
+                    .padding()
+                }.frame(width: geo.size.width / 1.5)
             }
             .accessibilityAction(.escape, onDismiss)
         }

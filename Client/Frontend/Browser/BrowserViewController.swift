@@ -83,36 +83,32 @@ class BrowserViewController: UIViewController, ModalPresenter {
         return model
     }()
 
+    let browserModel = BrowserModel()
     let chromeModel = TabChromeModel()
     var gridModel: GridModel {
         cardGridViewController.gridModel
     }
 
+    lazy var toolbarModel: SwitcherToolbarModel = {
+        SwitcherToolbarModel(
+            tabManager: tabManager,
+            openLazyTab: { self.openLazyTab(openedFrom: .tabTray) },
+            createNewSpace: {
+                self.showModal(style: .grouped) {
+                    CreateSpaceOverlayContent()
+                        .environmentObject(self.gridModel.spaceCardModel)
+                }
+            },
+            onNeevaMenuAction: self.perform(neevaMenuAction:))
+    }()
+
     lazy var cardGridViewController: CardGridViewController = {
         let controller = CardGridViewController(
             tabManager: self.tabManager,
-            toolbarModel: SwitcherToolbarModel(
-                tabManager: tabManager,
-                openLazyTab: { self.openLazyTab(openedFrom: .tabTray) },
-                createNewSpace: {
-                    self.showModal(style: .grouped) {
-                        CreateSpaceOverlayContent()
-                            .environmentObject(self.gridModel.spaceCardModel)
-                    }
-                },
-                onNeevaMenuAction: self.perform(neevaMenuAction:)),
-            web3Model: self.web3Model
+            toolbarModel: toolbarModel,
+            web3Model: self.web3Model, browserModel: browserModel
         ) { url, view in
-            let helper = ShareExtensionHelper(url: url, tab: nil)
-            let controller = helper.createActivityViewController({ (_, _) in })
-            if UIDevice.current.userInterfaceIdiom != .pad {
-                controller.modalPresentationStyle = .formSheet
-            } else {
-                controller.popoverPresentationController?.sourceView = view
-                controller.popoverPresentationController?.permittedArrowDirections = .up
-            }
-
-            self.present(controller, animated: true, completion: nil)
+            self.shareURL(url: url, view: view)
         }
 
         addChild(controller)
@@ -121,6 +117,14 @@ class BrowserViewController: UIViewController, ModalPresenter {
         controller.view.isHidden = true
         controller.view.isUserInteractionEnabled = false
         return controller
+    }()
+
+    lazy var browserHost: BrowserHost = {
+        BrowserHost(bvc: self)
+    }()
+
+    lazy var overlayManager: OverlayManager = {
+        OverlayManager()
     }()
 
     private(set) var overlaySheetViewController: UIViewController?
@@ -190,7 +194,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     // Backdrop used for displaying greyed background for private tabs
     private(set) var webViewContainerBackdrop: UIView!
 
-    let scrollController: TabScrollingController
+    let scrollController: TabScrollingController?
 
     fileprivate var keyboardState: KeyboardState?
 
@@ -232,8 +236,14 @@ class BrowserViewController: UIViewController, ModalPresenter {
         self.profile = profile
         self.tabManager = tabManager
         self.readerModeCache = DiskReaderModeCache.sharedInstance
-        self.scrollController = TabScrollingController(
-            tabManager: tabManager, chromeModel: chromeModel)
+
+        if !FeatureFlag[.enableBrowserView] {
+            self.scrollController = TabScrollingController(
+                tabManager: tabManager, chromeModel: chromeModel)
+        } else {
+            self.scrollController = nil
+        }
+
         super.init(nibName: nil, bundle: nil)
         chromeModel.topBarDelegate = self
         chromeModel.toolbarDelegate = self
@@ -267,7 +277,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         dismissVisibleMenus()
 
         coordinator.animate { [self] context in
-            scrollController.updateMinimumZoom()
+            scrollController?.updateMinimumZoom()
 
             if let popover = displayedPopoverController {
                 updateDisplayedPopoverProperties?()
@@ -278,7 +288,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 hideOverlaySheetViewController()
             }
         } completion: { _ in
-            self.scrollController.setMinimumZoom()
+            self.scrollController?.setMinimumZoom()
         }
     }
 
@@ -319,7 +329,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         toolbar?.view.removeFromSuperview()
         toolbar = nil
 
-        if showToolbar {
+        if showToolbar && !FeatureFlag[.enableBrowserView] {
             let toolbar = TabToolbarHost(
                 isIncognito: tabManager.isIncognito, chromeModel: chromeModel,
                 showNeevaMenuSheet: showNeevaMenuSheet)
@@ -358,7 +368,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         if tabContainerModel.currentContentUI != .previewHome {
             coordinator.animate { context in
-                self.scrollController.showToolbars(animated: false)
+                self.scrollController?.showToolbars(animated: false)
             }
         }
     }
@@ -375,7 +385,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     @objc func tappedTopArea() {
-        scrollController.showToolbars(animated: true)
+        scrollController?.showToolbars(animated: true)
     }
 
     @objc func appWillResignActiveNotification() {
@@ -417,7 +427,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         // Re-show toolbar which might have been hidden during scrolling (prior to app moving into the background)
         if tabContainerModel.currentContentUI != .previewHome {
-            scrollController.showToolbars(animated: false)
+            scrollController?.showToolbars(animated: false)
         }
 
         if NeevaUserInfo.shared.isUserLoggedIn {
@@ -468,50 +478,56 @@ class BrowserViewController: UIViewController, ModalPresenter {
         webViewContainerBackdrop.alpha = 0
         view.addSubview(webViewContainerBackdrop)
 
-        tabContainerHost.willMove(toParent: self)
-        view.addSubview(tabContainerHost.view)
-        addChild(tabContainerHost)
+        if FeatureFlag[.enableBrowserView] {
+            browserHost.willMove(toParent: self)
+            view.addSubview(browserHost.view)
+            addChild(browserHost)
+        } else {
+            tabContainerHost.willMove(toParent: self)
+            view.addSubview(tabContainerHost.view)
+            addChild(tabContainerHost)
+
+            let gridModel = self.gridModel
+            let topBarHost = TopBarHost(
+                isIncognito: tabManager.isIncognito,
+                locationViewModel: locationModel,
+                suggestionModel: suggestionModel,
+                queryModel: searchQueryModel,
+                gridModel: gridModel,
+                trackingStatsViewModel: trackingStatsViewModel,
+                chromeModel: chromeModel,
+                readerModeModel: readerModeModel,
+                web3Model: web3Model, delegate: self,
+                newTab: { self.openURLInNewTab(nil) },
+                onCancel: { [weak self] in
+                    guard let self = self else { return }
+                    if self.zeroQueryModel.isLazyTab {
+                        self.closeLazyTab()
+                    } else {
+                        self.hideZeroQuery()
+                    }
+                })
+
+            addChild(topBarHost)
+            view.addSubview(topBarHost.view)
+            topBarHost.didMove(toParent: self)
+            self.topBar = topBarHost
+
+            footer = UIView()
+            view.addSubview(footer)
+
+            scrollController?.header = topBar.view
+            scrollController?.safeAreaView = view
+            scrollController?.footer = footer
+        }
 
         topTouchArea = UIButton()
         topTouchArea.isAccessibilityElement = false
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        let gridModel = self.gridModel
-        let topBarHost = TopBarHost(
-            isIncognito: tabManager.isIncognito,
-            locationViewModel: locationModel,
-            suggestionModel: suggestionModel,
-            queryModel: searchQueryModel,
-            gridModel: gridModel,
-            trackingStatsViewModel: trackingStatsViewModel,
-            chromeModel: chromeModel,
-            readerModeModel: readerModeModel,
-            web3Model: web3Model,
-            delegate: self,
-            newTab: { self.openURLInNewTab(nil) },
-            onCancel: { [weak self] in
-                guard let self = self else { return }
-                if self.zeroQueryModel.isLazyTab {
-                    self.closeLazyTab()
-                } else {
-                    self.hideZeroQuery()
-                }
-            })
-        addChild(topBarHost)
-        view.addSubview(topBarHost.view)
-        topBarHost.didMove(toParent: self)
-        self.topBar = topBarHost
-
-        footer = UIView()
-        view.addSubview(footer)
-
         clipboardBarDisplayHandler = ClipboardBarDisplayHandler(tabManager: tabManager)
         clipboardBarDisplayHandler?.bvc = self
-
-        scrollController.header = topBar.view
-        scrollController.safeAreaView = view
-        scrollController.footer = footer
 
         self.updateToolbarStateForTraitCollection(self.traitCollection)
 
@@ -538,50 +554,71 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     fileprivate func setupConstraints() {
-        topBar.view.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
+        if FeatureFlag[.enableBrowserView] {
+            browserHost.view.snp.makeConstraints { make in
+                make.edges.equalToSuperview()
+            }
 
-            if !UIConstants.enableBottomURLBar {
-                let headerTopConstraint = make.top.equalToSuperview().constraint
-                scrollController.$headerTopOffset
+            simulateBackViewController?.view.snp.makeConstraints { make in
+                make.top.bottom.equalTo(browserHost.view)
+                make.width.equalTo(browserHost.view).offset(SwipeUX.EdgeWidth)
+                make.trailing.equalTo(browserHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
+            }
+
+            if FeatureFlag[.swipePlusPlus] {
+                simulateForwardViewController?.view.snp.makeConstraints { make in
+                    make.top.bottom.equalTo(browserHost.view)
+                    make.width.equalTo(browserHost.view).offset(SwipeUX.EdgeWidth)
+                    make.leading.equalTo(browserHost.view.snp.trailing).offset(-SwipeUX.EdgeWidth)
+                }
+            }
+        } else {
+            topBar.view.snp.makeConstraints { make in
+                make.leading.trailing.equalToSuperview()
+
+                if !UIConstants.enableBottomURLBar {
+                    let headerTopConstraint = make.top.equalToSuperview().constraint
+                    scrollController?.$headerTopOffset
+                        .sink { [weak self] in
+                            guard let self = self else { return }
+                            headerTopConstraint.update(offset: $0)
+                            self.view.setNeedsLayout()
+                        }
+                        .store(in: &subscriptions)
+                }
+            }
+
+            webViewContainerBackdrop.snp.makeConstraints { make in
+                make.edges.equalTo(self.view)
+            }
+
+            footer.snp.makeConstraints { make in
+                let footerBottomConstraint = make.bottom.equalTo(self.view.snp.bottom).constraint
+                make.leading.trailing.equalTo(self.view)
+
+                scrollController?.$footerBottomOffset
                     .sink { [weak self] in
                         guard let self = self else { return }
-                        headerTopConstraint.update(offset: $0)
+                        footerBottomConstraint.update(offset: $0)
                         self.view.setNeedsLayout()
                     }
                     .store(in: &subscriptions)
             }
-        }
 
-        footer.snp.makeConstraints { make in
-            let footerBottomConstraint = make.bottom.equalTo(self.view.snp.bottom).constraint
-            make.leading.trailing.equalTo(self.view)
-
-            scrollController.$footerBottomOffset
-                .sink { [weak self] in
-                    guard let self = self else { return }
-                    footerBottomConstraint.update(offset: $0)
-                    self.view.setNeedsLayout()
-                }
-                .store(in: &subscriptions)
-        }
-
-        webViewContainerBackdrop.snp.makeConstraints { make in
-            make.edges.equalTo(self.view)
-        }
-
-        if FeatureFlag[.swipePlusPlus] {
-            simulateForwardViewController?.view.snp.makeConstraints { make in
+            simulateBackViewController?.view.snp.makeConstraints { make in
                 make.top.bottom.equalTo(tabContainerHost.view)
                 make.width.equalTo(tabContainerHost.view).offset(SwipeUX.EdgeWidth)
-                make.leading.equalTo(tabContainerHost.view.snp.trailing).offset(-SwipeUX.EdgeWidth)
+                make.trailing.equalTo(tabContainerHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
             }
-        }
 
-        simulateBackViewController?.view.snp.makeConstraints { make in
-            make.top.bottom.equalTo(tabContainerHost.view)
-            make.width.equalTo(tabContainerHost.view).offset(SwipeUX.EdgeWidth)
-            make.trailing.equalTo(tabContainerHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
+            if FeatureFlag[.swipePlusPlus] {
+                simulateForwardViewController?.view.snp.makeConstraints { make in
+                    make.top.bottom.equalTo(tabContainerHost.view)
+                    make.width.equalTo(tabContainerHost.view).offset(SwipeUX.EdgeWidth)
+                    make.leading.equalTo(tabContainerHost.view.snp.trailing).offset(
+                        -SwipeUX.EdgeWidth)
+                }
+            }
         }
     }
 
@@ -751,32 +788,34 @@ class BrowserViewController: UIViewController, ModalPresenter {
             make.height.equalTo(BrowserViewControllerUX.ShowHeaderTapAreaHeight)
         }
 
-        tabContainerHost.view.snp.remakeConstraints { make in
-            make.left.right.equalTo(self.view)
+        if !FeatureFlag[.enableBrowserView] {
+            tabContainerHost.view.snp.remakeConstraints { make in
+                make.left.right.equalTo(self.view)
 
-            if UIConstants.enableBottomURLBar {
-                make.top.equalTo(self.view.safeArea.top)
-            } else {
-                make.top.equalTo(self.topBar.view.snp.bottom)
-            }
-
-            if UIConstants.enableBottomURLBar {
-                make.bottom.equalTo(self.topBar.view.snp.top)
-            } else {
-                if let toolbar = self.toolbar {
-                    make.bottom.equalTo(toolbar.view.snp.top)
+                if UIConstants.enableBottomURLBar {
+                    make.top.equalTo(self.view.safeArea.top)
                 } else {
-                    make.bottom.equalTo(self.view)
+                    make.top.equalTo(self.topBar.view.snp.bottom)
+                }
+
+                if UIConstants.enableBottomURLBar {
+                    make.bottom.equalTo(self.topBar.view.snp.top)
+                } else {
+                    if let toolbar = self.toolbar {
+                        make.bottom.equalTo(toolbar.view.snp.top)
+                    } else {
+                        make.bottom.equalTo(self.view)
+                    }
                 }
             }
-        }
 
-        // Setup the bottom toolbar
-        toolbar?.view.snp.remakeConstraints { make in
-            make.edges.equalTo(self.footer)
-        }
+            // Setup the bottom toolbar
+            toolbar?.view.snp.remakeConstraints { make in
+                make.edges.equalTo(self.footer)
+            }
 
-        topBar.view.setNeedsUpdateConstraints()
+            topBar.view.setNeedsUpdateConstraints()
+        }
 
         cardGridViewController.view.snp.remakeConstraints { make in
             make.leading.trailing.top.bottom.equalToSuperview()
@@ -839,14 +878,14 @@ class BrowserViewController: UIViewController, ModalPresenter {
         DispatchQueue.main.async { [self] in
             tabContainerModel.updateContent(.hideZeroQuery)
             if tabContainerModel.currentContentUI == .previewHome {
-                scrollController.hideToolbars(animated: true)
+                scrollController?.hideToolbars(animated: true)
             }
         }
     }
 
     public func showPreviewHome() {
         tabContainerModel.updateContent(.showPreviewHome)
-        scrollController.hideToolbars(animated: false)
+        scrollController?.hideToolbars(animated: false)
     }
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
@@ -885,11 +924,15 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     private func hideOverlaySheetViewController() {
-        if let overlaySheetViewController = self.overlaySheetViewController {
-            overlaySheetViewController.willMove(toParent: nil)
-            overlaySheetViewController.view.removeFromSuperview()
-            overlaySheetViewController.removeFromParent()
-            self.overlaySheetViewController = nil
+        if FeatureFlag[.enableBrowserView] {
+            overlayManager.hideCurrentOverlay()
+        } else {
+            if let overlaySheetViewController = self.overlaySheetViewController {
+                overlaySheetViewController.willMove(toParent: nil)
+                overlaySheetViewController.view.removeFromSuperview()
+                overlaySheetViewController.removeFromParent()
+                self.overlaySheetViewController = nil
+            }
         }
     }
 
@@ -904,7 +947,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 style: style, content: content,
                 onDismiss: onDismiss, headerButton: headerButton)
         } else {
-            showAsModalOverlayPopover(style: style, content: content, onDismiss: onDismiss)
+            showAsModalOverlayPopover(
+                style: style, content: content, onDismiss: onDismiss, headerButton: headerButton)
         }
     }
 
@@ -913,48 +957,79 @@ class BrowserViewController: UIViewController, ModalPresenter {
         onDismiss: (() -> Void)? = nil,
         headerButton: OverlayHeaderButton? = nil
     ) {
-        var controller: UIViewController? = nil
-        controller = OverlayViewController(
-            isPopover: false, style: style,
-            content: { AnyView(erasing: content()) },
-            onDismiss: {
-                if controller == self.overlaySheetViewController {
-                    self.hideOverlaySheetViewController()
-                }
-                onDismiss?()
-            },
-            onOpenURL: { url in
-                if controller == self.overlaySheetViewController {
-                    self.hideOverlaySheetViewController()
-                }
-                self.openURLInNewTabPreservingIncognitoState(url)
-            },
-            headerButton: headerButton)
+        if FeatureFlag[.enableBrowserView] {
+            let overlayView = OverlaySheetRootView(
+                style: style, content: { AnyView(erasing: content()) },
+                onDismiss: {
+                    self.overlayManager.hideCurrentOverlay()
+                    onDismiss?()
+                },
+                onOpenURL: { url in
+                    self.overlayManager.hideCurrentOverlay()
+                    self.openURLInNewTabPreservingIncognitoState(url)
+                }, headerButton: headerButton)
 
-        showOverlaySheetViewController(controller!)
+            overlayManager.show(overlay: .sheet(overlayView))
+        } else {
+            var controller: UIViewController? = nil
+            controller = OverlayViewController(
+                isPopover: false, style: style,
+                content: { AnyView(erasing: content()) },
+                onDismiss: {
+                    if controller == self.overlaySheetViewController {
+                        self.hideOverlaySheetViewController()
+                    }
+                    onDismiss?()
+                },
+                onOpenURL: { url in
+                    if controller == self.overlaySheetViewController {
+                        self.hideOverlaySheetViewController()
+                    }
+                    self.openURLInNewTabPreservingIncognitoState(url)
+                },
+                headerButton: headerButton)
+
+            showOverlaySheetViewController(controller!)
+        }
     }
 
     func showAsModalOverlayPopover<Content: View>(
         style: OverlayStyle, content: @escaping () -> Content,
-        onDismiss: (() -> Void)? = nil
+        onDismiss: (() -> Void)? = nil,
+        headerButton: OverlayHeaderButton? = nil
     ) {
-        var controller: UIViewController? = nil
-        controller = OverlayViewController(
-            isPopover: true, style: style, content: { AnyView(erasing: content()) },
-            onDismiss: {
-                controller?.dismiss(animated: true, completion: nil)
-                onDismiss?()
-            },
-            onOpenURL: { url in
-                controller?.dismiss(animated: true, completion: nil)
-                self.openURLInNewTabPreservingIncognitoState(url)
-            },
-            headerButton: nil)
+        if FeatureFlag[.enableBrowserView] {
+            let popoverView = PopoverRootView(
+                style: style, content: { AnyView(erasing: content()) },
+                onDismiss: {
+                    self.overlayManager.hideCurrentOverlay()
+                    onDismiss?()
+                },
+                onOpenURL: { url in
+                    self.overlayManager.hideCurrentOverlay()
+                    self.openURLInNewTabPreservingIncognitoState(url)
+                }, headerButton: headerButton)
 
-        controller?.modalPresentationStyle = .overFullScreen
-        controller?.modalTransitionStyle = .crossDissolve
+            overlayManager.show(overlay: .popover(popoverView))
+        } else {
+            var controller: UIViewController? = nil
+            controller = OverlayViewController(
+                isPopover: true, style: style, content: { AnyView(erasing: content()) },
+                onDismiss: {
+                    controller?.dismiss(animated: true, completion: nil)
+                    onDismiss?()
+                },
+                onOpenURL: { url in
+                    controller?.dismiss(animated: true, completion: nil)
+                    self.openURLInNewTabPreservingIncognitoState(url)
+                },
+                headerButton: nil)
 
-        present(controller!, animated: true, completion: nil)
+            controller?.modalPresentationStyle = .overFullScreen
+            controller?.modalTransitionStyle = .crossDissolve
+
+            present(controller!, animated: true, completion: nil)
+        }
     }
 
     func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab?) {
@@ -1014,7 +1089,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     func updateUIForReaderHomeStateForTab(_ tab: Tab) {
         updateURLBarDisplayURL(tab)
-        scrollController.showToolbars(animated: false)
+        scrollController?.showToolbars(animated: false)
 
         if let url = tab.url {
             updateInZeroQuery(url as URL)
@@ -1134,7 +1209,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager.setIncognitoMode(to: switchToIncognitoMode)
         }
 
-        scrollController.showToolbars(animated: true, completion: nil)
+        scrollController?.showToolbars(animated: true, completion: nil)
         showZeroQuery(openedFrom: openedFrom, isLazyTab: true)
     }
 
@@ -1369,6 +1444,19 @@ class BrowserViewController: UIViewController, ModalPresenter {
             gridModel.hideWithNoAnimation()
         }
     }
+
+    func shareURL(url: URL, view: UIView) {
+        let helper = ShareExtensionHelper(url: url, tab: nil)
+        let controller = helper.createActivityViewController({ (_, _) in })
+        if UIDevice.current.userInterfaceIdiom != .pad {
+            controller.modalPresentationStyle = .formSheet
+        } else {
+            controller.popoverPresentationController?.sourceView = view
+            controller.popoverPresentationController?.permittedArrowDirections = .up
+        }
+
+        self.present(controller, animated: true, completion: nil)
+    }
 }
 
 // MARK: URL Bar Delegate support code
@@ -1505,7 +1593,7 @@ extension BrowserViewController: TabDelegate {
         webView.scrollView
             .publisher(for: \.contentSize, options: .new)
             .sink { _ in
-                self.scrollController.contentSizeDidChange()
+                self.scrollController?.contentSizeDidChange()
             }
             .store(in: &tab.webViewSubscriptions)
     }

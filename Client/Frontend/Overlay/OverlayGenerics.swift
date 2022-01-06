@@ -33,7 +33,8 @@ struct OverlayRootView: View {
     var body: some View {
         if isPopover {
             PopoverRootView(
-                style: style, content: content, onDismiss: onDismiss, onOpenURL: onOpenURL)
+                style: style, content: content, onDismiss: onDismiss,
+                onOpenURL: onOpenURL, headerButton: headerButton)
         } else {
             OverlaySheetRootView(
                 style: style, content: content, onDismiss: onDismiss,
@@ -42,14 +43,15 @@ struct OverlayRootView: View {
     }
 }
 
-private struct PopoverRootView: View {
+struct PopoverRootView: View {
     var style: OverlayStyle
     var content: () -> AnyView
     var onDismiss: () -> Void
     var onOpenURL: (URL) -> Void
+    let headerButton: OverlayHeaderButton?
 
     var body: some View {
-        PopoverView(style: style, onDismiss: onDismiss) {
+        PopoverView(style: style, onDismiss: onDismiss, headerButton: headerButton) {
             content()
                 .environment(\.onOpenURL, self.onOpenURL)
                 .environment(\.hideOverlay, onDismiss)
@@ -57,7 +59,7 @@ private struct PopoverRootView: View {
     }
 }
 
-private struct OverlaySheetRootView: View {
+struct OverlaySheetRootView: View {
     let overlayModel = OverlaySheetModel()
 
     let style: OverlayStyle
@@ -70,7 +72,10 @@ private struct OverlaySheetRootView: View {
     var overlay: some View {
         OverlaySheetView(
             model: overlayModel, style: style,
-            onDismiss: onDismiss, headerButton: headerButton
+            onDismiss: {
+                onDismiss()
+                overlayModel.hide()
+            }, headerButton: headerButton
         ) {
             content()
                 .environment(\.onOpenURL, self.onOpenURL)

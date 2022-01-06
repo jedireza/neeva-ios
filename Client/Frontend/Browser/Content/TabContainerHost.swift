@@ -146,18 +146,18 @@ struct TabContainerContent: View {
                             }
                         }
                     }
-                    if FeatureFlag[.spaceComments] {
+                    if FeatureFlag[.spaceComments] && !FeatureFlag[.enableBrowserView] {
                         SpaceContentSheet(
                             model: spaceContentSheetModel!,
-                            scrollingController: bvc.scrollController
+                            scrollingController: bvc.scrollController!
                         )
                         .environment(
                             \.onOpenURLForSpace,
                             { bvc.tabManager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
                         )
                     }
-                    if NeevaFeatureFlags[.recipeCheatsheet] && !bvc.tabManager.isIncognito
-                        && NeevaUserInfo.shared.hasLoginCookie()
+                    if NeevaFeatureFlags[.recipeCheatsheet] && !FeatureFlag[.enableBrowserView]
+                        && !bvc.tabManager.isIncognito && NeevaUserInfo.shared.hasLoginCookie()
                     {
                         GeometryReader { geo in
                             VStack {
@@ -165,7 +165,7 @@ struct TabContainerContent: View {
                                 RecipeCheatsheetStripView(
                                     tabManager: bvc.tabManager,
                                     recipeModel: model.recipeModel,
-                                    scrollingController: bvc.scrollController,
+                                    scrollingController: bvc.scrollController!,
                                     height: geo.size.height,
                                     chromeModel: bvc.chromeModel
                                 )

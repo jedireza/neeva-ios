@@ -16,14 +16,13 @@ struct DraggableBannerModifier: ViewModifier {
         return delta > 0 ? 1 - delta / (ToastViewUX.threshold * 3) : 1
     }
 
-    var draggingUpdated: (() -> Void)?
-    var draggingEnded: ((Bool) -> Void)?
+    var bannerViewDelegate: BannerViewDelegate?
 
     private var drag: some Gesture {
         DragGesture()
             .onChanged {
                 self.offset = $0.translation.height
-                draggingUpdated?()
+                bannerViewDelegate?.draggingUpdated()
             }
             .onEnded {
                 var dismissing = false
@@ -36,7 +35,7 @@ struct DraggableBannerModifier: ViewModifier {
                     self.offset = 0
                 }
 
-                draggingEnded?(dismissing)
+                bannerViewDelegate?.draggingEnded(dismissing: dismissing)
             }
     }
 

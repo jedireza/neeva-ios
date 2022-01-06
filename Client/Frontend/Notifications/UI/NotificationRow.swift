@@ -47,9 +47,7 @@ struct NotificationRow: View {
             Spacer()
         }
         .modifier(
-            DraggableBannerModifier(
-                draggingUpdated: viewDelegate?.draggingUpdated,
-                draggingEnded: viewDelegate?.draggingEnded(dismissing:))
+            DraggableBannerModifier(bannerViewDelegate: viewDelegate)
         )
     }
 }

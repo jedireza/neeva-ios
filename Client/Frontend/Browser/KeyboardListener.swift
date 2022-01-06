@@ -4,18 +4,19 @@ import Combine
 import SwiftUI
 import UIKit
 
-struct AdaptsToKeyboard: ViewModifier {
+struct KeyboardListener: ViewModifier {
     @State var currentHeight: CGFloat = 0 {
         didSet {
             keyboardHeightChanged(currentHeight)
         }
     }
+    let adapt: Bool
     var keyboardHeightChanged: (CGFloat) -> Void
 
     func body(content: Content) -> some View {
         GeometryReader { geometry in
             content
-                .offset(y: -1)
+                .offset(y: adapt ? -1 : 0)
                 .onAppear(perform: {
                     NotificationCenter.Publisher(
                         center: NotificationCenter.default,
@@ -51,7 +52,12 @@ struct AdaptsToKeyboard: ViewModifier {
 }
 
 extension View {
-    func adaptsToKeyboard(keyboardHeightChanged: @escaping (CGFloat) -> Void) -> some View {
-        return modifier(AdaptsToKeyboard(keyboardHeightChanged: keyboardHeightChanged))
+    /// - Parameters:
+    ///   - adapts: If `true`, adjust the view to move with the keyboard
+    func keyboardListener(adapt: Bool = true, keyboardHeightChanged: @escaping (CGFloat) -> Void)
+        -> some View
+    {
+        return modifier(
+            KeyboardListener(adapt: adapt, keyboardHeightChanged: keyboardHeightChanged))
     }
 }

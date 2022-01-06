@@ -49,12 +49,16 @@ struct LocationTextField: UIViewRepresentable {
     }
 
     func updateUIView(_ tf: AutocompleteTextField, context: Context) {
-        tf.onSubmit = onSubmit
-        if tf.text != text {
-            tf.text = text
-        }
-        if !editing {
-            tf.resignFirstResponder()
+        DispatchQueue.main.async {
+            tf.onSubmit = onSubmit
+
+            if tf.text != text {
+                tf.text = text
+            }
+
+            if !editing {
+                tf.resignFirstResponder()
+            }
         }
     }
 }

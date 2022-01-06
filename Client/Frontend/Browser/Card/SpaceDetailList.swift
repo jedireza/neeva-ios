@@ -187,7 +187,7 @@ struct SpaceDetailList: View {
                 .modifier(ListStyleModifier())
                 .navigationBarHidden(true)
                 .edgesIgnoringSafeArea([.top, .bottom])
-                .adaptsToKeyboard { height in
+                .keyboardListener { height in
                     guard height > 0 && addingComment else { return }
 
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {

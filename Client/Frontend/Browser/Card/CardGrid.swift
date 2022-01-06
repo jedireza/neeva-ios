@@ -71,14 +71,16 @@ struct CardGrid: View {
 
     @ViewBuilder var grid: some View {
         VStack(spacing: 0) {
-            topBar
-                .modifier(
-                    SwipeToSwitchToSpacesGesture(
-                        gridModel: gridModel, tabModel: tabModel, fromPicker: true
-                    ) {
-                        offset in
-                        self.dragOffset = offset
-                    })
+            if !FeatureFlag[.enableBrowserView] {
+                topBar
+                    .modifier(
+                        SwipeToSwitchToSpacesGesture(
+                            gridModel: gridModel, tabModel: tabModel, fromPicker: true
+                        ) {
+                            offset in
+                            self.dragOffset = offset
+                        })
+            }
 
             cardContainer
                 .accessibilityIdentifier("CardGrid")
@@ -87,7 +89,7 @@ struct CardGrid: View {
                         "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
                     ))
 
-            if !topToolbar {
+            if !topToolbar && !FeatureFlag[.enableBrowserView] {
                 SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
                     .frame(height: UIConstants.ToolbarHeight)
             }
@@ -144,6 +146,7 @@ struct CardGrid: View {
                 Group {
                     if let spaceDetails = spaceModel.detailedSpace {
                         DetailView(primitive: spaceDetails) {
+                            gridModel.showingDetailView = false
                             withAnimation(.easeInOut(duration: 0.4)) {
                                 detailDragOffset = geom.size.width
                             }
@@ -155,10 +158,14 @@ struct CardGrid: View {
                             ])
                         )
                         .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
+                        .onAppear {
+                            gridModel.showingDetailView = true
+                        }
                     }
 
                     if let tabGroupDetails = tabGroupModel.detailedTabGroup {
                         DetailView(primitive: tabGroupDetails) {
+                            gridModel.showingDetailView = false
                             withAnimation(.easeInOut(duration: 0.4)) {
                                 detailDragOffset = geom.size.width
                             }
@@ -172,6 +179,9 @@ struct CardGrid: View {
                         .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
                         .environment(\.cardSize, cardSize)
                         .environment(\.columns, columns)
+                        .onAppear {
+                            gridModel.showingDetailView = true
+                        }
                     }
                     if web3Model.showingWalletDetails {
                         WalletDetailView()

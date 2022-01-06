@@ -178,7 +178,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                             .layoutPriority(0.5)
                         }
                     }
-
                 }
                 .frame(height: getSpacerHeight(outerGeometry))
 
@@ -228,7 +227,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             ZStack {
                 // The semi-transparent backdrop used to shade the content that lies below
                 // the sheet.
-                Button(action: style.nonDismissible ? {} : self.model.hide) {
+                Button(action: style.nonDismissible ? {} : onDismiss) {
                     Color.black
                         .opacity(self.model.backdropOpacity)
                         .ignoresSafeArea()

@@ -11,6 +11,7 @@ import UIKit
 
 struct SuggestionsContent: View {
     @ObservedObject var suggestionModel: SuggestionModel
+    @State var bottomSafeArea: CGFloat = 0
 
     var body: some View {
         GeometryReader { outerGeometry in
@@ -33,10 +34,12 @@ struct SuggestionsContent: View {
                 }
 
                 Spacer()
-                    .frame(
-                        height: suggestionModel.getKeyboardHeight())
+                    .frame(height: bottomSafeArea)
             }
             .ignoresSafeArea(edges: [.bottom])
+            .useEffect(deps: outerGeometry.safeAreaInsets.bottom) { height in
+                bottomSafeArea = height
+            }
         }.onAppear {
             suggestionModel.reload()
         }

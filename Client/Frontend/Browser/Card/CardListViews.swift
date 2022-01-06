@@ -5,6 +5,7 @@ import SwiftUI
 
 struct SpaceCardsView: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
+
     var body: some View {
         if FeatureFlag[.enableCryptoWallet] && !AssetStore.shared.assets.isEmpty {
             AssetGroupView(assetGroup: AssetGroup())

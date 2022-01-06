@@ -9,9 +9,9 @@ class GridModel: ObservableObject {
     let tabCardModel: TabCardModel
     let tabGroupCardModel: TabGroupCardModel
     let spaceCardModel: SpaceCardModel
+    let browserModel: BrowserModel
 
     @Published var isHidden = true
-
     @Published var animationThumbnailState: AnimationThumbnailState = .hidden
     @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
     @Published var isLoading = false
@@ -25,6 +25,7 @@ class GridModel: ObservableObject {
         }
     }
     @Published var refreshDetailedSpaceSubscription: AnyCancellable? = nil
+    @Published var showingDetailView = false
 
     var isIncognito: Bool {
         tabCardModel.manager.isIncognito
@@ -39,11 +40,12 @@ class GridModel: ObservableObject {
 
     @Published var needsScrollToSelectedTab: Int = 0
 
-    init(tabManager: TabManager) {
+    init(tabManager: TabManager, browserModel: BrowserModel) {
         let tabGroupManager = TabGroupManager(tabManager: tabManager)
         self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)
         self.tabGroupCardModel = TabGroupCardModel(manager: tabGroupManager)
         self.spaceCardModel = SpaceCardModel()
+        self.browserModel = browserModel
     }
 
     func scrollToSelectedTab() {
@@ -54,24 +56,42 @@ class GridModel: ObservableObject {
         if tabCardModel.allDetails.isEmpty {
             showWithNoAnimation()
         } else {
-            animationThumbnailState = .visibleForTrayShow
-            updateVisibility(false)
-            updateSpaces()
+            if FeatureFlag[.enableBrowserView] {
+                withAnimation(.easeOut(duration: 0.2)) {
+                    browserModel.currentState = .switcher
+                    isHidden = false
+                }
+            } else {
+                animationThumbnailState = .visibleForTrayShow
+                updateVisibility(false)
+                updateSpaces()
+            }
         }
     }
 
     func showWithNoAnimation() {
-        animationThumbnailState = .hidden
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.currentState = .switcher
+        } else {
+            animationThumbnailState = .hidden
+            updateVisibility(false)
+            updateSpaces()
+        }
+
         isHidden = false
-        updateVisibility(false)
-        updateSpaces()
     }
 
     func showSpaces(forceUpdate: Bool = true) {
-        animationThumbnailState = .hidden
-        switcherState = .spaces
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.currentState = .switcher
+        } else {
+            animationThumbnailState = .hidden
+            updateVisibility(false)
+        }
+
         isHidden = false
-        updateVisibility(false)
+        switcherState = .spaces
+
         if forceUpdate {
             updateSpaces()
         }
@@ -79,15 +99,29 @@ class GridModel: ObservableObject {
 
     func hideWithAnimation() {
         assert(!tabCardModel.allDetails.isEmpty)
-        self.animationThumbnailState = .visibleForTrayHidden
+
+        if FeatureFlag[.enableBrowserView] {
+            withAnimation(.easeOut(duration: 0.2)) {
+                browserModel.currentState = .tab
+                switcherState = .tabs
+                isHidden = true
+            }
+        } else {
+            self.animationThumbnailState = .visibleForTrayHidden
+        }
     }
 
     func hideWithNoAnimation() {
-        animationThumbnailState = .hidden
-        updateVisibility(true)
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.currentState = .tab
+        } else {
+            animationThumbnailState = .hidden
+            updateVisibility(true)
+            animateDetailTransitions = true
+        }
+
         isHidden = true
         switcherState = .tabs
-        animateDetailTransitions = true
     }
 
     func onCompletedCardTransition() {

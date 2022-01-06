@@ -7,8 +7,7 @@ struct FindInPageRootView: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        FindInPageView(onDismiss: onDismiss)
-            .environmentObject(model)
+        FindInPageView(model: model, onDismiss: onDismiss)
     }
 }
 

@@ -31,6 +31,7 @@ class CardTests: XCTestCase {
 
     var profile: TabManagerMockProfile!
     var manager: TabManager!
+    var browserModel: BrowserModel!
     var delegate: MockTabManagerDelegate!
     var groupManager: TabGroupManager!
     var tabCardModel: TabCardModel!
@@ -56,6 +57,7 @@ class CardTests: XCTestCase {
 
         profile = TabManagerMockProfile()
         manager = TabManager(profile: profile, imageStore: nil)
+        browserModel = BrowserModel()
         manager.didRestoreAllTabs = true
         delegate = MockTabManagerDelegate()
         groupManager = TabGroupManager(tabManager: manager)
@@ -192,7 +194,7 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
-        let model = GridModel(tabManager: manager)
+        let model = GridModel(tabManager: manager, browserModel: browserModel)
         let cardGrid = CardGrid().environmentObject(tabCardModel).environmentObject(spaceCardModel)
             .environmentObject(tabGroupCardModel).environmentObject(model)
             .environmentObject(
@@ -217,7 +219,7 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
-        let model = GridModel(tabManager: manager)
+        let model = GridModel(tabManager: manager, browserModel: browserModel)
         model.switcherState = .spaces
         spaceCardModel.onDataUpdated()
         waitForCondition(condition: { spaceCardModel.allDetails.count == 4 })

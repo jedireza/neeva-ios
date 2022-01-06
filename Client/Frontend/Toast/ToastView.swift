@@ -118,11 +118,7 @@ struct ToastView: View {
                 }.padding(.horizontal, 16).colorScheme(.dark)
             }.frame(height: 53).padding(.horizontal)
         }
-        .modifier(
-            DraggableBannerModifier(
-                draggingUpdated: viewDelegate?.draggingUpdated,
-                draggingEnded: viewDelegate?.draggingEnded(dismissing:))
-        )
+        .modifier(DraggableBannerModifier(bannerViewDelegate: viewDelegate))
         .onAppear {
             if let toastProgressViewModel = toastProgressViewModel {
                 content.updateStatus(with: toastProgressViewModel.status)

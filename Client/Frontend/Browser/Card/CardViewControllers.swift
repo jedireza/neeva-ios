@@ -46,9 +46,9 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
 
     init(
         tabManager: TabManager, toolbarModel: SwitcherToolbarModel, web3Model: Web3Model,
-        shareURL: @escaping (URL, UIView) -> Void
+        browserModel: BrowserModel, shareURL: @escaping (URL, UIView) -> Void
     ) {
-        self.gridModel = GridModel(tabManager: tabManager)
+        self.gridModel = GridModel(tabManager: tabManager, browserModel: browserModel)
         self.toolbarModel = toolbarModel
         super.init(
             rootView: Content(

@@ -12,12 +12,17 @@ class NotificationViewManager: QueuedViewManager<NotificationRow> {
         let viewHostingController = UIHostingController(rootView: currentView)
         viewHostingController.view.backgroundColor = .clear
 
-        // creates new window to display View in
-        windowManager.createWindow(
-            with: viewHostingController, placement: .top, height: height
-        ) { [weak self] in
-            guard let self = self else { return }
-            self.startViewDismissTimer(for: view)
+        if FeatureFlag[.enableBrowserView] {
+            overlayManager.show(overlay: .notification(currentView!))
+            startViewDismissTimer(for: view)
+        } else {
+            // creates new window to display View in
+            windowManager.createWindow(
+                with: viewHostingController, placement: .top, height: height
+            ) { [weak self] in
+                guard let self = self else { return }
+                self.startViewDismissTimer(for: view)
+            }
         }
     }
 }
