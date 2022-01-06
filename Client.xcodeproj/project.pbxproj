@@ -44,6 +44,7 @@
 		0BF8F8DA1AEFF1C900E90BC2 /* noTitle.html in Resources */ = {isa = PBXBuildFile; fileRef = 0BF8F8D91AEFF1C900E90BC2 /* noTitle.html */; };
 		122DE37225FA3CF100599A0D /* PinToTopSitesActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 122DE37125FA3CF100599A0D /* PinToTopSitesActivity.swift */; };
 		1A840EB027861F95005F6003 /* LayoutDirectionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A840EAF27861F95005F6003 /* LayoutDirectionExtensions.swift */; };
+		1A840EB227877D3A005F6003 /* ActionObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A840EB127877D3A005F6003 /* ActionObject.swift */; };
 		1D06AE6624FEE4D5000B092B /* TopSitesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D06AE6524FEE4D5000B092B /* TopSitesProvider.swift */; };
 		1D0BA05C24F46A0400D731B5 /* TopSitesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0BA05B24F46A0400D731B5 /* TopSitesManager.swift */; };
 		1D9E1FE524FEF56C006E561D /* TopSites in Resources */ = {isa = PBXBuildFile; fileRef = 3BC659481E5BA4AE006D560F /* TopSites */; };
@@ -1155,6 +1156,7 @@
 		149C4A2A90EB137DCD917726 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Search.strings; sourceTree = "<group>"; };
 		17904C639D55070AB7AFF43A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		1A840EAF27861F95005F6003 /* LayoutDirectionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LayoutDirectionExtensions.swift; sourceTree = "<group>"; };
+		1A840EB127877D3A005F6003 /* ActionObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionObject.swift; sourceTree = "<group>"; };
 		1D06AE6524FEE4D5000B092B /* TopSitesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopSitesProvider.swift; sourceTree = "<group>"; };
 		1D0BA05B24F46A0400D731B5 /* TopSitesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopSitesManager.swift; sourceTree = "<group>"; };
 		1DA3CE5E24EEE7C600422BB2 /* SiteArchiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteArchiver.swift; sourceTree = "<group>"; };
@@ -3655,6 +3657,7 @@
 			isa = PBXGroup;
 			children = (
 				C9C18DCC26558FF2004710CD /* MenuAction.swift */,
+				1A840EB127877D3A005F6003 /* ActionObject.swift */,
 				C9C18E6726559DCF004710CD /* FormatDateTime.swift */,
 				C9C18DD826558FF3004710CD /* FrontViewController.swift */,
 				C9C18E1C265591A1004710CD /* Icons.swift */,
@@ -5556,6 +5559,7 @@
 				6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */,
 				4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */,
 				C832BF5926DEE0BB00B9A1F8 /* AddToSpaceOverlayContent.swift in Sources */,
+				1A840EB227877D3A005F6003 /* ActionObject.swift in Sources */,
 				4A93B53F2776709400CD5415 /* WalletConnectHandlers.swift in Sources */,
 				66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */,
 				66F97CCA26F696B7005A26C2 /* BrightnessModel.swift in Sources */,
