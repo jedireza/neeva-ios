@@ -27,8 +27,8 @@ class TrackingStatsViewModel: ObservableObject {
         }
     }
 
-    @Published var numDomains = 0
-    @Published var hallOfShameDomains = [HallOfShameDomain]()
+    @Published private(set) var numDomains = 0
+    @Published private(set) var hallOfShameDomains = [HallOfShameDomain]()
     @Published var preventTrackersForCurrentPage: Bool {
         didSet {
             guard let domain = selectedTab?.currentURL()?.host else {
@@ -57,7 +57,8 @@ class TrackingStatsViewModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private var statsSubscription: AnyCancellable? = nil
 
-    var trackers: [TrackingEntity] {
+    // read by tests
+    private(set) var trackers: [TrackingEntity] {
         didSet {
             onDataUpdated()
         }

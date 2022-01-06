@@ -24,7 +24,7 @@ enum ContentUIVisibilityEvent {
 
 class TabContainerModel: ObservableObject {
     /// Holds the current webpage's WebView, so that when the state changes to be other content, we don't lose it.
-    @Published var webContainerType: ContentUIType {
+    @Published private(set) var webContainerType: ContentUIType {
         didSet {
             switch currentContentUI {
             case .webPage:
@@ -37,13 +37,13 @@ class TabContainerModel: ObservableObject {
         }
     }
     /// Current content UI that is showing
-    @Published var currentContentUI: ContentUIType
+    @Published private(set) var currentContentUI: ContentUIType
 
-    @Published var recipeModel: RecipeViewModel
+    @Published private(set) var recipeModel: RecipeViewModel
 
-    var subscription: AnyCancellable? = nil
+    private var subscription: AnyCancellable? = nil
 
-    let zeroQueryModel: ZeroQueryModel
+    private let zeroQueryModel: ZeroQueryModel
     let tabCardModel: TabCardModel
 
     init(bvc: BrowserViewController) {

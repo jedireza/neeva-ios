@@ -8,7 +8,7 @@ import SwiftUI
 
 protocol ThumbnailModel: ObservableObject {
     associatedtype Thumbnail: SelectableThumbnail
-    var allDetails: [Thumbnail] { get set }
+    var allDetails: [Thumbnail] { get }
 }
 
 protocol CardModel: ThumbnailModel {
@@ -16,38 +16,38 @@ protocol CardModel: ThumbnailModel {
     associatedtype Details: CardDetails where Details.Item == Manager.Item
     var manager: Manager { get }
     var allDetails: [Details] { get set }
-    var allDetailsWithExclusionList: [Details] { get set }
+    var allDetailsWithExclusionList: [Details] { get }
 
     func onDataUpdated()
 }
 
 class TabCardModel: CardModel, TabEventHandler {
-    var onViewUpdate: () -> Void = {}
+    private var onViewUpdate: () -> Void = {}
     var manager: TabManager
-    var groupManager: TabGroupManager
-    var anyCancellable: AnyCancellable? = nil
+    private var groupManager: TabGroupManager
+    private var anyCancellable: AnyCancellable? = nil
 
     @Published var allDetails: [TabCardDetails] = []
-    @Published var allDetailsWithExclusionList: [TabCardDetails] = []
-    @Published var selectedTabID: String? = nil
+    @Published private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
+    @Published private(set) var selectedTabID: String? = nil
 
     var isCardGridEmpty: Bool {
         return allDetailsMatchingIncognitoState.isEmpty
     }
 
-    var allDetailsMatchingIncognitoState: [TabCardDetails] {
+    private var allDetailsMatchingIncognitoState: [TabCardDetails] {
         allDetails.filter {
             manager.get(for: $0.id)?.isIncognito ?? false == manager.isIncognito
         }
     }
 
-    var normalDetails: [TabCardDetails] {
+    private var normalDetails: [TabCardDetails] {
         allDetails.filter {
             manager.get(for: $0.id)?.isIncognito == false
         }
     }
 
-    var incognitoDetails: [TabCardDetails] {
+    private var incognitoDetails: [TabCardDetails] {
         allDetails.filter {
             manager.get(for: $0.id)?.isIncognito == true
         }
@@ -87,7 +87,7 @@ class TabCardModel: CardModel, TabEventHandler {
         onViewUpdate()
     }
 
-    func modifyAllDetailsAvoidingSingleTabs(_ childTabs: [Tab]) {
+    private func modifyAllDetailsAvoidingSingleTabs(_ childTabs: [Tab]) {
         let tabGroupsFilter = manager.getAll().reduce(into: [Int]()) {
             let numToAppend = !childTabs.contains($1) ? (($0.last ?? 0) + 1) : 0
             $0.append(numToAppend)
@@ -174,13 +174,13 @@ func getLogCounterAttributesForSpaces(details: SpaceCardDetails?) -> [ClientLogC
 }
 
 class SpaceCardModel: CardModel {
-    @Published var manager = SpaceStore.shared
+    @Published private(set) var manager = SpaceStore.shared
     @Published var allDetails: [SpaceCardDetails] = [] {
         didSet {
             allDetailsWithExclusionList = allDetails
         }
     }
-    @Published var allDetailsWithExclusionList: [SpaceCardDetails] = []
+    @Published private(set) var allDetailsWithExclusionList: [SpaceCardDetails] = []
     @Published var detailedSpace: SpaceCardDetails? {
         willSet {
             guard let space = detailedSpace, newValue == nil else {
@@ -222,7 +222,7 @@ class SpaceCardModel: CardModel {
         }
     }
 
-    var onViewUpdate: () -> Void = {}
+    private var onViewUpdate: () -> Void = {}
     var thumbnailURLCandidates = [URL: [URL]]()
     private var anyCancellable: AnyCancellable? = nil
     private var recommendationSubscription: AnyCancellable? = nil
@@ -596,7 +596,7 @@ class TabGroupCardModel: CardModel {
         objectWillChange.send()
     }
 
-    func createIsShowingDetailsSink(
+    private func createIsShowingDetailsSink(
         details: TabGroupCardDetails?, storeIn: inout Set<AnyCancellable>
     ) {
         let id = details?.id

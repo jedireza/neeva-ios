@@ -5,7 +5,7 @@ import SwiftUI
 import WebKit
 
 class WebsiteDataController: ObservableObject {
-    @Published var siteRecords: [WKWebsiteDataRecord]?
+    @Published private(set) var siteRecords: [WKWebsiteDataRecord]?
 
     init() {
         reload()

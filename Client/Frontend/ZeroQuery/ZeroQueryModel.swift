@@ -45,7 +45,7 @@ enum ZeroQueryTarget {
 
 class ZeroQueryModel: ObservableObject {
     @Published var isPrivate = false
-    @Published var promoCard: PromoCardType?
+    @Published private(set) var promoCard: PromoCardType?
     @Published var showRatingsCard: Bool = false
     @Published var openedFrom: ZeroQueryOpenedLocation?
 
@@ -67,8 +67,9 @@ class ZeroQueryModel: ObservableObject {
 
     let bvc: BrowserViewController
 
-    @ObservedObject var suggestedSitesViewModel: SuggestedSitesViewModel = SuggestedSitesViewModel(
-        sites: [])
+    @ObservedObject private(set) var suggestedSitesViewModel: SuggestedSitesViewModel =
+        SuggestedSitesViewModel(
+            sites: [])
     let profile: Profile
     let shareURLHandler: (URL, UIView) -> Void
     var delegate: ZeroQueryPanelDelegate?

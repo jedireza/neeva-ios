@@ -18,25 +18,25 @@ class NotificationManager: ObservableObject {
         public static let localNotificationURL = "localNotificationURL"
     }
 
-    @Published var notifications = [BaseNotification]() {
+    @Published private(set) var notifications = [BaseNotification]() {
         didSet {
             saveNotitificationsToDevice(notifications)
         }
     }
 
-    var upcomingNotifications: [BaseNotification] {
+    private var upcomingNotifications: [BaseNotification] {
         notifications.filter { $0.dateReceived > Date() }
     }
 
-    var readNotifications: [BaseNotification] {
+    private var readNotifications: [BaseNotification] {
         notifications.filter { !$0.isUnread }
     }
 
-    var unreadNotifications: [BaseNotification] {
+    private var unreadNotifications: [BaseNotification] {
         notifications.filter { $0.isUnread && $0.dateReceived <= Date() }
     }
 
-    var shouldShowBadge: Bool {
+    private var shouldShowBadge: Bool {
         unreadNotifications.count > 0
     }
 
@@ -88,7 +88,7 @@ class NotificationManager: ObservableObject {
         return URL(fileURLWithPath: path).appendingPathComponent("notifications")
     }
 
-    func saveNotitificationsToDevice(_ notifications: [BaseNotification]) {
+    private func saveNotitificationsToDevice(_ notifications: [BaseNotification]) {
         guard let path = storageURL?.absoluteString else {
             return
         }
@@ -102,7 +102,7 @@ class NotificationManager: ObservableObject {
         }
     }
 
-    func retrieveNotificationsFromDevice() -> [BaseNotification] {
+    private func retrieveNotificationsFromDevice() -> [BaseNotification] {
         guard let url = storageURL,
             FileManager.default.fileExists(atPath: url.absoluteString),
             let notificationData = try? Data(contentsOf: url)
@@ -125,7 +125,7 @@ class NotificationManager: ObservableObject {
     }
 
     /// Deletes all read notifications that are 7+ days old.
-    func purgeOldNotifications() {
+    private func purgeOldNotifications() {
         notifications = notifications.filter {
             $0.isUnread || $0.dateRead?.daysFromToday() ?? 0 <= 7
         }
@@ -206,7 +206,7 @@ class NotificationManager: ObservableObject {
         }
     }
 
-    func rescheduleNotification(identifier: String) {
+    private func rescheduleNotification(identifier: String) {
         UNUserNotificationCenter.current().getPendingNotificationRequests { pendingNotifications in
             for notification in pendingNotifications where notification.identifier == identifier {
                 self.cancelLocalNotification(identifier: identifier)
@@ -228,7 +228,7 @@ class NotificationManager: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    func setupFeatureFlagUpdateHandler() {
+    private func setupFeatureFlagUpdateHandler() {
         NeevaFeatureFlags.shared.$flagsUpdated.sink { flagsUpdated in
             if flagsUpdated {
                 let notificationContent = NeevaFeatureFlags.latestValue(.localNotificationContent)
@@ -246,7 +246,7 @@ class NotificationManager: ObservableObject {
     }
 
     // MARK: - Notification Handler
-    func handleNotification(notification: BaseNotification, bvc: BrowserViewController) {
+    private func handleNotification(notification: BaseNotification, bvc: BrowserViewController) {
         notification.markNotificationAsRead()
 
         if let notification = notification as? NeevaPromoNotification, let type = notification.type
@@ -377,7 +377,7 @@ class NotificationManager: ObservableObject {
         }
     }
 
-    func showInAppNotification(notification: BaseNotification) {
+    private func showInAppNotification(notification: BaseNotification) {
         guard let sceneDelegate = SceneDelegate.getCurrentSceneDelegateOrNil(),
             let bvc = SceneDelegate.getBVCOrNil()
         else {

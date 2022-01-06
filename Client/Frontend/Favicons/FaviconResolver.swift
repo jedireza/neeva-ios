@@ -10,7 +10,7 @@ class FaviconResolver: ObservableObject {
     private let site: Site?
 
     /// Updated asynchronously when the favicon has been resolved.
-    @Published var faviconUrl: URL?
+    @Published private(set) var faviconUrl: URL?
 
     init(site: Site) {
         self.site = site

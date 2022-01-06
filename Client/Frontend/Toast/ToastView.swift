@@ -17,7 +17,7 @@ struct ToastStateContent {
 }
 
 class ToastViewContent: ObservableObject {
-    @Published var currentToastStateContent: ToastStateContent
+    @Published private(set) var currentToastStateContent: ToastStateContent
 
     func updateStatus(with status: ToastProgressStatus) {
         switch status {

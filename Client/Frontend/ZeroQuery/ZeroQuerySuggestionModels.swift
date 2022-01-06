@@ -26,7 +26,7 @@ class SuggestedSitesViewModel: ObservableObject {
 }
 
 class SuggestedSearchesModel: ObservableObject {
-    @Published var suggestedQueries = [(query: String, site: Site)]()
+    @Published private(set) var suggestedQueries = [(query: String, site: Site)]()
 
     init(suggestedQueries: [(String, Site)]) {
         self.suggestedQueries = suggestedQueries

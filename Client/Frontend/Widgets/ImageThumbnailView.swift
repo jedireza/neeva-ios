@@ -5,7 +5,7 @@ import SwiftUI
 
 class ImageThumbnailModel: ObservableObject {
     private let imageData: Data
-    @Published var cachedImage: UIImage?
+    @Published private var cachedImage: UIImage?
 
     init(imageData: Data) {
         self.imageData = imageData

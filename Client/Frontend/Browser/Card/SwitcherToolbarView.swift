@@ -7,8 +7,8 @@ class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
     let openLazyTab: () -> Void
     let createNewSpace: () -> Void
-    let onNeevaMenuAction: (NeevaMenuAction) -> Void
-    @Published var isIncognito: Bool
+    private let onNeevaMenuAction: (NeevaMenuAction) -> Void
+    @Published private(set) var isIncognito: Bool
 
     init(
         tabManager: TabManager,

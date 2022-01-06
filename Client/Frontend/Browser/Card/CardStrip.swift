@@ -60,7 +60,7 @@ private struct CardStripButtonSpec: ViewModifier {
 }
 
 class CardStripModel: ObservableObject {
-    @Published var isVisible: Bool = false
+    @Published private(set) var isVisible: Bool = false
 
     func toggleVisible() {
         withAnimation {

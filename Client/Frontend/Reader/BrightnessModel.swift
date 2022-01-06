@@ -6,14 +6,14 @@ import Shared
 import SwiftUI
 
 class BrightnessModel: ObservableObject {
-    let levels: [CGFloat] = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+    private let levels: [CGFloat] = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
 
     var brightness: CGFloat {
         UIScreen.main.brightness
     }
 
-    @Published var canDecrease: Bool = false
-    @Published var canIncrease: Bool = false
+    @Published private(set) var canDecrease: Bool = false
+    @Published private(set) var canIncrease: Bool = false
 
     func setBrightness(to: CGFloat) {
         UIScreen.main.brightness = to
@@ -24,7 +24,9 @@ class BrightnessModel: ObservableObject {
     func increase() {
         if brightness < levels.first! {
             setBrightness(to: levels.first!)
-        } else if let currentIndex = levels.firstIndex(where: {abs($0 - brightness) < 0.05}), levels.indices.contains(currentIndex + 1) {
+        } else if let currentIndex = levels.firstIndex(where: { abs($0 - brightness) < 0.05 }),
+            levels.indices.contains(currentIndex + 1)
+        {
             setBrightness(to: levels[currentIndex + 1])
         }
     }
@@ -32,7 +34,9 @@ class BrightnessModel: ObservableObject {
     func decrease() {
         if brightness > levels.last! {
             setBrightness(to: levels.first!)
-        } else if let currentIndex = levels.firstIndex(where: {abs($0 - brightness) < 0.05}), levels.indices.contains(currentIndex - 1) {
+        } else if let currentIndex = levels.firstIndex(where: { abs($0 - brightness) < 0.05 }),
+            levels.indices.contains(currentIndex - 1)
+        {
             setBrightness(to: levels[currentIndex - 1])
         }
     }

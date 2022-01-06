@@ -250,8 +250,8 @@ extension Site: BrowserPrimitive {
 class SiteFetcher: AccessingManager, ObservableObject {
     typealias Item = Site
 
-    @Published var cache: [String: Site] = [:]
-    var sites: [Site?] = [] {
+    @Published private var cache: [String: Site] = [:]
+    private var sites: [Site?] = [] {
         didSet {
             self.cache = self.sites.compactMap { $0 }.reduce(into: [:]) { dict, site in
                 dict[site!.url.absoluteString] = site
@@ -333,9 +333,9 @@ extension TabGroup: BrowserPrimitive, Closeable {
 class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
     typealias Item = TabGroup
     let tabManager: TabManager
-    @Default(.tabGroupNames) var tabGroupDict: [String: String]
-    @Published var tabGroups: [String: TabGroup] = [:]
-    var anyCancellable: AnyCancellable? = nil
+    @Default(.tabGroupNames) private var tabGroupDict: [String: String]
+    @Published private(set) var tabGroups: [String: TabGroup] = [:]
+    private var anyCancellable: AnyCancellable? = nil
 
     init(tabManager: TabManager) {
         self.tabManager = tabManager

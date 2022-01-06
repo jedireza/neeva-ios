@@ -21,8 +21,8 @@ class TabScrollingController: NSObject, ObservableObject {
         case animating
     }
 
-    @Published var headerTopOffset: CGFloat = 0
-    @Published var footerBottomOffset: CGFloat = 0
+    @Published private(set) var headerTopOffset: CGFloat = 0
+    @Published private(set) var footerBottomOffset: CGFloat = 0
 
     private let chromeModel: TabChromeModel
 

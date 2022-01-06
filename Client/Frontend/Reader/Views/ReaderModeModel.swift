@@ -7,14 +7,14 @@ import SwiftUI
 
 class ReaderModeModel: ObservableObject {
     @Published private(set) var state: ReaderModeState = .unavailable
-    @Published var style: ReaderModeStyle = ReaderModeStyle(
+    @Published private(set) var style: ReaderModeStyle = ReaderModeStyle(
         theme: .light, fontType: .sansSerif)
 
-    let setReadingMode: (Bool) -> Void
+    private let setReadingMode: (Bool) -> Void
     let tabManager: TabManager
 
     var delegate: ReaderModeDelegate?
-    var isOriginalTabSecure: Bool = false
+    private(set) var isOriginalTabSecure: Bool = false
 
     fileprivate var isUsingUserDefinedColor = false
 
@@ -45,7 +45,9 @@ class ReaderModeModel: ObservableObject {
     }
 
     func setReadingModeState(state: ReaderModeState) {
-        if state == .available, let currentURL = tabManager.selectedTab?.url, ReaderModeBlocklist.isSiteBlocked(url: currentURL) {
+        if state == .available, let currentURL = tabManager.selectedTab?.url,
+            ReaderModeBlocklist.isSiteBlocked(url: currentURL)
+        {
             self.state = .unavailable
         } else {
             self.state = state

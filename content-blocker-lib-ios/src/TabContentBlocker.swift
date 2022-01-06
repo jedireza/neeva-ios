@@ -15,7 +15,7 @@ protocol ContentBlockerTab: AnyObject {
 }
 
 class TabContentBlocker: ObservableObject {
-    weak var tab: ContentBlockerTab?
+    private(set) weak var tab: ContentBlockerTab?
 
     var isEnabled: Bool {
         return false

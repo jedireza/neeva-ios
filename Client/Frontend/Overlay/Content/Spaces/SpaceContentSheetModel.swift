@@ -5,9 +5,9 @@ import Shared
 import SwiftUI
 
 class SpaceContentSheetModel: ObservableObject {
-    @Published var selectedTab: Tab?
-    @Published var currentSpaceDetail: SpaceCardDetails?
-    @Published var currentSpaceEntityDetail: SpaceEntityThumbnail?
+    @Published private(set) var selectedTab: Tab?
+    @Published private(set) var currentSpaceDetail: SpaceCardDetails?
+    @Published private(set) var currentSpaceEntityDetail: SpaceEntityThumbnail?
     private var subscriptions = Set<AnyCancellable>()
     private var urlSubscription: AnyCancellable? = nil
     private var spaceModel: SpaceCardModel

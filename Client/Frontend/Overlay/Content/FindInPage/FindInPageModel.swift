@@ -11,7 +11,7 @@ enum SearchFunction: String {
 
 class FindInPageModel: ObservableObject {
     // MARK: Properties
-    var tab: Tab?
+    private var tab: Tab?
 
     @Published var searchValue: String = "" {
         didSet {

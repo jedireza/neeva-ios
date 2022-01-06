@@ -17,7 +17,7 @@ class SuggestionModel: ObservableObject {
     let bvc: BrowserViewController
     var getKeyboardHeight: () -> CGFloat = { 0 }
 
-    public var queryModel: SearchQueryModel
+    private(set) var queryModel: SearchQueryModel
     private var searchQueryListener: AnyCancellable?
 
     private var searchQuery: String = "" {
@@ -42,17 +42,18 @@ class SuggestionModel: ObservableObject {
 
     // MARK: Neeva Suggestions
     // Displayed in linear order
-    @Published var tabSuggestions: [Suggestion] = []
-    @Published var autocompleteSuggestion: Suggestion?
-    @Published var rowQuerySuggestions: [Suggestion] = []
+    @Published private(set) var tabSuggestions: [Suggestion] = []
+    @Published private(set) var autocompleteSuggestion: Suggestion?
+    @Published private(set) var rowQuerySuggestions: [Suggestion] = []
+    // these two get set by tests
     @Published var urlSuggestions: [Suggestion] = []
     @Published var navSuggestions: [Suggestion] = []
-    @Published var findInPageSuggestion: Suggestion?
-    @Published var activeLensBang: ActiveLensBangInfo?
-    @Published var error: Error?
-    @Published var keyboardFocusedSuggestion: Suggestion?
-    @Published var memorizedSuggestionMap = [String: String]()
-    @Published var querySuggestionIndexMap = [String: Int]()
+    @Published private(set) var findInPageSuggestion: Suggestion?
+    @Published private(set) var activeLensBang: ActiveLensBangInfo?
+    @Published private(set) var error: Error?
+    @Published private(set) var keyboardFocusedSuggestion: Suggestion?
+    @Published private(set) var memorizedSuggestionMap = [String: String]()
+    @Published private(set) var querySuggestionIndexMap = [String: Int]()
     private var keyboardFocusedSuggestionIndex = -1
 
     private var isIncognito: Bool {

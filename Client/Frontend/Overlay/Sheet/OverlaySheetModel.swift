@@ -12,7 +12,7 @@ public class OverlaySheetModel: ObservableObject {
     @Published var topBarHeight: CGFloat = 0
     @Published var deltaHeight: CGFloat = 0
     @Published var position: OverlaySheetPosition = .dismissed
-    @Published var backdropOpacity: Double = 0.0
+    @Published private(set) var backdropOpacity: Double = 0.0
 
     func show(defaultPosition: OverlaySheetPosition = .middle) {
         withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {

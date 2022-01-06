@@ -4,7 +4,7 @@ import Foundation
 import Shared
 
 class RecipeViewModel: ObservableObject {
-    @Published var recipe: Recipe =
+    @Published private(set) var recipe: Recipe =
         Recipe(
             title: "",
             imageURL: "",
@@ -17,7 +17,7 @@ class RecipeViewModel: ObservableObject {
             reviews: nil,
             preference: .noPreference
         )
-    @Published var relatedQuery: String? = nil
+    @Published private(set) var relatedQuery: String? = nil
 
     init(tabManager: TabManager) {
         if let url = tabManager.selectedTab?.url?.absoluteString {

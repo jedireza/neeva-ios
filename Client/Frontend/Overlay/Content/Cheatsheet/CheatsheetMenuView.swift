@@ -82,11 +82,11 @@ struct QueryButton: View {
 }
 
 public class CheatsheetMenuViewModel: ObservableObject {
-    @Published var cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?
-    @Published var searchRichResults: [SearchController.RichResult]?
-    @Published var currentPageURL: URL?
-    @Published var cheatsheetDataLoading: Bool
-    @Published var currentCheatsheetQuery: String?
+    @Published private(set) var cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?
+    @Published private(set) var searchRichResults: [SearchController.RichResult]?
+    @Published private(set) var currentPageURL: URL?
+    @Published private(set) var cheatsheetDataLoading: Bool
+    @Published private(set) var currentCheatsheetQuery: String?
 
     private var subscriptions: Set<AnyCancellable> = []
 

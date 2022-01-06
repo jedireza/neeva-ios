@@ -11,7 +11,7 @@ public enum AssetStoreState {
 public class AssetStore: ObservableObject {
     public static var shared = AssetStore()
 
-    @Published var state: AssetStoreState = .ready
+    @Published private(set) var state: AssetStoreState = .ready
     var assets: [Asset] = []
     var collections = Set<Collection>()
 

@@ -13,8 +13,9 @@ class GridModel: ObservableObject {
 
     @Published var isHidden = true
     @Published var animationThumbnailState: AnimationThumbnailState = .hidden
-    @Published var pickerHeight: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
-    @Published var isLoading = false
+    @Published private(set) var pickerHeight: CGFloat = UIConstants
+        .TopToolbarHeightWithToolbarButtonsShowing
+    @Published private(set) var isLoading = false
     @Published var switcherState: SwitcherViews = .tabs {
         didSet {
             if case .spaces = switcherState {
@@ -24,7 +25,7 @@ class GridModel: ObservableObject {
             }
         }
     }
-    @Published var refreshDetailedSpaceSubscription: AnyCancellable? = nil
+    @Published private(set) var refreshDetailedSpaceSubscription: AnyCancellable? = nil
     @Published var showingDetailView = false
 
     var isIncognito: Bool {
