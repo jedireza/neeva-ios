@@ -6,6 +6,7 @@ import Shared
 import Storage
 import UIKit
 import XCGLogger
+import SwiftUI
 
 private let log = Logger.browser
 
@@ -123,17 +124,17 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         return tabMenu.createOpenTabMenu(savedTab) { (tab, isPrivate) in
             self.loadData()
 
-            let toastLabelText: String =
+            let toastLabelText: LocalizedStringKey =
                 isPrivate
-                ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
-                : Strings.ContextMenuButtonToastNewTabOpenedLabelText
+                ? "New Incognito Tab opened"
+                : "Incognito Tab opened"
 
             if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view)
                 .toastViewManager
             {
                 toastManager.makeToast(
                     text: toastLabelText,
-                    buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                    buttonText: "Switch",
                     buttonAction: {
                         self.tabManager?.selectTab(tab)
                     }

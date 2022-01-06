@@ -7,6 +7,7 @@ import Storage
 import UIKit
 import WebKit
 import XCGLogger
+import SwiftUI
 
 protocol HistoryPanelDelegate: AnyObject {
     func libraryPanel(didSelectURL url: URL, visitType: VisitType)
@@ -240,9 +241,7 @@ class HistoryPanel: SiteTableViewController {
                 let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view)
                     .toastViewManager
             {
-                toastManager.makeToast(
-                    text: Strings.AppMenuAddPinToTopSitesConfirmMessage
-                ).enqueue(manager: toastManager)
+                toastManager.makeToast(text: "Pinned To Top Sites").enqueue(manager: toastManager)
             }
         }
     }
@@ -501,14 +500,14 @@ class HistoryPanel: SiteTableViewController {
             if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view)
                 .toastViewManager
             {
-                let toastLabelText: String =
+                let toastLabelText: LocalizedStringKey =
                     isPrivate
-                    ? Strings.ContextMenuButtonToastNewIncognitoTabOpenedLabelText
-                    : Strings.ContextMenuButtonToastNewTabOpenedLabelText
+                    ? "New Incognito Tab opened"
+                    : "New Tab opened"
 
                 toastManager.makeToast(
                     text: toastLabelText,
-                    buttonText: Strings.ContextMenuButtonToastNewTabOpenedButtonText,
+                    buttonText: "Switch",
                     buttonAction: {
                         self.tabManager.selectTab(tab)
                     }

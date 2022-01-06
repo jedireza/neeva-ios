@@ -20,7 +20,7 @@ enum OverlaySheetUX {
 }
 
 public struct OverlayHeaderButton {
-    public let text: String
+    public let text: LocalizedStringKey
     public let icon: Nicon
     public let action: () -> Void
 }
@@ -34,7 +34,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
 
     @State private var keyboardHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
-    @State private var title: String = ""
+    @State private var title: LocalizedStringKey? = nil
     @State private var isFixedHeight: Bool = false
 
     let style: OverlayStyle
@@ -124,7 +124,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     .padding(.top, 8)
             }
             HStack(spacing: 0) {
-                if style.showTitle {
+                if style.showTitle, let title = title {
                     Text(title)
                         .withFont(.headingMedium)
                         .foregroundColor(.label)

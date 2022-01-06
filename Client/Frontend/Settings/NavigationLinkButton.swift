@@ -55,7 +55,7 @@ struct NavigationLinkButton<Label: View>: View {
 }
 
 extension NavigationLinkButton where Label == Text {
-    init(_ title: String, style: Style = .link, action: @escaping () -> Void) {
+    init(_ title: LocalizedStringKey, style: Style = .link, action: @escaping () -> Void) {
         self.label = { Text(title) }
         self.action = action
         self.style = style
@@ -88,6 +88,17 @@ extension SheetNavigationLink where Label == Text {
         self.label = { Text(title) }
         self.sheet = sheet
     }
+}
+
+@ViewBuilder
+func makeNavigationLink<D: View>(title: LocalizedStringKey, destination: () -> D) -> some View {
+    NavigationLink(title, destination: destination().navigationTitle(title))
+}
+
+@_disfavoredOverload
+@ViewBuilder
+func makeNavigationLink<D: View, S: StringProtocol>(title: S, destination: () -> D) -> some View {
+    NavigationLink(title, destination: destination().navigationTitle(title))
 }
 
 struct NavigationLinkButton_Previews: PreviewProvider {

@@ -8,29 +8,35 @@ struct AboutSettingsSection: View {
     @Binding var showDebugSettings: Bool
     @Environment(\.onOpenURL) var openURL
     var body: some View {
-        let version = "Neeva Browser \(AppInfo.appVersion) (\(AppInfo.buildNumber))"
+        let versionText = String(
+            format: NSLocalizedString(
+                "Neeva Browser %@ (%@)",
+                comment: "Copiable text showing the version on the settings screen"
+            ),
+            AppInfo.appVersion, AppInfo.buildNumber
+        )
         Menu {
-            Button(action: { UIPasteboard.general.string = version }) {
+            Button(action: {
+                UIPasteboard.general.string = versionText
+            }) {
                 Label("Copy Version information", systemSymbol: .docOnDoc)
             }
             Button(action: { showDebugSettings.toggle() }) {
                 Label(
-                    "Toggle Debug Settings",
+                    String("Toggle Debug Settings"),
                     systemSymbol: showDebugSettings ? .checkmarkSquare : .square)
             }
         } label: {
             HStack {
-                Text(version)
+                Text(versionText)
                 Spacer()
             }.padding(.vertical, 3).contentShape(Rectangle())
         }.accentColor(.label)
 
-        NavigationLink(
-            "Licenses",
-            destination: LicensesView()
+        makeNavigationLink(title: "Licenses") {
+            LicensesView()
                 .ignoresSafeArea(.all, edges: [.bottom, .horizontal])
-                .navigationTitle("Licenses")
-        )
+        }
 
         NavigationLinkButton("Terms") {
             ClientLogger.shared.logCounter(

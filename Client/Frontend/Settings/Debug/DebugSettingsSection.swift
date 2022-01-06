@@ -10,31 +10,29 @@ struct DebugSettingsSection: View {
 
     var body: some View {
         Group {
-            Section(header: Text("Debug — Neeva")) {
-                NavigationLink(
-                    "Server Feature Flags",
-                    destination: NeevaFeatureFlagSettingsView().navigationTitle(
-                        "Server Feature Flags"))
-                NavigationLink(
-                    "Server User Flags",
-                    destination: NeevaUserFlagSettingsView().navigationTitle(
-                        "Server User Flags"))
+            Section(header: Text(verbatim: "Debug — Neeva")) {
+                makeNavigationLink(title: String("Server Feature Flags")) {
+                    NeevaFeatureFlagSettingsView()
+                }
+                makeNavigationLink(title: String("Server User Flags")) {
+                    NeevaUserFlagSettingsView()
+                }
                 AppHostSetting()
-                NavigationLinkButton("Neeva Admin") {
+                NavigationLinkButton("\(String("Neeva Admin"))") {
                     openURL(NeevaConstants.appHomeURL / "admin")
                 }
             }
-            Section(header: Text("Debug — Local")) {
-                NavigationLink(
-                    "Local Feature Flags",
-                    destination: FeatureFlagSettingsView().navigationTitle("Local Feature Flags"))
-                NavigationLink(
-                    "Internal Settings",
-                    destination: InternalSettingsView().navigationTitle("Internal Settings"))
-                NavigationLink(
-                    "Logging",
-                    destination: LoggingSettingsView().navigationTitle("Logging"))
-                Toggle("Enable Geiger Counter", isOn: $enableGeigerCounter)
+            Section(header: Text(verbatim: "Debug — Local")) {
+                makeNavigationLink(title: String("Local Feature Flags")) {
+                    FeatureFlagSettingsView()
+                }
+                makeNavigationLink(title: String("Internal Settings")) {
+                    InternalSettingsView()
+                }
+                makeNavigationLink(title: String("Logging")) {
+                    LoggingSettingsView()
+                }
+                Toggle(String("Enable Geiger Counter"), isOn: $enableGeigerCounter)
                     .onChange(of: enableGeigerCounter) {
                         if $0 {
                             SceneDelegate.getCurrentSceneDelegateOrNil()?.startGeigerCounter()
@@ -42,13 +40,13 @@ struct DebugSettingsSection: View {
                             SceneDelegate.getCurrentSceneDelegateOrNil()?.stopGeigerCounter()
                         }
                     }
-                NavigationLink(
-                    "Notification",
-                    destination: NotificationSettingsView().navigationTitle("Notification"))
+                makeNavigationLink(title: String("Notification")) {
+                    NotificationSettingsView()
+                }
             }
             DebugDBSettingsSection()
             DecorativeSection {
-                Button("Force Crash App") {
+                Button(String("Force Crash App")) {
                     Sentry.shared.crash()
                 }.accentColor(.red)
             }

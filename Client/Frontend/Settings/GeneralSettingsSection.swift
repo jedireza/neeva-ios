@@ -4,8 +4,8 @@ import Defaults
 import SwiftUI
 
 struct DetailedSettingsLabel: View {
-    let title: String
-    let description: String
+    let title: LocalizedStringKey
+    let description: LocalizedStringKey
     var body: some View {
         VStack(alignment: .leading) {
             Text(title)

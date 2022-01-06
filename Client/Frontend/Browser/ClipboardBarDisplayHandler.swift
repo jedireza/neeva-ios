@@ -145,7 +145,7 @@ class ClipboardBarDisplayHandler: NSObject {
                 .toastViewManager
             {
                 let toastView = toastManager.makeToast(
-                    text: Strings.GoToCopiedLink, buttonText: Strings.GoButtonTitle,
+                    text: "Go to copied link?", buttonText: "Go",
                     buttonAction: {
                         self.bvc?.openURLInNewTabPreservingIncognitoState(url)
                     })

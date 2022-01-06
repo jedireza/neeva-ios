@@ -68,9 +68,9 @@ extension Defaults.Keys {
 }
 
 struct ZeroQueryHeader: View {
-    let title: String
+    let title: LocalizedStringKey
     let action: () -> Void
-    let label: String
+    let label: LocalizedStringKey
     let icon: Nicon
 
     var body: some View {
@@ -94,14 +94,14 @@ struct ZeroQueryHeader: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityAddTraits([.isHeader, .isButton])
-        .accessibilityLabel("\(title), \(label)")
+        .accessibilityLabel("\(Text(title)), \(Text(label))")
         .accessibilityAction(.default, action)
         .padding([.top, .horizontal], ZeroQueryUX.Padding)
     }
 }
 
 struct ZeroQueryPlaceholder: View {
-    let label: String
+    let label: LocalizedStringKey
 
     var body: some View {
         HStack {
@@ -147,7 +147,7 @@ struct ZeroQueryView: View {
     @ViewBuilder var suggestedSpace: some View {
         if let space = SpaceStore.suggested.allSpaces.first {
             ZeroQueryHeader(
-                title: space.name,
+                title: "\(space.name)",
                 action: { expandSuggestedSpace.toggle() },
                 label: "\(expandSuggestedSpace ? "hides" : "shows") this section",
                 icon: expandSuggestedSpace ? .chevronUp : .chevronDown

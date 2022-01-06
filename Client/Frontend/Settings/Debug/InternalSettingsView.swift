@@ -37,61 +37,59 @@ struct InternalSettingsView: View {
     @Default(.signupPromptInterval) var signupPromptInterval
     @Default(.maxQueryLimit) var maxQueryLimit
     @Default(.signedInOnce) var signedInOnce
-
+    
     var body: some View {
         List {
-            Section(header: Text("First Run")) {
-                Toggle("searchInputPromptDismissed", isOn: $searchInputPromptDismissed)
-                Toggle("introSeen", isOn: $introSeen)
-                Toggle("didFirstNavigation", isOn: $didFirstNavigation)
-                Toggle("signedInOnce", isOn: $signedInOnce)
+            Section(header: Text(verbatim: "First Run")) {
+                Toggle(String("searchInputPromptDismissed"), isOn: $searchInputPromptDismissed)
+                Toggle(String("introSeen"), isOn: $introSeen)
+                Toggle(String("didFirstNavigation"), isOn: $didFirstNavigation)
+                Toggle(String("signedInOnce"), isOn: $signedInOnce)
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("previewModeQueries")
-                        Text(
-                            "\(previewModeQueries.count)"
-                        )
-                        .foregroundColor(.secondaryLabel)
-                        .font(.caption)
+                        Text(verbatim: "previewModeQueries")
+                        Text(verbatim: "\(previewModeQueries.count)")
+                            .foregroundColor(.secondaryLabel)
+                            .font(.caption)
                     }
                     Spacer()
-                    Button("Clear") { previewModeQueries.removeAll() }
+                    Button(String("Clear")) { previewModeQueries.removeAll() }
                         .font(.body)
                         .accentColor(.red)
                         .buttonStyle(BorderlessButtonStyle())
                 }
                 NumberField(
-                    "signupPromptInterval", number: $signupPromptInterval)
+                    String("signupPromptInterval"), number: $signupPromptInterval)
                 NumberField(
-                    "maxQueryLimit", number: $maxQueryLimit)
+                    String("maxQueryLimit"), number: $maxQueryLimit)
             }
-            Section(header: Text("Spaces")) {
-                Toggle("spacesIntroSeen", isOn: $seenSpacesIntro)
-                Toggle("spacesShareIntroSeen", isOn: $seenSpacesShareIntro)
+            Section(header: Text(verbatim: "Spaces")) {
+                Toggle(String("spacesIntroSeen"), isOn: $seenSpacesIntro)
+                Toggle(String("spacesShareIntroSeen"), isOn: $seenSpacesShareIntro)
             }
-            Section(header: Text("Promo Cards")) {
-                Toggle("didShowDefaultBrowserOnboarding", isOn: $didShowDefaultBrowserOnboarding)
-                Toggle("didDismissDefaultBrowserCard", isOn: $didDismissDefaultBrowserCard)
-                Toggle("didDismissReferralPromoCard", isOn: $didDismissReferralPromoCard)
-                Toggle("ratingsCardHidden", isOn: $ratingsCardHidden)
+            Section(header: Text(verbatim: "Promo Cards")) {
+                Toggle(String("didShowDefaultBrowserOnboarding"), isOn: $didShowDefaultBrowserOnboarding)
+                Toggle(String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
+                Toggle(String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
+                Toggle(String("ratingsCardHidden"), isOn: $ratingsCardHidden)
             }
             Section(header: Text("promo-card")) {
-                Toggle("seenNotificationPermissionPromo", isOn: $seenNotificationPermissionPromo)
-                Toggle("seenBlackFridayFollowPromo", isOn: $seenBlackFridayFollowPromo)
-                Toggle("seenBlackFridayNotifyPromo", isOn: $seenBlackFridayNotifyPromo)
+                Toggle(String("seenNotificationPermissionPromo"), isOn: $seenNotificationPermissionPromo)
+                Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
+                Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
             }
-            Section(header: Text("User-generated")) {
+            Section(header: Text(verbatim: "User-generated")) {
                 HStack {
                     VStack(alignment: .leading) {
-                        Text("deletedSuggestedSites")
+                        Text(verbatim: "deletedSuggestedSites")
                         Text(
-                            "\(deletedSuggestedSites.count) site\(deletedSuggestedSites.count == 1 ? "" : "s")"
+                            String("\(deletedSuggestedSites.count) site\(deletedSuggestedSites.count == 1 ? "" : "s")")
                         )
                         .foregroundColor(.secondaryLabel)
                         .font(.caption)
                     }
                     Spacer()
-                    Button("Clear") { deletedSuggestedSites = [] }
+                    Button(String("Clear")) { deletedSuggestedSites = [] }
                         .font(.body)
                         .accentColor(.red)
                         .buttonStyle(BorderlessButtonStyle())
@@ -99,9 +97,9 @@ struct InternalSettingsView: View {
                 OptionalDataKeyView("recentlyClosedTabs", data: $recentlyClosedTabs)
             }
 
-            Section(header: Text("Miscellaneous")) {
-                // enable if you’re working on logins and need access
-                Toggle("saveLogins", isOn: $saveLogins)
+            Section(header: Text(verbatim: "Miscellaneous")) {
+                Toggle(String("saveLogins"), isOn: $saveLogins)
+                // comment this line out if you’re working on logins and need access
                     .disabled(!saveLogins)
 
                 OptionalBooleanField(
@@ -110,9 +108,9 @@ struct InternalSettingsView: View {
                 OptionalStringField("lastVersionNumber", text: $lastVersionNumber)
             }
 
-            Section(header: Text("Top Sites Cache")) {
+            Section(header: Text(verbatim: "Top Sites Cache")) {
                 HStack {
-                    Text("topSitesCacheIsValid")
+                    Text(verbatim: "topSitesCacheIsValid")
                     Spacer()
                     Text(String(topSitesCacheIsValid))
                         .foregroundColor(.secondaryLabel)
@@ -120,13 +118,13 @@ struct InternalSettingsView: View {
                 OptionalNumberField("topSitesCacheSize", number: $topSitesCacheSize)
             }
 
-            Section(header: Text("WidgetKit")) {
+            Section(header: Text(verbatim: "WidgetKit")) {
                 OptionalDataKeyView("widgetKitSimpleTabKey", data: $widgetKitSimpleTabKey)
                 OptionalDataKeyView("widgetKitSimpleTopTab", data: $widgetKitSimpleTopTab)
             }
 
-            Section(header: Text("Performance")) {
-                Toggle("applicationCleanlyBackgrounded", isOn: $applicationCleanlyBackgrounded)
+            Section(header: Text(verbatim: "Performance")) {
+                Toggle(String("applicationCleanlyBackgrounded"), isOn: $applicationCleanlyBackgrounded)
                 if let cleanlyBackgrounded = cleanlyBackgroundedLastTime {
                     let text =
                         cleanlyBackgrounded
@@ -138,14 +136,14 @@ struct InternalSettingsView: View {
                 }
             }
 
-            Section(header: Text("Notification")) {
+            Section(header: Text(verbatim: "Notification")) {
                 OptionalStringField(
                     "lastScheduledNeevaPromoID", text: $lastScheduledNeevaPromoID)
                 OptionalNumberField(
                     "lastNeevaPromoScheduledTimeInterval",
                     number: $lastNeevaPromoScheduledTimeInterval)
                 Toggle(
-                    "didRegisterNotificationTokenOnServer",
+                    String("didRegisterNotificationTokenOnServer"),
                     isOn: $didRegisterNotificationTokenOnServer)
 
                 NumberField(

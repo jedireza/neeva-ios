@@ -121,7 +121,7 @@ class TrackingStatsViewModel: ObservableObject {
 }
 
 struct TrackingMenuFirstRowElement: View {
-    let label: String
+    let label: LocalizedStringKey
     let num: Int
 
     var body: some View {
@@ -133,7 +133,7 @@ struct TrackingMenuFirstRowElement: View {
             .padding(.bottom, 4)
             .padding(.vertical, 10)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(num) \(label) blocked")
+            .accessibilityLabel(Text("\(num) \(Text(label)) blocked"))
             .accessibilityIdentifier("TrackingMenu.TrackingMenuFirstRowElement")
         }
     }

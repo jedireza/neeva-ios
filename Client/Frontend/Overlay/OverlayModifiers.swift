@@ -13,15 +13,14 @@ import SwiftUI
 //    }
 //
 struct OverlayTitlePreferenceKey: PreferenceKey {
-    typealias Value = String
-    static var defaultValue: String = ""
-    static func reduce(value: inout String, nextValue: () -> String) {
+    static var defaultValue: LocalizedStringKey? = nil
+    static func reduce(value: inout LocalizedStringKey?, nextValue: () -> LocalizedStringKey?) {
         value = nextValue()
     }
 }
 
 struct OverlayTitleViewModifier: ViewModifier {
-    let title: String
+    let title: LocalizedStringKey
     func body(content: Content) -> some View {
         content.preference(
             key: OverlayTitlePreferenceKey.self,
@@ -30,7 +29,7 @@ struct OverlayTitleViewModifier: ViewModifier {
 }
 
 extension View {
-    func overlayTitle(title: String) -> some View {
+    func overlayTitle(title: LocalizedStringKey) -> some View {
         self.modifier(OverlayTitleViewModifier(title: title))
     }
 }

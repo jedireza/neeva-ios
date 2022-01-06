@@ -13,10 +13,9 @@ struct NotificationSettingsView: View {
     var body: some View {
         List {
             Group {
-                NavigationLink(
-                    "Schedule Notification",
-                    destination: ScheduleNotificationView()
-                        .navigationTitle("Schedule Notification"))
+                makeNavigationLink(title: String("Schedule Notification")) {
+                    ScheduleNotificationView()
+                }
 
                 if NotificationPermissionHelper.shared.permissionStatus != .authorized {
                     Button {

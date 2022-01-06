@@ -10,7 +10,7 @@ struct NeevaFeatureFlagSettingsView: View {
     var body: some View {
         List {
             // TODO: Add support for Float flags to TextFlagView
-            Section(header: Text("Bool Flags")) {
+            Section(header: Text(verbatim: "Bool Flags")) {
                 ForEach(NeevaFeatureFlags.BoolFlag.allCases, id: \.rawValue) { flag in
                     HStack {
                         Text(flag.name)
@@ -22,7 +22,7 @@ struct NeevaFeatureFlagSettingsView: View {
                     }
                 }
             }
-            Section(header: Text("Int Flags")) {
+            Section(header: Text(verbatim: "Int Flags")) {
                 ForEach(NeevaFeatureFlags.IntFlag.allCases, id: \.rawValue) { flag in
                     VStack(alignment: .leading) {
                         Text(flag.name)
@@ -32,7 +32,7 @@ struct NeevaFeatureFlagSettingsView: View {
                     }
                 }
             }
-            Section(header: Text("String Flags")) {
+            Section(header: Text(verbatim: "String Flags")) {
                 ForEach(NeevaFeatureFlags.StringFlag.allCases, id: \.rawValue) { flag in
                     VStack(alignment: .leading) {
                         Text(flag.name)

@@ -5,7 +5,7 @@ import Shared
 import SwiftUI
 
 public struct NeevaMenuButtonView: View {
-    let label: String
+    let label: LocalizedStringKey
     let nicon: Nicon?
     let symbol: SFSymbol?
     let action: () -> Void
@@ -16,7 +16,7 @@ public struct NeevaMenuButtonView: View {
     ///   - label: The text displayed on the button
     ///   - nicon: The Nicon to use
     ///   - isDisabled: Whether to apply gray out disabled style
-    public init(label: String, nicon: Nicon, action: @escaping () -> Void) {
+    public init(label: LocalizedStringKey, nicon: Nicon, action: @escaping () -> Void) {
         self.label = label
         self.nicon = nicon
         self.symbol = nil
@@ -27,7 +27,7 @@ public struct NeevaMenuButtonView: View {
     ///   - label: The text displayed on the button
     ///   - symbol: The SFSymbol to use
     ///   - isDisabled: Whether to apply gray out disabled style
-    public init(label: String, symbol: SFSymbol, action: @escaping () -> Void) {
+    public init(label: LocalizedStringKey, symbol: SFSymbol, action: @escaping () -> Void) {
         self.label = label
         self.nicon = nil
         self.symbol = symbol

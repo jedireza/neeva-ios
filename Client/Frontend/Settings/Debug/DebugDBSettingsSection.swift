@@ -5,8 +5,8 @@ import SwiftUI
 
 struct DebugDBSettingsSection: View {
     var body: some View {
-        Section(header: Text("Debug — Databases")) {
-            Button("Copy Databases to App Container") {
+        Section(header: Text(verbatim: "Debug — Databases")) {
+            Button(String("Copy Databases to App Container")) {
                 let documentsPath = NSSearchPathForDirectoriesInDomains(
                     .documentDirectory, .userDomainMask, true)[0]
                 do {
@@ -22,7 +22,7 @@ struct DebugDBSettingsSection: View {
                     print("Couldn't export browser data: \(error).")
                 }
             }
-            Button("Delete Exported Databases") {
+            Button(String("Delete Exported Databases")) {
                 let documentsPath = NSSearchPathForDirectoriesInDomains(
                     .documentDirectory, .userDomainMask, true)[0]
                 let fileManager = FileManager.default
@@ -37,7 +37,7 @@ struct DebugDBSettingsSection: View {
                     print("Couldn't delete exported data: \(error).")
                 }
             }
-            Button("Simulate Slow Database Operations") {
+            Button(String("Simulate Slow Database Operations")) {
                 debugSimulateSlowDBOperations.toggle()
             }
         }
