@@ -35,19 +35,19 @@ class TabCardModel: CardModel, TabEventHandler {
         return allDetailsMatchingIncognitoState.isEmpty
     }
 
-    private var allDetailsMatchingIncognitoState: [TabCardDetails] {
+    var allDetailsMatchingIncognitoState: [TabCardDetails] {
         allDetails.filter {
             manager.get(for: $0.id)?.isIncognito ?? false == manager.isIncognito
         }
     }
 
-    private var normalDetails: [TabCardDetails] {
+    var normalDetails: [TabCardDetails] {
         allDetails.filter {
             manager.get(for: $0.id)?.isIncognito == false
         }
     }
 
-    private var incognitoDetails: [TabCardDetails] {
+    var incognitoDetails: [TabCardDetails] {
         allDetails.filter {
             manager.get(for: $0.id)?.isIncognito == true
         }

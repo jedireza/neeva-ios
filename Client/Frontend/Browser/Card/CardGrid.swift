@@ -41,12 +41,8 @@ struct CardGrid: View {
             count: columnCount)
     }
 
-    @ViewBuilder var cardContainerBackground: some View {
-        if tabModel.isCardGridEmpty, case .tabs = gridModel.switcherState {
-            EmptyCardGrid(isIncognito: gridModel.isIncognito)
-        } else {
-            Color.background.ignoresSafeArea()
-        }
+    var cardContainerBackground: some View {
+        Color.background.ignoresSafeArea()
     }
 
     @ViewBuilder var cardContainer: some View {
@@ -381,7 +377,7 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
     func body(content: Content) -> some View {
         content
             .gesture(
-                DragGesture(minimumDistance: 20, coordinateSpace: .global)
+                DragGesture()
                     .onChanged({ value in
                         let horizontalAmount = value.translation.width as CGFloat
 

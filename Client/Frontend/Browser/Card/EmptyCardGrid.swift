@@ -14,7 +14,6 @@ struct EmptyCardGrid: View {
                 .withFont(.bodyMedium)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.background.ignoresSafeArea())
     }
 }
 

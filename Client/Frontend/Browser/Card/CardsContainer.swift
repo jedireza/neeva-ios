@@ -120,44 +120,54 @@ struct CardsContainer: View {
     // Used to rebuild the scene when switching between portrait and landscape.
     @State var orientation: UIDeviceOrientation = .unknown
     @State var generationId: Int = 0
+    @State var switchingState = false
 
     let columns: [GridItem]
 
     var body: some View {
         ZStack {
             GeometryReader { geom in
+                // Spaces
                 ScrollContainer(columns: columns, category: .spaces)
                     .offset(
                         x: (gridModel.switcherState == .spaces ? 0 : geom.size.width))
 
-                ScrollContainer(columns: columns, category: .normalTabs)
-                    .offset(
-                        x: (gridModel.switcherState == .tabs
-                            ? (gridModel.isIncognito ? geom.size.width : 0) : -geom.size.width)
-                    )
-                    .onAppear {
-                        gridModel.scrollToSelectedTab()
-                    }
+                // Normal Tabs
+                ZStack {
+                    EmptyCardGrid(isIncognito: false)
+                        .opacity(tabModel.normalDetails.isEmpty ? 1 : 0)
 
-                ScrollContainer(columns: columns, category: .incognitoTabs)
-                    .offset(
-                        x: (gridModel.switcherState == .tabs
-                            ? (gridModel.isIncognito ? 0 : -geom.size.width) : -geom.size.width)
-                    )
-                    .onAppear {
-                        gridModel.scrollToSelectedTab()
-                    }
+                    ScrollContainer(columns: columns, category: .normalTabs)
+                        .onAppear {
+                            gridModel.scrollToSelectedTab()
+                        }
+                }.offset(
+                    x: (gridModel.switcherState == .tabs
+                        ? (gridModel.isIncognito ? geom.size.width : 0) : -geom.size.width)
+                )
 
-                    // So that in landscape mode `scrollGeometry` includes the safe area, which is
-                    // needed by the `CardTransitionModifier`.
-                    .ignoresSafeArea(edges: [.bottom])
+                // Incognito Tabs
+                ZStack {
+                    EmptyCardGrid(isIncognito: true)
+                        .opacity(tabModel.incognitoDetails.isEmpty ? 1 : 0)
+
+                    ScrollContainer(columns: columns, category: .incognitoTabs)
+                        .onAppear {
+                            gridModel.scrollToSelectedTab()
+                        }
+                }.offset(
+                    x: (gridModel.switcherState == .tabs
+                        ? (gridModel.isIncognito ? 0 : -geom.size.width) : -geom.size.width)
+                )
             }
         }
         .id(generationId)
+        .animation(.easeInOut)
         .onChange(of: gridModel.switcherState) { value in
             guard case .spaces = value, !seenSpacesIntro, !gridModel.isLoading else {
                 return
             }
+
             SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
                 style: .spaces,
                 content: {
