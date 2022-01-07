@@ -85,11 +85,11 @@ struct SingleLevelTabCardsView: View {
                                     + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
                                     + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
                             )
-                            //                                                    .background(Color.secondarySystemFill)
-                            //                                                    .cornerRadius(
-                            //                                                        24,
-                            //                                                        corners: cornersToRound(index, groupDetails.allDetails.count)
-                            //                                                    )
+                            .background(Color.secondarySystemFill)
+                            .cornerRadius(
+                                24,
+                                corners: cornersToRound(index, groupDetails.allDetails.count)
+                            )
                             .padding(.horizontal, -CardGridUX.GridSpacing)
                             .id(groupDetails.allDetails[index].id)
                         }
@@ -197,24 +197,24 @@ struct SingleLevelTabCardsView: View {
             || (row == 1 && index == total - 1)
     }
 
-    func cornersToRound(_ index: Int, _ total: Int) -> UIRectCorner {
+    func cornersToRound(_ index: Int, _ total: Int) -> CornerSet {
         if isTopLeft(index, total) && isBottomLeft(index, total) {
-            return [.topLeft, .bottomLeft]
+            return .leading
         }
         if isTopRight(index, total) && isBottomRight(index, total) {
-            return [.topRight, .bottomRight]
+            return .trailing
         }
         if isTopLeft(index, total) {
-            return .topLeft
+            return .topLeading
         }
         if isTopRight(index, total) {
-            return .topRight
+            return .topTrailing
         }
         if isBottomLeft(index, total) {
-            return .bottomLeft
+            return .bottomLeading
         }
         if isBottomRight(index, total) {
-            return .bottomRight
+            return .bottomTrailing
         }
         return []
     }
