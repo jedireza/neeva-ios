@@ -92,7 +92,8 @@ struct CardGrid: View {
         }
     }
 
-    @ViewBuilder var loadingIndicator: some View {
+    @ViewBuilder
+    var loadingIndicator: some View {
         ZStack {
             Color.TrayBackground
                 .opacity(0.5)
@@ -138,6 +139,7 @@ struct CardGrid: View {
 
                 if gridModel.isLoading {
                     loadingIndicator
+                        .ignoresSafeArea()
                 }
 
                 Group {
@@ -359,7 +361,7 @@ struct GridPicker: View {
         picker
             .frame(height: gridModel.pickerHeight)
             .background(
-                (gridModel.spaceCardModel.detailedSpace == nil && !isInToolbar
+                (!isInToolbar
                     ? Color.background : Color.clear)
                     .ignoresSafeArea()
             )

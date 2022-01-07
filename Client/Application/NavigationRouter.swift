@@ -184,7 +184,18 @@ enum NavigationPath {
 
     private static func handleURL(url: URL?, isPrivate: Bool, with bvc: BrowserViewController) {
         if let newURL = url {
-            bvc.switchToTabForURLOrOpen(newURL, isPrivate: isPrivate)
+            if newURL.isNeevaURL() && newURL.path.hasPrefix("/spaces") {
+                let spaceId = newURL.lastPathComponent
+                if spaceId != "spaces" {
+                    NavigationPath.handleSpace(
+                        spaceId: spaceId, updatedItemIds: [], isPrivate: isPrivate, with: bvc
+                    )
+                } else {
+                    bvc.gridModel.showSpaces()
+                }
+            } else {
+                bvc.switchToTabForURLOrOpen(newURL, isPrivate: isPrivate)
+            }
         } else {
             bvc.openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
         }
@@ -211,6 +222,7 @@ enum NavigationPath {
         if let updatedItemIDs = updatedItemIds, !updatedItemIDs.isEmpty {
             gridModel.spaceCardModel.updatedItemIDs = updatedItemIDs
         }
+
         gridModel.openSpace(spaceId: spaceId, bvc: bvc, isPrivate: isPrivate, completion: {})
     }
 

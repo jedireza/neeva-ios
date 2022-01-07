@@ -1,8 +1,8 @@
 // Copyright Neeva. All rights reserved.
 
+import Defaults
 import Shared
 import SwiftUI
-import Defaults
 
 struct ScheduleNotificationView: View {
     @Environment(\.dismissScreen) var dismissScreen

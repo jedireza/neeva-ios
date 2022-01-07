@@ -219,13 +219,20 @@ class GridModel: ObservableObject {
 
     }
 
-    func openSpace(spaceID: String, animate: Bool = true) {
-        let detail = spaceCardModel.allDetails.first(where: { $0.id == spaceID })
+    func openSpace(spaceID: String?, animate: Bool = true) {
         withAnimation(nil) {
             showSpaces(forceUpdate: false)
         }
+
         animateDetailTransitions = animate
-        detail?.isShowingDetails = true
+
+        guard let spaceID = spaceID,
+            let detail = spaceCardModel.allDetails.first(where: { $0.id == spaceID })
+        else {
+            return
+        }
+
+        detail.isShowingDetails = true
     }
 
     func openTabGroup(detail: TabGroupCardDetails) {

@@ -41,7 +41,8 @@ struct NeevaAccountInfoView: View {
                                         .SettingSignout,
                                         attributes: EnvironmentHelper.shared.getAttributes())
                                     if userInfo.hasLoginCookie() {
-                                        NotificationPermissionHelper.shared.deleteDeviceTokenFromServer()
+                                        NotificationPermissionHelper.shared
+                                            .deleteDeviceTokenFromServer()
                                         userInfo.clearCache()
                                         userInfo.deleteLoginCookie()
                                         userInfo.didLogOut()

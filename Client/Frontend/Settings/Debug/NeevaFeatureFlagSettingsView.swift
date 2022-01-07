@@ -174,7 +174,9 @@ private struct IntFlagView: View {
 
     var body: some View {
         HStack {
-            TextField(String(NeevaFeatureFlags[flag]), text: $flagValueText, onEditingChanged: { _ in }) {
+            TextField(
+                String(NeevaFeatureFlags[flag]), text: $flagValueText, onEditingChanged: { _ in }
+            ) {
                 NeevaFeatureFlags[flag] = Int(flagValueText) ?? 0
                 updateState()
             }

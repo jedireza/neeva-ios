@@ -257,26 +257,6 @@ where
         }
     }
 
-    @ViewBuilder var webUIButton: some View {
-        Button {
-            if let space = space {
-                gridModel.hideWithNoAnimation()
-                spacesModel.detailedSpace = nil
-                onOpenURLForSpace(space.url, space.id.id)
-            }
-        } label: {
-            Label(
-                title: {
-                    Text("Open as Website")
-                        .withFont(.labelMedium)
-                        .lineLimit(1)
-                        .foregroundColor(Color.secondaryLabel)
-                },
-                icon: { Image(systemName: "doc.richtext") }
-            )
-        }
-    }
-
     var descriptionToggle: some View {
         Toggle(isOn: $showDescriptions) {
             Text("Show Descriptions")
@@ -304,12 +284,12 @@ where
                 if let space = space, !space.isDefaultSpace {
                     deleteButton
                 }
+
                 if !headerVisible {
                     addButton
                     editButton
                     descriptionToggle
                 }
-                webUIButton
             },
             label: {
                 Symbol(decorative: .ellipsis, style: .labelMedium)
