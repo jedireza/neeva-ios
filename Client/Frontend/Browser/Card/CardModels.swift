@@ -559,10 +559,12 @@ class TabGroupCardModel: CardModel {
     @Published var allDetailsWithExclusionList: [TabGroupCardDetails] = []
     @Published var detailedTabGroup: TabGroupCardDetails? {
         willSet {
-            guard let tabgroup = detailedTabGroup, newValue == nil else {
-                return
+            if !FeatureFlag[.tabGroupsNewDesign] {
+                guard let tabgroup = detailedTabGroup, newValue == nil else {
+                    return
+                }
+                tabgroup.isShowingDetails = false
             }
-            tabgroup.isShowingDetails = false
         }
     }
     @Published var representativeTabs: [Tab] = []
@@ -605,6 +607,10 @@ class TabGroupCardModel: CardModel {
                 withAnimation {
                     self?.detailedTabGroup =
                         self?.allDetails.first(where: { $0.id == id })
+                }
+            } else {
+                if FeatureFlag[.tabGroupsNewDesign] {
+                    self?.detailedTabGroup = nil
                 }
             }
         }.store(in: &storeIn)

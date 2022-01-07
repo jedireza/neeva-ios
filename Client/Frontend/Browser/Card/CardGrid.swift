@@ -126,7 +126,8 @@ struct CardGrid: View {
                     .offset(
                         x: (spaceModel.detailedSpace == nil
                             && tabGroupModel.detailedTabGroup == nil
-                            && !web3Model.showingWalletDetails)
+                            && !web3Model.showingWalletDetails
+                            || FeatureFlag[.tabGroupsNewDesign])
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
                     .background(
@@ -162,25 +163,28 @@ struct CardGrid: View {
                             gridModel.showingDetailView = true
                         }
                     }
-
-                    if let tabGroupDetails = tabGroupModel.detailedTabGroup {
-                        DetailView(primitive: tabGroupDetails) {
-                            gridModel.showingDetailView = false
-                            withAnimation(.easeInOut(duration: 0.4)) {
-                                detailDragOffset = geom.size.width
+                    if !FeatureFlag[.tabGroupsNewDesign] {
+                        if let tabGroupDetails = tabGroupModel.detailedTabGroup {
+                            DetailView(primitive: tabGroupDetails) {
+                                gridModel.showingDetailView = false
+                                withAnimation(.easeInOut(duration: 0.4)) {
+                                    detailDragOffset = geom.size.width
+                                }
                             }
-                        }
-                        .frame(width: geom.size.width, height: geom.size.height)
-                        .background(
-                            Color.groupedBackground.edgesIgnoringSafeArea([
-                                .bottom, .horizontal,
-                            ])
-                        )
-                        .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
-                        .environment(\.cardSize, cardSize)
-                        .environment(\.columns, columns)
-                        .onAppear {
-                            gridModel.showingDetailView = true
+                            .frame(width: geom.size.width, height: geom.size.height)
+                            .background(
+                                Color.groupedBackground.edgesIgnoringSafeArea([
+                                    .bottom, .horizontal,
+                                ])
+                            )
+                            .transition(
+                                gridModel.animateDetailTransitions ? .flipFromRight : .identity
+                            )
+                            .environment(\.cardSize, cardSize)
+                            .environment(\.columns, columns)
+                            .onAppear {
+                                gridModel.showingDetailView = true
+                            }
                         }
                     }
                     if web3Model.showingWalletDetails {
