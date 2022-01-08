@@ -37,7 +37,7 @@ extension BrowserViewController {
                 tabManager.selectedTab?.stop()
             }
         case .newTab:
-            openLazyTab()
+            openLazyTab(openedFrom: .newTabButton)
         case .findOnPage:
             updateFindInPageVisibility(visible: true)
         case .textSize:

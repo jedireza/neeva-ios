@@ -1038,18 +1038,18 @@ class BrowserViewController: UIViewController, ModalPresenter {
             return
         }
 
-        if zeroQueryModel.isLazyTab || zeroQueryModel.targetTab == .newTab {
+        if zeroQueryModel.targetTab == .existingOrNewTab {
+            hideZeroQuery()
+            tabManager.createOrSwitchToTab(
+                for: url,
+                query: searchQueryModel.value,
+                visitType: visitType
+            )
+        } else if zeroQueryModel.isLazyTab || zeroQueryModel.targetTab == .newTab {
             hideZeroQuery()
             openURLInNewTab(
                 url,
                 isPrivate: zeroQueryModel.isPrivate,
-                query: searchQueryModel.value,
-                visitType: visitType
-            )
-        } else if zeroQueryModel.targetTab == .existingOrNewTab {
-            hideZeroQuery()
-            tabManager.createOrSwitchToTab(
-                for: url,
                 query: searchQueryModel.value,
                 visitType: visitType
             )
