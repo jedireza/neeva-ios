@@ -14,9 +14,10 @@ struct AddToSpaceOverlayContent: View {
     let bvc: BrowserViewController
     let importData: SpaceImportHandler?
 
-    var body: some View {
-        VStack {
-            if request.state == .savedToSpace || request.state == .savingToSpace {
+    @ViewBuilder
+    var content: some View {
+        if request.state == .savedToSpace || request.state == .savingToSpace {
+            VStack {
                 Spacer()
 
                 ShareAddedSpaceView(request: request, bvc: bvc)
@@ -25,32 +26,36 @@ struct AddToSpaceOverlayContent: View {
                             overlayModel.position = .middle
                         }
                     }
-            } else {
-                AddToSpaceView(
-                    request: request,
-                    onDismiss: hideOverlay,
-                    importData: importData
-                )
             }
-        }
-        .overlayTitle(title: request.mode.title)
-        .overlayIsFixedHeight(
-            isFixedHeight: request.mode == .saveToNewSpace
-                && (request.state == .creatingSpace || request.state == .initial)
-        )
-        .environment(\.onSigninOrJoinNeeva) {
-            ClientLogger.shared.logCounter(
-                .AddToSpaceErrorSigninOrJoinNeeva,
-                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-            hideOverlay()
-            bvc.presentIntroViewController(
-                true,
-                onDismiss: {
-                    DispatchQueue.main.async {
-                        bvc.hideCardGrid(withAnimation: true)
-                    }
-                }
+        } else {
+            AddToSpaceView(
+                request: request,
+                onDismiss: hideOverlay,
+                importData: importData
             )
         }
+    }
+
+    var body: some View {
+        content
+            .overlayTitle(title: request.mode.title)
+            .overlayIsFixedHeight(
+                isFixedHeight: request.mode == .saveToNewSpace
+                    && (request.state == .creatingSpace || request.state == .initial)
+            )
+            .environment(\.onSigninOrJoinNeeva) {
+                ClientLogger.shared.logCounter(
+                    .AddToSpaceErrorSigninOrJoinNeeva,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                hideOverlay()
+                bvc.presentIntroViewController(
+                    true,
+                    onDismiss: {
+                        DispatchQueue.main.async {
+                            bvc.hideCardGrid(withAnimation: true)
+                        }
+                    }
+                )
+            }
     }
 }

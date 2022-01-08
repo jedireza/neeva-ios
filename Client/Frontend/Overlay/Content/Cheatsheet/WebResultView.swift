@@ -44,28 +44,33 @@ struct WebResultItem: View {
     var body: some View {
         VStack(alignment: .leading) {
             if item.buyingGuides.count > 0 {
-                Button(action: onClick) {
-                    WebResultHeader(item: item)
-                }
+                WebResultHeader(item: item)
+                    .onTapGesture(perform: onClick)
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityLabel(Text(item.title))
+
                 BuyingGuideList(buyingGuides: item.buyingGuides)
             } else if item.inlineSearchProducts.count > 0 {
-                Button(action: onClick) {
-                    WebResultHeader(item: item)
-                }
+                WebResultHeader(item: item)
+                    .onTapGesture(perform: onClick)
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityLabel(Text(item.title))
+
                 InlineSearchProductList(inlineSearchProducts: item.inlineSearchProducts)
             } else if let snippet = item.snippet {
-                Button(action: onClick) {
-                    VStack(alignment: .leading) {
-                        WebResultHeader(item: item)
-                        Text(snippet)
-                            .font(.system(size: 13))
-                            .foregroundColor(
-                                Color(light: Color.ui.gray40, dark: Color(hex: 0xd0dada))
-                            )
-                            .lineLimit(3)
-                            .multilineTextAlignment(.leading)
-                    }
+                VStack(alignment: .leading) {
+                    WebResultHeader(item: item)
+
+                    Text(snippet)
+                        .font(.system(size: 13))
+                        .foregroundColor(
+                            Color(light: Color.ui.gray40, dark: Color(hex: 0xd0dada))
+                        )
+                        .lineLimit(3)
+                        .multilineTextAlignment(.leading)
                 }
+                .onTapGesture(perform: onClick)
+                .accessibilityAddTraits(.isButton)
             }
         }
         .padding(.bottom, 10)

@@ -98,3 +98,17 @@ private struct Pair<T0: Equatable, T1: Equatable>: Equatable {
 private struct Tuple<T0: Equatable, T1: Equatable, T2: Equatable>: Equatable {
     let zero: T0, one: T1, two: T2
 }
+
+extension View {
+    func onHeightOfViewChanged(perform updater: @escaping (CGFloat) -> Void) -> some View {
+        self
+            .background(
+                GeometryReader { geom in
+                    Color.clear
+                        .useEffect(deps: geom.size.height) { height in
+                            updater(height)
+                        }
+                }
+            )
+    }
+}

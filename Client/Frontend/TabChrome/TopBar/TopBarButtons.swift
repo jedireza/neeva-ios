@@ -134,10 +134,10 @@ struct TopBarOverflowMenuButton: View {
         ) {
             VerticalScrollViewIfNeeded {
                 content
-                    .padding(.bottom, 16)
                     .environment(\.isIncognito, isIncognito)
                     .environmentObject(chromeModel)
                     .environmentObject(locationModel)
+                    .padding(.horizontal, -6)
             }.frame(minWidth: 340, minHeight: 285)
         }
     }

@@ -71,8 +71,13 @@ struct PopoverView<Content: View>: View {
                             }.padding(.top)
                         }
 
-                        content()
-                            .onPreferenceChange(OverlayTitlePreferenceKey.self) { self.title = $0 }
+                        ScrollView(.vertical, showsIndicators: false) {
+                            content()
+                                .onPreferenceChange(OverlayTitlePreferenceKey.self) {
+                                    self.title = $0
+                                }
+                                .padding(.bottom, 18)
+                        }
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .background(

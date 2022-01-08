@@ -30,9 +30,11 @@ public struct OverlayHeaderButton {
 // top) position or can drag down to dismiss.
 // Intended to present content that is flexible in height (e.g., a ScrollView).
 struct OverlaySheetView<Content: View>: View, KeyboardReadable {
+    // MARK: - Properties
     @StateObject var model: OverlaySheetModel
 
     @State private var keyboardHeight: CGFloat = 0
+    @State private var titleHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
     @State private var title: LocalizedStringKey? = nil
     @State private var isFixedHeight: Bool = false
@@ -46,55 +48,67 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         return keyboardHeight > 0
     }
 
-    // The height of the spacer is a function of the outer geometry (i.e.,
-    // that of our container) and the current delta height.
+    // MARK: - View Functions
+    private func isPortraitMode(_ outerGeometry: GeometryProxy) -> Bool {
+        return outerGeometry.size.width < outerGeometry.size.height
+    }
+
     private func getSpacerHeight(_ outerGeometry: GeometryProxy) -> CGFloat {
+        let viewHeight = outerGeometry.size.height
         var size: CGFloat
+
         if isFixedHeight {
             switch self.model.position {
             case .top, .middle:
-                size = outerGeometry.size.height - contentHeight - model.topBarHeight
+                size =
+                    viewHeight - contentHeight - model.topBarHeight
+                    - UIConstants.PortraitToolbarHeight - outerGeometry.safeAreaInsets.top
             case .dismissed:
-                size = outerGeometry.size.height
+                size = viewHeight
             }
         } else {
-            let defaultSize: CGFloat
-            switch self.model.position {
+            switch model.position {
             case .top:
-                defaultSize = 0
+                size = 0
+
+                if style.showTitle {
+                    size += titleHeight
+                }
             case .middle:
                 if isPortraitMode(outerGeometry) {
-                    defaultSize = outerGeometry.size.height / 2
+                    size = viewHeight / 2
                 } else {
-                    defaultSize = 0  // Landscape mode does not support half-height
+                    size = 0
                 }
             case .dismissed:
-                defaultSize = outerGeometry.size.height
+                return viewHeight
             }
-            size = defaultSize + self.model.deltaHeight
+
+            size = size + model.deltaHeight
         }
-        if size < 0 {
-            size = 0
+
+        size -= keyboardHeight
+
+        let min: CGFloat = 24
+        if size < min {
+            size = min
         }
+
         return size
     }
 
-    // Applied to the top bar.
-    private var topDrag: some Gesture {
-        DragGesture()
-            .onChanged { value in
-                if !isFixedHeight {
-                    self.onDragChanged(value)
-                }
-            }
-            .onEnded { value in
-                if !isFixedHeight {
-                    self.onDragEnded(value)
-                }
-            }
+    // MARK: - Views
+    /// Controls height of the OverlaySheet
+    private var topSpacer: some View {
+        VStack(spacing: 0) {
+            Spacer()
+
+            // Without this, the smooth drag animation does not work
+            Color.clear
+        }
     }
 
-    var topBar: some View {
+    private var topBar: some View {
         VStack(spacing: 0) {
             if !isFixedHeight {
                 Capsule()
@@ -123,6 +137,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                     .padding(-15)
                     .padding(.top, 8)
             }
+
             HStack(spacing: 0) {
                 if style.showTitle, let title = title {
                     Text(title)
@@ -130,9 +145,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                         .foregroundColor(.label)
                         .padding(.leading, 16)
                     Spacer()
-                    Button {
-                        self.model.hide()
-                    } label: {
+                    Button(action: onDismiss) {
                         Symbol(.xmark, style: .headingMedium, label: "Close")
                             .foregroundColor(.tertiaryLabel)
                             .tapTargetFrame()
@@ -143,124 +156,141 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 }
             }
             .padding(.top, 8)
+            .onHeightOfViewChanged { height in
+                self.titleHeight = height
+            }
         }
     }
 
-    var sheet: some View {
-        GeometryReader { outerGeometry in
-            VStack(spacing: 0) {
-                // The height of this spacer is what controls the apparent height of
-                // the sheet. By sizing this spacer instead of the sheet directly
-                // we avoid encroaching on the safe area. That's because the spacer
-                // cannot be made to have negative height.
-                VStack(spacing: 0) {
-                    Spacer()
-                    if let headerButton = headerButton, case .middle = model.position {
-                        HStack(spacing: 0) {
-                            Spacer().layoutPriority(0.5)
-                            Button(
-                                action: {
-                                    headerButton.action()
-                                    model.hide()
-                                },
-                                label: {
-                                    HStack(spacing: 10) {
-                                        Text(headerButton.text)
-                                            .withFont(.labelLarge)
-                                        Symbol(decorative: headerButton.icon)
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                }
-                            )
-                            .buttonStyle(NeevaButtonStyle(.primary))
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 6)
-                            .layoutPriority(0.5)
-                        }
-                    }
-                }
-                .frame(height: getSpacerHeight(outerGeometry))
-
-                VStack(spacing: 0) {
-                    self.topBar
-                        .modifier(ViewHeightKey())
-                        .onPreferenceChange(ViewHeightKey.self) { self.model.topBarHeight = $0 }
-                    self.content()
-                        .modifier(ViewHeightKey())
-                        .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
-                        .onPreferenceChange(OverlayTitlePreferenceKey.self) { self.title = $0 }
-                        .onPreferenceChange(OverlayIsFixedHeightPreferenceKey.self) {
-                            self.isFixedHeight = $0
-                        }
-                    if isFixedHeight {
-                        Spacer()
-                    }
-                }
-                .background(
-                    Color(style.backgroundColor)
-                        .cornerRadius(16, corners: .top)
-                        .ignoresSafeArea(edges: .bottom)
-                        .gesture(topDrag)
-                )
-            }
+    private var background: some View {
+        // The semi-transparent backdrop used to shade the content that lies below
+        // the sheet.
+        Button(action: style.nonDismissible ? {} : onDismiss) {
+            Color.black
+                .opacity(self.model.backdropOpacity)
+                .ignoresSafeArea()
+                .modifier(
+                    DismissalObserverModifier(
+                        backdropOpacity: self.model.backdropOpacity,
+                        position: self.model.position, onDismiss: self.onDismiss))
         }
-        .onReceive(keyboardPublisher) { height in
-            // When opening the keyboard, we want our animation to slightly lag behind the keyboard.
-            // When closing the keyboard, we want our animation to slightly lead ahead of the keyboard.
-            let durationScalar: Double
-            if height > 0 {
-                durationScalar = 1.6
-            } else {
-                durationScalar = 0.6
+        .buttonStyle(HighlightlessButtonStyle())
+        .accessibilityHint("Dismiss pop-up window")
+        // make this the last option. This will bring the user’s focus first to the
+        // useful content inside of the overlay sheet rather than the close button.
+        .accessibilitySortPriority(-1)
+    }
+
+    private var sheetContent: some View {
+        self.content()
+            .modifier(ViewHeightKey())
+            .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
+            .onPreferenceChange(OverlayTitlePreferenceKey.self) { self.title = $0 }
+            .onPreferenceChange(OverlayIsFixedHeightPreferenceKey.self) {
+                self.isFixedHeight = $0
             }
-            withAnimation(.easeInOut(duration: OverlaySheetUX.animationDuration * durationScalar)) {
-                keyboardHeight = height
-                if height > 0 && model.position != .dismissed {
-                    model.position = .top
+    }
+
+    private var sheet: some View {
+        VStack {
+            VStack(spacing: 0) {
+                self.topBar
+                    .modifier(ViewHeightKey())
+                    .onPreferenceChange(ViewHeightKey.self) { self.model.topBarHeight = $0 }
+
+                if isFixedHeight {
+                    sheetContent
+                } else {
+                    ScrollView(model.position == .top ? [.vertical] : [], showsIndicators: false) {
+                        sheetContent
+                            .padding(.bottom, 18)
+                    }
                 }
-            }
+            }.background(
+                Color(style.backgroundColor)
+                    .cornerRadius(16, corners: [.topLeading, .topTrailing])
+                    .ignoresSafeArea(edges: .bottom)
+            )
+            .gesture(topDrag)
+            .padding(.bottom, -10)
         }
     }
 
     var body: some View {
         GeometryReader { outerGeometry in
-            ZStack {
-                // The semi-transparent backdrop used to shade the content that lies below
-                // the sheet.
-                Button(action: style.nonDismissible ? {} : onDismiss) {
-                    Color.black
-                        .opacity(self.model.backdropOpacity)
-                        .ignoresSafeArea()
-                        .modifier(
-                            DismissalObserverModifier(
-                                backdropOpacity: self.model.backdropOpacity,
-                                position: self.model.position, onDismiss: self.onDismiss))
-                }
-                .buttonStyle(HighlightlessButtonStyle())
-                .accessibilityHint("Dismiss pop-up window")
-                // make this the last option. This will bring the user’s focus first to the
-                // useful content inside of the overlay sheet rather than the close button.
-                .accessibilitySortPriority(-1)
+            background
+
+            VStack {
+                // The height of this spacer is what controls the apparent height of
+                // the sheet. By sizing this spacer instead of the sheet directly
+                // we avoid encroaching on the safe area. That's because the spacer
+                // cannot be made to have negative height.
+                topSpacer
+                    .frame(height: getSpacerHeight(outerGeometry))
+                    .animation(.interactiveSpring(), value: model.deltaHeight)
 
                 // Used to center the sheet within the container view.
                 HStack(spacing: 0) {
                     Spacer(minLength: 0)
-                    self.sheet
+
+                    sheet
                         // Constrain to full width in portrait mode.
                         .frame(
                             minWidth: isPortraitMode(outerGeometry)
                                 ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth,
                             maxWidth: isPortraitMode(outerGeometry)
-                                ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth)
+                                ? outerGeometry.size.width : OverlaySheetUX.landscapeModeWidth
+                        )
                     Spacer(minLength: 0)
                 }
             }
+            .padding(.top, 16)
+            .keyboardListener { height in
+                keyboardHeight = height
+            }
+            .background(
+                HStack(spacing: 0) {
+                    Spacer().layoutPriority(0.5)
+
+                    if let headerButton = headerButton, case .middle = model.position {
+                        Button(
+                            action: {
+                                headerButton.action()
+                                model.hide()
+                            },
+                            label: {
+                                HStack(spacing: 10) {
+                                    Text(headerButton.text)
+                                        .withFont(.labelLarge)
+                                    Symbol(decorative: headerButton.icon)
+                                }
+                                .frame(maxWidth: .infinity)
+                            }
+                        )
+                        .buttonStyle(NeevaButtonStyle(.primary))
+                        .padding(.vertical, 8)
+                        .padding(.horizontal, 6)
+                        .layoutPriority(0.5)
+                    }
+                }.offset(y: -20 + model.deltaHeight)
+            )
         }
-        .accessibilityAction(.escape, model.hide)
+        .ignoresSafeArea()
     }
 
-    private func isPortraitMode(_ outerGeometry: GeometryProxy) -> Bool {
-        return outerGeometry.size.width < outerGeometry.size.height
+    // MARK: - Drag
+    private var topDrag: some Gesture {
+        DragGesture()
+            .onChanged { value in
+                if !isFixedHeight {
+                    self.onDragChanged(value)
+                }
+            }
+            .onEnded { value in
+                if !isFixedHeight {
+                    self.onDragEnded(value)
+                }
+            }
     }
 
     private func onDragChanged(_ value: DragGesture.Value) {
@@ -272,6 +302,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     // applied smoothly.
     private func onDragEnded(_ value: DragGesture.Value) {
         self.model.deltaHeight += value.translation.height
+
         var newPosition = self.model.position
         if self.model.deltaHeight > OverlaySheetUX.slideThreshold {
             // Middle position only makes sense when the keyboard is hidden, and if
@@ -287,6 +318,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         } else if self.model.deltaHeight < -OverlaySheetUX.slideThreshold {
             newPosition = .top
         }
+
         withAnimation(.easeOut(duration: OverlaySheetUX.animationDuration)) {
             self.model.position = newPosition
             self.model.deltaHeight = 0

@@ -21,111 +21,120 @@ struct RecipeView: View {
     let tabUUID: String?
 
     var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                VStack(alignment: .leading, spacing: 6) {
-                    if let title = title {
-                        Text(title)
-                            .withFont(.headingXLarge)
-                            .foregroundColor(Color.label)
-                            .lineLimit(1)
-                    }
-                    ratingStarsComp
-                    HStack {
-                        if let faviconURL = faviconURL {
-                            WebImage(url: faviconURL)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 16, height: 16)
-                                .clipShape(Circle())
-                                .cornerRadius(6)
-                        }
-                        if let currentURL = currentURL {
-                            Text(currentURL.baseDomain ?? "")
-                                .withFont(.bodySmall)
-                                .foregroundColor(Color.label)
-                        }
-                    }
-                }
-                Spacer()
+        ScrollViewReader { scrollViewReader in
+            VStack(alignment: .leading) {
                 HStack {
-                    if let imageURL = imageURL {
-                        WebImage(url: URL(string: imageURL))
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 68, height: 68)
-                            .clipped()
-                            .cornerRadius(10)
-                    }
-                }
-            }
-            Divider()
-                .padding(.vertical, 6)
-            VStack(alignment: .leading, spacing: 6) {
-                if let totalTime = totalTime {
-                    ScrollView(.horizontal) {
-                        HStack(alignment: .center, spacing: 0) {
-                            Image(systemSymbol: .clock)
-                                .renderingMode(.template)
-                                .foregroundColor(Color.secondaryLabel)
-                                .font(.system(size: 14))
-                                .padding(.leading, 3)
-                                .padding(.trailing, 10)
-                            Text("\(totalTime) (Total Time)")
-                            if let prepTime = prepTime {
-                                Text(", \(prepTime) (Prep Time)")
+                    VStack(alignment: .leading, spacing: 6) {
+                        if let title = title {
+                            Text(title)
+                                .withFont(.headingXLarge)
+                                .foregroundColor(Color.label)
+                                .lineLimit(1)
+                                .id("Top")
+                        }
+                        ratingStarsComp
+                        HStack {
+                            if let faviconURL = faviconURL {
+                                WebImage(url: faviconURL)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 16, height: 16)
+                                    .clipShape(Circle())
+                                    .cornerRadius(6)
+                            }
+                            if let currentURL = currentURL {
+                                Text(currentURL.baseDomain ?? "")
+                                    .withFont(.bodySmall)
+                                    .foregroundColor(Color.label)
                             }
                         }
-                        .withFont(unkerned: .bodyMedium)
                     }
-                }
-                if let yield = yield {
-                    ScrollView(.horizontal) {
-                        HStack(alignment: .center) {
-                            Image(systemSymbol: .person2)
-                                .renderingMode(.template)
-                                .foregroundColor(Color.secondaryLabel)
-                                .font(.system(size: 14))
-                            Text(constructYieldString(input: yield))
-                                .withFont(.bodyMedium)
+                    Spacer()
+                    HStack {
+                        if let imageURL = imageURL {
+                            WebImage(url: URL(string: imageURL))
+                                .resizable()
+                                .scaledToFill()
+                                .frame(width: 68, height: 68)
+                                .clipped()
+                                .cornerRadius(10)
                         }
                     }
                 }
-            }
-            .padding(.bottom, 2)
-            Divider()
-                .padding(.vertical, 6)
-            if let ingredients = ingredients {
-                Text("Ingredients")
-                    .withFont(.headingMedium)
-                ForEach(
-                    (expanded || ingredients.count < 3)
-                        ? ingredients[..<ingredients.count]
-                        : ingredients[..<3],
-                    id: \.self
-                ) {
-                    Text(cleanupText(input: $0))
-                        .withFont(.bodyMedium)
-                }
-            }
-            if expanded {
                 Divider()
                     .padding(.vertical, 6)
-                if let instructions = instructions {
-                    Text("Instructions")
-                        .withFont(.headingMedium)
-                    ForEach(instructions.indices) { i in
-                        HStack(alignment: .top) {
-                            Text("\(i+1). ")
-                            Text("\(cleanupText(input: instructions[i]))")
+                VStack(alignment: .leading, spacing: 6) {
+                    if let totalTime = totalTime {
+                        ScrollView(.horizontal) {
+                            HStack(alignment: .center, spacing: 0) {
+                                Image(systemSymbol: .clock)
+                                    .renderingMode(.template)
+                                    .foregroundColor(Color.secondaryLabel)
+                                    .font(.system(size: 14))
+                                    .padding(.leading, 3)
+                                    .padding(.trailing, 10)
+                                Text("\(totalTime) (Total Time)")
+                                if let prepTime = prepTime {
+                                    Text(", \(prepTime) (Prep Time)")
+                                }
+                            }
+                            .withFont(unkerned: .bodyMedium)
                         }
-                        .withFont(unkerned: .bodyMedium)
+                    }
+                    if let yield = yield {
+                        ScrollView(.horizontal) {
+                            HStack(alignment: .center) {
+                                Image(systemSymbol: .person2)
+                                    .renderingMode(.template)
+                                    .foregroundColor(Color.secondaryLabel)
+                                    .font(.system(size: 14))
+                                Text(constructYieldString(input: yield))
+                                    .withFont(.bodyMedium)
+                            }
+                        }
                     }
                 }
+                .padding(.bottom, 2)
+                Divider()
+                    .padding(.vertical, 6)
+                if let ingredients = ingredients {
+                    Text("Ingredients")
+                        .withFont(.headingMedium)
+                    ForEach(
+                        (expanded || ingredients.count < 3)
+                            ? ingredients[..<ingredients.count]
+                            : ingredients[..<3],
+                        id: \.self
+                    ) {
+                        Text(cleanupText(input: $0))
+                            .withFont(.bodyMedium)
+                    }
+                }
+                if expanded {
+                    Divider()
+                        .padding(.vertical, 6)
+                    if let instructions = instructions {
+                        Text("Instructions")
+                            .withFont(.headingMedium)
+                        ForEach(instructions.indices) { i in
+                            HStack(alignment: .top) {
+                                Text("\(i+1). ")
+                                Text("\(cleanupText(input: instructions[i]))")
+                            }
+                            .withFont(unkerned: .bodyMedium)
+                        }
+                    }
+                }
+
+                expandButton
+                    .onChange(of: expanded) { _ in
+                        if !expanded {
+                            scrollViewReader.scrollTo("Top", anchor: .bottom)
+                        }
+                    }
             }
-            expandButton
+            .onDisappear(perform: onDisappearCleanup)
         }
-        .onDisappear(perform: onDisappearCleanup)
     }
 
     @ViewBuilder

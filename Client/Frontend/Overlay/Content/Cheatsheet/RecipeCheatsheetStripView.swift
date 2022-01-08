@@ -75,7 +75,7 @@ struct RecipeCheatsheetStripView: View {
                     },
                     headerButton: nil
                 ) {
-                    ScrollView(.vertical, showsIndicators: false) {
+                    LazyVStack {
                         RecipeView(
                             title: recipeModel.recipe.title,
                             imageURL: recipeModel.recipe.imageURL,
@@ -94,6 +94,7 @@ struct RecipeCheatsheetStripView: View {
                             tabUUID: self.tabManager.selectedTab?.tabUUID
                         )
                         .padding(.bottom, 20)
+
                         if let richResults = self.richResults {
                             VStack(alignment: .leading) {
                                 ForEach(richResults) { richResult in
@@ -107,7 +108,7 @@ struct RecipeCheatsheetStripView: View {
                     .environment(\.onOpenURL, self.onOpenURL)
                     .onAppear(perform: loadRelatedContent)
                     .onDisappear(perform: resetRelatedContent)
-                }
+                }.padding(.top, -10)
             }
         }
     }

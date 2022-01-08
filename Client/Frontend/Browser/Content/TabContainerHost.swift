@@ -162,6 +162,7 @@ struct TabContainerContent: View {
                         GeometryReader { geo in
                             VStack {
                                 Spacer()
+
                                 RecipeCheatsheetStripView(
                                     tabManager: bvc.tabManager,
                                     recipeModel: model.recipeModel,

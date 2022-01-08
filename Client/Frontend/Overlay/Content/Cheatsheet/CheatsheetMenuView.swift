@@ -117,6 +117,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
 }
 
 public struct CheatsheetMenuView: View {
+    @State var height: CGFloat = 0
     @EnvironmentObject private var model: CheatsheetMenuViewModel
     private let menuAction: (NeevaMenuAction) -> Void
 
@@ -126,54 +127,56 @@ public struct CheatsheetMenuView: View {
 
     public var body: some View {
         GeometryReader { geom in
-            ScrollView(.vertical) {
-                if model.currentPageURL?.origin == NeevaConstants.appURL.origin {
-                    VStack(alignment: .center) {
-                        VStack(alignment: .leading) {
-                            Text("What is Neeva Cheatsheet?").withFont(.headingXLarge).padding(
-                                .top, 32)
-                            Text(
-                                "Cheatsheet will show you information about the website you're visiting."
-                            )
-                            .withFont(.bodyLarge)
-                            .foregroundColor(.secondaryLabel)
-                            Text(
-                                "Try it by visiting a website outside of Neeva and tap this Neeva logo again!"
-                            )
-                            .withFont(.bodyLarge)
-                            .foregroundColor(.secondaryLabel)
-                        }
-                        .padding(.horizontal, 32)
-                        .fixedSize(horizontal: false, vertical: true)
-                        Image("notification-prompt", bundle: .main)
-                            .resizable()
-                            .frame(width: 160, height: 140)
-                            .padding(24)
-                    }
-                } else if model.cheatsheetDataLoading {
-                    VStack(alignment: .center) {
-                        LoadingView("something good on it's way")
-                    }
-                } else {
+            if model.currentPageURL?.origin == NeevaConstants.appURL.origin {
+                VStack(alignment: .center) {
                     VStack(alignment: .leading) {
-                        recipeView
-                            .padding()
-                        if let richResults = model.searchRichResults {
-                            VStack(alignment: .leading) {
-                                ForEach(richResults) { richResult in
-                                    renderRichResult(for: richResult)
-                                }
+                        Text("What is Neeva Cheatsheet?").withFont(.headingXLarge).padding(
+                            .top, 32)
+                        Text(
+                            "Cheatsheet will show you information about the website you're visiting."
+                        )
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.secondaryLabel)
+                        Text(
+                            "Try it by visiting a website outside of Neeva and tap this Neeva logo again!"
+                        )
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.secondaryLabel)
+                    }
+                    .padding(.horizontal, 32)
+                    .fixedSize(horizontal: false, vertical: true)
+                    Image("notification-prompt", bundle: .main)
+                        .resizable()
+                        .frame(width: 160, height: 140)
+                        .padding(24)
+                }
+            } else if model.cheatsheetDataLoading {
+                VStack(alignment: .center) {
+                    LoadingView("something good on it's way")
+                }
+            } else {
+                VStack(alignment: .leading) {
+                    recipeView
+                        .padding()
+                    if let richResults = model.searchRichResults {
+                        VStack(alignment: .leading) {
+                            ForEach(richResults) { richResult in
+                                renderRichResult(for: richResult)
                             }
-                            .padding()
                         }
-                        priceHistorySection
-                        reviewURLSection
-                        memorizedQuerySection
-                    }.frame(width: geom.size.width)
+                        .padding()
+
+                    }
+                    priceHistorySection
+                    reviewURLSection
+                    memorizedQuerySection
+                }
+                .frame(width: geom.size.width)
+                .onHeightOfViewChanged { height in
+                    self.height = height
                 }
             }
-            .frame(minHeight: 200)
-        }
+        }.frame(minHeight: height < 200 ? 200 : height)
     }
 
     @ViewBuilder

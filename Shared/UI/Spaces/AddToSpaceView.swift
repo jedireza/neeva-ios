@@ -210,6 +210,7 @@ public struct AddToSpaceView: View {
 
     @State private var searchTerm = ""
     @State private var backgroundColor: Color? = nil
+    @State private var height: CGFloat = 0
 
     let onDismiss: () -> Void
     let importData: SpaceImportHandler?
@@ -236,7 +237,11 @@ public struct AddToSpaceView: View {
     var searchHeader: some View {
         SpacesSearchHeaderView(
             searchText: $searchTerm,
-            createAction: { request.mode = .saveToNewSpace },
+            createAction: {
+                withAnimation {
+                    request.mode = .saveToNewSpace
+                }
+            },
             onDismiss: onDismiss,
             importData: importData
         )
@@ -245,7 +250,8 @@ public struct AddToSpaceView: View {
         .padding(.bottom, 20)
     }
 
-    @ViewBuilder var filteredListView: some View {
+    @ViewBuilder
+    var filteredListView: some View {
         let filteredSpaces = filter(spaceStore.editableSpaces)
         if !searchTerm.isEmpty && filteredSpaces.isEmpty {
             Text("No Results Found")
@@ -255,16 +261,16 @@ public struct AddToSpaceView: View {
         } else {
             LazyVStack(spacing: 14) {
                 ForEach(filteredSpaces, id: \.self) { space in
-                    Button {
-                        if SpaceStore.shared.urlInSpace(request.url, spaceId: space.id) {
-                            request.deleteFromExistingSpace(id: space.id.value, name: space.name)
-                            onDismiss()
-                        } else {
-                            request.addToExistingSpace(id: space.id.value, name: space.name)
+                    SpaceListItem(space, currentURL: request.url)
+                        .onTapGesture {
+                            if SpaceStore.shared.urlInSpace(request.url, spaceId: space.id) {
+                                request.deleteFromExistingSpace(
+                                    id: space.id.value, name: space.name)
+                                onDismiss()
+                            } else {
+                                request.addToExistingSpace(id: space.id.value, name: space.name)
+                            }
                         }
-                    } label: {
-                        SpaceListItem(space, currentURL: request.url)
-                    }
                 }
             }
             .padding(.bottom, 16)
@@ -278,40 +284,37 @@ public struct AddToSpaceView: View {
                     request.addToNewSpace(spaceName: $0)
                 }
             } else {
-                GeometryReader { geom in
-                    let sv = ScrollView {
-                        VStack(spacing: 0) {
-                            if case .failed(_) = spaceStore.state {
-                            } else {
-                                searchHeader
-                            }
-                            switch spaceStore.state {
-                            case .refreshing:
-                                VStack(spacing: 14) {
-                                    ForEach(0..<20) { _ in
-                                        LoadingSpaceListItem()
-                                            .padding(.vertical, 10)
-                                            .padding(.leading, 16)
-                                    }
-                                }
-                            case .failed(let error):
-                                ErrorView(error, in: self, tryAgain: { spaceStore.refresh() })
-                                    .frame(height: geom.size.height)
-                            case .ready:
-                                filteredListView
+                let spaceList = VStack {
+                    if case .failed(_) = spaceStore.state {
+                    } else {
+                        searchHeader
+                    }
+
+                    switch spaceStore.state {
+                    case .refreshing:
+                        VStack(spacing: 14) {
+                            ForEach(0..<20) { _ in
+                                LoadingSpaceListItem()
+                                    .padding(.vertical, 10)
+                                    .padding(.leading, 16)
                             }
                         }
-                    }
-                    .onPreferenceChange(ErrorViewBackgroundPreferenceKey.self) {
-                        self.backgroundColor = $0
-                    }
-                    if let bg = backgroundColor {
-                        sv.background(bg.ignoresSafeArea())
-                    } else {
-                        sv
+                    case .failed(let error):
+                        ErrorView(error, in: self, tryAgain: { spaceStore.refresh() })
+                            .frame(maxHeight: .infinity)
+                    case .ready:
+                        filteredListView
                     }
                 }
+
+                if let bg = backgroundColor {
+                    spaceList.background(bg.ignoresSafeArea())
+                } else {
+                    spaceList
+                }
             }
+        }.onPreferenceChange(ErrorViewBackgroundPreferenceKey.self) {
+            self.backgroundColor = $0
         }
     }
 }
