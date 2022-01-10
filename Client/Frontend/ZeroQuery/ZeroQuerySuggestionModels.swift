@@ -33,7 +33,7 @@ class SuggestedSearchesModel: ObservableObject {
     }
 
     var searchUrlForQuery: String {
-        return neevaSearchEngine.searchURLForQuery("blank")!.normalizedHostAndPath!
+        SearchEngine.current.searchURLForQuery("blank")!.normalizedHostAndPath!
     }
 
     func reload(from profile: Profile, completion: (() -> Void)? = nil) {
@@ -61,13 +61,13 @@ class SuggestedSearchesModel: ObservableObject {
             var queries = Set<String>()
             var topFrecentHistoryQuery: String? = nil
             if let topFrecentHistorySite = topFrecentHistorySite,
-                let query = neevaSearchEngine.queryForSearchURL(topFrecentHistorySite.url)
+                let query = SearchEngine.current.queryForSearchURL(topFrecentHistorySite.url)
             {
                 topFrecentHistoryQuery = query
                 queries.insert(query)
             }
             self.suggestedQueries = deferredHistorySites.compactMap { site in
-                if let query = neevaSearchEngine.queryForSearchURL(site.url),
+                if let query = SearchEngine.current.queryForSearchURL(site.url),
                     !queries.contains(query)
                 {
                     queries.insert(query)

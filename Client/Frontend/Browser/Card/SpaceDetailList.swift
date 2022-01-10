@@ -52,7 +52,7 @@ struct SpaceDetailList: View {
                 substring = substring[..<endIndex]
                 return snippet.replacingOccurrences(
                     of: substring,
-                    with: neevaSearchEngine.searchURLForQuery(String(substring))!.absoluteString)
+                    with: SearchEngine.current.searchURLForQuery(String(substring))!.absoluteString)
             }
         }
         return details.data.snippet

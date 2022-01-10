@@ -71,9 +71,10 @@ extension BrowserViewController: TopBarDelegate {
             return
         }
 
-        if let queryItems = searchQueryModel.queryItems {
-            // User is editing the current query, should preserve the parameters from their original query
-            let url = neevaSearchEngine.searchURLFrom(searchQuery: text, queryItems: queryItems)
+        // User is editing the current query, should preserve the parameters from their original query
+        if let queryItems = searchQueryModel.queryItems,
+            let url = SearchEngine.current.searchURLFrom(searchQuery: text, queryItems: queryItems)
+        {
             finishEditingAndSubmit(url, visitType: VisitType.typed, forTab: currentTab)
 
             searchQueryModel.queryItems = nil
@@ -97,7 +98,7 @@ extension BrowserViewController: TopBarDelegate {
     }
 
     fileprivate func submitSearchText(_ text: String, forTab tab: Tab?) {
-        if let searchURL = neevaSearchEngine.searchURLForQuery(text) {
+        if let searchURL = SearchEngine.current.searchURLForQuery(text) {
             // We couldn't find a matching search keyword, so do a search query.
             finishEditingAndSubmit(searchURL, visitType: VisitType.typed, forTab: tab)
         } else {

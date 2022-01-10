@@ -1,6 +1,5 @@
 // Copyright Neeva. All rights reserved.
 
-import Apollo
 import Combine
 import Foundation
 import SDWebImageSwiftUI
@@ -63,7 +62,7 @@ public class SpaceImportHandler {
         return NeevaConstants.appSpacesURL / id
     }
 
-    private var cancellable: Apollo.Cancellable? = nil
+    private var cancellable: Cancellable? = nil
     private var spaceID: String? = nil
 
     public init(title: String, data: [[String]]) {

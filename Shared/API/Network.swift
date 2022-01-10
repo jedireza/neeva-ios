@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
-import SwiftUI
+import Combine
 
 /// This singleton class manages access to the Neeva GraphQL API
 public class GraphQLAPI {
@@ -119,14 +119,14 @@ extension GraphQLQuery {
     public func fetch(
         on queue: DispatchQueue = DispatchQueue.main,
         resultHandler: ((Result<Data, Swift.Error>) -> Void)? = nil
-    ) -> Cancellable {
+    ) -> Combine.Cancellable {
         GraphQLAPI.shared.apollo.fetch(
             query: self,
             cachePolicy: .fetchIgnoringCacheCompletely,
             queue: queue
         ) { result in
             resultHandler?(GraphQLAPI.unwrap(result: result))
-        }
+        }.combine
     }
 }
 
@@ -136,13 +136,13 @@ extension GraphQLMutation {
     public func perform(
         on queue: DispatchQueue = .main,
         resultHandler: ((Result<Data, Swift.Error>) -> Void)? = nil
-    ) -> Cancellable {
+    ) -> Combine.Cancellable {
         GraphQLAPI.shared.apollo.perform(
             mutation: self,
             publishResultToStore: false,
             queue: queue
         ) { result in
             resultHandler?(GraphQLAPI.unwrap(result: result))
-        }
+        }.combine
     }
 }

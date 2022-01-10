@@ -70,7 +70,11 @@ struct QuerySuggestionsList: View {
 
     var body: some View {
         if !suggestionModel.rowQuerySuggestions.isEmpty {
-            SuggestionsHeader(header: "Neeva Search")
+            if SearchEngine.current.isNeeva {
+                SuggestionsHeader(header: "Neeva Search")
+            } else {
+                SuggestionsHeader(header: "\(SearchEngine.current.label) Suggestions")
+            }
 
             ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
                 index, suggestion in
@@ -129,7 +133,11 @@ struct NavSuggestionsList: View {
 
 struct PlaceholderSuggestions: View {
     var body: some View {
-        SuggestionsHeader(header: "Neeva Search")
+        if SearchEngine.current.isNeeva {
+            SuggestionsHeader(header: "Neeva Search")
+        } else {
+            SuggestionsHeader(header: "\(SearchEngine.current.label) Suggestions")
+        }
         ForEach(0..<4) { i in
             if i > 0 && i % 2 == 0 {
                 SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)

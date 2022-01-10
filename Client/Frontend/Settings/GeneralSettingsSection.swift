@@ -1,6 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Defaults
+import Shared
 import SwiftUI
 
 struct DetailedSettingsLabel: View {
@@ -36,6 +37,11 @@ struct GeneralSettingsSection: View {
                     )
                 }
         )
+        if FeatureFlag[.customSearchEngine] {
+            makeNavigationLink(title: "Search Engine") {
+                SearchEngineSettings()
+            }
+        }
         Toggle("Show Search Suggestions", isOn: $showSearchSuggestions)
         Toggle("Block Pop-up Windows", isOn: $blockPopups)
         Toggle(isOn: $showClipboardBar) {

@@ -1,5 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
+import SDWebImageSwiftUI
 import Shared
 import Storage
 import SwiftUI
@@ -33,8 +34,12 @@ struct LocationTextFieldIcon: View {
             {
                 FaviconView(forSiteUrl: url)
                     .cornerRadius(4)
-            } else {
+            } else if SearchEngine.current.isNeeva {
                 Image("neevaMenuIcon")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+            } else {
+                WebImage(url: SearchEngine.current.icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
             }

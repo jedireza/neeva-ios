@@ -180,7 +180,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         if let intent = userActivity.interaction?.intent as? SearchNeevaIntent,
             let query = intent.text,
-            let url = neevaSearchEngine.searchURLForQuery(query)
+            let url = SearchEngine.current.searchURLForQuery(query)
         {
             self.bvc.openURLInNewTab(url)
             return true

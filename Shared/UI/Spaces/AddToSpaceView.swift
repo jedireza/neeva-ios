@@ -1,10 +1,10 @@
 // Copyright Neeva. All rights reserved.
 
-import Apollo
+import Combine
 import SwiftUI
 
 public class AddToSpaceRequest: ObservableObject {
-    var cancellable: Apollo.Cancellable? = nil
+    var cancellable: Cancellable? = nil
 
     public let title: String
     public let description: String?  // meta description

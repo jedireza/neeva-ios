@@ -39,7 +39,7 @@ struct LocationLabelAndIcon: View {
             .secondaryLabel)
         if forcePlaceholder {
             placeholder
-        } else if let query = neevaSearchEngine.queryForLocationBar(from: url) {
+        } else if let query = SearchEngine.current.queryForLocationBar(from: url) {
             Label {
                 Text(query).withFont(.bodyLarge)
             } icon: {
@@ -86,7 +86,7 @@ struct LocationLabel_Previews: PreviewProvider {
                 .previewDisplayName("Secure URL")
 
             LocationLabel(
-                url: neevaSearchEngine.searchURLForQuery("a long search query with words"),
+                url: SearchEngine.current.searchURLForQuery("a long search query with words"),
                 isSecure: true
             )
             .previewDisplayName("Search")

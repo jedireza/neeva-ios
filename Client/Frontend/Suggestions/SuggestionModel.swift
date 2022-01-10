@@ -1,6 +1,5 @@
 // Copyright Neeva. All rights reserved.
 
-import Apollo
 import Combine
 import Defaults
 import Shared
@@ -65,9 +64,9 @@ class SuggestionModel: ObservableObject {
             && !searchQuery.looksLikeAURL
     }
 
-    fileprivate var suggestionQuery: Apollo.Cancellable?
+    fileprivate var suggestionQuery: Cancellable?
 
-    fileprivate var suggestionQueryQueue = [(query: String, suggestionQuery: Apollo.Cancellable)]()
+    fileprivate var suggestionQueryQueue = [(query: String, suggestionQuery: Cancellable)]()
 
     var suggestions: [Suggestion] {
         let top = tabSuggestions
@@ -151,23 +150,36 @@ class SuggestionModel: ObservableObject {
         keyboardFocusedSuggestionIndex = -1
 
         guard shouldShowSuggestions else {
-            rowQuerySuggestions = []
-            urlSuggestions = []
-            navSuggestions = []
-            findInPageSuggestion = nil
-            activeLensBang = nil
-            error = nil
-            memorizedSuggestionMap = [String: String]()
-            querySuggestionIndexMap = [String: Int]()
+            clearSearchSuggestions()
             return
         }
-
-        let searchQuery = searchQuery
 
         if suggestStartTime == nil {
             suggestStartTime = Date()
         }
-        let suggestionQuery = SuggestionsController.getSuggestions(for: searchQuery) { result in
+
+        let suggestionQuery =
+            SearchEngine.current.isNeeva
+            ? fetchNeevaSuggestions(for: searchQuery)
+            : fetchGenericSuggestions(for: searchQuery)
+
+        // always insert the most recent query to the beginning of the array
+        suggestionQueryQueue.insert((searchQuery, suggestionQuery), at: 0)
+    }
+
+    private func clearSearchSuggestions() {
+        rowQuerySuggestions = []
+        urlSuggestions = []
+        navSuggestions = []
+        findInPageSuggestion = nil
+        activeLensBang = nil
+        error = nil
+        memorizedSuggestionMap = [:]
+        querySuggestionIndexMap = [:]
+    }
+
+    private func fetchNeevaSuggestions(for searchQuery: String) -> Cancellable {
+        SuggestionsController.getSuggestions(for: searchQuery) { [searchQuery] result in
             // cancel and remove any pending requests that's older than the current one
             if let requestIdx =
                 self.suggestionQueryQueue.firstIndex(where: { query, _ in
@@ -269,9 +281,35 @@ class SuggestionModel: ObservableObject {
                 }
             }
         }
+    }
 
-        // always insert the most recent query to the beginning of the array
-        suggestionQueryQueue.insert((searchQuery, suggestionQuery), at: 0)
+    private func fetchGenericSuggestions(for searchQuery: String) -> Cancellable {
+        guard let suggestURL = SearchEngine.current.suggestURLForQuery(searchQuery) else {
+            clearSearchSuggestions()
+            return AnyCancellable({})
+        }
+        return URLSession.shared
+            .dataTaskPublisher(for: suggestURL)
+            .failureToNil()
+            .receive(on: RunLoop.main)
+            .sink { [self] result in
+                clearSearchSuggestions()
+                guard
+                    let data = result?.data,
+                    let suggestionResult = try? JSONDecoder().decode(
+                        GenericSuggestionResult.self, from: data)
+                else { return }
+                rowQuerySuggestions = suggestionResult.suggestions.prefix(5).map { suggestedQuery in
+                    .query(
+                        .init(
+                            type: .standard,
+                            suggestedQuery: suggestedQuery,
+                            boldSpan: [],
+                            source: .unknown,
+                            annotation: nil
+                        ))
+                }
+            }
     }
 
     private func subscribe() {

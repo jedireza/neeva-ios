@@ -9,7 +9,7 @@ import SwiftUI
 public class MutationController<Mutation, Container>: AbstractController, ObservableObject
 where Mutation: GraphQLMutation {
     /// This contains the currently running mutation.
-    @Published public private(set) var cancellable: Apollo.Cancellable?
+    @Published public private(set) var cancellable: Combine.Cancellable?
 
     /// `true` if a mutation is running, `false` otherwse
     public var isRunning: Bool { cancellable != nil }

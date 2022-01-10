@@ -297,7 +297,7 @@ enum NavigationPath {
         }
 
         if let value = value?.replacingOccurrences(of: "+", with: " ").removingPercentEncoding,
-            let newURL = neevaSearchEngine.searchURLForQuery(value)
+            let newURL = SearchEngine.current.searchURLForQuery(value)
         {
             return newURL
         } else {

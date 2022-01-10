@@ -23,4 +23,11 @@ extension Publisher {
             return true
         }
     }
+
+    /// Converts the publisher’s result to an optional value, with errors being represented as `nil`.
+    /// Similar to Swift’s `try?` syntax.
+    func failureToNil() -> Publishers.ReplaceError<Publishers.Map<Self, Self.Output?>> {
+        self.map(Optional.init)
+            .replaceError(with: nil)
+    }
 }

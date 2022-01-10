@@ -1,7 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
-import Apollo
-import Foundation
+import Combine
 
 public class ContactsProvider: QueryController<
     GetContactSuggestionsQuery,
@@ -18,7 +17,7 @@ public class ContactsProvider: QueryController<
     @discardableResult public static func getContacts(
         for query: String, count: Int = 5, onlyNeevaUsers: Bool = false,
         completion: @escaping (Result<[Profile?], Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Combine.Cancellable {
         Self.perform(
             query: GetContactSuggestionsQuery(
                 q: query, count: count, onlyNeevaUsers: onlyNeevaUsers), completion: completion)

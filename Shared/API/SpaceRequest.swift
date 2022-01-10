@@ -1,10 +1,10 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
-import Foundation
+import Combine
 
 public class SpaceRequest<Mutation: GraphQLMutation>: ObservableObject {
-    private var subcription: Apollo.Cancellable? = nil
+    private var subcription: Combine.Cancellable? = nil
 
     public enum State {
         case initial

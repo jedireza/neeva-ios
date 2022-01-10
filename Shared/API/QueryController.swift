@@ -39,8 +39,8 @@ where Query: GraphQLQuery {
 
     /// Called by subclasses to perform their query, updating the `state` property to reflect its progress
     /// - Parameter query: the query to perform
-    @discardableResult open func perform(query: Query) -> Apollo.Cancellable {
-        return Self.perform(query: query) { result in
+    @discardableResult open func perform(query: Query) -> Combine.Cancellable {
+        Self.perform(query: query) { result in
             self.withOptionalAnimation {
                 switch result {
                 case .failure(let error):
@@ -97,7 +97,7 @@ where Query: GraphQLQuery {
     @discardableResult open class func perform(
         query: Query,
         completion: @escaping (Result<Data, Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Combine.Cancellable {
         query.fetch { result in
             switch result {
             case .success(let data):

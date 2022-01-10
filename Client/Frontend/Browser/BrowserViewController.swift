@@ -1215,7 +1215,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     func openSearchNewTab(isPrivate: Bool = false, _ text: String) {
         popToBVC()
-        if let searchURL = neevaSearchEngine.searchURLForQuery(text) {
+        if let searchURL = SearchEngine.current.searchURLForQuery(text) {
             openURLInNewTab(searchURL, isPrivate: isPrivate)
         } else {
             // We still don't have a valid URL, so something is broken. Give up.
@@ -1275,7 +1275,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
                             if let toastManager = self.getSceneDelegate()?.toastViewManager {
-                                toastManager.makeToast(text: "Pinned To Top Sites").enqueue(manager: toastManager)
+                                toastManager.makeToast(text: "Pinned To Top Sites").enqueue(
+                                    manager: toastManager)
                             }
                         }
                     }
@@ -1295,7 +1296,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     }.uponQueue(.main) { result in
                         if result.isSuccess {
                             if let toastManager = self.getSceneDelegate()?.toastViewManager {
-                                toastManager.makeToast(text: "Removed From Top Sites").enqueue(manager: toastManager)
+                                toastManager.makeToast(text: "Removed From Top Sites").enqueue(
+                                    manager: toastManager)
                             }
                         }
                     }

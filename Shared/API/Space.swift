@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
-import Foundation
+import Combine
 
 /// Retrieves all spaces the user can view.
 class SpaceListController: QueryController<ListSpacesQuery, [SpaceListController.Space]> {
@@ -17,7 +17,7 @@ class SpaceListController: QueryController<ListSpacesQuery, [SpaceListController
 
     @discardableResult static func getSpaces(
         completion: @escaping (Result<[Space], Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Combine.Cancellable {
         Self.perform(query: ListSpacesQuery(kind: .all), completion: completion)
     }
 }
@@ -124,7 +124,7 @@ class SpacesDataQueryController: QueryController<
     @discardableResult static func getSpacesData(
         spaceIds: [String],
         completion: @escaping (Result<[Space], Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Combine.Cancellable {
         Self.perform(query: GetSpacesDataQuery(ids: spaceIds), completion: completion)
     }
 }
@@ -168,7 +168,7 @@ class SuggestedSpacesQueryController: QueryController<
     @discardableResult static func getSpacesTitleInfo(
         spaceIds: [String],
         completion: @escaping (Result<[SpaceTitleInfo], Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Combine.Cancellable {
         Self.perform(query: GetSpacesTitleInfoQuery(ids: spaceIds), completion: completion)
     }
 }

@@ -1,12 +1,12 @@
 // Copyright Neeva. All rights reserved.
 
-import Foundation
+import Shared
 
 func showFeedbackPanel(
     bvc: BrowserViewController, screenshot: UIImage? = nil, shareURL: Bool = true
 ) {
     let url = shareURL ? bvc.tabManager.selectedTab?.canonicalURL : nil
-    let query = neevaSearchEngine.queryForSearchURL(url)
+    let query = SearchEngine.current.queryForSearchURL(url)
 
     getSearchRequestID(bvc: bvc) { requestId in
         bvc.present(

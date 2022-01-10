@@ -1,7 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
-import Apollo
-import Foundation
+import Combine
 import Shared
 
 public class SearchResultsController: QueryController<SearchResultsQuery, [URL]> {
@@ -20,7 +19,7 @@ public class SearchResultsController: QueryController<SearchResultsQuery, [URL]>
     @discardableResult public static func getSearchResults(
         for query: String,
         completion: @escaping (Result<[URL], Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Cancellable {
         Self.perform(query: SearchResultsQuery(query: query), completion: completion)
     }
 }

@@ -1039,7 +1039,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // we will show the promp for both incognito and normal mode
         if let url = webView.url, url.origin == NeevaConstants.appURL.origin {
             if !Defaults[.signedInOnce] {
-                if let query = neevaSearchEngine.queryForSearchURL(url),
+                if let query = SearchEngine.current.queryForSearchURL(url),
                     Defaults[.previewModeQueries].count == Defaults[.maxQueryLimit]
                         || Defaults[.previewModeQueries].count % Defaults[.signupPromptInterval]
                             == 0

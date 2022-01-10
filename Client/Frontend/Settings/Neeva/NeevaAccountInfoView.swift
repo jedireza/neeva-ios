@@ -29,7 +29,8 @@ struct NeevaAccountInfoView: View {
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(
-                    "\(Text(userInfo.authProvider?.displayName ?? "Unknown")), \(userInfo.email ?? "")")
+                    "\(Text(userInfo.authProvider?.displayName ?? "Unknown")), \(userInfo.email ?? "")"
+                )
 
                 Button("Sign Out") { signingOut = true }
                     .actionSheet(isPresented: $signingOut) {

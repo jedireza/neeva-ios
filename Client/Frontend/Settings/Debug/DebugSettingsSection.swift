@@ -18,6 +18,9 @@ struct DebugSettingsSection: View {
                     NeevaUserFlagSettingsView()
                 }
                 AppHostSetting()
+                #if DEBUG
+                    DebugLocaleSetting()
+                #endif
                 NavigationLinkButton("\(String("Neeva Admin"))") {
                     openURL(NeevaConstants.appHomeURL / "admin")
                 }

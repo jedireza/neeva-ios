@@ -55,6 +55,7 @@ extension Defaults.Keys {
         "profile.tracking_protection.blockThirdPartyTrackingRequests", default: true)
     public static let unblockedDomains = Defaults.Key<Set<String>>(
         "profile.tracking_protection.unblockedDomains", default: Set<String>())
+    public static let customSearchEngine = Defaults.Key<String?>("profile_customSearchEngine")
 
     // debug settings
     public static let enableBrowserLogging = Defaults.BoolKey("profile_enableBrowserLogging")

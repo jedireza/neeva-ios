@@ -25,6 +25,9 @@ public class NeevaUserInfo: ObservableObject {
     /// Using optimistic approach, the user is considered `LoggedIn = true` until we receive a login required GraphQL error.
     @Published public private(set) var isUserLoggedIn: Bool = true
 
+    // TODO: fetch this from the API!
+    @Published public var countryCode: String = "US"
+
     private let reachability = try! Reachability()
     private var connection: Reachability.Connection?
 

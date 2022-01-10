@@ -1,7 +1,7 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
-import Foundation
+import Combine
 
 public struct Seller {
     public let url: String
@@ -334,7 +334,7 @@ public class SearchController:
 
     @discardableResult public static func getRichResult(
         query: String, completion: @escaping (Result<[RichResult], Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Combine.Cancellable {
         Self.perform(query: SearchQuery(query: query), completion: completion)
     }
 }

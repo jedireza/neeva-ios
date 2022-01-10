@@ -29,7 +29,7 @@ struct SuggestedPreviewSearchesView: View {
     }
 
     func onClick(input: String) {
-        if let target = neevaSearchEngine.searchURLForQuery(input) {
+        if let target = SearchEngine.current.searchURLForQuery(input) {
             var attributes = EnvironmentHelper.shared.getFirstRunAttributes()
             attributes.append(
                 ClientLogCounterAttribute(

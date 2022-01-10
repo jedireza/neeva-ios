@@ -1,6 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
-import Apollo
+import Combine
 import SFSafeSymbols
 import Shared
 
@@ -229,7 +229,7 @@ public class SuggestionsController: QueryController<SuggestionsQuery, Suggestion
     @discardableResult public static func getSuggestions(
         for query: String,
         completion: @escaping (Result<SuggestionsQueryResult, Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Cancellable {
         Self.perform(query: SuggestionsQuery(query: query), completion: completion)
     }
 }

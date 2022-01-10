@@ -1,6 +1,6 @@
 // Copyright Neeva. All rights reserved.
 
-import Apollo
+import Combine
 import Foundation
 
 public struct Rating {
@@ -207,7 +207,7 @@ public class CheatsheetQueryController:
 
     @discardableResult public static func getCheatsheetInfo(
         url: String, completion: @escaping (Result<[CheatsheetInfo], Error>) -> Void
-    ) -> Apollo.Cancellable {
+    ) -> Combine.Cancellable {
         Self.perform(query: CheatsheetInfoQuery(input: url), completion: completion)
     }
 }

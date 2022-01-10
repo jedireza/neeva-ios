@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Foundation
+import Shared
 
 @objc public protocol MenuHelperInterface {
     @objc optional func menuHelperCopy()
@@ -49,7 +49,7 @@ open class MenuHelper: NSObject {
         let findInPageItem = UIMenuItem(
             title: .MenuHelperFindInPage, action: MenuHelper.SelectorFindInPage)
         let searchItem = UIMenuItem(
-            title: .MenuHelperSearchWithNeeva, action: MenuHelper.SelectorSearchWithNeeva)
+            title: "Search with \(SearchEngine.current.label)", action: MenuHelper.SelectorSearchWithNeeva)
         let addToSpaceItem = UIMenuItem(
             title: .MenuHelperAddToSpace, action: MenuHelper.SelectorAddToSpace)
 

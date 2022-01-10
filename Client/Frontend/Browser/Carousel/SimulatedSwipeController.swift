@@ -94,7 +94,7 @@ class SimulatedSwipeController:
 
         switch swipeDirection {
         case .forward:
-            if let query = neevaSearchEngine.queryForSearchURL(url), !query.isEmpty {
+            if let query = SearchEngine.current.queryForSearchURL(url), !query.isEmpty {
                 forwardUrlMap[tab.tabUUID] = []
                 SearchResultsController.getSearchResults(for: query) { result in
                     switch result {

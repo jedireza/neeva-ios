@@ -59,7 +59,7 @@ class ZeroQueryModel: ObservableObject {
 
     var searchQuery: String? {
         if let url = tabURL, url.isNeevaURL() {
-            return neevaSearchEngine.queryForSearchURL(url)
+            return SearchEngine.current.queryForSearchURL(url)
         }
 
         return nil

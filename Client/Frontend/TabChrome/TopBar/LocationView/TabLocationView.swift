@@ -93,7 +93,7 @@ struct TabLocationView: View {
                             isSecure: model.isSecure,
                             background: backgroundColor,
                             onTap: {
-                                if let query = neevaSearchEngine.queryForLocationBar(
+                                if let query = SearchEngine.current.queryForLocationBar(
                                     from: model.url)
                                 {
                                     queryModel.value = query
@@ -255,7 +255,7 @@ struct TabLocationView_Previews: PreviewProvider {
             )
             .environmentObject(
                 LocationViewModel(
-                    previewURL: neevaSearchEngine.searchURLForQuery(
+                    previewURL: SearchEngine.current.searchURLForQuery(
                         "a long search query with words"), isSecure: true)
             )
             .previewDisplayName("Search")
