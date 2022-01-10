@@ -71,11 +71,9 @@ struct CardGrid: View {
                 topBar
                     .modifier(
                         SwipeToSwitchToSpacesGesture(
-                            gridModel: gridModel, tabModel: tabModel, fromPicker: true
-                        ) {
-                            offset in
-                            self.dragOffset = offset
-                        })
+                            gridModel: gridModel, tabModel: tabModel,
+                            horizontalOffsetChanged: { dragOffset = $0 },
+                            fromPicker: true))
             }
 
             cardContainer

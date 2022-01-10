@@ -135,7 +135,7 @@ struct CollectionStatsView: View {
         VStack {
             HStack(spacing: 16) {
                 if verified {
-                    Image("twitter-verified")
+                    Image("twitter-verified-large")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 24, height: 24)

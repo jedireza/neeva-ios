@@ -88,9 +88,11 @@ class ZeroQueryModel: ObservableObject {
     }
 
     func signIn() {
-        self.bvc.presentIntroViewController(true) {
-            self.bvc.hideZeroQuery()
-        }
+        self.bvc.presentIntroViewController(
+            true,
+            completion: {
+                self.bvc.hideZeroQuery()
+            })
     }
 
     func handleReferralPromo() {

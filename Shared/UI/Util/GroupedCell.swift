@@ -73,8 +73,8 @@ public struct GroupedCellButton<Label: View>: View {
     public init(
         alignment: GroupedCellAlignment = .center, action: @escaping () -> Void,
         longPressAction: (() -> Void)? = nil,
-        @ViewBuilder label: @escaping () -> Label,
-        backgroundColor: Color = Color.secondaryGroupedBackground
+        backgroundColor: Color = Color.secondaryGroupedBackground,
+        @ViewBuilder label: @escaping () -> Label
     ) {
         self.alignment = alignment
         self.action = action

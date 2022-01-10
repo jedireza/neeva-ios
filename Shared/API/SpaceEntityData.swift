@@ -141,7 +141,7 @@ public struct SpaceEntityData {
                         NSAttributedString.DocumentReadingOptionKey.characterEncoding: NSNumber(
                             value: String.Encoding.utf8.rawValue),
                     ], documentAttributes: nil)
-            } catch let _ as NSError {
+            } catch {
                 Logger.browser.info("Already initialized to blank. Ignoring...")
             }
         }

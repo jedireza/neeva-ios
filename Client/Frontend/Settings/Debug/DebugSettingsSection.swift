@@ -37,10 +37,13 @@ struct DebugSettingsSection: View {
                 }
                 Toggle(String("Enable Geiger Counter"), isOn: $enableGeigerCounter)
                     .onChange(of: enableGeigerCounter) {
+                        guard let delegate = SceneDelegate.getCurrentSceneDelegateOrNil() else {
+                            return
+                        }
                         if $0 {
-                            SceneDelegate.getCurrentSceneDelegateOrNil()?.startGeigerCounter()
+                            delegate.startGeigerCounter()
                         } else {
-                            SceneDelegate.getCurrentSceneDelegateOrNil()?.stopGeigerCounter()
+                            delegate.stopGeigerCounter()
                         }
                     }
                 makeNavigationLink(title: String("Notification")) {
