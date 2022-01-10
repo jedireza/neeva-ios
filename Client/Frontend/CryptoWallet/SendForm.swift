@@ -9,22 +9,30 @@ struct SendForm: View {
     @State var sendToAccountAddress = ""
     @State var amount: String = ""
     @Binding var showSendForm: Bool
+    @State var showQRScanner: Bool = false
 
     var body: some View {
         VStack(alignment: .leading) {
             Text("Send To")
                 .font(.roobert(size: 14))
-            TextField("Recipient Address", text: $sendToAccountAddress)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12.0)
-                        .stroke(Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 1.0))
-                )
-                .disableAutocorrection(true)
-                .autocapitalization(.none)
-                .fixedSize(horizontal: false, vertical: true)
-                .background(Color.brand.white.opacity(0.8))
-                .cornerRadius(12)
+            HStack {
+                TextField("Recipient Address", text: $sendToAccountAddress)
+                Spacer()
+                Button(action: { showQRScanner = true }) {
+                    Symbol(decorative: .qrcodeViewfinder, style: .labelMedium)
+                        .foregroundColor(.secondaryLabel)
+                }
+            }
+            .padding()
+            .overlay(
+                RoundedRectangle(cornerRadius: 12.0)
+                    .stroke(Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 1.0))
+            )
+            .disableAutocorrection(true)
+            .autocapitalization(.none)
+            .fixedSize(horizontal: false, vertical: true)
+            .background(Color.brand.white.opacity(0.8))
+            .cornerRadius(12)
 
             if !sendToAccountAddress.isEmpty {
                 Text("Send to address: \(sendToAccountAddress)")
@@ -56,6 +64,7 @@ struct SendForm: View {
                 Button(action: { showSendForm = false }) {
                     Text("Cancel")
                         .font(.roobert(.semibold, size: 18))
+                        .frame(maxWidth: 120, minHeight: 40)
                 }
                 .buttonStyle(NeevaButtonStyle(.secondary))
                 .padding(.top, 8)
@@ -63,14 +72,15 @@ struct SendForm: View {
                 Button(action: sendEth) {
                     Text("Send")
                         .font(.roobert(.semibold, size: 18))
+                        .frame(maxWidth: 120, minHeight: 40)
                 }
-                .frame(maxWidth: 120, minHeight: 40)
-                .foregroundColor(Color.brand.white)
-                .background(Color.brand.blue)
-                .cornerRadius(10)
+                .buttonStyle(NeevaButtonStyle(.primary))
                 .padding(.top, 8)
                 .disabled(amount.isEmpty && sendToAccountAddress.isEmpty)
             }
+        }
+        .sheet(isPresented: $showQRScanner) {
+            ScannerView(showQRScanner: $showQRScanner, returnAddress: $sendToAccountAddress)
         }
     }
 

@@ -361,6 +361,8 @@
 		BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC264BC126746098001527B6 /* ViewExtensions.swift */; };
 		BC423EA626CE391D007E2C01 /* CompactNeevaMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */; };
 		BC4E98012669572A00A8FBD6 /* TourManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43CC265F49EA007E2F61 /* TourManager.swift */; };
+		BC532EEF278C00550027CA11 /* CodeScanner in Frameworks */ = {isa = PBXBuildFile; productRef = BC532EEE278C00550027CA11 /* CodeScanner */; };
+		BC532EF1278C05230027CA11 /* ScannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC532EF0278C05230027CA11 /* ScannerView.swift */; };
 		BC5740A226BB699A0047D29B /* PerformanceLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5740A126BB699A0047D29B /* PerformanceLogger.swift */; };
 		BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */; };
 		BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */; };
@@ -1515,6 +1517,7 @@
 		BC248769273382E5003A6867 /* RelatedSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedSearchesView.swift; sourceTree = "<group>"; };
 		BC264BC126746098001527B6 /* ViewExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
 		BC423EA526CE391D007E2C01 /* CompactNeevaMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompactNeevaMenuView.swift; sourceTree = "<group>"; };
+		BC532EF0278C05230027CA11 /* ScannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScannerView.swift; sourceTree = "<group>"; };
 		BC5740A126BB699A0047D29B /* PerformanceLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerformanceLogger.swift; sourceTree = "<group>"; };
 		BC5C438C265F2CA0007E2F61 /* WebUIMessageHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebUIMessageHelper.swift; sourceTree = "<group>"; };
 		BC5C43BE265F407F007E2F61 /* TourPromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourPromptViewController.swift; sourceTree = "<group>"; };
@@ -2042,6 +2045,7 @@
 				C877037A25222F30006E38EB /* Shared.framework in Frameworks */,
 				4A93B53D2775909600CD5415 /* WalletConnectSwift in Frameworks */,
 				C8E18F20222EDED000E30E52 /* SafariServices.framework in Frameworks */,
+				BC532EEF278C00550027CA11 /* CodeScanner in Frameworks */,
 				C8E18F1E222EDE4500E30E52 /* Accelerate.framework in Frameworks */,
 				E6231C051B90A472005ABB0D /* libxml2.2.tbd in Frameworks */,
 				E6231C011B90A44F005ABB0D /* libz.tbd in Frameworks */,
@@ -2986,6 +2990,7 @@
 				BCAAA0E1276D9C400013223E /* WalletDashboard.swift */,
 				4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */,
 				4A93B5592782981600CD5415 /* Web3Model.swift */,
+				BC532EF0278C05230027CA11 /* ScannerView.swift */,
 				BCAAA0E5276D9D3D0013223E /* WelcomeStarterView.swift */,
 			);
 			path = CryptoWallet;
@@ -4478,6 +4483,7 @@
 				6786EA762759545A00B53127 /* CrashReporter */,
 				BCAAA0CF276D979B0013223E /* web3swift */,
 				4A93B53C2775909600CD5415 /* WalletConnectSwift */,
+				BC532EEE278C00550027CA11 /* CodeScanner */,
 			);
 			productName = Client;
 			productReference = F84B21BE1A090F8100AAB793 /* Client.app */;
@@ -4673,6 +4679,7 @@
 				6786EA752759545A00B53127 /* XCRemoteSwiftPackageReference "plcrashreporter" */,
 				BCAAA0CE276D979B0013223E /* XCRemoteSwiftPackageReference "web3swift" */,
 				4A93B53B2775909500CD5415 /* XCRemoteSwiftPackageReference "WalletConnectSwift" */,
+				BC532EED278C00550027CA11 /* XCRemoteSwiftPackageReference "CodeScanner" */,
 			);
 			productRefGroup = F84B21BF1A090F8100AAB793 /* Products */;
 			projectDirPath = "";
@@ -5805,6 +5812,7 @@
 				66EA9BF72776A7B60013DB07 /* OverlayManager.swift in Sources */,
 				D3972BF31C22412B00035B87 /* ShareExtensionHelper.swift in Sources */,
 				6604922826843975002AC35D /* Intents.intentdefinition in Sources */,
+				BC532EF1278C05230027CA11 /* ScannerView.swift in Sources */,
 				F35B8D2D1D6383E9008E3D61 /* SessionRestoreHelper.swift in Sources */,
 				4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */,
 				C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */,
@@ -7764,6 +7772,14 @@
 				minimumVersion = 1.0.0;
 			};
 		};
+		BC532EED278C00550027CA11 /* XCRemoteSwiftPackageReference "CodeScanner" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/CodeScanner";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		BCAAA0CE276D979B0013223E /* XCRemoteSwiftPackageReference "web3swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/skywinder/web3swift";
@@ -7845,6 +7861,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 6786EA752759545A00B53127 /* XCRemoteSwiftPackageReference "plcrashreporter" */;
 			productName = CrashReporter;
+		};
+		BC532EEE278C00550027CA11 /* CodeScanner */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BC532EED278C00550027CA11 /* XCRemoteSwiftPackageReference "CodeScanner" */;
+			productName = CodeScanner;
 		};
 		BCAAA0CF276D979B0013223E /* web3swift */ = {
 			isa = XCSwiftPackageProductDependency;
