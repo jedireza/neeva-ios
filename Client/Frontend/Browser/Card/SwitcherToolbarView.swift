@@ -71,8 +71,6 @@ struct SwitcherToolbarView: View {
                             onOverflowMenuAction: { action, view in
                                 bvc.perform(overflowMenuAction: action, targetButtonView: view)
                             },
-                            onLongPress: { _ in
-                            },
                             location: .cardGrid
                         )
                         .tapTargetFrame()
@@ -106,7 +104,6 @@ struct SwitcherToolbarView: View {
                                     )
                                 }
                             },
-                            onLongPress: {},
                             identifier: "SwitcherOverflowButton"
                         )
                         .tapTargetFrame()

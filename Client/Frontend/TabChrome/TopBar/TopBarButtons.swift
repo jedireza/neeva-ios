@@ -74,7 +74,6 @@ struct TopBarNeevaMenuButton: View {
 struct TopBarOverflowMenuButton: View {
     let changedUserAgent: Bool?
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
-    let onLongPress: (UIView) -> Void
     let location: OverflowMenuLocation
 
     @Environment(\.isIncognito) private var isIncognito
@@ -114,9 +113,6 @@ struct TopBarOverflowMenuButton: View {
             action: {
                 presenting = true
                 chromeModel.hideZeroQuery()
-            },
-            onLongPress: {
-                onLongPress(targetButtonView)
             }
         )
         .uiViewRef($targetButtonView)

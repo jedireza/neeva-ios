@@ -41,9 +41,6 @@ struct TabToolbarView: View {
                 weight: .medium,
                 action: {
                     performAction(.overflow)
-                },
-                onLongPress: {
-                    performAction(.longPressOverflow)
                 })
             TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
             TabToolbarButtons.AddToSpace(

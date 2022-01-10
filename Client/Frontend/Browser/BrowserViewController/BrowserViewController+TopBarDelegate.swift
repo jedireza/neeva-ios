@@ -92,11 +92,6 @@ extension BrowserViewController: TopBarDelegate {
         self.submitSearchText(text, forTab: currentTab)
     }
 
-    func urlBarDidLongPressOverflow(targetButtonView: UIView) {
-        // No action should be taken.
-        // Leaving this function unless we want to add anything in the future.
-    }
-
     fileprivate func submitSearchText(_ text: String, forTab tab: Tab?) {
         if let searchURL = SearchEngine.current.searchURLForQuery(text) {
             // We couldn't find a matching search keyword, so do a search query.

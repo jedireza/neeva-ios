@@ -16,7 +16,6 @@ struct TopBarView: View {
     let newTab: () -> Void
     let onCancel: () -> Void
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
-    let onLongPressOverflowButton: (UIView) -> Void
 
     @State private var shouldInsetHorizontally = false
     @State private var opacity: Double = 1
@@ -49,7 +48,6 @@ struct TopBarView: View {
                         changedUserAgent:
                             chrome.topBarDelegate?.tabManager.selectedTab?.showRequestDesktop,
                         onOverflowMenuAction: onOverflowMenuAction,
-                        onLongPress: onLongPressOverflowButton,
                         location: .tab
                     )
                 }

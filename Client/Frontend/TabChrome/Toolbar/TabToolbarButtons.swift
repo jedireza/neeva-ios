@@ -111,15 +111,13 @@ enum TabToolbarButtons {
     struct OverflowMenu: View {
         let weight: Font.Weight
         let action: () -> Void
-        let onLongPress: () -> Void
         let identifier: String
 
         @Environment(\.isIncognito) private var isIncognito
 
-        init(weight: Font.Weight, action: @escaping () -> Void, onLongPress: @escaping () -> Void, identifier: String = "") {
+        init(weight: Font.Weight, action: @escaping () -> Void, identifier: String = "") {
             self.weight = weight
             self.action = action
-            self.onLongPress = onLongPress
             self.identifier = identifier
         }
 
@@ -129,8 +127,7 @@ enum TabToolbarButtons {
                     .ellipsisCircle,
                     size: 20, weight: weight,
                     label: .TabToolbarMoreAccessibilityLabel),
-                action: action,
-                longPressAction: onLongPress
+                action: action
             )
             .accessibilityIdentifier(identifier)
         }

@@ -12,7 +12,6 @@ protocol TopBarDelegate: ToolbarDelegate {
     func urlBarDidPressReload()
     func urlBarDidEnterOverlayMode()
     func urlBarDidLeaveOverlayMode()
-    func urlBarDidLongPressOverflow(targetButtonView: UIView)
     func urlBar(didSubmitText text: String, isSearchQuerySuggestion: Bool)
 
     func perform(neevaMenuAction: NeevaMenuAction)
@@ -76,9 +75,6 @@ struct TopBarContent: View {
             onCancel: onCancel,
             onOverflowMenuAction: {
                 chromeModel.topBarDelegate?.perform(overflowMenuAction: $0, targetButtonView: $1)
-            },
-            onLongPressOverflowButton: {
-                chromeModel.topBarDelegate?.urlBarDidLongPressOverflow(targetButtonView: $0)
             }
         )
         .environmentObject(suggestionModel)

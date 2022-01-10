@@ -14,7 +14,6 @@ enum ToolbarAction {
     case longPressBackForward
     case addToSpace
     case showTabs
-    case longPressOverflow
     case showPreference
     case share
 }
@@ -90,8 +89,6 @@ extension BrowserViewController: ToolbarDelegate {
 
             case .showTabs:
                 self.showTabTray()
-            case .longPressOverflow:
-                break
             case .showPreference:
                 if let tabUUID = self.tabManager.selectedTab?.tabUUID,
                     let url = self.tabManager.selectedTab?.url?.absoluteString
