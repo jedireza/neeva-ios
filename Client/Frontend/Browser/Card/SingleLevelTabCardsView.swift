@@ -14,208 +14,30 @@ enum SingleLevelTabCardsViewUX {
 struct SingleLevelTabCardsView: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
-    @Environment(\.cardSize) private var size
-    @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.columns) private var columns
 
     let containerGeometry: GeometryProxy
     let incognito: Bool
 
     var body: some View {
-        Group {
-            ForEach(
-                tabModel.getAllDetails(matchingIncognitoState: incognito).filter { tabCard in
-                    (tabGroupModel.representativeTabs.contains(
-                        tabCard.manager.get(for: tabCard.id)!)
-                        || tabModel.allDetailsWithExclusionList.contains { $0.id == tabCard.id })
-                }, id: \.id
-            ) { details in
-                if let rootID = details.manager.get(for: details.id)?.rootUUID,
-                    let groupDetails = tabGroupModel.allDetails.first { $0.id == rootID }
-                {
-                    if groupDetails.isShowingDetails {
-                        ForEach(
-                            (0..<getTotalCards(groupDetails.allDetails.count, columns.count)),
-                            id: \.self
-                        ) { index in
-                            VStack(spacing: 0) {
-                                HStack {
-                                    if isTopLeft(index, groupDetails.allDetails.count) {
-                                        Symbol(decorative: .squareGrid2x2Fill)
-                                            .foregroundColor(.label)
-                                        Text(groupDetails.title)
-                                            .withFont(.labelLarge)
-                                            .foregroundColor(.label)
-                                    }
-                                    Spacer()
-                                    if isTopRight(index, groupDetails.allDetails.count) {
-                                        Button {
-                                            groupDetails.isShowingDetails.toggle()
-                                        } label: {
-                                            Label("caret", systemImage: "chevron.up")
-                                                .foregroundColor(.label)
-                                                .labelStyle(.iconOnly)
-                                                .rotationEffect(
-                                                    .degrees(
-                                                        groupDetails.isShowingDetails ? -180 : 0)
-                                                )
-                                                .padding()
-                                        }
-                                    }
-                                }.padding(.leading, CardGridUX.GridSpacing).frame(
-                                    height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                                if index < groupDetails.allDetails.count {
-                                    FittedCard(details: groupDetails.allDetails[index])
-                                        .modifier(
-                                            CardTransitionModifier(
-                                                details: groupDetails.allDetails[index],
-                                                containerGeometry: containerGeometry)
-                                        )
-                                        .padding(
-                                            .top,
-                                            SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-                                }
-                            }
-                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                            .frame(
-                                width: size * 1 + 1.5 * CardGridUX.GridSpacing,
-                                height: size * aspectRatio + CardUX.HeaderSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                    + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                            )
-                            .background(Color.secondarySystemFill)
-                            .cornerRadius(
-                                24,
-                                corners: cornersToRound(index, groupDetails.allDetails.count)
-                            )
+        ForEach(tabModel.buildRows(tabGroupModel: tabGroupModel, maxCols: columns.count)) { row in
+            HStack(spacing: CardGridUX.GridSpacing) {
+                ForEach(row.cells) { details in
+                    switch details {
+                    case .tabGroup(let groupDetails):
+                        CollapsableCardGroupView(
+                            groupDetails: groupDetails, containerGeometry: containerGeometry
+                        )
                             .padding(.horizontal, -CardGridUX.GridSpacing)
-                            .id(groupDetails.allDetails[index].id)
-                        }
-                    } else {
-                        VStack(spacing: 0) {
-                            HStack {
-                                Symbol(decorative: .squareGrid2x2Fill)
-                                    .foregroundColor(.label)
-                                Text(groupDetails.title)
-                                    .withFont(.labelLarge)
-                                    .foregroundColor(.label)
-                                Spacer()
-                                Button {
-                                    groupDetails.isShowingDetails.toggle()
-                                } label: {
-                                    Label("caret", systemImage: "chevron.up")
-                                        .foregroundColor(.label)
-                                        .labelStyle(.iconOnly)
-                                        .rotationEffect(
-                                            .degrees(groupDetails.isShowingDetails ? -180 : 0)
-                                        )
-                                        .padding()
-                                }
-                            }.padding(.leading, CardGridUX.GridSpacing).frame(
-                                height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                LazyHStack(
-                                    spacing: SingleLevelTabCardsViewUX.TabGroupCarouselTabSpacing
-                                ) {
-                                    Color.clear.frame(
-                                        width: CardGridUX.GridSpacing
-                                            - SingleLevelTabCardsViewUX.TabGroupCarouselTabSpacing)
-                                    ForEach(groupDetails.allDetails, id: \.id) { childTabDetail in
-                                        FittedCard(details: childTabDetail, dragToClose: false)
-                                            .modifier(
-                                                CardTransitionModifier(
-                                                    details: childTabDetail,
-                                                    containerGeometry: containerGeometry)
-                                            )
-                                            .id(childTabDetail.id)
-                                    }
-                                }
-                            }
-                            .padding(
-                                .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
+                    case .tab(let tabDetails):
+                        FittedCard(details: tabDetails)
+                            .modifier(
+                                CardTransitionModifier(
+                                    details: tabDetails, containerGeometry: containerGeometry)
                             )
-                            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-                        }
-                        .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-                        .frame(
-                            width: size * 2 + 3 * CardGridUX.GridSpacing,
-                            height: size * aspectRatio + CardUX.HeaderSize
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize
-                                + SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing
-                        )
-                        .background(Color.secondarySystemFill)
-                        .cornerRadius(
-                            24,
-                            corners: groupDetails.allDetails.count > 2 ? .leading : .all
-                        )
-                        .padding(.horizontal, -CardGridUX.GridSpacing)
-                        .id(groupDetails.id)
-                        Color.clear.frame(
-                            width: size, height: size * aspectRatio + CardUX.HeaderSize)
                     }
-                } else {
-                    FittedCard(details: details)
-                        .modifier(
-                            CardTransitionModifier(
-                                details: details, containerGeometry: containerGeometry)
-                        )
-                        .id(details.id)
                 }
-            }
+            }.padding(.horizontal, CardGridUX.GridSpacing)
         }
-        .transition(.identity)
-    }
-
-    func getTotalCards(_ total: Int, _ columns: Int) -> Int {
-        return Int(round((total * 1.0) / columns)) * columns
-    }
-
-    func isTopLeft(_ index: Int, _ total: Int) -> Bool {
-        let row = Int(round((total * 1.0) / columns.count))
-        return index / row == 0 && index % columns.count == 0
-
-    }
-
-    func isTopRight(_ index: Int, _ total: Int) -> Bool {
-        let row = Int(round((total * 1.0) / columns.count))
-        return (index / row == 0 && index % columns.count == columns.count - 1)
-            || (row == 1 && index == total - 1)
-    }
-
-    func isBottomLeft(_ index: Int, _ total: Int) -> Bool {
-        let row = Int(round((total * 1.0) / columns.count))
-        return index / row == row - 1 && index % columns.count == 0
-    }
-
-    func isBottomRight(_ index: Int, _ total: Int) -> Bool {
-        let row = Int(round((total * 1.0) / columns.count))
-        return (index / row == row - 1 && index % columns.count == columns.count - 1)
-            || (row == 1 && index == total - 1)
-    }
-
-    func cornersToRound(_ index: Int, _ total: Int) -> CornerSet {
-        if isTopLeft(index, total) && isBottomLeft(index, total) {
-            return .leading
-        }
-        if isTopRight(index, total) && isBottomRight(index, total) {
-            return .trailing
-        }
-        if isTopLeft(index, total) {
-            return .topLeading
-        }
-        if isTopRight(index, total) {
-            return .topTrailing
-        }
-        if isBottomLeft(index, total) {
-            return .bottomLeading
-        }
-        if isBottomRight(index, total) {
-            return .bottomTrailing
-        }
-        return []
     }
 }

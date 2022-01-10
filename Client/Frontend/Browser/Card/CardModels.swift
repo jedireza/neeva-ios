@@ -70,6 +70,41 @@ class TabCardModel: CardModel, TabEventHandler {
         onDataUpdated()
     }
 
+    struct Row: Identifiable {
+        var id: Set<String> { Set(cells.map(\.id)) }
+        enum Cell: Identifiable {
+            case tab(TabCardDetails)
+            case tabGroup(TabGroupCardDetails)
+
+            var id: String {
+                switch self {
+                case .tab(let details):
+                    return details.id
+                case .tabGroup(let details):
+                    return details.id
+                }
+            }
+        }
+        var cells: [Cell]
+    }
+
+    func buildRows(tabGroupModel: TabGroupCardModel, maxCols: Int) -> [Row] {
+        allDetails.filter { tabCard in
+            (tabGroupModel.representativeTabs.contains(tabCard.manager.get(for: tabCard.id)!)
+                || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
+        }.reduce(into: []) { partialResult, details in
+            let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == details.rootID })
+            if partialResult.isEmpty || partialResult.last?.cells.count == maxCols || tabGroup != nil {
+                partialResult.append(Row(cells: [tabGroup.map(Row.Cell.tabGroup) ?? .tab(details)]))
+                if tabGroup != nil {
+                    partialResult.append(Row(cells: []))
+                }
+            } else {
+                partialResult[partialResult.endIndex - 1].cells.append(.tab(details))
+            }
+        }.filter { !$0.cells.isEmpty }
+    }
+
     func onDataUpdated() {
         groupManager.updateTabGroups()
         allDetails = manager.getAll()

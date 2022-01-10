@@ -15,7 +15,7 @@ protocol SelectableThumbnail {
     func onSelect()
 }
 
-protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail {
+protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail, Identifiable {
     associatedtype Item: BrowserPrimitive
     associatedtype FaviconViewType: View
 
@@ -124,7 +124,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     typealias Item = Tab
     typealias Manager = TabManager
 
-    var id: String
+    public let id: String
     var manager: TabManager
 
     var isPinned: Bool {
@@ -142,6 +142,10 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     var isSelected: Bool {
         self.manager.selectedTab?.tabUUID == id
+    }
+
+    var rootID: String? {
+        manager.get(for: id)?.rootUUID
     }
 
     var accessibilityLabel: String {

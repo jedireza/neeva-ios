@@ -52,32 +52,34 @@ struct ScrollContainer: View {
                 ScrollViewReader { scrollProxy in
                     switch category {
                     case .incognitoTabs, .normalTabs:
-                        LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                            Group {
-                                if FeatureFlag[.tabGroupsNewDesign] {
+                        Group {
+                            if FeatureFlag[.tabGroupsNewDesign] {
+                                LazyVStack(alignment: .leading, spacing: CardGridUX.GridSpacing) {
                                     SingleLevelTabCardsView(
                                         containerGeometry: scrollGeometry,
                                         incognito: category == .incognitoTabs)
-                                } else {
+                                }
+                            } else {
+                                LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
                                     TabCardsView(
                                         containerGeometry: scrollGeometry,
                                         incognito: category == .incognitoTabs)
                                 }
                             }
-                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                            .environment(\.selectionCompletion) {
-                                guard tabGroupModel.detailedTabGroup == nil else {
-                                    return
-                                }
-                                ClientLogger.shared.logCounter(
-                                    .SelectTab,
-                                    attributes: getLogCounterAttributesForTabs(
-                                        selectedTabIndex: tabModel.allDetails.firstIndex(
-                                            where: {
-                                                $0.id == tabModel.selectedTabID
-                                            })))
-                                gridModel.hideWithAnimation()
+                        }
+                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
+                        .environment(\.selectionCompletion) {
+                            guard tabGroupModel.detailedTabGroup == nil else {
+                                return
                             }
+                            ClientLogger.shared.logCounter(
+                                .SelectTab,
+                                attributes: getLogCounterAttributesForTabs(
+                                    selectedTabIndex: tabModel.allDetails.firstIndex(
+                                        where: {
+                                            $0.id == tabModel.selectedTabID
+                                        })))
+                            gridModel.hideWithAnimation()
                         }
                         .padding(.vertical, CardGridUX.GridSpacing)
                         .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
@@ -105,7 +107,8 @@ struct ScrollContainer: View {
             }
         }
         .environment(\.columns, columns)
-        .animation(gridModel.animateDetailTransitions ? .easeInOut : nil)
+        .animation(gridModel.animateDetailTransitions && !FeatureFlag[.tabGroupsNewDesign] ? .easeInOut : nil)
+        .animation(.spring(), value: tabGroupModel.allDetails.map(\.isSelected))
     }
 }
 
