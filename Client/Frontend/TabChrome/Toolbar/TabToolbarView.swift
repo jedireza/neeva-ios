@@ -25,7 +25,7 @@ struct TabToolbarView: View {
 
             Spacer()
         }
-        .background(Color.DefaultBackground.ignoresSafeArea())
+        .chromeOrBar()
         .accentColor(.label)
     }
 

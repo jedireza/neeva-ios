@@ -112,3 +112,14 @@ extension View {
             )
     }
 }
+
+extension View {
+    /// On iOS 15+, use a background material to show content behind the bar.
+    @ViewBuilder func chromeOrBar() -> some View {
+        if #available(iOS 15.0, *) {
+            background(Material.bar, ignoresSafeAreaEdges: .all)
+        } else {
+            background(Color.DefaultBackground.ignoresSafeArea())
+        }
+    }
+}

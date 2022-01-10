@@ -170,7 +170,7 @@ struct SwitcherToolbarView: View {
                 Spacer()
             }
         }
-        .background(Color.DefaultBackground.ignoresSafeArea())
+        .chromeOrBar()
         .opacity(FeatureFlag[.enableBrowserView] ? 1 : (gridModel.isHidden ? 0 : 1))
         .animation(.easeOut)
     }
