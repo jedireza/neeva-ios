@@ -72,16 +72,14 @@ class TabCardModel: CardModel, TabEventHandler {
 
     func onDataUpdated() {
         groupManager.updateTabGroups()
-        let childTabs = groupManager.getAll()
-            .reduce(into: [Tab]()) { $0.append(contentsOf: $1.children) }
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
 
         if FeatureFlag[.tabGroupsNewDesign] {
-            modifyAllDetailsAvoidingSingleTabs(childTabs)
+            modifyAllDetailsAvoidingSingleTabs(groupManager.childTabs)
         }
 
-        allDetailsWithExclusionList = manager.getAll().filter { !childTabs.contains($0) }
+        allDetailsWithExclusionList = manager.getAll().filter { !groupManager.childTabs.contains($0) }
             .map { TabCardDetails(tab: $0, manager: manager) }
         selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()

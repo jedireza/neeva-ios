@@ -179,6 +179,14 @@ struct Card<Details>: View where Details: CardDetails {
             ? "bookmark.fill" : "square.grid.2x2.fill"
     }
 
+    func isChildTab(details: Details) -> Bool {
+        if let currentTab = tabCardDetail?.manager.get(for: details.id) {
+            return tabGroupCardModel.manager.childTabs.contains(currentTab)
+        } else {
+            return false
+        }
+    }
+
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
@@ -212,15 +220,16 @@ struct Card<Details>: View where Details: CardDetails {
                 )
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
-                        if let favicon = details.favicon,
-                            !(gridModel.animationThumbnailState == .visibleForTrayShow)
+                        if isChildTab(details: details)
+                            && (gridModel.animationThumbnailState == .visibleForTrayShow)
                         {
-                            favicon
+                            Image(systemName: iconInMainGrid)
                                 .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
                                 .cornerRadius(CardUX.FaviconCornerRadius)
                                 .padding(5)
+
                         } else {
-                            Image(systemName: iconInMainGrid)
+                            details.favicon
                                 .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
                                 .cornerRadius(CardUX.FaviconCornerRadius)
                                 .padding(5)

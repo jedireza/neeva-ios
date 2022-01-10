@@ -335,6 +335,7 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
     let tabManager: TabManager
     @Default(.tabGroupNames) private var tabGroupDict: [String: String]
     @Published private(set) var tabGroups: [String: TabGroup] = [:]
+    var childTabs: [Tab] = []
     private var anyCancellable: AnyCancellable? = nil
 
     init(tabManager: TabManager) {
@@ -352,6 +353,7 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
             }.filter { $0.value.count > 1 }.reduce(into: [String: TabGroup]()) { dict, element in
                 dict[element.key] = TabGroup(children: element.value, id: element.key)
             }
+        childTabs = getAll().flatMap(\.children)
         objectWillChange.send()
     }
 
