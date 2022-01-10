@@ -2,8 +2,9 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import WebKit
 import Defaults
+import Shared
+import WebKit
 
 extension TabContentBlocker {
     func clearPageStats() {
@@ -31,6 +32,11 @@ extension TabContentBlocker {
             guard var components = URLComponents(string: urlString) else { return }
             components.scheme = "http"
             guard let url = components.url else { return }
+
+            if FeatureFlag[.enableCryptoWallet], url.equals(WalletConnectDetector.WalletRegistryURL) {
+                WalletConnectDetector.shared.walletConnectURL = mainDocumentUrl
+            }
+
             TPStatsBlocklistChecker.shared.isBlocked(url: url, mainDocumentURL: mainDocumentUrl).uponQueue(.main) { blocked in
                 if blocked, let host = url.host {
                     self.stats = self.stats.create(host: host)

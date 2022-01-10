@@ -172,6 +172,7 @@
 		4A9FCD4626F1074600725E17 /* SocialShare.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4526F1074600725E17 /* SocialShare.swift */; };
 		4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9FCD4726F107BF00725E17 /* ProfileView.swift */; };
 		4AA14F20264C7954003B815A /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* ZeroQueryView.swift */; };
+		4AA285AF278BA884001993EE /* ConnectWallet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA285AE278BA884001993EE /* ConnectWallet.swift */; };
 		4AA9F66727478DB8005F6F81 /* SpaceDetailList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */; };
 		4AB07F29276C4E6300C85ED4 /* SingleLevelTabCardsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */; };
 		4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */; };
@@ -1295,6 +1296,7 @@
 		4A9FCD4526F1074600725E17 /* SocialShare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SocialShare.swift; sourceTree = "<group>"; };
 		4A9FCD4726F107BF00725E17 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* ZeroQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryView.swift; sourceTree = "<group>"; };
+		4AA285AE278BA884001993EE /* ConnectWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectWallet.swift; sourceTree = "<group>"; };
 		4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceDetailList.swift; sourceTree = "<group>"; };
 		4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLevelTabCardsView.swift; sourceTree = "<group>"; };
 		4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserPrimitive.swift; sourceTree = "<group>"; };
@@ -2942,6 +2944,7 @@
 			children = (
 				4A93B550277F80A400CD5415 /* Assets */,
 				BCAAA0D4276D9B420013223E /* CryptoConfig.swift */,
+				4AA285AE278BA884001993EE /* ConnectWallet.swift */,
 				BCAAA0D2276D9A070013223E /* CryptoWalletController.swift */,
 				BCAAA0D6276D9B800013223E /* CryptoWalletView.swift */,
 				BCAAA0D8276D9BA60013223E /* ImportWalletView.swift */,
@@ -5586,6 +5589,7 @@
 				C832BF5B26E0A7A400B9A1F8 /* OpenInAppOverlayContent.swift in Sources */,
 				4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */,
 				EBB8950C21939E4100EB91A0 /* NeevaTabContentBlocker.swift in Sources */,
+				4AA285AF278BA884001993EE /* ConnectWallet.swift in Sources */,
 				BCF864CD276C5FDC00E94B3A /* BuyingGuideView.swift in Sources */,
 				BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */,
 				BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */,

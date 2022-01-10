@@ -4,6 +4,7 @@ import Defaults
 import Shared
 import SwiftUI
 import ViewInspector
+import WalletConnectSwift
 import XCTest
 
 @testable import Client
@@ -43,7 +44,11 @@ class CardTests: XCTestCase {
     fileprivate let spyRestoredTabs = "tabManagerDidRestoreTabs(_:)"
     fileprivate let spyAddTab = "tabManager(_:didAddTab:isRestoring:)"
 
-    private struct MockPresenter: ModalPresenter {
+    private struct MockPresenter: WalletConnectPresenter {
+        func connectWallet(to wcURL: WCURL) -> Bool {
+            return false
+        }
+
         func showModal<Content>(
             style: OverlayStyle, headerButton: OverlayHeaderButton?,
             content: @escaping () -> Content, onDismiss: (() -> Void)?

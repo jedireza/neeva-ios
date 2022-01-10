@@ -11,24 +11,26 @@ func DappsSessionKey(for sessionID: String) -> String {
     "DataForSession" + sessionID
 }
 
-extension BrowserViewController: ServerDelegate {
+protocol WalletConnectPresenter: ModalPresenter {
+    @discardableResult func connectWallet(to wcURL: WCURL) -> Bool
+}
+
+extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
 
     @discardableResult func connectWallet(to wcURL: WCURL) -> Bool {
         guard FeatureFlag[.enableCryptoWallet], !WalletAccessor().publicAddress.isEmpty else {
             return false
         }
 
-        do {
-            try server?.connect(to: wcURL)
-            showModal(
-                style: .spaces,
-                content: {
-                    WalletSequenceContent(model: self.web3Model)
-                }, onDismiss: { self.web3Model.reset() })
-            return true
-        } catch {
-            return false
+        DispatchQueue.global(qos: .userInitiated).async {
+            try? self.server?.connect(to: wcURL)
         }
+        showModal(
+            style: .spaces,
+            content: {
+                WalletSequenceContent(model: self.web3Model)
+            }, onDismiss: { self.web3Model.reset() })
+        return true
     }
 
     func configureWalletServer() {

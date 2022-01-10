@@ -165,29 +165,31 @@ struct CollectionView: View {
                 .resizable()
                 .scaledToFill()
                 .frame(maxHeight: 128)
-            WebImage(url: collection.imageURL)
-                .placeholder {
-                    Color.TrayBackground
+            VStack(spacing: 4) {
+                WebImage(url: collection.imageURL)
+                    .placeholder {
+                        Color.TrayBackground
+                    }
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 48, height: 48)
+                    .clipShape(Circle())
+                    .roundedOuterBorder(cornerRadius: 24, color: .white, lineWidth: 2)
+                Text(collection.name)
+                    .withFont(.headingXLarge)
+                    .foregroundColor(.label)
+                if let stats = collection.stats {
+                    CollectionStatsView(
+                        stats: stats,
+                        verified: collection.safelistRequestStatus == .verified)
                 }
-                .resizable()
-                .scaledToFit()
-                .frame(width: 48, height: 48)
-                .clipShape(Circle())
-                .roundedOuterBorder(cornerRadius: 24, color: .white, lineWidth: 2)
-                .offset(y: -28)
-            Text(collection.name)
-                .withFont(.headingXLarge)
-                .foregroundColor(.label)
-            if let stats = collection.stats {
-                CollectionStatsView(
-                    stats: stats,
-                    verified: collection.safelistRequestStatus == .verified)
+                Image("open-sea-badge")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 18)
+                    .padding(.vertical, 20)
             }
-            Image("open-sea-badge")
-                .resizable()
-                .scaledToFit()
-                .frame(height: 18)
-                .padding(.vertical, 20)
+            .offset(y: -28)
         }
     }
 }

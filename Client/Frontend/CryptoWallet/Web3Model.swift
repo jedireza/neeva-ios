@@ -3,6 +3,7 @@
 import Combine
 import Foundation
 import Shared
+import SwiftUI
 import WalletConnectSwift
 import web3swift
 
@@ -23,18 +24,31 @@ struct SequenceInfo {
 }
 
 class Web3Model: ObservableObject, ResponseRelay {
-    @Published var currentSequence: SequenceInfo? = nil
-    @Published var currentSession: Session?
+    @Published var currentSequence: SequenceInfo? = nil {
+        didSet {
+            guard currentSequence != nil else { return }
+            tryMatchCurrentPageToCollection()
+        }
+    }
+    @Published var currentSession: Session? {
+        didSet {
+            guard currentSession != nil else { return }
+            tryMatchCurrentPageToCollection()
+        }
+    }
     @Published var showingWalletDetails = false
+    @Published var matchingCollection: Collection?
+    @Published var wcURL: WCURL? = nil
 
     let server: Server?
-    let presenter: ModalPresenter
+    let presenter: WalletConnectPresenter
     var selectedTab: Tab?
 
     private var selectedTabSubscription: AnyCancellable? = nil
     private var urlSubscription: AnyCancellable? = nil
+    private var walletConnectSubscription: AnyCancellable? = nil
 
-    init(server: Server?, presenter: ModalPresenter, tabManager: TabManager) {
+    init(server: Server?, presenter: WalletConnectPresenter, tabManager: TabManager) {
         self.server = server
         self.presenter = presenter
         self.currentSession =
@@ -51,6 +65,15 @@ class Web3Model: ObservableObject, ResponseRelay {
             self.updateCurrentSession()
             self.urlSubscription = tab.$url.sink { _ in
                 self.updateCurrentSession()
+            }
+        }
+
+        self.walletConnectSubscription = WalletConnectDetector.shared.$walletConnectURL.sink {
+            url in
+            if let baseDomain = url?.baseDomain, baseDomain == self.selectedTab?.url?.baseDomain {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    self.tryWalletConnect()
+                }
             }
         }
     }
@@ -70,6 +93,61 @@ class Web3Model: ObservableObject, ResponseRelay {
 
     func reset() {
         currentSequence = nil
+        wcURL = nil
+    }
+
+    func tryWalletConnect() {
+        selectedTab?.webView?
+            .evaluateJavascriptInDefaultContentWorld(
+                WalletConnectDetector.scrapeWalletConnectURI
+            ) {
+                object, error in
+                guard let walletConnectUriString = object as? String,
+                    let wcURL = WCURL(walletConnectUriString.removingPercentEncoding ?? "")
+                else { return }
+
+                self.wcURL = wcURL
+                self.presenter.showModal(
+                    style: .withTitle,
+                    headerButton: nil,
+                    content: {
+                        WalletSequenceContent(model: self)
+                    }, onDismiss: { self.reset() })
+                self.tryMatchCurrentPageToCollection()
+            }
+    }
+
+    func tryMatchCurrentPageToCollection() {
+        matchingCollection = AssetStore.shared.collections.first(
+            where: {
+                $0.externalURL?.baseDomain
+                    == self.selectedTab?.url?.baseDomain
+            })
+
+        guard matchingCollection?.stats == nil else { return }
+
+        selectedTab?.webView?
+            .evaluateJavascriptInDefaultContentWorld(
+                Collection.scrapeForOpenSeaLink
+            ) {
+                object, error in
+                guard let openSeaSlugs = object as? [String],
+                    !openSeaSlugs.isEmpty
+                else { return }
+
+                DispatchQueue.global(qos: .userInitiated).async {
+                    AssetStore.shared.fetch(collection: openSeaSlugs[0]) { collection in
+                        if self.selectedTab?.url?.baseDomain
+                            == collection.externalURL?.baseDomain
+                        {
+                            print(
+                                "WC: collection \(collection.name) checks out!"
+                            )
+                            self.matchingCollection = collection
+                        }
+                    }
+                }
+            }
     }
 
     func send(_ response: Response) {

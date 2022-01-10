@@ -2,6 +2,7 @@
 
 import Combine
 import Foundation
+import LocalAuthentication
 import SDWebImageSwiftUI
 import Shared
 import SwiftUI
@@ -53,7 +54,13 @@ struct WalletSequenceContent: View {
                 )
                 .withFont(.labelLarge)
                 .foregroundColor(.ui.adaptive.blue)
-                if let description = sequence.message {
+                if case .sessionRequest = sequence.type, let collection = model.matchingCollection,
+                    let stats = collection.stats
+                {
+                    CollectionStatsView(
+                        stats: stats,
+                        verified: collection.safelistRequestStatus == .verified)
+                } else if let description = sequence.message {
                     Text(description)
                         .withFont(.bodyLarge)
                         .foregroundColor(.secondaryLabel)
@@ -87,24 +94,75 @@ struct WalletSequenceContent: View {
                         .disabled(model.currentSequence == nil)
                     Button(
                         action: {
-                            sequence.onAccept()
+                            switch sequence.type {
+                            case .sessionRequest:
+                                sequence.onAccept()
+                            default:
+                                let context = LAContext()
+                                let reason = "Signing in and transactions require authentication"
+                                let onAuth: (Bool, Error?) -> Void = {
+                                    success, authenticationError in
+                                    if success {
+                                        sequence.onAccept()
+                                    } else {
+                                        sequence.onReject()
+                                    }
+                                }
+
+                                var error: NSError?
+                                if context.canEvaluatePolicy(
+                                    .deviceOwnerAuthenticationWithBiometrics, error: &error)
+                                {
+                                    context.evaluatePolicy(
+                                        .deviceOwnerAuthenticationWithBiometrics,
+                                        localizedReason: reason,
+                                        reply: onAuth)
+                                } else if context.canEvaluatePolicy(
+                                    .deviceOwnerAuthentication, error: &error)
+                                {
+                                    context.evaluatePolicy(
+                                        .deviceOwnerAuthentication, localizedReason: reason,
+                                        reply: onAuth)
+                                } else {
+                                    sequence.onReject()
+                                }
+                            }
+
                             hideOverlaySheet()
                         },
                         label: {
-                            Text("Accept")
+                            if case .sessionRequest = sequence.type {
+                                Text("Accept")
+                                    .frame(maxWidth: .infinity)
+                            } else {
+                                Label(
+                                    title: {
+                                        Text("Accept")
+                                    },
+                                    icon: {
+                                        Symbol(decorative: .faceid)
+                                    }
+                                )
                                 .frame(maxWidth: .infinity)
+
+                            }
                         }
                     ).buttonStyle(NeevaButtonStyle(.primary))
                         .disabled(model.currentSequence == nil)
                 }
+            } else if let wcURL = model.wcURL {
+                ConnectWalletPanel()
+                    .environmentObject(model)
             } else {
-                Spacer()
+                Spacer(minLength: 150)
                 ProgressView()
                     .scaleEffect(x: 2, y: 2, anchor: .center)
-                Spacer()
+                    .frame(maxWidth: .infinity, alignment: .center)
+                Spacer(minLength: 150)
             }
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 12)
+        .padding(.top, 12)
+        .padding(.bottom, 36)
     }
 }

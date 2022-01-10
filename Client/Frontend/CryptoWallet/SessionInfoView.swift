@@ -12,11 +12,10 @@ struct SessionInfoView: View {
 
     let dAppSession: Session
     @Binding var showdAppSessionControls: Bool
-    @Binding var matchingCollection: Collection?
 
     var body: some View {
         VStack {
-            if let matchingCollection = matchingCollection {
+            if let matchingCollection = web3Model.matchingCollection {
                 CollectionView(collection: matchingCollection)
             } else {
                 VStack {
@@ -71,7 +70,6 @@ struct SessionInfoButton: View {
 
     let dAppSession: Session
     @State var showdAppSessionControls: Bool = false
-    @State var matchingCollection: Collection? = nil
 
     var body: some View {
         Button(
@@ -87,13 +85,13 @@ struct SessionInfoButton: View {
                     .background(
                         Circle()
                             .fill(
-                                matchingCollection == nil
+                                web3Model.matchingCollection == nil
                                     ? Color.clear : Color.ui.adaptive.blue.opacity(0.3))
                     ).roundedOuterBorder(
                         cornerRadius: 10,
-                        color: matchingCollection == nil
+                        color: web3Model.matchingCollection == nil
                             ? Color.label : Color.ui.adaptive.blue,
-                        lineWidth: matchingCollection == nil
+                        lineWidth: web3Model.matchingCollection == nil
                             ? 1 : 2)
             }
         ).presentAsPopover(
@@ -102,41 +100,8 @@ struct SessionInfoButton: View {
         ) {
             SessionInfoView(
                 dAppSession: dAppSession,
-                showdAppSessionControls: $showdAppSessionControls,
-                matchingCollection: $matchingCollection
+                showdAppSessionControls: $showdAppSessionControls
             ).environmentObject(web3Model)
-        }.useEffect(deps: web3Model.currentSession?.url) { _ in
-            matchingCollection = AssetStore.shared.collections.first(
-                where: {
-                    $0.externalURL?.baseDomain
-                        == web3Model.currentSession?.dAppInfo.peerMeta
-                        .url.baseDomain
-                })
-
-            guard matchingCollection?.stats == nil else { return }
-
-            web3Model.selectedTab?.webView?
-                .evaluateJavascriptInDefaultContentWorld(
-                    Collection.scrapeForOpenSeaLink
-                ) {
-                    object, error in
-                    guard let openSeaSlugs = object as? [String],
-                        !openSeaSlugs.isEmpty
-                    else { return }
-
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        AssetStore.shared.fetch(collection: openSeaSlugs[0]) { collection in
-                            if web3Model.selectedTab?.url?.baseDomain
-                                == collection.externalURL?.baseDomain
-                            {
-                                print(
-                                    "WC: collection \(collection.name) checks out!"
-                                )
-                                matchingCollection = collection
-                            }
-                        }
-                    }
-                }
         }
     }
 }
