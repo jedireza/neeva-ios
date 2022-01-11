@@ -5,7 +5,7 @@ import SwiftUI
 
 public struct AuthButton: View {
     var action: () -> Void
-    var icon: String
+    var icon: Image
     var isSignIn: Bool
     var service: String
     var textColor: Color
@@ -15,7 +15,7 @@ public struct AuthButton: View {
     public var body: some View {
         Button(action: action) {
             HStack {
-                Image(icon)
+                icon
                     .renderingMode(tintIcon ? .template : .none)
                     .padding(.leading, 28)
                 Spacer()
@@ -40,7 +40,7 @@ public struct SignUpWithAppleButton: View {
     public var body: some View {
         AuthButton(
             action: action,
-            icon: "apple",
+            icon: Image(systemSymbol: .applelogo),
             isSignIn: onSignInMode,
             service: "Apple",
             textColor: .brand.white,
@@ -56,7 +56,7 @@ public struct SignUpWithGoogleButton: View {
     public var body: some View {
         AuthButton(
             action: action,
-            icon: "google_icon",
+            icon: Image("google_icon"),
             isSignIn: onSignInMode,
             service: "Google",
             textColor: Color.ui.gray20,
@@ -71,7 +71,7 @@ public struct SignUpWithMicrosoftButton: View {
     public var body: some View {
         AuthButton(
             action: action,
-            icon: "microsoft",
+            icon: Image("microsoft"),
             isSignIn: onSignInMode,
             service: "Microsoft",
             textColor: Color.ui.gray20,

@@ -32,7 +32,8 @@ class MockUserInfoProvider: UserInfoProvider {
                     pictureUrl: testURLString(for: ""),
                     authProvider: SSOProvider.okta.rawValue,
                     featureFlags: [],
-                    userFlags: []
+                    userFlags: [],
+                    subscriptionType: nil
                 )
                 completion(.success(userInfo))
             }

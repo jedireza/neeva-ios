@@ -20,6 +20,7 @@ public class NeevaUserInfo: ObservableObject {
     @Published public private(set) var pictureUrl: String?
     @Published public private(set) var pictureData: Data?
     @Published public private(set) var authProvider: SSOProvider?
+    @Published public private(set) var subscriptionType: SubscriptionType?
     @Published public private(set) var isLoading = false
 
     /// Using optimistic approach, the user is considered `LoggedIn = true` until we receive a login required GraphQL error.
@@ -187,6 +188,7 @@ public class NeevaUserInfo: ObservableObject {
         self.email = userInfoDict["userEmail"]
         self.pictureUrl = userInfoDict["userPictureUrl"]
         self.authProvider = userInfoDict["userAuthProvider"].flatMap(SSOProvider.init(rawValue:))
+        self.subscriptionType = userInfoDict["userSubscriptionType"].flatMap(SubscriptionType.init(rawValue:))
     }
 
     private func fetchUserPicture() {
@@ -226,13 +228,15 @@ public class NeevaUserInfo: ObservableObject {
             "userEmail": userInfo.email,
             "userPictureUrl": userInfo.pictureUrl,
             "userAuthProvider": userInfo.authProvider,
-        ]
+            "userSubscriptionType": userInfo.subscriptionType?.rawValue
+        ].compactMapValues { $0 }
         defaults.set(userInfoDict, forKey: UserInfoKey)
 
         displayName = userInfo.name
         email = userInfo.email
         pictureUrl = userInfo.pictureUrl
         authProvider = userInfo.authProvider.flatMap(SSOProvider.init(rawValue:))
+        subscriptionType = userInfo.subscriptionType
     }
 
     private func clearUserInfoCache() {
@@ -241,6 +245,8 @@ public class NeevaUserInfo: ObservableObject {
         pictureUrl = nil
         pictureData = nil
         id = nil
+        authProvider = nil
+        subscriptionType = nil
         self.reachability.stopNotifier()
     }
 }

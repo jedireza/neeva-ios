@@ -34,7 +34,7 @@ public enum SSOProvider: String, CaseIterable {
         switch self {
         case .unknown: return Image("placeholder-avatar")
         case .google: return Image("google")
-        case .apple: return Image("apple")
+        case .apple: return Image(systemSymbol: .applelogo)
         case .microsoft: return Image("o365")
         case .okta: return Image("neeva-logo")
         }

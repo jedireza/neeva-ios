@@ -3016,6 +3016,56 @@ public enum PerfTraceStatus: RawRepresentable, Equatable, Hashable, CaseIterable
   }
 }
 
+public enum SubscriptionType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case basic
+  case premium
+  case lifetime
+  case unknown
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "Basic": self = .basic
+      case "Premium": self = .premium
+      case "Lifetime": self = .lifetime
+      case "Unknown": self = .unknown
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .basic: return "Basic"
+      case .premium: return "Premium"
+      case .lifetime: return "Lifetime"
+      case .unknown: return "Unknown"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: SubscriptionType, rhs: SubscriptionType) -> Bool {
+    switch (lhs, rhs) {
+      case (.basic, .basic): return true
+      case (.premium, .premium): return true
+      case (.lifetime, .lifetime): return true
+      case (.unknown, .unknown): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [SubscriptionType] {
+    return [
+      .basic,
+      .premium,
+      .lifetime,
+      .unknown,
+    ]
+  }
+}
+
 public enum UserPreference: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case notSupported
@@ -4483,13 +4533,14 @@ public final class UserInfoQuery: GraphQLQuery {
           stringValue
         }
         authProvider
+        subscriptionType
       }
     }
     """
 
   public let operationName: String = "UserInfo"
 
-  public let operationIdentifier: String? = "4f12e7948733e73cb2ac4147d34b5aae5fea0de60ebad124b3f7da5d30c23a7d"
+  public let operationIdentifier: String? = "2a6d398f5f4ead696c4708bedc992bea1471ff3be71c76e6cde110e42a2d5ca2"
 
   public init() {
   }
@@ -4534,6 +4585,7 @@ public final class UserInfoQuery: GraphQLQuery {
           GraphQLField("flags", type: .nonNull(.list(.nonNull(.scalar(String.self))))),
           GraphQLField("featureFlags", type: .nonNull(.list(.nonNull(.object(FeatureFlag.selections))))),
           GraphQLField("authProvider", type: .scalar(String.self)),
+          GraphQLField("subscriptionType", type: .scalar(SubscriptionType.self)),
         ]
       }
 
@@ -4543,8 +4595,8 @@ public final class UserInfoQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(id: GraphQLID, profile: Profile, flags: [String], featureFlags: [FeatureFlag], authProvider: String? = nil) {
-        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "flags": flags, "featureFlags": featureFlags.map { (value: FeatureFlag) -> ResultMap in value.resultMap }, "authProvider": authProvider])
+      public init(id: GraphQLID, profile: Profile, flags: [String], featureFlags: [FeatureFlag], authProvider: String? = nil, subscriptionType: SubscriptionType? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "flags": flags, "featureFlags": featureFlags.map { (value: FeatureFlag) -> ResultMap in value.resultMap }, "authProvider": authProvider, "subscriptionType": subscriptionType])
       }
 
       public var __typename: String {
@@ -4603,6 +4655,16 @@ public final class UserInfoQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue, forKey: "authProvider")
+        }
+      }
+
+      /// Type of a user subscription (modulates subscription behavior)
+      public var subscriptionType: SubscriptionType? {
+        get {
+          return resultMap["subscriptionType"] as? SubscriptionType
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "subscriptionType")
         }
       }
 

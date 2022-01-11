@@ -7,6 +7,8 @@ struct NeevaAccountInfoView: View {
     @ObservedObject var userInfo: NeevaUserInfo
     @Binding var isPresented: Bool
 
+    @Environment(\.onOpenURL) var openURL
+
     @State var signingOut = false
 
     var body: some View {
@@ -32,6 +34,21 @@ struct NeevaAccountInfoView: View {
                     "\(Text(userInfo.authProvider?.displayName ?? "Unknown")), \(userInfo.email ?? "")"
                 )
 
+            }
+
+            if let type = userInfo.subscriptionType {
+                Section(header: Text(type.displayName)) {
+                    Text(type.description).padding(.vertical, 5)
+                }
+            } else {
+                DecorativeSection {
+                    Button("No Subscription. Check status on the Neeva website.") {
+                        openURL(NeevaConstants.appSettingsURL)
+                    }
+                }
+            }
+
+            DecorativeSection {
                 Button("Sign Out") { signingOut = true }
                     .actionSheet(isPresented: $signingOut) {
                         ActionSheet(

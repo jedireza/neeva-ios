@@ -2,6 +2,7 @@
 
 import Apollo
 import Foundation
+import SwiftUI
 
 private let log = Logger.browser
 
@@ -14,10 +15,12 @@ public struct UserInfo {
     let authProvider: String?
     let featureFlags: [UserInfoQuery.Data.User.FeatureFlag]
     let userFlags: [String]
+    let subscriptionType: SubscriptionType?
 
     public init(
         id: String?, name: String?, email: String?, pictureUrl: String?, authProvider: String?,
-        featureFlags: [UserInfoQuery.Data.User.FeatureFlag], userFlags: [String]
+        featureFlags: [UserInfoQuery.Data.User.FeatureFlag], userFlags: [String],
+        subscriptionType: SubscriptionType?
     ) {
         self.id = id
         self.name = name
@@ -26,6 +29,28 @@ public struct UserInfo {
         self.authProvider = authProvider
         self.featureFlags = featureFlags
         self.userFlags = userFlags
+        self.subscriptionType = subscriptionType
+    }
+}
+
+
+extension SubscriptionType {
+    public var displayName: LocalizedStringKey {
+        switch self {
+        case .basic: return "Free Basic Membership"
+        case .premium: return "Premium Member"
+        case .lifetime: return "Lifetime Premium Member"
+        case .unknown, .__unknown: return "Unknown"
+        }
+    }
+
+    public var description: LocalizedStringKey {
+        switch self {
+        case .basic: return "You are currently part of Neeva’s free basic membership which gives you access to all of Neeva’s search and personalization features (subject to certain usage limits). Neeva will soon offer a premium tier where members can pay a monthly fee and receive unlimited access to all Neeva search and browsing features, plus a range of other benefits. We will notify you when we offer the option to upgrade to Neeva’s premium membership tier."
+        case .premium: return "Thank you for subscribing to Neeva Premium."
+        case .lifetime: return "As a winner in the referral competition, you are a lifetime premium member of Neeva. You will receive unlimited access to all Neeva search and browsing features, plus a range of other benefits."
+        case .unknown, .__unknown: return ""
+        }
     }
 }
 
@@ -63,7 +88,8 @@ open class UserInfoProvider {
                         pictureUrl: data.user?.profile.pictureUrl,
                         authProvider: data.user?.authProvider,
                         featureFlags: data.user?.featureFlags ?? [],
-                        userFlags: data.user?.flags ?? []
+                        userFlags: data.user?.flags ?? [],
+                        subscriptionType: data.user?.subscriptionType
                     ))
             case .failure(let error):
                 userInfoResult = .failureTemporaryError

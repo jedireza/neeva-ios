@@ -31,9 +31,21 @@ struct NeevaAccountRow: View {
             .aspectRatio(contentMode: .fill)
             .frame(width: 35, height: 35)
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 3) {
                 if let name = userInfo.displayName {
-                    Text(name)
+                    HStack {
+                        Text(name)
+                        if let type = userInfo.subscriptionType {
+                            Text(type.displayName)
+                                .font(.caption)
+                                .padding(3)
+                                .padding(.horizontal, 3)
+                                .background(Color.secondarySystemFill)
+                                .cornerRadius(5)
+                                .fixedSize()
+                                .frame(height: 1)
+                        }
+                    }
                 }
                 if let email = userInfo.email {
                     Text(email)
