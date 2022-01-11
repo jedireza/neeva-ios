@@ -27,6 +27,7 @@ class GridModel: ObservableObject {
     }
     @Published private(set) var refreshDetailedSpaceSubscription: AnyCancellable? = nil
     @Published var showingDetailView = false
+    @Published var dragOffset: CGFloat? = nil
 
     var isIncognito: Bool {
         tabCardModel.manager.isIncognito

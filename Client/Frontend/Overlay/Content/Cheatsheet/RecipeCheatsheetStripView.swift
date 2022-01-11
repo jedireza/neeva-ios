@@ -8,8 +8,9 @@ struct RecipeCheatsheetStripView: View {
     @Environment(\.onOpenURL) var onOpenURL
     let tabManager: TabManager
     let overlayModel: OverlaySheetModel = OverlaySheetModel()
+    let overlayManager: OverlayManager
     var height: CGFloat
-    @ObservedObject var scrollingController: TabScrollingController
+    var yOffset: CGFloat
     @ObservedObject var recipeModel: RecipeViewModel
     @State private var presentSheet: Bool = false
     let chromeModel: TabChromeModel
@@ -18,16 +19,18 @@ struct RecipeCheatsheetStripView: View {
     init(
         tabManager: TabManager,
         recipeModel: RecipeViewModel,
-        scrollingController: TabScrollingController,
+        yOffset: CGFloat,
         height: CGFloat,
-        chromeModel: TabChromeModel
+        chromeModel: TabChromeModel,
+        overlayManager: OverlayManager
     ) {
         self.tabManager = tabManager
         self.recipeModel = recipeModel
-        self.scrollingController = scrollingController
+        self.yOffset = yOffset
         self.recipeModel = recipeModel
         self.height = height
         self.chromeModel = chromeModel
+        self.overlayManager = overlayManager
     }
 
     var body: some View {
@@ -51,8 +54,7 @@ struct RecipeCheatsheetStripView: View {
                 .padding(.horizontal, 18)
                 .offset(
                     x: 0,
-                    y: -height * scrollingController.headerTopOffset
-                        / scrollingController.headerHeight
+                    y: -height * yOffset
                 )
                 .animation(.easeInOut)
                 .onAppear(perform: logBannerImpression)
@@ -66,51 +68,56 @@ struct RecipeCheatsheetStripView: View {
             let instructions = recipeModel.recipe.instructions
         {
             if ingredients.count > 0 && instructions.count > 0 {
-                OverlaySheetView(
-                    model: overlayModel,
-                    style: .spaces,
-                    onDismiss: {
-                        presentSheet = false
-                        self.chromeModel.toolBarContentView = .regularContent
-                    },
-                    headerButton: nil
-                ) {
-                    LazyVStack {
-                        RecipeView(
-                            title: recipeModel.recipe.title,
-                            imageURL: recipeModel.recipe.imageURL,
-                            totalTime: recipeModel.recipe.totalTime,
-                            prepTime: recipeModel.recipe.prepTime,
-                            ingredients: ingredients,
-                            instructions: instructions,
-                            yield: recipeModel.recipe.yield,
-                            recipeRating: RecipeRating(
-                                maxStars: recipeModel.recipe.recipeRating?.maxStars ?? 0,
-                                recipeStars: recipeModel.recipe.recipeRating?.recipeStars ?? 0,
-                                numReviews: recipeModel.recipe.recipeRating?.numReviews ?? 0),
-                            reviews: constructReviewList(recipe: recipeModel.recipe),
-                            faviconURL: self.tabManager.selectedTab?.favicon?.url,
-                            currentURL: self.tabManager.selectedTab?.url,
-                            tabUUID: self.tabManager.selectedTab?.tabUUID
-                        )
-                        .padding(.bottom, 20)
+                LazyVStack {
+                    RecipeView(
+                        title: recipeModel.recipe.title,
+                        imageURL: recipeModel.recipe.imageURL,
+                        totalTime: recipeModel.recipe.totalTime,
+                        prepTime: recipeModel.recipe.prepTime,
+                        ingredients: ingredients,
+                        instructions: instructions,
+                        yield: recipeModel.recipe.yield,
+                        recipeRating: RecipeRating(
+                            maxStars: recipeModel.recipe.recipeRating?.maxStars ?? 0,
+                            recipeStars: recipeModel.recipe.recipeRating?.recipeStars ?? 0,
+                            numReviews: recipeModel.recipe.recipeRating?.numReviews ?? 0),
+                        reviews: constructReviewList(recipe: recipeModel.recipe),
+                        faviconURL: self.tabManager.selectedTab?.favicon?.url,
+                        currentURL: self.tabManager.selectedTab?.url,
+                        tabUUID: self.tabManager.selectedTab?.tabUUID
+                    )
+                    .padding(.bottom, 20)
 
-                        if let richResults = self.richResults {
-                            VStack(alignment: .leading) {
-                                ForEach(richResults) { richResult in
-                                    renderRichResult(for: richResult)
-                                }
+                    if let richResults = self.richResults {
+                        VStack(alignment: .leading) {
+                            ForEach(richResults) { richResult in
+                                renderRichResult(for: richResult)
                             }
                         }
                     }
-                    .padding()
-                    .background(Color.DefaultBackground)
-                    .environment(\.onOpenURL, self.onOpenURL)
-                    .onAppear(perform: loadRelatedContent)
-                    .onDisappear(perform: resetRelatedContent)
-                }.padding(.top, -10)
+                }
+                .padding()
+                .background(Color.DefaultBackground)
+                .environment(\.onOpenURL, self.onOpenURL)
+                .onAppear(perform: loadRelatedContent)
+                .onDisappear(perform: resetRelatedContent)
             }
         }
+    }
+
+    @ViewBuilder
+    var recipeSheetView: some View {
+        OverlaySheetView(
+            model: overlayModel,
+            style: .spaces,
+            onDismiss: {
+                presentSheet = false
+                self.chromeModel.toolBarContentView = .regularContent
+            },
+            headerButton: nil
+        ) {
+            recipeView
+        }.padding(.top, -10)
     }
 
     func loadRelatedContent() {
@@ -168,9 +175,25 @@ struct RecipeCheatsheetStripView: View {
         }
 
         self.chromeModel.currentCheatsheetFaviconURL = self.tabManager.selectedTab?.favicon?.url
-        presentSheet = true
         self.chromeModel.toolBarContentView = .recipeContent
-        overlayModel.show(defaultPosition: .top)
+
+        if FeatureFlag[.enableBrowserView] {
+            overlayManager.show(
+                overlay: .sheet(
+                    OverlaySheetRootView(
+                        overlayPosition: .top,
+                        style: .spaces,
+                        content: {
+                            AnyView(erasing: recipeView)
+                        },
+                        onDismiss: {
+                            self.chromeModel.toolBarContentView = .regularContent
+                            overlayManager.hideCurrentOverlay()
+                        }, onOpenURL: { _ in }, headerButton: nil)))
+        } else {
+            presentSheet = true
+            overlayModel.show(defaultPosition: .top)
+        }
     }
 
     func constructReviewList(recipe: Recipe) -> [Review] {

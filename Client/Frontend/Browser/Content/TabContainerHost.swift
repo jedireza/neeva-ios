@@ -125,6 +125,16 @@ struct TabContainerContent: View {
         SuggestedSearchesModel(suggestedQueries: [])
     let spaceContentSheetModel: SpaceContentSheetModel?
 
+    var yOffset: CGFloat {
+        guard let scrollingController = bvc.scrollController, !FeatureFlag[.enableBrowserView]
+        else {
+            return 0.02
+        }
+
+        return scrollingController.headerTopOffset
+            / scrollingController.headerHeight
+    }
+
     var body: some View {
         ZStack {
             // MARK: Page Content
@@ -147,17 +157,19 @@ struct TabContainerContent: View {
                             }
                         }
                     }
-                    if FeatureFlag[.spaceComments] && !FeatureFlag[.enableBrowserView] {
+
+                    if FeatureFlag[.spaceComments] {
                         SpaceContentSheet(
                             model: spaceContentSheetModel!,
-                            scrollingController: bvc.scrollController!
+                            yOffset: yOffset
                         )
                         .environment(
                             \.onOpenURLForSpace,
                             { bvc.tabManager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
                         )
                     }
-                    if NeevaFeatureFlags[.recipeCheatsheet] && !FeatureFlag[.enableBrowserView]
+
+                    if NeevaFeatureFlags[.recipeCheatsheet]
                         && !bvc.tabManager.isIncognito && NeevaUserInfo.shared.hasLoginCookie()
                     {
                         GeometryReader { geo in
@@ -167,9 +179,10 @@ struct TabContainerContent: View {
                                 RecipeCheatsheetStripView(
                                     tabManager: bvc.tabManager,
                                     recipeModel: model.recipeModel,
-                                    scrollingController: bvc.scrollController!,
+                                    yOffset: yOffset,
                                     height: geo.size.height,
-                                    chromeModel: bvc.chromeModel
+                                    chromeModel: bvc.chromeModel,
+                                    overlayManager: bvc.overlayManager
                                 )
                                 .environment(\.onOpenURL) { url in
                                     let bvc = zeroQueryModel.bvc

@@ -56,7 +56,7 @@ struct SwitcherToolbarView: View {
 
             HStack(spacing: 0) {
                 if top {
-                    GridPicker(isInToolbar: true, dragOffset: dragOffset).fixedSize()
+                    GridPicker(isInToolbar: true).fixedSize()
                     Spacer()
                 }
 

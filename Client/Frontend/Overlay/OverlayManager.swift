@@ -3,6 +3,7 @@
 import SwiftUI
 
 enum OverlayType {
+    case backForwardList(BackForwardListView)
     case findInPage(FindInPageView)
     case notification(NotificationRow)
     case popover(PopoverRootView)
@@ -16,10 +17,18 @@ class OverlayManager: ObservableObject {
     @Published var offset: CGFloat = 0
     @Published var opacity: CGFloat = 1
     @Published var animationCompleted: (() -> Void)? = nil
+    @Published var offsetForBottomBar = false
 
     private let animation = Animation.easeInOut(duration: 0.2)
 
     public func show(overlay: OverlayType, animate: Bool = true) {
+        switch overlay {
+        case .backForwardList, .toast:
+            offsetForBottomBar = true
+        default:
+            offsetForBottomBar = false
+        }
+
         hideCurrentOverlay { [self] in
             currentOverlay = overlay
 
@@ -32,6 +41,8 @@ class OverlayManager: ObservableObject {
                 }
 
                 switch overlay {
+                case .backForwardList:
+                    slideAndFadeIn(offset: 100)
                 case .notification:
                     slideAndFadeIn(offset: -ToastViewUX.height)
                 case .toast:
@@ -77,6 +88,8 @@ class OverlayManager: ObservableObject {
             animating = true
 
             switch overlay {
+            case .backForwardList:
+                slideAndFadeOut(offset: 0)
             case .notification:
                 slideAndFadeOut(offset: -ToastViewUX.height)
             case .toast:
@@ -88,6 +101,7 @@ class OverlayManager: ObservableObject {
             }
         } else {
             currentOverlay = nil
+            offsetForBottomBar = false
             resetUIModifiers()
             completion?()
         }
@@ -97,6 +111,7 @@ class OverlayManager: ObservableObject {
                 self.offset = offset
                 opacity = 0
                 animating = false
+                offsetForBottomBar = false
             }
         }
     }

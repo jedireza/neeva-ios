@@ -11,11 +11,11 @@ enum SpaceContentSheetUX {
 
 struct SpaceContentSheet: View {
     @ObservedObject var model: SpaceContentSheetModel
-    @ObservedObject var scrollingController: TabScrollingController
+    var yOffset: CGFloat
 
-    init(model: SpaceContentSheetModel, scrollingController: TabScrollingController) {
+    init(model: SpaceContentSheetModel, yOffset: CGFloat) {
         self.model = model
-        self.scrollingController = scrollingController
+        self.yOffset = yOffset
     }
 
     var body: some View {
@@ -28,8 +28,7 @@ struct SpaceContentSheet: View {
                 }
                 .offset(
                     x: 0,
-                    y: -geom.size.height * scrollingController.headerTopOffset
-                        / scrollingController.headerHeight
+                    y: -geom.size.height * yOffset
                 )
                 .animation(.easeInOut)
             }

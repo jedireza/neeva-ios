@@ -23,6 +23,8 @@ public enum OverflowMenuAction {
 
 extension BrowserViewController {
     func perform(overflowMenuAction: OverflowMenuAction, targetButtonView: UIView?) {
+        overlayManager.hideCurrentOverlay()
+
         switch overflowMenuAction {
         case .forward:
             if simulateForwardViewController?.goForward() ?? false {

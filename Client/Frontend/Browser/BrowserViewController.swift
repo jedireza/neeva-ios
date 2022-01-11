@@ -2390,7 +2390,6 @@ extension BrowserViewController {
         updateFeedbackImage()
 
         if NeevaFeatureFlags[.cheatsheetQuery] {
-
             tabManager.selectedTab?.fetchCheatsheetInfo()
 
             showModal(style: .spaces) { [self] in
@@ -2431,7 +2430,21 @@ extension BrowserViewController {
     }
 
     func showBackForwardList() {
-        if let backForwardList = self.tabManager.selectedTab?.webView?.backForwardList {
+        if FeatureFlag[.enableBrowserView] {
+            guard let backForwardList = tabManager.selectedTab?.webView?.backForwardList else {
+                return
+            }
+
+            overlayManager.show(
+                overlay: .backForwardList(
+                    BackForwardListView(
+                        model: BackForwardListModel(
+                            profile: profile, backForwardList: backForwardList),
+                        overlayManager: overlayManager,
+                        navigationClicked: { navigationListItem in
+                            self.tabManager.selectedTab?.goToBackForwardListItem(navigationListItem)
+                        })))
+        } else if let backForwardList = self.tabManager.selectedTab?.webView?.backForwardList {
             let backForwardViewController = BackForwardListViewController(
                 profile: self.profile, backForwardList: backForwardList)
             backForwardViewController.tabManager = self.tabManager

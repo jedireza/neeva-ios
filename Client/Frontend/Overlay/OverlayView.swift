@@ -20,6 +20,8 @@ struct OverlayView: View {
     @ViewBuilder
     var content: some View {
         switch overlayManager.currentOverlay {
+        case .backForwardList(let backForwardList):
+            backForwardList
         case .findInPage(let findInPage):
             VStack {
                 Spacer()
@@ -40,7 +42,7 @@ struct OverlayView: View {
             VStack {
                 Spacer()
                 toast
-                    .padding(.bottom, UIConstants.TopToolbarHeightWithToolbarButtonsShowing + 18)
+                    .padding(.bottom, 18)
             }
         default:
             EmptyView()

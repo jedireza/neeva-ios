@@ -14,6 +14,8 @@ enum NeevaMenuAction {
 
 extension BrowserViewController {
     func perform(neevaMenuAction: NeevaMenuAction) {
+        overlayManager.hideCurrentOverlay()
+
         switch neevaMenuAction {
         case .home:
             ClientLogger.shared.logCounter(

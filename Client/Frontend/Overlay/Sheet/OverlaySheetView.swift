@@ -162,25 +162,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         }
     }
 
-    private var background: some View {
-        // The semi-transparent backdrop used to shade the content that lies below
-        // the sheet.
-        Button(action: style.nonDismissible ? {} : onDismiss) {
-            Color.black
-                .opacity(self.model.backdropOpacity)
-                .ignoresSafeArea()
-                .modifier(
-                    DismissalObserverModifier(
-                        backdropOpacity: self.model.backdropOpacity,
-                        position: self.model.position, onDismiss: self.onDismiss))
-        }
-        .buttonStyle(HighlightlessButtonStyle())
-        .accessibilityHint("Dismiss pop-up window")
-        // make this the last option. This will bring the user’s focus first to the
-        // useful content inside of the overlay sheet rather than the close button.
-        .accessibilitySortPriority(-1)
-    }
-
     private var sheetContent: some View {
         self.content()
             .modifier(ViewHeightKey())
@@ -218,7 +199,9 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
 
     var body: some View {
         GeometryReader { outerGeometry in
-            background
+            DismissBackgroundView(
+                opacity: model.backdropOpacity, position: model.position,
+                onDismiss: style.nonDismissible ? {} : onDismiss)
 
             VStack {
                 // The height of this spacer is what controls the apparent height of
@@ -323,32 +306,5 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             self.model.position = newPosition
             self.model.deltaHeight = 0
         }
-    }
-}
-
-private struct DismissalObserverModifier: AnimatableModifier {
-    var backdropOpacity: Double
-    let position: OverlaySheetPosition
-    let onDismiss: () -> Void
-
-    var animatableData: Double {
-        get { backdropOpacity }
-        set {
-            backdropOpacity = newValue
-            if position == .dismissed && backdropOpacity == 0.0 {
-                // Run after the call stack has unwound as |onDismiss| may tear down
-                // the overlay sheet, which could cause issues for SwiftUI processing.
-                // See issue #401.
-                let onDismiss = self.onDismiss
-
-                DispatchQueue.main.async {
-                    onDismiss()
-                }
-            }
-        }
-    }
-
-    func body(content: Content) -> some View {
-        return content
     }
 }

@@ -4,6 +4,7 @@ import SwiftUI
 
 struct BrowserTopBarView: View {
     let bvc: BrowserViewController
+    var gridModel: GridModel
 
     @ObservedObject var browserModel: BrowserModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -50,6 +51,13 @@ struct BrowserTopBarView: View {
             switcherTopBar
                 .environmentObject(bvc.gridModel)
                 .environmentObject(bvc.gridModel.tabCardModel)
+                .modifier(
+                    SwipeToSwitchToSpacesGesture(
+                        gridModel: gridModel, tabModel: gridModel.tabCardModel, fromPicker: true
+                    ) {
+                        offset in
+                        gridModel.dragOffset = offset
+                    })
         }
     }
 }

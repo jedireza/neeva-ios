@@ -61,6 +61,7 @@ struct PopoverRootView: View {
 
 struct OverlaySheetRootView: View {
     let overlayModel = OverlaySheetModel()
+    var overlayPosition: OverlaySheetPosition = .middle
 
     let style: OverlayStyle
     let content: () -> AnyView
@@ -90,7 +91,7 @@ struct OverlaySheetRootView: View {
                 // It seems to be necessary to delay starting the animation until this point to
                 // avoid a visual artifact.
                 DispatchQueue.main.async {
-                    self.overlayModel.show()
+                    self.overlayModel.show(defaultPosition: overlayPosition)
                 }
             }
     }

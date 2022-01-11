@@ -11,6 +11,7 @@ struct BrowserView: View {
     let shareURL: (URL, UIView) -> Void
 
     @State var keyboardShowing = false
+    @State var bottomBarHeight: CGFloat = 0
 
     @ObservedObject var browserModel: BrowserModel
     @ObservedObject var gridModel: GridModel
@@ -44,7 +45,7 @@ struct BrowserView: View {
 
     // MARK: - Views
     var topBar: some View {
-        BrowserTopBarView(bvc: bvc, browserModel: browserModel)
+        BrowserTopBarView(bvc: bvc, gridModel: gridModel, browserModel: browserModel)
             .transition(.opacity)
             .frame(height: topBarHeight)
     }
@@ -129,6 +130,9 @@ struct BrowserView: View {
                             x: detailViewVisible ? -geom.size.width : 0,
                             y: scrollingControlModel.footerBottomOffset
                         )
+                        .onHeightOfViewChanged { height in
+                            self.bottomBarHeight = height
+                        }
                 }
             }.useEffect(deps: topBarHeight) { _ in
                 scrollingControlModel.setHeaderFooterHeight(
@@ -147,6 +151,10 @@ struct BrowserView: View {
         ZStack {
             mainContent
             OverlayView(overlayManager: overlayManager)
+                .padding(
+                    .bottom,
+                    overlayManager.offsetForBottomBar && !chromeModel.inlineToolbar
+                        ? bottomBarHeight : 0)
         }
     }
 

@@ -26,7 +26,6 @@ struct CardGrid: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
     @State var detailDragOffset: CGFloat = 0
-    @State var dragOffset: CGFloat? = nil
 
     var topToolbar: Bool {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
@@ -59,9 +58,9 @@ struct CardGrid: View {
     @ViewBuilder var topBar: some View {
         if topToolbar {
             SwitcherToolbarView(
-                top: true, isEmpty: tabModel.isCardGridEmpty, dragOffset: dragOffset)
+                top: true, isEmpty: tabModel.isCardGridEmpty, dragOffset: gridModel.dragOffset)
         } else {
-            GridPicker(dragOffset: dragOffset)
+            GridPicker()
         }
     }
 
@@ -72,7 +71,7 @@ struct CardGrid: View {
                     .modifier(
                         SwipeToSwitchToSpacesGesture(
                             gridModel: gridModel, tabModel: tabModel,
-                            horizontalOffsetChanged: { dragOffset = $0 },
+                            horizontalOffsetChanged: { gridModel.dragOffset = $0 },
                             fromPicker: true))
             }
 
@@ -132,7 +131,7 @@ struct CardGrid: View {
                     .modifier(
                         SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel) {
                             offset in
-                            self.dragOffset = offset
+                            gridModel.dragOffset = offset
                         })
 
                 if gridModel.isLoading {
@@ -282,7 +281,6 @@ private struct DraggableDetail: ViewModifier {
 
 struct GridPicker: View {
     var isInToolbar = false
-    var dragOffset: CGFloat? = nil
 
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
@@ -326,16 +324,16 @@ struct GridPicker: View {
                         selectedAction: {
                             gridModel.switcherState = .spaces
                         }),
-                ], selectedSegmentIndex: $selectedIndex, dragOffset: dragOffset
+                ], selectedSegmentIndex: $selectedIndex, dragOffset: gridModel.dragOffset
             )
             .useEffect(deps: gridModel.switcherState) { _ in
                 switch gridModel.switcherState {
                 case .tabs:
-                    if dragOffset == nil {
+                    if gridModel.dragOffset == nil {
                         selectedIndex = 1
                     }
                 case .spaces:
-                    if dragOffset == nil {
+                    if gridModel.dragOffset == nil {
                         selectedIndex = 2
                     }
 
@@ -346,7 +344,7 @@ struct GridPicker: View {
                 }
             }
             .useEffect(deps: gridModel.isIncognito) { isIncognito in
-                if gridModel.switcherState == .tabs && dragOffset == nil {
+                if gridModel.switcherState == .tabs && gridModel.dragOffset == nil {
                     selectedIndex = isIncognito ? 0 : 1
                 }
             }
