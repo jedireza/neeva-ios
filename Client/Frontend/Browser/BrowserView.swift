@@ -65,12 +65,7 @@ struct BrowserView: View {
     @ViewBuilder
     var containerView: some View {
         if browserModel.currentState == .tab {
-            if case ContentUIType.webPage(_) = bvc.tabContainerModel.currentContentUI {
-                tabContainerContent
-                    .transition(.scale)
-            } else {
-                tabContainerContent
-            }
+            tabContainerContent
         } else {
             CardGrid()
                 .environmentObject(bvc.toolbarModel)
@@ -120,7 +115,6 @@ struct BrowserView: View {
                                 y: scrollingControlModel.headerTopOffset
                                     * (UIConstants.enableBottomURLBar ? -1 : 1)
                             )
-                            .animation(.easeOut)
 
                         if !UIConstants.enableBottomURLBar { Spacer() }
                     }
@@ -135,7 +129,6 @@ struct BrowserView: View {
                             x: detailViewVisible ? -geom.size.width : 0,
                             y: scrollingControlModel.footerBottomOffset
                         )
-                        .animation(.easeOut)
                 }
             }.useEffect(deps: topBarHeight) { _ in
                 scrollingControlModel.setHeaderFooterHeight(

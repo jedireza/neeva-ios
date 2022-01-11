@@ -105,16 +105,17 @@ struct TopBarView: View {
                 }
             }
 
-            Group {
+            ZStack {
                 if let progress = chrome.estimatedProgress {
                     ProgressView(value: progress)
                         .progressViewStyle(PageProgressBarStyle())
                         .padding(.bottom, -1)
-                        .zIndex(1)
                         .ignoresSafeArea(edges: .horizontal)
                 }
             }
+            .zIndex(1)
             .transition(.opacity)
+            .animation(.spring(), value: chrome.estimatedProgress)
 
             if !UIConstants.enableBottomURLBar {
                 separator
@@ -129,7 +130,6 @@ struct TopBarView: View {
                     .useEffect(deps: shouldInsetHorizontally) { self.shouldInsetHorizontally = $0 }
             }
         )
-        .animation(.default, value: chrome.estimatedProgress)
         .background(Color.DefaultBackground.ignoresSafeArea())
         .accentColor(.label)
     }

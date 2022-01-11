@@ -1209,7 +1209,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager.setIncognitoMode(to: switchToIncognitoMode)
         }
 
-        scrollController?.showToolbars(animated: true, completion: nil)
+        scrollController?.showToolbars(animated: true)
         showZeroQuery(openedFrom: openedFrom, isLazyTab: true)
     }
 

@@ -52,7 +52,6 @@ struct OverlayView: View {
             content
                 .offset(y: overlayManager.offset)
                 .opacity(overlayManager.opacity)
-                .animation(!isSheet || overlayManager.animationCompleted != nil ? .easeOut : nil)
                 .onAnimationCompleted(for: overlayManager.animating) {
                     if let animationCompleted = overlayManager.animationCompleted {
                         animationCompleted()

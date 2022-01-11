@@ -52,6 +52,7 @@
 		1A840EC32788CEA0005F6003 /* DebugLocaleSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A840EC22788CEA0005F6003 /* DebugLocaleSetting.swift */; };
 		1A840EC52788DDB9005F6003 /* CancellableExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A840EC42788DDB9005F6003 /* CancellableExtensions.swift */; };
 		1A840EC72788E840005F6003 /* GenericSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A840EC62788E840005F6003 /* GenericSuggestion.swift */; };
+		1AC3F333278CDE7E000CCE09 /* TransitionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC3F332278CDE7E000CCE09 /* TransitionExtensions.swift */; };
 		1D06AE6624FEE4D5000B092B /* TopSitesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D06AE6524FEE4D5000B092B /* TopSitesProvider.swift */; };
 		1D0BA05C24F46A0400D731B5 /* TopSitesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0BA05B24F46A0400D731B5 /* TopSitesManager.swift */; };
 		1D9E1FE524FEF56C006E561D /* TopSites in Resources */ = {isa = PBXBuildFile; fileRef = 3BC659481E5BA4AE006D560F /* TopSites */; };
@@ -1172,6 +1173,7 @@
 		1A840EC22788CEA0005F6003 /* DebugLocaleSetting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugLocaleSetting.swift; sourceTree = "<group>"; };
 		1A840EC42788DDB9005F6003 /* CancellableExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancellableExtensions.swift; sourceTree = "<group>"; };
 		1A840EC62788E840005F6003 /* GenericSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericSuggestion.swift; sourceTree = "<group>"; };
+		1AC3F332278CDE7E000CCE09 /* TransitionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionExtensions.swift; sourceTree = "<group>"; };
 		1ADFEEF9278CAA7E00A0E82E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1ADFEEFA278CAAE500A0E82E /* parse_template_url_prepopulate_data.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = parse_template_url_prepopulate_data.py; sourceTree = "<group>"; };
 		1ADFEEFB278CAAE500A0E82E /* update-search-engine-list.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; path = "update-search-engine-list.sh"; sourceTree = "<group>"; };
@@ -2337,6 +2339,7 @@
 				BC264BC126746098001527B6 /* ViewExtensions.swift */,
 				C962778E26A21BC80078CDAF /* ArithmeticExtensions.swift */,
 				663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */,
+				1AC3F332278CDE7E000CCE09 /* TransitionExtensions.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -5596,6 +5599,7 @@
 				C832BF5D26E0A8D500B9A1F8 /* DownloadOverlayContent.swift in Sources */,
 				D8D33A7D1FBD080300A20A28 /* SnapKitExtensions.swift in Sources */,
 				C99646652655AA9A005FFE83 /* (null) in Sources */,
+				1AC3F333278CDE7E000CCE09 /* TransitionExtensions.swift in Sources */,
 				66B7A0E926EAF5B000AB751A /* OverlayGenerics.swift in Sources */,
 				C832BF8526E2DA2B00B9A1F8 /* ImageThumbnailView.swift in Sources */,
 				F0405D0F25FFCA5200A0A3B2 /* NeevaMenuRowButtonView.swift in Sources */,

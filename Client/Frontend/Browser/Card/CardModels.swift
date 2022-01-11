@@ -114,8 +114,10 @@ class TabCardModel: CardModel, TabEventHandler {
             modifyAllDetailsAvoidingSingleTabs(groupManager.childTabs)
         }
 
-        allDetailsWithExclusionList = manager.getAll().filter { !groupManager.childTabs.contains($0) }
-            .map { TabCardDetails(tab: $0, manager: manager) }
+        allDetailsWithExclusionList = manager.getAll().filter {
+            !groupManager.childTabs.contains($0)
+        }
+        .map { TabCardDetails(tab: $0, manager: manager) }
         selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()
     }

@@ -126,7 +126,8 @@ struct TabContainerContent: View {
     let spaceContentSheetModel: SpaceContentSheetModel?
 
     var body: some View {
-        Group {
+        ZStack {
+            // MARK: Page Content
             switch model.currentContentUI {
             case .webPage(let currentWebView):
                 ZStack {
@@ -178,46 +179,61 @@ struct TabContainerContent: View {
                         }
                     }
                 }
-            case .zeroQuery:
-                ZeroQueryContent(model: zeroQueryModel)
-                    .environmentObject(suggestedSearchesModel)
-            case .suggestions:
-                SuggestionsContent(suggestionModel: suggestionModel)
-                    .environment(\.onOpenURL) { url in
-                        let bvc = zeroQueryModel.bvc
-                        guard let tab = bvc.tabManager.selectedTab else { return }
-                        bvc.finishEditingAndSubmit(
-                            url, visitType: VisitType.typed, forTab: tab)
-                    }.environment(\.setSearchInput) { suggestion in
-                        suggestionModel.queryModel.value = suggestion
-                    }.environment(\.onSigninOrJoinNeeva) {
-                        ClientLogger.shared.logCounter(
-                            .SuggestionErrorSigninOrJoinNeeva,
-                            attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                        let bvc = zeroQueryModel.bvc
-                        bvc.chromeModel.setEditingLocation(to: false)
-                        bvc.presentIntroViewController(
-                            true,
-                            onDismiss: {
-                                bvc.hideCardGrid(withAnimation: true)
-                            }
-                        )
-                    }
-            case .blank:
-                ZeroQueryContent(model: zeroQueryModel)
-                    .environmentObject(suggestedSearchesModel)
             case .previewHome:
                 PreviewHomeView(bvc: bvc)
                     .environment(\.onOpenURL) { url in
                         bvc.tabManager.createOrSwitchToTab(for: url)
                     }
+            case .blank:
+                ZeroQueryContent(model: zeroQueryModel)
+                    .environmentObject(suggestedSearchesModel)
+            default:
+                Color.clear
+            }
+
+            // MARK: Overlays
+            if model.currentContentUI == .zeroQuery || model.currentContentUI == .suggestions {
+                ZStack {
+                    switch model.currentContentUI {
+                    case .zeroQuery:
+                        ZeroQueryContent(model: zeroQueryModel)
+                            .transition(.identity)
+                            .environmentObject(suggestedSearchesModel)
+                    case .suggestions:
+                        SuggestionsContent(suggestionModel: suggestionModel)
+                            .transition(.identity)
+                            .environment(\.onOpenURL) { url in
+                                let bvc = zeroQueryModel.bvc
+                                guard let tab = bvc.tabManager.selectedTab else { return }
+                                bvc.finishEditingAndSubmit(
+                                    url, visitType: VisitType.typed, forTab: tab)
+                            }.environment(\.setSearchInput) { suggestion in
+                                suggestionModel.queryModel.value = suggestion
+                            }.environment(\.onSigninOrJoinNeeva) {
+                                ClientLogger.shared.logCounter(
+                                    .SuggestionErrorSigninOrJoinNeeva,
+                                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                                let bvc = zeroQueryModel.bvc
+                                bvc.chromeModel.setEditingLocation(to: false)
+                                bvc.presentIntroViewController(
+                                    true,
+                                    onDismiss: {
+                                        bvc.hideCardGrid(withAnimation: true)
+                                    }
+                                )
+                            }
+                    default:
+                        EmptyView()
+                    }
+                }
+                .transition(.pageOverlay)
             }
         }.useEffect(deps: model.currentContentUI) { _ in
             zeroQueryModel.profile.panelDataObservers.activityStream.refreshIfNeeded(
                 forceTopSites: true)
             self.zeroQueryModel.updateSuggestedSites()
             self.suggestedSearchesModel.reload(from: zeroQueryModel.profile)
-        }
+        }.animation(.spring(), value: model.currentContentUI)
     }
 }
 

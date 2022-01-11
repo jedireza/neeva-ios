@@ -5,7 +5,7 @@ import Shared
 import SnapKit
 import SwiftUI
 
-private let ToolbarBaseAnimationDuration: CGFloat = 0.2
+private let ToolbarBaseAnimationDuration = 0.3
 
 class ScrollingControlModel: NSObject, ObservableObject {
     enum ScrollDirection {
@@ -19,8 +19,8 @@ class ScrollingControlModel: NSObject, ObservableObject {
         case animating
     }
 
-    @Published var headerTopOffset: CGFloat = 0
-    @Published var footerBottomOffset: CGFloat = 0
+    @Published private(set) var headerTopOffset: CGFloat = 0
+    @Published private(set) var footerBottomOffset: CGFloat = 0
 
     private let chromeModel: TabChromeModel
 
@@ -257,20 +257,19 @@ extension ScrollingControlModel {
         // produce a ~50px page jumping effect in response to tap navigations.
         let isShownFromHidden = headerTopOffset == -topScrollHeight && headerOffset == 0
 
-        let animation: () -> Void = {
+        let animation = {
             if isShownFromHidden, let scrollView = self.scrollView {
                 scrollView.contentOffset = CGPoint(
                     x: initialContentOffset.x, y: initialContentOffset.y + self.topScrollHeight)
             }
-
-            self.headerTopOffset = headerOffset
-            self.footerBottomOffset = footerOffset
         }
 
         DispatchQueue.main.async { [self] in
             if animated {
-                withAnimation(.easeInOut(duration: duration)) {
+                withAnimation(.spring(response: duration)) {
                     chromeModel.controlOpacity = Double(alpha)
+                    self.headerTopOffset = headerOffset
+                    self.footerBottomOffset = footerOffset
                 }
                 UIView.animate(
                     withDuration: duration, delay: 0, options: .allowUserInteraction,
@@ -278,6 +277,8 @@ extension ScrollingControlModel {
             } else {
                 chromeModel.controlOpacity = Double(alpha)
                 animation()
+                self.headerTopOffset = headerOffset
+                self.footerBottomOffset = footerOffset
                 completion?(true)
             }
         }

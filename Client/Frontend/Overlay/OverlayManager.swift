@@ -17,6 +17,8 @@ class OverlayManager: ObservableObject {
     @Published var opacity: CGFloat = 1
     @Published var animationCompleted: (() -> Void)? = nil
 
+    private let animation = Animation.easeInOut(duration: 0.2)
+
     public func show(overlay: OverlayType, animate: Bool = true) {
         hideCurrentOverlay { [self] in
             currentOverlay = overlay
@@ -35,7 +37,7 @@ class OverlayManager: ObservableObject {
                 case .toast:
                     slideAndFadeIn(offset: ToastViewUX.height)
                 default:
-                    withAnimation {
+                    withAnimation(animation) {
                         animating = false
                     }
                 }
@@ -46,7 +48,7 @@ class OverlayManager: ObservableObject {
             self.offset = offset
             self.opacity = 0
 
-            withAnimation {
+            withAnimation(animation) {
                 resetUIModifiers()
                 animating = false
             }
@@ -66,7 +68,10 @@ class OverlayManager: ObservableObject {
                 currentOverlay = nil
                 resetUIModifiers()
                 animationCompleted = nil
-                completion?()
+
+                DispatchQueue.main.async {
+                    completion?()
+                }
             }
 
             animating = true
@@ -77,7 +82,7 @@ class OverlayManager: ObservableObject {
             case .toast:
                 slideAndFadeOut(offset: ToastViewUX.height)
             default:
-                withAnimation {
+                withAnimation(animation) {
                     animating = false
                 }
             }
@@ -88,7 +93,7 @@ class OverlayManager: ObservableObject {
         }
 
         func slideAndFadeOut(offset: CGFloat) {
-            withAnimation {
+            withAnimation(animation) {
                 self.offset = offset
                 opacity = 0
                 animating = false

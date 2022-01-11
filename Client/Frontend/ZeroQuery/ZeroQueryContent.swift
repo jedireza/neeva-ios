@@ -31,7 +31,6 @@ struct ZeroQueryContent: View {
 
     var body: some View {
         ZeroQueryView()
-            .background(Color(UIColor.HomePanel.topSitesBackground))
             .environmentObject(model)
             .environment(\.setSearchInput) { query in
                 model.delegate?.zeroQueryPanel(didEnterQuery: query)
