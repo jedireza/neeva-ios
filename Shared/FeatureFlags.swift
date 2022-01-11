@@ -23,7 +23,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case tabGroupsPinning = "Enable support for pinning tabs"
     case updatedTabOverflowMenu = "Update Tab Overflow Menu"
     case enableSuggestedSpaces = "Show Spaces from Neeva Community"
-    case enableMemorizedURLOnWiki = "Enable Memorized URL on Wiki Suggest"
     case enableCryptoWallet = "Enable crypto wallet"
     case enableBrowserView = "Enable BrowserView"
     case customSearchEngine = "Custom Search Engine"

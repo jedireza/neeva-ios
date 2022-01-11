@@ -23,8 +23,16 @@ struct TopBarView: View {
     @EnvironmentObject private var chrome: TabChromeModel
     @EnvironmentObject private var location: LocationViewModel
 
+    private var separator: some View {
+        Color.ui.adaptive.separator.frame(height: 0.5).ignoresSafeArea()
+    }
+
     var body: some View {
         VStack(spacing: 0) {
+            if UIConstants.enableBottomURLBar {
+                separator.padding(.bottom, chrome.inlineToolbar ? 0 : 3)
+            }
+
             HStack(spacing: chrome.inlineToolbar ? 12 : 0) {
                 if chrome.inlineToolbar {
                     TabToolbarButtons.BackButton(
@@ -108,7 +116,9 @@ struct TopBarView: View {
             }
             .transition(.opacity)
 
-            Color.ui.adaptive.separator.frame(height: 0.5).ignoresSafeArea()
+            if !UIConstants.enableBottomURLBar {
+                separator
+            }
         }
         .background(
             GeometryReader { geom in

@@ -770,25 +770,25 @@ class BrowserViewController: UIViewController, ModalPresenter {
     override func updateViewConstraints() {
         super.updateViewConstraints()
 
-        if UIConstants.enableBottomURLBar {
-            topBar.view.snp.remakeConstraints { make in
-                if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view),
-                    keyboardHeight > 0
-                {
-                    make.bottom.equalTo(self.view).offset(-keyboardHeight)
-                } else {
-                    make.bottom.equalTo(footer.snp.top)
-                }
-                make.leading.trailing.equalTo(self.view)
-            }
-        }
-
         topTouchArea.snp.remakeConstraints { make in
             make.top.left.right.equalTo(self.view)
             make.height.equalTo(BrowserViewControllerUX.ShowHeaderTapAreaHeight)
         }
 
         if !FeatureFlag[.enableBrowserView] {
+            if UIConstants.enableBottomURLBar {
+                topBar.view.snp.remakeConstraints { make in
+                    if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view),
+                        keyboardHeight > 0
+                    {
+                        make.bottom.equalTo(self.view).offset(-keyboardHeight)
+                    } else {
+                        make.bottom.equalTo(footer.snp.top)
+                    }
+                    make.leading.trailing.equalTo(self.view)
+                }
+            }
+
             tabContainerHost.view.snp.remakeConstraints { make in
                 make.left.right.equalTo(self.view)
 

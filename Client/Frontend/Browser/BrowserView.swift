@@ -106,18 +106,23 @@ struct BrowserView: View {
                 ZStack {
                     // Tab content or CardGrid
                     containerView
-                        .padding(.top, detailViewVisible ? 0 : topBarPadding)
+                        .padding(
+                            UIConstants.enableBottomURLBar ? .bottom : .top,
+                            detailViewVisible ? 0 : topBarPadding)
 
                     // Top Bar
                     VStack {
+                        if UIConstants.enableBottomURLBar { Spacer() }
+
                         topBar
                             .offset(
                                 x: detailViewVisible ? -geom.size.width : 0,
                                 y: scrollingControlModel.headerTopOffset
+                                    * (UIConstants.enableBottomURLBar ? -1 : 1)
                             )
                             .animation(.easeOut)
 
-                        Spacer()
+                        if !UIConstants.enableBottomURLBar { Spacer() }
                     }
                 }.padding(.bottom, -scrollingControlModel.footerBottomOffset)
 
