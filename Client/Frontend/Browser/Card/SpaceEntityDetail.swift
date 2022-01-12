@@ -213,12 +213,13 @@ struct SpaceEntityDetailView: View {
                         }
                     }
                 }
-            }.buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
-                .padding(.vertical, 12)
-                .padding(.horizontal, 16)
-                .background(
-                    shouldHighlightAsUpdated
-                        ? Color.ui.adaptive.blue.opacity(0.1) : Color.DefaultBackground)
+            }
+            .buttonStyle(.reportsPresses(to: $isPressed))
+            .padding(.vertical, 12)
+            .padding(.horizontal, 16)
+            .background(
+                shouldHighlightAsUpdated
+                    ? Color.ui.adaptive.blue.opacity(0.1) : Color.DefaultBackground)
             Spacer(minLength: 0)
         }
         .modifier(

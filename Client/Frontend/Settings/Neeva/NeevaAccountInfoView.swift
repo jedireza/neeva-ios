@@ -144,7 +144,7 @@ struct NeevaAccountInfoView: View {
                     }
             }
         }
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
         .navigationTitle(userInfo.displayName ?? "Neeva Account")
     }
 }

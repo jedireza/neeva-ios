@@ -212,7 +212,7 @@ struct Card<Details>: View where Details: CardDetails {
                         )
                         .clipped()
                 }
-                .buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+                .buttonStyle(.reportsPresses(to: $isPressed))
                 .cornerRadius(animate && gridModel.isHidden ? 0 : CardUX.CornerRadius)
                 .modifier(
                     BorderTreatment(

@@ -40,7 +40,7 @@ struct TextSizeStepper: View {
                 }.padding(.horizontal, -GroupedCellUX.padding)
             }, roundedCorners: roundedCorners
         )
-        .buttonStyle(TableCellButtonStyle())
+        .buttonStyle(.tableCell)
         .accessibilityElement(children: .ignore)
         .modifier(
             OverlayStepperAccessibilityModifier(

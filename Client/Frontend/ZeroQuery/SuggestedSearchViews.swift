@@ -33,7 +33,7 @@ struct SuggestedSearchesView: View {
 
                 }
                 .onDrag { NSItemProvider(url: site.url) }
-                .buttonStyle(TableCellButtonStyle())
+                .buttonStyle(.tableCell)
                 .overlay(
                     Button(action: { setSearchInput(query) }) {
                         VStack {

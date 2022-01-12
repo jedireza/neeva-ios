@@ -186,7 +186,7 @@ struct AssetGroupView: View {
                     ThumbnailGroupView(model: assetGroup)
                 }
             )
-            .buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+            .buttonStyle(.reportsPresses(to: $isPressed))
             .scaleEffect(isPressed ? 0.95 : 1)
             HStack(alignment: .center) {
                 Spacer(minLength: 12)

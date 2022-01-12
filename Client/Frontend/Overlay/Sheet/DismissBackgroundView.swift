@@ -22,7 +22,7 @@ struct DismissBackgroundView: View {
                         backdropOpacity: self.opacity,
                         position: position, onDismiss: self.onDismiss))
         }
-        .buttonStyle(HighlightlessButtonStyle())
+        .buttonStyle(.highlightless)
         .accessibilityHint("Dismiss pop-up window")
         // make this the last option. This will bring the user’s focus first to the
         // useful content inside of the overlay sheet rather than the close button.

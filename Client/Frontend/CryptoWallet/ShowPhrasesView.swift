@@ -73,7 +73,7 @@ struct ShowPhrasesView: View {
                         .font(.roobert(.semibold, size: 18))
                         .frame(minWidth: 90)
                 }
-                .buttonStyle(NeevaButtonStyle(.primary))
+                .buttonStyle(.neeva(.primary))
             }
             .padding(.top, 10)
         }

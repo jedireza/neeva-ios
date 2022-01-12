@@ -91,7 +91,7 @@ struct WalletDashboard: View {
                         .font(.roobert(.semibold, size: 18))
                         .frame(minWidth: 300)
                 }
-                .buttonStyle(NeevaButtonStyle(.primary))
+                .buttonStyle(.neeva(.primary))
                 .padding(.top, 8)
 
                 TransactionHistoryView(transactionHistory: $transactionHistory)

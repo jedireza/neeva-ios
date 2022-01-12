@@ -169,7 +169,7 @@ struct ShareSpaceView: View {
                         Spacer()
                     }
                 }
-            }.buttonStyle(TableCellButtonStyle())
+            }.buttonStyle(.tableCell)
         }.padding(.vertical, ShareSpaceViewUX.Padding)
     }
 
@@ -244,7 +244,7 @@ struct ShareSpaceView: View {
                         .clipShape(Capsule())
                 }
             )
-            .buttonStyle(NeevaButtonStyle(.primary))
+            .buttonStyle(.neeva(.primary))
             .padding(.bottom, 16)
         }
     }
@@ -264,7 +264,7 @@ struct ShareSpaceView: View {
                     }.padding(.horizontal, 16)
                         .padding(.vertical, 12)
                 }
-            ).buttonStyle(TableCellButtonStyle())
+            ).buttonStyle(.tableCell)
             if soloACLSharePresented {
                 emailEntry.padding(.horizontal, 16)
                 if suggestedContacts.isEmpty {

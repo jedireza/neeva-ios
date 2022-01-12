@@ -23,7 +23,7 @@ struct SuggestedPreviewSearchesView: View {
                     .padding(.horizontal, ZeroQueryUX.Padding)
 
                 }
-                .buttonStyle(TableCellButtonStyle())
+                .buttonStyle(.tableCell)
             }
         }
         .accentColor(Color(light: .ui.gray70, dark: .secondaryLabel))

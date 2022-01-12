@@ -7,8 +7,8 @@ import SwiftUI
 /// This button style updates a binding to reflect its pressed state.
 /// You are responsible for making the pressed state visible since the button will no longer change its appearance.
 struct PressReportingButtonStyle: ButtonStyle {
-    @Binding var isPressed: Bool
-    var animation: Animation? = .interactiveSpring()
+    @Binding fileprivate var isPressed: Bool
+    fileprivate let animation: Animation?
 
     func makeBody(configuration: Configuration) -> some View {
         return configuration.label
@@ -18,6 +18,14 @@ struct PressReportingButtonStyle: ButtonStyle {
                     isPressed = value
                 }
             }
+    }
+}
+
+extension ButtonStyle where Self == PressReportingButtonStyle {
+    static func reportsPresses(
+        to isPressed: Binding<Bool>, using animation: Animation? = .interactiveSpring()
+    ) -> Self {
+        .init(isPressed: isPressed, animation: animation)
     }
 }
 
@@ -32,7 +40,7 @@ struct PressReportingButtonStyle_Previews: PreviewProvider {
                 Button("Press Here!") {}
                     .padding()
                     .background(Capsule().fill(Color.systemFill))
-                    .buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+                    .buttonStyle(.reportsPresses(to: $isPressed))
             }
             .padding()
         }

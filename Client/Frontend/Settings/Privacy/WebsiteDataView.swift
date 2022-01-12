@@ -105,7 +105,7 @@ struct WebsiteDataView: View {
                     }
                 }
             }
-            .listStyle(InsetGroupedListStyle())
+            .listStyle(.insetGrouped)
         }
         .navigationTitle("Website Data")
         .toolbar {

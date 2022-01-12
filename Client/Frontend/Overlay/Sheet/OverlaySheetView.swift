@@ -253,7 +253,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                                 .frame(maxWidth: .infinity)
                             }
                         )
-                        .buttonStyle(NeevaButtonStyle(.primary))
+                        .buttonStyle(.neeva(.primary))
                         .padding(.vertical, 8)
                         .padding(.horizontal, 6)
                         .layoutPriority(0.5)

@@ -110,7 +110,7 @@ struct TopBarView: View {
             ZStack {
                 if let progress = chrome.estimatedProgress {
                     ProgressView(value: progress)
-                        .progressViewStyle(PageProgressBarStyle())
+                        .progressViewStyle(.pageProgressBar)
                         .padding(.bottom, -1)
                         .ignoresSafeArea(edges: .horizontal)
                 }

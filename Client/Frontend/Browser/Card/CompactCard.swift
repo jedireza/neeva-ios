@@ -80,7 +80,7 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
                     .frame(minWidth: details.isSelected ? preferredWidth : CardUX.FaviconSize + 12)
             }
         }
-        .buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+        .buttonStyle(.reportsPresses(to: $isPressed))
         .padding(.horizontal)
         .background(
             GeometryReader { geom in

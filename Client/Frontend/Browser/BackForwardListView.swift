@@ -110,7 +110,7 @@ struct BackForwardListView: View {
 
                         Spacer()
                     }.padding(10)
-                }.buttonStyle(TableCellButtonStyle())
+                }.buttonStyle(.tableCell)
 
                 if index < model.numberOfItems - 1 {
                     Color.gray

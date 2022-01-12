@@ -99,7 +99,7 @@ struct DefaultBrowserOnboardingView: View {
                     Spacer()
                 }
             }
-            .buttonStyle(NeevaButtonStyle(.primary))
+            .buttonStyle(.neeva(.primary))
             .font(.title3)
         }
         .padding(25)

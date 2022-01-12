@@ -62,7 +62,7 @@ struct SessionInfoView: View {
                     Text("Disconnect")
                         .frame(width: 300)
                 }
-            ).buttonStyle(NeevaButtonStyle(.primary))
+            ).buttonStyle(.neeva(.primary))
         }.padding(.vertical, 16)
     }
 }

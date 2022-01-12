@@ -58,7 +58,7 @@ struct InternalSettingsView: View {
                     Button(String("Clear")) { previewModeQueries.removeAll() }
                         .font(.body)
                         .accentColor(.red)
-                        .buttonStyle(BorderlessButtonStyle())
+                        .buttonStyle(.borderless)
                 }
                 NumberField(
                     String("signupPromptInterval"), number: $signupPromptInterval)
@@ -100,7 +100,7 @@ struct InternalSettingsView: View {
                     Button(String("Clear")) { deletedSuggestedSites = [] }
                         .font(.body)
                         .accentColor(.red)
-                        .buttonStyle(BorderlessButtonStyle())
+                        .buttonStyle(.borderless)
                 }
                 OptionalDataKeyView("recentlyClosedTabs", data: $recentlyClosedTabs)
             }
@@ -166,7 +166,7 @@ struct InternalSettingsView: View {
         }
         .font(.system(.footnote, design: .monospaced))
         .minimumScaleFactor(0.75)
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
         .applyToggleStyle()
     }
 
@@ -332,7 +332,7 @@ private struct OptionalDataKeyView: View {
             Button("Clear") { data = nil }
                 .font(.body)
                 .accentColor(.red)
-                .buttonStyle(BorderlessButtonStyle())
+                .buttonStyle(.borderless)
         }
     }
 }

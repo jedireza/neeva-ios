@@ -69,7 +69,7 @@ struct SpaceDetailList: View {
                 List {
                     if let promoCardType = promoCardType {
                         PromoCard(type: promoCardType, viewWidth: 390)
-                            .buttonStyle(PlainButtonStyle())
+                            .buttonStyle(.plain)
                             .modifier(ListSeparatorModifier())
                     }
                     SpaceHeaderView(space: space!)

@@ -8,20 +8,6 @@ import SwiftUI
 public struct TableCellButtonStyle: ButtonStyle {
     let padding: EdgeInsets
 
-    public init(padding: EdgeInsets) {
-        self.padding = padding
-    }
-    public init(padding: CGFloat) {
-        self.padding = EdgeInsets(
-            top: padding, leading: padding, bottom: padding, trailing: padding)
-    }
-    public init() {
-        self.padding = EdgeInsets()
-    }
-    public init(padding edges: Edge.Set, _ padding: CGFloat) {
-        self.padding = EdgeInsets(edges: edges, amount: padding)
-    }
-
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .foregroundColor(.accentColor)
@@ -34,6 +20,22 @@ public struct TableCellButtonStyle: ButtonStyle {
     }
 }
 
+extension ButtonStyle where Self == TableCellButtonStyle {
+    public static var tableCell: Self { .init(padding: EdgeInsets()) }
+
+    public static func tableCell(padding: EdgeInsets) -> Self {
+        .init(padding: padding)
+    }
+    public static func tableCell(padding: CGFloat) -> Self {
+        .init(
+            padding: EdgeInsets(top: padding, leading: padding, bottom: padding, trailing: padding))
+    }
+    public static func tableCell(padding edges: Edge.Set, _ padding: CGFloat) -> Self {
+        .init(padding: EdgeInsets(edges: edges, amount: padding))
+    }
+
+}
+
 /// A button style that prevents the button’s label from dimming when the user presses down on it
 public struct HighlightlessButtonStyle: ButtonStyle {
     public init() {}
@@ -41,6 +43,10 @@ public struct HighlightlessButtonStyle: ButtonStyle {
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
     }
+}
+
+extension ButtonStyle where Self == HighlightlessButtonStyle {
+    public static var highlightless: Self { .init() }
 }
 
 public struct NeevaButtonStyle: ButtonStyle {
@@ -51,10 +57,6 @@ public struct NeevaButtonStyle: ButtonStyle {
 
     let visualSpec: VisualSpec
     @Environment(\.isEnabled) private var isEnabled
-
-    public init(_ visual: VisualSpec) {
-        self.visualSpec = visual
-    }
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
@@ -72,5 +74,11 @@ public struct NeevaButtonStyle: ButtonStyle {
                     )
                     .opacity(isEnabled ? 1 : 0.5)
             )
+    }
+}
+
+extension ButtonStyle where Self == NeevaButtonStyle {
+    public static func neeva(_ visualSpec: NeevaButtonStyle.VisualSpec) -> Self {
+        .init(visualSpec: visualSpec)
     }
 }

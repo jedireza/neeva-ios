@@ -118,7 +118,7 @@ public struct SendFeedbackView: View {
                                             Text("View or edit").withFont(.labelMedium)
                                         }
                                         .disabled(!shareScreenshot)
-                                        .buttonStyle(BorderlessButtonStyle())
+                                        .buttonStyle(.borderless)
                                     }
                                 }
                                 .padding(.vertical, 9)
@@ -211,7 +211,7 @@ public struct SendFeedbackView: View {
             }
         }
         .presentation(isModal: feedbackText != initialText || isEditingURL)
-        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationViewStyle(.stack)
         .onDisappear(perform: viewDidDisappear)
     }
 

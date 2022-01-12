@@ -50,7 +50,7 @@ struct SettingsView: View {
                     DebugSettingsSection()
                 }
             }
-            .listStyle(InsetGroupedListStyle())
+            .listStyle(.insetGrouped)
             .applyToggleStyle()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
@@ -60,7 +60,7 @@ struct SettingsView: View {
                 }
             }
         }
-        .navigationViewStyle(StackNavigationViewStyle())
+        .navigationViewStyle(.stack)
         .onDisappear(perform: TourManager.shared.notifyCurrentViewClose)
     }
 }
@@ -75,11 +75,11 @@ struct SettingPreviewWrapper<Content: View>: View {
             List {
                 content()
             }
-            .listStyle(InsetGroupedListStyle())
+            .listStyle(.insetGrouped)
             .applyToggleStyle()
             .navigationBarHidden(true)
             .navigationBarTitleDisplayMode(.inline)
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(.stack)
 
     }
 }

@@ -38,7 +38,7 @@ struct ScheduleNotificationView: View {
                 Text("Schedule")
             }
         }
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
     }
 }
 
@@ -48,6 +48,6 @@ struct ScheduleNotification_Previews: PreviewProvider {
             ScheduleNotificationView()
                 .navigationTitle("Schedule Notification")
                 .navigationBarTitleDisplayMode(.inline)
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(.stack)
     }
 }

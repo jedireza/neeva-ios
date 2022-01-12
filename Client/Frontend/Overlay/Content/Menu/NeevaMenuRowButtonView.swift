@@ -65,7 +65,7 @@ public struct NeevaMenuRowButtonView: View {
             .padding(.horizontal, GroupedCellUX.padding)
             .frame(minHeight: GroupedCellUX.minCellHeight)
         }
-        .buttonStyle(TableCellButtonStyle())
+        .buttonStyle(.tableCell)
     }
 }
 

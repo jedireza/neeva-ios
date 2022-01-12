@@ -22,7 +22,7 @@ struct NeevaUserFlagSettingsView: View {
                 }
             }
         }
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
     }
 }
 
@@ -32,6 +32,6 @@ struct NeevaUserFlagSettings_Previews: PreviewProvider {
             NeevaUserFlagSettingsView()
                 .navigationTitle("Server User Flags")
                 .navigationBarTitleDisplayMode(.inline)
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(.stack)
     }
 }

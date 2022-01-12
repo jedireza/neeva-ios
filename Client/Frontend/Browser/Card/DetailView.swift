@@ -112,7 +112,7 @@ where
                         }
                     )
                     .environment(\.isEnabled, selectedTabIDs.count > 0)
-                    .buttonStyle(NeevaButtonStyle(.primary))
+                    .buttonStyle(.neeva(.primary))
                     .padding(16)
                 }
             } else if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty {

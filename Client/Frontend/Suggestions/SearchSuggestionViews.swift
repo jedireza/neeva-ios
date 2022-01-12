@@ -176,7 +176,7 @@ struct SuggestionView<Icon: View, Label: View, SecondaryLabel: View, Detail: Vie
                 }
             }.apply(config: config, suggestionState: suggestionState)
         }
-        .buttonStyle(TableCellButtonStyle())
+        .buttonStyle(.tableCell)
         .modifier(ClipShape(config: config))
         .accentColor(.primary)
         .useEffect(deps: suggestionModel.keyboardFocusedSuggestion) { _ in
@@ -382,7 +382,7 @@ struct QuerySuggestionView: View {
             Button(action: { setInput(suggestedQuery) }) {
                 Symbol(decorative: .arrowUpLeft)
                     .foregroundColor(.tertiaryLabel)
-            }.buttonStyle(BorderlessButtonStyle())
+            }.buttonStyle(.borderless)
         } else if AnnotationType(annotation: suggestion.annotation) == .calculator {
             Button {
                 copySuggestion(

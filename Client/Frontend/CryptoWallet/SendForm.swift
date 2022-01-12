@@ -28,7 +28,7 @@ struct SendForm: View {
             .padding()
             .overlay(
                 RoundedRectangle(cornerRadius: 12.0)
-                    .stroke(Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 1.0))
+                    .stroke(Color(UIColor.systemGray5), lineWidth: 1)
             )
             .disableAutocorrection(true)
             .autocapitalization(.none)
@@ -48,7 +48,7 @@ struct SendForm: View {
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 12.0)
-                        .stroke(Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 1.0))
+                        .stroke(Color(UIColor.systemGray5), lineWidth: 1.0)
                 )
                 .disableAutocorrection(true)
                 .autocapitalization(.none)
@@ -68,7 +68,7 @@ struct SendForm: View {
                         .font(.roobert(.semibold, size: 18))
                         .frame(maxWidth: 120, minHeight: 40)
                 }
-                .buttonStyle(NeevaButtonStyle(.secondary))
+                .buttonStyle(.neeva(.secondary))
                 .padding(.top, 8)
 
                 Button(action: sendEth) {
@@ -76,7 +76,7 @@ struct SendForm: View {
                         .font(.roobert(.semibold, size: 18))
                         .frame(maxWidth: 120, minHeight: 40)
                 }
-                .buttonStyle(NeevaButtonStyle(.primary))
+                .buttonStyle(.neeva(.primary))
                 .padding(.top, 8)
                 .disabled(amount.isEmpty && sendToAccountAddress.isEmpty)
             }

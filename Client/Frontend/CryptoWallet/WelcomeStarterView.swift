@@ -33,7 +33,7 @@ struct WelcomeStarterView: View {
                         .font(.roobert(.semibold, size: 18))
                         .frame(width: 300)
                 }
-                .buttonStyle(NeevaButtonStyle(.primary))
+                .buttonStyle(.neeva(.primary))
                 .padding()
             }
             .padding(20)
@@ -63,7 +63,7 @@ struct WelcomeStarterView: View {
                         .font(.roobert(.semibold, size: 18))
                         .frame(width: 300)
                 }
-                .buttonStyle(NeevaButtonStyle(.primary))
+                .buttonStyle(.neeva(.primary))
             }
             .padding(20)
             .background(

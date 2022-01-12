@@ -147,7 +147,7 @@ struct DataManagementView: View {
             }
         }
         .navigationTitle("Clear Browsing Data")
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
         .applyToggleStyle()
     }
 }

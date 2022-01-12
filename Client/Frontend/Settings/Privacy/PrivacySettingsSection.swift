@@ -34,7 +34,7 @@ struct PrivacySettingsSection: View {
                     }
                     TrackingAttribution()
                 }
-                .listStyle(InsetGroupedListStyle())
+                .listStyle(.insetGrouped)
                 .applyToggleStyle()
                 .onAppear {
                     ClientLogger.shared.logCounter(

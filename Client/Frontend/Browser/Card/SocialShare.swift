@@ -188,7 +188,7 @@ struct SocialShareButton: View {
                     .clipShape(Circle())
                     .overlay(Circle().stroke(Color.tertiaryLabel, lineWidth: 1))
                 }
-            ).buttonStyle(PressReportingButtonStyle(isPressed: $isPressed))
+            ).buttonStyle(.reportsPresses(to: $isPressed))
                 .scaleEffect(isPressed ? 0.85 : 1)
             Text(label)
                 .withFont(.bodySmall)

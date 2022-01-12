@@ -55,7 +55,7 @@ struct NotificationSettingsView: View {
             }
             .listRowBackground(Color.red.opacity(0.2).ignoresSafeArea())
         }
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
         .applyToggleStyle()
         .navigationBarTitleDisplayMode(.inline)
     }

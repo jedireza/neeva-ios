@@ -79,7 +79,7 @@ struct ReaderModePopover: View {
                             }.padding(.horizontal, -GroupedCellUX.padding)
                         }, roundedCorners: .bottom
                     )
-                    .buttonStyle(TableCellButtonStyle())
+                    .buttonStyle(.tableCell)
                     .accessibilityElement(children: .ignore)
                     .modifier(
                         OverlayStepperAccessibilityModifier(

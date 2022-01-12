@@ -60,7 +60,7 @@ public struct EmailForm: View {
                 .padding()
                 .overlay(
                     RoundedRectangle(cornerRadius: 12.0)
-                        .stroke(Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 1.0))
+                        .stroke(Color(UIColor.systemGray5), lineWidth: 1.0)
                 )
                 .disableAutocorrection(true)
                 .autocapitalization(.none)
@@ -75,7 +75,7 @@ public struct EmailForm: View {
                         .overlay(
                             RoundedRectangle(cornerRadius: 12.0)
                                 .stroke(
-                                    Color(UIColor.systemGray5), style: StrokeStyle(lineWidth: 1.0))
+                                    Color(UIColor.systemGray5), lineWidth: 1.0)
                         )
                         .disableAutocorrection(true)
                         .autocapitalization(.none)

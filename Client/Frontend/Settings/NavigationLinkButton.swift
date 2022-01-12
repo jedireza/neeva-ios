@@ -25,7 +25,8 @@ struct NavigationLinkButton<Label: View>: View {
                 Image(systemSymbol: .chevronForward)
                     .font(.footnote.weight(.semibold))
             case .loading:
-                ProgressView().progressViewStyle(CircularProgressViewStyle())
+                ProgressView()
+                    .progressViewStyle(.circular)
             }
         }
     }

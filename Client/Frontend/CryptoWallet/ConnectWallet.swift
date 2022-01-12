@@ -37,7 +37,7 @@ struct ConnectWalletPanel: View {
                     Text("Connect Neeva Wallet")
                         .frame(maxWidth: .infinity)
                 }
-            ).buttonStyle(NeevaButtonStyle(.primary))
+            ).buttonStyle(.neeva(.primary))
             if let collection = web3Model.matchingCollection {
                 CollectionView(collection: collection)
             }

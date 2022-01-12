@@ -45,7 +45,7 @@ struct NeevaFeatureFlagSettingsView: View {
                 }
             }
         }
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
         .overlay(DebugSettingsRestartPromptView(isVisible: needsRestart), alignment: .bottom)
     }
 }
@@ -132,7 +132,7 @@ private struct TextFlagView: View {
                 NeevaFeatureFlags[flag] = flagValueText
                 updateState()
             }
-            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .textFieldStyle(.roundedBorder)
             .font(Font.headline.weight(isOverridden ? .bold : .regular))
             Menu {
                 Button {
@@ -182,7 +182,7 @@ private struct IntFlagView: View {
                 NeevaFeatureFlags[flag] = Int(flagValueText) ?? 0
                 updateState()
             }
-            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .textFieldStyle(.roundedBorder)
             .font(Font.headline.weight(isOverridden ? .bold : .regular))
             Menu {
                 Button {
@@ -216,6 +216,6 @@ struct NeevaFeatureFlagSettings_Previews: PreviewProvider {
             NeevaFeatureFlagSettingsView()
                 .navigationTitle("Server Feature Flags")
                 .navigationBarTitleDisplayMode(.inline)
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(.stack)
     }
 }

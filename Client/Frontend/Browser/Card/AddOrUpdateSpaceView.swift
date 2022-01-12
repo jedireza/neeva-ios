@@ -289,7 +289,7 @@ struct AddOrUpdateSpaceView: View {
                         .clipShape(Capsule())
                 }
             )
-            .buttonStyle(NeevaButtonStyle(.primary))
+            .buttonStyle(.neeva(.primary))
             .padding(.vertical, 16)
         }.onAppear {
             thumbnailModel.showing = true

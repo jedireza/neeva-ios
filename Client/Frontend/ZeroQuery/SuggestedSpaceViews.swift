@@ -45,7 +45,7 @@ struct SuggestedSpacesView: View {
                             SuggestedSpaceView(space: space)
                                 .foregroundColor(.primary)
                         }
-                        .buttonStyle(TableCellButtonStyle())
+                        .buttonStyle(.tableCell)
                         .uiViewRef($shareTargetView)
                         .contextMenu {
                             ZeroQueryCommonContextMenuActions(

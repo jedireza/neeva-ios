@@ -5,6 +5,7 @@
 import SwiftUI
 
 struct PageProgressBarStyle: ProgressViewStyle {
+    fileprivate init() {}
     func makeBody(configuration: Configuration) -> some View {
         let progress = configuration.fractionCompleted ?? 0
         GeometryReader { geom in
@@ -13,6 +14,10 @@ struct PageProgressBarStyle: ProgressViewStyle {
         }
         .frame(height: 2)
     }
+}
+
+extension ProgressViewStyle where Self == PageProgressBarStyle {
+    static var pageProgressBar: Self { .init() }
 }
 
 struct PageProgressBarStyle_Previews: PreviewProvider {
@@ -26,7 +31,7 @@ struct PageProgressBarStyle_Previews: PreviewProvider {
             ProgressView(value: 1)
         }
         .padding()
-        .progressViewStyle(PageProgressBarStyle())
+        .progressViewStyle(.pageProgressBar)
         .previewLayout(.sizeThatFits)
 
         preview

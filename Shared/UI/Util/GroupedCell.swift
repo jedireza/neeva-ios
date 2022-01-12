@@ -92,7 +92,7 @@ public struct GroupedCellButton<Label: View>: View {
             LongPressButton(action: action, longPressAction: longPressAction) {
                 GroupedCell.ContentContainer(alignment: alignment, content: label)
             }
-            .buttonStyle(TableCellButtonStyle())
+            .buttonStyle(.tableCell)
         }
     }
 }

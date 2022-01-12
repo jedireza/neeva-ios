@@ -77,7 +77,7 @@ struct ShareToView: View {
                         Text("Neeva").font(.headline)
                     }
                 }
-            }.navigationViewStyle(StackNavigationViewStyle())
+            }.navigationViewStyle(.stack)
         }
     }
 }

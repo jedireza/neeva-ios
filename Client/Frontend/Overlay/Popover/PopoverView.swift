@@ -23,7 +23,7 @@ struct PopoverView<Content: View>: View {
                         .opacity(0.2)
                         .ignoresSafeArea()
                 }
-                .buttonStyle(HighlightlessButtonStyle())
+                .buttonStyle(.highlightless)
                 .accessibilityHint("Dismiss pop-up window")
                 // make this the last option. This will bring the user’s focus first to the
                 // useful content inside of the overlay sheet rather than the close button.
@@ -47,7 +47,7 @@ struct PopoverView<Content: View>: View {
                                     .frame(maxWidth: .infinity)
                                 }
                             )
-                            .buttonStyle(NeevaButtonStyle(.primary))
+                            .buttonStyle(.neeva(.primary))
                             .padding(.vertical, 8)
                             .padding(.horizontal, 6)
                             .layoutPriority(0.5)

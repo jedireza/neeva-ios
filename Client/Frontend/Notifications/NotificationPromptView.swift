@@ -54,7 +54,7 @@ struct NotificationPromptView: View {
                         .frame(maxWidth: .infinity)
                 }
             )
-            .buttonStyle(NeevaButtonStyle(.primary))
+            .buttonStyle(.neeva(.primary))
             .padding(.top, 36)
             .padding(.horizontal, 16)
             Button(

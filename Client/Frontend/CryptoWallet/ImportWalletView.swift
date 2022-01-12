@@ -34,7 +34,7 @@ struct ImportWalletView: View {
                         .font(.roobert(.semibold, size: 18))
                         .frame(maxWidth: 120)
                 }
-                .buttonStyle(NeevaButtonStyle(.secondary))
+                .buttonStyle(.neeva(.secondary))
                 .padding(.top, 8)
 
                 Button(action: importWallet) {
@@ -42,7 +42,7 @@ struct ImportWalletView: View {
                         .font(.roobert(.semibold, size: 18))
                         .frame(width: 200)
                 }
-                .buttonStyle(NeevaButtonStyle(.primary))
+                .buttonStyle(.neeva(.primary))
                 .padding(.top, 8)
                 .disabled(inputPhrase.isEmpty)
             }

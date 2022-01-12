@@ -29,7 +29,7 @@ struct FeatureFlagSettingsView: View {
                     ))
             }
         }
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
         .overlay(DebugSettingsRestartPromptView(isVisible: needsRestart), alignment: .bottom)
         .applyToggleStyle()
     }
@@ -41,11 +41,11 @@ struct FeatureFlagSettings_Previews: PreviewProvider {
             FeatureFlagSettingsView()
                 .navigationTitle("Feature Flags")
                 .navigationBarTitleDisplayMode(.inline)
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(.stack)
         NavigationView {
             FeatureFlagSettingsView(needsRestart: true)
                 .navigationTitle("Feature Flags")
                 .navigationBarTitleDisplayMode(.inline)
-        }.navigationViewStyle(StackNavigationViewStyle())
+        }.navigationViewStyle(.stack)
     }
 }

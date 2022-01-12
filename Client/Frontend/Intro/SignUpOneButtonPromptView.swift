@@ -70,7 +70,7 @@ struct SignUpOneButtonPromptView: View {
                 }
                 .padding(.horizontal, 40)
             }
-            .buttonStyle(NeevaButtonStyle(.primary))
+            .buttonStyle(.neeva(.primary))
             .padding(.horizontal, 20)
 
             if skippable {

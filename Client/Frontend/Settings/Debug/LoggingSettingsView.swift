@@ -42,7 +42,7 @@ struct LoggingSettingsView: View {
                 }.accentColor(.red)
             }
         }
-        .listStyle(InsetGroupedListStyle())
+        .listStyle(.insetGrouped)
         .applyToggleStyle()
     }
 }

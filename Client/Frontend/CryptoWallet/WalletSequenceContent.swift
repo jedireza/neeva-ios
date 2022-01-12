@@ -92,7 +92,7 @@ struct WalletSequenceContent: View {
                             Text("Reject")
                                 .frame(maxWidth: .infinity)
                         }
-                    ).buttonStyle(NeevaButtonStyle(.secondary))
+                    ).buttonStyle(.neeva(.secondary))
                         .disabled(model.currentSequence == nil)
                     Button(
                         action: {
@@ -149,7 +149,7 @@ struct WalletSequenceContent: View {
 
                             }
                         }
-                    ).buttonStyle(NeevaButtonStyle(.primary))
+                    ).buttonStyle(.neeva(.primary))
                         .disabled(model.currentSequence == nil)
                 }
             } else if let wcURL = model.wcURL {

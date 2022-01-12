@@ -179,7 +179,7 @@ private struct LoginView: View {
                     }
                     .padding(.horizontal, 40)
                 }
-                .buttonStyle(NeevaButtonStyle(.primary))
+                .buttonStyle(.neeva(.primary))
                 .padding(.bottom, 25)
             }
             .multilineTextAlignment(.center)
@@ -229,7 +229,7 @@ private struct OfflineView: View {
                         Symbol(decorative: .arrowClockwise)
                         Spacer()
                     }
-                }.buttonStyle(NeevaButtonStyle(.primary))
+                }.buttonStyle(.neeva(.primary))
             }
             Spacer()
         }
