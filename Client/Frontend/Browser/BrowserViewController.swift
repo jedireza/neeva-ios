@@ -1191,15 +1191,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
         }
     }
 
-    func openBlankNewTab(focusLocationField: Bool, isPrivate: Bool = false) {
+    func openBlankNewTab(isPrivate: Bool = false) {
         popToBVC()
 
         let newTab = tabManager.addTab(isPrivate: isPrivate)
         tabManager.select(newTab)
-
-        if focusLocationField {
-            chromeModel.setEditingLocation(to: true)
-        }
     }
 
     func openLazyTab(

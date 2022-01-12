@@ -52,9 +52,6 @@ enum NavigationPath {
             urlString: urlString, scheme: scheme, components: components)
         {
             self = widgetKitNavPath
-        } else if urlString.starts(with: "\(scheme)://open-text") {
-            let text = components.valueForQuery("text")
-            self = .text(text ?? "")
         } else if urlString.starts(with: "http:") || urlString.starts(with: "https:") {
             // Use the last browsing mode the user was in
             let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
@@ -197,7 +194,8 @@ enum NavigationPath {
                 bvc.switchToTabForURLOrOpen(newURL, isPrivate: isPrivate)
             }
         } else {
-            bvc.openBlankNewTab(focusLocationField: true, isPrivate: isPrivate)
+            bvc.openLazyTab(
+                openedFrom: .openTab(bvc.tabManager.selectedTab), switchToIncognitoMode: isPrivate)
         }
     }
 
@@ -205,12 +203,13 @@ enum NavigationPath {
         if let newURL = url {
             bvc.switchToTabForWidgetURLOrOpen(newURL, uuid: uuid, isPrivate: false)
         } else {
-            bvc.openBlankNewTab(focusLocationField: true, isPrivate: false)
+            bvc.openLazyTab(
+                openedFrom: .openTab(bvc.tabManager.selectedTab), switchToIncognitoMode: false)
         }
     }
 
     private static func handleText(text: String, with bvc: BrowserViewController) {
-        bvc.openBlankNewTab(focusLocationField: false)
+        bvc.openBlankNewTab()
         bvc.urlBar(didSubmitText: text)
     }
 
