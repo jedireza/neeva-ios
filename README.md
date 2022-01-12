@@ -1,5 +1,5 @@
-Neeva for iOS [![codebeat badge](https://codebeat.co/badges/67e58b6d-bc89-4f22-ba8f-7668a9c15c5a)](https://codebeat.co/projects/github-com-mozilla-neeva-ios)  [![codecov](https://codecov.io/gh/mozilla-mobile/neeva-ios/branch/main/graph/badge.svg)](https://codecov.io/gh/mozilla-mobile/neeva-ios/branch/main)
-===============
+Neeva for iOS
+=============
 
 Download on the [App Store](https://apps.apple.com/us/app/neeva-browser-search-engine/id1543288638).
 
@@ -8,14 +8,10 @@ This branch (main)
 
 This branch works with [Xcode 13.0](https://apps.apple.com/us/app/xcode/id497799835), Swift 5.5 and supports iOS 14.0 and above.
 
-Please make sure you aim your pull requests in the right direction.
-
-For bug fixes and features for a specific release use the version branch.
-
 Getting involved
 ----------------
 
-Want to contribute but don't know where to start? Here is a list of [issues that are contributor friendly](https://github.com/neevaco/neeva-ios-phoenix/labels/Contributor%20OK)
+Want to contribute but don't know where to start? Here is a list of [good first issues](https://github.com/neevaco/neeva-ios-phoenix/labels/good%20first%20issue).
 
 Building the code
 -----------------
@@ -86,7 +82,7 @@ To perform authenticated requests in SwiftUI previews, create a `dev-token.txt` 
 
 ## Updating the schema and `API.swift`
 
-Copy the latest `schema.json` file to `Shared/API/schema.json`
+Copy the latest `schema.json` file from the `neeva` repo to `Shared/API/schema.json`
 
 You can get the latest `schema.json` file from the monorepo:
 ```
@@ -115,7 +111,7 @@ There is currently less infrastructure for calling mutations, but there’s a co
 
 ## Contributing
 
-Want to contribute to this repository? Check out [Contributing Guidelines](https://github.com/mozilla-mobile/firefox-ios/blob/main/CONTRIBUTING.md)
+Want to contribute to this repository? Check out [Contributing Guidelines](https://github.com/neevaco/neeva-ios-phoenix/blob/main/CONTRIBUTING.md)
 
 ## Other
 
