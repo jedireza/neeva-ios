@@ -40,6 +40,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     @State private var contentHeight: CGFloat = 0
     @State private var title: LocalizedStringKey? = nil
     @State private var isFixedHeight: Bool = false
+    @State private var bottomSafeArea: CGFloat = 0
 
     let style: OverlayStyle
     let onDismiss: () -> Void
@@ -63,8 +64,8 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             switch self.model.position {
             case .top, .middle:
                 size =
-                    viewHeight - contentHeight - model.topBarHeight
-                    - UIConstants.PortraitToolbarHeight - outerGeometry.safeAreaInsets.top
+                    viewHeight - contentHeight
+                    - (bottomSafeArea > 0 ? 0 : NeevaMenuUX.bottomPadding)
             case .dismissed:
                 size = viewHeight
             }
@@ -91,7 +92,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
 
         size -= keyboardHeight
 
-        let min: CGFloat = 24
+        let min: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
         if size < min {
             size = min
         }
@@ -167,7 +168,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     private var sheetContent: some View {
         self.content()
             .modifier(ViewHeightKey())
-            .onPreferenceChange(ViewHeightKey.self) { self.contentHeight = $0 }
             .onPreferenceChange(OverlayTitlePreferenceKey.self) { self.title = $0 }
             .onPreferenceChange(OverlayIsFixedHeightPreferenceKey.self) {
                 self.isFixedHeight = $0
@@ -189,13 +189,15 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                             .padding(.bottom, 18)
                     }
                 }
-            }.background(
+            }.padding(.bottom, bottomSafeArea).background(
                 Color(style.backgroundColor)
                     .cornerRadius(16, corners: [.topLeading, .topTrailing])
                     .ignoresSafeArea(edges: .bottom)
             )
+            .onHeightOfViewChanged { height in
+                self.contentHeight = height
+            }
             .gesture(topDrag)
-            .padding(.bottom, -10)
         }
     }
 
@@ -217,7 +219,6 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 // Used to center the sheet within the container view.
                 HStack(spacing: 0) {
                     Spacer(minLength: 0)
-
                     sheet
                         // Constrain to full width in portrait mode.
                         .frame(
@@ -261,6 +262,9 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             )
         }
         .ignoresSafeArea()
+        .safeAreaChanged { insets in
+            self.bottomSafeArea = insets.bottom
+        }
     }
 
     // MARK: - Drag

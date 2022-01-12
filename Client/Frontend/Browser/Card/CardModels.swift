@@ -96,7 +96,9 @@ class TabCardModel: CardModel, TabEventHandler {
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
         }.reduce(into: []) { partialResult, details in
             let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == details.rootID })
-            if partialResult.isEmpty || partialResult.last?.cells.count == maxCols || tabGroup != nil {
+            if partialResult.isEmpty || partialResult.last?.cells.count == maxCols
+                || tabGroup != nil
+            {
                 partialResult.append(Row(cells: [tabGroup.map(Row.Cell.tabGroup) ?? .tab(details)]))
                 if tabGroup != nil {
                     partialResult.append(Row(cells: []))

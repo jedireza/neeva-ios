@@ -41,7 +41,6 @@ struct SpacesFilterView: View {
             }
         }
         .overlayIsFixedHeight(isFixedHeight: true)
-        .padding(.bottom, -12)
     }
 
     func logFilterTapped() {

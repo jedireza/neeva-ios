@@ -75,7 +75,7 @@ public struct CardGridOverflowMenuView: View {
                 .accentColor(.red)
                 .disabled(chromeModel.topBarDelegate?.tabManager.getTabCountForCurrentType() == 0)
             }
-        }.padding(.bottom, -12)
+        }
     }
 }
 

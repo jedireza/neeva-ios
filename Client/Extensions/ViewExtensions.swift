@@ -113,4 +113,16 @@ extension View {
                 }
             )
     }
+
+    func safeAreaChanged(perform updater: @escaping (EdgeInsets) -> Void) -> some View {
+        self
+            .background(
+                GeometryReader { geom in
+                    Color.clear
+                        .useEffect(deps: geom.safeAreaInsets) { insets in
+                            updater(insets)
+                        }
+                }
+            )
+    }
 }

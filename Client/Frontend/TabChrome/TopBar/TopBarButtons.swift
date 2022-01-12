@@ -43,11 +43,10 @@ struct TopBarNeevaMenuButton: View {
                             action = $0
                             presenting = false
                         })
-                        .padding(.bottom, 16)
+                        .topBarPopoverPadding()
                         .environment(\.isIncognito, isIncognito)
                     }
                     .frame(minWidth: 340, minHeight: 323)
-                    .padding(.top, 13)  // height of the arrow
                 }
             },
             popoverContent: {
@@ -135,7 +134,7 @@ struct TopBarOverflowMenuButton: View {
                     .environment(\.isIncognito, isIncognito)
                     .environmentObject(chromeModel)
                     .environmentObject(locationModel)
-                    .padding(.horizontal, -6)
+                    .topBarPopoverPadding()
             }.frame(minWidth: 340, minHeight: 285)
         }
     }
@@ -160,7 +159,7 @@ struct TopBarSpaceFilterButton: View {
         ) {
             VerticalScrollViewIfNeeded {
                 SpacesFilterView()
-                    .padding(.bottom, 16)
+                    .topBarPopoverPadding()
                     .environmentObject(spaceCardModel)
             }.frame(minWidth: 325, minHeight: 128)
         }
@@ -199,5 +198,13 @@ struct TopBarShareButton_Previews: PreviewProvider {
 
         TopBarNeevaMenuButton(onTap: {}, onNeevaMenuAction: { _ in })
             .environmentObject(TabChromeModel())
+    }
+}
+
+extension View {
+    fileprivate func topBarPopoverPadding() -> some View {
+        self
+            .padding(.horizontal, -4)
+            .padding(.top, 8)
     }
 }

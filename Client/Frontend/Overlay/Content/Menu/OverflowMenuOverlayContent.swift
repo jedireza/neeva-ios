@@ -38,6 +38,5 @@ struct OverflowMenuOverlayContent: View {
             .environmentObject(chromeModel)
             .environmentObject(locationModel)
             .overlayIsFixedHeight(isFixedHeight: true)
-            .padding(.top, -8)
     }
 }

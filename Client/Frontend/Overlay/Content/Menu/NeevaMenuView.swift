@@ -5,12 +5,12 @@
 import Shared
 import SwiftUI
 
-private enum NeevaMenuUX {
+enum NeevaMenuUX {
     static let innerSectionPadding: CGFloat = 8
+    static let bottomPadding: CGFloat = 24
 }
 
 struct NeevaMenuView: View {
-    private let noTopPadding: Bool
     private let menuAction: (NeevaMenuAction) -> Void
 
     @State private var openSpacesPrompt = false
@@ -18,81 +18,77 @@ struct NeevaMenuView: View {
     @State private var openSettingsPrompt = false
     @Environment(\.isIncognito) private var isIncognito
 
-    init(noTopPadding: Bool = false, menuAction: @escaping (NeevaMenuAction) -> Void) {
-        self.noTopPadding = noTopPadding
+    init(menuAction: @escaping (NeevaMenuAction) -> Void) {
         self.menuAction = menuAction
     }
 
     var body: some View {
-        // TODO: when making significant updates, migrate to OverlayGroupedStack
-        VStack(alignment: .leading, spacing: GroupedCellUX.spacing) {
-            VStack(spacing: NeevaMenuUX.innerSectionPadding) {
-                HStack(spacing: NeevaMenuUX.innerSectionPadding) {
-                    NeevaMenuButtonView(label: "Home", nicon: .house) {
-                        self.menuAction(.home)
-                    }
-                    .accessibilityIdentifier("NeevaMenu.Home")
-                    .disabled(isIncognito)
-
-                    WithPopover(
-                        showPopover: $openSpacesPrompt,
-                        popoverSize: CGSize(width: 290, height: 150),
-                        content: {
-                            NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
-                                self.menuAction(.spaces)
-                            }
-                            .accessibilityIdentifier("NeevaMenu.Spaces")
-                            .disabled(isIncognito)
-                        },
-                        popoverContent: {
-                            TourPromptView(
-                                title: "Want to be organized?",
-                                description:
-                                    "Save web pages, images, and videos to a curated Space for easy access later",
-                                onClose: onCloseTourPrompt, staticColorMode: true)
-                        },
-                        staticColorMode: true
-                    )
+        GroupedStack {
+            HStack(spacing: NeevaMenuUX.innerSectionPadding) {
+                NeevaMenuButtonView(label: "Home", nicon: .house) {
+                    self.menuAction(.home)
                 }
+                .accessibilityIdentifier("NeevaMenu.Home")
+                .disabled(isIncognito)
 
-                HStack(spacing: NeevaMenuUX.innerSectionPadding) {
-                    WithPopover(
-                        showPopover: $openSettingsPrompt,
-                        popoverSize: CGSize(width: 290, height: 180),
-                        content: {
-                            NeevaMenuButtonView(label: "Settings", nicon: .gear) {
-                                self.menuAction(.settings)
-                            }
-                            .accessibilityIdentifier("NeevaMenu.Settings")
-                        },
-                        popoverContent: {
-                            TourPromptView(
-                                title: "Want to search personal documents?",
-                                description:
-                                    "Search information in your email, online files and folders, and calendar!",
-                                onClose: onCloseTourPrompt, staticColorMode: true)
-                        },
-                        staticColorMode: true
-                    )
+                WithPopover(
+                    showPopover: $openSpacesPrompt,
+                    popoverSize: CGSize(width: 290, height: 150),
+                    content: {
+                        NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
+                            self.menuAction(.spaces)
+                        }
+                        .accessibilityIdentifier("NeevaMenu.Spaces")
+                        .disabled(isIncognito)
+                    },
+                    popoverContent: {
+                        TourPromptView(
+                            title: "Want to be organized?",
+                            description:
+                                "Save web pages, images, and videos to a curated Space for easy access later",
+                            onClose: onCloseTourPrompt, staticColorMode: true)
+                    },
+                    staticColorMode: true
+                )
+            }
 
-                    WithPopover(
-                        showPopover: $openFeedbackPrompt,
-                        popoverSize: CGSize(width: 290, height: 120),
-                        content: {
-                            NeevaMenuButtonView(label: "Support", symbol: .bubbleLeft) {
-                                self.menuAction(.support)
-                            }
-                            .accessibilityIdentifier("NeevaMenu.Feedback")
-                        },
-                        popoverContent: {
-                            TourPromptView(
-                                title: "Have feedback?",
-                                description: "We'd love to hear your thoughts!",
-                                onClose: onCloseTourPrompt, staticColorMode: true)
-                        },
-                        staticColorMode: true
-                    )
-                }
+            HStack(spacing: NeevaMenuUX.innerSectionPadding) {
+                WithPopover(
+                    showPopover: $openSettingsPrompt,
+                    popoverSize: CGSize(width: 290, height: 180),
+                    content: {
+                        NeevaMenuButtonView(label: "Settings", nicon: .gear) {
+                            self.menuAction(.settings)
+                        }
+                        .accessibilityIdentifier("NeevaMenu.Settings")
+                    },
+                    popoverContent: {
+                        TourPromptView(
+                            title: "Want to search personal documents?",
+                            description:
+                                "Search information in your email, online files and folders, and calendar!",
+                            onClose: onCloseTourPrompt, staticColorMode: true)
+                    },
+                    staticColorMode: true
+                )
+
+                WithPopover(
+                    showPopover: $openFeedbackPrompt,
+                    popoverSize: CGSize(width: 290, height: 120),
+                    content: {
+                        NeevaMenuButtonView(label: "Support", symbol: .bubbleLeft) {
+                            self.menuAction(.support)
+                        }
+                        .accessibilityIdentifier("NeevaMenu.Feedback")
+                    },
+                    popoverContent: {
+                        TourPromptView(
+                            title: "Have feedback?",
+                            description: "We'd love to hear your thoughts!",
+                            onClose: onCloseTourPrompt, staticColorMode: true)
+                    },
+                    staticColorMode: true
+                )
             }
 
             GroupedCell.Decoration {
@@ -123,14 +119,10 @@ struct NeevaMenuView: View {
                     }
                     .accessibilityIdentifier("NeevaMenu.Downloads")
                 }
-            }
+            }.accentColor(.label)
         }
-        .padding(self.noTopPadding ? [.leading, .trailing] : [.leading, .trailing, .top], 16)
-        .padding(.bottom, 12)
-        .background(Color.groupedBackground)
         .onAppear(perform: viewDidAppear)
         .onDisappear(perform: viewDidDisappear)
-        .accentColor(.label)
     }
 
     func onCloseTourPrompt() {

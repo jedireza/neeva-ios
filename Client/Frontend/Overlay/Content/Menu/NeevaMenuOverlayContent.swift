@@ -11,12 +11,11 @@ struct NeevaMenuOverlayContent: View {
     let isIncognito: Bool
 
     var body: some View {
-        NeevaMenuView(noTopPadding: true) { action in
+        NeevaMenuView { action in
             menuAction(action)
             hideOverlay()
         }
         .environment(\.isIncognito, isIncognito)
         .overlayIsFixedHeight(isFixedHeight: true)
-        .padding(.top, 8)
     }
 }

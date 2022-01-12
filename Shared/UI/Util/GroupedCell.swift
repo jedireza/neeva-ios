@@ -6,6 +6,7 @@ import SwiftUI
 
 public enum GroupedCellUX {
     public static let minCellHeight: CGFloat = 52
+    public static let topPadding: CGFloat = 8
     public static let padding: CGFloat = 16
     public static let spacing: CGFloat = 12
     public static let cornerRadius: CGFloat = 12
@@ -30,7 +31,8 @@ public struct GroupedStack<Content: View>: View {
             content()
         }
         .accentColor(.ui.adaptive.blue)
-        .padding(GroupedCellUX.padding)
+        .padding([.horizontal, .bottom], GroupedCellUX.padding)
+        .padding(.top, GroupedCellUX.topPadding)
     }
 }
 
