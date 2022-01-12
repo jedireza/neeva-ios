@@ -35,17 +35,87 @@ struct NeevaAccountInfoView: View {
                 .accessibilityLabel(
                     "\(Text(userInfo.authProvider?.displayName ?? "Unknown")), \(userInfo.email ?? "")"
                 )
-
             }
 
-            if let type = userInfo.subscriptionType {
-                Section(header: Text(type.displayName)) {
-                    Text(type.description).padding(.vertical, 5)
+            switch userInfo.subscriptionType {
+            case .basic:
+                Section(header: Text("Membership Status")) {
+                    VStack(alignment: .leading) {
+                        Text(SubscriptionType.basic.displayName)
+                            .withFont(.headingMedium)
+                            .padding(4)
+                            .padding(.horizontal, 4)
+                            .foregroundColor(.brand.charcoal)
+                            .background(SubscriptionType.basic.color)
+                            .cornerRadius(4)
+
+                        Text(
+                            "Neeva’s Free Basic membership gives you access to all Neeva search and personalization features."
+                        )
+                        .withFont(.bodyLarge)
+                        .fixedSize(horizontal: false, vertical: true)
+                    }.padding(.vertical, 5)
+
+                    VStack(alignment: .leading, spacing: 7) {
+                        Text("Upgrade to Premium: Power the Future of Search!")
+                            .withFont(.headingMedium)
+                            .fixedSize(horizontal: false, vertical: true)
+                        Button(action: {
+                            openURL(NeevaConstants.appMembershipURL)
+                        }) {
+                            Text("See the Benefits \(Image(systemSymbol: .arrowForward))")
+                                .withFont(.bodyLarge)
+                        }
+                    }.padding(.vertical, 5)
                 }
-            } else {
-                DecorativeSection {
-                    Button("No Subscription. Check status on the Neeva website.") {
-                        openURL(NeevaConstants.appSettingsURL)
+            case .premium, .lifetime:
+                Section(
+                    header: Text("Membership Status"),
+                    footer: Group {
+                        if userInfo.subscriptionType != .lifetime {
+                            Text(
+                                "Please sign in to Neeva from your computer to manage your membership."
+                            )
+                        }
+                    }
+                ) {
+                    VStack(alignment: .leading) {
+                        Text(SubscriptionType.premium.displayName)
+                            .withFont(.headingMedium)
+                            .padding(4)
+                            .padding(.horizontal, 4)
+                            .foregroundColor(.brand.charcoal)
+                            .background(SubscriptionType.premium.color)
+                            .cornerRadius(4)
+
+                        if userInfo.subscriptionType == .lifetime {
+                            Text(
+                                "As a winner in Neeva's referral competition, you are a lifetime Premium member of Neeva."
+                            )
+                            .withFont(.bodyLarge)
+                            .fixedSize(horizontal: false, vertical: true)
+                        }
+
+                        Text(
+                            "If you have any questions or need assistance with your Premium membership, please reach out to premium@neeva.co."
+                        )
+                        .withFont(.bodyLarge)
+                        .fixedSize(horizontal: false, vertical: true)
+                    }.padding(.vertical, 5)
+
+                    NavigationLinkButton("View Benefits") {
+                        openURL(NeevaConstants.appMembershipURL)
+                    }
+                }
+
+            default:
+                Section(
+                    header: Text(
+                        "\(Image(systemSymbol: .exclamationmarkTriangleFill)) Membership Status Unavailable"
+                    )
+                ) {
+                    Button("Learn More on the Neeva Website") {
+                        openURL(NeevaConstants.appMembershipURL)
                     }
                 }
             }

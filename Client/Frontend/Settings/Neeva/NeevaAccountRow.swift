@@ -39,11 +39,12 @@ struct NeevaAccountRow: View {
                         Text(name)
                         if let type = userInfo.subscriptionType {
                             Text(type.displayName)
-                                .font(.caption)
+                                .withFont(.labelMedium)
                                 .padding(3)
                                 .padding(.horizontal, 3)
-                                .background(Color.secondarySystemFill)
-                                .cornerRadius(5)
+                                .foregroundColor(.brand.charcoal)
+                                .background(type.color)
+                                .cornerRadius(3)
                                 .fixedSize()
                                 .frame(height: 1)
                         }

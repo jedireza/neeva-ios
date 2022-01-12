@@ -40,6 +40,7 @@ public struct NeevaConstants {
     public static var appSpacesURL: URL { buildAppURL("spaces") }
     public static var appSettingsURL: URL { buildAppURL("settings") }
     public static var appReferralsURL: URL { buildAppURL("settings/referrals") }
+    public static var appMembershipURL: URL { buildAppURL("settings/membership") }
     public static var appConnectionsURL: URL { buildAppURL("connections") }
     public static var appMemoryModeURL: URL { buildAppURL("settings#memory-mode") }
     public static var appSigninURL: URL { buildAppURL("signin") }

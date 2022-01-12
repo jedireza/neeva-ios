@@ -35,27 +35,6 @@ public struct UserInfo {
     }
 }
 
-
-extension SubscriptionType {
-    public var displayName: LocalizedStringKey {
-        switch self {
-        case .basic: return "Free Basic Membership"
-        case .premium: return "Premium Member"
-        case .lifetime: return "Lifetime Premium Member"
-        case .unknown, .__unknown: return "Unknown"
-        }
-    }
-
-    public var description: LocalizedStringKey {
-        switch self {
-        case .basic: return "You are currently part of Neeva’s free basic membership which gives you access to all of Neeva’s search and personalization features (subject to certain usage limits). Neeva will soon offer a premium tier where members can pay a monthly fee and receive unlimited access to all Neeva search and browsing features, plus a range of other benefits. We will notify you when we offer the option to upgrade to Neeva’s premium membership tier."
-        case .premium: return "Thank you for subscribing to Neeva Premium."
-        case .lifetime: return "As a winner in the referral competition, you are a lifetime premium member of Neeva. You will receive unlimited access to all Neeva search and browsing features, plus a range of other benefits."
-        case .unknown, .__unknown: return ""
-        }
-    }
-}
-
 /// Enum container for the result of fetching `UserInfo` from the server.
 public enum UserInfoResult {
     /// On success, the `UserInfo` parameter provides information about the user.
