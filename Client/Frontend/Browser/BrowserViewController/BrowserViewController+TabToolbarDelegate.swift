@@ -24,12 +24,20 @@ extension BrowserViewController: ToolbarDelegate {
             guard let self = self else { return }
             switch action {
             case .back:
+                ClientLogger.shared.logCounter(
+                    .ClickBack,
+                    attributes: EnvironmentHelper.shared.getAttributes()
+                )
                 if self.simulateBackViewController?.goBack() ?? false {
                     return
                 }
 
                 self.tabManager.selectedTab?.goBack()
             case .forward:
+                ClientLogger.shared.logCounter(
+                    .ClickForward,
+                    attributes: EnvironmentHelper.shared.getAttributes()
+                )
                 if self.simulateBackViewController?.goForward() ?? false {
                     return
                 }
