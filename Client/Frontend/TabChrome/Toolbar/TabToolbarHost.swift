@@ -7,7 +7,7 @@ import SwiftUI
 protocol ToolbarDelegate: AnyObject {
     var performTabToolbarAction: (ToolbarAction) -> Void { get }
     func perform(overflowMenuAction: OverflowMenuAction, targetButtonView: UIView?)
-    func tabToolbarTabsMenu() -> UIMenu?
+    func tabToolbarTabsMenu(sourceView: UIView) -> UIMenu?
 }
 
 struct TabToolbarContent: View {
@@ -16,9 +16,8 @@ struct TabToolbarContent: View {
 
     var body: some View {
         TabToolbarView(
-            performAction: { action in chromeModel.toolbarDelegate?.performTabToolbarAction(action)
-            },
-            buildTabsMenu: { chromeModel.toolbarDelegate?.tabToolbarTabsMenu() },
+            performAction: { chromeModel.toolbarDelegate?.performTabToolbarAction($0) },
+            buildTabsMenu: { chromeModel.toolbarDelegate?.tabToolbarTabsMenu(sourceView: $0) },
             onNeevaMenu: {
                 ClientLogger.shared.logCounter(
                     .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())

@@ -9,6 +9,8 @@ import SwiftUI
 struct AppHostSetting: View {
     @Default(.neevaHost) var appHost
 
+    @State var viewRef: UIView?
+
     var body: some View {
         HStack {
             Text(verbatim: "appHost")
@@ -45,9 +47,9 @@ struct AppHostSetting: View {
                             saveAction.accessibilityActivate()
                         }, for: .primaryActionTriggered)
                 }
-                UIApplication.shared.frontViewController.present(
-                    alert, animated: true, completion: nil)
-            }
+                viewRef!.window!.windowScene!.frontViewController!
+                    .present(alert, animated: true, completion: nil)
+            }.uiViewRef($viewRef)
         }.accessibilityElement(children: .combine)
     }
 }

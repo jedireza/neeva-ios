@@ -23,8 +23,8 @@ extension UINavigationController {
             ?? self
     }
 }
-extension UIApplication {
-    var frontViewController: UIViewController {
-        windows.first!.rootViewController!.frontViewController
+extension UIWindowScene {
+    var frontViewController: UIViewController? {
+        windows.first?.rootViewController?.frontViewController
     }
 }

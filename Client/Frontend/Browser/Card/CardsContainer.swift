@@ -109,7 +109,10 @@ struct ScrollContainer: View {
             }
         }
         .environment(\.columns, columns)
-        .animation(gridModel.animateDetailTransitions && !FeatureFlag[.tabGroupsNewDesign] ? .easeInOut : nil)
+        .animation(
+            gridModel.animateDetailTransitions && !FeatureFlag[.tabGroupsNewDesign]
+                ? .easeInOut : nil
+        )
         .animation(.spring(), value: tabGroupModel.allDetails.map(\.isSelected))
     }
 }

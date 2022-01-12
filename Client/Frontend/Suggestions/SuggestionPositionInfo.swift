@@ -23,7 +23,8 @@ struct SuggestionPositionInfo {
 
         clientLogAttributes.append(
             ClientLogCounterAttribute(
-                key: LogConfig.SuggestionAttribute.suggestionPosition, value: String(positionIndex)))
+                key: LogConfig.SuggestionAttribute.suggestionPosition, value: String(positionIndex))
+        )
 
         let bvc = SceneDelegate.getBVC(for: nil)
         clientLogAttributes.append(

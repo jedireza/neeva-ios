@@ -6,24 +6,25 @@ import Shared
 import Storage
 import UIKit
 
-class TabMenu {
-    var tabManager: TabManager
-    var alertPresentViewController: UIViewController?
-
-    var tabsClosed: ((Bool) -> Void)?
+// TODO(iOS 15): Port this to SwiftUI
+struct TabMenu {
+    let tabManager: TabManager
 
     // MARK: Close All Tabs
-    func showConfirmCloseAllTabs(numberOfTabs: Int, fromTabTray: Bool) {
+    func showConfirmCloseAllTabs(sourceView: UIView?) {
+        let numberOfTabs = tabManager.getTabCountForCurrentType()
         let isIncognito = tabManager.isIncognito
-        guard let alertPresentViewController = alertPresentViewController else {
-            return
-        }
+        guard
+            let scene = tabManager.scene as? UIWindowScene,
+            let alertVC = scene.frontViewController
+        else { return }
 
         let actionSheet = UIAlertController(
             title: nil,
             message:
                 "Are you sure you want to close all open \(isIncognito ? "incognito " : "")tabs?",
-            preferredStyle: .actionSheet)
+            preferredStyle: sourceView == nil ? .alert : .actionSheet
+        )
 
         let closeAction = UIAlertAction(
             title:
@@ -33,19 +34,13 @@ class TabMenu {
             tabManager.removeTabs(
                 isIncognito ? tabManager.privateTabs : tabManager.normalTabs, showToast: false,
                 addNormalTab: false)
-
-            if let tabsClosed = tabsClosed {
-                tabsClosed(isIncognito)
-            }
         }
         closeAction.accessibilityLabel = "Confirm Close All Tabs"
 
-        if let popoverPresentationController = actionSheet.popoverPresentationController {
-            popoverPresentationController.sourceView = alertPresentViewController.view
-            popoverPresentationController.sourceRect = CGRect(
-                x: alertPresentViewController.view.bounds.midX,
-                y: alertPresentViewController.view.bounds.midY, width: 0, height: 0)
-            popoverPresentationController.permittedArrowDirections = []
+        if let popoverPresentationController = actionSheet.popoverPresentationController,
+            let sourceView = sourceView
+        {
+            popoverPresentationController.sourceView = sourceView
         }
 
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
@@ -53,28 +48,23 @@ class TabMenu {
         actionSheet.addAction(closeAction)
         actionSheet.addAction(cancelAction)
         // show the alert
-        alertPresentViewController.present(actionSheet, animated: true, completion: nil)
+        alertVC.present(actionSheet, animated: true, completion: nil)
     }
 
-    func createCloseAllTabsAction(fromTabTray: Bool) -> UIAction {
+    func createCloseAllTabsAction(sourceView: UIView?) -> UIAction {
         let isPrivate = tabManager.isIncognito
         let action = UIAction(
             title: "Close All \(isPrivate ? "Incognito " : "")Tabs",
             image: UIImage(systemName: "trash"), attributes: .destructive
         ) { _ in
             // make sure the user really wants to close all tabs
-            self.showConfirmCloseAllTabs(
-                numberOfTabs: self.tabManager.getTabCountForCurrentType(), fromTabTray: fromTabTray)
+            self.showConfirmCloseAllTabs(sourceView: sourceView)
         }
         action.accessibilityLabel = "Close All Tabs"
 
         Haptics.longPress()
 
         return action
-    }
-
-    func createCloseAllTabsMenu(fromTabTray: Bool) -> UIMenu {
-        return UIMenu(sections: [[createCloseAllTabsAction(fromTabTray: fromTabTray)]])
     }
 
     // MARK: Recently Closed Tabs
@@ -127,14 +117,5 @@ class TabMenu {
 
             return UIMenu(children: [newTabAction, newIncognitoTabAction])
         }
-    }
-
-    // MARK: Initialization
-    init(
-        tabManager: TabManager,
-        alertPresentViewController: UIViewController? = nil
-    ) {
-        self.tabManager = tabManager
-        self.alertPresentViewController = alertPresentViewController
     }
 }

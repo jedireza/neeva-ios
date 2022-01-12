@@ -8,7 +8,7 @@ import SwiftUI
 
 struct TabToolbarView: View {
     let performAction: (ToolbarAction) -> Void
-    let buildTabsMenu: () -> UIMenu?
+    let buildTabsMenu: (_ sourceView: UIView) -> UIMenu?
     let onNeevaMenu: () -> Void
 
     @EnvironmentObject var chromeModel: TabChromeModel
@@ -79,7 +79,7 @@ struct TabToolbarView: View {
 struct TabToolbarView_Previews: PreviewProvider {
     static var previews: some View {
         let make = { (model: TabChromeModel) in
-            TabToolbarView(performAction: { _ in }, buildTabsMenu: { nil }, onNeevaMenu: {})
+            TabToolbarView(performAction: { _ in }, buildTabsMenu: { _ in nil }, onNeevaMenu: {})
                 .environmentObject(model)
         }
         VStack {

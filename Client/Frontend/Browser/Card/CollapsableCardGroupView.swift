@@ -29,7 +29,8 @@ struct CollapsableCardGroupView: View {
         .background(Color.secondarySystemFill)
         .cornerRadius(
             24,
-            corners: groupDetails.allDetails.count <= 2 || groupDetails.isShowingDetails ? .all : .leading
+            corners: groupDetails.allDetails.count <= 2 || groupDetails.isShowingDetails
+                ? .all : .leading
         )
     }
 
@@ -82,7 +83,9 @@ struct CollapsableCardGroupView: View {
 
     private var grid: some View {
         LazyVStack(alignment: .leading, spacing: CardGridUX.GridSpacing) {
-            ForEach(Array(groupDetails.allDetails.split(intoChunksOf: 2).enumerated()), id: \.offset) { (_, row) in
+            ForEach(
+                Array(groupDetails.allDetails.split(intoChunksOf: 2).enumerated()), id: \.offset
+            ) { (_, row) in
                 HStack(spacing: CardGridUX.GridSpacing) {
                     ForEach(row) { childTabDetail in
                         FittedCard(details: childTabDetail, dragToClose: false)

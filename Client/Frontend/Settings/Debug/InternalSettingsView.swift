@@ -39,7 +39,7 @@ struct InternalSettingsView: View {
     @Default(.signupPromptInterval) var signupPromptInterval
     @Default(.maxQueryLimit) var maxQueryLimit
     @Default(.signedInOnce) var signedInOnce
-    
+
     var body: some View {
         List {
             Section(header: Text(verbatim: "First Run")) {
@@ -70,13 +70,17 @@ struct InternalSettingsView: View {
                 Toggle(String("spacesShareIntroSeen"), isOn: $seenSpacesShareIntro)
             }
             Section(header: Text(verbatim: "Promo Cards")) {
-                Toggle(String("didShowDefaultBrowserOnboarding"), isOn: $didShowDefaultBrowserOnboarding)
+                Toggle(
+                    String("didShowDefaultBrowserOnboarding"),
+                    isOn: $didShowDefaultBrowserOnboarding)
                 Toggle(String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
                 Toggle(String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
                 Toggle(String("ratingsCardHidden"), isOn: $ratingsCardHidden)
             }
             Section(header: Text("promo-card")) {
-                Toggle(String("seenNotificationPermissionPromo"), isOn: $seenNotificationPermissionPromo)
+                Toggle(
+                    String("seenNotificationPermissionPromo"),
+                    isOn: $seenNotificationPermissionPromo)
                 Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
                 Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
             }
@@ -85,7 +89,9 @@ struct InternalSettingsView: View {
                     VStack(alignment: .leading) {
                         Text(verbatim: "deletedSuggestedSites")
                         Text(
-                            String("\(deletedSuggestedSites.count) site\(deletedSuggestedSites.count == 1 ? "" : "s")")
+                            String(
+                                "\(deletedSuggestedSites.count) site\(deletedSuggestedSites.count == 1 ? "" : "s")"
+                            )
                         )
                         .foregroundColor(.secondaryLabel)
                         .font(.caption)
@@ -101,7 +107,7 @@ struct InternalSettingsView: View {
 
             Section(header: Text(verbatim: "Miscellaneous")) {
                 Toggle(String("saveLogins"), isOn: $saveLogins)
-                // comment this line out if you’re working on logins and need access
+                    // comment this line out if you’re working on logins and need access
                     .disabled(!saveLogins)
 
                 OptionalBooleanField(
@@ -126,7 +132,8 @@ struct InternalSettingsView: View {
             }
 
             Section(header: Text(verbatim: "Performance")) {
-                Toggle(String("applicationCleanlyBackgrounded"), isOn: $applicationCleanlyBackgrounded)
+                Toggle(
+                    String("applicationCleanlyBackgrounded"), isOn: $applicationCleanlyBackgrounded)
                 if let cleanlyBackgrounded = cleanlyBackgroundedLastTime {
                     let text =
                         cleanlyBackgrounded

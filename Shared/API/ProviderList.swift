@@ -9,7 +9,7 @@ public class ProviderList: ObservableObject {
     public static let shared = ProviderList()
 
     @Published public private(set) var isLoading = false
-    @Published public private(set) var allProviders: [String: UserPreference] = [String: UserPreference]()
+    @Published public private(set) var allProviders: [String: UserPreference] = [:]
     @Published public private(set) var providerDisplayName: [String: String] = [:]
 
     public init() {}
@@ -45,7 +45,7 @@ public class ProviderList: ObservableObject {
         if allProviders.keys.contains(domain) {
             return allProviders[domain]!
         }
-        
+
         fetchProviderList()
         return .noPreference
     }

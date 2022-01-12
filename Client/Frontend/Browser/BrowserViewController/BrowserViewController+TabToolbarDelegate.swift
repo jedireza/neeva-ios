@@ -121,7 +121,7 @@ extension BrowserViewController: ToolbarDelegate {
         }
     }
 
-    func tabToolbarTabsMenu() -> UIMenu? {
+    func tabToolbarTabsMenu(sourceView: UIView) -> UIMenu? {
         guard self.presentedViewController == nil else {
             return nil
         }
@@ -177,8 +177,8 @@ extension BrowserViewController: ToolbarDelegate {
 
         if tabCount > 1 {
             actions.insert(
-                TabMenu(tabManager: tabManager, alertPresentViewController: self)
-                    .createCloseAllTabsAction(fromTabTray: false), at: 0)
+                TabMenu(tabManager: tabManager).createCloseAllTabsAction(sourceView: sourceView),
+                at: 0)
         }
 
         Haptics.longPress()

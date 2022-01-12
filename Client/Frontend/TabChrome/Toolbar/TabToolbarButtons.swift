@@ -175,13 +175,16 @@ enum TabToolbarButtons {
     struct ShowTabs: View {
         let weight: UIImage.SymbolWeight
         let action: () -> Void
-        let buildMenu: () -> UIMenu?
+        let buildMenu: (_ sourceView: UIView) -> UIMenu?
 
         var body: some View {
-            SecondaryMenuButton(action: action) {
-                $0.setImage(Symbol.uiImage(.squareOnSquare, size: 20, weight: weight), for: .normal)
-                $0.setDynamicMenu(buildMenu)
-                $0.accessibilityLabel = "Show Tabs"
+            SecondaryMenuButton(action: action) { button in
+                button.setImage(
+                    Symbol.uiImage(.squareOnSquare, size: 20, weight: weight), for: .normal)
+                button.setDynamicMenu {
+                    buildMenu(button)
+                }
+                button.accessibilityLabel = "Show Tabs"
             }
         }
     }

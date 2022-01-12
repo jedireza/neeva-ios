@@ -190,7 +190,8 @@ public class NeevaUserInfo: ObservableObject {
         self.email = userInfoDict["userEmail"]
         self.pictureUrl = userInfoDict["userPictureUrl"]
         self.authProvider = userInfoDict["userAuthProvider"].flatMap(SSOProvider.init(rawValue:))
-        self.subscriptionType = userInfoDict["userSubscriptionType"].flatMap(SubscriptionType.init(rawValue:))
+        self.subscriptionType = userInfoDict["userSubscriptionType"].flatMap(
+            SubscriptionType.init(rawValue:))
     }
 
     private func fetchUserPicture() {
@@ -230,7 +231,7 @@ public class NeevaUserInfo: ObservableObject {
             "userEmail": userInfo.email,
             "userPictureUrl": userInfo.pictureUrl,
             "userAuthProvider": userInfo.authProvider,
-            "userSubscriptionType": userInfo.subscriptionType?.rawValue
+            "userSubscriptionType": userInfo.subscriptionType?.rawValue,
         ].compactMapValues { $0 }
         defaults.set(userInfoDict, forKey: UserInfoKey)
 

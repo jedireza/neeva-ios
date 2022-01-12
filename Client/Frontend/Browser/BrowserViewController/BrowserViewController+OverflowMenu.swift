@@ -82,9 +82,7 @@ extension BrowserViewController {
         case .goToDownloads:
             openDownloadsFolderInFilesApp()
         case .closeAllTabs:
-            let tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
-            tabMenu.showConfirmCloseAllTabs(
-                numberOfTabs: tabMenu.tabManager.getTabCountForCurrentType(), fromTabTray: true)
+            TabMenu(tabManager: tabManager).showConfirmCloseAllTabs(sourceView: nil)
         case .support:
             perform(neevaMenuAction: .support)
         case .cryptoWallet:

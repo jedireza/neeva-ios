@@ -146,15 +146,17 @@ struct SwitcherToolbarView: View {
                     case .spaces:
                         gridModel.hideWithNoAnimation()
                     }
-                }) {
+                }) { button in
                     let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
                     let title = NSAttributedString(
                         string: "Done",
                         attributes: [NSAttributedString.Key.font: font])
-                    $0.setAttributedTitle(title, for: .normal)
-                    $0.setTitleColor(isEmpty ? .secondaryLabel : .label, for: .normal)
-                    $0.setDynamicMenu(gridModel.buildCloseAllTabsMenu)
-                    $0.isEnabled = !isEmpty
+                    button.setAttributedTitle(title, for: .normal)
+                    button.setTitleColor(isEmpty ? .secondaryLabel : .label, for: .normal)
+                    button.setDynamicMenu {
+                        gridModel.buildCloseAllTabsMenu(sourceView: button)
+                    }
+                    button.isEnabled = !isEmpty
                 }
                 .tapTargetFrame()
                 .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)

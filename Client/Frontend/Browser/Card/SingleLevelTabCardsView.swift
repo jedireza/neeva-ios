@@ -30,7 +30,7 @@ struct SingleLevelTabCardsView: View {
                         CollapsableCardGroupView(
                             groupDetails: groupDetails, containerGeometry: containerGeometry
                         )
-                            .padding(.horizontal, -CardGridUX.GridSpacing)
+                        .padding(.horizontal, -CardGridUX.GridSpacing)
                     case .tab(let tabDetails):
                         FittedCard(details: tabDetails)
                             .modifier(

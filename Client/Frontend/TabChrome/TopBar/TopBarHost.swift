@@ -39,10 +39,8 @@ struct TopBarContent: View {
 
     var body: some View {
         TopBarView(
-            performTabToolbarAction: { action in
-                chromeModel.topBarDelegate?.performTabToolbarAction(action)
-            },
-            buildTabsMenu: { chromeModel.topBarDelegate?.tabToolbarTabsMenu() },
+            performTabToolbarAction: { chromeModel.topBarDelegate?.performTabToolbarAction($0) },
+            buildTabsMenu: { chromeModel.topBarDelegate?.tabToolbarTabsMenu(sourceView: $0) },
             onReload: {
                 switch chromeModel.reloadButton {
                 case .reload:

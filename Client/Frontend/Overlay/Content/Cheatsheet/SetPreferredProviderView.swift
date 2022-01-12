@@ -31,11 +31,13 @@ struct SetPreferredProviderView: View {
     let tabUUID: String?
 
     var selectedPreference: UserPreference {
-        return ProviderList.shared.getPreferenceByDomain(domain: chromeModel.currentCheatsheetURL?.baseDomain?.asURL?.absoluteString ?? "")
+        return ProviderList.shared.getPreferenceByDomain(
+            domain: chromeModel.currentCheatsheetURL?.baseDomain?.asURL?.absoluteString ?? "")
     }
 
     var currentSite: String {
-        return self.chromeModel.currentCheatsheetURL?.absoluteString.asURL?.baseDomain ?? "current site"
+        return self.chromeModel.currentCheatsheetURL?.absoluteString.asURL?.baseDomain
+            ?? "current site"
     }
 
     @Environment(\.hideOverlay) private var hideOverlay
@@ -205,9 +207,10 @@ struct PreferenceRowView: View {
 
     func submitPreference() {
         if let tabUUID = self.tabUUID, let url = chromeModel.currentCheatsheetURL?.absoluteString {
-            RecipeCheatsheetLogManager.shared.logInteraction(logType: .updatePreferredProvider, tabUUIDAndURL: tabUUID + url)
+            RecipeCheatsheetLogManager.shared.logInteraction(
+                logType: .updatePreferredProvider, tabUUIDAndURL: tabUUID + url)
         }
-        
+
         hideOverlay()
         if let url = chromeModel.currentCheatsheetURL?.absoluteString {
             let preferenceRequest = PreferredProviderRequest(

@@ -14,7 +14,7 @@ struct RelatedSearchesView: View {
             Text("People Also Search")
                 .withFont(.headingXLarge)
                 .padding(.bottom, 6)
-            
+
             ForEach(relatedSearches, id: \.self) { search in
                 QueryButton(query: search, onDismiss: onDismiss)
             }

@@ -4,9 +4,9 @@
 
 import Shared
 import Storage
+import SwiftUI
 import UIKit
 import XCGLogger
-import SwiftUI
 
 private let log = Logger.browser
 
@@ -63,7 +63,7 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         super.viewDidLoad()
         tableView.accessibilityIdentifier = "Recently Closed Tabs List"
         tabManager = SceneDelegate.getTabManager(for: view)
-        tabMenu = TabMenu(tabManager: tabManager, alertPresentViewController: self)
+        tabMenu = TabMenu(tabManager: tabManager)
     }
 
     override func viewWillAppear(_ animated: Bool) {

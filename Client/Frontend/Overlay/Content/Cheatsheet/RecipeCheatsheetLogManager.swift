@@ -26,30 +26,39 @@ public class RecipeCheatsheetLogManager {
         case .impression:
             if !impressionUUIDAndURL.contains(tabUUIDAndURL) {
                 impressionUUIDAndURL.insert(tabUUIDAndURL)
-                ClientLogger.shared.logCounter(.RecipeCheatsheetImpression, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .RecipeCheatsheetImpression,
+                    attributes: EnvironmentHelper.shared.getAttributes())
             }
         case .clickRecipeBanner:
             if !clickRecipeBannerUUIDAndURL.contains(tabUUIDAndURL) {
                 clickRecipeBannerUUIDAndURL.insert(tabUUIDAndURL)
-                ClientLogger.shared.logCounter(.RecipeCheatsheetClickBanner, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .RecipeCheatsheetClickBanner,
+                    attributes: EnvironmentHelper.shared.getAttributes())
             }
         case .clickShowMoreRecipe:
             if !clickShowMoreRecipeUUIDAndURL.contains(tabUUIDAndURL) {
                 clickShowMoreRecipeUUIDAndURL.insert(tabUUIDAndURL)
-                ClientLogger.shared.logCounter(.RecipeCheatsheetShowMoreRecipe, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .RecipeCheatsheetShowMoreRecipe,
+                    attributes: EnvironmentHelper.shared.getAttributes())
             }
         case .clickPreferredProvider:
             if !clickPreferredProviderUUIDAndURL.contains(tabUUIDAndURL) {
                 clickPreferredProviderUUIDAndURL.insert(tabUUIDAndURL)
-                ClientLogger.shared.logCounter(.RecipeCheatsheetClickPreferredProvider, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .RecipeCheatsheetClickPreferredProvider,
+                    attributes: EnvironmentHelper.shared.getAttributes())
             }
         case .updatePreferredProvider:
             if !updatePreferredProviderUUIDAndURL.contains(tabUUIDAndURL) {
                 updatePreferredProviderUUIDAndURL.insert(tabUUIDAndURL)
-                ClientLogger.shared.logCounter(.RecipeCheatsheetUpdatePreferredProvider, attributes: EnvironmentHelper.shared.getAttributes())
+                ClientLogger.shared.logCounter(
+                    .RecipeCheatsheetUpdatePreferredProvider,
+                    attributes: EnvironmentHelper.shared.getAttributes())
             }
         }
     }
-
 
 }

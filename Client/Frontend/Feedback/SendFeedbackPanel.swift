@@ -15,10 +15,14 @@ public class SendFeedbackPanel: UIHostingController<AnyView> {
             SendFeedbackView(
                 screenshot: screenshot, url: url,
                 onDismiss: { self.dismiss(animated: true, completion: nil) }, requestId: requestId,
-                query: query) { feedbackRequest in
+                query: query
+            ) { feedbackRequest in
                 // Wait for feedback UI to dismiss
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    ToastDefaults().showToastForFeedback(request: feedbackRequest, toastViewManager: SceneDelegate.getCurrentSceneDelegate(for: self.view).toastViewManager)
+                    ToastDefaults().showToastForFeedback(
+                        request: feedbackRequest,
+                        toastViewManager: SceneDelegate.getCurrentSceneDelegate(for: self.view)
+                            .toastViewManager)
                 }
             }
             .environment(\.onOpenURL, onOpenURL)

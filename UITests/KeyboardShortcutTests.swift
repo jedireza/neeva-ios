@@ -73,7 +73,7 @@ class KeyboardShortcutTests: UITestBase {
 
         bvc.selectLocationBarKeyCommand()
         openURL(openAddressBar: false)
-        
+
         reset(tester: tester())
     }
 

@@ -8,7 +8,7 @@ import SwiftUI
 
 struct TopBarView: View {
     let performTabToolbarAction: (ToolbarAction) -> Void
-    let buildTabsMenu: () -> UIMenu?
+    let buildTabsMenu: (_ sourceView: UIView) -> UIMenu?
     let onReload: () -> Void
     let onSubmit: (String) -> Void
     let onShare: (UIView) -> Void

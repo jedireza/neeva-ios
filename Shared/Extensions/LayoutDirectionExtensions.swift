@@ -4,8 +4,8 @@
 
 import SwiftUI
 
-public extension LayoutDirection {
-    var xSign: CGFloat {
+extension LayoutDirection {
+    public var xSign: CGFloat {
         switch self {
         case .rightToLeft:
             return -1

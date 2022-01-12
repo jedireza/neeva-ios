@@ -31,6 +31,8 @@ class GridModel: ObservableObject {
     @Published var showingDetailView = false
     @Published var dragOffset: CGFloat? = nil
 
+    private let tabMenu: TabMenu
+
     var isIncognito: Bool {
         tabCardModel.manager.isIncognito
     }
@@ -38,8 +40,6 @@ class GridModel: ObservableObject {
     private var followPublicSpaceSubscription: AnyCancellable? = nil
 
     private var updateVisibility: ((Bool) -> Void)!
-    var buildCloseAllTabsMenu: (() -> UIMenu)!
-    var buildRecentlyClosedTabsMenu: (() -> UIMenu)!
     var animateDetailTransitions = true
 
     @Published var needsScrollToSelectedTab: Int = 0
@@ -50,6 +50,8 @@ class GridModel: ObservableObject {
         self.tabGroupCardModel = TabGroupCardModel(manager: tabGroupManager)
         self.spaceCardModel = SpaceCardModel()
         self.browserModel = browserModel
+
+        self.tabMenu = TabMenu(tabManager: tabManager)
     }
 
     func scrollToSelectedTab() {
@@ -241,6 +243,18 @@ class GridModel: ObservableObject {
     func openTabGroup(detail: TabGroupCardDetails) {
         tabGroupCardModel.detailedTabGroup = detail
         show()
+    }
+
+    func buildCloseAllTabsMenu(sourceView: UIView) -> UIMenu {
+        if switcherState == .tabs {
+            return UIMenu(sections: [[tabMenu.createCloseAllTabsAction(sourceView: sourceView)]])
+        } else {
+            return UIMenu()
+        }
+    }
+
+    func buildRecentlyClosedTabsMenu() -> UIMenu {
+        tabMenu.createRecentlyClosedTabsMenu()
     }
 }
 
