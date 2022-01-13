@@ -112,7 +112,7 @@ class DownloadedFilesClearable: Clearable {
 class ConnectedDAppsClearable: Clearable {
     func clear() -> Success {
         for session in Defaults[.sessionsPeerIDs] {
-            UserDefaults.standard.set(nil, forKey: DappsSessionKey(for: session))
+            Defaults[.dAppsSession(session)] = nil
         }
         Defaults[.sessionsPeerIDs].removeAll()
         return succeed()

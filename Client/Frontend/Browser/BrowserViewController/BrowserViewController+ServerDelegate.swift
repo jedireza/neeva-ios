@@ -9,8 +9,11 @@ import SwiftUI
 import WalletConnectSwift
 import web3swift
 
-func DappsSessionKey(for sessionID: String) -> String {
-    "DataForSession" + sessionID
+
+extension Defaults.Keys {
+    static func dAppsSession(_ sessionID: String) -> Defaults.Key<Data?> {
+        Defaults.Key("DataForSession" + sessionID)
+    }
 }
 
 protocol WalletConnectPresenter: ModalPresenter {
@@ -42,9 +45,7 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
         server!.register(handler: SendTransactionHandler(relay: self.web3Model))
         web3Model.updateCurrentSession()
         for session in Defaults[.sessionsPeerIDs] {
-            if let oldSessionObject = UserDefaults.standard.object(
-                forKey: DappsSessionKey(for: session))
-                as? Data,
+            if let oldSessionObject = Defaults[.dAppsSession(session)],
                 let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject)
             {
                 try? server!.reconnect(to: session)
@@ -112,9 +113,7 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
 
         // Add session to cached sessions if it is not there
         guard !Defaults[.sessionsPeerIDs].contains(session.dAppInfo.peerId) else { return }
-        let sessionData = try! JSONEncoder().encode(session)
-        UserDefaults.standard.set(
-            sessionData, forKey: DappsSessionKey(for: session.dAppInfo.peerId))
+        Defaults[.dAppsSession(session.dAppInfo.peerId)] = try! JSONEncoder().encode(session)
         Defaults[.sessionsPeerIDs].insert(session.dAppInfo.peerId)
         self.web3Model.updateCurrentSession()
     }
@@ -124,7 +123,7 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
             "WC: Did disconnect session to \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))"
         )
         self.web3Model.updateCurrentSession()
-        UserDefaults.standard.set(nil, forKey: DappsSessionKey(for: session.dAppInfo.peerId))
+        Defaults[.dAppsSession(session.dAppInfo.peerId)] = nil
         Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
         DispatchQueue.main.async {
             if let toastManager = self.getSceneDelegate()?.toastViewManager {
@@ -143,9 +142,7 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
         )
         guard session.walletInfo!.approved else { return }
 
-        let sessionData = try! JSONEncoder().encode(session)
-        UserDefaults.standard.set(
-            sessionData, forKey: DappsSessionKey(for: session.dAppInfo.peerId))
+        Defaults[.dAppsSession(session.dAppInfo.peerId)] = try! JSONEncoder().encode(session)
         Defaults[.sessionsPeerIDs].insert(session.dAppInfo.peerId)
     }
 }

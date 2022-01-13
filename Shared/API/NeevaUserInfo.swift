@@ -7,13 +7,9 @@ import Foundation
 import Reachability
 import SwiftUI
 import WebKit
+import Defaults
 
 public class NeevaUserInfo: ObservableObject {
-
-    private let UserInfoKey = "UserInfo"
-
-    private let defaults: UserDefaults
-
     public static let shared = NeevaUserInfo()
 
     @Published public private(set) var id: String?
@@ -42,7 +38,6 @@ public class NeevaUserInfo: ObservableObject {
         self.email = email
         self.pictureUrl = pictureUrl
         self.authProvider = (authProvider?.rawValue).flatMap(SSOProvider.init(rawValue:))
-        defaults = UserDefaults.standard
         isUserLoggedIn = true
         fetchUserPicture()
     }
@@ -50,17 +45,13 @@ public class NeevaUserInfo: ObservableObject {
     public static let previewLoggedOut = NeevaUserInfo(previewLoggedOut: ())
     public static let previewLoading = NeevaUserInfo(previewLoading: ())
     private init(previewLoggedOut: ()) {
-        defaults = UserDefaults.standard
         isUserLoggedIn = false
     }
     private init(previewLoading: ()) {
-        defaults = UserDefaults.standard
         isLoading = true
     }
 
     private init() {
-        self.defaults = UserDefaults.standard
-
         reachability.whenReachable = { reachability in
             self.connection = reachability.connection
             self.fetch()
@@ -182,8 +173,7 @@ public class NeevaUserInfo: ObservableObject {
     }
 
     public func loadUserInfoFromDefaults() {
-        let userInfoDict =
-            defaults.object(forKey: UserInfoKey) as? [String: String] ?? [String: String]()
+        let userInfoDict = Defaults[.neevaUserInfo]
 
         self.id = userInfoDict["userId"]
         self.displayName = userInfoDict["userDisplayName"]
@@ -225,7 +215,7 @@ public class NeevaUserInfo: ObservableObject {
     }
 
     private func saveUserInfoToDefaults(userInfo: UserInfo) {
-        let userInfoDict = [
+        Defaults[.neevaUserInfo] = [
             "userId": userInfo.id,
             "userDisplayName": userInfo.name,
             "userEmail": userInfo.email,
@@ -233,7 +223,6 @@ public class NeevaUserInfo: ObservableObject {
             "userAuthProvider": userInfo.authProvider,
             "userSubscriptionType": userInfo.subscriptionType?.rawValue,
         ].compactMapValues { $0 }
-        defaults.set(userInfoDict, forKey: UserInfoKey)
 
         displayName = userInfo.name
         email = userInfo.email

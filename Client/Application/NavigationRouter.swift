@@ -52,28 +52,26 @@ enum NavigationPath {
         {
             self = widgetKitNavPath
         } else if urlString.starts(with: "http:") || urlString.starts(with: "https:") {
-            // Use the last browsing mode the user was in
-            let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             self = .url(
-                webURL: NavigationPath.maybeRewriteURL(url, components) ?? url, isPrivate: isPrivate
+                webURL: NavigationPath.maybeRewriteURL(url, components) ?? url,
+                // Use the last browsing mode the user was in
+                isPrivate: Defaults[.lastSessionPrivate]
             )
         } else if urlString.starts(with: "\(scheme)://space"),
             let spaceId = components.valueForQuery("id")
         {
-            let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
             var updatedItemIds: [String]?
             if let ids = components.valueForQuery("updatedItemIds") {
                 updatedItemIds = ids.components(separatedBy: ",")
             }
-            self = .space(spaceId, updatedItemIds, isPrivate)
+            self = .space(spaceId, updatedItemIds, Defaults[.lastSessionPrivate])
         } else if urlString.starts(with: "\(scheme)://fast-tap"),
             let query =
                 components.valueForQuery("query")?.replacingOccurrences(of: "+", with: " ")
         {
             self = .fastTap(query, components.valueForQuery("no-delay") != nil)
         } else if urlString.starts(with: "\(scheme)://configure-news-provider") {
-            let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
-            self = .configNewsProvider(isPrivate: isPrivate)
+            self = .configNewsProvider(isPrivate: Defaults[.lastSessionPrivate])
         } else if urlString.starts(with: "\(scheme)://wc?uri="),
             let wcURL = WCURL(
                 urlString.dropFirst("\(scheme)://wc?uri=".count).removingPercentEncoding ?? "")
@@ -153,23 +151,20 @@ enum NavigationPath {
         // Unless the `open-url` URL specifies a `private` parameter,
         // use the last browsing mode the user was in.
         let isPrivate =
-            Bool(components.valueForQuery("private") ?? "")
-            ?? UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
+            Bool(components.valueForQuery("private") ?? "") ?? Defaults[.lastSessionPrivate]
         return .url(webURL: url, isPrivate: isPrivate)
     }
 
     private static func openCopiedUrl() -> NavigationPath? {
-        let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
-
         guard let url = UIPasteboard.general.url else {
             if let string = UIPasteboard.general.string, let url = URL(string: string) {
-                return .url(webURL: url, isPrivate: isPrivate)
+                return .url(webURL: url, isPrivate: Defaults[.lastSessionPrivate])
             } else {
                 return nil
             }
         }
 
-        return .url(webURL: url, isPrivate: isPrivate)
+        return .url(webURL: url, isPrivate: Defaults[.lastSessionPrivate])
     }
 
     private static func handleClosePrivateTabs(with bvc: BrowserViewController) {

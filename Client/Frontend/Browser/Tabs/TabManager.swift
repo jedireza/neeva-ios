@@ -826,8 +826,7 @@ extension TabManager {
 
         var tabToSelect = store.restoreStartupTabs(
             for: scene, clearPrivateTabs: Defaults[.closePrivateTabs], tabManager: self)
-        let wasLastSessionPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
-        if wasLastSessionPrivate, !(tabToSelect?.isIncognito ?? false) {
+        if Defaults[.lastSessionPrivate], !(tabToSelect?.isIncognito ?? false) {
             tabToSelect = addTab(isPrivate: true)
         }
 

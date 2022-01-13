@@ -36,6 +36,7 @@ extension Defaults.Keys {
         "firstSessionUUID", default: "")
     public static let sessionUUIDExpirationTime = Defaults.Key<Date>(
         "sessionUUIDExpirationTime", default: Date(timeIntervalSince1970: 0))
+    public static let lastSessionPrivate = Defaults.BoolKey("wasLastSessionPrivate")
 
     // explicit/implicit settings
     public static let contextMenuShowLinkPreviews = Defaults.Key(
@@ -55,7 +56,7 @@ extension Defaults.Keys {
     public static let blockThirdPartyTrackingRequests = Defaults.Key(
         "profile.tracking_protection.blockThirdPartyTrackingRequests", default: true)
     public static let unblockedDomains = Defaults.Key<Set<String>>(
-        "profile.tracking_protection.unblockedDomains", default: Set<String>())
+        "profile.tracking_protection.unblockedDomains", default: [])
     public static let customSearchEngine = Defaults.Key<String?>("profile_customSearchEngine")
 
     // debug settings
@@ -71,6 +72,7 @@ extension Defaults.Keys {
     // caches
     public static let topSitesCacheIsValid = Defaults.BoolKey("profile.topSitesCacheIsValid")
     public static let topSitesCacheSize = Defaults.Key<Int32?>("profile.topSitesCacheSize")
+    public static let neevaUserInfo = Defaults.Key<[String: String]>("UserInfo", default: [:])
 
     // telemetry
     public static let appExtensionTelemetryOpenUrl = Defaults.Key<Bool?>(
@@ -91,26 +93,21 @@ extension Defaults.Keys {
     public static let loginLastWeekTimeStamp = Defaults.Key<[Date]>(
         "LoginLastWeekTimeStamp", default: [])
 
-    public static let ratingsCardHidden = Defaults.Key<Bool>("RatingsCardHidden", default: false)
+    public static let ratingsCardHidden = Defaults.BoolKey("RatingsCardHidden")
 
-    public static let notificationToken = Defaults.Key<String?>(
-        "notificationToken", default: nil)
+    public static let notificationToken = Defaults.Key<String?>("notificationToken")
 
     // spaces
-    public static let seenSpacesIntro = Defaults.Key<Bool>(
-        "spacesIntroSeen", default: false)
-    public static let seenSpacesShareIntro = Defaults.Key<Bool>(
-        "spacesShareIntroSeen", default: false)
-    public static let showDescriptions = Defaults.Key<Bool>(
-        "showSpaceEntityDescription", default: false)
+    public static let seenSpacesIntro = Defaults.BoolKey("spacesIntroSeen")
+    public static let seenSpacesShareIntro = Defaults.BoolKey("spacesShareIntroSeen")
+    public static let showDescriptions = Defaults.BoolKey("showSpaceEntityDescription")
 
     // notification
-    public static let lastScheduledNeevaPromoID = Defaults.Key<String?>(
-        "lastScheduledNeevaPromoID", default: nil)
+    public static let lastScheduledNeevaPromoID = Defaults.Key<String?>("lastScheduledNeevaPromoID")
     public static let lastNeevaPromoScheduledTimeInterval = Defaults.Key<Int?>(
         "lastNeevaPromoScheduledTimeInterval")
-    public static let didRegisterNotificationTokenOnServer = Defaults.Key<Bool>(
-        "didRegisterNotificationTokenOnServer", default: false)
+    public static let didRegisterNotificationTokenOnServer = Defaults.BoolKey(
+        "didRegisterNotificationTokenOnServer")
     public static let productSearchPromoTimeInterval = Defaults.Key<Int>(
         "productSearchPromoTimeInterval", default: 259200)
     public static let newsProviderPromoTimeInterval = Defaults.Key<Int>(
@@ -120,8 +117,8 @@ extension Defaults.Keys {
     /// 0: Undecided, 1: Accepted, 2: Denied
     public static let notificationPermissionState = Defaults.Key<Int>(
         "notificationPermissionState", default: 0)
-    public static let seenNotificationPermissionPromo = Defaults.Key<Bool>(
-        "seenNotificationPermissionPromo", default: false)
+    public static let seenNotificationPermissionPromo = Defaults.BoolKey(
+        "seenNotificationPermissionPromo")
     public static let debugNotificationTitle = Defaults.Key<String?>(
         "debugNotificationTitle", default: "Neeva Space")
     public static let debugNotificationBody = Defaults.Key<String?>(
@@ -133,37 +130,28 @@ extension Defaults.Keys {
         "debugNotificationTimeInterval", default: 10)
 
     // tab groups
-    public static let tabGroupNames = Defaults.Key<[String: String]>(
-        "tabGroupNames", default: [String: String]())
+    public static let tabGroupNames = Defaults.Key<[String: String]>("tabGroupNames", default: [:])
 
-    public static let seenBlackFridayFollowPromo = Defaults.Key<Bool>(
-        "seenBlackFridayFollowPromo", default: false)
-    public static let seenBlackFridayNotifyPromo = Defaults.Key<Bool>(
-        "seenBlackFridayNotifyPromo", default: false)
+    public static let seenBlackFridayFollowPromo = Defaults.BoolKey("seenBlackFridayFollowPromo")
+    public static let seenBlackFridayNotifyPromo = Defaults.BoolKey("seenBlackFridayNotifyPromo")
 
     // Feedback
-    public static let feedbackBeingSent = Defaults.Key<Bool>(
-        "feedbackBeingSent", default: false)
+    public static let feedbackBeingSent = Defaults.BoolKey("feedbackBeingSent")
 
     // preview mode
     public static let previewModeQueries = Defaults.Key<Set<String>>(
-        "previewModeQueries", default: Set<String>())
-    public static let signupPromptInterval = Defaults.Key<Int>(
-        "signupPromptInterval", default: 5)
-    public static let maxQueryLimit = Defaults.Key<Int>(
-        "maxQueryLimit", default: 25)
+        "previewModeQueries", default: [])
+    public static let signupPromptInterval = Defaults.Key<Int>("signupPromptInterval", default: 5)
+    public static let maxQueryLimit = Defaults.Key<Int>("maxQueryLimit", default: 25)
 
     // crypto wallet
-    public static let cryptoPhrases = Defaults.Key<String>(
-        "cryptoPhrases", default: "")
-    public static let cryptoPublicKey = Defaults.Key<String>(
-        "cryptoPublicKey", default: "")
-    public static let cryptoPrivateKey = Defaults.Key<String>(
-        "cryptoPrivateKey", default: "")
+    public static let cryptoPhrases = Defaults.Key<String>("cryptoPhrases", default: "")
+    public static let cryptoPublicKey = Defaults.Key<String>("cryptoPublicKey", default: "")
+    public static let cryptoPrivateKey = Defaults.Key<String>("cryptoPrivateKey", default: "")
     public static let cryptoTransactionHashStore = Defaults.Key<Set<String>>(
-        "cryptoTransactionHashStore", default: Set<String>())
+        "cryptoTransactionHashStore", default: [])
     public static let sessionsPeerIDs = Defaults.Key<Set<String>>(
-        "web3SessionsPeerIDs", default: Set<String>())
+        "web3SessionsPeerIDs", default: [])
 }
 
 extension Defaults {

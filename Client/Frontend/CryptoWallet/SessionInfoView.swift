@@ -52,8 +52,7 @@ struct SessionInfoView: View {
                     DispatchQueue.global(qos: .userInitiated).async {
                         try? web3Model.server?.disconnect(from: dAppSession)
                     }
-                    UserDefaults.standard.set(
-                        nil, forKey: DappsSessionKey(for: dAppSession.dAppInfo.peerId))
+                    Defaults[.dAppsSession(dAppSession.dAppInfo.peerId)] = nil
                     Defaults[.sessionsPeerIDs].remove(dAppSession.dAppInfo.peerId)
                     showdAppSessionControls = false
                     web3Model.currentSession = nil
