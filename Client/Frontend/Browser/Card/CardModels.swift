@@ -90,10 +90,13 @@ class TabCardModel: CardModel, TabEventHandler {
         var cells: [Cell]
     }
 
-    func buildRows(tabGroupModel: TabGroupCardModel, maxCols: Int) -> [Row] {
+    func buildRows(incognito: Bool, tabGroupModel: TabGroupCardModel, maxCols: Int) -> [Row] {
         allDetails.filter { tabCard in
-            (tabGroupModel.representativeTabs.contains(tabCard.manager.get(for: tabCard.id)!)
+            let tab = tabCard.manager.get(for: tabCard.id)!
+            return
+                (tabGroupModel.representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
+                && tab.isIncognito == incognito
         }.reduce(into: []) { partialResult, details in
             let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == details.rootID })
             if partialResult.isEmpty || partialResult.last?.cells.count == maxCols

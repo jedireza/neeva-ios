@@ -300,32 +300,16 @@ struct GridPicker: View {
                         symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
                         selectedIconColor: .background,
                         selectedColor: .label,
-                        selectedAction: {
-                            gridModel.switcherState = .tabs
-
-                            if !gridModel.isIncognito {
-                                gridModel.tabCardModel.manager.toggleIncognitoMode(
-                                    fromTabTray: true, openLazyTab: false)
-                            }
-                        }),
+                        selectedAction: { gridModel.switchToTabs(incognito: true) }),
                     Segment(
                         symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
                         selectedIconColor: .white,
                         selectedColor: Color.ui.adaptive.blue,
-                        selectedAction: {
-                            gridModel.switcherState = .tabs
-
-                            if gridModel.isIncognito {
-                                gridModel.tabCardModel.manager.toggleIncognitoMode(
-                                    fromTabTray: true, openLazyTab: false)
-                            }
-                        }),
+                        selectedAction: { gridModel.switchToTabs(incognito: false) }),
                     Segment(
                         symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
                         selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
-                        selectedAction: {
-                            gridModel.switcherState = .spaces
-                        }),
+                        selectedAction: gridModel.switchToSpaces),
                 ], selectedSegmentIndex: $selectedIndex, dragOffset: gridModel.dragOffset
             )
             .useEffect(deps: gridModel.switcherState) { _ in
@@ -374,19 +358,25 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
     let horizontalOffsetChanged: (CGFloat?) -> Void
     var fromPicker: Bool = false
 
-    func body(content: Content) -> some View {
-        content
-            .gesture(
-                DragGesture()
-                    .onChanged({ value in
-                        let horizontalAmount = value.translation.width as CGFloat
+    private var gesture: some Gesture {
+        DragGesture()
+            .onChanged({ value in
+                let horizontalAmount = value.translation.width as CGFloat
 
-                        // Divide by 2.5 to follow drag more accurately
-                        horizontalOffsetChanged(
-                            fromPicker ? horizontalAmount : (-horizontalAmount / 2.5))
-                    })
-                    .onEnded { value in
-                        horizontalOffsetChanged(nil)
-                    })
+                // Divide by 2.5 to follow drag more accurately
+                horizontalOffsetChanged(
+                    fromPicker ? horizontalAmount : (-horizontalAmount / 2.5))
+            })
+            .onEnded { value in
+                horizontalOffsetChanged(nil)
+            }
+    }
+
+    func body(content: Content) -> some View {
+        if fromPicker {
+            content.simultaneousGesture(gesture)
+        } else {
+            content.gesture(gesture)
+        }
     }
 }

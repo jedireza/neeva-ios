@@ -10,18 +10,18 @@ extension BaseTestCase {
         enabled: Bool, urlToOpen: String = "example.com",
         shouldOpenURL: Bool = true, closeTabTray: Bool = true
     ) {
-        if !app.staticTexts["Incognito Tabs"].exists {
+        if !app.buttons["Incognito Tabs"].exists {
             goToTabTray()
         }
 
         if enabled {
-            app.staticTexts["Incognito Tabs"].tap()
+            app.buttons["Incognito Tabs"].tap()
 
             if shouldOpenURL {
                 openURLInNewTab(urlToOpen)
             }
         } else {
-            app.images["Normal Tabs"].tap()
+            app.buttons["Normal Tabs"].tap()
         }
 
         if app.buttons["Done"].exists && app.buttons["Done"].isHittable && closeTabTray {

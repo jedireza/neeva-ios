@@ -22,7 +22,10 @@ struct SingleLevelTabCardsView: View {
     let incognito: Bool
 
     var body: some View {
-        ForEach(tabModel.buildRows(tabGroupModel: tabGroupModel, maxCols: columns.count)) { row in
+        ForEach(
+            tabModel.buildRows(
+                incognito: incognito, tabGroupModel: tabGroupModel, maxCols: columns.count)
+        ) { row in
             HStack(spacing: CardGridUX.GridSpacing) {
                 ForEach(row.cells) { details in
                     switch details {

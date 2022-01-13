@@ -198,7 +198,8 @@ class BackForwardListViewController: UIViewController, UITableViewDataSource, UI
                 ]
             } else {
                 verticalConstraints += [
-                    make.top.equalTo(self.view).offset(bvc.topBar.view.frame.height).constraint
+                    make.top.equalTo(self.view).offset(bvc.topBar?.view.frame.height ?? 0)
+                        .constraint
                 ]
             }
         }

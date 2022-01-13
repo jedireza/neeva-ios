@@ -30,15 +30,12 @@ struct SegmentTappedModifier: ViewModifier {
     @Binding var selectedSegmentIndex: Int
 
     func body(content: Content) -> some View {
-        content
-            .foregroundColor(
-                index != currentIndex
-                    ? Color.label : segment.selectedIconColor
-            )
-            .onTapGesture {
-                segment.selectedAction()
-                selectedSegmentIndex = index
-            }
+        Button(action: {
+            segment.selectedAction()
+            selectedSegmentIndex = index
+        }) {
+            content
+        }
     }
 }
 
@@ -48,6 +45,7 @@ public struct SegmentedPicker: View {
     var dragOffset: CGFloat? = nil
 
     @Binding var selectedSegmentIndex: Int
+    @GestureState var pressed = false
     @State var placeholderIndex: Int? = nil
 
     var currentIndex: Int {
@@ -78,34 +76,61 @@ public struct SegmentedPicker: View {
         segmentWidth * CGFloat(selectedSegmentIndex - 1) + evenSegmentOffset + (dragOffset ?? 0)
     }
 
+    private var segment: some View {
+        RoundedRectangle(cornerRadius: 18)
+            .scaleEffect(pressed ? 0.9 : 1)
+            .offset(x: offset.clamp(min: -minMaxOffset, max: minMaxOffset))
+            .animation(.interactiveSpring(), value: pressed)
+            .animation(dragOffset == nil ? .interactiveSpring() : nil, value: offset)
+            .padding(.horizontal, 3)
+            .frame(width: segmentWidth, height: 35)
+    }
+
+    private func icons(selected: Bool) -> some View {
+        HStack {
+            ForEach(Array(segments.enumerated()), id: \.offset) { (index, segment) in
+                Spacer()
+
+                if selected {
+                    segment.symbol
+                        .foregroundColor(segment.selectedIconColor)
+                } else {
+                    segment.symbol
+                        .foregroundColor(.label)
+                        .modifier(
+                            SegmentTappedModifier(
+                                index: index, segment: segment, currentIndex: currentIndex,
+                                selectedSegmentIndex: $selectedSegmentIndex))
+                }
+
+                if segments.count > 1 {
+                    Spacer()
+                }
+            }
+        }
+    }
+
     public var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 20)
                 .foregroundColor(Color.secondaryBackground)
                 .frame(height: 40)
 
-            RoundedRectangle(cornerRadius: 18)
+            icons(selected: false)
+
+            segment
                 .foregroundColor(segments[currentIndex].selectedColor)
-                .offset(x: offset.clamp(min: -minMaxOffset, max: minMaxOffset))
-                .animation(dragOffset != nil ? .linear : nil)
-                .padding(.horizontal, 3)
-                .frame(width: segmentWidth, height: 35)
+                .gesture(
+                    DragGesture()
+                        .updating($pressed, body: { _, state, _ in
+                            state = true
+                        })
+                )
 
-            HStack {
-                ForEach(Array(segments.enumerated()), id: \.offset) { (index, segment) in
-                    Spacer()
-
-                    segment.symbol
-                        .modifier(
-                            SegmentTappedModifier(
-                                index: index, segment: segment, currentIndex: currentIndex,
-                                selectedSegmentIndex: $selectedSegmentIndex))
-
-                    if segments.count > 1 {
-                        Spacer()
-                    }
-                }
-            }
+            icons(selected: true)
+                .mask(segment)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
         }
         .frame(width: segmentWidth * CGFloat(segments.count))
         .onChange(of: selectedSegmentIndex) { _ in
@@ -144,6 +169,9 @@ public struct SegmentedPicker: View {
                 if newPlaceholderIndex != placeholderIndex {
                     placeholderIndex = newPlaceholderIndex
                     segments[newPlaceholderIndex].selectedAction()
+                    if proposedPlaceholderChange != 0 {
+                        Haptics.swipeGesture()
+                    }
                 }
             }
         }

@@ -157,7 +157,7 @@ class ZeroQueryModel: ObservableObject {
                     ClientLogger.shared.logCounter(
                         .BlackFridayPromo)
                     let spaceId = SpaceStore.promotionalSpaceId
-                    let gridModel = self.bvc.cardGridViewController.gridModel
+                    let gridModel = self.bvc.gridModel
                     gridModel.openSpace(
                         spaceId: spaceId, bvc: self.bvc,
                         completion: {
@@ -242,7 +242,7 @@ class ZeroQueryModel: ObservableObject {
             isLazyTab && !createdLazyTab
                 && (openedFrom != .tabTray)
         {
-            bvc.cardGridViewController.toolbarModel.onToggleIncognito()
+            bvc.toolbarModel.onToggleIncognito()
         }
 
         // This can occur if a taps back and the Suggestion UI is shown.

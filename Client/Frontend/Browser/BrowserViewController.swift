@@ -85,9 +85,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     let browserModel = BrowserModel()
     let chromeModel = TabChromeModel()
-    var gridModel: GridModel {
-        cardGridViewController.gridModel
-    }
+    lazy var gridModel: GridModel = {
+        GridModel(tabManager: tabManager, browserModel: browserModel)
+    }()
 
     lazy var toolbarModel: SwitcherToolbarModel = {
         SwitcherToolbarModel(
@@ -102,11 +102,13 @@ class BrowserViewController: UIViewController, ModalPresenter {
             onNeevaMenuAction: self.perform(neevaMenuAction:))
     }()
 
-    lazy var cardGridViewController: CardGridViewController = {
+    lazy var cardGridViewController: CardGridViewController? = {
+        guard !FeatureFlag[.enableBrowserView] else { return nil }
         let controller = CardGridViewController(
             tabManager: self.tabManager,
             toolbarModel: toolbarModel,
-            web3Model: self.web3Model, browserModel: browserModel
+            web3Model: self.web3Model,
+            gridModel: gridModel
         ) { url, view in
             self.shareURL(url: url, view: view)
         }
@@ -136,7 +138,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager: self.tabManager,
             chromeModel: chromeModel,
             swipeDirection: .forward,
-            contentView: tabContainerHost.view)
+            contentView: tabContainerHost?.view)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -148,7 +150,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager: self.tabManager,
             chromeModel: chromeModel,
             swipeDirection: .back,
-            contentView: tabContainerHost.view)
+            contentView: tabContainerHost?.view)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -159,7 +161,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
         return TabContainerModel(bvc: self)
     }()
 
-    private(set) lazy var tabContainerHost: TabContainerHost = {
+    private(set) lazy var tabContainerHost: TabContainerHost? = {
+        guard !FeatureFlag[.enableBrowserView] else { return nil }
         return TabContainerHost(model: tabContainerModel, bvc: self)
     }()
 
@@ -170,7 +173,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     var findInPageViewController: FindInPageViewController?
     var overlayWindowManager: WindowManager?
 
-    private(set) var topBar: TopBarHost!
+    private(set) var topBar: TopBarHost?
 
     private(set) var readerModeCache: ReaderModeCache
     private(set) var toolbar: TabToolbarHost?
@@ -402,7 +405,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         view.bringSubviewToFront(webViewContainerBackdrop)
         webViewContainerBackdrop.alpha = 1
-        tabContainerHost.view.alpha = 0
+        tabContainerHost?.view.alpha = 0
         presentedViewController?.popoverPresentationController?.containerView?.alpha = 0
         presentedViewController?.view.alpha = 0
     }
@@ -413,7 +416,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         UIView.animate(
             withDuration: 0.2, delay: 0, options: UIView.AnimationOptions(),
             animations: {
-                self.tabContainerHost.view.alpha = 1
+                self.tabContainerHost?.view.alpha = 1
                 self.presentedViewController?.popoverPresentationController?.containerView?.alpha =
                     1
                 self.presentedViewController?.view.alpha = 1
@@ -482,9 +485,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
             view.addSubview(browserHost.view)
             addChild(browserHost)
         } else {
-            tabContainerHost.willMove(toParent: self)
-            view.addSubview(tabContainerHost.view)
-            addChild(tabContainerHost)
+            tabContainerHost!.willMove(toParent: self)
+            view.addSubview(tabContainerHost!.view)
+            addChild(tabContainerHost!)
 
             let gridModel = self.gridModel
             let topBarHost = TopBarHost(
@@ -515,7 +518,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             footer = UIView()
             view.addSubview(footer)
 
-            scrollController?.header = topBar.view
+            scrollController?.header = topBar?.view
             scrollController?.safeAreaView = view
             scrollController?.footer = footer
         }
@@ -569,7 +572,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 }
             }
         } else {
-            topBar.view.snp.makeConstraints { make in
+            topBar?.view.snp.makeConstraints { make in
                 make.leading.trailing.equalToSuperview()
 
                 if !UIConstants.enableBottomURLBar {
@@ -602,16 +605,16 @@ class BrowserViewController: UIViewController, ModalPresenter {
             }
 
             simulateBackViewController?.view.snp.makeConstraints { make in
-                make.top.bottom.equalTo(tabContainerHost.view)
-                make.width.equalTo(tabContainerHost.view).offset(SwipeUX.EdgeWidth)
-                make.trailing.equalTo(tabContainerHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
+                make.top.bottom.equalTo(tabContainerHost!.view)
+                make.width.equalTo(tabContainerHost!.view).offset(SwipeUX.EdgeWidth)
+                make.trailing.equalTo(tabContainerHost!.view.snp.leading).offset(SwipeUX.EdgeWidth)
             }
 
             if FeatureFlag[.swipePlusPlus] {
                 simulateForwardViewController?.view.snp.makeConstraints { make in
-                    make.top.bottom.equalTo(tabContainerHost.view)
-                    make.width.equalTo(tabContainerHost.view).offset(SwipeUX.EdgeWidth)
-                    make.leading.equalTo(tabContainerHost.view.snp.trailing).offset(
+                    make.top.bottom.equalTo(tabContainerHost!.view)
+                    make.width.equalTo(tabContainerHost!.view).offset(SwipeUX.EdgeWidth)
+                    make.leading.equalTo(tabContainerHost!.view.snp.trailing).offset(
                         -SwipeUX.EdgeWidth)
                 }
             }
@@ -771,7 +774,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         if !FeatureFlag[.enableBrowserView] {
             if UIConstants.enableBottomURLBar {
-                topBar.view.snp.remakeConstraints { make in
+                topBar!.view.snp.remakeConstraints { make in
                     if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view),
                         keyboardHeight > 0
                     {
@@ -783,17 +786,17 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 }
             }
 
-            tabContainerHost.view.snp.remakeConstraints { make in
+            tabContainerHost!.view.snp.remakeConstraints { make in
                 make.left.right.equalTo(self.view)
 
                 if UIConstants.enableBottomURLBar {
                     make.top.equalTo(self.view.safeArea.top)
                 } else {
-                    make.top.equalTo(self.topBar.view.snp.bottom)
+                    make.top.equalTo(self.topBar!.view.snp.bottom)
                 }
 
                 if UIConstants.enableBottomURLBar {
-                    make.bottom.equalTo(self.topBar.view.snp.top)
+                    make.bottom.equalTo(self.topBar!.view.snp.top)
                 } else {
                     if let toolbar = self.toolbar {
                         make.bottom.equalTo(toolbar.view.snp.top)
@@ -808,11 +811,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 make.edges.equalTo(self.footer)
             }
 
-            topBar.view.setNeedsUpdateConstraints()
-        }
-
-        cardGridViewController.view.snp.remakeConstraints { make in
-            make.leading.trailing.top.bottom.equalToSuperview()
+            topBar?.view.setNeedsUpdateConstraints()
+            cardGridViewController!.view.snp.remakeConstraints { make in
+                make.leading.trailing.top.bottom.equalToSuperview()
+            }
         }
     }
 
@@ -1591,7 +1593,7 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didCreateWebView webView: WKWebView) {
-        webView.frame = tabContainerHost.view.frame
+        webView.frame = tabContainerHost?.view.frame ?? webView.frame
         webView.uiDelegate = self
 
         self.subscribe(to: webView, for: tab)

@@ -48,9 +48,9 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
 
     init(
         tabManager: TabManager, toolbarModel: SwitcherToolbarModel, web3Model: Web3Model,
-        browserModel: BrowserModel, shareURL: @escaping (URL, UIView) -> Void
+        gridModel: GridModel, shareURL: @escaping (URL, UIView) -> Void
     ) {
-        self.gridModel = GridModel(tabManager: tabManager, browserModel: browserModel)
+        self.gridModel = gridModel
         self.toolbarModel = toolbarModel
         super.init(
             rootView: Content(
@@ -110,7 +110,7 @@ struct CardStripContent: View {
         self.spaceCardModel = SpaceCardModel()
         self.sitesCardModel = SiteCardModel(urls: [], tabManager: tabManager)
         self.cardStripModel = CardStripModel()
-        self.gridModel = bvc.cardGridViewController.gridModel
+        self.gridModel = bvc.gridModel
         self.width = width
     }
 }

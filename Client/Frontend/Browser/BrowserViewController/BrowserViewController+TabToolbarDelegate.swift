@@ -122,7 +122,7 @@ extension BrowserViewController: ToolbarDelegate {
                 }
                 break
             case .share:
-                self.showShareSheet(buttonView: self.topBar.view)
+                self.showShareSheet(buttonView: self.topBar!.view)
             }
 
             self.hideZeroQuery()

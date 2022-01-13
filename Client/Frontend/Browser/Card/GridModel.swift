@@ -245,6 +245,18 @@ class GridModel: ObservableObject {
         show()
     }
 
+    func switchToTabs(incognito: Bool) {
+        switcherState = .tabs
+
+        if isIncognito != incognito {
+            tabCardModel.manager.toggleIncognitoMode(fromTabTray: true, openLazyTab: false)
+        }
+    }
+
+    func switchToSpaces() {
+        switcherState = .spaces
+    }
+
     func buildCloseAllTabsMenu(sourceView: UIView) -> UIMenu {
         if switcherState == .tabs {
             return UIMenu(sections: [[tabMenu.createCloseAllTabsAction(sourceView: sourceView)]])

@@ -48,7 +48,7 @@ class SimulatedSwipeAnimator: NSObject {
     }
 
     init(
-        swipeDirection: SwipeDirection, animatingView: UIView, contentView: UIView,
+        swipeDirection: SwipeDirection, animatingView: UIView, contentView: UIView?,
         params: SimulateForwardAnimationParameters = DefaultParameters
     ) {
         self.animatingView = animatingView

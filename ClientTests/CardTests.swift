@@ -13,7 +13,8 @@ import XCTest
 
 extension CardGrid: Inspectable {}
 extension CardsContainer: Inspectable {}
-extension ScrollContainer: Inspectable {}
+extension TabGridContainer: Inspectable {}
+extension CardScrollContainer: Inspectable {}
 extension SingleLevelTabCardsView: Inspectable {}
 extension GridPicker: Inspectable {}
 extension FaviconView: Inspectable {}

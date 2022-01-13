@@ -21,7 +21,7 @@ struct BrowserTopBarView: View {
             SwitcherToolbarView(
                 top: true, isEmpty: bvc.tabContainerModel.tabCardModel.isCardGridEmpty
             )
-            .environmentObject(bvc.cardGridViewController.toolbarModel)
+            .environmentObject(bvc.toolbarModel)
         } else {
             GridPicker()
         }

@@ -60,7 +60,7 @@ extension BrowserViewController {
                     isPrivate: tab.isIncognito)
             }
         case .share:
-            showShareSheet(buttonView: targetButtonView ?? topBar.view)
+            showShareSheet(buttonView: targetButtonView ?? topBar!.view)
         case .downloadPage:
             guard let selectedTab = tabManager.selectedTab, let url = selectedTab.url else {
                 return
@@ -74,7 +74,7 @@ extension BrowserViewController {
         case .longPressForward:
             self.showBackForwardList()
         case .toggleIncognitoMode:
-            self.cardGridViewController.toolbarModel.onToggleIncognito()
+            self.toolbarModel.onToggleIncognito()
         case .goToSettings:
             perform(neevaMenuAction: .settings)
         case .goToHistory:

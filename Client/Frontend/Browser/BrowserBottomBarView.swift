@@ -26,7 +26,7 @@ struct BrowserBottomBarView: View {
             )
             .environmentObject(bvc.gridModel)
             .environmentObject(bvc.gridModel.tabCardModel)
-            .environmentObject(bvc.cardGridViewController.toolbarModel)
+            .environmentObject(bvc.toolbarModel)
         }
     }
 }

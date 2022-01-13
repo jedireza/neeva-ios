@@ -96,7 +96,7 @@ struct ShareAddedSpaceView: View {
                 if let space = space {
                     ShareSpaceView(
                         space: space,
-                        shareTarget: FeatureFlag[.enableBrowserView] ? bvc.view : bvc.topBar.view,
+                        shareTarget: FeatureFlag[.enableBrowserView] ? bvc.view : bvc.topBar!.view,
                         isPresented: $presentingShareUI,
                         compact: true,
                         noteText:

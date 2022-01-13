@@ -42,7 +42,7 @@ class SimulatedSwipeController:
 
     init(
         tabManager: TabManager, chromeModel: TabChromeModel, swipeDirection: SwipeDirection,
-        contentView: UIView
+        contentView: UIView?
     ) {
         self.tabManager = tabManager
         self.chromeModel = chromeModel
