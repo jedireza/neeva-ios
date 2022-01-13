@@ -1,9 +1,14 @@
-//  Need this wrapper because Popover from SwiftUI will display as an
-//  overlay sheet on mobile, it will only display the arrow popover style
-//  on larger screen(tablet)
-//  https://stackoverflow.com/questions/58834809/change-popover-size-in-swiftui/60077135#60077135
+// Copyright 2022 Neeva Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// Need this wrapper because Popover from SwiftUI will display as an
+// overlay sheet on mobile, it will only display the arrow popover style
+// on larger screen(tablet)
 //
-//
+// See also:
+// https://stackoverflow.com/questions/58834809/change-popover-size-in-swiftui/60077135#60077135
+
 import Foundation
 import SwiftUI
 

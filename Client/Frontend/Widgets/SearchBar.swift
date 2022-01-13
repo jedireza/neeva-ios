@@ -1,4 +1,7 @@
-// Copyright © Neeva. All rights reserved.
+// Copyright 2022 Neeva Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
 // Adapted from https://github.com/stleamist/NavigationSearchBarModifier/blob/f1d92c7e/Sources/NavigationSearchBarModifier/NavigationSearchBarModifier.swift
 
 import SwiftUI
