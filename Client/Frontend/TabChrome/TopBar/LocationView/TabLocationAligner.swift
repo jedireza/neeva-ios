@@ -8,7 +8,7 @@ import SwiftUI
 /// SwiftUI magic that center-aligns the location label in the location view, even if
 /// the leading and trailing buttons are different widths.
 ///
-/// NOTE: this view has not been tested with layouts where `Leading` is wider than `Trailing`.
+/// **Warning:** This view has not been tested with layouts where `Leading` is wider than `Trailing`.
 /// If that is possible with the parameters you pass, make sure to check that it works properly.
 struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Trailing: View>: View {
     let transitionToEditing: Bool
@@ -33,6 +33,12 @@ struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Traili
         self.leadingActions = leading
         self.trailingActions = trailing
     }
+
+    // __________________________outerGeom__________________________
+    //
+    // _____________leadingGeom______________
+    //                        ___innerGeom___
+    // |   [leadingActions]   |   [label]   |   [trailingActions]   |
 
     var body: some View {
         /// `outerGeom` measures the available width
@@ -79,6 +85,7 @@ struct TabLocationAligner<Leading: View, Label: View, LabelOverlay: View, Traili
 }
 
 private struct LocationLabelAligner<Label: View>: View {
+    /// Forces the label to be aligned leading when true (used by the app to smooth the transition to the `LocationTextField`)
     let alignLeading: Bool
     let debug: Bool
     let label: () -> Label
@@ -111,11 +118,12 @@ private struct LocationLabelAligner<Label: View>: View {
         let trailingGap = centerX - trailingPadding - labelWidth / 2
 
         /// The offset necessary (from the trailing edge of the leading controls) to center the label in the aligner.
-        ///
-        /// If the label would extend over the trailing controls if centered, this offset will align its trailing edge with
-        /// the leading edge of the trailing controls.
         let labelOffset =
-            alignLeading ? labelWidth / 2 : centerX - leadingPadding - max(-trailingGap, 0)
+            alignLeading
+            ? labelWidth / 2
+                /// If the label would extend over the trailing controls if centered, this offset will align its trailing edge with
+                /// the leading edge of the trailing controls.
+            : centerX - leadingPadding - max(-trailingGap, 0)
 
         label()
             .background(

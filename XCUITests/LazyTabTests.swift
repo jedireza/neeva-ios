@@ -59,7 +59,7 @@ class LazyTabTests: BaseTestCase {
 
     // MARK: Overflow
     func testNoTabAddedWhenCancelingNewTabFromOverflow() {
-        goToOverflowMenuButton(label: "New Tab") { element in
+        goToOverflowMenuButton(label: "New Tab", shouldDismissOverlay: false) { element in
             element.tap()
         }
 

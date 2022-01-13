@@ -36,31 +36,34 @@ struct TopBarView: View {
             }
 
             HStack(spacing: chrome.inlineToolbar ? 12 : 0) {
-                if chrome.inlineToolbar {
-                    TabToolbarButtons.BackButton(
-                        weight: .regular,
-                        onBack: { performTabToolbarAction(.back) },
-                        onLongPress: { performTabToolbarAction(.longPressBackForward) }
-                    ).tapTargetFrame()
+                if chrome.inlineToolbar && !chrome.isEditingLocation {
+                    Group {
+                        TabToolbarButtons.BackButton(
+                            weight: .regular,
+                            onBack: { performTabToolbarAction(.back) },
+                            onLongPress: { performTabToolbarAction(.longPressBackForward) }
+                        ).tapTargetFrame()
 
-                    TabToolbarButtons.ForwardButton(
-                        weight: .regular,
-                        onForward: { performTabToolbarAction(.forward) },
-                        onLongPress: { performTabToolbarAction(.longPressBackForward) }
-                    ).tapTargetFrame()
+                        TabToolbarButtons.ForwardButton(
+                            weight: .regular,
+                            onForward: { performTabToolbarAction(.forward) },
+                            onLongPress: { performTabToolbarAction(.longPressBackForward) }
+                        ).tapTargetFrame()
 
-                    TabToolbarButtons.ReloadStopButton(
-                        weight: .regular,
-                        onTap: { performTabToolbarAction(.reloadStop) }
-                    ).tapTargetFrame()
+                        TabToolbarButtons.ReloadStopButton(
+                            weight: .regular,
+                            onTap: { performTabToolbarAction(.reloadStop) }
+                        ).tapTargetFrame()
 
-                    TopBarOverflowMenuButton(
-                        changedUserAgent:
-                            chrome.topBarDelegate?.tabManager.selectedTab?.showRequestDesktop,
-                        onOverflowMenuAction: onOverflowMenuAction,
-                        location: .tab
-                    )
+                        TopBarOverflowMenuButton(
+                            changedUserAgent:
+                                chrome.topBarDelegate?.tabManager.selectedTab?.showRequestDesktop,
+                            onOverflowMenuAction: onOverflowMenuAction,
+                            location: .tab
+                        )
+                    }.transition(.offset(x: -300, y: 0).combined(with: .opacity))
                 }
+
                 TabLocationView(
                     onReload: onReload, onSubmit: onSubmit, onShare: onShare,
                     buildReloadMenu: buildReloadMenu, onCancel: onCancel
@@ -69,24 +72,28 @@ struct TopBarView: View {
                 .padding(.top, chrome.inlineToolbar ? 8 : 3)
                 // -1 for the progress bar
                 .padding(.bottom, (chrome.inlineToolbar ? 8 : 10) - 1)
+                .zIndex(1)
                 .layoutPriority(1)
-                if chrome.inlineToolbar {
-                    TopBarNeevaMenuButton(
-                        onTap: {
-                            chrome.hideZeroQuery()
-                            didTapNeevaMenu()
-                        }, onNeevaMenuAction: onNeevaMenuAction)
 
-                    TabToolbarButtons.AddToSpace(
-                        weight: .regular, action: { performTabToolbarAction(.addToSpace) }
-                    )
-                    .tapTargetFrame()
+                if chrome.inlineToolbar && !chrome.isEditingLocation {
+                    Group {
+                        TopBarNeevaMenuButton(
+                            onTap: {
+                                chrome.hideZeroQuery()
+                                didTapNeevaMenu()
+                            }, onNeevaMenuAction: onNeevaMenuAction)
 
-                    TabToolbarButtons.ShowTabs(
-                        weight: .regular, action: { performTabToolbarAction(.showTabs) },
-                        buildMenu: buildTabsMenu
-                    )
-                    .tapTargetFrame()
+                        TabToolbarButtons.AddToSpace(
+                            weight: .regular, action: { performTabToolbarAction(.addToSpace) }
+                        )
+                        .tapTargetFrame()
+
+                        TabToolbarButtons.ShowTabs(
+                            weight: .regular, action: { performTabToolbarAction(.showTabs) },
+                            buildMenu: buildTabsMenu
+                        )
+                        .tapTargetFrame()
+                    }.transition(.offset(x: 300, y: 0).combined(with: .opacity))
                 }
             }
             /// Unfortunately `.opacity(chrome.controlOpacity)` doesn't work consistently.
