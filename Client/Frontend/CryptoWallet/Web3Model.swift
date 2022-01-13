@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import Combine
+import Defaults
 import Foundation
 import Shared
 import SwiftUI
@@ -45,12 +46,12 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
     @Published var showingWalletDetails = false
     @Published var matchingCollection: Collection?
-    @Published var wcURL: WCURL? = nil
     @Published var gasEstimate: String? = nil
 
     let server: Server?
     let presenter: WalletConnectPresenter
     var selectedTab: Tab?
+    var wallet: WalletAccessor?
 
     private var selectedTabSubscription: AnyCancellable? = nil
     private var urlSubscription: AnyCancellable? = nil
@@ -65,6 +66,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                     == tabManager.selectedTab?.url?.baseDomain
             })
         self.selectedTab = tabManager.selectedTab
+        self.wallet = FeatureFlag[.enableCryptoWallet] ? WalletAccessor() : nil
 
         self.selectedTabSubscription = tabManager.selectedTabPublisher.sink { tab in
             guard let tab = tab else { return }
@@ -101,11 +103,14 @@ class Web3Model: ObservableObject, ResponseRelay {
 
     func reset() {
         currentSequence = nil
-        wcURL = nil
         gasEstimate = nil
     }
 
     func tryWalletConnect() {
+        if let wallet = wallet, wallet.publicAddress.isEmpty, !Defaults[.cryptoPublicKey].isEmpty {
+            // This would only happen if we created/imported a wallet within this session
+            self.wallet = WalletAccessor()
+        }
         selectedTab?.webView?
             .evaluateJavascriptInDefaultContentWorld(
                 WalletConnectDetector.scrapeWalletConnectURI
@@ -114,15 +119,10 @@ class Web3Model: ObservableObject, ResponseRelay {
                 guard let walletConnectUriString = object as? String,
                     let wcURL = WCURL(walletConnectUriString.removingPercentEncoding ?? "")
                 else { return }
-
-                self.wcURL = wcURL
-                self.presenter.showModal(
-                    style: .withTitle,
-                    headerButton: nil,
-                    content: {
-                        WalletSequenceContent(model: self)
-                    }, onDismiss: { self.reset() })
-                self.tryMatchCurrentPageToCollection()
+                self.presenter.connectWallet(to: wcURL)
+                DispatchQueue.main.async {
+                    self.tryMatchCurrentPageToCollection()
+                }
             }
     }
 
@@ -149,10 +149,9 @@ class Web3Model: ObservableObject, ResponseRelay {
                         if self.selectedTab?.url?.baseDomain
                             == collection.externalURL?.baseDomain
                         {
-                            print(
-                                "WC: collection \(collection.name) checks out!"
-                            )
-                            self.matchingCollection = collection
+                            DispatchQueue.main.async {
+                                self.matchingCollection = collection
+                            }
                         }
                     }
                 }

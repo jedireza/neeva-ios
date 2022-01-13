@@ -16,38 +16,3 @@ public class WalletConnectDetector: ObservableObject {
 
     @Published var walletConnectURL: URL? = nil
 }
-
-struct ConnectWalletPanel: View {
-    @EnvironmentObject var web3Model: Web3Model
-
-    var body: some View {
-        VStack(spacing: 16) {
-            Button(
-                action: {
-                    guard let connectToURI = web3Model.wcURL else { return }
-
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        try? web3Model.server?.connect(to: connectToURI)
-                    }
-                    withAnimation {
-                        web3Model.wcURL = nil
-                    }
-                },
-                label: {
-                    Text("Connect Neeva Wallet")
-                        .frame(maxWidth: .infinity)
-                }
-            ).buttonStyle(.neeva(.primary))
-            if let collection = web3Model.matchingCollection,
-                collection.safelistRequestStatus >= .approved
-            {
-                CollectionView(collection: collection)
-            } else if let url = web3Model.selectedTab?.url {
-                CommunitySubmissionView(url: url)
-            }
-        }
-        .padding(12)
-        .background(Color.DefaultBackground)
-        .cornerRadius(12, corners: [.topLeading, .topTrailing])
-    }
-}

@@ -18,20 +18,21 @@ protocol WalletConnectPresenter: ModalPresenter {
 }
 
 extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
-
     @discardableResult func connectWallet(to wcURL: WCURL) -> Bool {
-        guard FeatureFlag[.enableCryptoWallet], !WalletAccessor().publicAddress.isEmpty else {
+        guard FeatureFlag[.enableCryptoWallet], let wallet = web3Model.wallet,
+            !wallet.publicAddress.isEmpty
+        else {
             return false
         }
 
-        DispatchQueue.global(qos: .userInitiated).async {
-            try? self.server?.connect(to: wcURL)
-        }
         showModal(
             style: .spaces,
             content: {
                 WalletSequenceContent(model: self.web3Model)
             }, onDismiss: { self.web3Model.reset() })
+        DispatchQueue.global(qos: .userInitiated).async {
+            try? self.server?.connect(to: wcURL)
+        }
         return true
     }
 
@@ -59,10 +60,21 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
         _ server: Server, shouldStart session: Session,
         completion: @escaping (Session.WalletInfo) -> Void
     ) {
+        guard let wallet = self.web3Model.wallet else {
+            let walletInfo = Session.WalletInfo(
+                approved: false,
+                accounts: [],
+                chainId: session.dAppInfo.chainId ?? 1,
+                peerId: UUID().uuidString,
+                peerMeta: Session.ClientMeta(name: "", description: "", icons: [], url: .aboutBlank)
+            )
+            completion(walletInfo)
+            return
+        }
+
         LogService.shared.log(
             "WC: Should Start from \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))")
         DispatchQueue.main.async {
-            let wallet = WalletAccessor()
             self.web3Model.currentSequence = SequenceInfo(
                 type: .sessionRequest,
                 thumbnailURL: session.dAppInfo.peerMeta.icons.first ?? .aboutBlank,

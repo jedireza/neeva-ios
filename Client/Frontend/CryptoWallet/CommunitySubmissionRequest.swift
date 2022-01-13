@@ -5,6 +5,7 @@ import Foundation
 import Shared
 
 public let WEB3_SUBMISSION_QUERY = "Web3 Community Submission Label"
+public let TEMP_WEB3_ALLOW_LIST = ["opensea.io", "superrare.com", "rarible.com", "foundation.app"]
 
 public class SuppressRequest: MutationRequest<CommunitySuppressResultMutation> {
     public init(url: URL) {

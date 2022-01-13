@@ -119,7 +119,7 @@ struct AssetView: View {
                             web3Model.showingWalletDetails = false
                             gridModel.hideWithNoAnimation()
                             DispatchQueue.main.async {
-                                openURLForSpace(url, WalletAccessor().publicAddress)
+                                openURLForSpace(url, web3Model.wallet?.publicAddress ?? "")
                             }
                         }))
             }.padding(.trailing, 16)

@@ -14,6 +14,20 @@ import web3swift
 struct WalletSequenceContent: View {
     @Environment(\.hideOverlay) private var hideOverlaySheet
     @ObservedObject var model: Web3Model
+    @State var communityTrusted: Bool = false
+
+    var showingCommunitySubmissions: Bool {
+        guard let type = model.currentSequence?.type,
+            case .sessionRequest = type,
+            model.matchingCollection == nil,
+            let url = model.selectedTab?.url,
+            !TEMP_WEB3_ALLOW_LIST.contains(where: { $0 == url.host }),
+            !communityTrusted
+        else {
+            return false
+        }
+        return true
+    }
 
     var header: String {
         guard let sequence = model.currentSequence else {
@@ -49,6 +63,7 @@ struct WalletSequenceContent: View {
                     .lineLimit(2)
                     .foregroundColor(.label)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .center)
                 Text(
                     sequence.dAppMeta.url.baseDomain
@@ -56,109 +71,122 @@ struct WalletSequenceContent: View {
                 )
                 .withFont(.labelLarge)
                 .foregroundColor(.ui.adaptive.blue)
-                if case .sessionRequest = sequence.type, let collection = model.matchingCollection,
-                    let stats = collection.stats
-                {
-                    CollectionStatsView(
-                        stats: stats,
-                        verified: collection.safelistRequestStatus == .verified)
+                if case .sessionRequest = sequence.type {
+                    if let collection = model.matchingCollection,
+                        collection.safelistRequestStatus >= .approved,
+                        let stats = collection.stats
+                    {
+                        CollectionStatsView(stats: stats)
+                            .padding(.vertical, 12)
+                    } else if showingCommunitySubmissions,
+                        let url = model.selectedTab?.url
+                    {
+                        CommunitySubmissionView(url: url, trust: $communityTrusted)
+                    } else if let description = sequence.message {
+                        Text(description)
+                            .withFont(.bodyLarge)
+                            .foregroundColor(.secondaryLabel)
+                    }
                 } else if let description = sequence.message {
                     Text(description)
                         .withFont(.bodyLarge)
                         .foregroundColor(.secondaryLabel)
                 }
-                if let ethAmount = sequence.ethAmount, let double = Double(ethAmount) {
-                    Label {
-                        Text(String(double)).withFont(.headingLarge).foregroundColor(.label)
-                    } icon: {
-                        Image("ethLogo")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 24, height: 24)
-                            .padding(4)
-                    }
-                }
-                if let gasEstimate = model.gasEstimate {
-                    Label {
-                        Text("\(gasEstimate) Gwei").withFont(.bodyLarge).foregroundColor(.label)
-                    } icon: {
-                        Symbol(decorative: .flameFill, style: .bodyLarge)
-                    }
-                }
-                Spacer()
-                HStack {
-                    Button(
-                        action: {
-                            sequence.onReject()
-                            hideOverlaySheet()
-                        },
-                        label: {
-                            Text("Reject")
-                                .frame(maxWidth: .infinity)
+                Group {
+                    if let ethAmount = sequence.ethAmount, let double = Double(ethAmount) {
+                        Label {
+                            Text(String(double)).withFont(.headingLarge).foregroundColor(.label)
+                        } icon: {
+                            Image("ethLogo")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 24, height: 24)
+                                .padding(4)
                         }
-                    ).buttonStyle(.neeva(.secondary))
-                        .disabled(model.currentSequence == nil)
-                    Button(
-                        action: {
-                            switch sequence.type {
-                            case .sessionRequest:
-                                sequence.onAccept()
-                            default:
-                                let context = LAContext()
-                                let reason = "Signing in and transactions require authentication"
-                                let onAuth: (Bool, Error?) -> Void = {
-                                    success, authenticationError in
-                                    if success {
-                                        sequence.onAccept()
+                    }
+                    if let gasEstimate = model.gasEstimate {
+                        Label {
+                            Text("\(gasEstimate) Gwei")
+                                .withFont(.bodyLarge)
+                                .foregroundColor(.label)
+                        } icon: {
+                            Symbol(decorative: .flameFill, style: .bodyLarge)
+                        }
+                    }
+                }.padding(.vertical, 12)
+                if !showingCommunitySubmissions {
+                    HStack {
+                        Button(
+                            action: {
+                                sequence.onReject()
+                                hideOverlaySheet()
+                            },
+                            label: {
+                                Text("Reject")
+                                    .frame(maxWidth: .infinity)
+                            }
+                        ).buttonStyle(.neeva(.secondary))
+                            .disabled(model.currentSequence == nil)
+                        Button(
+                            action: {
+                                switch sequence.type {
+                                case .sessionRequest:
+                                    sequence.onAccept()
+                                default:
+                                    let context = LAContext()
+                                    let reason =
+                                        "Signing in and transactions require authentication"
+                                    let onAuth: (Bool, Error?) -> Void = {
+                                        success, authenticationError in
+                                        if success {
+                                            sequence.onAccept()
+                                        } else {
+                                            sequence.onReject()
+                                        }
+                                    }
+
+                                    var error: NSError?
+                                    if context.canEvaluatePolicy(
+                                        .deviceOwnerAuthenticationWithBiometrics, error: &error)
+                                    {
+                                        context.evaluatePolicy(
+                                            .deviceOwnerAuthenticationWithBiometrics,
+                                            localizedReason: reason,
+                                            reply: onAuth)
+                                    } else if context.canEvaluatePolicy(
+                                        .deviceOwnerAuthentication, error: &error)
+                                    {
+                                        context.evaluatePolicy(
+                                            .deviceOwnerAuthentication, localizedReason: reason,
+                                            reply: onAuth)
                                     } else {
                                         sequence.onReject()
                                     }
                                 }
 
-                                var error: NSError?
-                                if context.canEvaluatePolicy(
-                                    .deviceOwnerAuthenticationWithBiometrics, error: &error)
-                                {
-                                    context.evaluatePolicy(
-                                        .deviceOwnerAuthenticationWithBiometrics,
-                                        localizedReason: reason,
-                                        reply: onAuth)
-                                } else if context.canEvaluatePolicy(
-                                    .deviceOwnerAuthentication, error: &error)
-                                {
-                                    context.evaluatePolicy(
-                                        .deviceOwnerAuthentication, localizedReason: reason,
-                                        reply: onAuth)
+                                hideOverlaySheet()
+                            },
+                            label: {
+                                if case .sessionRequest = sequence.type {
+                                    Text("Accept")
+                                        .frame(maxWidth: .infinity)
                                 } else {
-                                    sequence.onReject()
+                                    Label(
+                                        title: {
+                                            Text("Accept")
+                                        },
+                                        icon: {
+                                            Symbol(decorative: .faceid)
+                                        }
+                                    )
+                                    .frame(maxWidth: .infinity)
+
                                 }
                             }
-
-                            hideOverlaySheet()
-                        },
-                        label: {
-                            if case .sessionRequest = sequence.type {
-                                Text("Accept")
-                                    .frame(maxWidth: .infinity)
-                            } else {
-                                Label(
-                                    title: {
-                                        Text("Accept")
-                                    },
-                                    icon: {
-                                        Symbol(decorative: .faceid)
-                                    }
-                                )
-                                .frame(maxWidth: .infinity)
-
-                            }
-                        }
-                    ).buttonStyle(.neeva(.primary))
-                        .disabled(model.currentSequence == nil)
+                        ).buttonStyle(.neeva(.primary))
+                            .disabled(model.currentSequence == nil)
+                    }
                 }
-            } else if let wcURL = model.wcURL {
-                ConnectWalletPanel()
-                    .environmentObject(model)
             } else {
                 Spacer(minLength: 150)
                 ProgressView()

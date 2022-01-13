@@ -16,12 +16,13 @@ public class AssetStore: ObservableObject {
     @Published private(set) var state: AssetStoreState = .ready
     var assets: [Asset] = []
     var collections = Set<Collection>()
+    let wallet = WalletAccessor()
 
     public func refresh() {
         guard
             let url = URL(
                 string:
-                    "https://api.opensea.io/api/v1/assets?order_direction=desc&offset=0&owner=\(WalletAccessor().publicAddress)"
+                    "https://api.opensea.io/api/v1/assets?order_direction=desc&offset=0&owner=\(wallet.publicAddress)"
             )
         else {
             return

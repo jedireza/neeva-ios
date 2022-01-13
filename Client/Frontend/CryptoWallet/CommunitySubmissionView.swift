@@ -6,7 +6,10 @@ import Shared
 import SwiftUI
 
 struct CommunitySubmissionView: View {
+    @Environment(\.hideOverlay) private var hideOverlaySheet
+
     let url: URL
+    @Binding var trust: Bool
     @State private var subscription: AnyCancellable? = nil
 
     var body: some View {
@@ -14,8 +17,7 @@ struct CommunitySubmissionView: View {
             Spacer()
             Text(
                 """
-                We were not able to confirm the validity of this site through our crowd sourced
-                efforts and OpenSea data. Please proceed with caution.
+                We were not able to confirm the validity of this site. Please proceed with caution.
                 """
             )
             .font(.roobert(size: 16))
@@ -25,6 +27,7 @@ struct CommunitySubmissionView: View {
             .padding(.bottom, 8)
             Button(
                 action: {
+                    trust = true
                     self.subscription = BoostRequest(url: url).$state.sink { _ in }
                 },
                 label: {
@@ -40,9 +43,11 @@ struct CommunitySubmissionView: View {
 
                 }
             )
-                .buttonStyle(.neeva(.primary))
+            .buttonStyle(.neeva(.primary))
             Button(
                 action: {
+                    trust = false
+                    hideOverlaySheet()
                     self.subscription = SuppressRequest(url: url).$state.sink { _ in }
                 },
                 label: {
