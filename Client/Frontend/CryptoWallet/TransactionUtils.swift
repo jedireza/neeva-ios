@@ -5,6 +5,7 @@
 import CryptoSwift
 import Defaults
 import Foundation
+import PromiseKit
 import WalletConnectSwift
 import secp256k1
 import web3swift
@@ -49,6 +50,14 @@ struct WalletAccessor {
             + web3.wallet.signPersonalMessage(
                 message, account: EthereumAddress(publicAddress)!, password: password
             ).toHexString()
+    }
+
+    func gasPrice(completion: @escaping (String?) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            web3.eth.getGasPricePromise().done(on: DispatchQueue.main) { estimate in
+                completion(Web3.Utils.formatToEthereumUnits(estimate, toUnits: .Gwei))
+            }.cauterize()
+        }
     }
 
     func send(

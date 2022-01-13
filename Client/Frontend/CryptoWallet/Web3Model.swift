@@ -30,6 +30,11 @@ class Web3Model: ObservableObject, ResponseRelay {
         didSet {
             guard currentSequence != nil else { return }
             tryMatchCurrentPageToCollection()
+            if case .sendTransaction = currentSequence!.type {
+                WalletAccessor().gasPrice { estimate in
+                    self.gasEstimate = estimate
+                }
+            }
         }
     }
     @Published var currentSession: Session? {
@@ -41,6 +46,7 @@ class Web3Model: ObservableObject, ResponseRelay {
     @Published var showingWalletDetails = false
     @Published var matchingCollection: Collection?
     @Published var wcURL: WCURL? = nil
+    @Published var gasEstimate: String? = nil
 
     let server: Server?
     let presenter: WalletConnectPresenter
@@ -96,6 +102,7 @@ class Web3Model: ObservableObject, ResponseRelay {
     func reset() {
         currentSequence = nil
         wcURL = nil
+        gasEstimate = nil
     }
 
     func tryWalletConnect() {
@@ -184,7 +191,8 @@ class Web3Model: ObservableObject, ResponseRelay {
                         self.server?.send(.reject(request))
                     }
                 },
-                ethAmount: Web3.Utils.formatToEthereumUnits(Web3.Utils.hexToBigUInt(value) ?? .zero)
+                ethAmount: Web3.Utils.formatToEthereumUnits(
+                    Web3.Utils.hexToBigUInt(value) ?? .zero, decimals: 4)
             )
             self.presenter.showModal(
                 style: .spaces,

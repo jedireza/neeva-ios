@@ -67,18 +67,22 @@ struct WalletSequenceContent: View {
                         .withFont(.bodyLarge)
                         .foregroundColor(.secondaryLabel)
                 }
-                if let ethAmount = sequence.ethAmount {
+                if let ethAmount = sequence.ethAmount, let double = Double(ethAmount) {
                     Label {
-                        Text(ethAmount).withFont(.headingLarge).foregroundColor(.label)
+                        Text(String(double)).withFont(.headingLarge).foregroundColor(.label)
                     } icon: {
                         Image("ethLogo")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 24, height: 24)
                             .padding(4)
-                            .background(
-                                Circle().stroke(Color.ui.gray80)
-                            )
+                    }
+                }
+                if let gasEstimate = model.gasEstimate {
+                    Label {
+                        Text("\(gasEstimate) Gwei").withFont(.bodyLarge).foregroundColor(.label)
+                    } icon: {
+                        Symbol(decorative: .flameFill, style: .bodyLarge)
                     }
                 }
                 Spacer()

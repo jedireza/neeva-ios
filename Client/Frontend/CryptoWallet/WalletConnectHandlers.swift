@@ -82,13 +82,12 @@ class SendTransactionHandler: RequestHandler {
             from.lowercased() == wallet.publicAddress.lowercased(),
             let fromAddress = EthereumAddress(from),
             let to = params["to"],
-            let toAddress = EthereumAddress(to),
-            let value = params["value"]
+            let toAddress = EthereumAddress(to)
         else {
             relay.send(.invalid(request))
             return
         }
-
+        let value = params["value"] ?? "0x0"
         let data = params["data"]
         let gas = params["gas"]
 

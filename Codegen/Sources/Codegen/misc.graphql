@@ -138,3 +138,11 @@ mutation UpdateUserProfile($input: UpdateUserProfileInput!) {
     success
   }
 }
+
+mutation CommunityBoostResult($input: CommunityBoostResultInput!) {
+    communityBoostResult(input: $input)
+}
+
+mutation CommunitySuppressResult($input: CommunitySuppressResultInput!) {
+    communitySuppressResult(input: $input)
+}

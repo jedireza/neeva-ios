@@ -90,3 +90,30 @@ public struct CollectionStats: Codable, Hashable {
 public enum SafelistRequestStatus: String, Codable {
     case not_requested, requested, approved, verified
 }
+
+extension SafelistRequestStatus: Comparable {
+    public static func < (_ lhs: SafelistRequestStatus, _ rhs: SafelistRequestStatus) -> Bool {
+        switch lhs {
+        case .verified:
+            return false
+        case .approved:
+            return rhs == .verified
+        case .requested:
+            return rhs == .verified || rhs == .approved
+        case .not_requested:
+            return rhs == .verified || rhs == .approved || rhs == .requested
+        }
+    }
+}
+
+public func >= (_ lhs: SafelistRequestStatus?, _ rhs: SafelistRequestStatus) -> Bool {
+    if let lhs = lhs {
+        return lhs >= rhs
+    } else {
+        return false
+    }
+}
+
+public func < (_ lhs: SafelistRequestStatus?, _ rhs: SafelistRequestStatus) -> Bool {
+    !(lhs >= rhs)
+}

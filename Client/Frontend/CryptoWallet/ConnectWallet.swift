@@ -38,8 +38,12 @@ struct ConnectWalletPanel: View {
                         .frame(maxWidth: .infinity)
                 }
             ).buttonStyle(.neeva(.primary))
-            if let collection = web3Model.matchingCollection {
+            if let collection = web3Model.matchingCollection,
+                collection.safelistRequestStatus >= .approved
+            {
                 CollectionView(collection: collection)
+            } else if let url = web3Model.selectedTab?.url {
+                CommunitySubmissionView(url: url)
             }
         }
         .padding(12)

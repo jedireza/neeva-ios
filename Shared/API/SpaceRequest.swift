@@ -5,48 +5,19 @@
 import Apollo
 import Combine
 
-public class SpaceRequest<Mutation: GraphQLMutation>: ObservableObject {
-    private var subcription: Combine.Cancellable? = nil
-
-    public enum State {
-        case initial
-        case success
-        case failure
-    }
-
-    @Published public var state: State = .initial
-    @Published public var error: Error?
-
-    init(mutation: Mutation) {
-        assert(subcription == nil)
-
-        self.subcription = mutation.perform { result in
-            self.subcription = nil
-            switch result {
-            case .failure(let error):
-                self.error = error
-                self.state = .failure
-                break
-            case .success(_):
-                self.state = .success
-            }
-        }
-    }
-}
-
-public class CreateSpaceRequest: SpaceRequest<CreateSpaceMutation> {
+public class CreateSpaceRequest: MutationRequest<CreateSpaceMutation> {
     public init(name: String) {
         super.init(mutation: CreateSpaceMutation(name: name))
     }
 }
 
-public class DeleteSpaceRequest: SpaceRequest<DeleteSpaceMutation> {
+public class DeleteSpaceRequest: MutationRequest<DeleteSpaceMutation> {
     public init(spaceID: String) {
         super.init(mutation: DeleteSpaceMutation(input: DeleteSpaceInput(id: spaceID)))
     }
 }
 
-public class DeleteGeneratorRequest: SpaceRequest<DeleteSpaceGeneratorMutation> {
+public class DeleteGeneratorRequest: MutationRequest<DeleteSpaceGeneratorMutation> {
     public init(spaceID: String, generatorID: String) {
         super.init(
             mutation: DeleteSpaceGeneratorMutation(
@@ -54,13 +25,13 @@ public class DeleteGeneratorRequest: SpaceRequest<DeleteSpaceGeneratorMutation> 
     }
 }
 
-public class UnfollowSpaceRequest: SpaceRequest<LeaveSpaceMutation> {
+public class UnfollowSpaceRequest: MutationRequest<LeaveSpaceMutation> {
     public init(spaceID: String) {
         super.init(mutation: LeaveSpaceMutation(input: LeaveSpaceInput(id: spaceID)))
     }
 }
 
-public class UpdateSpaceRequest: SpaceRequest<UpdateSpaceMutation> {
+public class UpdateSpaceRequest: MutationRequest<UpdateSpaceMutation> {
     public init(
         spaceID: String, title: String,
         description: String? = nil, thumbnail: String? = nil
@@ -73,7 +44,7 @@ public class UpdateSpaceRequest: SpaceRequest<UpdateSpaceMutation> {
     }
 }
 
-public class ClaimGeneratedItem: SpaceRequest<ClaimGeneratedItemMutation> {
+public class ClaimGeneratedItem: MutationRequest<ClaimGeneratedItemMutation> {
     public init(spaceID: String, entityID: String) {
         super.init(
             mutation: ClaimGeneratedItemMutation(
@@ -81,7 +52,7 @@ public class ClaimGeneratedItem: SpaceRequest<ClaimGeneratedItemMutation> {
     }
 }
 
-public class AddSpaceCommentRequest: SpaceRequest<AddSpaceCommentMutation> {
+public class AddSpaceCommentRequest: MutationRequest<AddSpaceCommentMutation> {
     public init(spaceID: String, comment: String) {
         super.init(
             mutation: AddSpaceCommentMutation(
@@ -89,20 +60,20 @@ public class AddSpaceCommentRequest: SpaceRequest<AddSpaceCommentMutation> {
     }
 }
 
-public class AddPublicACLRequest: SpaceRequest<AddSpacePublicAclMutation> {
+public class AddPublicACLRequest: MutationRequest<AddSpacePublicAclMutation> {
     public init(spaceID: String) {
         super.init(mutation: AddSpacePublicAclMutation(input: AddSpacePublicACLInput(id: spaceID)))
     }
 }
 
-public class DeletePublicACLRequest: SpaceRequest<DeleteSpacePublicAclMutation> {
+public class DeletePublicACLRequest: MutationRequest<DeleteSpacePublicAclMutation> {
     public init(spaceID: String) {
         super.init(
             mutation: DeleteSpacePublicAclMutation(input: DeleteSpacePublicACLInput(id: spaceID)))
     }
 }
 
-public class AddSoloACLsRequest: SpaceRequest<AddSpaceSoloAcLsMutation> {
+public class AddSoloACLsRequest: MutationRequest<AddSpaceSoloAcLsMutation> {
     public init(spaceID: String, emails: [String], acl: SpaceACLLevel, note: String) {
         super.init(
             mutation: AddSpaceSoloAcLsMutation(
@@ -112,7 +83,7 @@ public class AddSoloACLsRequest: SpaceRequest<AddSpaceSoloAcLsMutation> {
     }
 }
 
-public class DeleteSpaceItemsRequest: SpaceRequest<BatchDeleteSpaceResultMutation> {
+public class DeleteSpaceItemsRequest: MutationRequest<BatchDeleteSpaceResultMutation> {
     public init(spaceID: String, ids: [String]) {
         super.init(
             mutation: BatchDeleteSpaceResultMutation(
@@ -121,7 +92,7 @@ public class DeleteSpaceItemsRequest: SpaceRequest<BatchDeleteSpaceResultMutatio
     }
 }
 
-public class UpdateSpaceEntityRequest: SpaceRequest<UpdateSpaceEntityDisplayDataMutation> {
+public class UpdateSpaceEntityRequest: MutationRequest<UpdateSpaceEntityDisplayDataMutation> {
     public init(
         spaceID: String, entityID: String, title: String, snippet: String?, thumbnail: String?
     ) {
@@ -133,7 +104,7 @@ public class UpdateSpaceEntityRequest: SpaceRequest<UpdateSpaceEntityDisplayData
     }
 }
 
-public class ReorderSpaceRequest: SpaceRequest<SetSpaceDetailPageSortOrderMutation> {
+public class ReorderSpaceRequest: MutationRequest<SetSpaceDetailPageSortOrderMutation> {
     public init(spaceID: String, ids: [String]) {
         super.init(
             mutation: SetSpaceDetailPageSortOrderMutation(
@@ -143,7 +114,7 @@ public class ReorderSpaceRequest: SpaceRequest<SetSpaceDetailPageSortOrderMutati
     }
 }
 
-public class AddToSpaceWithURLRequest: SpaceRequest<AddToSpaceMutation> {
+public class AddToSpaceWithURLRequest: MutationRequest<AddToSpaceMutation> {
     public init(spaceID: String, url: String, title: String, description: String?) {
         super.init(
             mutation: AddToSpaceMutation(
@@ -153,7 +124,7 @@ public class AddToSpaceWithURLRequest: SpaceRequest<AddToSpaceMutation> {
     }
 }
 
-public class UpdateProfileRequest: SpaceRequest<UpdateUserProfileMutation> {
+public class UpdateProfileRequest: MutationRequest<UpdateUserProfileMutation> {
     public init(firstName: String, lastName: String) {
         super.init(
             mutation: UpdateUserProfileMutation(

@@ -157,6 +157,9 @@
 		4A59B58AD11B5EE1F80BBDEB /* TestHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */; };
 		4A5B0F2126AF9610009D1336 /* CardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5B0F2026AF9610009D1336 /* CardTests.swift */; };
 		4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5CCE8226524B7F0063783D /* FaviconView.swift */; };
+		4A72AFC2278E42F60057E58B /* MutationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC1278E42F60057E58B /* MutationRequest.swift */; };
+		4A72AFC4278E43AF0057E58B /* CommunitySubmissionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC3278E43AF0057E58B /* CommunitySubmissionRequest.swift */; };
+		4A72AFC6278E9E500057E58B /* CommunitySubmissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */; };
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
 		4A88F97526630EFC007C203D /* CardDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97426630EFC007C203D /* CardDetails.swift */; };
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
@@ -1297,6 +1300,9 @@
 		4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestHistory.swift; sourceTree = "<group>"; };
 		4A5B0F2026AF9610009D1336 /* CardTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTests.swift; sourceTree = "<group>"; };
 		4A5CCE8226524B7F0063783D /* FaviconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconView.swift; sourceTree = "<group>"; };
+		4A72AFC1278E42F60057E58B /* MutationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationRequest.swift; sourceTree = "<group>"; };
+		4A72AFC3278E43AF0057E58B /* CommunitySubmissionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySubmissionRequest.swift; sourceTree = "<group>"; };
+		4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySubmissionView.swift; sourceTree = "<group>"; };
 		4A88F9722662AEAB007C203D /* CardStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStrip.swift; sourceTree = "<group>"; };
 		4A88F97426630EFC007C203D /* CardDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetails.swift; sourceTree = "<group>"; };
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -2986,11 +2992,14 @@
 			isa = PBXGroup;
 			children = (
 				4A93B550277F80A400CD5415 /* Assets */,
-				BCAAA0D4276D9B420013223E /* CryptoConfig.swift */,
+				4A72AFC3278E43AF0057E58B /* CommunitySubmissionRequest.swift */,
+				4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */,
 				4AA285AE278BA884001993EE /* ConnectWallet.swift */,
+				BCAAA0D4276D9B420013223E /* CryptoConfig.swift */,
 				BCAAA0D2276D9A070013223E /* CryptoWalletController.swift */,
 				BCAAA0D6276D9B800013223E /* CryptoWalletView.swift */,
 				BCAAA0D8276D9BA60013223E /* ImportWalletView.swift */,
+				BC532EF0278C05230027CA11 /* ScannerView.swift */,
 				BCAAA0DB276D9BCD0013223E /* SendForm.swift */,
 				4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */,
 				BCAAA0DD276D9BF00013223E /* ShowPhrasesView.swift */,
@@ -3000,7 +3009,6 @@
 				BCAAA0E1276D9C400013223E /* WalletDashboard.swift */,
 				4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */,
 				4A93B5592782981600CD5415 /* Web3Model.swift */,
-				BC532EF0278C05230027CA11 /* ScannerView.swift */,
 				BCAAA0E5276D9D3D0013223E /* WelcomeStarterView.swift */,
 			);
 			path = CryptoWallet;
@@ -3260,6 +3268,7 @@
 				C9C18DD026558FF2004710CD /* QueryController.swift */,
 				C9C18E30265594DE004710CD /* Space.swift */,
 				4A15C8B826E1BFAB006CD097 /* SpaceRequest.swift */,
+				4A72AFC1278E42F60057E58B /* MutationRequest.swift */,
 				C9C18E31265594DE004710CD /* SpaceStore.swift */,
 				4AD771B52738697A00B6769D /* SpaceEntityData.swift */,
 				4AD771AD2729C4C000B6769D /* PreviewEntities.swift */,
@@ -5227,6 +5236,7 @@
 				E65075C01E37F7AB006961AC /* WeakList.swift in Sources */,
 				E65075AE1E37F7AB006961AC /* UIImageExtensions.swift in Sources */,
 				C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */,
+				4A72AFC2278E42F60057E58B /* MutationRequest.swift in Sources */,
 				E65075A21E37F7AB006961AC /* HexExtensions.swift in Sources */,
 				4A9F65452713E06F00B7C06E /* SocialInfoUpdater.swift in Sources */,
 				288A2DB61AB8B38D0023ABC3 /* Result.swift in Sources */,
@@ -5625,6 +5635,7 @@
 				1ADFEEF8278C884800A0E82E /* CollapsableCardGroupView.swift in Sources */,
 				BC62C070263E0E6A00615E70 /* EnvironmentHelper.swift in Sources */,
 				4A93B552277F80C800CD5415 /* Collection.swift in Sources */,
+				4A72AFC4278E43AF0057E58B /* CommunitySubmissionRequest.swift in Sources */,
 				670029C1272D1A5C00EBB968 /* ScheduleNotificationView.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,
 				C93EFEE926716411000396B5 /* TabLocationBarButton.swift in Sources */,
@@ -5646,6 +5657,7 @@
 				4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */,
 				EBB8950C21939E4100EB91A0 /* NeevaTabContentBlocker.swift in Sources */,
 				4AA285AF278BA884001993EE /* ConnectWallet.swift in Sources */,
+				4A72AFC6278E9E500057E58B /* CommunitySubmissionView.swift in Sources */,
 				BCF864CD276C5FDC00E94B3A /* BuyingGuideView.swift in Sources */,
 				BC93328E2715324700B9BE1C /* OktaAuth.swift in Sources */,
 				BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */,
