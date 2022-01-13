@@ -40,7 +40,6 @@ extension Defaults.Keys {
     // explicit/implicit settings
     public static let contextMenuShowLinkPreviews = Defaults.Key(
         "profile.ContextMenuShowLinkPreviews", default: true)
-    public static let showClipboardBar = Defaults.BoolKey("profile.showClipboardBar")
     public static let deletedSuggestedSites = Defaults.Key<[String]>(
         "profile.topSites.deletedSuggestedSites", default: [])
     public static let showSearchSuggestions = Defaults.Key(

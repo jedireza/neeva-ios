@@ -20,7 +20,6 @@ extension URLComponents {
 enum NavigationPath {
     case url(webURL: URL?, isPrivate: Bool)
     case widgetUrl(webURL: URL?, uuid: String)
-    case text(String)
     case closePrivateTabs
     case space(String, [String]?, Bool)
     case fastTap(String, Bool)
@@ -89,8 +88,6 @@ enum NavigationPath {
         switch nav {
         case .url(let url, let isPrivate):
             NavigationPath.handleURL(url: url, isPrivate: isPrivate, with: bvc)
-        case .text(let text):
-            NavigationPath.handleText(text: text, with: bvc)
         case .closePrivateTabs:
             NavigationPath.handleClosePrivateTabs(with: bvc)
         case .widgetUrl(let webURL, let uuid):
@@ -135,6 +132,7 @@ enum NavigationPath {
             return .openUrlFromComponents(components: components)
         } else if urlString.starts(with: "\(scheme)://widget-small-quicklink-open-copied")
             || urlString.starts(with: "\(scheme)://widget-medium-quicklink-open-copied")
+            || urlString.starts(with: "\(scheme)://open-copied")
         {
             // Widget Quick links - medium - open copied url
             return .openCopiedUrl()
@@ -160,13 +158,17 @@ enum NavigationPath {
         return .url(webURL: url, isPrivate: isPrivate)
     }
 
-    private static func openCopiedUrl() -> NavigationPath {
-        if !UIPasteboard.general.hasURLs {
-            let searchText = UIPasteboard.general.string ?? ""
-            return .text(searchText)
-        }
-        let url = UIPasteboard.general.url
+    private static func openCopiedUrl() -> NavigationPath? {
         let isPrivate = UserDefaults.standard.bool(forKey: "wasLastSessionPrivate")
+
+        guard let url = UIPasteboard.general.url else {
+            if let string = UIPasteboard.general.string, let url = URL(string: string) {
+                return .url(webURL: url, isPrivate: isPrivate)
+            } else {
+                return nil
+            }
+        }
+
         return .url(webURL: url, isPrivate: isPrivate)
     }
 
@@ -206,11 +208,6 @@ enum NavigationPath {
             bvc.openLazyTab(
                 openedFrom: .openTab(bvc.tabManager.selectedTab), switchToIncognitoMode: false)
         }
-    }
-
-    private static func handleText(text: String, with bvc: BrowserViewController) {
-        bvc.openBlankNewTab()
-        bvc.urlBar(didSubmitText: text)
     }
 
     private static func handleSpace(

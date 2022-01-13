@@ -172,7 +172,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     private(set) var topBar: TopBarHost!
 
-    private var clipboardBarDisplayHandler: ClipboardBarDisplayHandler?
     private(set) var readerModeCache: ReaderModeCache
     private(set) var toolbar: TabToolbarHost?
     private(set) var screenshotHelper: ScreenshotHelper!
@@ -526,9 +525,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
         topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
         view.addSubview(topTouchArea)
 
-        clipboardBarDisplayHandler = ClipboardBarDisplayHandler(tabManager: tabManager)
-        clipboardBarDisplayHandler?.bvc = self
-
         self.updateToolbarStateForTraitCollection(self.traitCollection)
 
         setupConstraints()
@@ -700,8 +696,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 }
             }
         }
-
-        clipboardBarDisplayHandler?.checkIfShouldDisplayBar()
     }
 
     fileprivate func crashedLastLaunch() -> Bool {
@@ -2275,8 +2269,6 @@ extension BrowserViewController: SessionRestoreHelperDelegate {
         if let tab = tabManager.selectedTab, tab.webView === tab.webView {
             updateUIForReaderHomeStateForTab(tab)
         }
-
-        clipboardBarDisplayHandler?.didRestoreSession()
     }
 }
 

@@ -22,7 +22,6 @@ struct DetailedSettingsLabel: View {
 struct GeneralSettingsSection: View {
     @Default(.showSearchSuggestions) var showSearchSuggestions
     @Default(.blockPopups) var blockPopups
-    @Default(.showClipboardBar) var showClipboardBar
     @Default(.contextMenuShowLinkPreviews) var showLinkPreviews
 
     var body: some View {
@@ -46,12 +45,6 @@ struct GeneralSettingsSection: View {
         }
         Toggle("Show Search Suggestions", isOn: $showSearchSuggestions)
         Toggle("Block Pop-up Windows", isOn: $blockPopups)
-        Toggle(isOn: $showClipboardBar) {
-            DetailedSettingsLabel(
-                title: "Offer to Open Copied Links",
-                description: "When Opening Neeva"
-            )
-        }
         Toggle(isOn: $showLinkPreviews) {
             DetailedSettingsLabel(
                 title: "Show Link Previews",
