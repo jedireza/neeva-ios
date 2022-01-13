@@ -11,6 +11,9 @@ struct CollapsableCardGroupView: View {
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
+    @EnvironmentObject var gridModel: GridModel
+
+    @State private var frame = CGRect.zero
 
     @Namespace var cardGroup
 
@@ -26,11 +29,13 @@ struct CollapsableCardGroupView: View {
         .animation(.spring(), value: groupDetails.isShowingDetails)
         .transition(.fade)
         .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
-        .background(Color.secondarySystemFill)
-        .cornerRadius(
-            24,
-            corners: groupDetails.allDetails.count <= 2 || groupDetails.isShowingDetails
-                ? .all : .leading
+        .background(
+            Color.secondarySystemFill
+                .cornerRadius(
+                    24,
+                    corners: groupDetails.allDetails.count <= 2 || groupDetails.isShowingDetails
+                        ? .all : .leading
+                )
         )
     }
 
@@ -57,14 +62,24 @@ struct CollapsableCardGroupView: View {
             height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
     }
 
+    @ViewBuilder
     private var scrollView: some View {
+        // ScrollView clips child views by default, so here ScrollView is resized
+        // to make CardTransitionModifier visible. TopSpace and BottomSpace are
+        // paddings needed to make ScrollView look in place when it's resized.
+        var topSpace =
+            gridModel.animationThumbnailState == .hidden
+            ? 0 : self.frame.minY - containerGeometry.frame(in: .global).minY
+        var bottomSpace =
+            gridModel.animationThumbnailState == .hidden
+            ? 0 : containerGeometry.frame(in: .global).maxY - self.frame.maxY
+
         ScrollView(.horizontal, showsIndicators: false) {
             LazyHStack(
                 spacing: SingleLevelTabCardsViewUX.TabGroupCarouselTabSpacing
             ) {
                 ForEach(groupDetails.allDetails) { childTabDetail in
                     FittedCard(details: childTabDetail, dragToClose: false)
-                        .animation(.spring())
                         .matchedGeometryEffect(id: childTabDetail.id, in: cardGroup)
                         .modifier(
                             CardTransitionModifier(
@@ -78,7 +93,18 @@ struct CollapsableCardGroupView: View {
             .padding(
                 .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
             )
+            .background(
+                GeometryReader { geom in
+                    Color.clear.useEffect(deps: geom.frame(in: .global)) { frame in
+                        self.frame = frame
+                    }
+                }
+            )
+            .padding(.top, topSpace)
+            .padding(.bottom, bottomSpace)
         }
+        .padding(.top, -topSpace)
+        .padding(.bottom, -bottomSpace)
     }
 
     private var grid: some View {
@@ -89,7 +115,6 @@ struct CollapsableCardGroupView: View {
                 HStack(spacing: CardGridUX.GridSpacing) {
                     ForEach(row) { childTabDetail in
                         FittedCard(details: childTabDetail, dragToClose: false)
-                            .animation(.spring())
                             .matchedGeometryEffect(id: childTabDetail.id, in: cardGroup)
                             .modifier(
                                 CardTransitionModifier(

@@ -42,7 +42,9 @@ struct SingleLevelTabCardsView: View {
                             )
                     }
                 }
-            }.padding(.horizontal, CardGridUX.GridSpacing)
+            }
+            .padding(.horizontal, CardGridUX.GridSpacing)
+            .zIndex(row.cells.contains { $0.isSelected } ? 1 : 0)
         }
     }
 }

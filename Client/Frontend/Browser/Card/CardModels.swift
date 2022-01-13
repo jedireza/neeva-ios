@@ -86,6 +86,15 @@ class TabCardModel: CardModel, TabEventHandler {
                     return details.id
                 }
             }
+
+            var isSelected: Bool {
+                switch self {
+                case .tab(let details):
+                    return details.isSelected
+                case .tabGroup(let details):
+                    return details.isSelected
+                }
+            }
         }
         var cells: [Cell]
     }
