@@ -8,6 +8,35 @@ query ListSpaces($kind: ListSpacesKind = All) {
       space {
         name
         lastModifiedTs
+        notifications(input: {kind: HomeFeed}) {
+          type
+          timestamp
+          data {
+            __typename
+            ... on NotificationSpaceSharedWithYou {
+              sharedBy {
+                displayName
+                email
+                pictureURL
+              }
+            }
+            ... on NotificationSpaceEntitiesAdded {
+              addedBy {
+                displayName
+                email
+                pictureURL
+              }
+              itemID
+            }
+            ... on NotificationSpaceCommentsAdded {
+              addedBy {
+                displayName
+                email
+                pictureURL
+              }
+            }
+          }
+        }
         userACL {
           acl
         }

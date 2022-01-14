@@ -3724,6 +3724,51 @@ public enum ListSpacesKind: RawRepresentable, Equatable, Hashable, CaseIterable,
   }
 }
 
+public enum NotificationType: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case spaceSharedWithYou
+  case spaceEntitiesAdded
+  case spaceCommentsAdded
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "SpaceSharedWithYou": self = .spaceSharedWithYou
+      case "SpaceEntitiesAdded": self = .spaceEntitiesAdded
+      case "SpaceCommentsAdded": self = .spaceCommentsAdded
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .spaceSharedWithYou: return "SpaceSharedWithYou"
+      case .spaceEntitiesAdded: return "SpaceEntitiesAdded"
+      case .spaceCommentsAdded: return "SpaceCommentsAdded"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: NotificationType, rhs: NotificationType) -> Bool {
+    switch (lhs, rhs) {
+      case (.spaceSharedWithYou, .spaceSharedWithYou): return true
+      case (.spaceEntitiesAdded, .spaceEntitiesAdded): return true
+      case (.spaceCommentsAdded, .spaceCommentsAdded): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [NotificationType] {
+    return [
+      .spaceSharedWithYou,
+      .spaceEntitiesAdded,
+      .spaceCommentsAdded,
+    ]
+  }
+}
+
 public enum SpaceACLLevel: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case owner
@@ -10446,6 +10491,39 @@ public final class ListSpacesQuery: GraphQLQuery {
             __typename
             name
             lastModifiedTs
+            notifications(input: {kind: HomeFeed}) {
+              __typename
+              type
+              timestamp
+              data {
+                __typename
+                ... on NotificationSpaceSharedWithYou {
+                  sharedBy {
+                    __typename
+                    displayName
+                    email
+                    pictureURL
+                  }
+                }
+                ... on NotificationSpaceEntitiesAdded {
+                  addedBy {
+                    __typename
+                    displayName
+                    email
+                    pictureURL
+                  }
+                  itemID
+                }
+                ... on NotificationSpaceCommentsAdded {
+                  addedBy {
+                    __typename
+                    displayName
+                    email
+                    pictureURL
+                  }
+                }
+              }
+            }
             userACL {
               __typename
               acl
@@ -10478,7 +10556,7 @@ public final class ListSpacesQuery: GraphQLQuery {
 
   public let operationName: String = "ListSpaces"
 
-  public let operationIdentifier: String? = "adb6e51cd6f9f2db0a5ca53232db6ba11568dc6be4d2aefb8f16782f403dac30"
+  public let operationIdentifier: String? = "f4003b9d21ae0dfbb78d37eced5d9b0b7886d0fccd98039113f78b83f7b83751"
 
   public var kind: ListSpacesKind?
 
@@ -10664,6 +10742,7 @@ public final class ListSpacesQuery: GraphQLQuery {
               GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
               GraphQLField("name", type: .scalar(String.self)),
               GraphQLField("lastModifiedTs", type: .scalar(String.self)),
+              GraphQLField("notifications", arguments: ["input": ["kind": "HomeFeed"]], type: .list(.nonNull(.object(Notification.selections)))),
               GraphQLField("userACL", type: .object(UserAcl.selections)),
               GraphQLField("acl", type: .list(.nonNull(.object(Acl.selections)))),
               GraphQLField("hasPublicACL", type: .scalar(Bool.self)),
@@ -10680,8 +10759,8 @@ public final class ListSpacesQuery: GraphQLQuery {
             self.resultMap = unsafeResultMap
           }
 
-          public init(name: String? = nil, lastModifiedTs: String? = nil, userAcl: UserAcl? = nil, acl: [Acl]? = nil, hasPublicAcl: Bool? = nil, thumbnail: String? = nil, thumbnailSize: ThumbnailSize? = nil, resultCount: Int? = nil, isDefaultSpace: Bool? = nil) {
-            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "lastModifiedTs": lastModifiedTs, "userACL": userAcl.flatMap { (value: UserAcl) -> ResultMap in value.resultMap }, "acl": acl.flatMap { (value: [Acl]) -> [ResultMap] in value.map { (value: Acl) -> ResultMap in value.resultMap } }, "hasPublicACL": hasPublicAcl, "thumbnail": thumbnail, "thumbnailSize": thumbnailSize.flatMap { (value: ThumbnailSize) -> ResultMap in value.resultMap }, "resultCount": resultCount, "isDefaultSpace": isDefaultSpace])
+          public init(name: String? = nil, lastModifiedTs: String? = nil, notifications: [Notification]? = nil, userAcl: UserAcl? = nil, acl: [Acl]? = nil, hasPublicAcl: Bool? = nil, thumbnail: String? = nil, thumbnailSize: ThumbnailSize? = nil, resultCount: Int? = nil, isDefaultSpace: Bool? = nil) {
+            self.init(unsafeResultMap: ["__typename": "SpaceData", "name": name, "lastModifiedTs": lastModifiedTs, "notifications": notifications.flatMap { (value: [Notification]) -> [ResultMap] in value.map { (value: Notification) -> ResultMap in value.resultMap } }, "userACL": userAcl.flatMap { (value: UserAcl) -> ResultMap in value.resultMap }, "acl": acl.flatMap { (value: [Acl]) -> [ResultMap] in value.map { (value: Acl) -> ResultMap in value.resultMap } }, "hasPublicACL": hasPublicAcl, "thumbnail": thumbnail, "thumbnailSize": thumbnailSize.flatMap { (value: ThumbnailSize) -> ResultMap in value.resultMap }, "resultCount": resultCount, "isDefaultSpace": isDefaultSpace])
           }
 
           public var __typename: String {
@@ -10708,6 +10787,15 @@ public final class ListSpacesQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "lastModifiedTs")
+            }
+          }
+
+          public var notifications: [Notification]? {
+            get {
+              return (resultMap["notifications"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [Notification] in value.map { (value: ResultMap) -> Notification in Notification(unsafeResultMap: value) } }
+            }
+            set {
+              resultMap.updateValue(newValue.flatMap { (value: [Notification]) -> [ResultMap] in value.map { (value: Notification) -> ResultMap in value.resultMap } }, forKey: "notifications")
             }
           }
 
@@ -10771,6 +10859,448 @@ public final class ListSpacesQuery: GraphQLQuery {
             }
             set {
               resultMap.updateValue(newValue, forKey: "isDefaultSpace")
+            }
+          }
+
+          public struct Notification: GraphQLSelectionSet {
+            public static let possibleTypes: [String] = ["Notification"]
+
+            public static var selections: [GraphQLSelection] {
+              return [
+                GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                GraphQLField("type", type: .scalar(NotificationType.self)),
+                GraphQLField("timestamp", type: .scalar(String.self)),
+                GraphQLField("data", type: .object(Datum.selections)),
+              ]
+            }
+
+            public private(set) var resultMap: ResultMap
+
+            public init(unsafeResultMap: ResultMap) {
+              self.resultMap = unsafeResultMap
+            }
+
+            public init(type: NotificationType? = nil, timestamp: String? = nil, data: Datum? = nil) {
+              self.init(unsafeResultMap: ["__typename": "Notification", "type": type, "timestamp": timestamp, "data": data.flatMap { (value: Datum) -> ResultMap in value.resultMap }])
+            }
+
+            public var __typename: String {
+              get {
+                return resultMap["__typename"]! as! String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "__typename")
+              }
+            }
+
+            /// The type of activity corresponding to the notification.
+            public var type: NotificationType? {
+              get {
+                return resultMap["type"] as? NotificationType
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "type")
+              }
+            }
+
+            /// Typically corresponds to the time of the underlying activity which triggered
+            /// the notification. Formatted as RFC 3339 date/time.
+            public var timestamp: String? {
+              get {
+                return resultMap["timestamp"] as? String
+              }
+              set {
+                resultMap.updateValue(newValue, forKey: "timestamp")
+              }
+            }
+
+            /// Additional type-specific data corresponding to the notification.
+            public var data: Datum? {
+              get {
+                return (resultMap["data"] as? ResultMap).flatMap { Datum(unsafeResultMap: $0) }
+              }
+              set {
+                resultMap.updateValue(newValue?.resultMap, forKey: "data")
+              }
+            }
+
+            public struct Datum: GraphQLSelectionSet {
+              public static let possibleTypes: [String] = ["NotificationSpaceSharedWithYou", "NotificationSpaceEntitiesAdded", "NotificationSpaceCommentsAdded"]
+
+              public static var selections: [GraphQLSelection] {
+                return [
+                  GraphQLTypeCase(
+                    variants: ["NotificationSpaceSharedWithYou": AsNotificationSpaceSharedWithYou.selections, "NotificationSpaceEntitiesAdded": AsNotificationSpaceEntitiesAdded.selections, "NotificationSpaceCommentsAdded": AsNotificationSpaceCommentsAdded.selections],
+                    default: [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    ]
+                  )
+                ]
+              }
+
+              public private(set) var resultMap: ResultMap
+
+              public init(unsafeResultMap: ResultMap) {
+                self.resultMap = unsafeResultMap
+              }
+
+              public static func makeNotificationSpaceSharedWithYou(sharedBy: AsNotificationSpaceSharedWithYou.SharedBy? = nil) -> Datum {
+                return Datum(unsafeResultMap: ["__typename": "NotificationSpaceSharedWithYou", "sharedBy": sharedBy.flatMap { (value: AsNotificationSpaceSharedWithYou.SharedBy) -> ResultMap in value.resultMap }])
+              }
+
+              public static func makeNotificationSpaceEntitiesAdded(addedBy: AsNotificationSpaceEntitiesAdded.AddedBy? = nil, itemId: String? = nil) -> Datum {
+                return Datum(unsafeResultMap: ["__typename": "NotificationSpaceEntitiesAdded", "addedBy": addedBy.flatMap { (value: AsNotificationSpaceEntitiesAdded.AddedBy) -> ResultMap in value.resultMap }, "itemID": itemId])
+              }
+
+              public static func makeNotificationSpaceCommentsAdded(addedBy: AsNotificationSpaceCommentsAdded.AddedBy? = nil) -> Datum {
+                return Datum(unsafeResultMap: ["__typename": "NotificationSpaceCommentsAdded", "addedBy": addedBy.flatMap { (value: AsNotificationSpaceCommentsAdded.AddedBy) -> ResultMap in value.resultMap }])
+              }
+
+              public var __typename: String {
+                get {
+                  return resultMap["__typename"]! as! String
+                }
+                set {
+                  resultMap.updateValue(newValue, forKey: "__typename")
+                }
+              }
+
+              public var asNotificationSpaceSharedWithYou: AsNotificationSpaceSharedWithYou? {
+                get {
+                  if !AsNotificationSpaceSharedWithYou.possibleTypes.contains(__typename) { return nil }
+                  return AsNotificationSpaceSharedWithYou(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsNotificationSpaceSharedWithYou: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["NotificationSpaceSharedWithYou"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("sharedBy", type: .object(SharedBy.selections)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(sharedBy: SharedBy? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "NotificationSpaceSharedWithYou", "sharedBy": sharedBy.flatMap { (value: SharedBy) -> ResultMap in value.resultMap }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var sharedBy: SharedBy? {
+                  get {
+                    return (resultMap["sharedBy"] as? ResultMap).flatMap { SharedBy(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "sharedBy")
+                  }
+                }
+
+                public struct SharedBy: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["Profile"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("displayName", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("email", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("pictureURL", type: .nonNull(.scalar(String.self))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(displayName: String, email: String, pictureUrl: String) {
+                    self.init(unsafeResultMap: ["__typename": "Profile", "displayName": displayName, "email": email, "pictureURL": pictureUrl])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var displayName: String {
+                    get {
+                      return resultMap["displayName"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "displayName")
+                    }
+                  }
+
+                  public var email: String {
+                    get {
+                      return resultMap["email"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "email")
+                    }
+                  }
+
+                  public var pictureUrl: String {
+                    get {
+                      return resultMap["pictureURL"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "pictureURL")
+                    }
+                  }
+                }
+              }
+
+              public var asNotificationSpaceEntitiesAdded: AsNotificationSpaceEntitiesAdded? {
+                get {
+                  if !AsNotificationSpaceEntitiesAdded.possibleTypes.contains(__typename) { return nil }
+                  return AsNotificationSpaceEntitiesAdded(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsNotificationSpaceEntitiesAdded: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["NotificationSpaceEntitiesAdded"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("addedBy", type: .object(AddedBy.selections)),
+                    GraphQLField("itemID", type: .scalar(String.self)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(addedBy: AddedBy? = nil, itemId: String? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "NotificationSpaceEntitiesAdded", "addedBy": addedBy.flatMap { (value: AddedBy) -> ResultMap in value.resultMap }, "itemID": itemId])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var addedBy: AddedBy? {
+                  get {
+                    return (resultMap["addedBy"] as? ResultMap).flatMap { AddedBy(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "addedBy")
+                  }
+                }
+
+                public var itemId: String? {
+                  get {
+                    return resultMap["itemID"] as? String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "itemID")
+                  }
+                }
+
+                public struct AddedBy: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["Profile"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("displayName", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("email", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("pictureURL", type: .nonNull(.scalar(String.self))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(displayName: String, email: String, pictureUrl: String) {
+                    self.init(unsafeResultMap: ["__typename": "Profile", "displayName": displayName, "email": email, "pictureURL": pictureUrl])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var displayName: String {
+                    get {
+                      return resultMap["displayName"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "displayName")
+                    }
+                  }
+
+                  public var email: String {
+                    get {
+                      return resultMap["email"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "email")
+                    }
+                  }
+
+                  public var pictureUrl: String {
+                    get {
+                      return resultMap["pictureURL"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "pictureURL")
+                    }
+                  }
+                }
+              }
+
+              public var asNotificationSpaceCommentsAdded: AsNotificationSpaceCommentsAdded? {
+                get {
+                  if !AsNotificationSpaceCommentsAdded.possibleTypes.contains(__typename) { return nil }
+                  return AsNotificationSpaceCommentsAdded(unsafeResultMap: resultMap)
+                }
+                set {
+                  guard let newValue = newValue else { return }
+                  resultMap = newValue.resultMap
+                }
+              }
+
+              public struct AsNotificationSpaceCommentsAdded: GraphQLSelectionSet {
+                public static let possibleTypes: [String] = ["NotificationSpaceCommentsAdded"]
+
+                public static var selections: [GraphQLSelection] {
+                  return [
+                    GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                    GraphQLField("addedBy", type: .object(AddedBy.selections)),
+                  ]
+                }
+
+                public private(set) var resultMap: ResultMap
+
+                public init(unsafeResultMap: ResultMap) {
+                  self.resultMap = unsafeResultMap
+                }
+
+                public init(addedBy: AddedBy? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "NotificationSpaceCommentsAdded", "addedBy": addedBy.flatMap { (value: AddedBy) -> ResultMap in value.resultMap }])
+                }
+
+                public var __typename: String {
+                  get {
+                    return resultMap["__typename"]! as! String
+                  }
+                  set {
+                    resultMap.updateValue(newValue, forKey: "__typename")
+                  }
+                }
+
+                public var addedBy: AddedBy? {
+                  get {
+                    return (resultMap["addedBy"] as? ResultMap).flatMap { AddedBy(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "addedBy")
+                  }
+                }
+
+                public struct AddedBy: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["Profile"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("displayName", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("email", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("pictureURL", type: .nonNull(.scalar(String.self))),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(displayName: String, email: String, pictureUrl: String) {
+                    self.init(unsafeResultMap: ["__typename": "Profile", "displayName": displayName, "email": email, "pictureURL": pictureUrl])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var displayName: String {
+                    get {
+                      return resultMap["displayName"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "displayName")
+                    }
+                  }
+
+                  public var email: String {
+                    get {
+                      return resultMap["email"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "email")
+                    }
+                  }
+
+                  public var pictureUrl: String {
+                    get {
+                      return resultMap["pictureURL"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "pictureURL")
+                    }
+                  }
+                }
+              }
             }
           }
 
