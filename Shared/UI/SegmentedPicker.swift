@@ -41,6 +41,7 @@ struct SegmentTappedModifier: ViewModifier {
 
 public struct SegmentedPicker: View {
     private let segmentWidth: CGFloat = 72
+    private let segmentHeight: CGFloat = 36
     let segments: [Segment]
     var dragOffset: CGFloat? = nil
 
@@ -76,14 +77,24 @@ public struct SegmentedPicker: View {
         segmentWidth * CGFloat(selectedSegmentIndex - 1) + evenSegmentOffset + (dragOffset ?? 0)
     }
 
-    private var segment: some View {
-        RoundedRectangle(cornerRadius: 18)
+    @ViewBuilder private var segment: some View {
+        // Not sure where sqrt() and 1.5 come from, but they do feel nice
+        let shrinkRatio = min(sqrt(1.5 * max(minMaxOffset, 1) / max(abs(offset), 1)), 1)
+        let width = max(segmentHeight, segmentWidth * shrinkRatio)
+        Capsule()
+            .background(
+                Capsule()
+                    .fill(Color(light: .black.opacity(0.15), dark: .black.opacity(0.75)))
+                    .offset(y: pressed ? 0 : 1)
+                    .animation(.interactiveSpring(), value: pressed)
+            )
             .scaleEffect(pressed ? 0.9 : 1)
             .offset(x: offset.clamp(min: -minMaxOffset, max: minMaxOffset))
             .animation(.interactiveSpring(), value: pressed)
             .animation(dragOffset == nil ? .interactiveSpring() : nil, value: offset)
+            .frame(width: width, height: segmentHeight)
+            .offset(x: Double(signOf: offset, magnitudeOf: 0.5) * (segmentWidth - width))
             .padding(.horizontal, 3)
-            .frame(width: segmentWidth, height: 35)
     }
 
     private func icons(selected: Bool) -> some View {
@@ -121,7 +132,7 @@ public struct SegmentedPicker: View {
             segment
                 .foregroundColor(segments[currentIndex].selectedColor)
                 .gesture(
-                    DragGesture()
+                    DragGesture(minimumDistance: 0)
                         .updating($pressed, body: { _, state, _ in
                             state = true
                         })
@@ -170,7 +181,7 @@ public struct SegmentedPicker: View {
                     placeholderIndex = newPlaceholderIndex
                     segments[newPlaceholderIndex].selectedAction()
                     if proposedPlaceholderChange != 0 {
-                        Haptics.swipeGesture()
+                        Haptics.selection()
                     }
                 }
             }

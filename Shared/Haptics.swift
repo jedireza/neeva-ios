@@ -13,6 +13,10 @@ public class Haptics {
         custom(style: .rigid)
     }
 
+    public static func selection() {
+        UISelectionFeedbackGenerator().selectionChanged()
+    }
+
     public static func custom(style: UIImpactFeedbackGenerator.FeedbackStyle) {
         let generator = UIImpactFeedbackGenerator(style: style)
         generator.impactOccurred()
