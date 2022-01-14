@@ -123,7 +123,7 @@ struct EmptySpaceView: View {
     let learnMoreURL = URL(
         string: "https://help.neeva.com/hc/en-us/articles/1500005917202-What-are-Spaces")!
     @Environment(\.onOpenURL) private var onOpenURL
-    @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
 
@@ -165,7 +165,7 @@ struct EmptySpaceView: View {
             Button(
                 action: {
                     spacesModel.detailedSpace = nil
-                    gridModel.hideWithNoAnimation()
+                    browserModel.hideWithNoAnimation()
                     onOpenURL(learnMoreURL)
                 },
                 label: {

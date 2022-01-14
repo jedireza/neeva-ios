@@ -6,9 +6,10 @@ import SwiftUI
 
 struct BrowserTopBarView: View {
     let bvc: BrowserViewController
-    var gridModel: GridModel
 
-    @ObservedObject var browserModel: BrowserModel
+    @EnvironmentObject var browserModel: BrowserModel
+    @EnvironmentObject var gridModel: GridModel
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -21,19 +22,28 @@ struct BrowserTopBarView: View {
             SwitcherToolbarView(
                 top: true, isEmpty: bvc.tabContainerModel.tabCardModel.isCardGridEmpty
             )
-            .environmentObject(bvc.toolbarModel)
         } else {
             GridPicker()
         }
     }
 
     var body: some View {
-        if browserModel.currentState == .tab {
+        if browserModel.showGrid {
+            switcherTopBar
+                .modifier(
+                    SwipeToSwitchToSpacesGesture(
+                        gridModel: gridModel, tabModel: gridModel.tabCardModel, fromPicker: true
+                    ) {
+                        offset in
+                        gridModel.dragOffset = offset
+                    })
+        } else {
             TopBarContent(
+                browserModel: browserModel,
                 suggestionModel: bvc.suggestionModel,
                 model: bvc.locationModel,
                 queryModel: bvc.searchQueryModel,
-                gridModel: bvc.gridModel,
+                gridModel: gridModel,
                 trackingStatsViewModel: bvc.trackingStatsViewModel,
                 chromeModel: bvc.chromeModel,
                 readerModeModel: bvc.readerModeModel,
@@ -49,17 +59,6 @@ struct BrowserTopBarView: View {
                     }
                 }
             )
-        } else if browserModel.currentState == .switcher {
-            switcherTopBar
-                .environmentObject(bvc.gridModel)
-                .environmentObject(bvc.gridModel.tabCardModel)
-                .modifier(
-                    SwipeToSwitchToSpacesGesture(
-                        gridModel: gridModel, tabModel: gridModel.tabCardModel, fromPicker: true
-                    ) {
-                        offset in
-                        gridModel.dragOffset = offset
-                    })
         }
     }
 }

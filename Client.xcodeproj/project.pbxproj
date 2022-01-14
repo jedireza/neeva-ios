@@ -53,6 +53,7 @@
 		1A840EC72788E840005F6003 /* GenericSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A840EC62788E840005F6003 /* GenericSuggestion.swift */; };
 		1AC3F333278CDE7E000CCE09 /* TransitionExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC3F332278CDE7E000CCE09 /* TransitionExtensions.swift */; };
 		1AC43C8B278F1FED000BF750 /* SubscriptionType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC43C8A278F1FED000BF750 /* SubscriptionType.swift */; };
+		1AC43CC32790BAD2000BF750 /* BrowserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC43CC22790BAD2000BF750 /* BrowserModel.swift */; };
 		1ADFEEF8278C884800A0E82E /* CollapsableCardGroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ADFEEF7278C884800A0E82E /* CollapsableCardGroupView.swift */; };
 		1D06AE6624FEE4D5000B092B /* TopSitesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D06AE6524FEE4D5000B092B /* TopSitesProvider.swift */; };
 		1D0BA05C24F46A0400D731B5 /* TopSitesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D0BA05B24F46A0400D731B5 /* TopSitesManager.swift */; };
@@ -276,7 +277,6 @@
 		66C5224C27607965003C7F2D /* UIDeviceExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */; };
 		66CA99DF2774E74500058241 /* ScrollingControlModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CA99DE2774E74500058241 /* ScrollingControlModel.swift */; };
 		66CA99E12775383200058241 /* BrowserBottomBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CA99E02775383200058241 /* BrowserBottomBarView.swift */; };
-		66CA99E7277547D200058241 /* BrowserModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66CA99E6277547D200058241 /* BrowserModel.swift */; };
 		66E2502C270FDDB20085AA35 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66E2502B270FDDB20085AA35 /* AppDelegate.swift */; };
 		66E25030270FDDB20085AA35 /* Main.html in Resources */ = {isa = PBXBuildFile; fileRef = 66E2502E270FDDB20085AA35 /* Main.html */; };
 		66E25034270FDDB20085AA35 /* Style.css in Resources */ = {isa = PBXBuildFile; fileRef = 66E25033270FDDB20085AA35 /* Style.css */; };
@@ -1179,6 +1179,7 @@
 		1A840EC62788E840005F6003 /* GenericSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericSuggestion.swift; sourceTree = "<group>"; };
 		1AC3F332278CDE7E000CCE09 /* TransitionExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransitionExtensions.swift; sourceTree = "<group>"; };
 		1AC43C8A278F1FED000BF750 /* SubscriptionType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionType.swift; sourceTree = "<group>"; };
+		1AC43CC22790BAD2000BF750 /* BrowserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserModel.swift; sourceTree = "<group>"; };
 		1ADFEEF7278C884800A0E82E /* CollapsableCardGroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollapsableCardGroupView.swift; sourceTree = "<group>"; };
 		1ADFEEF9278CAA7E00A0E82E /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		1ADFEEFA278CAAE500A0E82E /* parse_template_url_prepopulate_data.py */ = {isa = PBXFileReference; lastKnownFileType = text.script.python; path = parse_template_url_prepopulate_data.py; sourceTree = "<group>"; };
@@ -1425,7 +1426,6 @@
 		66C5224A2760770C003C7F2D /* UIDeviceExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeviceExtension.swift; sourceTree = "<group>"; };
 		66CA99DE2774E74500058241 /* ScrollingControlModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollingControlModel.swift; sourceTree = "<group>"; };
 		66CA99E02775383200058241 /* BrowserBottomBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserBottomBarView.swift; sourceTree = "<group>"; };
-		66CA99E6277547D200058241 /* BrowserModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserModel.swift; sourceTree = "<group>"; };
 		66DA9E48268E8EFB001EFF13 /* ToastTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastTests.swift; sourceTree = "<group>"; };
 		66E25029270FDDB20085AA35 /* NeevaForSafari.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NeevaForSafari.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E2502B270FDDB20085AA35 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -3560,18 +3560,17 @@
 		D3A994941A368691008AD1AC /* Browser */ = {
 			isa = PBXGroup;
 			children = (
-				663322BF276D66220046EC1C /* KeyboardListener.swift */,
 				D38F02D01C05127100175932 /* Authenticator.swift */,
 				C40046F91CF8E0B200B08303 /* BackForwardListAnimator.swift */,
+				666CDFA5278D11E0004A9B1E /* BackForwardListView.swift */,
 				C400467B1CF4E43E00B08303 /* BackForwardListViewController.swift */,
 				C4EFEECE1CEBB6F2009762A4 /* BackForwardTableViewCell.swift */,
-				E653422C1C5944F90039DD9E /* BrowserPrompts.swift */,
-				C8B109A2275E9CD80010EBE4 /* BrowserHost.swift */,
-				66CA99E6277547D200058241 /* BrowserModel.swift */,
-				C8B109A4275E9CE60010EBE4 /* BrowserView.swift */,
-				666CDFA5278D11E0004A9B1E /* BackForwardListView.swift */,
-				66EA9BF1277644870013DB07 /* BrowserTopBarView.swift */,
 				66CA99E02775383200058241 /* BrowserBottomBarView.swift */,
+				C8B109A2275E9CD80010EBE4 /* BrowserHost.swift */,
+				1AC43CC22790BAD2000BF750 /* BrowserModel.swift */,
+				E653422C1C5944F90039DD9E /* BrowserPrompts.swift */,
+				66EA9BF1277644870013DB07 /* BrowserTopBarView.swift */,
+				C8B109A4275E9CE60010EBE4 /* BrowserView.swift */,
 				C8F457A61F1FD75A000CB895 /* BrowserViewController */,
 				D3A994951A3686BD008AD1AC /* BrowserViewController.swift */,
 				4A1D054E26696B6D00D63333 /* Card */,
@@ -3579,14 +3578,15 @@
 				C9DDC11E26B9E22800F293AB /* Content */,
 				C9835CDD26C480C600E81EB9 /* ContentScripts */,
 				D0625C97208E87F10081F3B2 /* DownloadQueue.swift */,
+				663322BF276D66220046EC1C /* KeyboardListener.swift */,
 				D0C95E35200FDC5400E4E51C /* MetadataParserHelper.swift */,
 				EBB8950B2193994A00EB91A0 /* NeevaTabContentBlocker.swift */,
 				7BA8D1C61BA037F500C8AE9E /* OpenInHelper.swift */,
 				D31CF65B1CC1959A001D0BD0 /* PrivilegedRequest.swift */,
 				FA6B2AC11D41F02D00429414 /* Punycode.swift */,
-				74C027441B2A348C001B1E88 /* SessionData.swift */,
 				D31F95E81AC226CB005C9F3B /* ScreenshotHelper.swift */,
 				66CA99DE2774E74500058241 /* ScrollingControlModel.swift */,
+				74C027441B2A348C001B1E88 /* SessionData.swift */,
 				1DA3CE5E24EEE7C600422BB2 /* SiteArchiver.swift */,
 				23F2C365244E44FA00FA4496 /* Tabs */,
 				E698FFD91B4AADF40001F623 /* TabScrollController.swift */,
@@ -5677,7 +5677,6 @@
 				C9299E3D2695F94400758795 /* TextSizeModel.swift in Sources */,
 				BC5C438D265F2CA0007E2F61 /* WebUIMessageHelper.swift in Sources */,
 				C9655DED26A09A6900925912 /* CardsContainer.swift in Sources */,
-				66CA99E7277547D200058241 /* BrowserModel.swift in Sources */,
 				D0625CA8208FC47A0081F3B2 /* BrowserViewController+DownloadQueueDelegate.swift in Sources */,
 				4AF1948D266EC78A007E2C3B /* SearchResults.swift in Sources */,
 				66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */,
@@ -5734,6 +5733,7 @@
 				4A3D2993268583710082F293 /* CardModels.swift in Sources */,
 				C8A50B8E268E7F7000E1392A /* NavigationLinkButton.swift in Sources */,
 				66C3C770267A8858002B50B1 /* ToastViewManager.swift in Sources */,
+				1AC43CC32790BAD2000BF750 /* BrowserModel.swift in Sources */,
 				3BB50E201D627539004B33DF /* ZeroQueryContent.swift in Sources */,
 				66FA64C4270E62A5008BAEAD /* ReaderModeBlocklist.swift in Sources */,
 				663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */,

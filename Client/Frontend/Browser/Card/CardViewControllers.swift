@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import Foundation
+import Combine
 import Shared
 import SnapKit
 import SwiftUI
@@ -15,6 +15,7 @@ public enum CardControllerUX {
 
 class CardGridViewController: UIHostingController<CardGridViewController.Content> {
     struct Content: View {
+        let browserModel: BrowserModel
         let gridModel: GridModel
         let toolbarModel: SwitcherToolbarModel
         let web3Model: Web3Model
@@ -22,6 +23,7 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
 
         var body: some View {
             CardGrid()
+                .environmentObject(browserModel)
                 .environmentObject(toolbarModel)
                 .environmentObject(gridModel.tabCardModel)
                 .environmentObject(gridModel.spaceCardModel)
@@ -46,14 +48,17 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
     let gridModel: GridModel
     let toolbarModel: SwitcherToolbarModel
 
+    private var subscription: AnyCancellable?
+
     init(
         tabManager: TabManager, toolbarModel: SwitcherToolbarModel, web3Model: Web3Model,
-        gridModel: GridModel, shareURL: @escaping (URL, UIView) -> Void
+        gridModel: GridModel, browserModel: BrowserModel, shareURL: @escaping (URL, UIView) -> Void
     ) {
         self.gridModel = gridModel
         self.toolbarModel = toolbarModel
         super.init(
             rootView: Content(
+                browserModel: browserModel,
                 gridModel: gridModel,
                 toolbarModel: toolbarModel,
                 web3Model: web3Model,
@@ -61,13 +66,13 @@ class CardGridViewController: UIHostingController<CardGridViewController.Content
             )
         )
 
-        gridModel.setVisibilityCallback(updateVisibility: { isHidden in
-            self.view.isHidden = isHidden
-            self.view.isUserInteractionEnabled = !isHidden
+        subscription = browserModel.$showContent.sink { [unowned self] isHidden in
+            view.isHidden = isHidden
+            view.isUserInteractionEnabled = !isHidden
             if !isHidden {
-                self.parent?.view.bringSubviewToFront(self.view)
+                parent?.view.bringSubviewToFront(view)
             }
-        })
+        }
     }
 
     required init?(coder aDecoder: NSCoder) {

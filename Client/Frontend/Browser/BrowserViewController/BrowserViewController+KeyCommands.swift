@@ -37,8 +37,7 @@ extension BrowserViewController {
     }
 
     @objc func newTabKeyCommand() {
-        openLazyTab(
-            openedFrom: gridModel.isHidden ? .openTab(nil) : .tabTray)
+        openLazyTab(openedFrom: browserModel.showContent ? .openTab(nil) : .tabTray)
     }
 
     @objc func newPrivateTabKeyCommand() {
@@ -47,8 +46,7 @@ extension BrowserViewController {
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
-            openLazyTab(
-                openedFrom: gridModel.isHidden ? .openTab(nil) : .tabTray)
+            openLazyTab(openedFrom: browserModel.showContent ? .openTab(nil) : .tabTray)
         }
     }
 
@@ -98,12 +96,12 @@ extension BrowserViewController {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
                 tabManager.removeTabs(
                     tabManager.privateTabs, showToast: true,
-                    addNormalTab: gridModel.isHidden)
+                    addNormalTab: browserModel.showContent)
             }
         } else {
             tabManager.removeTabs(
                 tabManager.normalTabs, showToast: true,
-                addNormalTab: gridModel.isHidden)
+                addNormalTab: browserModel.showContent)
         }
     }
 

@@ -48,6 +48,9 @@ struct DragToCloseInteraction: ViewModifier {
 
     @Environment(\.cardSize) private var cardSize
     @Environment(\.layoutDirection) private var layoutDirection
+
+    @EnvironmentObject private var browserModel: BrowserModel
+
     @State private var offset = CGFloat.zero
 
     private var dragToCloseThreshold: CGFloat {
@@ -189,8 +192,9 @@ struct Card<Details>: View where Details: CardDetails {
         }
     }
 
-    @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
-    @EnvironmentObject var gridModel: GridModel
+    @Environment(\.selectionCompletion) private var selectionCompletion
+    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @State private var isPressed = false
 
@@ -213,17 +217,17 @@ struct Card<Details>: View where Details: CardDetails {
                         .clipped()
                 }
                 .buttonStyle(.reportsPresses(to: $isPressed))
-                .cornerRadius(animate && gridModel.isHidden ? 0 : CardUX.CornerRadius)
+                .cornerRadius(animate && !browserModel.showGrid ? 0 : CardUX.CornerRadius)
                 .modifier(
                     BorderTreatment(
                         isSelected: showsSelection && details.isSelected,
                         thumbnailDrawsHeader: details.thumbnailDrawsHeader,
-                        isIncognito: gridModel.isIncognito)
+                        isIncognito: isIncognito)
                 )
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
                         if isChildTab(details: details)
-                            && (gridModel.animationThumbnailState == .visibleForTrayShow)
+                            && (browserModel.cardTransition == .visibleForTrayShow)
                         {
                             Image(systemName: iconInMainGrid)
                                 .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
@@ -237,14 +241,15 @@ struct Card<Details>: View where Details: CardDetails {
                                 .padding(5)
                         }
                         Text(
-                            gridModel.animationThumbnailState == .visibleForTrayShow
+                            browserModel.cardTransition == .visibleForTrayShow
                                 ? titleInMainGrid : details.title
                         ).withFont(.labelMedium)
                             .frame(alignment: .center)
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
                     }
                     .frame(width: max(0, geom.size.width), height: CardUX.ButtonSize)
-                    .background(Color.clear).opacity(animate && gridModel.isHidden ? 0 : 1)
+                    .background(Color.clear)
+                    .opacity(animate && !browserModel.showGrid ? 0 : 1)
                 }
             }
         }
@@ -266,7 +271,7 @@ struct Card<Details>: View where Details: CardDetails {
                             .clipShape(Circle())
                             .padding(6)
                             .accessibilityLabel("Close \(details.title)")
-                            .opacity(animate && gridModel.isHidden ? 0 : 1)
+                            .opacity(animate && !browserModel.showGrid ? 0 : 1)
                     },
                     alignment: .topTrailing
                 )

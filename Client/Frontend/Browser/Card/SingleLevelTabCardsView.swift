@@ -44,7 +44,7 @@ struct SingleLevelTabCardsView: View {
                 }
             }
             .padding(.horizontal, CardGridUX.GridSpacing)
-            .zIndex(row.cells.contains { $0.isSelected } ? 1 : 0)
+            .zIndex(row.cells.contains(where: \.isSelected) ? 1 : 0)
         }
     }
 }

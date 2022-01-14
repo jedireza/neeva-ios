@@ -31,8 +31,16 @@ struct TabGridContainer: View {
     @EnvironmentObject private var tabModel: TabCardModel
     @EnvironmentObject private var tabGroupModel: TabGroupCardModel
     @EnvironmentObject private var gridModel: GridModel
+    @EnvironmentObject private var browserModel: BrowserModel
 
     @Environment(\.columns) private var columns
+
+    var selectedRowId: TabCardModel.Row.ID? {
+        tabModel.buildRows(
+            incognito: isIncognito, tabGroupModel: tabGroupModel, maxCols: columns.count
+        )
+        .first { $0.cells.contains(where: \.isSelected) }?.id
+    }
 
     var selectedCardID: String? {
         if let details = tabModel.allDetailsWithExclusionList.first(where: \.isSelected) {
@@ -68,12 +76,18 @@ struct TabGridContainer: View {
                         where: {
                             $0.id == tabModel.selectedTabID
                         })))
-            gridModel.hideWithAnimation()
+            browserModel.hideWithAnimation()
         }
         .padding(.vertical, CardGridUX.GridSpacing)
         .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
-            if let selectedCardID = selectedCardID {
-                scrollProxy.scrollTo(selectedCardID)
+            if FeatureFlag[.tabGroupsNewDesign] {
+                if let selectedRowId = selectedRowId {
+                    scrollProxy.scrollTo(selectedRowId)
+                }
+            } else {
+                if let selectedCardID = selectedCardID {
+                    scrollProxy.scrollTo(selectedCardID)
+                }
             }
         }
         .animation(.spring(), value: tabGroupModel.allDetails.map(\.isSelected))
@@ -101,6 +115,7 @@ struct CardsContainer: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var spacesModel: SpaceCardModel
+    @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var gridModel: GridModel
 
     // Used to rebuild the scene when switching between portrait and landscape.
@@ -122,7 +137,7 @@ struct CardsContainer: View {
                         }.animation(nil)
                     }
                     .padding(.vertical, CardGridUX.GridSpacing)
-                    .useEffect(deps: gridModel.isHidden) { _ in
+                    .useEffect(deps: browserModel.showGrid) { _ in
                         scrollProxy.scrollTo(
                             spacesModel.allDetails.first?.id ?? ""
                         )
@@ -162,7 +177,9 @@ struct CardsContainer: View {
             }
         }
         .id(generationId)
-        .animation(.interactiveSpring(), value: "\(gridModel.switcherState) \(gridModel.isIncognito)")
+        .animation(
+            .interactiveSpring(), value: "\(gridModel.switcherState) \(gridModel.isIncognito)"
+        )
         .onChange(of: gridModel.switcherState) { value in
             guard case .spaces = value, !seenSpacesIntro, !gridModel.isLoading else {
                 return
@@ -174,7 +191,7 @@ struct CardsContainer: View {
                     SpacesIntroOverlayContent()
                 },
                 onDismiss: {
-                    gridModel.showSpaces()
+                    browserModel.showSpaces()
                 })
             seenSpacesIntro = true
         }

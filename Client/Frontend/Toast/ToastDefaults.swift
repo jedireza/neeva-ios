@@ -96,10 +96,9 @@ class ToastDefaults: NSObject {
 
         let buttonAction = {
             if let spaceID = request.targetSpaceID {
-                bvc.gridModel.openSpace(
-                    spaceID: spaceID)
+                bvc.browserModel.openSpace(spaceID: spaceID)
             } else {
-                bvc.gridModel.showSpaces()
+                bvc.browserModel.showSpaces()
             }
         }
 

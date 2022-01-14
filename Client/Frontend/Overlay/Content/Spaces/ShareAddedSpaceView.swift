@@ -9,6 +9,7 @@ import SwiftUI
 struct ShareAddedSpaceView: View {
     @Environment(\.hideOverlay) private var hideOverlay
     @EnvironmentObject private var chromeModel: TabChromeModel
+    @EnvironmentObject private var browserModel: BrowserModel
 
     @State var subscription: AnyCancellable? = nil
     @State var refreshing = false
@@ -46,7 +47,7 @@ struct ShareAddedSpaceView: View {
                     Spacer()
                     Button(
                         action: {
-                            bvc.gridModel.openSpace(
+                            browserModel.openSpace(
                                 spaceID: request.targetSpaceID!, animate: false)
                             hideOverlay()
                             let entity: SpaceEntityData? = space?.contentData?.first
@@ -70,7 +71,7 @@ struct ShareAddedSpaceView: View {
                         })
                     Button(
                         action: {
-                            bvc.gridModel.openSpace(
+                            browserModel.openSpace(
                                 spaceID: request.targetSpaceID!)
                             hideOverlay()
                         },

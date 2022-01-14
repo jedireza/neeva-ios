@@ -82,7 +82,7 @@ struct AssetView: View {
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.onOpenURLForSpace) private var openURLForSpace
     @EnvironmentObject var web3Model: Web3Model
-    @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var browserModel: BrowserModel
     let asset: Asset
 
     var body: some View {
@@ -117,7 +117,7 @@ struct AssetView: View {
                             }
 
                             web3Model.showingWalletDetails = false
-                            gridModel.hideWithNoAnimation()
+                            browserModel.hideWithNoAnimation()
                             DispatchQueue.main.async {
                                 openURLForSpace(url, web3Model.wallet?.publicAddress ?? "")
                             }

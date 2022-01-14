@@ -34,7 +34,6 @@ struct TabLocationView: View {
     @EnvironmentObject private var readerModeModel: ReaderModeModel
     @EnvironmentObject private var web3Model: Web3Model
     @EnvironmentObject private var queryModel: SearchQueryModel
-    @EnvironmentObject private var gridModel: GridModel
     @EnvironmentObject private var trackingStatsModel: TrackingStatsViewModel
 
     @State private var isPressed = false
@@ -111,9 +110,7 @@ struct TabLocationView: View {
                         )
                     }
                 } leading: {
-                    if gridModel.isHidden
-                        && (model.url?.scheme == "https" || model.url?.scheme == "http")
-                    {
+                    if model.url?.scheme == "https" || model.url?.scheme == "http" {
                         if trackingStatsModel.numTrackers > 0 {
                             NotificationBadgeOverlay(
                                 from: NotificationBadgeLocation.topRight,
@@ -128,57 +125,55 @@ struct TabLocationView: View {
                         }
                     }
                 } trailing: {
-                    if gridModel.isHidden {
-                        Group {
-                            if let url = model.url, !InternalURL.isValid(url: url) {
-                                if let dAppSession = web3Model.currentSession {
-                                    SessionInfoButton(dAppSession: dAppSession)
-                                } else if readerModeModel.state != .unavailable {
-                                    LongPressButton {
-                                        if readerModeModel.state != .active {
-                                            readerModeModel.enableReadingMode()
-                                        } else {
-                                            showReaderModeSettings = true
-                                        }
-                                    } label: {
-                                        Symbol(.docPlaintext, label: "Reader Mode")
-                                            .padding()
+                    Group {
+                        if let url = model.url, !InternalURL.isValid(url: url) {
+                            if let dAppSession = web3Model.currentSession {
+                                SessionInfoButton(dAppSession: dAppSession)
+                            } else if readerModeModel.state != .unavailable {
+                                LongPressButton {
+                                    if readerModeModel.state != .active {
+                                        readerModeModel.enableReadingMode()
+                                    } else {
+                                        showReaderModeSettings = true
                                     }
-                                    .accessibilityLabel(
-                                        Text(
-                                            readerModeModel.state == .available
-                                                ? "Reader Mode"
-                                                : "Reading Mode Settings")
-                                    )
-                                    .foregroundColor(
-                                        readerModeModel.state == .active ? .blue : .label
-                                    )
-                                    .frame(
-                                        width: TabLocationViewUX.height,
-                                        height: TabLocationViewUX.height
-                                    )
-                                    .presentAsPopover(
-                                        isPresented: $showReaderModeSettings,
-                                        dismissOnTransition: true
-                                    ) {
-                                        ReaderModePopover(disableReadingMode: {
-                                            readerModeModel.disableReadingMode()
-                                            showReaderModeSettings = false
-                                        })
-                                        .environmentObject(readerModeModel)
-                                        .environmentObject(BrightnessModel())
-                                        .environmentObject(
-                                            TextSizeModel(
-                                                webView: (readerModeModel.tabManager
-                                                    .selectedTab?
-                                                    .webView)!))
-                                    }
+                                } label: {
+                                    Symbol(.docPlaintext, label: "Reader Mode")
+                                        .padding()
                                 }
-
-                                LocationViewShareButton(url: model.url, onTap: onShare)
+                                .accessibilityLabel(
+                                    Text(
+                                        readerModeModel.state == .available
+                                            ? "Reader Mode"
+                                            : "Reading Mode Settings")
+                                )
+                                .foregroundColor(
+                                    readerModeModel.state == .active ? .blue : .label
+                                )
+                                .frame(
+                                    width: TabLocationViewUX.height,
+                                    height: TabLocationViewUX.height
+                                )
+                                .presentAsPopover(
+                                    isPresented: $showReaderModeSettings,
+                                    dismissOnTransition: true
+                                ) {
+                                    ReaderModePopover(disableReadingMode: {
+                                        readerModeModel.disableReadingMode()
+                                        showReaderModeSettings = false
+                                    })
+                                    .environmentObject(readerModeModel)
+                                    .environmentObject(BrightnessModel())
+                                    .environmentObject(
+                                        TextSizeModel(
+                                            webView: (readerModeModel.tabManager
+                                                .selectedTab?
+                                                .webView)!))
+                                }
                             }
-                        }.transition(.opacity)
-                    }
+
+                            LocationViewShareButton(url: model.url, onTap: onShare)
+                        }
+                    }.transition(.opacity)
                 }.opacity(chromeModel.isEditingLocation ? 0 : 1)
 
                 HStack(spacing: 0) {

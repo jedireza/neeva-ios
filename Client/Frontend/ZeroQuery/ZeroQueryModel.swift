@@ -157,8 +157,7 @@ class ZeroQueryModel: ObservableObject {
                     ClientLogger.shared.logCounter(
                         .BlackFridayPromo)
                     let spaceId = SpaceStore.promotionalSpaceId
-                    let gridModel = self.bvc.gridModel
-                    gridModel.openSpace(
+                    self.bvc.browserModel.openSpace(
                         spaceId: spaceId, bvc: self.bvc,
                         completion: {
                             self.bvc.hideZeroQuery()

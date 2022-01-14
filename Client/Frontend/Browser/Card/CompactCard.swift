@@ -9,7 +9,8 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
     @ObservedObject var details: Details
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
     @Environment(\.sizeCategory) var sizeCategory
-    @EnvironmentObject var gridModel: GridModel
+    @Environment(\.isIncognito) var isIncognito
+    @EnvironmentObject var browserModel: BrowserModel
 
     var animate = false
     @State private var isPressed = false
@@ -61,7 +62,7 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
                         .clipShape(Circle())
                         .padding(6)
                         .accessibilityLabel("Close \(details.title)")
-                        .opacity(animate && gridModel.isHidden ? 0 : 1)
+                        .opacity(animate && !browserModel.showGrid ? 0 : 1)
                 }
             }
         }
@@ -106,7 +107,7 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
                     BorderTreatment(
                         isSelected: details.isSelected,
                         thumbnailDrawsHeader: details.thumbnailDrawsHeader,
-                        isIncognito: gridModel.isIncognito, cornerRadius: CardUX.CompactCornerRadius
+                        isIncognito: isIncognito, cornerRadius: CardUX.CompactCornerRadius
                     )
                 )
         }

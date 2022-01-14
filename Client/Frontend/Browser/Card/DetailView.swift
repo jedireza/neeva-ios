@@ -24,6 +24,7 @@ where
 {
     @Default(.tabGroupNames) var tabGroupDict: [String: String]
     @Default(.showDescriptions) var showDescriptions
+    @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
@@ -181,7 +182,7 @@ where
                                 .environmentObject(spacesModel)
                                 .environmentObject(tabModel)
                                 .environment(\.onOpenURL) { url in
-                                    gridModel.hideWithNoAnimation()
+                                    browserModel.hideWithNoAnimation()
                                     spacesModel.detailedSpace = nil
                                     onOpenURL(url)
                                 }
@@ -363,13 +364,13 @@ where
                             .foregroundColor(Color.secondaryLabel)
                     }
                     .opacity(headerVisible ? 0 : 1)
-                    .animation(.easeInOut)
+                    .animation(.easeInOut, value: headerVisible)
                 } else {
                     Text(primitive.title)
                         .withFont(.headingMedium)
                         .foregroundColor(Color.label)
                         .opacity(headerVisible && tabGroupDetail == nil ? 0 : 1)
-                        .animation(.easeInOut)
+                        .animation(.easeInOut, value: headerVisible)
                 }
             }
             Spacer()
@@ -473,7 +474,7 @@ where
                                 .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
                                 .environment(\.selectionCompletion) {
                                     ClientLogger.shared.logCounter(.tabInTabGroupClicked)
-                                    gridModel.hideWithAnimation()
+                                    browserModel.hideWithAnimation()
                                 }
                                 .overlay(
                                     tabSelectButtonOverlay(details: details),

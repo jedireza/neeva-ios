@@ -185,7 +185,7 @@ enum NavigationPath {
                         spaceId: spaceId, updatedItemIds: [], isPrivate: isPrivate, with: bvc
                     )
                 } else {
-                    bvc.gridModel.showSpaces()
+                    bvc.browserModel.showSpaces()
                 }
             } else {
                 bvc.switchToTabForURLOrOpen(newURL, isPrivate: isPrivate)
@@ -214,7 +214,7 @@ enum NavigationPath {
             gridModel.spaceCardModel.updatedItemIDs = updatedItemIDs
         }
 
-        gridModel.openSpace(spaceId: spaceId, bvc: bvc, isPrivate: isPrivate, completion: {})
+        bvc.browserModel.openSpace(spaceId: spaceId, bvc: bvc, isPrivate: isPrivate, completion: {})
     }
 
     private static func handleFastTap(query: String, with bvc: BrowserViewController, noDelay: Bool)

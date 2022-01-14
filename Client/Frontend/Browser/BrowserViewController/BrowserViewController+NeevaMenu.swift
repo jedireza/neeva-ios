@@ -41,7 +41,7 @@ extension BrowserViewController {
                 if TourManager.shared.hasActiveStep() {
                     switchToTabForURLOrOpen(NeevaConstants.appSpacesURL)
                 } else {
-                    gridModel.showSpaces()
+                    browserModel.showSpaces()
                 }
             }
 

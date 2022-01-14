@@ -47,7 +47,7 @@ struct BrowserView: View {
 
     // MARK: - Views
     var topBar: some View {
-        BrowserTopBarView(bvc: bvc, gridModel: gridModel, browserModel: browserModel)
+        BrowserTopBarView(bvc: bvc)
             .transition(.opacity)
             .frame(height: topBarHeight)
     }
@@ -67,16 +67,8 @@ struct BrowserView: View {
 
     @ViewBuilder
     var containerView: some View {
-        if browserModel.currentState == .tab {
-            tabContainerContent
-        } else {
+        ZStack {
             CardGrid()
-                .environmentObject(bvc.toolbarModel)
-                .environmentObject(gridModel.tabCardModel)
-                .environmentObject(gridModel.spaceCardModel)
-                .environmentObject(gridModel.tabGroupCardModel)
-                .environmentObject(gridModel)
-                .environmentObject(bvc.web3Model)
                 .environment(
                     \.onOpenURL, { gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) }
                 )
@@ -88,11 +80,20 @@ struct BrowserView: View {
                     }
                 )
                 .environment(\.shareURL, shareURL)
+                .opacity(browserModel.showContent ? 0 : 1)
+                .onAppear {
+                    gridModel.scrollToSelectedTab()
+                }
+                .accessibilityHidden(browserModel.showContent)
+
+            tabContainerContent
+                .opacity(browserModel.showContent ? 1 : 0)
+                .accessibilityHidden(!browserModel.showContent)
         }
     }
 
     var bottomBar: some View {
-        BrowserBottomBarView(bvc: bvc, chromeModel: chromeModel, browserModel: browserModel)
+        BrowserBottomBarView(bvc: bvc, chromeModel: chromeModel)
             .transition(.opacity)
             .frame(
                 height: UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
@@ -158,6 +159,13 @@ struct BrowserView: View {
                     overlayManager.offsetForBottomBar && !chromeModel.inlineToolbar
                         ? bottomBarHeight : 0)
         }
+        .environmentObject(bvc.browserModel)
+        .environmentObject(gridModel)
+        .environmentObject(bvc.toolbarModel)
+        .environmentObject(gridModel.tabCardModel)
+        .environmentObject(gridModel.spaceCardModel)
+        .environmentObject(gridModel.tabGroupCardModel)
+        .environmentObject(bvc.web3Model)
     }
 
     // MARK: - Init
@@ -167,12 +175,12 @@ struct BrowserView: View {
             bvc.shareURL(url: url, view: view)
         }
         self.gridModel = bvc.gridModel
-        self.browserModel = bvc.browserModel
         self.chromeModel = bvc.chromeModel
         self.scrollingControlModel = ScrollingControlModel(
             tabManager: bvc.tabManager, chromeModel: bvc.chromeModel)
         self.overlayManager = bvc.overlayManager
         self.tabGroupModel = bvc.gridModel.tabGroupCardModel
         self.spaceModel = bvc.gridModel.spaceCardModel
+        self.browserModel = bvc.browserModel
     }
 }

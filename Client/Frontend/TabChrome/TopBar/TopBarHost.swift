@@ -25,6 +25,7 @@ protocol TopBarDelegate: ToolbarDelegate {
 }
 
 struct TopBarContent: View {
+    let browserModel: BrowserModel
     let suggestionModel: SuggestionModel
     let model: LocationViewModel
     let queryModel: SearchQueryModel
@@ -77,6 +78,7 @@ struct TopBarContent: View {
                 chromeModel.topBarDelegate?.perform(overflowMenuAction: $0, targetButtonView: $1)
             }
         )
+        .environmentObject(browserModel)
         .environmentObject(suggestionModel)
         .environmentObject(model)
         .environmentObject(queryModel)
@@ -107,6 +109,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
 
     init(
         isIncognito: Bool,
+        browserModel: BrowserModel,
         locationViewModel: LocationViewModel,
         suggestionModel: SuggestionModel,
         queryModel: SearchQueryModel,
@@ -124,6 +127,7 @@ class TopBarHost: IncognitoAwareHostingController<TopBarContent> {
 
         setRootView {
             TopBarContent(
+                browserModel: browserModel,
                 suggestionModel: suggestionModel,
                 model: locationViewModel,
                 queryModel: queryModel,

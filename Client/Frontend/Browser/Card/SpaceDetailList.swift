@@ -10,6 +10,7 @@ import SwiftUI
 struct SpaceDetailList: View {
     @Default(.showDescriptions) var showDescriptions
     @Default(.seenBlackFridayNotifyPromo) var seenBlackFridayNotifyPromo
+    @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var spacesModel: SpaceCardModel
@@ -110,14 +111,14 @@ struct SpaceDetailList: View {
                                     if let navPath = NavigationPath.navigationPath(
                                         from: url, with: bvc)
                                     {
-                                        gridModel.hideWithNoAnimation()
+                                        browserModel.hideWithNoAnimation()
                                         spacesModel.detailedSpace = nil
 
                                         NavigationPath.handle(nav: navPath, with: bvc)
                                         return
                                     }
                                     onOpenURLForSpace(url, primitive.id)
-                                    gridModel.hideWithNoAnimation()
+                                    browserModel.hideWithNoAnimation()
                                     spacesModel.detailedSpace = nil
                                 },
                                 onDelete: { index in
@@ -300,6 +301,7 @@ struct CompactSeparatorModifier: ViewModifier {
 
 struct ListStyleModifier: ViewModifier {
     @Environment(\.onOpenURLForSpace) var openURLForSpace
+    @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var spaceModel: SpaceCardModel
 
@@ -311,7 +313,7 @@ struct ListStyleModifier: ViewModifier {
                 .environment(
                     \.openURL,
                     OpenURLAction(handler: {
-                        gridModel.hideWithNoAnimation()
+                        browserModel.hideWithNoAnimation()
                         openURLForSpace($0, spaceModel.detailedSpace!.id)
                         spaceModel.detailedSpace = nil
                         return .handled

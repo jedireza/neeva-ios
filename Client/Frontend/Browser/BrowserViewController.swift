@@ -83,10 +83,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
         return model
     }()
 
-    let browserModel = BrowserModel()
     let chromeModel = TabChromeModel()
     lazy var gridModel: GridModel = {
-        GridModel(tabManager: tabManager, browserModel: browserModel)
+        GridModel(tabManager: tabManager)
+    }()
+    lazy var browserModel: BrowserModel = {
+        BrowserModel(gridModel: gridModel, tabManager: tabManager)
     }()
 
     lazy var toolbarModel: SwitcherToolbarModel = {
@@ -108,7 +110,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager: self.tabManager,
             toolbarModel: toolbarModel,
             web3Model: self.web3Model,
-            gridModel: gridModel
+            gridModel: gridModel,
+            browserModel: browserModel
         ) { url, view in
             self.shareURL(url: url, view: view)
         }
@@ -492,6 +495,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             let gridModel = self.gridModel
             let topBarHost = TopBarHost(
                 isIncognito: tabManager.isIncognito,
+                browserModel: browserModel,
                 locationViewModel: locationModel,
                 suggestionModel: suggestionModel,
                 queryModel: searchQueryModel,
@@ -825,7 +829,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         // makes sure zeroQuery isn't already open
         guard zeroQueryModel.openedFrom == nil else { return }
 
-        if !gridModel.isHidden {
+        if browserModel.showGrid {
             hideCardGrid(withAnimation: false)
         }
 
@@ -1217,8 +1221,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     fileprivate func popToBVC() {
-        if !gridModel.isHidden {
-            gridModel.hideWithNoAnimation()
+        if browserModel.showGrid {
+            browserModel.hideWithNoAnimation()
         }
 
         if let introViewController = introViewController {
@@ -1421,9 +1425,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
         updateFindInPageVisibility(visible: false)
 
         if zeroQueryModel.isLazyTab {
-            gridModel.showWithNoAnimation()
+            browserModel.showWithNoAnimation()
         } else {
-            gridModel.show()
+            browserModel.show()
         }
 
         if let tab = tabManager.selectedTab {
@@ -1433,9 +1437,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     func hideCardGrid(withAnimation: Bool) {
         if withAnimation {
-            gridModel.hideWithAnimation()
+            browserModel.hideWithAnimation()
         } else {
-            gridModel.hideWithNoAnimation()
+            browserModel.hideWithNoAnimation()
         }
     }
 
@@ -1456,7 +1460,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 // MARK: URL Bar Delegate support code
 extension BrowserViewController {
     func urlBarDidEnterOverlayMode() {
-        if !gridModel.isHidden || tabManager.selectedTab == nil {
+        if browserModel.showGrid || tabManager.selectedTab == nil {
             openLazyTab(openedFrom: .tabTray)
         } else {
             showZeroQuery(openedFrom: .openTab(tabManager.selectedTab))
@@ -1685,7 +1689,7 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
             && url.absoluteString.starts(with: NeevaConstants.appSpacesURL.absoluteString)
         {
             hideZeroQuery()
-            gridModel.openSpace(spaceID: url.lastPathComponent)
+            browserModel.openSpace(spaceID: url.lastPathComponent)
             return
         }
         finishEditingAndSubmit(url, visitType: visitType, forTab: tabManager.selectedTab)
@@ -2351,7 +2355,7 @@ extension BrowserViewController {
                 text: "View Spaces",
                 icon: .bookmarkOnBookmark,
                 action: {
-                    self.gridModel.showSpaces()
+                    self.browserModel.showSpaces()
                     ClientLogger.shared.logCounter(
                         .ViewSpacesFromSheet,
                         attributes: EnvironmentHelper.shared.getAttributes())

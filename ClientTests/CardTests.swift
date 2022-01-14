@@ -36,6 +36,7 @@ class CardTests: XCTestCase {
     var profile: TabManagerMockProfile!
     var manager: TabManager!
     var browserModel: BrowserModel!
+    var gridModel: GridModel!
     var delegate: MockTabManagerDelegate!
     var groupManager: TabGroupManager!
     var tabCardModel: TabCardModel!
@@ -65,7 +66,8 @@ class CardTests: XCTestCase {
 
         profile = TabManagerMockProfile()
         manager = TabManager(profile: profile, imageStore: nil)
-        browserModel = BrowserModel()
+        gridModel = GridModel(tabManager: manager)
+        browserModel = BrowserModel(gridModel: gridModel, tabManager: manager)
         manager.didRestoreAllTabs = true
         delegate = MockTabManagerDelegate()
         groupManager = TabGroupManager(tabManager: manager)
@@ -202,9 +204,9 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
-        let model = GridModel(tabManager: manager, browserModel: browserModel)
-        let cardGrid = CardGrid().environmentObject(tabCardModel).environmentObject(spaceCardModel)
-            .environmentObject(tabGroupCardModel).environmentObject(model)
+        let cardGrid = CardGrid().environmentObject(browserModel)
+            .environmentObject(tabCardModel).environmentObject(spaceCardModel)
+            .environmentObject(tabGroupCardModel).environmentObject(gridModel)
             .environmentObject(
                 Web3Model(server: nil, presenter: MockPresenter(), tabManager: manager))
 
@@ -227,16 +229,15 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
-        let model = GridModel(tabManager: manager, browserModel: browserModel)
-        model.switcherState = .spaces
+        gridModel.switcherState = .spaces
         spaceCardModel.onDataUpdated()
         waitForCondition(condition: { spaceCardModel.allDetails.count == 4 })
 
         let cardContainer = CardsContainer(
             columns: Array(repeating: GridItem(.fixed(100), spacing: 20), count: 2)
         ).environmentObject(tabCardModel).environmentObject(spaceCardModel)
-            .environmentObject(tabGroupCardModel).environmentObject(model)
-            .environmentObject(tabGroupCardModel)
+            .environmentObject(tabGroupCardModel).environmentObject(gridModel)
+            .environmentObject(tabGroupCardModel).environmentObject(browserModel)
 
         let spaceCardsView = try cardContainer.inspect().find(SpaceCardsView.self)
         XCTAssertNotNil(spaceCardsView)

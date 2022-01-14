@@ -13,21 +13,19 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
     let containerGeometry: GeometryProxy
     var extraBottomPadding: CGFloat = 0
 
-    @EnvironmentObject var gridModel: GridModel
-    @EnvironmentObject var tabModel: TabCardModel
-    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    @EnvironmentObject var browserModel: BrowserModel
 
     func body(content: Content) -> some View {
         content
             .zIndex(details.isSelected ? 1 : 0)
-            .opacity(details.isSelected && gridModel.animationThumbnailState != .hidden ? 0 : 1)
+            .opacity(details.isSelected && browserModel.cardTransition != .hidden ? 0 : 1)
             .animation(nil)
             .overlay(overlay)
     }
 
     var overlay: some View {
         GeometryReader { geom in
-            if details.isSelected && gridModel.animationThumbnailState != .hidden {
+            if details.isSelected && browserModel.cardTransition != .hidden {
                 let rect = calculateCardRect(geom: geom)
                 overlayCard
                     .offset(x: rect.minX, y: rect.minY)
@@ -42,14 +40,14 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
     @ViewBuilder var overlayCard: some View {
         if let tabGroupDetails = details as? TabGroupCardDetails {
             let selectedTabDetails = (tabGroupDetails.allDetails.first { $0.isSelected })!
-            Card(details: selectedTabDetails, showsSelection: !gridModel.isHidden, animate: true)
+            Card(details: selectedTabDetails, showsSelection: browserModel.showGrid, animate: true)
         } else {
-            Card(details: details, showsSelection: !gridModel.isHidden, animate: true)
+            Card(details: details, showsSelection: browserModel.showGrid, animate: true)
         }
     }
 
     func calculateCardRect(geom: GeometryProxy) -> CGRect {
-        if !gridModel.isHidden {
+        if browserModel.showGrid {
             return geom.frame(in: .local)
         }
 

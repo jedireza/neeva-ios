@@ -11,7 +11,7 @@ struct CollapsableCardGroupView: View {
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
-    @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var browserModel: BrowserModel
 
     @State private var frame = CGRect.zero
 
@@ -68,10 +68,10 @@ struct CollapsableCardGroupView: View {
         // to make CardTransitionModifier visible. TopSpace and BottomSpace are
         // paddings needed to make ScrollView look in place when it's resized.
         var topSpace =
-            gridModel.animationThumbnailState == .hidden
+            browserModel.cardTransition == .hidden
             ? 0 : self.frame.minY - containerGeometry.frame(in: .global).minY
         var bottomSpace =
-            gridModel.animationThumbnailState == .hidden
+            browserModel.cardTransition == .hidden
             ? 0 : containerGeometry.frame(in: .global).maxY - self.frame.maxY
 
         ScrollView(.horizontal, showsIndicators: false) {

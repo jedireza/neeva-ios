@@ -41,6 +41,7 @@ struct SwitcherToolbarView: View {
     var dragOffset: CGFloat? = nil
 
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
 
@@ -124,7 +125,7 @@ struct SwitcherToolbarView: View {
                     switch gridModel.switcherState {
                     case .tabs:
                         toolbarModel.openLazyTab()
-                        gridModel.hideWithNoAnimation()
+                        browserModel.hideWithNoAnimation()
                     case .spaces:
                         toolbarModel.createNewSpace()
                     }
@@ -146,9 +147,9 @@ struct SwitcherToolbarView: View {
                 SecondaryMenuButton(action: {
                     switch gridModel.switcherState {
                     case .tabs:
-                        gridModel.hideWithAnimation()
+                        browserModel.hideWithAnimation()
                     case .spaces:
-                        gridModel.hideWithNoAnimation()
+                        browserModel.hideWithNoAnimation()
                     }
                 }) { button in
                     let font = UIFont.systemFont(ofSize: 16, weight: .semibold)
@@ -176,7 +177,7 @@ struct SwitcherToolbarView: View {
             }
         }
         .background(Color.DefaultBackground.ignoresSafeArea())
-        .opacity(FeatureFlag[.enableBrowserView] ? 1 : (gridModel.isHidden ? 0 : 1))
+        .opacity(FeatureFlag[.enableBrowserView] ? 1 : (browserModel.showGrid ? 1 : 0))
         .animation(.easeOut)
     }
 }

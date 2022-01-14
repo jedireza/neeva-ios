@@ -16,6 +16,7 @@ enum CardGridUX {
 }
 
 struct CardGrid: View {
+    @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
@@ -127,7 +128,7 @@ struct CardGrid: View {
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
                     .background(
-                        gridModel.animationThumbnailState == .hidden
+                        browserModel.cardTransition == .hidden
                             ? Color.TrayBackground : Color.clear
                     )
                     .modifier(
@@ -209,25 +210,26 @@ struct CardGrid: View {
         }
         .ignoresSafeArea(.keyboard)
         .accessibilityAction(.escape) {
-            gridModel.hideWithAnimation()
+            browserModel.hideWithAnimation()
         }
-        .onAnimationCompleted(for: gridModel.isHidden) {
-            gridModel.onCompletedCardTransition()
-        }
-        .useEffect(deps: gridModel.animationThumbnailState) { _ in
+        .onAnimationCompleted(
+            for: browserModel.showGrid,
+            completion: browserModel.onCompletedCardTransition
+        )
+        .useEffect(deps: browserModel.cardTransition) { _ in
             // Ensure that the `Card` for the selected tab is visible. This way its
             // `CardTransitionModifier` will be visible and run the animation.
-            if gridModel.animationThumbnailState != .hidden {
+            if browserModel.cardTransition != .hidden {
                 if !tabModel.allDetails.isEmpty {
                     gridModel.scrollToSelectedTab()
                 }
                 // Allow some time for the `Card` to get created if it was previously
                 // not visible.
                 DispatchQueue.main.async {
-                    if gridModel.animationThumbnailState != .hidden {
+                    if browserModel.cardTransition != .hidden {
                         withAnimation(CardTransitionUX.animation) {
-                            gridModel.isHidden =
-                                (gridModel.animationThumbnailState == .visibleForTrayHidden)
+                            browserModel.showGrid =
+                                (browserModel.cardTransition == .visibleForTrayShow)
                         }
                     }
                 }
@@ -241,6 +243,8 @@ private struct DraggableDetail: ViewModifier {
     static let DraggableWidth: CGFloat = 50
     @Binding var detailDragOffset: CGFloat
     let width: CGFloat
+
+    @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var web3Model: Web3Model
@@ -254,6 +258,7 @@ private struct DraggableDetail: ViewModifier {
                     tabGroupModel.detailedTabGroup = nil
                     web3Model.showingWalletDetails = false
                     detailDragOffset = 0
+                    gridModel.showingDetailView = false
                 }
             }
             .simultaneousGesture(
@@ -285,7 +290,7 @@ struct GridPicker: View {
     var isInToolbar = false
 
     @EnvironmentObject var gridModel: GridModel
-    @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject var browserModel: BrowserModel
 
     @State var selectedIndex: Int = 1
 
@@ -347,7 +352,7 @@ struct GridPicker: View {
                     ? Color.background : Color.clear)
                     .ignoresSafeArea()
             )
-            .opacity(gridModel.isHidden ? 0 : 1)
+            .opacity(browserModel.showGrid ? 1 : 0)
             .animation(.easeOut)
     }
 }
