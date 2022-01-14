@@ -91,6 +91,10 @@ struct SwitcherToolbarView: View {
                         TabToolbarButtons.OverflowMenu(
                             weight: .medium,
                             action: {
+                                ClientLogger.shared.logCounter(
+                                    .OpenOverflowMenu,
+                                    attributes: EnvironmentHelper.shared.getAttributes()
+                                )
                                 bvc.showModal(style: .grouped) {
                                     OverflowMenuOverlayContent(
                                         menuAction: { action in

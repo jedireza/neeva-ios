@@ -9,19 +9,21 @@ public struct LogConfig {
     public enum Interaction: String {
         case OpenNeevaMenu  // Open neeva menu
         case OpenShield  // Open tracking shield
-        case TapReload  // Tap reload page from url bar
+        case OpenOverflowMenu  // Open Overflow Menu
+        case TapReload  // Tap reload page
+        case TapStopReload  // Tap stop reload page
 
         // bottom nav
         case ShowTabTray  // Click tab button to see all available tabs
         case HideTabTray  // Click done button to hide the tab tray
         case SelectTab  // Click on any tabs inside the tab tray
         case ClickAddToSpaceButton  // Click bookmark button to add to space
-        case ClickNewTabButton  // Click the plus new tab button
         case ClickShareButton  // Click the share button
         case TurnOnIncognitoMode  // Click turn on incognito mode button
         case TurnOffIncognitoMode  // Click turn off incognito mode button
         case ClickBack  // Click back button to navigate to previous page
         case ClickForward  // Click forward button to navigate to next page
+        case LongPressForward  // Tap and Hold forward button to show navigation stack
 
         // tracking shield
         case TurnOnBlockTracking  // Turn on block tracking from shield
@@ -34,6 +36,14 @@ public struct LogConfig {
         case OpenHistory  // Open history from neeva menu
         case OpenSetting  // Open settings from neeva menu
         case OpenSendFeedback  // Open send feedback from neeva menu
+
+        // overflow menu
+        case ClickNewTabButton  // Click the plus new tab button
+        case ClickFindOnPage  // Click the Find on Page Button
+        case ClickTextSize  // Click the Text Size Button
+        case ClickRequestDesktop  // Click the Request Desktop Site button
+        case ClickDownloadPage  // Click the Download Page Button
+        case ClickCloseAllTabs  // Click the Close All Tabs button
 
         // settings
         case SettingAccountSettings  // Click search setting/account setting
@@ -186,6 +196,7 @@ public struct LogConfig {
     public enum InteractionCategory: String, CaseIterable {
         case UI = "UI"
         case NeevaMenu = "NeevaMenu"
+        case OverflowMenu = "OverflowMenu"
         case Settings = "Settings"
         case Suggestions = "Suggestions"
         case ReferralPromo = "ReferralPromo"
@@ -228,17 +239,19 @@ public struct LogConfig {
         switch interaction {
         case .OpenNeevaMenu: return .UI
         case .OpenShield: return .UI
+        case .OpenOverflowMenu: return .UI
         case .TapReload: return .UI
+        case .TapStopReload: return .UI
         case .ShowTabTray: return .UI
         case .HideTabTray: return .UI
         case .SelectTab: return .UI
         case .ClickAddToSpaceButton: return .UI
-        case .ClickNewTabButton: return .UI
         case .ClickShareButton: return .UI
         case .TurnOnIncognitoMode: return .UI
         case .TurnOffIncognitoMode: return .UI
         case .ClickBack: return .UI
         case .ClickForward: return .UI
+        case .LongPressForward: return .UI
         case .TurnOnBlockTracking: return .UI
         case .TurnOffBlockTracking: return .UI
 
@@ -248,6 +261,13 @@ public struct LogConfig {
         case .OpenHistory: return .NeevaMenu
         case .OpenSetting: return .NeevaMenu
         case .OpenSendFeedback: return .NeevaMenu
+
+        case .ClickNewTabButton: return .OverflowMenu
+        case .ClickFindOnPage: return .OverflowMenu
+        case .ClickTextSize: return .OverflowMenu
+        case .ClickRequestDesktop: return .OverflowMenu
+        case .ClickDownloadPage: return .OverflowMenu
+        case .ClickCloseAllTabs: return .OverflowMenu
 
         case .SettingAccountSettings: return .Settings
         case .SettingDefaultBrowser: return .Settings
@@ -409,6 +429,11 @@ public struct LogConfig {
         public static let FirstSessionUUID = "FirstSessionUUID"
         /// Preview mode query count
         public static let PreviewModeQueryCount = "PreviewModeQueryCount"
+    }
+
+    public struct UIInteractionAttribute {
+        /// View from which an UI Interaction is triggered
+        public static let fromActionType = "fromActionType"
     }
 
     public struct SuggestionAttribute {

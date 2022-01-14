@@ -17,15 +17,23 @@ enum NeevaMenuAction {
 extension BrowserViewController {
     func perform(neevaMenuAction: NeevaMenuAction) {
         overlayManager.hideCurrentOverlay()
+        let neevaMenuAttribute = ClientLogCounterAttribute(
+            key: LogConfig.UIInteractionAttribute.fromActionType,
+            value: String(describing: NeevaMenuAction.self)
+        )
 
         switch neevaMenuAction {
         case .home:
             ClientLogger.shared.logCounter(
-                .OpenHome, attributes: EnvironmentHelper.shared.getAttributes())
+                .OpenHome,
+                attributes: EnvironmentHelper.shared.getAttributes() + [neevaMenuAttribute]
+            )
             switchToTabForURLOrOpen(NeevaConstants.appSearchURL)
         case .spaces:
             ClientLogger.shared.logCounter(
-                .OpenSpaces, attributes: EnvironmentHelper.shared.getAttributes())
+                .OpenSpaces,
+                attributes: EnvironmentHelper.shared.getAttributes() + [neevaMenuAttribute]
+            )
 
             // if user started a tour, trigger navigation on webui side
             // to prevent page refresh, which will lost the states
@@ -39,7 +47,9 @@ extension BrowserViewController {
 
         case .settings:
             ClientLogger.shared.logCounter(
-                .OpenSetting, attributes: EnvironmentHelper.shared.getAttributes())
+                .OpenSetting,
+                attributes: EnvironmentHelper.shared.getAttributes() + [neevaMenuAttribute]
+            )
             TourManager.shared.userReachedStep(tapTarget: .settingMenu)
             let action = {
                 let controller = SettingsViewController(bvc: self)
@@ -55,7 +65,9 @@ extension BrowserViewController {
 
         case .history:
             ClientLogger.shared.logCounter(
-                .OpenHistory, attributes: EnvironmentHelper.shared.getAttributes())
+                .OpenHistory,
+                attributes: EnvironmentHelper.shared.getAttributes() + [neevaMenuAttribute]
+            )
 
             let historyPanel = HistoryPanel(profile: profile)
             historyPanel.delegate = self
@@ -68,16 +80,18 @@ extension BrowserViewController {
 
         case .support:
             ClientLogger.shared.logCounter(
-                .OpenSendFeedback, attributes: EnvironmentHelper.shared.getAttributes())
+                .OpenSendFeedback,
+                attributes: EnvironmentHelper.shared.getAttributes() + [neevaMenuAttribute]
+            )
             TourManager.shared.userReachedStep(tapTarget: .feedbackMenu)
 
             showFeedbackPanel(bvc: self, screenshot: self.feedbackImage)
         case .referralPromo:
             // log click referral promo from neeva menu
-            var attributes = EnvironmentHelper.shared.getAttributes()
-            attributes.append(ClientLogCounterAttribute(key: "source", value: "neeva menu"))
             ClientLogger.shared.logCounter(
-                .OpenReferralPromo, attributes: attributes)
+                .OpenReferralPromo,
+                attributes: EnvironmentHelper.shared.getAttributes() + [neevaMenuAttribute]
+            )
             switchToTabForURLOrOpen(NeevaConstants.appReferralsURL)
             presentedViewController?.dismiss(animated: true)
         case .downloads:

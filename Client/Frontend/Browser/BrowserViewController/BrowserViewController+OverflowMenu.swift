@@ -26,9 +26,17 @@ public enum OverflowMenuAction {
 extension BrowserViewController {
     func perform(overflowMenuAction: OverflowMenuAction, targetButtonView: UIView?) {
         overlayManager.hideCurrentOverlay()
+        let overflowMenuAttribute = ClientLogCounterAttribute(
+            key: LogConfig.UIInteractionAttribute.fromActionType,
+            value: String(describing: OverflowMenuAction.self)
+        )
 
         switch overflowMenuAction {
         case .forward:
+            ClientLogger.shared.logCounter(
+                .ClickForward,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             if simulateForwardViewController?.goForward() ?? false {
                 return
             }
@@ -36,21 +44,45 @@ extension BrowserViewController {
             tabManager.selectedTab?.goForward()
         case .reloadStop:
             if chromeModel.reloadButton == .reload {
+                ClientLogger.shared.logCounter(
+                    .TapReload,
+                    attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+                )
                 tabManager.selectedTab?.reload()
             } else {
+                ClientLogger.shared.logCounter(
+                    .TapStopReload,
+                    attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+                )
                 tabManager.selectedTab?.stop()
             }
         case .newTab:
+            ClientLogger.shared.logCounter(
+                .ClickNewTabButton,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             openLazyTab(openedFrom: .newTabButton)
         case .findOnPage:
+            ClientLogger.shared.logCounter(
+                .ClickFindOnPage,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             updateFindInPageVisibility(visible: true)
         case .textSize:
+            ClientLogger.shared.logCounter(
+                .ClickTextSize,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             if let webView = tabManager.selectedTab?.webView {
                 UserActivityHandler.presentTextSizeView(
                     webView: webView,
                     overlayParent: self)
             }
         case .desktopSite:
+            ClientLogger.shared.logCounter(
+                .ClickRequestDesktop,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             if let tab = tabManager.selectedTab,
                 let url = tab.url
             {
@@ -60,8 +92,16 @@ extension BrowserViewController {
                     isPrivate: tab.isIncognito)
             }
         case .share:
+            ClientLogger.shared.logCounter(
+                .ClickShareButton,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             showShareSheet(buttonView: targetButtonView ?? topBar!.view)
         case .downloadPage:
+            ClientLogger.shared.logCounter(
+                .ClickDownloadPage,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             guard let selectedTab = tabManager.selectedTab, let url = selectedTab.url else {
                 return
             }
@@ -72,18 +112,45 @@ extension BrowserViewController {
                 selectedTab.webView?.load(request)
             }
         case .longPressForward:
+            ClientLogger.shared.logCounter(
+                .LongPressForward,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             self.showBackForwardList()
         case .toggleIncognitoMode:
             self.toolbarModel.onToggleIncognito()
         case .goToSettings:
+            // This will log twice.
+            ClientLogger.shared.logCounter(
+                .OpenSetting,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             perform(neevaMenuAction: .settings)
         case .goToHistory:
+            // This will log twice.
+            ClientLogger.shared.logCounter(
+                .OpenHistory,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             perform(neevaMenuAction: .history)
         case .goToDownloads:
+            ClientLogger.shared.logCounter(
+                .OpenDownloads,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             openDownloadsFolderInFilesApp()
         case .closeAllTabs:
+            ClientLogger.shared.logCounter(
+                .ClickCloseAllTabs,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             TabMenu(tabManager: tabManager).showConfirmCloseAllTabs(sourceView: nil)
         case .support:
+            // This will log twice.
+            ClientLogger.shared.logCounter(
+                .OpenSendFeedback,
+                attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
+            )
             perform(neevaMenuAction: .support)
         case .cryptoWallet:
             let cryptoWalletPanel = CryptoWalletController(onDismiss: {

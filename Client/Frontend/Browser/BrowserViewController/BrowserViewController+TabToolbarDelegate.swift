@@ -22,11 +22,15 @@ extension BrowserViewController: ToolbarDelegate {
     var performTabToolbarAction: (ToolbarAction) -> Void {
         { [weak self] action in
             guard let self = self else { return }
+            let toolbarActionAttribute = ClientLogCounterAttribute(
+                key: LogConfig.UIInteractionAttribute.fromActionType,
+                value: String(describing: ToolbarAction.self)
+            )
             switch action {
             case .back:
                 ClientLogger.shared.logCounter(
                     .ClickBack,
-                    attributes: EnvironmentHelper.shared.getAttributes()
+                    attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
                 if self.simulateBackViewController?.goBack() ?? false {
                     return
@@ -36,7 +40,7 @@ extension BrowserViewController: ToolbarDelegate {
             case .forward:
                 ClientLogger.shared.logCounter(
                     .ClickForward,
-                    attributes: EnvironmentHelper.shared.getAttributes()
+                    attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
                 if self.simulateBackViewController?.goForward() ?? false {
                     return
@@ -45,11 +49,23 @@ extension BrowserViewController: ToolbarDelegate {
                 self.tabManager.selectedTab?.goForward()
             case .reloadStop:
                 if self.chromeModel.reloadButton == .reload {
+                    ClientLogger.shared.logCounter(
+                        .TapReload,
+                        attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
+                    )
                     self.tabManager.selectedTab?.reload()
                 } else {
+                    ClientLogger.shared.logCounter(
+                        .TapStopReload,
+                        attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
+                    )
                     self.tabManager.selectedTab?.stop()
                 }
             case .overflow:
+                ClientLogger.shared.logCounter(
+                    .OpenOverflowMenu,
+                    attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
+                )
                 self.showModal(style: .grouped) {
                     OverflowMenuOverlayContent(
                         menuAction: { action in
@@ -64,6 +80,10 @@ extension BrowserViewController: ToolbarDelegate {
 
                 self.dismissVC()
             case .longPressBackForward:
+                ClientLogger.shared.logCounter(
+                    .LongPressForward,
+                    attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
+                )
                 self.showBackForwardList()
             case .addToSpace:
                 guard let tab = self.tabManager.selectedTab else { return }
@@ -93,7 +113,9 @@ extension BrowserViewController: ToolbarDelegate {
                     self.showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
                 }
                 ClientLogger.shared.logCounter(
-                    .ClickAddToSpaceButton, attributes: EnvironmentHelper.shared.getAttributes())
+                    .ClickAddToSpaceButton,
+                    attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
+                )
 
             case .showTabs:
                 self.showTabTray()
