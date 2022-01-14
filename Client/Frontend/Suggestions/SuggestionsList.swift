@@ -12,44 +12,73 @@ struct SuggestionsList: View {
 
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
-    var body: some View {
-        ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack(spacing: 0) {
-                if let lensOrBang = suggestionModel.activeLensBang,
-                    let description = lensOrBang.description
-                {
-                    Section(
-                        header: Group {
-                            switch lensOrBang.type {
-                            case .bang:
-                                Text("Search on \(description)")
-                                    .withFont(.bodyMedium)
+    private var content: some View {
+        LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
+            if let lensOrBang = suggestionModel.activeLensBang,
+                let description = lensOrBang.description
+            {
+                Section(
+                    header: Group {
+                        switch lensOrBang.type {
+                        case .bang:
+                            Text("Search on \(description)")
+                                .withFont(.bodyMedium)
 
-                            default:
-                                Text(description)
-                                    .withFont(.bodyMedium)
-                            }
-                        }.textCase(nil).padding(.vertical, 8)
+                        default:
+                            Text(description)
+                                .withFont(.bodyMedium)
+                        }
+                    }.textCase(nil).padding(.vertical, 8)
+                ) {
+                    QuerySuggestionsList()
+                }
+            } else {
+                TabSuggestionsList()
+                AutocompleteSuggestionView()
+
+                if suggestionModel.shouldShowSearchSuggestions {
+                    SuggestionsSection(
+                        header: SearchEngine.current.isNeeva
+                            ? "Neeva Search" : "\(SearchEngine.current.label) Suggestions"
                     ) {
-                        QuerySuggestionsList()
-                    }
-                } else {
-                    TabSuggestionsList()
-                    AutocompleteSuggestionView()
-
-                    if suggestionModel.shouldShowPlaceholderSuggestions {
-                        PlaceholderSuggestions()
-                    } else {
-                        QuerySuggestionsList()
-                        UrlSuggestionsList()
+                        if suggestionModel.shouldShowPlaceholderSuggestions {
+                            PlaceholderSuggestions()
+                        } else {
+                            QuerySuggestionsList()
+                            UrlSuggestionsList()
+                        }
                     }
                 }
+            }
 
-                NavSuggestionsList()
+            NavSuggestionsList()
 
-                if let findInPageSuggestion = suggestionModel.findInPageSuggestion {
-                    SuggestionsHeader(header: "Find on this page")
+            if let findInPageSuggestion = suggestionModel.findInPageSuggestion {
+                SuggestionsSection(header: "Find on this page") {
                     SearchSuggestionView(findInPageSuggestion)
+                }
+            }
+        }
+    }
+
+    var body: some View {
+        GeometryReader { geom in
+            if #available(iOS 15.0, *) {
+                ScrollView(.vertical, showsIndicators: false) {
+                    content
+                        .safeAreaInset(edge: .leading) {
+                            Color.clear.frame(width: geom.safeAreaInsets.leading)
+
+                        }
+                        .safeAreaInset(edge: .trailing) {
+                            Color.clear.frame(width: geom.safeAreaInsets.trailing)
+                        }
+                }
+                .padding(.leading, -geom.safeAreaInsets.leading)
+                .padding(.trailing, -geom.safeAreaInsets.trailing)
+            } else {
+                ScrollView(.vertical, showsIndicators: false) {
+                    content
                 }
             }
         }

@@ -21,14 +21,17 @@ struct SuggestionsDivider: View {
     let height: CGFloat
 
     var body: some View {
-        Color.secondaryBackground.frame(height: height)
+        Color.secondaryBackground
+            .frame(height: height)
+            .ignoresSafeArea()
     }
 }
 
-struct SuggestionsHeader: View {
-    let header: String
+struct SuggestionsSection<Content: View>: View {
+    let header: LocalizedStringKey
+    @ViewBuilder private(set) var content: () -> Content
 
-    var body: some View {
+    private var headerView: some View {
         Text(header)
             .withFont(.bodyMedium)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -39,7 +42,11 @@ struct SuggestionsHeader: View {
                     bottom: SuggestionBlockUX.HeaderBottomPadding,
                     trailing: 0)
             )
-            .background(Color.secondaryBackground)
+            .background(Color.secondaryBackground.ignoresSafeArea())
+    }
+
+    var body: some View {
+        Section(header: headerView, content: content)
     }
 }
 
@@ -72,12 +79,6 @@ struct QuerySuggestionsList: View {
 
     var body: some View {
         if !suggestionModel.rowQuerySuggestions.isEmpty {
-            if SearchEngine.current.isNeeva {
-                SuggestionsHeader(header: "Neeva Search")
-            } else {
-                SuggestionsHeader(header: "\(SearchEngine.current.label) Suggestions")
-            }
-
             ForEach(Array(suggestionModel.rowQuerySuggestions.enumerated()), id: \.0) {
                 index, suggestion in
                 if case let .query(querySuggestion) = suggestion,
@@ -124,22 +125,18 @@ struct NavSuggestionsList: View {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var body: some View {
-        if suggestionModel.navCombinedSuggestions.count > 0 {
-            SuggestionsHeader(header: "History")
-        }
-        ForEach(suggestionModel.navCombinedSuggestions) { suggestion in
-            SearchSuggestionView(suggestion)
+        if !suggestionModel.navCombinedSuggestions.isEmpty {
+            SuggestionsSection(header: "History") {
+                ForEach(suggestionModel.navCombinedSuggestions) { suggestion in
+                    SearchSuggestionView(suggestion)
+                }
+            }
         }
     }
 }
 
 struct PlaceholderSuggestions: View {
     var body: some View {
-        if SearchEngine.current.isNeeva {
-            SuggestionsHeader(header: "Neeva Search")
-        } else {
-            SuggestionsHeader(header: "\(SearchEngine.current.label) Suggestions")
-        }
         ForEach(0..<4) { i in
             if i > 0 && i % 2 == 0 {
                 SuggestionsDivider(height: SuggestionBlockUX.SeparatorSpacing)

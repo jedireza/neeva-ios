@@ -265,20 +265,6 @@ class TabContainerHost: IncognitoAwareHostingController<TabContainerContent> {
                         tabManager: bvc.tabManager,
                         spaceModel: bvc.gridModel.spaceCardModel) : nil)
         }
-
-        bvc.suggestionModel.getKeyboardHeight = {
-            if let view = self.view,
-                let currentState = KeyboardHelper.defaultHelper.currentState
-            {
-                let height =
-                    currentState.intersectionHeightForView(view)
-                    - self.view.safeAreaInsets.bottom
-
-                return height > 0 ? height : 0
-            } else {
-                return 0
-            }
-        }
     }
 
     @objc required dynamic init?(coder: NSCoder) {

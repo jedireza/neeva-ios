@@ -16,7 +16,6 @@ private let maxSuggestRequestCount: Int = 5
 
 class SuggestionModel: ObservableObject {
     let bvc: BrowserViewController
-    var getKeyboardHeight: () -> CGFloat = { 0 }
 
     private(set) var queryModel: SearchQueryModel
     private var searchQueryListener: AnyCancellable?
@@ -61,7 +60,7 @@ class SuggestionModel: ObservableObject {
         bvc.tabManager.isIncognito
     }
 
-    var shouldShowSuggestions: Bool {
+    var shouldShowSearchSuggestions: Bool {
         !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions]
             && !searchQuery.looksLikeAURL
     }
@@ -97,7 +96,7 @@ class SuggestionModel: ObservableObject {
     var shouldShowPlaceholderSuggestions: Bool {
         [rowQuerySuggestions].allSatisfy {
             $0?.isEmpty == true
-        } && shouldShowSuggestions
+        } && !suggestionQueryQueue.isEmpty
     }
 
     // MARK: - History Suggestions
@@ -151,7 +150,7 @@ class SuggestionModel: ObservableObject {
         keyboardFocusedSuggestion = nil
         keyboardFocusedSuggestionIndex = -1
 
-        guard shouldShowSuggestions else {
+        guard shouldShowSearchSuggestions else {
             clearSearchSuggestions()
             return
         }

@@ -15,14 +15,18 @@ extension SuggestionsList: Inspectable {}
 extension Kern: Inspectable {}
 extension PlaceholderSuggestions: Inspectable {}
 extension QuerySuggestionsList: Inspectable {}
+extension UrlSuggestionsList: Inspectable {}
+extension AutocompleteSuggestionView: Inspectable {}
 extension SearchSuggestionView: Inspectable {}
 extension QuerySuggestionView: Inspectable {}
 extension NavSuggestionView: Inspectable {}
 extension URLSuggestionView: Inspectable {}
 extension SuggestionView: Inspectable {}
+extension SuggestionsSection: Inspectable {}
 extension Symbol: Inspectable {}
 extension BoldSpanView: Inspectable {}
 extension NavSuggestionsList: Inspectable {}
+extension TabSuggestionsList: Inspectable {}
 extension URLDisplayView: Inspectable {}
 
 class SuggestionViewsTests: XCTestCase {
@@ -95,6 +99,7 @@ class SuggestionViewsTests: XCTestCase {
     func testHistorySuggestion() throws {
         let suggestionModel = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil),
+            previewSites: [Site(url: SuggestionsList.placeholderNavSuggestion.url, title: SuggestionsList.placeholderNavSuggestion.title!, guid: "test-suggestion")],
             searchQueryForTesting: "query",
             previewLensBang: nil)
         let historySuggestion = SuggestionsList().environmentObject(suggestionModel)
@@ -109,6 +114,7 @@ class SuggestionViewsTests: XCTestCase {
     func testSuggestionsList() throws {
         let suggestionModel = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil),
+            searchQueryForTesting: "query",
             previewLensBang: nil,
             rowQuerySuggestions: [SuggestionModelTests.sampleNavURL])
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
@@ -125,13 +131,14 @@ class SuggestionViewsTests: XCTestCase {
             bvc: SceneDelegate.getBVC(for: nil),
             searchQueryForTesting: "query",
             previewLensBang: nil)
+        suggestionModel.reload() // trigger placeholders
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let list = try suggestionList.inspect().find(ViewType.LazyVStack.self)
         XCTAssertNotNil(list)
 
-        // We should be showing a placeholder with 4 row suggestions placeholders
+        // We should be showing a placeholder
         XCTAssertEqual(3, list.count)
-        XCTAssertEqual(4, list.findAll(QuerySuggestionView.self).count)
+        XCTAssertEqual(1, list.findAll(PlaceholderSuggestions.self).count)
     }
 
     func testSuggestionsListNoNeevaSuggestionsForIncognito() throws {

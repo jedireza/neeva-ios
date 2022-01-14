@@ -11,34 +11,19 @@ import UIKit
 
 struct SuggestionsContent: View {
     @ObservedObject var suggestionModel: SuggestionModel
-    @State var bottomSafeArea: CGFloat = 0
 
     var body: some View {
-        GeometryReader { outerGeometry in
-            /// This is a hack to cause SwiftUI to call this function again when `outerGeometry` changes due to device rotation.
-            /// By reading that value, SwiftUI thinks our computation depends on it.
-            /// See https://github.com/neevaco/neeva-ios-phoenix/pull/210 for a detailed explanation.
-            let _ = outerGeometry.size.height
-
-            VStack(spacing: 0) {
-                if let error = suggestionModel.error {
-                    GeometryReader { geom in
-                        ScrollView {
-                            ErrorView(error, in: self, tryAgain: suggestionModel.reload)
-                                .frame(minHeight: geom.size.height)
-                        }
+        VStack(spacing: 0) {
+            if let error = suggestionModel.error {
+                GeometryReader { geom in
+                    ScrollView {
+                        ErrorView(error, in: self, tryAgain: suggestionModel.reload)
+                            .frame(minHeight: geom.size.height)
                     }
-                } else {
-                    SuggestionsList()
-                        .environmentObject(suggestionModel)
                 }
-
-                Spacer()
-                    .frame(height: bottomSafeArea)
-            }
-            .ignoresSafeArea(edges: [.bottom])
-            .useEffect(deps: outerGeometry.safeAreaInsets.bottom) { height in
-                bottomSafeArea = height
+            } else {
+                SuggestionsList()
+                    .environmentObject(suggestionModel)
             }
         }.onAppear {
             suggestionModel.reload()
