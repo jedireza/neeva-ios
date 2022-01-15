@@ -91,7 +91,18 @@ struct DefaultBrowserOnboardingView: View {
 
             Spacer().repeated(3)
 
-            Button(action: openSettings) {
+            Button(action: {
+                ClientLogger.shared.logCounter(
+                    .GoToSysAppSettings,
+                    attributes: EnvironmentHelper.shared.getAttributes() + [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.UIInteractionAttribute.openSysSettingSourceView,
+                            value: String(describing: DefaultBrowserOnboardingView.self)
+                        )
+                    ]
+                )
+                openSettings()
+            }) {
                 HStack {
                     Spacer()
                     Text("Go to Settings")

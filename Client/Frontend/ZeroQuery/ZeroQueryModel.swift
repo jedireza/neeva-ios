@@ -174,14 +174,15 @@ class ZeroQueryModel: ObservableObject {
         } else if !Defaults[.didDismissDefaultBrowserCard] {
             promoCard = .defaultBrowser {
                 ClientLogger.shared.logCounter(
-                    .PromoDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes())
+                    .PromoDefaultBrowser,
+                    attributes: EnvironmentHelper.shared.getAttributes()
+                )
                 self.bvc.presentDBOnboardingViewController()
-
-                // Set default browser onboarding did show to true so it will not show again after user clicks this button
-                Defaults[.didShowDefaultBrowserOnboarding] = true
             } onClose: {
                 ClientLogger.shared.logCounter(
-                    .CloseDefaultBrowserPromo, attributes: EnvironmentHelper.shared.getAttributes())
+                    .CloseDefaultBrowserPromo,
+                    attributes: EnvironmentHelper.shared.getAttributes()
+                )
                 self.promoCard = nil
                 Defaults[.didDismissDefaultBrowserCard] = true
             }

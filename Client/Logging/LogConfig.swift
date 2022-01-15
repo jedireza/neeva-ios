@@ -56,6 +56,7 @@ public struct LogConfig {
         case ViewHelpCenter  // Click Help Center in setting
         case ViewLicenses  // Click Licenses in setting
         case ViewTerms  // Click Terms in setting
+        case GoToSysAppSettings  // Click link to navigate to App Settings in System Settings
 
         case ClearPrivateData  // Click Clear Private Data in Data Management
         case ClearAllWebsiteData  // Click Clear All Website Data in Data Management > Website Data
@@ -281,6 +282,7 @@ public struct LogConfig {
         case .ViewTerms: return .Settings
         case .ClearPrivateData: return .Settings
         case .ClearAllWebsiteData: return .Settings
+        case .GoToSysAppSettings: return .Settings
 
         case .FirstRunSignupWithApple: return .FirstRun
         case .FirstRunOtherSignUpOptions: return .FirstRun
@@ -434,6 +436,7 @@ public struct LogConfig {
     public struct UIInteractionAttribute {
         /// View from which an UI Interaction is triggered
         public static let fromActionType = "fromActionType"
+        public static let openSysSettingSourceView = "openSysSettingSourceView"
     }
 
     public struct SuggestionAttribute {

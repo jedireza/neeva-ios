@@ -13,7 +13,6 @@ struct InternalSettingsView: View {
     @Default(.seenSpacesIntro) var seenSpacesIntro
     @Default(.seenSpacesShareIntro) var seenSpacesShareIntro
     @Default(.lastVersionNumber) var lastVersionNumber
-    @Default(.didShowDefaultBrowserOnboarding) var didShowDefaultBrowserOnboarding
     @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
     @Default(.didDismissReferralPromoCard) var didDismissReferralPromoCard
     @Default(.deletedSuggestedSites) var deletedSuggestedSites
@@ -70,9 +69,6 @@ struct InternalSettingsView: View {
                 Toggle(String("spacesShareIntroSeen"), isOn: $seenSpacesShareIntro)
             }
             Section(header: Text(verbatim: "Promo Cards")) {
-                Toggle(
-                    String("didShowDefaultBrowserOnboarding"),
-                    isOn: $didShowDefaultBrowserOnboarding)
                 Toggle(String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
                 Toggle(String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
                 Toggle(String("ratingsCardHidden"), isOn: $ratingsCardHidden)
