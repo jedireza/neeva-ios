@@ -66,9 +66,6 @@ struct TabGridContainer: View {
         }
         .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
         .environment(\.selectionCompletion) {
-            guard tabGroupModel.detailedTabGroup == nil else {
-                return
-            }
             ClientLogger.shared.logCounter(
                 .SelectTab,
                 attributes: getLogCounterAttributesForTabs(
