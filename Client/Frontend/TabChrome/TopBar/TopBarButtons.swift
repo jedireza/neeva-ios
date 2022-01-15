@@ -112,6 +112,10 @@ struct TopBarOverflowMenuButton: View {
         TabToolbarButtons.OverflowMenu(
             weight: .regular,
             action: {
+                // Refesh feedback screenshot before presenting overflow menu
+                if let tabManager = chromeModel.topBarDelegate?.tabManager {
+                    SceneDelegate.getBVC(with: tabManager.scene).updateFeedbackImage()
+                }
                 presenting = true
                 chromeModel.hideZeroQuery()
             }

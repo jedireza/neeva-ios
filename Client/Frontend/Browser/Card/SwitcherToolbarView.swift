@@ -96,6 +96,8 @@ struct SwitcherToolbarView: View {
                                     .OpenOverflowMenu,
                                     attributes: EnvironmentHelper.shared.getAttributes()
                                 )
+                                // Refesh feedback screenshot before presenting overflow menu
+                                bvc.updateFeedbackImage()
                                 bvc.showModal(style: .grouped) {
                                     OverflowMenuOverlayContent(
                                         menuAction: { action in
