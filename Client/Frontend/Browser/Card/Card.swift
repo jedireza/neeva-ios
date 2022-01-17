@@ -226,7 +226,7 @@ struct Card<Details>: View where Details: CardDetails {
                 )
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
-                        if isChildTab(details: details)
+                        if !FeatureFlag[.tabGroupsNewDesign] && isChildTab(details: details)
                             && (browserModel.cardTransition == .visibleForTrayShow)
                         {
                             Image(systemName: iconInMainGrid)
@@ -241,7 +241,7 @@ struct Card<Details>: View where Details: CardDetails {
                                 .padding(5)
                         }
                         Text(
-                            browserModel.cardTransition == .visibleForTrayShow
+                            !FeatureFlag[.tabGroupsNewDesign] && browserModel.cardTransition == .visibleForTrayShow
                                 ? titleInMainGrid : details.title
                         ).withFont(.labelMedium)
                             .frame(alignment: .center)

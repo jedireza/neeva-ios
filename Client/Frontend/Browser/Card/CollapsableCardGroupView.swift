@@ -12,10 +12,15 @@ struct CollapsableCardGroupView: View {
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
     @EnvironmentObject var browserModel: BrowserModel
+    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
 
     @State private var frame = CGRect.zero
 
     @Namespace var cardGroup
+
+    var groupFromSpace: Bool {
+        return groupDetails.id == tabGroupCardModel.manager.get(for: groupDetails.id)?.children.first?.parentSpaceID
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -41,7 +46,7 @@ struct CollapsableCardGroupView: View {
 
     private var header: some View {
         HStack {
-            Symbol(decorative: .squareGrid2x2Fill)
+            Symbol(decorative: groupFromSpace ? .bookmarkFill : .squareGrid2x2Fill)
                 .foregroundColor(.label)
             Text(groupDetails.title)
                 .withFont(.labelLarge)
