@@ -2367,6 +2367,7 @@ extension BrowserViewController {
                 bvc: self, importData: importData
             )
             .environmentObject(self.chromeModel)
+            .environmentObject(self.browserModel)
         } onDismiss: {
             if request.state != .initial
                 && request.state != .savingToSpace
