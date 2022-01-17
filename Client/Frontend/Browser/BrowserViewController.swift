@@ -148,12 +148,13 @@ class BrowserViewController: UIViewController, ModalPresenter {
         return host
     }()
 
-    private(set) lazy var simulateBackViewController: SimulatedSwipeController? = {
+    private(set) lazy var simulateBackViewController: SimulatedSwipeController = {
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             chromeModel: chromeModel,
             swipeDirection: .back,
-            contentView: tabContainerHost?.view)
+            contentView: FeatureFlag[.enableBrowserView] ? browserHost.view : tabContainerHost?.view
+        )
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -562,7 +563,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 make.edges.equalToSuperview()
             }
 
-            simulateBackViewController?.view.snp.makeConstraints { make in
+            simulateBackViewController.view.snp.makeConstraints { make in
                 make.top.bottom.equalTo(browserHost.view)
                 make.width.equalTo(browserHost.view).offset(SwipeUX.EdgeWidth)
                 make.trailing.equalTo(browserHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
@@ -608,7 +609,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     .store(in: &subscriptions)
             }
 
-            simulateBackViewController?.view.snp.makeConstraints { make in
+            simulateBackViewController.view.snp.makeConstraints { make in
                 make.top.bottom.equalTo(tabContainerHost!.view)
                 make.width.equalTo(tabContainerHost!.view).offset(SwipeUX.EdgeWidth)
                 make.trailing.equalTo(tabContainerHost!.view.snp.leading).offset(SwipeUX.EdgeWidth)
@@ -1771,7 +1772,7 @@ extension BrowserViewController: TabManagerDelegate {
 
         updateFindInPageVisibility(visible: false, tab: previous)
         chromeModel.canGoBack =
-            (simulateBackViewController?.canGoBack() ?? false
+            (simulateBackViewController.canGoBack() ?? false
                 || selected?.canGoBack ?? false)
         chromeModel.canGoForward =
             (simulateForwardViewController?.canGoForward() ?? false

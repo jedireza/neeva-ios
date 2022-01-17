@@ -196,7 +196,10 @@ class SimulatedSwipeController:
             tabManager.removeTabAndUpdateSelectedTab(tab)
         } else if let id = tab.parentSpaceID {
             SceneDelegate.getBVC(with: tabManager.scene).browserModel.openSpace(spaceID: id)
+        } else {
+            return false
         }
+
         return true
     }
 

@@ -32,7 +32,7 @@ extension BrowserViewController: ToolbarDelegate {
                     .ClickBack,
                     attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
-                if self.simulateBackViewController?.goBack() ?? false {
+                if self.simulateBackViewController.goBack() {
                     return
                 }
 
@@ -42,7 +42,7 @@ extension BrowserViewController: ToolbarDelegate {
                     .ClickForward,
                     attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
-                if self.simulateBackViewController?.goForward() ?? false {
+                if self.simulateBackViewController.goForward() {
                     return
                 }
 
@@ -51,13 +51,17 @@ extension BrowserViewController: ToolbarDelegate {
                 if self.chromeModel.reloadButton == .reload {
                     ClientLogger.shared.logCounter(
                         .TapReload,
-                        attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
+                        attributes: EnvironmentHelper.shared.getAttributes() + [
+                            toolbarActionAttribute
+                        ]
                     )
                     self.tabManager.selectedTab?.reload()
                 } else {
                     ClientLogger.shared.logCounter(
                         .TapStopReload,
-                        attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
+                        attributes: EnvironmentHelper.shared.getAttributes() + [
+                            toolbarActionAttribute
+                        ]
                     )
                     self.tabManager.selectedTab?.stop()
                 }
