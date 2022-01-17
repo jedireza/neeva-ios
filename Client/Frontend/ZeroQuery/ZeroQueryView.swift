@@ -220,6 +220,17 @@ struct ZeroQueryView: View {
                     } else {
                         if let promoCardType = viewModel.promoCard {
                             PromoCard(type: promoCardType, viewWidth: geom.size.width)
+                                .onAppear {
+                                    ClientLogger.shared.logCounter(
+                                        .PromoCardAppear,
+                                        attributes: EnvironmentHelper.shared.getAttributes() + [
+                                            ClientLogCounterAttribute(
+                                                key: LogConfig.PromoCardAttribute.promoCardType,
+                                                value: promoCardType.name
+                                            )
+                                        ]
+                                    )
+                                }
                         }
 
                         if isLandScape() && viewModel.showRatingsCard {

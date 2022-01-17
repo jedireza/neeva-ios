@@ -99,6 +99,7 @@ public struct LogConfig {
         case PreviewHomeSignin  // Click sign in on preview home
 
         // promo card
+        case PromoCardAppear  // Promo card is rendered on screen
         case PromoDefaultBrowser  // Click set default browser from promo
         case CloseDefaultBrowserPromo  // Close default browser promo card
 
@@ -320,6 +321,7 @@ public struct LogConfig {
         case .PreviewTapFakeSearchInput: return .FirstRun
         case .PreviewHomeSignin: return .FirstRun
 
+        case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
 
@@ -477,6 +479,10 @@ public struct LogConfig {
         public static let isPublic = "isPublic"
         public static let numberOfSpaceEntities = "NumberOfSpaceEntities"
         public static let socialShareApp = "ShareAppName"
+    }
+
+    public struct PromoCardAttribute {
+        public static let promoCardType = "promoCardType"
     }
 
     public struct TabsAttribute {

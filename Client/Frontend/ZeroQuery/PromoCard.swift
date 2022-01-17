@@ -104,6 +104,25 @@ enum PromoCardType {
             return false
         }
     }
+
+    var name: String {
+        switch self {
+        case .previewModeSignUp:
+            return "previewModeSignUp"
+        case .neevaSignIn:
+            return "neevaSignIn"
+        case .defaultBrowser:
+            return "defaultBrowser"
+        case .referralPromo:
+            return "referralPromo"
+        case .notificationPermission:
+            return "notificationPermission"
+        case .blackFridayFollowPromo:
+            return "blackFridayFollowPromo"
+        case .blackFridayNotifyPromo:
+            return "blackFridayNotifyPromo"
+        }
+    }
 }
 
 struct PromoCard: View {
