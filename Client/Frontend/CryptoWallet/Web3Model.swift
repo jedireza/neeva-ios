@@ -29,12 +29,15 @@ struct SequenceInfo {
 class Web3Model: ObservableObject, ResponseRelay {
     @Published var currentSequence: SequenceInfo? = nil {
         didSet {
-            guard currentSequence != nil else { return }
+            guard let _ = currentSequence, let wallet = wallet else { return }
             tryMatchCurrentPageToCollection()
-            if case .sendTransaction = currentSequence!.type {
-                WalletAccessor().gasPrice { estimate in
-                    self.gasEstimate = estimate
-                }
+
+            wallet.gasPrice { estimate in
+                self.gasEstimate = estimate
+            }
+
+            wallet.ethBalance { balance in
+                self.walletBalance = balance
             }
         }
     }
@@ -47,6 +50,7 @@ class Web3Model: ObservableObject, ResponseRelay {
     @Published var showingWalletDetails = false
     @Published var matchingCollection: Collection?
     @Published var gasEstimate: String? = nil
+    @Published var walletBalance: String? = nil
 
     let server: Server?
     let presenter: WalletConnectPresenter
@@ -158,6 +162,16 @@ class Web3Model: ObservableObject, ResponseRelay {
             }
     }
 
+    func startSequence() {
+        presenter.showModal(
+            style: .spaces,
+            headerButton: nil,
+            content: {
+                WalletSequenceContent(model: self)
+                    .overlayIsFixedHeight(isFixedHeight: true)
+            }, onDismiss: { self.reset() })
+    }
+
     func send(_ response: Response) {
         server?.send(response)
     }
@@ -193,15 +207,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 ethAmount: Web3.Utils.formatToEthereumUnits(
                     Web3.Utils.hexToBigUInt(value) ?? .zero, decimals: 4)
             )
-            self.presenter.showModal(
-                style: .spaces,
-                headerButton: nil,
-                content: {
-                    WalletSequenceContent(model: self)
-                },
-                onDismiss: {
-                    self.currentSequence = nil
-                })
+            self.startSequence()
         }
     }
 
@@ -234,15 +240,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                         self.server?.send(.reject(request))
                     }
                 })
-            self.presenter.showModal(
-                style: .spaces,
-                headerButton: nil,
-                content: {
-                    WalletSequenceContent(model: self)
-                },
-                onDismiss: {
-                    self.currentSequence = nil
-                })
+            self.startSequence()
         }
     }
 }

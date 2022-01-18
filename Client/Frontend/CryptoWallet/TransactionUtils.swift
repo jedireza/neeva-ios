@@ -16,7 +16,7 @@ struct WalletAccessor {
     let web3: web3
 
     init() {
-        self.web3 = try! Web3.new(URL(string: CryptoConfig.shared.getNodeURL())!)
+        self.web3 = try! Web3.new(CryptoConfig.shared.nodeURL)
         self.password = CryptoConfig.shared.getPassword()
         let key = Defaults[.cryptoPrivateKey]
         let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -50,6 +50,15 @@ struct WalletAccessor {
             + web3.wallet.signPersonalMessage(
                 message, account: EthereumAddress(publicAddress)!, password: password
             ).toHexString()
+    }
+
+    func ethBalance(completion: @escaping (String?) -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            web3.eth.getBalancePromise(address: publicAddress).done(on: DispatchQueue.main) {
+                balance in
+                completion(Web3.Utils.formatToEthereumUnits(balance, toUnits: .eth))
+            }.cauterize()
+        }
     }
 
     func gasPrice(completion: @escaping (String?) -> Void) {

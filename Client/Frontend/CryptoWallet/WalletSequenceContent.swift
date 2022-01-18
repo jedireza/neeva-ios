@@ -39,10 +39,79 @@ struct WalletSequenceContent: View {
             return " wants to connect to your wallet"
         case .personalSign:
             return
-                " wants to personal sign a message using your wallet."
+                " wants to sign a message using your wallet."
         case .sendTransaction:
             return " wants to send a transaction"
         }
+    }
+
+    var bottomLeftHeader: String {
+        guard let type = model.currentSequence?.type else { return "" }
+
+        switch type {
+        case .sendTransaction:
+            return "Gas Estimate"
+        default:
+            return "Wallet"
+        }
+    }
+
+    @ViewBuilder var bottomLeftInfo: some View {
+        if let type = model.currentSequence?.type {
+            switch type {
+            case .sendTransaction:
+                if let gasEstimate = model.gasEstimate {
+                    Label {
+                        Text("\(gasEstimate) Gwei")
+                            .withFont(.bodyLarge)
+                            .foregroundColor(.label)
+                    } icon: {
+                        Symbol(decorative: .flameFill, style: .bodyLarge)
+                    }
+                }
+            default:
+                Text(model.wallet?.publicAddress ?? "")
+                    .withFont(.labelMedium)
+                    .lineLimit(1)
+                    .foregroundColor(.label)
+                    .frame(maxWidth: 150, alignment: .leading)
+            }
+        }
+    }
+
+    var bottomRightHeader: String {
+        guard let type = model.currentSequence?.type else { return "" }
+
+        switch type {
+        case .sessionRequest:
+            return "Network"
+        default:
+            return "Balance"
+        }
+    }
+
+    var bottomRightInfo: String {
+        guard let balance = model.walletBalance,
+            let type = model.currentSequence?.type
+        else {
+            return "Fetching..."
+
+        }
+
+        switch type {
+        case .sessionRequest:
+            return CryptoConfig.shared.currentNode.rawValue
+        default:
+            return balance + " ETH"
+        }
+
+    }
+
+    var descriptionText: some View {
+        Text(model.currentSequence?.message ?? "")
+            .withFont(.bodyLarge)
+            .foregroundColor(.secondaryLabel)
+            .fixedSize(horizontal: false, vertical: true)
     }
 
     var body: some View {
@@ -65,12 +134,21 @@ struct WalletSequenceContent: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .center)
-                Text(
-                    sequence.dAppMeta.url.baseDomain
-                        ?? sequence.dAppMeta.url.domainURL.absoluteString
-                )
-                .withFont(.labelLarge)
-                .foregroundColor(.ui.adaptive.blue)
+                HStack {
+                    if !showingCommunitySubmissions {
+                        Image("twitter-verified-large")
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.ui.adaptive.blue)
+                            .frame(width: 16, height: 16)
+                    }
+                    Text(
+                        sequence.dAppMeta.url.baseDomain
+                            ?? sequence.dAppMeta.url.domainURL.absoluteString
+                    ).withFont(.headingMedium)
+                        .foregroundColor(showingCommunitySubmissions ? .label : .ui.adaptive.blue)
+                }
                 if case .sessionRequest = sequence.type {
                     if let collection = model.matchingCollection,
                         collection.safelistRequestStatus >= .approved,
@@ -82,35 +160,27 @@ struct WalletSequenceContent: View {
                         let url = model.selectedTab?.url
                     {
                         CommunitySubmissionView(url: url, trust: $communityTrusted)
-                    } else if let description = sequence.message {
-                        Text(description)
-                            .withFont(.bodyLarge)
-                            .foregroundColor(.secondaryLabel)
+                    } else if let _ = sequence.message {
+                        descriptionText
                     }
-                } else if let description = sequence.message {
-                    Text(description)
-                        .withFont(.bodyLarge)
-                        .foregroundColor(.secondaryLabel)
+                } else if let _ = sequence.message {
+                    descriptionText
                 }
-                Group {
+                VStack(spacing: 8) {
                     if let ethAmount = sequence.ethAmount, let double = Double(ethAmount) {
+                        Text("$" + CryptoConfig.shared.etherToUSD(ether: String(double)))
+                            .withFont(.headingXLarge)
+                            .foregroundColor(.label)
                         Label {
-                            Text(String(double)).withFont(.headingLarge).foregroundColor(.label)
+                            Text(String(double))
+                                .withFont(.bodyLarge)
+                                .foregroundColor(.secondaryLabel)
                         } icon: {
                             Image("ethLogo")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 24, height: 24)
+                                .frame(width: 16, height: 16)
                                 .padding(4)
-                        }
-                    }
-                    if let gasEstimate = model.gasEstimate {
-                        Label {
-                            Text("\(gasEstimate) Gwei")
-                                .withFont(.bodyLarge)
-                                .foregroundColor(.label)
-                        } icon: {
-                            Symbol(decorative: .flameFill, style: .bodyLarge)
                         }
                     }
                 }.padding(.vertical, 12)
@@ -184,7 +254,27 @@ struct WalletSequenceContent: View {
                                 }
                             }
                         ).buttonStyle(.neeva(.primary))
+                            .padding(.vertical, 16)
                             .disabled(model.currentSequence == nil)
+                    }
+                }
+                HStack {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text(bottomLeftHeader)
+                            .withFont(.labelSmall)
+                            .foregroundColor(.secondaryLabel)
+                        bottomLeftInfo
+                    }
+                    Spacer()
+                    VStack(alignment: .trailing, spacing: 8) {
+                        Text(bottomRightHeader)
+                            .withFont(.labelSmall)
+                            .foregroundColor(.secondaryLabel)
+                        Text(bottomRightInfo)
+                            .withFont(.labelMedium)
+                            .lineLimit(1)
+                            .foregroundColor(.label)
+                            .frame(maxWidth: 150, alignment: .trailing)
                     }
                 }
             } else {

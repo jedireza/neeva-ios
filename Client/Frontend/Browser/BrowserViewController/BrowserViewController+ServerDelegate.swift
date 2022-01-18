@@ -9,7 +9,6 @@ import SwiftUI
 import WalletConnectSwift
 import web3swift
 
-
 extension Defaults.Keys {
     static func dAppsSession(_ sessionID: String) -> Defaults.Key<Data?> {
         Defaults.Key("DataForSession" + sessionID)
@@ -28,11 +27,7 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
             return false
         }
 
-        showModal(
-            style: .spaces,
-            content: {
-                WalletSequenceContent(model: self.web3Model)
-            }, onDismiss: { self.web3Model.reset() })
+        web3Model.startSequence()
         DispatchQueue.global(qos: .userInitiated).async {
             try? self.server?.connect(to: wcURL)
         }
