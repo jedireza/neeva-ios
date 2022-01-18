@@ -32,7 +32,8 @@ struct CollapsableCardGroupView: View {
                 scrollView
             }
         }
-        .animation(.spring(), value: groupDetails.isShowingDetails)
+        .animation(nil)
+//        .animation(.spring(), value: groupDetails.isShowingDetails)
         .transition(.fade)
         .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
         .background(
@@ -137,6 +138,7 @@ struct CollapsableCardGroupView: View {
                             )
                     }
                 }
+                .zIndex(row.contains(where: \.isSelected) ? 1 : 0)
             }
         }
         .padding(.leading, CardGridUX.GridSpacing)

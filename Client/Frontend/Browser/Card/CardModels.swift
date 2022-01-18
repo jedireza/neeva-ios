@@ -670,7 +670,7 @@ class TabGroupCardModel: CardModel {
     }
 
     func setupDetailsListener() {
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
             guard let self = self else {
                 return
             }
