@@ -99,7 +99,11 @@ class SuggestionViewsTests: XCTestCase {
     func testHistorySuggestion() throws {
         let suggestionModel = SuggestionModel(
             bvc: SceneDelegate.getBVC(for: nil),
-            previewSites: [Site(url: SuggestionsList.placeholderNavSuggestion.url, title: SuggestionsList.placeholderNavSuggestion.title!, guid: "test-suggestion")],
+            previewSites: [
+                Site(
+                    url: SuggestionsList.placeholderNavSuggestion.url,
+                    title: SuggestionsList.placeholderNavSuggestion.title!, guid: "test-suggestion")
+            ],
             searchQueryForTesting: "query",
             previewLensBang: nil)
         let historySuggestion = SuggestionsList().environmentObject(suggestionModel)
@@ -131,7 +135,7 @@ class SuggestionViewsTests: XCTestCase {
             bvc: SceneDelegate.getBVC(for: nil),
             searchQueryForTesting: "query",
             previewLensBang: nil)
-        suggestionModel.reload() // trigger placeholders
+        suggestionModel.reload()  // trigger placeholders
         let suggestionList = SuggestionsList().environmentObject(suggestionModel)
         let list = try suggestionList.inspect().find(ViewType.LazyVStack.self)
         XCTAssertNotNil(list)

@@ -32,11 +32,11 @@ struct BrowserTopBarView: View {
             switcherTopBar
                 .modifier(
                     SwipeToSwitchToSpacesGesture(
-                        gridModel: gridModel, tabModel: gridModel.tabCardModel, fromPicker: true
-                    ) {
-                        offset in
-                        gridModel.dragOffset = offset
-                    })
+                        gridModel: gridModel, tabModel: gridModel.tabCardModel,
+                        horizontalOffsetChanged: {
+                            offset in
+                            gridModel.dragOffset = offset
+                        }, fromPicker: true))
         } else {
             TopBarContent(
                 browserModel: browserModel,

@@ -12,12 +12,6 @@ import UIKit
 struct SuggestionPositionInfo {
     let positionIndex: Int
 
-    init(
-        positionIndex: Int
-    ) {
-        self.positionIndex = positionIndex
-    }
-
     public func loggingAttributes() -> [ClientLogCounterAttribute] {
         var clientLogAttributes = [ClientLogCounterAttribute]()
 

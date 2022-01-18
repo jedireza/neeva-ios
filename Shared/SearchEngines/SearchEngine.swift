@@ -101,11 +101,11 @@ public class SearchEngine: Identifiable, Hashable {
 
     // MARK: - Internal properties & initializers
     private let suggestTemplate: String?
-    private let _searchTemplate: String
+    private let customSearchTemplate: String
     private var searchTemplate: String {
         isNeeva
             ? "https://\(NeevaConstants.appHost)/search?q={searchTerms}&src=nvobar"
-            : _searchTemplate
+            : customSearchTemplate
     }
 
     private init(
@@ -119,7 +119,7 @@ public class SearchEngine: Identifiable, Hashable {
             id == "google"
             ? "{google:baseSuggestURL}search?{google:searchFieldtrialParameter}client={google:suggestClient}&q={searchTerms}"
             : suggestTemplate
-        self._searchTemplate = searchTemplate
+        self.customSearchTemplate = searchTemplate
         self.isNeeva = isNeeva
     }
 

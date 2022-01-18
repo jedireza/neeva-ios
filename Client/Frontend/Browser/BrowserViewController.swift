@@ -1768,7 +1768,7 @@ extension BrowserViewController: TabManagerDelegate {
 
         updateFindInPageVisibility(visible: false, tab: previous)
         chromeModel.canGoBack =
-            (simulateBackViewController.canGoBack() ?? false
+            (simulateBackViewController.canGoBack()
                 || selected?.canGoBack ?? false)
         chromeModel.canGoForward =
             (simulateForwardViewController?.canGoForward() ?? false

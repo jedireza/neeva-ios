@@ -3,11 +3,11 @@
 // found in the LICENSE file.
 
 import Apollo
+import Defaults
 import Foundation
 import Reachability
 import SwiftUI
 import WebKit
-import Defaults
 
 public class NeevaUserInfo: ObservableObject {
     public static let shared = NeevaUserInfo()

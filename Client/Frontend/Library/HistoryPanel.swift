@@ -4,10 +4,10 @@
 
 import Shared
 import Storage
+import SwiftUI
 import UIKit
 import WebKit
 import XCGLogger
-import SwiftUI
 
 protocol HistoryPanelDelegate: AnyObject {
     func libraryPanel(didSelectURL url: URL, visitType: VisitType)

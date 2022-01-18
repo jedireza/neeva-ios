@@ -69,7 +69,8 @@ class TPStatsBlocklistsTests: XCTestCase {
         XCTAssertEqual(blocklist("https://datafeedfile.com/popup"), true)
         XCTAssertEqual(blocklist("https://datafront.co/track"), true)
         XCTAssertEqual(blocklist("https://data.front.com/track"), false)
-        XCTAssertEqual(blocklist("https://aol.com.aolanswers.com", "https://foo.com", ["ers.com"]), false)
+        XCTAssertEqual(
+            blocklist("https://aol.com.aolanswers.com", "https://foo.com", ["ers.com"]), false)
         XCTAssertEqual(blocklist("https://sub.xiti.com/track"), true)
     }
 }
