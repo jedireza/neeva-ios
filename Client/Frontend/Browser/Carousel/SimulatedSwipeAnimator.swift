@@ -65,8 +65,7 @@ class SimulatedSwipeAnimator: NSObject {
 
     init(
         swipeDirection: SwipeDirection, simulatedSwipeControllerView: UIView,
-        tabManager: TabManager,
-        params: SimulateForwardAnimationParameters = DefaultParameters
+        tabManager: TabManager, params: SimulateForwardAnimationParameters = DefaultParameters
     ) {
         self.params = params
         self.simulatedSwipeControllerView = simulatedSwipeControllerView
@@ -76,7 +75,7 @@ class SimulatedSwipeAnimator: NSObject {
         super.init()
 
         self.panGestureRecogniser = UIPanGestureRecognizer(target: self, action: #selector(didPan))
-        animatingView?.addGestureRecognizer(self.panGestureRecogniser)
+        simulatedSwipeControllerView.addGestureRecognizer(self.panGestureRecogniser)
     }
 }
 
