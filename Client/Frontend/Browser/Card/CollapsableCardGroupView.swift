@@ -33,7 +33,6 @@ struct CollapsableCardGroupView: View {
             }
         }
         .animation(nil)
-//        .animation(.spring(), value: groupDetails.isShowingDetails)
         .transition(.fade)
         .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
         .background(

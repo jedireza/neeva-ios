@@ -95,7 +95,6 @@ struct TabGridContainer: View {
             }
         }
         .animation(nil)
-//        .animation(.spring(), value: tabGroupModel.allDetails.map(\.isSelected))
     }
 }
 
