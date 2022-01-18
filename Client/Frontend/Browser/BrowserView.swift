@@ -126,7 +126,7 @@ struct BrowserView: View {
 
                 // Bottom Bar
                 if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
-                    && !detailViewVisible && !keyboardShowing
+                    && !detailViewVisible && !keyboardShowing && !overlayManager.hideBottomBar
                 {
                     bottomBar
                         .offset(
@@ -157,7 +157,8 @@ struct BrowserView: View {
                 .padding(
                     .bottom,
                     overlayManager.offsetForBottomBar && !chromeModel.inlineToolbar
-                        ? bottomBarHeight : 0)
+                        && !keyboardShowing
+                        ? bottomBarHeight - scrollingControlModel.footerBottomOffset : 0)
         }
         .environmentObject(bvc.browserModel)
         .environmentObject(gridModel)

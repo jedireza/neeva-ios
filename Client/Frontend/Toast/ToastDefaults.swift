@@ -49,6 +49,19 @@ class ToastDefaults: NSObject {
     func showToastForDownload(download: Download, toastViewManager: ToastViewManager) {
         resetProgress()
 
+        toastProgressViewModel?.downloadListener = download.$bytesDownloaded.sink {
+            [self] bytesDownloaded in
+            guard let bytesExpected = download.totalBytesExpected else {
+                toastProgressViewModel?.downloadListener = nil
+                toastProgressViewModel?.progress = nil
+                return
+            }
+
+            withAnimation(.default) {
+                toastProgressViewModel?.progress = Double(bytesDownloaded) / Double(bytesExpected)
+            }
+        }
+
         download.delegate = self
 
         let normalContent = ToastStateContent(text: "Downloading", buttonText: "cancel") {
@@ -238,6 +251,8 @@ class ToastDefaults: NSObject {
     private func resetProgress() {
         toastProgressViewModel = ToastProgressViewModel()
         toastProgressViewModel?.status = .inProgress
+        toastProgressViewModel?.progress = nil
+        toastProgressViewModel?.downloadListener = nil
     }
 }
 
@@ -255,7 +270,7 @@ extension ToastDefaults: DownloadDelegate {
         if error != nil {
             print("Download failed with error:", error as Any)
 
-            toastProgressViewModel?.status = .success
+            toastProgressViewModel?.status = .failed
             downloadComplete()
         }
     }

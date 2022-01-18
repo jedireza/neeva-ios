@@ -10,7 +10,7 @@ protocol DownloadDelegate {
     func download(_ download: Download, didFinishDownloadingTo location: URL)
 }
 
-class Download: NSObject {
+class Download: NSObject, ObservableObject {
     var delegate: DownloadDelegate?
 
     fileprivate(set) var filename: String
@@ -18,8 +18,8 @@ class Download: NSObject {
 
     fileprivate(set) var isComplete = false
 
-    fileprivate(set) var totalBytesExpected: Int64?
-    fileprivate(set) var bytesDownloaded: Int64
+    @Published fileprivate(set) var totalBytesExpected: Int64?
+    @Published fileprivate(set) var bytesDownloaded: Int64
 
     override init() {
         self.filename = "unknown"
