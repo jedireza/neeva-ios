@@ -140,8 +140,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             chromeModel: chromeModel,
-            swipeDirection: .forward,
-            contentView: tabContainerHost?.view)
+            swipeDirection: .forward)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -152,8 +151,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         let host = SimulatedSwipeController(
             tabManager: self.tabManager,
             chromeModel: chromeModel,
-            swipeDirection: .back,
-            contentView: FeatureFlag[.enableBrowserView] ? browserHost.view : tabContainerHost?.view
+            swipeDirection: .back
         )
         addChild(host)
         view.addSubview(host.view)

@@ -107,7 +107,9 @@ struct BrowserView: View {
                     containerView
                         .padding(
                             UIConstants.enableBottomURLBar ? .bottom : .top,
-                            detailViewVisible ? 0 : topBarPadding)
+                            detailViewVisible ? 0 : topBarPadding
+                        )
+                        .background(Color.white)
 
                     // Top Bar
                     VStack {

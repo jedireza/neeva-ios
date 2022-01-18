@@ -41,8 +41,7 @@ class SimulatedSwipeController:
     var progressView: UIHostingController<CarouselProgressView>!
 
     init(
-        tabManager: TabManager, chromeModel: TabChromeModel, swipeDirection: SwipeDirection,
-        contentView: UIView?
+        tabManager: TabManager, chromeModel: TabChromeModel, swipeDirection: SwipeDirection
     ) {
         self.tabManager = tabManager
         self.chromeModel = chromeModel
@@ -54,8 +53,8 @@ class SimulatedSwipeController:
 
         self.animator = SimulatedSwipeAnimator(
             swipeDirection: swipeDirection,
-            animatingView: self.view,
-            contentView: contentView)
+            simulatedSwipeControllerView: self.view,
+            tabManager: tabManager)
         self.animator.delegate = self
 
         if swipeDirection == .forward {

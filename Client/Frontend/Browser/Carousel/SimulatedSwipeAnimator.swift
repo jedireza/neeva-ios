@@ -3,6 +3,8 @@
 // found in the LICENSE file.
 
 import Foundation
+import Shared
+import UIKit
 
 struct SimulateForwardAnimationParameters {
     let totalRotationInDegrees: Double
@@ -31,8 +33,8 @@ protocol SimulateForwardAnimatorDelegate: AnyObject {
 
 class SimulatedSwipeAnimator: NSObject {
     weak var delegate: SimulateForwardAnimatorDelegate?
-    weak var animatingView: UIView?
-    weak var contentView: UIView?
+    weak var simulatedSwipeControllerView: UIView?
+    weak var tabManager: TabManager?
     var swipeDirection: SwipeDirection
 
     fileprivate var prevOffset: CGPoint?
@@ -47,19 +49,34 @@ class SimulatedSwipeAnimator: NSObject {
         return CGPoint(x: animatingView.frame.width / 2, y: animatingView.frame.height / 2)
     }
 
+    var contentView: UIView? {
+        tabManager?.selectedTab?.webView
+    }
+
+    var animatingView: UIView? {
+        if FeatureFlag[.enableBrowserView], let contentView = contentView {
+            return UIView(frame: contentView.frame)
+        } else if !FeatureFlag[.enableBrowserView] {
+            return simulatedSwipeControllerView
+        }
+
+        return nil
+    }
+
     init(
-        swipeDirection: SwipeDirection, animatingView: UIView, contentView: UIView?,
+        swipeDirection: SwipeDirection, simulatedSwipeControllerView: UIView,
+        tabManager: TabManager,
         params: SimulateForwardAnimationParameters = DefaultParameters
     ) {
-        self.animatingView = animatingView
-        self.contentView = contentView
         self.params = params
+        self.simulatedSwipeControllerView = simulatedSwipeControllerView
+        self.tabManager = tabManager
         self.swipeDirection = swipeDirection
 
         super.init()
 
         self.panGestureRecogniser = UIPanGestureRecognizer(target: self, action: #selector(didPan))
-        animatingView.addGestureRecognizer(self.panGestureRecogniser)
+        animatingView?.addGestureRecognizer(self.panGestureRecogniser)
     }
 }
 
