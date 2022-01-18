@@ -20,10 +20,6 @@ import XCGLogger
 
 private let ActionSheetTitleMaxLength = 120
 
-private enum BrowserViewControllerUX {
-    static let ShowHeaderTapAreaHeight: CGFloat = 32
-}
-
 struct UrlToOpenModel {
     var url: URL?
     var isPrivate: Bool
@@ -195,7 +191,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     // This view wraps the toolbar to allow it to hide without messing up the layout
     private(set) var footer: UIView!
-    fileprivate var topTouchArea: UIButton!
+    fileprivate var topTouchArea: UIButton?
 
     // Backdrop used for displaying greyed background for private tabs
     private(set) var webViewContainerBackdrop: UIView!
@@ -526,12 +522,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
             scrollController?.header = topBar?.view
             scrollController?.safeAreaView = view
             scrollController?.footer = footer
-        }
 
-        topTouchArea = UIButton()
-        topTouchArea.isAccessibilityElement = false
-        topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
-        view.addSubview(topTouchArea)
+            topTouchArea = UIButton()
+            topTouchArea!.isAccessibilityElement = false
+            topTouchArea!.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
+            view.addSubview(topTouchArea!)
+        }
 
         self.updateToolbarStateForTraitCollection(self.traitCollection)
 
@@ -772,12 +768,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
     override func updateViewConstraints() {
         super.updateViewConstraints()
 
-        topTouchArea.snp.remakeConstraints { make in
-            make.top.left.right.equalTo(self.view)
-            make.height.equalTo(BrowserViewControllerUX.ShowHeaderTapAreaHeight)
-        }
-
         if !FeatureFlag[.enableBrowserView] {
+            topTouchArea!.snp.remakeConstraints { make in
+                make.top.left.right.equalTo(self.view)
+                make.height.equalTo(32)
+            }
+
             if UIConstants.enableBottomURLBar {
                 topBar!.view.snp.remakeConstraints { make in
                     if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view),

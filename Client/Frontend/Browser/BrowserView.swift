@@ -6,6 +6,10 @@ import Foundation
 import Shared
 import SwiftUI
 
+private enum BrowserViewUX {
+    static let ShowHeaderTapAreaHeight = 32.0
+}
+
 struct BrowserView: View {
     // MARK: - Parameters
     // TODO: Eliminate this dependency
@@ -119,6 +123,21 @@ struct BrowserView: View {
                                 y: scrollingControlModel.headerTopOffset
                                     * (UIConstants.enableBottomURLBar ? -1 : 1)
                             )
+                            .background(
+                                Group {
+                                    if !UIConstants.enableBottomURLBar, chromeModel.inlineToolbar {
+                                        // invisible tap area to show the toolbars since modern iOS
+                                        // does not have a status bar in landscape.
+                                        Color.clear
+                                            .ignoresSafeArea()
+                                            .frame(height: BrowserViewUX.ShowHeaderTapAreaHeight)
+                                            // without this, the area isn’t tappable because it’s invisible
+                                            .contentShape(Rectangle())
+                                            .onTapGesture {
+                                                scrollingControlModel.showToolbars(animated: true)
+                                            }
+                                    }
+                                }, alignment: .top)
 
                         if !UIConstants.enableBottomURLBar { Spacer() }
                     }
