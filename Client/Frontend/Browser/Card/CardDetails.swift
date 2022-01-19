@@ -451,10 +451,16 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     typealias Manager = TabGroupManager
 
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
+    private var tabGroupExpandedSubscriptions: Set<AnyCancellable> = Set()
+
     @Published var manager: TabGroupManager
-    @Published var isShowingDetails: Bool {
-        didSet {
-            if isShowingDetails {
+    @Published var isShowingDetails = false
+    var isExpanded: Bool {
+        get {
+            tabGroupExpanded.contains(id)
+        }
+        set {
+            if newValue {
                 tabGroupExpanded.insert(id)
             } else {
                 tabGroupExpanded.remove(id)
@@ -485,10 +491,15 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             ? "bookmark.fill" : "square.grid.2x2.fill"
     }
 
-    init(tabGroup: TabGroup, tabGroupManager: TabGroupManager, isShowingDetails: Bool = false) {
+    init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
         self.id = tabGroup.id
         self.manager = tabGroupManager
-        self.isShowingDetails = FeatureFlag[.tabGroupsNewDesign] ? isShowingDetails : false
+
+        _tabGroupExpanded.publisher.sink {
+            [unowned self] _ in
+            self.objectWillChange.send()
+        }.store(in: &self.tabGroupExpandedSubscriptions)
+
         allDetails =
             manager.get(for: id)?.children
             .map({

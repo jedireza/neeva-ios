@@ -596,7 +596,6 @@ class TabGroupCardModel: CardModel {
     var onViewUpdate: () -> Void = {}
     var manager: TabGroupManager
     var anyCancellable: AnyCancellable? = nil
-    @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
     private var detailsSubscriptions: Set<AnyCancellable> = Set()
     private var screenshotsSubscriptions: Set<AnyCancellable> = Set()
 
@@ -643,8 +642,7 @@ class TabGroupCardModel: CardModel {
             .map {
                 TabGroupCardDetails(
                     tabGroup: $0,
-                    tabGroupManager: manager, isShowingDetails: self.tabGroupExpanded.contains($0.id)
-                )
+                    tabGroupManager: manager)
             }
         objectWillChange.send()
     }
@@ -664,12 +662,6 @@ class TabGroupCardModel: CardModel {
                     }
                 }
             }
-            // With the old tab group, the GridModel is responsible for setting the detailedTabGroup
-            // to nil when animating out of the tab switcher. With the new tab group design, it's possible
-            // to hide a tab group within the tab switcher, which explains the objectWillChange below.
-            if FeatureFlag[.tabGroupsNewDesign] {
-                self?.objectWillChange.send()
-            }
         }.store(in: &storeIn)
     }
 
@@ -679,7 +671,7 @@ class TabGroupCardModel: CardModel {
                 return
             }
             self.allDetails = self.manager.getAll().map {
-                TabGroupCardDetails(tabGroup: $0, tabGroupManager: self.manager, isShowingDetails: self.tabGroupExpanded.contains($0.id))
+                TabGroupCardDetails(tabGroup: $0, tabGroupManager: self.manager)
             }
             if !FeatureFlag[.tabGroupsNewDesign] {
                 if self.detailedTabGroup != nil {
@@ -692,9 +684,11 @@ class TabGroupCardModel: CardModel {
             self.manager.cleanUpTabGroupNames()
             self.representativeTabs = self.manager.getAll()
                 .reduce(into: [Tab]()) { $0.append($1.children.first!) }
-            self.allDetails.forEach { details in
-                self.createIsShowingDetailsSink(
-                    details: details, storeIn: &self.detailsSubscriptions)
+            if !FeatureFlag[.tabGroupsNewDesign] {
+                self.allDetails.forEach { details in
+                    self.createIsShowingDetailsSink(
+                        details: details, storeIn: &self.detailsSubscriptions)
+                }
             }
             self.manager.getAll().forEach { tabgroup in
                 tabgroup.children.forEach { tab in
@@ -703,10 +697,12 @@ class TabGroupCardModel: CardModel {
                             $0.id == tab.rootUUID
                         }), let tabGroup = self.manager.tabGroups[tab.rootUUID] {
                             self.allDetails[index] = TabGroupCardDetails(
-                                tabGroup: tabGroup, tabGroupManager: self.manager, isShowingDetails: self.tabGroupExpanded.contains(tabGroup.id))
-                            self.createIsShowingDetailsSink(
-                                details: self.allDetails[index],
-                                storeIn: &self.screenshotsSubscriptions)
+                                tabGroup: tabGroup, tabGroupManager: self.manager)
+                            if !FeatureFlag[.tabGroupsNewDesign] {
+                                self.createIsShowingDetailsSink(
+                                    details: self.allDetails[index],
+                                    storeIn: &self.screenshotsSubscriptions)
+                            }
                         }
                     }.store(in: &self.screenshotsSubscriptions)
                 }
