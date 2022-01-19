@@ -596,7 +596,7 @@ class TabGroupCardModel: CardModel {
     var onViewUpdate: () -> Void = {}
     var manager: TabGroupManager
     var anyCancellable: AnyCancellable? = nil
-    @Default(.tabGroupNames) var tabGroupDict: [String: String]
+    @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
     private var detailsSubscriptions: Set<AnyCancellable> = Set()
     private var screenshotsSubscriptions: Set<AnyCancellable> = Set()
 
@@ -643,7 +643,7 @@ class TabGroupCardModel: CardModel {
             .map {
                 TabGroupCardDetails(
                     tabGroup: $0,
-                    tabGroupManager: manager
+                    tabGroupManager: manager, isShowingDetails: self.tabGroupExpanded.contains($0.id)
                 )
             }
         objectWillChange.send()
@@ -656,33 +656,38 @@ class TabGroupCardModel: CardModel {
         details?.$isShowingDetails.sink { [weak self] showingDetails in
             DispatchQueue.main.async {
                 if showingDetails {
-                    withAnimation {
-                        self?.detailedTabGroup =
-                            self?.allDetails.first(where: { $0.id == id })
-                    }
-                } else {
-                    if FeatureFlag[.tabGroupsNewDesign] {
-                        self?.detailedTabGroup = nil
+                    if !FeatureFlag[.tabGroupsNewDesign] {
+                        withAnimation {
+                            self?.detailedTabGroup =
+                                self?.allDetails.first(where: { $0.id == id })
+                        }
                     }
                 }
+            }
+            // With the old tab group, the GridModel is responsible for setting the detailedTabGroup
+            // to nil when animating out of the tab switcher. With the new tab group design, it's possible
+            // to hide a tab group within the tab switcher, which explains the objectWillChange below.
+            if FeatureFlag[.tabGroupsNewDesign] {
+                self?.objectWillChange.send()
             }
         }.store(in: &storeIn)
     }
 
     func setupDetailsListener() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return
             }
-
             self.allDetails = self.manager.getAll().map {
-                TabGroupCardDetails(tabGroup: $0, tabGroupManager: self.manager)
+                TabGroupCardDetails(tabGroup: $0, tabGroupManager: self.manager, isShowingDetails: self.tabGroupExpanded.contains($0.id))
             }
-            if self.detailedTabGroup != nil {
-                self.detailedTabGroup = self.allDetails.first {
-                    $0.id == self.detailedTabGroup?.id
+            if !FeatureFlag[.tabGroupsNewDesign] {
+                if self.detailedTabGroup != nil {
+                    self.detailedTabGroup = self.allDetails.first {
+                        $0.id == self.detailedTabGroup?.id
+                    }
+                    self.detailedTabGroup?.isShowingDetails = true
                 }
-                self.detailedTabGroup?.isShowingDetails = true
             }
             self.manager.cleanUpTabGroupNames()
             self.representativeTabs = self.manager.getAll()
@@ -698,7 +703,7 @@ class TabGroupCardModel: CardModel {
                             $0.id == tab.rootUUID
                         }), let tabGroup = self.manager.tabGroups[tab.rootUUID] {
                             self.allDetails[index] = TabGroupCardDetails(
-                                tabGroup: tabGroup, tabGroupManager: self.manager)
+                                tabGroup: tabGroup, tabGroupManager: self.manager, isShowingDetails: self.tabGroupExpanded.contains(tabGroup.id))
                             self.createIsShowingDetailsSink(
                                 details: self.allDetails[index],
                                 storeIn: &self.screenshotsSubscriptions)

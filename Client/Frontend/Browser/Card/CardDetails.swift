@@ -443,14 +443,24 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
     func onClose() {}
 }
 
+// TabGroupCardDetails are not to be used for storing data because they can be recreated.
 class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManagerProvider,
     ThumbnailModel
 {
     typealias Item = TabGroup
     typealias Manager = TabGroupManager
 
+    @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
     @Published var manager: TabGroupManager
-    @Published var isShowingDetails = false
+    @Published var isShowingDetails: Bool {
+        didSet {
+            if isShowingDetails {
+                tabGroupExpanded.insert(id)
+            } else {
+                tabGroupExpanded.remove(id)
+            }
+        }
+    }
     var id: String
     var isSelected: Bool {
         manager.tabManager.selectedTab?.rootUUID == id
@@ -475,9 +485,10 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             ? "bookmark.fill" : "square.grid.2x2.fill"
     }
 
-    init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
+    init(tabGroup: TabGroup, tabGroupManager: TabGroupManager, isShowingDetails: Bool = false) {
         self.id = tabGroup.id
         self.manager = tabGroupManager
+        self.isShowingDetails = FeatureFlag[.tabGroupsNewDesign] ? isShowingDetails : false
         allDetails =
             manager.get(for: id)?.children
             .map({
