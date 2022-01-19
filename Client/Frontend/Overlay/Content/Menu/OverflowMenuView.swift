@@ -52,7 +52,9 @@ public struct OverflowMenuButtonView: View {
     public var body: some View {
         GroupedCellButton(
             action: action, longPressAction: longPressAction,
-            backgroundColor: isIncognito ? Color.black : Color.secondaryGroupedBackground
+            backgroundColor: isIncognito
+                ? Color.black
+                : Color.secondaryGroupedBackgroundElevated
         ) {
             VStack(spacing: OverflowMenuUX.squareButtonSpacing) {
                 if let symbol = symbol {

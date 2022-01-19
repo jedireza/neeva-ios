@@ -145,8 +145,8 @@ struct CardGrid: View {
                 Group {
                     if let spaceDetails = spaceModel.detailedSpace {
                         DetailView(primitive: spaceDetails) {
-                            gridModel.showingDetailView = false
                             withAnimation(.easeInOut(duration: 0.4)) {
+                                gridModel.showingDetailView = false
                                 detailDragOffset = geom.size.width
                             }
                         }
@@ -157,9 +157,6 @@ struct CardGrid: View {
                             ])
                         )
                         .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
-                        .onAppear {
-                            gridModel.showingDetailView = true
-                        }
                     }
                     if !FeatureFlag[.tabGroupsNewDesign] {
                         if let tabGroupDetails = tabGroupModel.detailedTabGroup {
@@ -180,9 +177,6 @@ struct CardGrid: View {
                             )
                             .environment(\.cardSize, cardSize)
                             .environment(\.columns, columns)
-                            .onAppear {
-                                gridModel.showingDetailView = true
-                            }
                         }
                     }
                     if web3Model.showingWalletDetails {
@@ -207,6 +201,12 @@ struct CardGrid: View {
             .useEffect(
                 deps: geom.size.width, topToolbar, perform: updateCardSize
             )
+            .useEffect(deps: spaceModel.detailedSpace) { value in
+                gridModel.showingDetailView = value != nil
+            }
+            .useEffect(deps: tabGroupModel.detailedTabGroup) { value in
+                gridModel.showingDetailView = value != nil
+            }
         }
         .ignoresSafeArea(.keyboard)
         .accessibilityAction(.escape) {

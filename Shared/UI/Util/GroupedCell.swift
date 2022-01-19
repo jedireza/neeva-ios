@@ -77,7 +77,7 @@ public struct GroupedCellButton<Label: View>: View {
     public init(
         alignment: GroupedCellAlignment = .center, action: @escaping () -> Void,
         longPressAction: (() -> Void)? = nil,
-        backgroundColor: Color = Color.secondaryGroupedBackground,
+        backgroundColor: Color = .secondaryGroupedBackgroundElevated,
         @ViewBuilder label: @escaping () -> Label
     ) {
         self.alignment = alignment
@@ -101,7 +101,7 @@ extension GroupedCellButton where Label == Text.WithFont {
     public init(
         _ label: LocalizedStringKey, style: FontStyle = .bodyLarge, weight: UIFont.Weight? = nil,
         action: @escaping () -> Void, longPressAction: (() -> Void)? = nil,
-        backgroundColor: Color = Color.secondaryGroupedBackground
+        backgroundColor: Color = .secondaryGroupedBackgroundElevated
     ) {
         self.label = { Text(label).withFont(style, weight: weight) }
         self.alignment = .center
@@ -121,7 +121,7 @@ extension GroupedCell {
 
         public init(
             roundedCorners: CornerSet = .all,
-            backgroundColor: Color = Color.secondaryGroupedBackground,
+            backgroundColor: Color = .secondaryGroupedBackgroundElevated,
             @ViewBuilder content: @escaping () -> Content
         ) {
             self.roundedCorners = roundedCorners

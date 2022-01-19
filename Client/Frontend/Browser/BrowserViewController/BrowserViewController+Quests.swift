@@ -11,7 +11,11 @@ extension BrowserViewController {
         guard TourManager.shared.hasActiveStep() else { return }
         var target: UIView
 
-        scrollController?.showToolbars(animated: true)
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.scrollingControlModel.showToolbars(animated: true)
+        } else {
+            scrollController?.showToolbars(animated: true)
+        }
 
         if !self.chromeModel.inlineToolbar, let toolbar = toolbar {
             // TODO(jed): open this prompt from SwiftUI once we have a full-height SwiftUI hierarchy

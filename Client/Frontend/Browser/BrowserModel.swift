@@ -6,24 +6,27 @@ import Combine
 import Shared
 import SwiftUI
 
+enum CardTransitionState {
+    case hidden
+    case visibleForTrayShow
+    case visibleForTrayHidden
+}
+
 class BrowserModel: ObservableObject {
     @Published var showGrid = false
     /// Like `!showGrid`, but not animated and only set when the web view should be visible
     @Published private(set) var showContent = true
-
     @Published var cardTransition = CardTransitionState.hidden
-    enum CardTransitionState {
-        case hidden
-        case visibleForTrayShow
-        case visibleForTrayHidden
-    }
 
     private let gridModel: GridModel
     private let tabManager: TabManager
+    @ObservedObject var scrollingControlModel: ScrollingControlModel
 
-    init(gridModel: GridModel, tabManager: TabManager) {
+    init(gridModel: GridModel, tabManager: TabManager, chromeModel: TabChromeModel) {
         self.gridModel = gridModel
         self.tabManager = tabManager
+        self.scrollingControlModel = ScrollingControlModel(
+            tabManager: tabManager, chromeModel: chromeModel)
     }
 
     func show() {
@@ -57,7 +60,6 @@ class BrowserModel: ObservableObject {
 
     func hideWithAnimation() {
         assert(!gridModel.tabCardModel.allDetails.isEmpty)
-
         cardTransition = .visibleForTrayHidden
     }
 
