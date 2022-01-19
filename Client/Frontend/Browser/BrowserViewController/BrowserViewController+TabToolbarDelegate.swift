@@ -192,7 +192,7 @@ extension BrowserViewController: ToolbarDelegate {
         }
         newTabAction.accessibilityLabel = newTabAccessibilityLabel
 
-        var actions = [newTabAction, switchModeAction]
+        var actions: [UIMenuElement] = [newTabAction, switchModeAction]
 
         let tabCount =
             tabManager.isIncognito
@@ -216,8 +216,16 @@ extension BrowserViewController: ToolbarDelegate {
                 at: 0)
         }
 
+        let recentlyClosedTabsMenu = gridModel.buildRecentlyClosedTabsMenu()
+        actions.append(
+            UIMenu(
+                title: "Recently Closed Tabs",
+                image: UIImage(systemName: "trash.square"),
+                children: recentlyClosedTabsMenu.children
+            ))
+
         Haptics.longPress()
 
-        return UIMenu(sections: [actions])
+        return UIMenu(children: actions)
     }
 }
