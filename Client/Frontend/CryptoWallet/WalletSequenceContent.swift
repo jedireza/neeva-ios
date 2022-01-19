@@ -15,6 +15,7 @@ struct WalletSequenceContent: View {
     @Environment(\.hideOverlay) private var hideOverlaySheet
     @ObservedObject var model: Web3Model
     @State var communityTrusted: Bool = false
+    @State var userSelectedChain: EthNode = .Ethereum
 
     var showingCommunitySubmissions: Bool {
         guard let type = model.currentSequence?.type,
@@ -56,6 +57,48 @@ struct WalletSequenceContent: View {
         }
     }
 
+    @ViewBuilder var bottomRightInfo: some View {
+        if let type = model.currentSequence?.type {
+            switch type {
+            case .sessionRequest:
+                Menu(
+                    content: {
+                        ForEach(EthNode.allCases) { node in
+                            Button(
+                                action: {
+                                    userSelectedChain = node
+                                },
+                                label: {
+                                    Text(node.rawValue)
+                                        .withFont(.labelMedium)
+                                        .lineLimit(1)
+                                        .foregroundColor(.label)
+                                        .frame(maxWidth: 150, alignment: .trailing)
+                                })
+                        }
+                    },
+                    label: {
+                        HStack(spacing: 6) {
+                            Text(userSelectedChain.rawValue)
+                                .withFont(.labelMedium)
+                                .lineLimit(1)
+                                .foregroundColor(.label)
+                                .frame(maxWidth: 150, alignment: .trailing)
+                            Symbol(decorative: .arrowtriangleDownFill)
+                                .foregroundColor(.label)
+                        }
+                    })
+
+            default:
+                Text(model.ethBalance == nil ? "Fetching..." : "\(model.ethBalance!) ETH")
+                    .withFont(.labelMedium)
+                    .lineLimit(1)
+                    .foregroundColor(.label)
+                    .frame(maxWidth: 150, alignment: .trailing)
+            }
+        }
+    }
+
     @ViewBuilder var bottomLeftInfo: some View {
         if let type = model.currentSequence?.type {
             switch type {
@@ -88,23 +131,6 @@ struct WalletSequenceContent: View {
         default:
             return "Balance"
         }
-    }
-
-    var bottomRightInfo: String {
-        guard let balance = model.ethBalance,
-            let type = model.currentSequence?.type
-        else {
-            return "Fetching..."
-
-        }
-
-        switch type {
-        case .sessionRequest:
-            return CryptoConfig.shared.currentNode.rawValue
-        default:
-            return balance + " ETH"
-        }
-
     }
 
     var descriptionText: some View {
@@ -201,7 +227,7 @@ struct WalletSequenceContent: View {
                             action: {
                                 switch sequence.type {
                                 case .sessionRequest:
-                                    sequence.onAccept()
+                                    sequence.onAccept(userSelectedChain.id)
                                 default:
                                     let context = LAContext()
                                     let reason =
@@ -209,7 +235,7 @@ struct WalletSequenceContent: View {
                                     let onAuth: (Bool, Error?) -> Void = {
                                         success, authenticationError in
                                         if success {
-                                            sequence.onAccept()
+                                            sequence.onAccept(userSelectedChain.id)
                                         } else {
                                             sequence.onReject()
                                         }
@@ -270,11 +296,7 @@ struct WalletSequenceContent: View {
                         Text(bottomRightHeader)
                             .withFont(.labelSmall)
                             .foregroundColor(.secondaryLabel)
-                        Text(bottomRightInfo)
-                            .withFont(.labelMedium)
-                            .lineLimit(1)
-                            .foregroundColor(.label)
-                            .frame(maxWidth: 150, alignment: .trailing)
+                        bottomRightInfo
                     }
                 }
             } else {
@@ -288,5 +310,8 @@ struct WalletSequenceContent: View {
         .padding(.horizontal, 16)
         .padding(.top, 12)
         .padding(.bottom, 36)
+        .onChange(of: model.currentSequence?.chain) { chain in
+            userSelectedChain = chain ?? .Ethereum
+        }
     }
 }

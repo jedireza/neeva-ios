@@ -20,8 +20,9 @@ struct SequenceInfo {
     let type: SequenceType
     let thumbnailURL: URL
     let dAppMeta: Session.ClientMeta
+    let chain: EthNode
     let message: String
-    let onAccept: () -> Void
+    let onAccept: (Int) -> Void
     let onReject: () -> Void
     var ethAmount: String? = nil
 }
@@ -223,9 +224,10 @@ class Web3Model: ObservableObject, ResponseRelay {
                 type: .sendTransaction,
                 thumbnailURL: dappInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: dappInfo.peerMeta,
+                chain: EthNode.from(chainID: dappInfo.chainId),
                 message:
                     "This will transfer this amount from your wallet to a wallet provided by \(dappInfo.peerMeta.name).",
-                onAccept: {
+                onAccept: { _ in
                     DispatchQueue.global(qos: .userInitiated).async {
                         self.server?.send(.transaction(transact(), for: request))
                     }
@@ -258,9 +260,10 @@ class Web3Model: ObservableObject, ResponseRelay {
                 type: .personalSign,
                 thumbnailURL: dappInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: dappInfo.peerMeta,
+                chain: EthNode.from(chainID: dappInfo.chainId),
                 message:
                     "This will not make any transactions with your wallet. But Neeva will be using your private key to sign the message.",
-                onAccept: {
+                onAccept: { _ in
                     DispatchQueue.global(qos: .userInitiated).async {
                         let signature = sign()
                         self.server?.send(.signature(signature, for: request))

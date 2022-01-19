@@ -14,7 +14,7 @@ public struct HDKey {
     let address: String
 }
 
-public enum EthNode: String {
+public enum EthNode: String, CaseIterable, Identifiable {
     // real eth network
     case Ethereum
     // testing network
@@ -22,14 +22,29 @@ public enum EthNode: String {
     // polygon network
     case Polygon
 
+    public var id: Int {
+        switch self {
+        case .Ethereum:
+            return 1
+        case .Ropsten:
+            return 3
+        case .Polygon:
+            return 137
+        }
+    }
+
+    static func from(chainID: Int?) -> EthNode {
+        return allCases.first(where: { $0.id == chainID }) ?? .Ethereum
+    }
+
     var url: URL {
         switch self {
         case .Ethereum:
-            return "https://mainnet.infura.io/v3/83f94ab9ec72404096d4fa53182c7e80"
+            return "https://mainnet.infura.io/v3/25b0f8c5b9004da38236104927e630b5"
         case .Ropsten:
-            return "https://ropsten.infura.io/v3/83f94ab9ec72404096d4fa53182c7e80"
+            return "https://ropsten.infura.io/v3/25b0f8c5b9004da38236104927e630b5"
         case .Polygon:
-            return "https://polygon-mainnet.infura.io/v3/83f94ab9ec72404096d4fa53182c7e80"
+            return "https://polygon-mainnet.infura.io/v3/25b0f8c5b9004da38236104927e630b5"
         }
     }
 }

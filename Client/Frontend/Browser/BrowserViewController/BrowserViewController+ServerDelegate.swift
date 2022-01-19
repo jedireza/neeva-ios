@@ -75,13 +75,14 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
                 type: .sessionRequest,
                 thumbnailURL: session.dAppInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: session.dAppInfo.peerMeta,
+                chain: EthNode.from(chainID: session.dAppInfo.chainId),
                 message: session.dAppInfo.peerMeta.description ?? "",
-                onAccept: {
+                onAccept: { chainID in
                     DispatchQueue.global(qos: .userInitiated).async {
                         let walletInfo = Session.WalletInfo(
                             approved: true,
                             accounts: [wallet.publicAddress],
-                            chainId: session.dAppInfo.chainId ?? 1,
+                            chainId: chainID,
                             peerId: UUID().uuidString,
                             peerMeta: wallet.walletMeta)
                         completion(walletInfo)
