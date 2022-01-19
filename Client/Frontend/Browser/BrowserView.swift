@@ -22,7 +22,6 @@ struct BrowserView: View {
     @ObservedObject var browserModel: BrowserModel
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
-    @ObservedObject var scrollingControlModel: ScrollingControlModel
     @ObservedObject var overlayManager: OverlayManager
     @ObservedObject var tabGroupModel: TabGroupCardModel
     @ObservedObject var spaceModel: SpaceCardModel
@@ -42,7 +41,9 @@ struct BrowserView: View {
     }
 
     private var topBarPadding: CGFloat {
-        topBarHeight + scrollingControlModel.headerTopOffset
+        // Prevents a bug where the page content gets stuck behind the TopBar
+        let padding = topBarHeight + browserModel.scrollingControlModel.headerTopOffset
+        return padding <= 0 ? 1 : padding
     }
 
     private var detailViewVisible: Bool {
@@ -111,7 +112,8 @@ struct BrowserView: View {
                     containerView
                         .padding(
                             UIConstants.enableBottomURLBar ? .bottom : .top,
-                            detailViewVisible ? 0 : topBarPadding)
+                            detailViewVisible ? 0 : topBarPadding
+                        )
 
                     // Top Bar
                     VStack {
@@ -120,7 +122,7 @@ struct BrowserView: View {
                         topBar
                             .offset(
                                 x: detailViewVisible ? -geom.size.width : 0,
-                                y: scrollingControlModel.headerTopOffset
+                                y: browserModel.scrollingControlModel.headerTopOffset
                                     * (UIConstants.enableBottomURLBar ? -1 : 1)
                             )
                             .background(
@@ -134,14 +136,15 @@ struct BrowserView: View {
                                             // without this, the area isn’t tappable because it’s invisible
                                             .contentShape(Rectangle())
                                             .onTapGesture {
-                                                scrollingControlModel.showToolbars(animated: true)
+                                                browserModel.scrollingControlModel.showToolbars(
+                                                    animated: true)
                                             }
                                     }
                                 }, alignment: .top)
 
                         if !UIConstants.enableBottomURLBar { Spacer() }
                     }
-                }.padding(.bottom, -scrollingControlModel.footerBottomOffset)
+                }.padding(.bottom, -browserModel.scrollingControlModel.footerBottomOffset)
 
                 // Bottom Bar
                 if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
@@ -150,14 +153,14 @@ struct BrowserView: View {
                     bottomBar
                         .offset(
                             x: detailViewVisible ? -geom.size.width : 0,
-                            y: scrollingControlModel.footerBottomOffset
+                            y: browserModel.scrollingControlModel.footerBottomOffset
                         )
                         .onHeightOfViewChanged { height in
                             self.bottomBarHeight = height
                         }
                 }
             }.useEffect(deps: topBarHeight) { _ in
-                scrollingControlModel.setHeaderFooterHeight(
+                browserModel.scrollingControlModel.setHeaderFooterHeight(
                     header: topBarHeight,
                     footer: UIConstants.TopToolbarHeightWithToolbarButtonsShowing
                         + geom.safeAreaInsets.bottom)
@@ -177,7 +180,8 @@ struct BrowserView: View {
                     .bottom,
                     overlayManager.offsetForBottomBar && !chromeModel.inlineToolbar
                         && !keyboardShowing
-                        ? bottomBarHeight - scrollingControlModel.footerBottomOffset : 0)
+                        ? bottomBarHeight - browserModel.scrollingControlModel.footerBottomOffset
+                        : 0)
         }
         .environmentObject(bvc.browserModel)
         .environmentObject(gridModel)
@@ -196,8 +200,6 @@ struct BrowserView: View {
         }
         self.gridModel = bvc.gridModel
         self.chromeModel = bvc.chromeModel
-        self.scrollingControlModel = ScrollingControlModel(
-            tabManager: bvc.tabManager, chromeModel: bvc.chromeModel)
         self.overlayManager = bvc.overlayManager
         self.tabGroupModel = bvc.gridModel.tabGroupCardModel
         self.spaceModel = bvc.gridModel.spaceCardModel

@@ -75,4 +75,11 @@ extension UIColor {
     public var darkVariant: UIColor {
         return self.resolvedColor(with: UITraitCollection(userInterfaceStyle: .dark))
     }
+
+    public var elevated: UIColor {
+        UIColor { traits in
+            self.resolvedColor(
+                with: UITraitCollection(traitsFrom: [traits, .init(userInterfaceLevel: .elevated)]))
+        }
+    }
 }
