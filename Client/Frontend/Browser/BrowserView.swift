@@ -25,6 +25,7 @@ struct BrowserView: View {
     @ObservedObject var overlayManager: OverlayManager
     @ObservedObject var tabGroupModel: TabGroupCardModel
     @ObservedObject var spaceModel: SpaceCardModel
+    @ObservedObject var simulatedBackModel: SimulatedSwipeModel
 
     private var inlineToolbarHeight: CGFloat {
         return UIConstants.TopToolbarHeightWithToolbarButtonsShowing
@@ -94,6 +95,15 @@ struct BrowserView: View {
             tabContainerContent
                 .opacity(browserModel.showContent ? 1 : 0)
                 .accessibilityHidden(!browserModel.showContent)
+                .offset(x: simulatedBackModel.offset / 2.5)
+
+            GeometryReader { geom in
+                SimulatedSwipeViewRepresentable(model: simulatedBackModel)
+                    .opacity(!simulatedBackModel.hidden ? 1 : 0)
+                    .offset(x: -geom.size.width + simulatedBackModel.offset)
+                    .frame(width: geom.size.width + SwipeUX.EdgeWidth)
+                    .animation(.easeOut, value: simulatedBackModel.offset)
+            }
         }
     }
 
@@ -205,5 +215,6 @@ struct BrowserView: View {
         self.tabGroupModel = bvc.gridModel.tabGroupCardModel
         self.spaceModel = bvc.gridModel.spaceCardModel
         self.browserModel = bvc.browserModel
+        self.simulatedBackModel = bvc.simulateBackModel
     }
 }

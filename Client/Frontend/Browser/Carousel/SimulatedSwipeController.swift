@@ -17,49 +17,26 @@ public enum SwipeUX {
 class SimulatedSwipeController:
     UIViewController, TabEventHandler, TabManagerDelegate, SimulateForwardAnimatorDelegate
 {
-
-    func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator) {
-        if swipeDirection == .forward {
-            self.goForward()
-        }
-    }
-
-    func simulateForwardAnimatorFinishedSwipe(_ animator: SimulatedSwipeAnimator) {
-        if swipeDirection == .back {
-            self.goBack()
-        }
-    }
-
+    var model: SimulatedSwipeModel
     var animator: SimulatedSwipeAnimator!
     var blankView: UIView!
-    var tabManager: TabManager
-    var chromeModel: TabChromeModel
-    var forwardUrlMap = [String: [URL]?]()
-    var swipeDirection: SwipeDirection
-    var progressModel = CarouselProgressModel(urls: [], index: 0)
-
     var progressView: UIHostingController<CarouselProgressView>!
 
-    init(
-        tabManager: TabManager, chromeModel: TabChromeModel, swipeDirection: SwipeDirection
-    ) {
-        self.tabManager = tabManager
-        self.chromeModel = chromeModel
-        self.swipeDirection = swipeDirection
+    init(model: SimulatedSwipeModel) {
+        self.model = model
         super.init(nibName: nil, bundle: nil)
 
         register(self, forTabEvents: .didChangeURL)
-        tabManager.addDelegate(self)
+        model.tabManager.addDelegate(self)
 
         self.animator = SimulatedSwipeAnimator(
-            swipeDirection: swipeDirection,
-            simulatedSwipeControllerView: self.view,
-            tabManager: tabManager)
+            model: model,
+            simulatedSwipeControllerView: self.view)
         self.animator.delegate = self
 
-        if swipeDirection == .forward {
+        if model.swipeDirection == .forward {
             self.progressView = UIHostingController(
-                rootView: CarouselProgressView(model: progressModel))
+                rootView: CarouselProgressView(model: model.progressModel))
             self.progressView.view.backgroundColor = .clear
         }
     }
@@ -79,7 +56,7 @@ class SimulatedSwipeController:
             make.top.bottom.equalToSuperview()
             make.width.equalToSuperview().offset(-SwipeUX.EdgeWidth)
 
-            switch swipeDirection {
+            switch model.swipeDirection {
             case .forward:
                 make.trailing.equalToSuperview()
             case .back:
@@ -89,14 +66,14 @@ class SimulatedSwipeController:
     }
 
     func tab(_ tab: Tab, didChangeURL url: URL) {
-        guard let url = tab.webView?.url, tab == tabManager.selectedTab else {
+        guard let url = tab.webView?.url, tab == model.tabManager.selectedTab else {
             return
         }
 
-        switch swipeDirection {
+        switch model.swipeDirection {
         case .forward:
             if let query = SearchEngine.current.queryForSearchURL(url), !query.isEmpty {
-                forwardUrlMap[tab.tabUUID] = []
+                model.forwardUrlMap[tab.tabUUID] = []
                 SearchResultsController.getSearchResults(for: query) { result in
                     switch result {
                     case .failure(let error):
@@ -108,7 +85,7 @@ class SimulatedSwipeController:
                 }
             }
 
-            guard let urls = self.forwardUrlMap[tab.tabUUID] else {
+            guard let urls = model.forwardUrlMap[tab.tabUUID] else {
                 return
             }
 
@@ -117,7 +94,7 @@ class SimulatedSwipeController:
                 return
             }
 
-            self.progressModel.index = index
+            model.progressModel.index = index
         case .back:
             updateBackVisibility(tab: tab)
         }
@@ -132,9 +109,9 @@ class SimulatedSwipeController:
             return
         }
 
-        switch swipeDirection {
+        switch model.swipeDirection {
         case .forward:
-            updateForwardVisibility(id: tabUUID, results: self.forwardUrlMap[tabUUID] ?? nil)
+            updateForwardVisibility(id: tabUUID, results: model.forwardUrlMap[tabUUID] ?? nil)
         case .back:
             updateBackVisibility(tab: selected)
         }
@@ -142,30 +119,31 @@ class SimulatedSwipeController:
 
     func updateBackVisibility(tab: Tab?) {
         guard let tab = tab else {
-            view.isHidden = true
+            setViewHidden(to: true)
             return
         }
+        
         if tab.canGoBack {
-            view.isHidden = true
+            setViewHidden(to: true)
         } else if let _ = tab.parent {
-            view.isHidden = false
-            chromeModel.canGoBack = true
+            setViewHidden(to: false)
+            model.chromeModel.canGoBack = true
         } else if let id = tab.parentSpaceID, !id.isEmpty {
-            view.isHidden = false
-            chromeModel.canGoBack = true
+            setViewHidden(to: false)
+            model.chromeModel.canGoBack = true
         }
     }
 
     func updateForwardVisibility(id: String, results: [URL]?, index: Int = -1) {
-        forwardUrlMap[id] = results
-        view.isHidden = results == nil
-        chromeModel.canGoForward = !view.isHidden
+        model.forwardUrlMap[id] = results
+        setViewHidden(to: results == nil)
+        model.chromeModel.canGoForward = !view.isHidden
 
         guard let results = results else {
             progressView.view.removeFromSuperview()
             progressView.removeFromParent()
-            progressModel.urls = []
-            progressModel.index = 0
+            model.progressModel.urls = []
+            model.progressModel.index = 0
             return
         }
 
@@ -173,51 +151,13 @@ class SimulatedSwipeController:
         bvc.addChild(progressView)
         bvc.view.addSubview(progressView.view)
         progressView.didMove(toParent: bvc)
-        progressModel.urls = results
-        progressModel.index = index
+        model.progressModel.urls = results
+        model.progressModel.index = index
         progressView.view.snp.makeConstraints { make in
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(bvc.view.snp.bottom)
                 .offset(-UIConstants.BottomToolbarHeight)
         }
-    }
-
-    func canGoBack() -> Bool {
-        swipeDirection == .back && !view.isHidden
-    }
-
-    @discardableResult func goBack() -> Bool {
-        guard canGoBack(), swipeDirection == .back, let tab = tabManager.selectedTab else {
-            return false
-        }
-
-        if let _ = tab.parent {
-            tabManager.removeTabAndUpdateSelectedTab(tab)
-        } else if let id = tab.parentSpaceID {
-            SceneDelegate.getBVC(with: tabManager.scene).browserModel.openSpace(spaceID: id)
-        } else {
-            return false
-        }
-
-        return true
-    }
-
-    func canGoForward() -> Bool {
-        swipeDirection == .forward && !view.isHidden
-    }
-
-    @discardableResult func goForward() -> Bool {
-        guard canGoForward(), swipeDirection == .forward, let tab = tabManager.selectedTab,
-            let urls = forwardUrlMap[tab.tabUUID]!
-        else {
-            return false
-        }
-
-        let index = urls.firstIndex(of: tab.currentURL()!) ?? -1
-        // If we are here, we have already fake animated and it is too late
-        assert(index < urls.count - 1)
-        tab.loadRequest(URLRequest(url: urls[index + 1]))
-        return true
     }
 
     func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {}
@@ -229,4 +169,21 @@ class SimulatedSwipeController:
     func tabManagerDidAddTabs(_ tabManager: TabManager) {}
 
     func tabManagerDidRemoveAllTabs(_ tabManager: TabManager) {}
+
+    func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator) {
+        if model.swipeDirection == .forward {
+            model.goForward()
+        }
+    }
+
+    func simulateForwardAnimatorFinishedSwipe(_ animator: SimulatedSwipeAnimator) {
+        if model.swipeDirection == .back {
+            model.goBack()
+        }
+    }
+
+    func setViewHidden(to: Bool) {
+        view.isHidden = to
+        model.hidden = to
+    }
 }

@@ -5,6 +5,7 @@
 import Foundation
 import Shared
 import UIKit
+import SwiftUI
 
 struct SimulateForwardAnimationParameters {
     let totalRotationInDegrees: Double
@@ -34,8 +35,7 @@ protocol SimulateForwardAnimatorDelegate: AnyObject {
 class SimulatedSwipeAnimator: NSObject {
     weak var delegate: SimulateForwardAnimatorDelegate?
     weak var simulatedSwipeControllerView: UIView?
-    weak var tabManager: TabManager?
-    var swipeDirection: SwipeDirection
+    weak var model: SimulatedSwipeModel?
 
     fileprivate var prevOffset: CGPoint?
     fileprivate let params: SimulateForwardAnimationParameters
@@ -50,27 +50,20 @@ class SimulatedSwipeAnimator: NSObject {
     }
 
     var contentView: UIView? {
-        tabManager?.selectedTab?.webView
+        model?.tabManager.selectedTab?.webView
     }
 
     var animatingView: UIView? {
-        if FeatureFlag[.enableBrowserView], let contentView = contentView {
-            return UIView(frame: contentView.frame)
-        } else if !FeatureFlag[.enableBrowserView] {
-            return simulatedSwipeControllerView
-        }
-
-        return nil
+        return simulatedSwipeControllerView
     }
 
     init(
-        swipeDirection: SwipeDirection, simulatedSwipeControllerView: UIView,
-        tabManager: TabManager, params: SimulateForwardAnimationParameters = DefaultParameters
+        model: SimulatedSwipeModel, simulatedSwipeControllerView: UIView,
+        params: SimulateForwardAnimationParameters = DefaultParameters
     ) {
+        self.model = model
         self.params = params
         self.simulatedSwipeControllerView = simulatedSwipeControllerView
-        self.tabManager = tabManager
-        self.swipeDirection = swipeDirection
 
         super.init()
 
@@ -119,20 +112,30 @@ extension SimulatedSwipeAnimator {
         // Calculate the edge to calculate distance from
         let translation =
             (-animatingView.frame.width + SwipeUX.EdgeWidth)
-            * (swipeDirection == .back ? -1 : 1)
+            * (model?.swipeDirection == .back ? -1 : 1)
         let timeStep = TimeInterval(abs(translation) / speed)
-        self.delegate?.simulateForwardAnimatorStartedSwipe(self)
-        UIView.animate(
-            withDuration: timeStep,
-            animations: {
-                animatingView.transform = self.transformForTranslation(translation)
-                webViewContainer.transform = self.transformForTranslation(translation / 2)
-            },
-            completion: { finished in
-                if finished {
-                    self.animateBackToCenter(canceledSwipe: false)
-                }
-            })
+
+        if FeatureFlag[.enableBrowserView] {
+            self.model?.offset = -20
+
+            withAnimation(.easeOut(duration: timeStep)) {
+                self.model?.offset = 0
+                self.animateBackToCenter(canceledSwipe: false)
+            }
+        } else {
+            self.delegate?.simulateForwardAnimatorStartedSwipe(self)
+            UIView.animate(
+                withDuration: timeStep,
+                animations: {
+                    animatingView.transform = self.transformForTranslation(translation)
+                    webViewContainer.transform = self.transformForTranslation(translation / 2)
+                },
+                completion: { finished in
+                    if finished {
+                        self.animateBackToCenter(canceledSwipe: false)
+                    }
+                })
+        }
     }
 
     fileprivate func transformForTranslation(_ translation: CGFloat) -> CGAffineTransform {
@@ -154,8 +157,13 @@ extension SimulatedSwipeAnimator {
         case .began:
             prevOffset = containerCenter
         case .changed:
-            animatingView?.transform = transformForTranslation(translation.x)
-            contentView?.transform = self.transformForTranslation(translation.x / 2)
+            if FeatureFlag[.enableBrowserView] {
+                model?.offset = translation.x
+            } else {
+                animatingView?.transform = transformForTranslation(translation.x)
+                contentView?.transform = self.transformForTranslation(translation.x / 2)
+            }
+
             prevOffset = CGPoint(x: translation.x, y: 0)
         case .cancelled:
             animateBackToCenter(canceledSwipe: true)
