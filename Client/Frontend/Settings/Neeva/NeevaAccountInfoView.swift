@@ -35,7 +35,7 @@ struct NeevaAccountInfoView: View {
                 .accessibilityLabel(
                     "\(Text(userInfo.authProvider?.displayName ?? "Unknown")), \(userInfo.email ?? "")"
                 )
-            }
+            }.accessibilityElement(children: .combine)
 
             switch userInfo.subscriptionType {
             case .basic:
@@ -54,7 +54,9 @@ struct NeevaAccountInfoView: View {
                         )
                         .withFont(.bodyLarge)
                         .fixedSize(horizontal: false, vertical: true)
-                    }.padding(.vertical, 5)
+                    }
+                    .padding(.vertical, 5)
+                    .accessibilityElement(children: .combine)
 
                     VStack(alignment: .leading, spacing: 7) {
                         Text("Upgrade to Premium: Power the Future of Search!")
@@ -66,7 +68,10 @@ struct NeevaAccountInfoView: View {
                             Text("See the Benefits \(Image(systemSymbol: .arrowForward))")
                                 .withFont(.bodyLarge)
                         }
-                    }.padding(.vertical, 5)
+                    }
+                    .padding(.vertical, 5)
+                    .accessibilityElement(children: .combine)
+                    .accessibilityAddTraits(.isButton)
                 }
             case .premium, .lifetime:
                 Section(
@@ -101,7 +106,9 @@ struct NeevaAccountInfoView: View {
                         )
                         .withFont(.bodyLarge)
                         .fixedSize(horizontal: false, vertical: true)
-                    }.padding(.vertical, 5)
+                    }
+                    .padding(.vertical, 5)
+                    .accessibilityElement(children: .combine)
 
                     NavigationLinkButton("View Benefits") {
                         openURL(NeevaConstants.appMembershipURL)

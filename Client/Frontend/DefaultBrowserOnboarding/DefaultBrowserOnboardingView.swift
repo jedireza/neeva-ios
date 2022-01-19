@@ -87,7 +87,7 @@ struct DefaultBrowserOnboardingView: View {
                             .offset(x: 20, y: 122),
                         alignment: .topLeading
                     )
-            }
+            }.accessibilityHidden(true)
 
             Spacer().repeated(3)
 

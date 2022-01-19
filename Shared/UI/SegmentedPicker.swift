@@ -26,7 +26,6 @@ public struct Segment {
 struct SegmentTappedModifier: ViewModifier {
     let index: Int
     let segment: Segment
-    var currentIndex: Int
     @Binding var selectedSegmentIndex: Int
 
     func body(content: Content) -> some View {
@@ -36,6 +35,7 @@ struct SegmentTappedModifier: ViewModifier {
         }) {
             content
         }
+        .accessibilityAddTraits(index == selectedSegmentIndex ? .isSelected : [])
     }
 }
 
@@ -100,22 +100,25 @@ public struct SegmentedPicker: View {
     private func icons(selected: Bool) -> some View {
         HStack {
             ForEach(Array(segments.enumerated()), id: \.offset) { (index, segment) in
-                Spacer()
-
-                if selected {
-                    segment.symbol
-                        .foregroundColor(segment.selectedIconColor)
-                } else {
-                    segment.symbol
-                        .foregroundColor(.label)
-                        .modifier(
-                            SegmentTappedModifier(
-                                index: index, segment: segment, currentIndex: currentIndex,
-                                selectedSegmentIndex: $selectedSegmentIndex))
-                }
-
-                if segments.count > 1 {
+                HStack {
                     Spacer()
+
+                    if selected {
+                        segment.symbol
+                            .foregroundColor(segment.selectedIconColor)
+                    } else {
+                        segment.symbol
+                            .foregroundColor(.label)
+                    }
+
+                    Spacer()
+                }
+                .frame(height: segmentHeight)
+                .if(!selected) {
+                    $0.modifier(
+                        SegmentTappedModifier(
+                            index: index, segment: segment,
+                            selectedSegmentIndex: $selectedSegmentIndex))
                 }
             }
         }
@@ -145,6 +148,7 @@ public struct SegmentedPicker: View {
                 .allowsHitTesting(false)
                 .accessibilityHidden(true)
         }
+        .accessibilityElement(children: .contain)
         .frame(width: segmentWidth * CGFloat(segments.count))
         .onChange(of: selectedSegmentIndex) { _ in
             placeholderIndex = nil

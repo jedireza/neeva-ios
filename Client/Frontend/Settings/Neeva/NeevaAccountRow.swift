@@ -56,7 +56,9 @@ struct NeevaAccountRow: View {
                         .font(.system(size: 15))
                 }
             }
-        }.frame(height: 60 - 12)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityValue("View Account")
     }
 }
 

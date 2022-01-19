@@ -142,8 +142,11 @@ struct CardsContainer: View {
                             spacesModel.allDetails.first?.id ?? ""
                         )
                     }
-                }.offset(
-                    x: (gridModel.switcherState == .spaces ? 0 : geom.size.width))
+                }
+                .offset(x: (gridModel.switcherState == .spaces ? 0 : geom.size.width))
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("Spaces")
+                .accessibilityHidden(gridModel.switcherState != .spaces)
 
                 // Normal Tabs
                 ZStack {
@@ -155,10 +158,14 @@ struct CardsContainer: View {
                     }.onAppear {
                         gridModel.scrollToSelectedTab()
                     }
-                }.offset(
+                }
+                .offset(
                     x: (gridModel.switcherState == .tabs
                         ? (gridModel.isIncognito ? geom.size.width : 0) : -geom.size.width)
                 )
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("Tabs")
+                .accessibilityHidden(gridModel.switcherState != .tabs || gridModel.isIncognito)
 
                 // Incognito Tabs
                 ZStack {
@@ -170,10 +177,14 @@ struct CardsContainer: View {
                     }.onAppear {
                         gridModel.scrollToSelectedTab()
                     }
-                }.offset(
+                }
+                .offset(
                     x: (gridModel.switcherState == .tabs
                         ? (gridModel.isIncognito ? 0 : -geom.size.width) : -geom.size.width)
                 )
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("Incognito Tabs")
+                .accessibilityHidden(gridModel.switcherState != .tabs || !gridModel.isIncognito)
             }
         }
         .id(generationId)

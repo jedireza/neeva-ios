@@ -42,16 +42,15 @@ enum TabToolbarButtons {
 
         @EnvironmentObject private var model: TabChromeModel
         var body: some View {
-            Group {
-                TabToolbarButton(
-                    label: Symbol(
-                        .arrowBackward, size: 20, weight: weight,
-                        label: .TabToolbarBackAccessibilityLabel),
-                    action: onBack,
-                    longPressAction: onLongPress
-                )
-                .disabled(!model.canGoBack && !model.canReturnToSuggestions)
-            }
+            TabToolbarButton(
+                label: Symbol(
+                    .arrowBackward, size: 20, weight: weight,
+                    label: .TabToolbarBackAccessibilityLabel),
+                action: onBack,
+                longPressAction: onLongPress
+            )
+            .disabled(!model.canGoBack && !model.canReturnToSuggestions)
+            .accessibilityAction(named: "Show Recent Pages", onLongPress)
         }
     }
 
@@ -72,6 +71,7 @@ enum TabToolbarButtons {
                     longPressAction: onLongPress
                 )
                 .disabled(!model.canGoForward)
+                .accessibilityAction(named: "Show Recent Pages", onLongPress)
             }
         }
     }
@@ -168,6 +168,7 @@ enum TabToolbarButtons {
                     size: 20, weight: weight, label: "Add To Space"),
                 action: action
             )
+            .accessibilityValue(model.urlInSpace ? "Page is in a Space" : "")
             .disabled(isIncognito || !model.isPage)
         }
     }

@@ -21,12 +21,7 @@ struct LocationLabel: View {
         .lineLimit(1)
         .frame(height: TabLocationViewUX.height)
         .allowsHitTesting(false)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Address Bar")
-        .accessibilityValue(
-            (isSecure ?? false ? "Secure connection, " : "") + (url?.absoluteString ?? "")
-        )
-        .accessibilityAddTraits(.isButton)
+        .accessibilityHidden(true)
     }
 }
 

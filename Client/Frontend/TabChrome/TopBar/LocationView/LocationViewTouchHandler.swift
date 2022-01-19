@@ -29,8 +29,14 @@ struct LocationViewTouchHandler: UIViewRepresentable {
         view.wrapper = nil
     }
 
-    class InteractionView: UIView, UIGestureRecognizerDelegate, UIDragInteractionDelegate {
-        var wrapper: LocationViewTouchHandler?
+    class InteractionView: UIControl, UIGestureRecognizerDelegate, UIDragInteractionDelegate {
+        var wrapper: LocationViewTouchHandler? {
+            didSet {
+                accessibilityValue =
+                    (wrapper?.isSecure ?? false ? "Secure connection, " : "")
+                    + (wrapper?.url?.absoluteString ?? "")
+            }
+        }
 
         private var touchCount = 0
         private var oldItems: [UIMenuItem]?
@@ -64,6 +70,17 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             addGestureRecognizer(tapGesture)
             tapGesture.require(toFail: longPressGesture)
             addInteraction(dragInteraction)
+
+            accessibilityLabel = "Address Bar"
+            accessibilityTraits.formUnion(.button)
+            isAccessibilityElement = true
+            accessibilityCustomActions = [
+                .init(name: wrapper.copyAction.name, target: self, selector: #selector(copy(_:))),
+                .init(name: wrapper.pasteAction.name, target: self, selector: #selector(paste(_:))),
+                .init(
+                    name: wrapper.pasteAndGoAction.name, target: self,
+                    selector: #selector(pasteAndGo(_:))),
+            ]
         }
 
         var subscriptions: Set<AnyCancellable> = []
@@ -168,6 +185,7 @@ struct LocationViewTouchHandler: UIViewRepresentable {
                     title: wrapper?.pasteAndGoAction.name ?? "",
                     action: #selector(pasteAndGo(_:)))
             ]
+            privateCanBecomeFirstResponder = true
             becomeFirstResponder()  // without this function call, the menu will not appear.
             UIMenuController.shared.showMenu(
                 from: self,
@@ -175,6 +193,9 @@ struct LocationViewTouchHandler: UIViewRepresentable {
                     by: UIEdgeInsets(
                         top: 0, left: -(wrapper?.margins.leading ?? 0), bottom: 0,
                         right: -(wrapper?.margins.trailing ?? 0))))
+            DispatchQueue.main.async {
+                self.privateCanBecomeFirstResponder = false
+            }
         }
 
         override func copy(_: Any?) {
@@ -194,7 +215,8 @@ struct LocationViewTouchHandler: UIViewRepresentable {
             return super.resignFirstResponder()
         }
 
-        override var canBecomeFirstResponder: Bool { true }
+        private var privateCanBecomeFirstResponder = false
+        override var canBecomeFirstResponder: Bool { privateCanBecomeFirstResponder }
 
         override func canPerformAction(_ action: Selector, withSender _: Any?) -> Bool {
             action == #selector(copy(_:))

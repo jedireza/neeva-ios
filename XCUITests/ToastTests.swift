@@ -32,7 +32,7 @@ class ToastTests: BaseTestCase {
         goToTabTray()
 
         // close tab
-        app.buttons["Close "].firstMatch.tap()
+        app.buttons["Close"].firstMatch.tap()
     }
 
     func testClosedTabToastDoesNotAppear() {

@@ -19,30 +19,30 @@ class EmptyTabTrayTests: BaseTestCase {
 
     func testEmptyTabTrayShowsOnLaunch() {
         // Can assume no tabs are saved between tests
-        waitForExistence(app.images["EmptyTabTray"], timeout: 30)
+        waitForExistence(app.staticTexts["EmptyTabTray"], timeout: 30)
     }
 
     func testEmptyTabTrayShowsAfterClosingTab() {
         openURLInNewTab()
         closeAllTabs(createNewTab: false)
 
-        waitForExistence(app.images["EmptyTabTray"])
+        waitForExistence(app.staticTexts["EmptyTabTray"])
     }
 
     func testEmptyTabTrayShowsAfterClosingTabFromTabTray() {
         openURLInNewTab()
         goToTabTray()
 
-        app.buttons["Close Example Domain"].tap()
+        app.buttons["Close"].tap()
 
-        waitForExistence(app.images["EmptyTabTray"])
+        waitForExistence(app.staticTexts["EmptyTabTray"])
     }
 
     func testEmptyTabTrayShowsAfterClosingAllTabs() {
         openThreeTabs()
         closeAllTabs(createNewTab: false)
 
-        waitForExistence(app.images["EmptyTabTray"])
+        waitForExistence(app.staticTexts["EmptyTabTray"])
     }
 
     func testEmptyTabTrayShowsAfterClosingAllTabsFromTabTray() {
@@ -50,7 +50,7 @@ class EmptyTabTrayTests: BaseTestCase {
         goToTabTray()
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
 
-        waitForExistence(app.images["EmptyTabTray"])
+        waitForExistence(app.staticTexts["EmptyTabTray"])
     }
 
     /// Tests that when closing all incognito tabs, and no normal tabs exist that empty tab tray is shown
@@ -59,7 +59,7 @@ class EmptyTabTrayTests: BaseTestCase {
         openThreeTabs()
         closeAllTabs(createNewTab: false)
 
-        waitForExistence(app.images["EmptyTabTrayIncognito"])
+        waitForExistence(app.staticTexts["EmptyTabTrayIncognito"])
     }
 
     func testEmptyTabTrayShowsAfterClosingAllIncognitoTabsFromTabTray() {
@@ -68,7 +68,7 @@ class EmptyTabTrayTests: BaseTestCase {
         goToTabTray()
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
 
-        waitForExistence(app.images["EmptyTabTrayIncognito"])
+        waitForExistence(app.staticTexts["EmptyTabTrayIncognito"])
     }
 
     func testTabTrayShowsTabs() {

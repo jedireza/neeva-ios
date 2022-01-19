@@ -265,6 +265,9 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         .safeAreaChanged { insets in
             self.bottomSafeArea = insets.bottom
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityAddTraits(.isModal)
+        .accessibilityAction(.escape, onDismiss)
     }
 
     // MARK: - Drag

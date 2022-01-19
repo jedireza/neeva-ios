@@ -14,16 +14,12 @@ struct NotificationBadge: View {
         count ?? 0 > maxCount
     }
 
-    var size: CGFloat {
-        count == nil ? smallCircleSize : 20
-    }
-
     var body: some View {
         ZStack {
-            if !textOversized {
-                Circle()
+            if textOversized {
+                Capsule()
             } else {
-                RoundedRectangle(cornerRadius: size)
+                Circle()
             }
 
             if let count = count {
@@ -55,7 +51,8 @@ enum NotificationBadgeLocation {
 /// Used for **overlaying** a badge overlay over an entire view.
 struct NotificationBadgeOverlay<Content: View>: View {
     let from: [NotificationBadgeLocation]
-    var count: Int?
+    let count: Int?
+    let value: LocalizedStringKey
     let content: Content
 
     var horizontalPadding: CGFloat {
@@ -93,6 +90,7 @@ struct NotificationBadgeOverlay<Content: View>: View {
     var body: some View {
         ZStack {
             content
+                .accessibilityValue(value)
 
             VStack {
                 if from.contains(.top) {
@@ -106,7 +104,7 @@ struct NotificationBadgeOverlay<Content: View>: View {
                     horizontalAlignedContent
                     Spacer()
                 }
-            }
+            }.accessibilityHidden(true)
         }.fixedSize()
     }
 }

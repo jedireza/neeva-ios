@@ -92,7 +92,7 @@ class LazyTabTests: BaseTestCase {
 
         // Confirms that the tab tray is open and that the incognito mode is still enabled.
         waitForExistence(app.staticTexts["Incognito Tabs"])
-        waitForExistence(app.images["EmptyTabTrayIncognito"])
+        waitForExistence(app.staticTexts["EmptyTabTrayIncognito"])
     }
 
     func testLazyTabCreatedFromIncognito() {

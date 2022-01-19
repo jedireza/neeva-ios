@@ -82,9 +82,6 @@ struct TabLocationView: View {
                         isSecure: readerModeModel.state == .active
                             ? readerModeModel.isOriginalTabSecure : model.isSecure
                     )
-                    .accessibilityAction(copyAction)
-                    .accessibilityAction(pasteAction)
-                    .accessibilityAction(pasteAndGoAction)
                 } labelOverlay: { padding in
                     if !chromeModel.isEditingLocation {
                         LocationViewTouchHandler(
@@ -115,6 +112,9 @@ struct TabLocationView: View {
                             NotificationBadgeOverlay(
                                 from: NotificationBadgeLocation.topRight,
                                 count: trackingStatsModel.numTrackers,
+                                value: trackingStatsModel.numTrackers == 1
+                                    ? "1 Tracker Blocked"
+                                    : "\(trackingStatsModel.numTrackers) Trackers Blocked",
                                 content:
                                     LocationViewTrackingButton(
                                         currentDomain: model.url?.baseDomain ?? "")
@@ -174,12 +174,15 @@ struct TabLocationView: View {
                             LocationViewShareButton(url: model.url, onTap: onShare)
                         }
                     }.transition(.opacity)
-                }.opacity(chromeModel.isEditingLocation ? 0 : 1)
+                }
+                .opacity(chromeModel.isEditingLocation ? 0 : 1)
+                .accessibilityHidden(chromeModel.isEditingLocation)
 
                 HStack(spacing: 0) {
                     if chromeModel.isEditingLocation {
                         LocationTextFieldIcon(currentUrl: model.url)
                             .transition(.opacity)
+                            .accessibilityHidden(true)
                         LocationEditView(
                             isEditing: Binding(
                                 get: { chromeModel.isEditingLocation },

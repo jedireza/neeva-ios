@@ -181,5 +181,7 @@ struct SwitcherToolbarView: View {
         .background(Color.DefaultBackground.ignoresSafeArea())
         .opacity(FeatureFlag[.enableBrowserView] ? 1 : (browserModel.showGrid ? 1 : 0))
         .animation(.easeOut)
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Toolbar")
     }
 }

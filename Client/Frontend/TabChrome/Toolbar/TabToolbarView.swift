@@ -57,6 +57,7 @@ struct TabToolbarView: View {
         .opacity(chromeModel.controlOpacity)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("TabToolbar")
+        .accessibilityLabel("Toolbar")
     }
 
     @ViewBuilder

@@ -36,7 +36,7 @@ class TabMenuTests: BaseTestCase {
         openURLInNewTab(secondWebsite.url)
         closeAllTabs(createNewTab: false)
 
-        waitForExistence(app.images["EmptyTabTray"])
+        waitForExistence(app.staticTexts["EmptyTabTray"])
     }
 
     func testCloseIncognitoTabFromTab() {
@@ -70,7 +70,7 @@ class TabMenuTests: BaseTestCase {
         goToTabTray()
 
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
-        waitForExistence(app.images["EmptyTabTray"])
+        waitForExistence(app.staticTexts["EmptyTabTray"])
     }
 
     func testCloseAllIncognitoTabsFromSwitcher() {

@@ -29,7 +29,7 @@ class NavigationTest: BaseTestCase {
             goToOverflowMenuButton(label: "Forward") { element in
                 XCTAssertFalse(element.isEnabled)
             }
-            app.buttons["Address Bar"].tap()
+            app.buttons["Address Bar"].tap(force: true)
         } else {
             XCTAssertFalse(app.buttons["Back"].isEnabled)
             // Disable this check for now, not entirely sure why it fails this check only on CI. It works locally.

@@ -5,22 +5,25 @@
 import SwiftUI
 
 struct EmptyCardGrid: View {
-    var isIncognito: Bool = false
+    let isIncognito: Bool
 
     var body: some View {
         VStack {
-            Image(isIncognito ? "EmptyTabTrayIncognito" : "EmptyTabTray")
-            Text("Create and manage\(isIncognito ? " incognito" : "") tabs")
+            Image(decorative: isIncognito ? "EmptyTabTrayIncognito" : "EmptyTabTray")
+            Text(isIncognito ? "Create and manage incognito tabs" : "Create and manage tabs")
                 .withFont(.headingXLarge)
             Text("Tap + below to create a new tab")
                 .withFont(.bodyMedium)
         }
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier(isIncognito ? "EmptyTabTrayIncognito" : "EmptyTabTray")
         .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
 struct EmptyCardGrid_Previews: PreviewProvider {
     static var previews: some View {
-        EmptyCardGrid()
+        EmptyCardGrid(isIncognito: false)
+        EmptyCardGrid(isIncognito: true)
     }
 }

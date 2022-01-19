@@ -266,6 +266,9 @@ struct Card<Details>: View where Details: CardDetails {
         .accessibilityLabel(details.accessibilityLabel)
         .modifier(ActionsModifier(close: details.closeButtonImage == nil ? nil : details.onClose))
         .accessibilityAddTraits(.isButton)
+        .accesibilityFocus(
+            shouldFocus: details.isSelected, trigger: browserModel.cardTransition == .hidden
+        )
         .onDrop(of: ["public.url", "public.text"], delegate: details)
         .if(let: details.closeButtonImage) { buttonImage, view in
             view
@@ -279,9 +282,9 @@ struct Card<Details>: View where Details: CardDetails {
                             .background(Color(UIColor.systemGray6))
                             .clipShape(Circle())
                             .padding(6)
-                            .accessibilityLabel("Close \(details.title)")
                             .opacity(animate && !browserModel.showGrid ? 0 : 1)
-                    },
+                    }
+                    .accessibilityHidden(true),  // use the Close action instead
                     alignment: .topTrailing
                 )
                 .if(dragToClose) { view in

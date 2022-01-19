@@ -63,9 +63,17 @@ struct CollapsableCardGroupView: View {
                         .degrees(groupDetails.isShowingDetails ? -180 : 0)
                     )
                     .padding()
-            }
-        }.padding(.leading, CardGridUX.GridSpacing).frame(
-            height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
+            }.accessibilityHidden(true)
+        }
+        .padding(.leading, CardGridUX.GridSpacing)
+        .frame(height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Tab Group, \(groupDetails.title)")
+        .accessibilityAddTraits([.isHeader, .isButton])
+        .accessibilityValue(groupDetails.isShowingDetails ? "Expanded" : "Collapsed")
+        .accessibilityAction {
+            groupDetails.isShowingDetails.toggle()
+        }
     }
 
     @ViewBuilder

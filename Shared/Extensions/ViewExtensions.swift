@@ -139,3 +139,33 @@ extension View {
         modifier(ScreenSpaceOffset(x: x, y: y))
     }
 }
+
+extension View {
+    @ViewBuilder public func accesibilityFocus(shouldFocus: Bool, trigger: Bool) -> some View {
+        if #available(iOS 15.0, *) {
+            modifier(FocusOnAppearModifier(focus: shouldFocus, trigger: trigger))
+        } else {
+            self
+        }
+    }
+}
+
+@available(iOS 15.0, *)
+private struct FocusOnAppearModifier: ViewModifier {
+    let focus: Bool
+    let trigger: Bool
+
+    @AccessibilityFocusState var isFocused
+
+    func body(content: Content) -> some View {
+        content
+            .accessibilityFocused($isFocused)
+            .onChange(of: trigger) { trigger in
+                if focus && trigger {
+                    DispatchQueue.main.async {
+                        isFocused = true
+                    }
+                }
+            }
+    }
+}

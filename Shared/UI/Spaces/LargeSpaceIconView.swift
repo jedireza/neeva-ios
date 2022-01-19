@@ -31,6 +31,7 @@ public struct LargeSpaceIconView: View {
                 .fill(background)
                 .overlay(content())
                 .frame(width: Metrics.size, height: Metrics.size)
+                .accessibilityHidden(true)
         }
     }
 
@@ -54,7 +55,6 @@ public struct LargeSpaceIconView: View {
                 Text(space.name.prefix(2).uppercased())
                     .foregroundColor(.white)
                     .font(.system(size: Metrics.textSize, weight: .semibold, design: .default))
-                    .accessibilityHidden(true)
             }
         }
     }

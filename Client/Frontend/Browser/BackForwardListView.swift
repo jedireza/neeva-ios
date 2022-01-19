@@ -142,6 +142,12 @@ struct BackForwardListView: View {
                 .background(Color.DefaultBackground)
                 .fixedSize(horizontal: false, vertical: true)
             }
-        }.frame(maxWidth: .infinity)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .contain)
+        .accessibilityAction(.escape) {
+            overlayManager.hideCurrentOverlay()
+        }
+        .accessibilityAddTraits(.isModal)
     }
 }

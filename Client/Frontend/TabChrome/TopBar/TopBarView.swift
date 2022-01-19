@@ -120,6 +120,7 @@ struct TopBarView: View {
                         .progressViewStyle(.pageProgressBar)
                         .padding(.bottom, -1)
                         .ignoresSafeArea(edges: .horizontal)
+                        .accessibilityLabel("Page Loading")
                 }
             }
             .zIndex(1)
@@ -141,5 +142,6 @@ struct TopBarView: View {
         )
         .background(Color.DefaultBackground.ignoresSafeArea())
         .accentColor(.label)
+        .accessibilityElement(children: .contain)
     }
 }
