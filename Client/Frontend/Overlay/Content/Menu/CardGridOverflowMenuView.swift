@@ -43,14 +43,6 @@ public struct CardGridOverflowMenuView: View {
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
-                    if FeatureFlag[.enableCryptoWallet] {
-                        NeevaMenuRowButtonView(label: "Crypto Wallet", symbol: .creditcard) {
-                            self.menuAction(.cryptoWallet)
-                        }
-                        .accentColor(Color.brand.adaptive.orange)
-                        .accessibilityIdentifier("Neeva Crypto Wallet")
-                    }
-
                     NeevaMenuRowButtonView(label: "History", symbol: .clock) {
                         menuAction(.goToHistory)
                     }

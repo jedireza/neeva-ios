@@ -154,6 +154,14 @@ public struct OverflowMenuView: View {
                         }
                     }
 
+                    if FeatureFlag[.enableCryptoWallet] {
+                        NeevaMenuRowButtonView(label: "Crypto Wallet", symbol: .creditcard) {
+                            self.menuAction(.cryptoWallet)
+                        }
+                        .accentColor(Color.brand.adaptive.orange)
+                        .accessibilityIdentifier("Neeva Crypto Wallet")
+                    }
+
                     NeevaMenuRowButtonView(
                         label: "Find on Page",
                         symbol: .docTextMagnifyingglass

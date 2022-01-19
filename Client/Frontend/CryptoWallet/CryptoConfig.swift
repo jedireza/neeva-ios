@@ -19,6 +19,8 @@ public enum EthNode: String {
     case Ethereum
     // testing network
     case Ropsten
+    // polygon network
+    case Polygon
 
     var url: URL {
         switch self {
@@ -26,6 +28,8 @@ public enum EthNode: String {
             return "https://mainnet.infura.io/v3/83f94ab9ec72404096d4fa53182c7e80"
         case .Ropsten:
             return "https://ropsten.infura.io/v3/83f94ab9ec72404096d4fa53182c7e80"
+        case .Polygon:
+            return "https://polygon-mainnet.infura.io/v3/83f94ab9ec72404096d4fa53182c7e80"
         }
     }
 }

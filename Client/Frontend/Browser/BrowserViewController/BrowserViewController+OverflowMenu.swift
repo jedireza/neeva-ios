@@ -153,13 +153,7 @@ extension BrowserViewController {
             )
             perform(neevaMenuAction: .support)
         case .cryptoWallet:
-            let cryptoWalletPanel = CryptoWalletController(onDismiss: {
-                self.dismiss(animated: true, completion: nil)
-            })
-            let navigationController = UINavigationController(rootViewController: cryptoWalletPanel)
-            navigationController.modalPresentationStyle = .formSheet
-
-            present(navigationController, animated: true, completion: nil)
+            web3Model.showWalletPanel()
         }
     }
 }

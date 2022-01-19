@@ -36,9 +36,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 self.gasEstimate = estimate
             }
 
-            wallet.ethBalance { balance in
-                self.walletBalance = balance
-            }
+            updateBalances()
         }
     }
     @Published var currentSession: Session? {
@@ -50,12 +48,23 @@ class Web3Model: ObservableObject, ResponseRelay {
     @Published var showingWalletDetails = false
     @Published var matchingCollection: Collection?
     @Published var gasEstimate: String? = nil
-    @Published var walletBalance: String? = nil
 
     let server: Server?
     let presenter: WalletConnectPresenter
     var selectedTab: Tab?
     var wallet: WalletAccessor?
+
+    var balances: [TokenType: String?] = [
+        .ether: nil, .wrappedEther: nil, .wrappedEtherOnPolygon: nil, .maticOnPolygon: nil,
+    ]
+
+    var ethBalance: String? {
+        balances[.ether]!
+    }
+
+    func balanceFor(_ token: TokenType) -> String? {
+        balances[token]!
+    }
 
     private var selectedTabSubscription: AnyCancellable? = nil
     private var urlSubscription: AnyCancellable? = nil
@@ -88,6 +97,15 @@ class Web3Model: ObservableObject, ResponseRelay {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     self.tryWalletConnect()
                 }
+            }
+        }
+    }
+
+    func updateBalances() {
+        balances.keys.forEach { token in
+            wallet?.tokenBalance(token: token) { balance in
+                self.balances[token] = balance
+                self.objectWillChange.send()
             }
         }
     }
@@ -169,6 +187,19 @@ class Web3Model: ObservableObject, ResponseRelay {
             content: {
                 WalletSequenceContent(model: self)
                     .overlayIsFixedHeight(isFixedHeight: true)
+            }, onDismiss: { self.reset() })
+    }
+
+    func showWalletPanel() {
+        updateBalances()
+        presenter.showModal(
+            style: .spaces,
+            headerButton: nil,
+            content: {
+                CryptoWalletView()
+                    .environmentObject(self)
+                    .overlayIsFixedHeight(isFixedHeight: true)
+
             }, onDismiss: { self.reset() })
     }
 

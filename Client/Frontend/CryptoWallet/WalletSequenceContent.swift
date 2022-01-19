@@ -91,7 +91,7 @@ struct WalletSequenceContent: View {
     }
 
     var bottomRightInfo: String {
-        guard let balance = model.walletBalance,
+        guard let balance = model.ethBalance,
             let type = model.currentSequence?.type
         else {
             return "Fetching..."

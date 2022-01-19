@@ -6,6 +6,7 @@ import Defaults
 import MobileCoreServices
 import Shared
 import SwiftUI
+import WalletConnectSwift
 import web3swift
 
 public enum TransactionAction: String {
@@ -20,91 +21,189 @@ struct TransactionDetail: Hashable {
 }
 
 struct WalletDashboard: View {
-    @State var copyButtonText: String = "Copy"
-    @State var accountBalance: String = ""
-    @State var showSendForm: Bool = false
+    @EnvironmentObject var model: Web3Model
 
-    @State var transactionHistory: [TransactionDetail] = []
+    @State var showSendForm: Bool = false
+    @State var showConfirmDisconnectAlert = false
+    @State var sessionToDisconnect: Session? = nil
 
     var body: some View {
-        VStack(spacing: 8) {
-            Image("ethLogo")
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 40, height: 40)
-                .padding(4)
-                .background(
-                    Circle().stroke(Color.ui.gray80)
-                )
-            Text("\(accountBalance) ETH")
-                .font(.roobert(size: 32))
-
-            Text("$\(CryptoConfig.shared.etherToUSD(ether: accountBalance)) USD")
-                .font(.system(size: 18))
-                .foregroundColor(.secondary)
-
-            Button(action: getData) {
-                Text("Refresh")
-                    .font(.system(size: 14))
-            }
-            .frame(minWidth: 70, minHeight: 30, alignment: .center)
-            .foregroundColor(Color.brand.white)
-            .background(Color(hex: 0xA6C294))
-            .cornerRadius(35)
-
-            VStack(alignment: .leading) {
-                Text("Account")
-                    .font(.roobert(size: 14))
-                HStack {
-                    ScrollView(.horizontal) {
+        List {
+            Section(
+                content: {
+                    HStack(spacing: 8) {
                         Text("\(Defaults[.cryptoPublicKey])")
-                    }
-                    Button(action: {
-                        copyButtonText = "Copied!"
-                        UIPasteboard.general.setValue(
-                            Defaults[.cryptoPublicKey],
-                            forPasteboardType: kUTTypePlainText as String)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                            copyButtonText = "Copy"
+                            .font(.roobert(size: 16))
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .padding(8)
+                            .background(Color.ui.adaptive.blue)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        Button(action: {
+                            UIPasteboard.general.setValue(
+                                Defaults[.cryptoPublicKey],
+                                forPasteboardType: kUTTypePlainText as String)
+                            if let toastManager = model.selectedTab?.browserViewController?
+                                .getSceneDelegate()?.toastViewManager
+                            {
+                                toastManager.makeToast(text: "Address copied to clipboard")
+                                    .enqueue(manager: toastManager)
+                            }
+                        }) {
+                            Symbol(decorative: .docOnDoc)
+                                .foregroundColor(.label)
                         }
-                    }) {
-                        Text("\(copyButtonText)")
+                        .tapTargetFrame()
+                    }.modifier(WalletListSeparatorModifier())
+                },
+                header: {
+                    Text("Account info")
+                        .withFont(.headingMedium)
+                        .foregroundColor(.label)
+                })
+
+            Section(
+                content: {
+                    ForEach(
+                        TokenType.allCases.filter {
+                            Double(model.balanceFor($0) ?? "0") != 0
+                        }, id: \.rawValue
+                    ) {
+                        token in
+                        HStack {
+                            token.thumbnail
+                            VStack(alignment: .leading, spacing: 8) {
+                                Text(token.rawValue)
+                                    .withFont(.labelSmall)
+                                    .lineLimit(2)
+                                    .foregroundColor(.label)
+                                Text("\(model.balanceFor(token) ?? "") \(token.currency)")
+                                    .font(.roobert(size: 16))
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            Text(
+                                "$\(CryptoConfig.shared.etherToUSD(ether: model.balanceFor(token) ?? "0"))"
+                            )
+                            .foregroundColor(.label)
+                            .font(.roobert(size: 24))
+                            .frame(alignment: .center)
+                        }
                     }
-                    .padding(12)
-                    .foregroundColor(Color.brand.white)
-                    .background(Color.brand.charcoal)
-                    .cornerRadius(10)
-                }
-                .padding(10)
-                .background(
-                    RoundedRectangle(cornerRadius: 10).stroke(Color.ui.gray91, lineWidth: 0.5)
-                )
-                .background(Color.white.opacity(0.8))
-                .cornerRadius(10)
-            }
+                },
+                header: {
+                    Text("Balances")
+                        .withFont(.headingMedium)
+                        .foregroundColor(.label)
+                })
+
+            Section(
+                content: {
+                    ForEach(model.server?.openSessions() ?? [], id: \.url) { session in
+                        if let domain = session.dAppInfo.peerMeta.url.baseDomain {
+                            HStack {
+                                Text(domain)
+                                    .withFont(.labelSmall)
+                                    .foregroundColor(.label)
+                                Spacer()
+                                Button(action: {
+                                    sessionToDisconnect = session
+                                    showConfirmDisconnectAlert = true
+                                }) {
+                                    Symbol(decorative: .xmarkCircleFill)
+                                        .foregroundColor(.label)
+                                }
+                                .tapTargetFrame()
+                            }
+                        }
+                    }
+                },
+                header: {
+                    if !(model.server?.openSessions() ?? []).isEmpty {
+                        Text("Open Sessions")
+                            .withFont(.headingMedium)
+                            .foregroundColor(.label)
+                    }
+                })
 
             if showSendForm {
                 SendForm(showSendForm: $showSendForm)
+                    .modifier(WalletListSeparatorModifier())
             } else {
                 Button(action: { showSendForm = true }) {
                     Text("Send ETH")
                         .font(.roobert(.semibold, size: 18))
-                        .frame(minWidth: 300)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
                 .buttonStyle(.neeva(.primary))
                 .padding(.top, 8)
-
-                TransactionHistoryView(transactionHistory: $transactionHistory)
+                .modifier(WalletListSeparatorModifier())
             }
         }
+        .modifier(WalletListStyleModifier())
+        .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal, 25)
-        .onAppear(perform: getData)
+        .actionSheet(isPresented: $showConfirmDisconnectAlert) {
+            ActionSheet(
+                title: Text(
+                    "Are you sure you want to disconnect from \(sessionToDisconnect?.dAppInfo.peerMeta.url.baseDomain ?? "")?"
+                ),
+                buttons: [
+                    .destructive(
+                        Text("Disconnect (May take a few secs)"),
+                        action: {
+                            let session = sessionToDisconnect!
+                            DispatchQueue.global(qos: .userInitiated).async {
+                                try? model.server?.disconnect(from: session)
+                            }
+                            sessionToDisconnect = nil
+                        })
+                ])
+        }
     }
+}
 
-    func getData() {
-        let accountInfo = CryptoConfig.shared.getData()
-        accountBalance = accountInfo.balance
-        transactionHistory = accountInfo.transactions
+struct WalletListStyleModifier: ViewModifier {
+    @EnvironmentObject var model: Web3Model
+
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .listStyle(.insetGrouped)
+                .refreshable {
+                    model.updateBalances()
+                }
+        } else {
+            content
+        }
+    }
+}
+
+struct WalletListSeparatorModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .listRowInsets(
+                    EdgeInsets.init(
+                        top: 0,
+                        leading: 0,
+                        bottom: 0,
+                        trailing: 0)
+                )
+                .listSectionSeparator(Visibility.hidden)
+                .listRowSeparator(Visibility.hidden)
+                .listSectionSeparatorTint(Color.clear)
+                .listRowBackground(Color.clear)
+        } else {
+            content
+                .listRowInsets(
+                    EdgeInsets.init(
+                        top: 0,
+                        leading: 0,
+                        bottom: 0,
+                        trailing: 0)
+                )
+        }
     }
 }
 
