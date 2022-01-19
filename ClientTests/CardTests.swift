@@ -32,7 +32,6 @@ private func assertCast<T>(_ value: Any, to _: T.Type) -> T {
 }
 
 class CardTests: XCTestCase {
-
     var profile: TabManagerMockProfile!
     var manager: TabManager!
     var browserModel: BrowserModel!
@@ -67,7 +66,8 @@ class CardTests: XCTestCase {
         profile = TabManagerMockProfile()
         manager = TabManager(profile: profile, imageStore: nil)
         gridModel = GridModel(tabManager: manager)
-        browserModel = BrowserModel(gridModel: gridModel, tabManager: manager)
+        browserModel = BrowserModel(
+            gridModel: gridModel, tabManager: manager, chromeModel: TabChromeModel())
         manager.didRestoreAllTabs = true
         delegate = MockTabManagerDelegate()
         groupManager = TabGroupManager(tabManager: manager)

@@ -17,7 +17,7 @@ protocol SelectableThumbnail {
     func onSelect()
 }
 
-protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail, Identifiable {
+protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail, Identifiable, Equatable {
     associatedtype Item: BrowserPrimitive
     associatedtype FaviconViewType: View
 
@@ -52,6 +52,10 @@ extension CardDetails {
 
     var defaultIcon: String? {
         nil
+    }
+
+    public static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.id == rhs.id
     }
 }
 
@@ -304,7 +308,6 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
 
     func onClose() {}
     func onSelect() {}
-
 }
 
 class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {

@@ -16,8 +16,8 @@ class DatabaseFixtureTest: BaseTestCase {
         // for the current test name, add the db fixture used
         launchArguments = [
             LaunchArguments.SkipIntro, LaunchArguments.SkipWhatsNew,
-            LaunchArguments.SkipETPCoverSheet, LaunchArguments.LoadDatabasePrefix +
-            fixtures[testName]!,
+            LaunchArguments.SkipETPCoverSheet,
+            LaunchArguments.LoadDatabasePrefix + fixtures[testName]!,
         ]
         super.setUp()
     }

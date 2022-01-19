@@ -7,103 +7,183 @@ import Shared
 
 public struct LogConfig {
     public enum Interaction: String {
-        case OpenNeevaMenu  // Open neeva menu
-        case OpenShield  // Open tracking shield
-        case OpenOverflowMenu  // Open Overflow Menu
-        case TapReload  // Tap reload page
-        case TapStopReload  // Tap stop reload page
+        /// Open neeva menu
+        case OpenNeevaMenu
+        /// Open tracking shield
+        case OpenShield
+        /// Open Overflow Menu
+        case OpenOverflowMenu
+        /// Tap reload page
+        case TapReload
+        /// Tap stop reload page
+        case TapStopReload
 
-        // bottom nav
-        case ShowTabTray  // Click tab button to see all available tabs
-        case HideTabTray  // Click done button to hide the tab tray
-        case SelectTab  // Click on any tabs inside the tab tray
-        case ClickAddToSpaceButton  // Click bookmark button to add to space
-        case ClickShareButton  // Click the share button
-        case TurnOnIncognitoMode  // Click turn on incognito mode button
-        case TurnOffIncognitoMode  // Click turn off incognito mode button
-        case ClickBack  // Click back button to navigate to previous page
-        case ClickForward  // Click forward button to navigate to next page
-        case LongPressForward  // Tap and Hold forward button to show navigation stack
+        // MARK: bottom nav
+        /// Click tab button to see all available tabs
+        case ShowTabTray
+        /// Click done button to hide the tab tray
+        case HideTabTray
+        /// Click on any tabs inside the tab tray
+        case SelectTab
+        /// Click bookmark button to add to space
+        case ClickAddToSpaceButton
+        /// Click the share button
+        case ClickShareButton
+        /// Click turn on incognito mode button
+        case TurnOnIncognitoMode
+        /// Click turn off incognito mode button
+        case TurnOffIncognitoMode
+        /// Click back button to navigate to previous page
+        case ClickBack
+        /// Click forward button to navigate to next page
+        case ClickForward
+        /// Tap and Hold forward button to show navigation stack
+        case LongPressForward
 
-        // tracking shield
-        case TurnOnBlockTracking  // Turn on block tracking from shield
-        case TurnOffBlockTracking  // Turn on block tracking from shield
+        // MARK: tracking shield
+        /// Turn on block tracking from shield
+        case TurnOnBlockTracking
+        /// Turn on block tracking from shield
+        case TurnOffBlockTracking
 
-        // neeva menu
-        case OpenHome  // Open home from neeva menu
-        case OpenSpaces  // Open spaces from neeva menu
-        case OpenDownloads  // Open downloads from neeva menu
-        case OpenHistory  // Open history from neeva menu
-        case OpenSetting  // Open settings from neeva menu
-        case OpenSendFeedback  // Open send feedback from neeva menu
+        // MARK: neeva menu
+        /// Open home from neeva menu
+        case OpenHome
+        /// Open spaces from neeva menu
+        case OpenSpaces
+        /// Open downloads from neeva menu
+        case OpenDownloads
+        /// Open history from neeva menu
+        case OpenHistory
+        /// Open settings from neeva menu
+        case OpenSetting
+        /// Open send feedback from neeva menu
+        case OpenSendFeedback
 
-        // overflow menu
-        case ClickNewTabButton  // Click the plus new tab button
-        case ClickFindOnPage  // Click the Find on Page Button
-        case ClickTextSize  // Click the Text Size Button
-        case ClickRequestDesktop  // Click the Request Desktop Site button
-        case ClickDownloadPage  // Click the Download Page Button
-        case ClickCloseAllTabs  // Click the Close All Tabs button
+        // MARK: overflow menu
+        /// Click the plus new tab button
+        case ClickNewTabButton
+        /// Click the Find on Page Button
+        case ClickFindOnPage
+        /// Click the Text Size Button
+        case ClickTextSize
+        /// Click the Request Desktop Site button
+        case ClickRequestDesktop
+        /// Click the Download Page Button
+        case ClickDownloadPage
+        /// Click the Close All Tabs button
+        case ClickCloseAllTabs
 
-        // settings
-        case SettingAccountSettings  // Click search setting/account setting
-        case SettingDefaultBrowser  // Click default browser in setting
-        case SettingSignout  // Click sign out in setting
-        case ViewDataManagement  // Click Data Management in setting
-        case ViewTrackingProtection  // Click Tracking Protection in setting
-        case ViewPrivacyPolicy  // Click Privacy Policy in setting
-        case ViewShowTour  // Click Show Tour in setting
-        case ViewHelpCenter  // Click Help Center in setting
-        case ViewLicenses  // Click Licenses in setting
-        case ViewTerms  // Click Terms in setting
-        case GoToSysAppSettings  // Click link to navigate to App Settings in System Settings
+        // MARK: settings
+        /// Click search setting/account setting
+        case SettingAccountSettings
+        /// Click default browser in setting
+        case SettingDefaultBrowser
+        /// Click sign out in setting
+        case SettingSignout
+        /// Click Data Management in setting
+        case ViewDataManagement
+        /// Click Tracking Protection in setting
+        case ViewTrackingProtection
+        /// Click Privacy Policy in setting
+        case ViewPrivacyPolicy
+        /// Click Show Tour in setting
+        case ViewShowTour
+        /// Click Help Center in setting
+        case ViewHelpCenter
+        /// Click Licenses in setting
+        case ViewLicenses
+        /// Click Terms in setting
+        case ViewTerms
+        /// Click link to navigate to App Settings in System Settings
+        case GoToSysAppSettings
 
-        case ClearPrivateData  // Click Clear Private Data in Data Management
-        case ClearAllWebsiteData  // Click Clear All Website Data in Data Management > Website Data
+        /// Click Clear Private Data in Data Management
+        case ClearPrivateData
+        /// Click Clear All Website Data in Data Management > Website Data
+        case ClearAllWebsiteData
 
-        // First Run
-        case FirstRunSignupWithApple  // Click Sign up with Apple on first run
-        case FirstRunOtherSignUpOptions  // Click Other sign up options on first run
-        case FirstRunSignin  // Click sign in on first run
-        case FirstRunSkipToBrowser  // Click skip to browser on first run
-        case FirstRunImpression  // First run screen rendered
-        case LoginAfterFirstRun  // Login after first run
-        case FirstRunPageLoad  // Page load at first run and before login
-        case PromoSignin  // Sign in from promo card
-        case PreviewModePromoSignup  // Sign up on preview promo card
-        case SettingSignin  // Sign in from setting
-        case SuggestionErrorLoginViewImpression  // Error login view triggered by suggestion
-        case SuggestionErrorSigninOrJoinNeeva  // Click Sign in or Join Neeva on suggestion error login page
-        case AddToSpaceErrorSigninOrJoinNeeva  // Click Sign in or Join Neeva on space error login page
-        case AuthImpression  // Open auth panel
-        case AuthClose  // Close auth panel
-        case AuthSignUpWithApple  // Click sign up with Apple on auth panel
-        case AuthOtherSignUpOptions  // Click other sign up options on auth panel
-        case AuthSignin  // Click sign in on auth panel
-        case OptionSignupWithApple  // Click Sign up with Apple under other options
-        case OptionSignupWithGoogle  // Click Sign up with Google under other options
-        case OptionSignupWithMicrosoft  // Click Sign up with Microsoft under other options
-        case AuthOptionSignupWithApple  // Click Sign up with Apple on auth panel under other options
-        case AuthOptionSignupWithGoogle  // Click Sign up with Google on auth panel under other options
-        case AuthOptionSignupWithMicrosoft  // Click Sign up with Microsoft on auth panel under other options
-        case OptionClosePanel  // Click close on the first run under other options
-        case AuthOptionClosePanel  // Click close on the auth panel under other options
-        case RecommendedSpaceVisited  // Clicked a public space in zero query
-        case PreviewPromptClose  // Clicked close on preview prompt
-        case PreviewPromptSignupWithApple  // Clicked sign up with apple on preview prompt
-        case PreviewPromptOtherSignupOptions  // Clicked other signup options on preview prompt
-        case PreviewPromptSignIn  // Clicked sign in on preview prompt
-        case PreviewHomeImpression  // Preview home impression
-        case PreviewSampleQueryClicked  // Clicked on sample query on the home page
-        case PreviewTapFakeSearchInput  // Clicked on the fake search input box on preview home page
-        case PreviewHomeSignin  // Click sign in on preview home
+        // MARK: First Run
+        /// Click Sign up with Apple on first run
+        case FirstRunSignupWithApple
+        /// Click Other sign up options on first run
+        case FirstRunOtherSignUpOptions
+        /// Click sign in on first run
+        case FirstRunSignin
+        /// Click skip to browser on first run
+        case FirstRunSkipToBrowser
+        /// First run screen rendered
+        case FirstRunImpression
+        /// Login after first run
+        case LoginAfterFirstRun
+        /// Page load at first run and before login
+        case FirstRunPageLoad
+        /// Sign in from promo card
+        case PromoSignin
+        /// Sign up on preview promo card
+        case PreviewModePromoSignup
+        /// Sign in from setting
+        case SettingSignin
+        /// Error login view triggered by suggestion
+        case SuggestionErrorLoginViewImpression
+        /// Click Sign in or Join Neeva on suggestion error login page
+        case SuggestionErrorSigninOrJoinNeeva
+        /// Click Sign in or Join Neeva on space error login page
+        case AddToSpaceErrorSigninOrJoinNeeva
+        /// Open auth panel
+        case AuthImpression
+        /// Close auth panel
+        case AuthClose
+        /// Click sign up with Apple on auth panel
+        case AuthSignUpWithApple
+        /// Click other sign up options on auth panel
+        case AuthOtherSignUpOptions
+        /// Click sign in on auth panel
+        case AuthSignin
+        /// Click Sign up with Apple under other options
+        case OptionSignupWithApple
+        /// Click Sign up with Google under other options
+        case OptionSignupWithGoogle
+        /// Click Sign up with Microsoft under other options
+        case OptionSignupWithMicrosoft
+        /// Click Sign up with Apple on auth panel under other options
+        case AuthOptionSignupWithApple
+        /// Click Sign up with Google on auth panel under other options
+        case AuthOptionSignupWithGoogle
+        /// Click Sign up with Microsoft on auth panel under other options
+        case AuthOptionSignupWithMicrosoft
+        /// Click close on the first run under other options
+        case OptionClosePanel
+        /// Click close on the auth panel under other options
+        case AuthOptionClosePanel
+        /// Clicked a public space in zero query
+        case RecommendedSpaceVisited
+        /// Clicked close on preview prompt
+        case PreviewPromptClose
+        /// Clicked sign up with apple on preview prompt
+        case PreviewPromptSignupWithApple
+        /// Clicked other signup options on preview prompt
+        case PreviewPromptOtherSignupOptions
+        /// Clicked sign in on preview prompt
+        case PreviewPromptSignIn
+        /// Preview home impression
+        case PreviewHomeImpression
+        /// Clicked on sample query on the home page
+        case PreviewSampleQueryClicked
+        /// Clicked on the fake search input box on preview home page
+        case PreviewTapFakeSearchInput
+        /// Click sign in on preview home
+        case PreviewHomeSignin
 
-        // promo card
-        case PromoCardAppear  // Promo card is rendered on screen
-        case PromoDefaultBrowser  // Click set default browser from promo
-        case CloseDefaultBrowserPromo  // Close default browser promo card
+        // MARK: promo card
+        /// Promo card is rendered on screen
+        case PromoCardAppear
+        /// Click set default browser from promo
+        case PromoDefaultBrowser
+        /// Close default browser promo card
+        case CloseDefaultBrowserPromo
 
-        // selected suggestion
+        // MARK: selected suggestion
         case QuerySuggestion
         case MemorizedSuggestion
         case HistorySuggestion
@@ -119,17 +199,23 @@ public struct LogConfig {
         case tabSuggestion
         case editCurrentURL
 
-        // referral promo
-        case OpenReferralPromo  // Open referral promo
-        case CloseReferralPromo  // Close referral promo card
+        // MARK: referral promo
+        /// Open referral promo
+        case OpenReferralPromo
+        /// Close referral promo card
+        case CloseReferralPromo
 
-        // performance
-        case AppCrashWithPageLoad  // App Crash # With Page load #
-        case AppCrashWithCrashReporter  // App Crash # With Crash Reporter
-        case LowMemoryWarning  // memory warning with memory footprint
-        case AppEnterForeground  // session start = app enter foreground
+        // MARK: performance
+        /// App Crash # With Page load #
+        case AppCrashWithPageLoad
+        /// App Crash # With Crash Reporter
+        case AppCrashWithCrashReporter
+        /// memory warning with memory footprint
+        case LowMemoryWarning
+        /// session start = app enter foreground
+        case AppEnterForeground
 
-        // spaces
+        // MARK: spaces
         case SpacesUIVisited
         case SpacesDetailUIVisited
         case SpacesDetailEntityClicked
@@ -138,7 +224,8 @@ public struct LogConfig {
         case OwnerSharedSpace
         case FollowerSharedSpace
         case SocialShare
-        case space_app_view  // This is for aggregate stats collection
+        /// This is for aggregate stats collection
+        case space_app_view
         case SaveToSpace
         case BlackFridayPromo
         case CloseBlackFridayPromo
@@ -148,7 +235,7 @@ public struct LogConfig {
         case SpaceFilterClicked
         case OpenSuggestedSpace
 
-        // ratings card
+        // MARK: ratings card
         case RatingsRateExperience
         case RatingsPromptFeedback
         case RatingsPromptAppStore
@@ -159,7 +246,7 @@ public struct LogConfig {
         case RatingsSendFeedback
         case RatingsSendAppReview
 
-        // notification
+        // MARK: notification
         case ShowNotificationPrompt
         case NotificationPromptEnable
         case NotificationPromptSkip
@@ -169,11 +256,14 @@ public struct LogConfig {
         case ScheduleLocalNotification
         case OpenLocalNotification
         case OpenNotification
-        case OpenDefaultBrowserURL  // When url is opened in default browser
-        case PromoEnableNotification  // Click enable notification from promo
-        case CloseEnableNotificationPromo  // Close enable notification promo card
+        /// When url is opened in default browser
+        case OpenDefaultBrowserURL
+        /// Click enable notification from promo
+        case PromoEnableNotification
+        /// Close enable notification promo card
+        case CloseEnableNotificationPromo
 
-        // recipe cheatsheet
+        // MARK: recipe cheatsheet
         case RecipeCheatsheetImpression
         case RecipeCheatsheetClickBanner
         case RecipeCheatsheetShowMoreRecipe
@@ -182,19 +272,19 @@ public struct LogConfig {
         case RelatedRecipeClick
         case RelatedSearchClick
 
-        // tab group
+        // MARK: tab group
         case tabGroupClicked
         case tabGroupClosed
         case tabInTabGroupClicked
         case tabRemovedFromGroup
 
-        // feedback
+        // MARK: feedback
         case FeedbackFailedToSend
     }
 
-    // Specify a comma separated string with these values to
-    // enable specific logging category on the server:
-    // ios_logging_categories.experiment.yaml
+    /// Specify a comma separated string with these values to
+    /// enable specific logging category on the server:
+    /// `ios_logging_categories.experiment.yaml`
     public enum InteractionCategory: String, CaseIterable {
         case UI = "UI"
         case NeevaMenu = "NeevaMenu"

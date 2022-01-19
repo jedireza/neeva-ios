@@ -92,6 +92,7 @@ extension BrowserViewController: ToolbarDelegate {
             case .addToSpace:
                 guard let tab = self.tabManager.selectedTab else { return }
                 guard let url = tab.canonicalURL?.displayURL else { return }
+                guard let webView = tab.webView else { return }
 
                 if FeatureFlag[.spacify],
                     let domain = SpaceImportDomain(rawValue: tab.url?.baseDomain ?? "")
@@ -101,7 +102,7 @@ extension BrowserViewController: ToolbarDelegate {
                         guard let self = self else { return }
                         guard let linkData = result as? [[String]] else {
                             self.showAddToSpacesSheet(
-                                url: url, title: tab.title, webView: tab.webView!)
+                                url: url, title: tab.title, webView: webView)
                             return
                         }
 
@@ -109,12 +110,12 @@ extension BrowserViewController: ToolbarDelegate {
                             title: tab.url!.path.remove("/").capitalized, data: linkData)
                         self.showAddToSpacesSheet(
                             url: url, title: tab.title,
-                            webView: tab.webView!,
+                            webView: webView,
                             importData: importData
                         )
                     }
                 } else {
-                    self.showAddToSpacesSheet(url: url, title: tab.title, webView: tab.webView!)
+                    self.showAddToSpacesSheet(url: url, title: tab.title, webView: webView)
                 }
                 ClientLogger.shared.logCounter(
                     .ClickAddToSpaceButton,

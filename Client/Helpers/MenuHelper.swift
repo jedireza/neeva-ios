@@ -49,7 +49,8 @@ open class MenuHelper: NSObject {
         let findInPageItem = UIMenuItem(
             title: .MenuHelperFindInPage, action: MenuHelper.SelectorFindInPage)
         let searchItem = UIMenuItem(
-            title: "Search with \(SearchEngine.current.label)", action: MenuHelper.SelectorSearchWithNeeva)
+            title: "Search with \(SearchEngine.current.label)",
+            action: MenuHelper.SelectorSearchWithNeeva)
         let addToSpaceItem = UIMenuItem(
             title: .MenuHelperAddToSpace, action: MenuHelper.SelectorAddToSpace)
 

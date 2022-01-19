@@ -133,9 +133,11 @@ public struct SegmentedPicker: View {
                 .foregroundColor(segments[currentIndex].selectedColor)
                 .gesture(
                     DragGesture(minimumDistance: 0)
-                        .updating($pressed, body: { _, state, _ in
-                            state = true
-                        })
+                        .updating(
+                            $pressed,
+                            body: { _, state, _ in
+                                state = true
+                            })
                 )
 
             icons(selected: true)

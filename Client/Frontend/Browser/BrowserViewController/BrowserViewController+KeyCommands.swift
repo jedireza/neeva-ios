@@ -32,7 +32,12 @@ extension BrowserViewController {
     }
 
     @objc func selectLocationBarKeyCommand() {
-        scrollController?.showToolbars(animated: true)
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.scrollingControlModel.showToolbars(animated: true)
+        } else {
+            scrollController?.showToolbars(animated: true)
+        }
+
         chromeModel.triggerOverlay()
     }
 

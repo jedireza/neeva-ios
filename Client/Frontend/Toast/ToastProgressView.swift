@@ -2,7 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Combine
 import SFSafeSymbols
+import Shared
 import SwiftUI
 
 enum ToastProgressStatus {
@@ -15,31 +17,62 @@ enum ToastProgressStatus {
         case .inProgress:
             return .circle
         case .success:
-            return .checkmarkCircleFill
+            return .checkmark
         case .failed:
-            return .xmarkCircleFill
+            return .xmark
         }
     }
 }
 
 class ToastProgressViewModel: ObservableObject {
     @Published var status: ToastProgressStatus = .inProgress
+    @Published var progress: Double? = nil
+
+    var downloadListener: AnyCancellable?
 }
 
 struct ToastProgressView: View {
+    private let width: CGFloat = 18
+
+    @EnvironmentObject var progressViewModel: ToastProgressViewModel
     var stateDidChange: ((ToastProgressStatus) -> Void)?
 
-    @EnvironmentObject var toastProgressViewModel: ToastProgressViewModel
+    @State var flipProgressGradient = false
+    @State var flipProgressGradientTimer: Timer?
 
     var body: some View {
         ZStack(alignment: .center) {
-            Image(systemSymbol: toastProgressViewModel.status.icon)
-                .foregroundColor(.white)
-                .frame(width: 24, height: 24)
-        }.onChange(of: toastProgressViewModel.status) { _ in
-            if let stateDidChange = stateDidChange {
-                stateDidChange(toastProgressViewModel.status)
+            switch progressViewModel.status {
+            case .inProgress:
+                if let progress = progressViewModel.progress {
+                    Circle()
+                        .strokeBorder()
+                        .background(
+                            Circle()
+                                .mask(
+                                    PieShape(progress: progress)
+                                        .animation(.default, value: progressViewModel.status)
+                                        .animation(.default, value: progressViewModel.progress)
+                                )
+                        )
+                } else {
+                    ProgressView()
+                }
+            case .success, .failed:
+                Circle()
+                    .foregroundColor(.white)
+
+                Symbol(decorative: progressViewModel.status.icon, size: 10)
+                    .foregroundColor(Color(ToastViewUX.ToastDefaultColor))
             }
+        }
+        .frame(width: width, height: width)
+        .onChange(of: progressViewModel.status) { _ in
+            stateDidChange?(progressViewModel.status)
+        }
+        .frame(width: width, height: width)
+        .onChange(of: progressViewModel.status) { _ in
+            stateDidChange?(progressViewModel.status)
         }
     }
 }
@@ -49,5 +82,33 @@ struct ToastProgressView_Previews: PreviewProvider {
         ToastProgressView()
             .environmentObject(ToastProgressViewModel())
             .preferredColorScheme(.dark)
+    }
+}
+
+struct PieShape: Shape {
+    var progress: Double?
+    var animatableData: Double {
+        get {
+            self.progress ?? 0
+        }
+        set {
+            self.progress = newValue
+        }
+    }
+
+    private let startAngle = 1.5 * .pi
+    private var endAngle: Double {
+        startAngle + 2 * .pi * (progress ?? 0)
+    }
+
+    func path(in rect: CGRect) -> Path {
+        var path = Path()
+        path.move(to: rect.center)
+        path.addArc(
+            center: rect.center, radius: rect.size.width / 2,
+            startAngle: Angle(radians: startAngle),
+            endAngle: Angle(radians: endAngle), clockwise: false)
+        path.closeSubpath()
+        return path
     }
 }

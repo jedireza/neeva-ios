@@ -20,10 +20,6 @@ import XCGLogger
 
 private let ActionSheetTitleMaxLength = 120
 
-private enum BrowserViewControllerUX {
-    static let ShowHeaderTapAreaHeight: CGFloat = 32
-}
-
 struct UrlToOpenModel {
     var url: URL?
     var isPrivate: Bool
@@ -88,7 +84,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         GridModel(tabManager: tabManager)
     }()
     lazy var browserModel: BrowserModel = {
-        BrowserModel(gridModel: gridModel, tabManager: tabManager)
+        BrowserModel(gridModel: gridModel, tabManager: tabManager, chromeModel: chromeModel)
     }()
 
     lazy var toolbarModel: SwitcherToolbarModel = {
@@ -193,7 +189,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     // This view wraps the toolbar to allow it to hide without messing up the layout
     private(set) var footer: UIView!
-    fileprivate var topTouchArea: UIButton!
+    fileprivate var topTouchArea: UIButton?
 
     // Backdrop used for displaying greyed background for private tabs
     private(set) var webViewContainerBackdrop: UIView!
@@ -281,7 +277,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
         dismissVisibleMenus()
 
         coordinator.animate { [self] context in
-            scrollController?.updateMinimumZoom()
+            if FeatureFlag[.enableBrowserView] {
+                browserModel.scrollingControlModel.updateMinimumZoom()
+            } else {
+                scrollController?.updateMinimumZoom()
+            }
 
             if let popover = displayedPopoverController {
                 updateDisplayedPopoverProperties?()
@@ -291,8 +291,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
             if chromeModel.inlineToolbar {
                 hideOverlaySheetViewController()
             }
-        } completion: { _ in
-            self.scrollController?.setMinimumZoom()
+        } completion: { [self] _ in
+            if FeatureFlag[.enableBrowserView] {
+                browserModel.scrollingControlModel.setMinimumZoom()
+            } else {
+                scrollController?.setMinimumZoom()
+            }
         }
     }
 
@@ -371,8 +375,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
         displayedPopoverController?.dismiss(animated: true, completion: nil)
 
         if tabContainerModel.currentContentUI != .previewHome {
-            coordinator.animate { context in
-                self.scrollController?.showToolbars(animated: false)
+            coordinator.animate { [self] context in
+                if FeatureFlag[.enableBrowserView] {
+                    browserModel.scrollingControlModel.showToolbars(animated: false)
+                } else {
+                    scrollController?.showToolbars(animated: false)
+                }
             }
         }
     }
@@ -389,7 +397,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     @objc func tappedTopArea() {
-        scrollController?.showToolbars(animated: true)
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.scrollingControlModel.showToolbars(animated: true)
+        } else {
+            scrollController?.showToolbars(animated: true)
+        }
     }
 
     @objc func appWillResignActiveNotification() {
@@ -431,7 +443,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         // Re-show toolbar which might have been hidden during scrolling (prior to app moving into the background)
         if tabContainerModel.currentContentUI != .previewHome {
-            scrollController?.showToolbars(animated: false)
+            if FeatureFlag[.enableBrowserView] {
+                browserModel.scrollingControlModel.showToolbars(animated: false)
+            } else {
+                scrollController?.showToolbars(animated: false)
+            }
         }
 
         if NeevaUserInfo.shared.isUserLoggedIn {
@@ -524,12 +540,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
             scrollController?.header = topBar?.view
             scrollController?.safeAreaView = view
             scrollController?.footer = footer
-        }
 
-        topTouchArea = UIButton()
-        topTouchArea.isAccessibilityElement = false
-        topTouchArea.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
-        view.addSubview(topTouchArea)
+            topTouchArea = UIButton()
+            topTouchArea!.isAccessibilityElement = false
+            topTouchArea!.addTarget(self, action: #selector(tappedTopArea), for: .touchUpInside)
+            view.addSubview(topTouchArea!)
+        }
 
         self.updateToolbarStateForTraitCollection(self.traitCollection)
 
@@ -770,12 +786,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
     override func updateViewConstraints() {
         super.updateViewConstraints()
 
-        topTouchArea.snp.remakeConstraints { make in
-            make.top.left.right.equalTo(self.view)
-            make.height.equalTo(BrowserViewControllerUX.ShowHeaderTapAreaHeight)
-        }
-
         if !FeatureFlag[.enableBrowserView] {
+            topTouchArea!.snp.remakeConstraints { make in
+                make.top.left.right.equalTo(self.view)
+                make.height.equalTo(32)
+            }
+
             if UIConstants.enableBottomURLBar {
                 topBar!.view.snp.remakeConstraints { make in
                     if let keyboardHeight = keyboardState?.intersectionHeightForView(self.view),
@@ -877,14 +893,22 @@ class BrowserViewController: UIViewController, ModalPresenter {
         DispatchQueue.main.async { [self] in
             tabContainerModel.updateContent(.hideZeroQuery)
             if tabContainerModel.currentContentUI == .previewHome {
-                scrollController?.hideToolbars(animated: true)
+                if FeatureFlag[.enableBrowserView] {
+                    browserModel.scrollingControlModel.showToolbars(animated: true)
+                } else {
+                    scrollController?.showToolbars(animated: true)
+                }
             }
         }
     }
 
     public func showPreviewHome() {
         tabContainerModel.updateContent(.showPreviewHome)
-        scrollController?.hideToolbars(animated: false)
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.scrollingControlModel.showToolbars(animated: false)
+        } else {
+            scrollController?.showToolbars(animated: false)
+        }
     }
 
     fileprivate func updateInZeroQuery(_ url: URL?) {
@@ -1088,7 +1112,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     func updateUIForReaderHomeStateForTab(_ tab: Tab) {
         updateURLBarDisplayURL(tab)
-        scrollController?.showToolbars(animated: false)
+
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.scrollingControlModel.showToolbars(animated: false)
+        } else {
+            scrollController?.showToolbars(animated: false)
+        }
 
         if let url = tab.url {
             updateInZeroQuery(url as URL)
@@ -1204,7 +1233,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager.setIncognitoMode(to: switchToIncognitoMode)
         }
 
-        scrollController?.showToolbars(animated: true)
+        if FeatureFlag[.enableBrowserView] {
+            browserModel.scrollingControlModel.showToolbars(animated: true)
+        } else {
+            scrollController?.showToolbars(animated: true)
+        }
+
         showZeroQuery(openedFrom: openedFrom, isLazyTab: true)
     }
 
@@ -1589,8 +1623,12 @@ extension BrowserViewController: TabDelegate {
 
         webView.scrollView
             .publisher(for: \.contentSize, options: .new)
-            .sink { _ in
-                self.scrollController?.contentSizeDidChange()
+            .sink { [self] _ in
+                if FeatureFlag[.enableBrowserView] {
+                    browserModel.scrollingControlModel.contentSizeDidChange()
+                } else {
+                    scrollController?.contentSizeDidChange()
+                }
             }
             .store(in: &tab.webViewSubscriptions)
     }
@@ -1770,7 +1808,7 @@ extension BrowserViewController: TabManagerDelegate {
 
         updateFindInPageVisibility(visible: false, tab: previous)
         chromeModel.canGoBack =
-            (simulateBackViewController.canGoBack() ?? false
+            (simulateBackViewController.canGoBack()
                 || selected?.canGoBack ?? false)
         chromeModel.canGoForward =
             (simulateForwardViewController?.canGoForward() ?? false

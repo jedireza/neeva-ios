@@ -67,11 +67,17 @@ extension Color {
     ///
     /// Use `groupedBackground` colors for grouped content, including table views and platter-based designs.
     public static let groupedBackground = Color(UIColor.systemGroupedBackground)
+    /// Meant for using `groupedBackground` on an elevated surface, e.g., an `OverlaySheet`
+    public static let groupedBackgroundElevated = Color(
+        UIColor.systemGroupedBackground.elevated)
 
     /// The color for content layered on top of the main background of your grouped interface.
     ///
     /// Use `groupedBackground` colors for grouped content, including table views and platter-based designs.
     public static let secondaryGroupedBackground = Color(UIColor.secondarySystemGroupedBackground)
+    /// Meant for using `secondaryGroupedBackground` on an elevated surface, e.g., an `OverlaySheet`
+    public static let secondaryGroupedBackgroundElevated = Color(
+        UIColor.secondarySystemGroupedBackground.elevated)
 
     /// The color for content layered on top of secondary backgrounds of your grouped interface.
     ///

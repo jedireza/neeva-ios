@@ -241,7 +241,8 @@ struct Card<Details>: View where Details: CardDetails {
                                 .padding(5)
                         }
                         Text(
-                            !FeatureFlag[.tabGroupsNewDesign] && browserModel.cardTransition == .visibleForTrayShow
+                            !FeatureFlag[.tabGroupsNewDesign]
+                                && browserModel.cardTransition == .visibleForTrayShow
                                 ? titleInMainGrid : details.title
                         ).withFont(.labelMedium)
                             .frame(alignment: .center)

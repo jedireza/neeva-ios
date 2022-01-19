@@ -654,14 +654,16 @@ class TabGroupCardModel: CardModel {
     ) {
         let id = details?.id
         details?.$isShowingDetails.sink { [weak self] showingDetails in
-            if showingDetails {
-                withAnimation {
-                    self?.detailedTabGroup =
-                        self?.allDetails.first(where: { $0.id == id })
-                }
-            } else {
-                if FeatureFlag[.tabGroupsNewDesign] {
-                    self?.detailedTabGroup = nil
+            DispatchQueue.main.async {
+                if showingDetails {
+                    withAnimation {
+                        self?.detailedTabGroup =
+                            self?.allDetails.first(where: { $0.id == id })
+                    }
+                } else {
+                    if FeatureFlag[.tabGroupsNewDesign] {
+                        self?.detailedTabGroup = nil
+                    }
                 }
             }
         }.store(in: &storeIn)

@@ -17,7 +17,7 @@ class BackForwardListModel: ObservableObject {
     @Published var listItems = [WKBackForwardListItem]()
 
     var numberOfItems: Int {
-        listItems.count
+        sites.count
     }
 
     func loadSitesFromProfile() {

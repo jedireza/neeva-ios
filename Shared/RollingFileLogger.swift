@@ -75,7 +75,9 @@ open class RollingFileLogger: XCGLogger {
         return work
     }
 
-    fileprivate static func deleteOldestLogWithPrefix(_ prefix: String, inDirectory path: String) -> Bool {
+    fileprivate static func deleteOldestLogWithPrefix(_ prefix: String, inDirectory path: String)
+        -> Bool
+    {
         var removed = false
         do {
             let logFiles = try FileManager.default.contentsOfDirectoryAtPath(

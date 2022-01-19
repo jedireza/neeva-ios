@@ -117,6 +117,8 @@ struct ZeroQueryPlaceholder: View {
 }
 
 struct ZeroQueryView: View {
+    private let promoCardImpressionTimerInterval: TimeInterval = 2
+
     @EnvironmentObject var viewModel: ZeroQueryModel
 
     @Default(.expandSuggestedSites) private var expandSuggestedSites
@@ -125,6 +127,8 @@ struct ZeroQueryView: View {
     @Default(.expandSuggestedSpace) private var expandSuggestedSpace
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
+    @State var impressionTimer: Timer? = nil
 
     func ratingsCard(_ viewWidth: CGFloat) -> some View {
         RatingsCard(
@@ -221,15 +225,28 @@ struct ZeroQueryView: View {
                         if let promoCardType = viewModel.promoCard {
                             PromoCard(type: promoCardType, viewWidth: geom.size.width)
                                 .onAppear {
-                                    ClientLogger.shared.logCounter(
-                                        .PromoCardAppear,
-                                        attributes: EnvironmentHelper.shared.getAttributes() + [
-                                            ClientLogCounterAttribute(
-                                                key: LogConfig.PromoCardAttribute.promoCardType,
-                                                value: promoCardType.name
+                                    impressionTimer?.invalidate()
+                                    impressionTimer = Timer.scheduledTimer(
+                                        withTimeInterval: promoCardImpressionTimerInterval,
+                                        repeats: false,
+                                        block: { _ in
+                                            ClientLogger.shared.logCounter(
+                                                .PromoCardAppear,
+                                                attributes: EnvironmentHelper.shared.getAttributes()
+                                                    + [
+                                                        ClientLogCounterAttribute(
+                                                            key: LogConfig.PromoCardAttribute
+                                                                .promoCardType,
+                                                            value: viewModel.promoCard?.name ?? "None"
+                                                        )
+                                                    ]
                                             )
-                                        ]
+                                        }
                                     )
+                                }
+                                .onDisappear {
+                                    impressionTimer?.invalidate()
+                                    impressionTimer = nil
                                 }
                         }
 

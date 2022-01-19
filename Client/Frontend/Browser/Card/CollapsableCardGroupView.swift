@@ -19,7 +19,8 @@ struct CollapsableCardGroupView: View {
     @Namespace var cardGroup
 
     var groupFromSpace: Bool {
-        return groupDetails.id == tabGroupCardModel.manager.get(for: groupDetails.id)?.children.first?.parentSpaceID
+        return groupDetails.id
+            == tabGroupCardModel.manager.get(for: groupDetails.id)?.children.first?.parentSpaceID
     }
 
     var body: some View {
@@ -72,10 +73,10 @@ struct CollapsableCardGroupView: View {
         // ScrollView clips child views by default, so here ScrollView is resized
         // to make CardTransitionModifier visible. TopSpace and BottomSpace are
         // paddings needed to make ScrollView look in place when it's resized.
-        var topSpace =
+        let topSpace =
             browserModel.cardTransition == .hidden
             ? 0 : self.frame.minY - containerGeometry.frame(in: .global).minY
-        var bottomSpace =
+        let bottomSpace =
             browserModel.cardTransition == .hidden
             ? 0 : containerGeometry.frame(in: .global).maxY - self.frame.maxY
 
