@@ -97,12 +97,14 @@ struct BrowserView: View {
                 .accessibilityHidden(!browserModel.showContent)
                 .offset(x: simulatedBackModel.offset / 2.5)
 
-            GeometryReader { geom in
-                SimulatedSwipeViewRepresentable(model: simulatedBackModel)
-                    .opacity(!simulatedBackModel.hidden ? 1 : 0)
-                    .offset(x: -geom.size.width + simulatedBackModel.offset)
-                    .frame(width: geom.size.width + SwipeUX.EdgeWidth)
-                    .animation(.easeOut, value: simulatedBackModel.offset)
+            if browserModel.showContent {
+                GeometryReader { geom in
+                    SimulatedSwipeViewRepresentable(model: simulatedBackModel)
+                        .opacity(!simulatedBackModel.hidden ? 1 : 0)
+                        .offset(x: -geom.size.width + simulatedBackModel.offset)
+                        .frame(width: geom.size.width + SwipeUX.EdgeWidth)
+                        .animation(.easeOut, value: simulatedBackModel.offset)
+                }
             }
         }
     }
