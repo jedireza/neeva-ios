@@ -38,7 +38,7 @@ struct RecipeCheatsheetStripView: View {
     var body: some View {
         if !recipeModel.recipe.title.isEmpty && onAllowedDomain() {
             if presentSheet {
-                recipeView
+                recipeSheetView
             } else {
                 Button(action: showOverlaySheet) {
                     RecipeBanner(recipe: recipeModel.recipe)
@@ -119,7 +119,7 @@ struct RecipeCheatsheetStripView: View {
             headerButton: nil
         ) {
             recipeView
-        }.padding(.top, -10)
+        }.padding(.vertical, -10)
     }
 
     func loadRelatedContent() {
