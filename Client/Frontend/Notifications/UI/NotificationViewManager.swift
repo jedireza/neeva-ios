@@ -15,8 +15,9 @@ class NotificationViewManager: QueuedViewManager<NotificationRow> {
         viewHostingController.view.backgroundColor = .clear
 
         if FeatureFlag[.enableBrowserView] {
-            overlayManager.show(overlay: .notification(currentView!))
-            startViewDismissTimer(for: view)
+            overlayManager.show(overlay: .notification(currentView!)) {
+                self.startViewDismissTimer(for: view)
+            }
         } else {
             // creates new window to display View in
             windowManager.createWindow(
