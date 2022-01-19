@@ -66,8 +66,10 @@ struct TabGridContainer: View {
         }
         .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
         .environment(\.selectionCompletion) {
-            guard tabGroupModel.detailedTabGroup == nil else {
-                return
+            if !FeatureFlag[.tabGroupsNewDesign] {
+                guard tabGroupModel.detailedTabGroup == nil else {
+                    return
+                }
             }
             ClientLogger.shared.logCounter(
                 .SelectTab,
@@ -82,7 +84,9 @@ struct TabGridContainer: View {
         .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
             if FeatureFlag[.tabGroupsNewDesign] {
                 if let selectedRowId = selectedRowId {
-                    scrollProxy.scrollTo(selectedRowId)
+                    withAnimation(nil) {
+                        scrollProxy.scrollTo(selectedRowId)
+                    }
                 }
             } else {
                 if let selectedCardID = selectedCardID {
@@ -90,7 +94,7 @@ struct TabGridContainer: View {
                 }
             }
         }
-        .animation(.spring(), value: tabGroupModel.allDetails.map(\.isSelected))
+        .animation(nil)
     }
 }
 

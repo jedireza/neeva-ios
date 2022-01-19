@@ -596,7 +596,6 @@ class TabGroupCardModel: CardModel {
     var onViewUpdate: () -> Void = {}
     var manager: TabGroupManager
     var anyCancellable: AnyCancellable? = nil
-    @Default(.tabGroupNames) var tabGroupDict: [String: String]
     private var detailsSubscriptions: Set<AnyCancellable> = Set()
     private var screenshotsSubscriptions: Set<AnyCancellable> = Set()
 
@@ -643,8 +642,7 @@ class TabGroupCardModel: CardModel {
             .map {
                 TabGroupCardDetails(
                     tabGroup: $0,
-                    tabGroupManager: manager
-                )
+                    tabGroupManager: manager)
             }
         objectWillChange.send()
     }
@@ -656,13 +654,11 @@ class TabGroupCardModel: CardModel {
         details?.$isShowingDetails.sink { [weak self] showingDetails in
             DispatchQueue.main.async {
                 if showingDetails {
-                    withAnimation {
-                        self?.detailedTabGroup =
-                            self?.allDetails.first(where: { $0.id == id })
-                    }
-                } else {
-                    if FeatureFlag[.tabGroupsNewDesign] {
-                        self?.detailedTabGroup = nil
+                    if !FeatureFlag[.tabGroupsNewDesign] {
+                        withAnimation {
+                            self?.detailedTabGroup =
+                                self?.allDetails.first(where: { $0.id == id })
+                        }
                     }
                 }
             }
@@ -674,22 +670,25 @@ class TabGroupCardModel: CardModel {
             guard let self = self else {
                 return
             }
-
             self.allDetails = self.manager.getAll().map {
                 TabGroupCardDetails(tabGroup: $0, tabGroupManager: self.manager)
             }
-            if self.detailedTabGroup != nil {
-                self.detailedTabGroup = self.allDetails.first {
-                    $0.id == self.detailedTabGroup?.id
+            if !FeatureFlag[.tabGroupsNewDesign] {
+                if self.detailedTabGroup != nil {
+                    self.detailedTabGroup = self.allDetails.first {
+                        $0.id == self.detailedTabGroup?.id
+                    }
+                    self.detailedTabGroup?.isShowingDetails = true
                 }
-                self.detailedTabGroup?.isShowingDetails = true
             }
             self.manager.cleanUpTabGroupNames()
             self.representativeTabs = self.manager.getAll()
                 .reduce(into: [Tab]()) { $0.append($1.children.first!) }
-            self.allDetails.forEach { details in
-                self.createIsShowingDetailsSink(
-                    details: details, storeIn: &self.detailsSubscriptions)
+            if !FeatureFlag[.tabGroupsNewDesign] {
+                self.allDetails.forEach { details in
+                    self.createIsShowingDetailsSink(
+                        details: details, storeIn: &self.detailsSubscriptions)
+                }
             }
             self.manager.getAll().forEach { tabgroup in
                 tabgroup.children.forEach { tab in
@@ -699,9 +698,11 @@ class TabGroupCardModel: CardModel {
                         }), let tabGroup = self.manager.tabGroups[tab.rootUUID] {
                             self.allDetails[index] = TabGroupCardDetails(
                                 tabGroup: tabGroup, tabGroupManager: self.manager)
-                            self.createIsShowingDetailsSink(
-                                details: self.allDetails[index],
-                                storeIn: &self.screenshotsSubscriptions)
+                            if !FeatureFlag[.tabGroupsNewDesign] {
+                                self.createIsShowingDetailsSink(
+                                    details: self.allDetails[index],
+                                    storeIn: &self.screenshotsSubscriptions)
+                            }
                         }
                     }.store(in: &self.screenshotsSubscriptions)
                 }

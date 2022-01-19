@@ -6,7 +6,7 @@ import Shared
 import SwiftUI
 
 struct CollapsableCardGroupView: View {
-    let groupDetails: TabGroupCardDetails
+    @ObservedObject var groupDetails: TabGroupCardDetails
     let containerGeometry: GeometryProxy
 
     @Environment(\.aspectRatio) private var aspectRatio
@@ -26,20 +26,20 @@ struct CollapsableCardGroupView: View {
     var body: some View {
         VStack(spacing: 0) {
             header
-            if groupDetails.isShowingDetails {
+            if groupDetails.isExpanded {
                 grid
             } else {
                 scrollView
             }
         }
-        .animation(.spring(), value: groupDetails.isShowingDetails)
+        .animation(nil)
         .transition(.fade)
         .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
         .background(
             Color.secondarySystemFill
                 .cornerRadius(
                     24,
-                    corners: groupDetails.allDetails.count <= 2 || groupDetails.isShowingDetails
+                    corners: groupDetails.allDetails.count <= 2 || groupDetails.isExpanded
                         ? .all : .leading
                 )
         )
@@ -54,13 +54,13 @@ struct CollapsableCardGroupView: View {
                 .foregroundColor(.label)
             Spacer()
             Button {
-                groupDetails.isShowingDetails.toggle()
+                groupDetails.isExpanded.toggle()
             } label: {
                 Label("caret", systemImage: "chevron.up")
                     .foregroundColor(.label)
                     .labelStyle(.iconOnly)
                     .rotationEffect(
-                        .degrees(groupDetails.isShowingDetails ? -180 : 0)
+                        .degrees(groupDetails.isExpanded ? -180 : 0)
                     )
                     .padding()
             }.accessibilityHidden(true)
@@ -137,6 +137,7 @@ struct CollapsableCardGroupView: View {
                             )
                     }
                 }
+                .zIndex(row.contains(where: \.isSelected) ? 1 : 0)
             }
         }
         .padding(.leading, CardGridUX.GridSpacing)
