@@ -1442,6 +1442,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     func showTabTray() {
+        guard !browserModel.showGrid else { return }
         // log show tap tray
         var attributes = EnvironmentHelper.shared.getAttributes()
 

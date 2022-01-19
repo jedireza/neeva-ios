@@ -76,4 +76,19 @@ class EmptyTabTrayTests: BaseTestCase {
         goToTabTray()
         waitForExistence(app.buttons["Example Domain, Tab"])
     }
+
+    // https://github.com/neevaco/neeva-ios-phoenix/issues/2595
+    func testTabGroupWorksAfterClosingLastTab() {
+        openURLInNewTab("https://example.com")
+        app.links["More information..."].press(forDuration: 0.5)
+        app.buttons["Open in New Tab"].tap()
+        goToTabTray()
+        app.buttons["Incognito Tabs"].tap()
+        openURLInNewTab("https://test.example/")
+        goToTabTray()
+        app.buttons["Close A server with the specified hostname could not be found."].tap()
+        app.buttons["Normal Tabs"].tap()
+        app.buttons["Example Domain, Tab Group"].tap()
+        XCTAssert(app.buttons["Example Domain, Tab"].exists)
+    }
 }
