@@ -148,6 +148,7 @@ struct CardGrid: View {
                             withAnimation(.easeInOut(duration: 0.4)) {
                                 gridModel.showingDetailView = false
                                 detailDragOffset = geom.size.width
+                                spaceModel.detailedSpace = nil
                             }
                         }
                         .frame(width: geom.size.width, height: geom.size.height)
@@ -164,6 +165,7 @@ struct CardGrid: View {
                                 gridModel.showingDetailView = false
                                 withAnimation(.easeInOut(duration: 0.4)) {
                                     detailDragOffset = geom.size.width
+                                    tabGroupModel.detailedTabGroup = nil
                                 }
                             }
                             .frame(width: geom.size.width, height: geom.size.height)

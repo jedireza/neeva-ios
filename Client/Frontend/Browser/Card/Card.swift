@@ -169,6 +169,10 @@ struct Card<Details>: View where Details: CardDetails {
         details as? TabCardDetails
     }
 
+    var tabGroupCardDetail: TabGroupCardDetails? {
+        details as? TabGroupCardDetails
+    }
+
     var titleInMainGrid: String {
         if let rootUUID = tabCardDetail?.manager.get(for: details.id)?.rootUUID,
             Defaults[.tabGroupNames][rootUUID] != nil
@@ -202,6 +206,10 @@ struct Card<Details>: View where Details: CardDetails {
         GeometryReader { geom in
             VStack(alignment: .center, spacing: 0) {
                 Button(action: {
+                    if let tabGroupCardDetail = tabGroupCardDetail {
+                        tabGroupCardModel.detailedTabGroup = tabGroupCardDetail
+                    }
+
                     details.onSelect()
                     selectionCompletion()
                 }) {
