@@ -100,12 +100,6 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
         HTTPCookieStorage.shared.setCookie(NeevaConstants.loginCookie(for: value))
     }
 
-    private func setPreviewCookie() {
-        if let previewCookie = NeevaUserInfo.shared.getPreviewCookie() {
-            HTTPCookieStorage.shared.setCookie(NeevaConstants.previewCookie(for: previewCookie))
-        }
-    }
-
     private func clearCookie() {
         if let cookies = HTTPCookieStorage.shared.cookies(for: NeevaConstants.appURL) {
             if let loginCookie = cookies.first(where: { $0.name == "httpd~login" }) {

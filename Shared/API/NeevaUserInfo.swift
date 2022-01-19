@@ -113,10 +113,6 @@ public class NeevaUserInfo: ObservableObject {
         }
     }
 
-    public func getPreviewCookie() -> String? {
-        return try? NeevaConstants.keychain.getString(NeevaConstants.previewKeychainKey)
-    }
-
     public func setLoginCookie(_ value: String) {
         // check if token has changed, when different, save new token
         // and fetch user info
@@ -156,11 +152,6 @@ public class NeevaUserInfo: ObservableObject {
     private static func matchesLoginCookie(cookie: HTTPCookie) -> Bool {
         // Allow non-HTTPS for testing purposes.
         NeevaConstants.isAppHost(cookie.domain) && cookie.name == "httpd~login"
-            && (NeevaConstants.appURL.scheme != "https" || cookie.isSecure)
-    }
-
-    private static func matchesPreviewCookie(cookie: HTTPCookie) -> Bool {
-        NeevaConstants.isAppHost(cookie.domain) && cookie.name == "httpd~preview"
             && (NeevaConstants.appURL.scheme != "https" || cookie.isSecure)
     }
 

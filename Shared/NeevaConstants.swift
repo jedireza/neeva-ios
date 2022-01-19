@@ -62,9 +62,6 @@ public struct NeevaConstants {
     /// The keychain key to store the Neeva login cookie into
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }
 
-    /// The keychain key to store the Neeva preview cookie into
-    public static var previewKeychainKey: String { "neevaHttpdPreview-\(appHost)" }
-
     /// The shared keychain accessible to the Neeva app and its extensions
     public static let keychain = Keychain(service: "Neeva", accessGroup: appGroup)
 
@@ -142,21 +139,6 @@ public struct NeevaConstants {
     public static func loginCookie(for value: String) -> HTTPCookie {
         HTTPCookie(properties: [
             .name: "httpd~login",
-            .value: value,
-            .domain: NeevaConstants.appHost,
-            .path: "/",
-            .expires: Date.distantFuture,
-            .secure: true,
-            .sameSitePolicy: HTTPCookieStringPolicy.sameSiteLax,
-            // ! potentially undocumented API
-            .init("HttpOnly"): true,
-        ])!
-    }
-
-    /// Generates a login cookie from the given cookie value.
-    public static func previewCookie(for value: String) -> HTTPCookie {
-        HTTPCookie(properties: [
-            .name: "httpd~preview",
             .value: value,
             .domain: NeevaConstants.appHost,
             .path: "/",
