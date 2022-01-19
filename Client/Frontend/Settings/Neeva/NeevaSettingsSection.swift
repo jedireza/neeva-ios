@@ -8,9 +8,9 @@ import SwiftUI
 import WebKit
 
 struct NeevaSettingsSection: View {
-    let dismissVC: () -> Void
-
     @ObservedObject var userInfo: NeevaUserInfo
+
+    @Environment(\.presentationMode) @Binding var presentation
     @Environment(\.openInNewTab) var openURL
     @Environment(\.settingsPresentIntroViewController) var presentIntroViewController
     @State var showingAccountDetails = false
@@ -75,7 +75,7 @@ struct NeevaSettingsSection: View {
                         .SettingAccountSettings,
                         attributes: EnvironmentHelper.shared.getAttributes())
                     openURL(NeevaConstants.appSettingsURL, false)
-                    dismissVC()
+                    presentation.dismiss()
                 }
             }
 
@@ -87,7 +87,7 @@ struct NeevaSettingsSection: View {
                 {
                     openURL(NeevaConstants.appConnectionsURL, false)
                 } else {
-                    dismissVC()
+                    presentation.dismiss()
                 }
             }.if(TourManager.shared.isCurrentStep(with: .promptSettingsInNeevaMenu)) { view in
                 view.throbbingHighlightBorderStyle(
@@ -100,7 +100,7 @@ struct NeevaSettingsSection: View {
                 attributes.append(ClientLogCounterAttribute(key: "source", value: "settings"))
                 ClientLogger.shared.logCounter(
                     .OpenReferralPromo, attributes: attributes)
-                dismissVC()
+                presentation.dismiss()
             }
         } else {
             Button("Sign In or Join Neeva") {
@@ -123,7 +123,6 @@ struct NeevaSettingsSection_Previews: PreviewProvider {
         SettingPreviewWrapper {
             Section(header: Text("Neeva — Logged in")) {
                 NeevaSettingsSection(
-                    dismissVC: {},
                     userInfo: NeevaUserInfo(
                         previewDisplayName: "First Last", email: "name@example.com",
                         pictureUrl:
@@ -131,10 +130,10 @@ struct NeevaSettingsSection_Previews: PreviewProvider {
                         authProvider: .apple))
             }
             Section(header: Text("Neeva — Logged out")) {
-                NeevaSettingsSection(dismissVC: {}, userInfo: .previewLoggedOut)
+                NeevaSettingsSection(userInfo: .previewLoggedOut)
             }
             Section(header: Text("Neeva — Fetching status")) {
-                NeevaSettingsSection(dismissVC: {}, userInfo: .previewLoading)
+                NeevaSettingsSection(userInfo: .previewLoading)
             }
         }
     }

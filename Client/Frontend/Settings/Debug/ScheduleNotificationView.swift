@@ -7,7 +7,7 @@ import Shared
 import SwiftUI
 
 struct ScheduleNotificationView: View {
-    @Environment(\.dismissScreen) var dismissScreen
+    @Environment(\.presentationMode) @Binding var presentation
 
     @Default(.debugNotificationTitle) var debugNotificationTitle
     @Default(.debugNotificationBody) var debugNotificationBody
@@ -31,7 +31,7 @@ struct ScheduleNotificationView: View {
                     deeplinkUrl: debugNotificationDeeplink
                 ) { _ in
                     DispatchQueue.main.async {
-                        dismissScreen()
+                        presentation.dismiss()
                     }
                 }
             } label: {

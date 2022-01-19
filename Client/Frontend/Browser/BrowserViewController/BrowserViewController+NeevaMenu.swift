@@ -52,8 +52,7 @@ extension BrowserViewController {
             )
             TourManager.shared.userReachedStep(tapTarget: .settingMenu)
             let action = {
-                let controller = SettingsViewController(bvc: self)
-                self.present(controller, animated: true)
+                self.browserModel.showSettings = true
             }
 
             // For the connected apps tour prompt

@@ -70,17 +70,6 @@ extension EnvironmentValues {
         }
         set { self[SaveToSpaceKey.self] = newValue }
     }
-    private struct dismissScreenKey: EnvironmentKey {
-        static var defaultValue: (() -> Void)? = nil
-    }
-    public var dismissScreen: () -> Void {
-        get {
-            self[dismissScreenKey.self] ?? {
-                fatalError(".environment(\\.dismissScreen) must be specified")
-            }
-        }
-        set { self[dismissScreenKey.self] = newValue }
-    }
     private struct showNotificationPromptKey: EnvironmentKey {
         static var defaultValue: (() -> Void)? = nil
     }

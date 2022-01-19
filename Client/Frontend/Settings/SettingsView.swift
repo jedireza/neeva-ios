@@ -18,7 +18,7 @@ extension EnvironmentValues {
 }
 
 struct SettingsView: View {
-    let dismiss: () -> Void
+    @Environment(\.presentationMode) @Binding var presentation
 
     #if DEBUG
         @State var showDebugSettings = true
@@ -32,7 +32,7 @@ struct SettingsView: View {
         NavigationView {
             List {
                 Section(header: Text("Neeva")) {
-                    NeevaSettingsSection(dismissVC: dismiss, userInfo: .shared)
+                    NeevaSettingsSection(userInfo: .shared)
                 }
                 Section(header: Text("General")) {
                     GeneralSettingsSection()
@@ -56,7 +56,9 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Done", action: dismiss)
+                    Button("Done") {
+                        presentation.dismiss()
+                    }
                 }
             }
         }
@@ -84,52 +86,8 @@ struct SettingPreviewWrapper<Content: View>: View {
     }
 }
 
-class SettingsViewController: UIHostingController<AnyView> {
-    init(bvc: BrowserViewController) {
-        super.init(rootView: AnyView(EmptyView()))
-
-        self.rootView = AnyView(
-            SettingsView(dismiss: { self.dismiss(animated: true, completion: nil) })
-                .environment(\.openInNewTab) { url, isPrivate in
-                    self.dismiss(animated: true, completion: nil)
-                    bvc.openURLInNewTab(url, isPrivate: isPrivate)
-                }
-                .environment(\.onOpenURL) { url in
-                    self.dismiss(animated: true, completion: nil)
-                    bvc.openURLInNewTabPreservingIncognitoState(url)
-                }
-                .environment(\.settingsPresentIntroViewController) {
-                    self.dismiss(animated: true) {
-                        bvc.presentIntroViewController(
-                            true,
-                            completion: {
-                                bvc.hideZeroQuery()
-                            })
-                    }
-                }
-                .environment(\.dismissScreen) {
-                    self.dismiss(animated: true, completion: nil)
-                }
-                .environment(\.showNotificationPrompt) {
-                    bvc.showAsModalOverlaySheet(
-                        style: OverlayStyle(
-                            showTitle: false,
-                            backgroundColor: .systemBackground)
-                    ) {
-                        NotificationPromptViewOverlayContent()
-                    } onDismiss: {
-                    }
-                }
-        )
-    }
-
-    @objc required dynamic init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(dismiss: {})
+        SettingsView()
     }
 }

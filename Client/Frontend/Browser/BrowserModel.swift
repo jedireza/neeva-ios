@@ -18,6 +18,8 @@ class BrowserModel: ObservableObject {
     @Published private(set) var showContent = true
     @Published var cardTransition = CardTransitionState.hidden
 
+    @Published var showSettings = false
+
     private let gridModel: GridModel
     private let tabManager: TabManager
     @ObservedObject var scrollingControlModel: ScrollingControlModel

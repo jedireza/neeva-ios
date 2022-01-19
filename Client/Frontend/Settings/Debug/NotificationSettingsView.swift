@@ -7,7 +7,7 @@ import Shared
 import SwiftUI
 
 struct NotificationSettingsView: View {
-    @Environment(\.dismissScreen) var dismissScreen
+    @Environment(\.presentationMode) @Binding var presentation
     @Environment(\.showNotificationPrompt) var showNotificationPrompt
 
     let scrollViewAppearance = UINavigationBar.appearance().scrollEdgeAppearance
@@ -30,7 +30,7 @@ struct NotificationSettingsView: View {
                 }
 
                 Button {
-                    dismissScreen()
+                    presentation.dismiss()
                     showNotificationPrompt()
                 } label: {
                     Text("Show Welcome Tour Notification Prompt")

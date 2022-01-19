@@ -187,6 +187,40 @@ struct BrowserView: View {
                         ? bottomBarHeight - browserModel.scrollingControlModel.footerBottomOffset
                         : 0)
         }
+        .sheet(isPresented: $browserModel.showSettings) {
+            SettingsView()
+                .environment(\.settingsPresentIntroViewController) {
+                    browserModel.showSettings = false
+
+                    /// if we fire too early, the intro VC will simply not appear.
+                    /// Ideally, change this to use SwiftUI-native code ref https://github.com/neevaco/neeva-ios-phoenix/issues/2627
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+                        bvc.presentIntroViewController(
+                            true,
+                            completion: {
+                                bvc.hideZeroQuery()
+                            })
+                    }
+                }
+                .environment(\.showNotificationPrompt) {
+                    bvc.showAsModalOverlaySheet(
+                        style: OverlayStyle(
+                            showTitle: false,
+                            backgroundColor: .systemBackground)
+                    ) {
+                        NotificationPromptViewOverlayContent()
+                    } onDismiss: {
+                    }
+                }
+        }
+        .environment(\.openInNewTab) { url, isPrivate in
+            browserModel.showSettings = false
+            bvc.openURLInNewTab(url, isPrivate: isPrivate)
+        }
+        .environment(\.onOpenURL) { url in
+            browserModel.showSettings = false
+            bvc.openURLInNewTabPreservingIncognitoState(url)
+        }
         .environmentObject(bvc.browserModel)
         .environmentObject(gridModel)
         .environmentObject(bvc.toolbarModel)
