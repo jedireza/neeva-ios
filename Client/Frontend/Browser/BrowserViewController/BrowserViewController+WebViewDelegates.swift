@@ -684,8 +684,7 @@ extension BrowserViewController: WKNavigationDelegate {
                 } else if url.path == "/signin"
                     || (url.path == "/search"
                         && query["q"] != nil
-                        && !NeevaUserInfo.shared.hasLoginCookie()
-                        && !NeevaUserInfo.shared.hasPreviewCookie())
+                        && !NeevaUserInfo.shared.hasLoginCookie())
                         && Defaults[.signedInOnce]
                 {
                     self.presentIntroViewController(true, signInMode: true)

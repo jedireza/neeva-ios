@@ -117,14 +117,6 @@ public class NeevaUserInfo: ObservableObject {
         return try? NeevaConstants.keychain.getString(NeevaConstants.previewKeychainKey)
     }
 
-    public func hasPreviewCookie() -> Bool {
-        let cookie = getPreviewCookie()
-        if cookie != nil {
-            return true
-        }
-        return false
-    }
-
     public func setLoginCookie(_ value: String) {
         // check if token has changed, when different, save new token
         // and fetch user info

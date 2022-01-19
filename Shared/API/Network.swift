@@ -111,6 +111,13 @@ class NeevaNetworkTransport: RequestChainNetworkTransport {
             if let loginCookie = cookies.first(where: { $0.name == "httpd~login" }) {
                 HTTPCookieStorage.shared.deleteCookie(loginCookie)
             }
+
+            // we are not storing preview~login, but there is an older version of our app
+            // that would store the preview cookie, adding this delete to make sure
+            // we clean up things properly
+            if let previewCookie = cookies.first(where: { $0.name == "preview~login" }) {
+                HTTPCookieStorage.shared.deleteCookie(previewCookie)
+            }
         }
     }
 }
