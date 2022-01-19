@@ -4,6 +4,14 @@
 
 import SwiftUI
 
+/// Vague categories of Overlay types.
+/// For specific views, use `OverlayType`.
+enum OverlayPriority {
+    case transient
+    case modal
+}
+
+/// Specific Overlay view type.
 enum OverlayType: Equatable {
     case backForwardList(BackForwardListView?)
     case findInPage(FindInPageView?)
@@ -11,6 +19,15 @@ enum OverlayType: Equatable {
     case popover(PopoverRootView?)
     case sheet(OverlaySheetRootView?)
     case toast(ToastView?)
+
+    var priority: OverlayPriority {
+        switch self {
+        case .backForwardList, .findInPage, .popover, .sheet:
+            return .modal
+        case .notification, .toast:
+            return .transient
+        }
+    }
 
     static func == (lhs: OverlayType, rhs: OverlayType) -> Bool {
         switch (lhs, rhs) {
@@ -42,44 +59,72 @@ class OverlayManager: ObservableObject {
     @Published var hideBottomBar = false
 
     private let animation = Animation.easeInOut(duration: 0.2)
+    /// (Overlay, Animate, Completion])
+    var queuedOverlays = [(OverlayType, Bool, (() -> Void)?)]()
 
-    public func show(overlay: OverlayType, animate: Bool = true) {
-        hideCurrentOverlay { [self] in
-            switch overlay {
-            case .backForwardList, .toast:
-                offsetForBottomBar = true
-            default:
-                offsetForBottomBar = false
+    public func show(overlay: OverlayType, animate: Bool = true, completion: (() -> Void)? = nil) {
+        if overlay.priority == .transient {
+            guard currentOverlay == nil else {
+                queuedOverlays.append((overlay, animate, completion))
+                return
+            }
+
+            presentOverlay(overlay: overlay, animate: animate)
+            completion?()
+        } else {
+            hideCurrentOverlay(ofPriority: .transient) { [self] in
+                presentOverlay(overlay: overlay, animate: animate)
+                completion?()
+            }
+        }
+    }
+
+    private func showNextOverlayIfNeeded() {
+        guard queuedOverlays.count > 0 else {
+            return
+        }
+
+        let (overlay, animate, completion) = queuedOverlays[0]
+        presentOverlay(overlay: overlay, animate: animate)
+        queuedOverlays.remove(at: 0)
+        completion?()
+    }
+
+    private func presentOverlay(overlay: OverlayType, animate: Bool = true) {
+        switch overlay {
+        case .backForwardList, .toast:
+            offsetForBottomBar = true
+        default:
+            offsetForBottomBar = false
+        }
+
+        switch overlay {
+        case .findInPage:
+            hideBottomBar = true
+        default:
+            hideBottomBar = false
+        }
+
+        currentOverlay = overlay
+
+        if animate {
+            animating = true
+
+            // Used to make sure animation completes succesfully.
+            animationCompleted = {
+                self.animationCompleted = nil
             }
 
             switch overlay {
-            case .findInPage:
-                hideBottomBar = true
+            case .backForwardList:
+                slideAndFadeIn(offset: 100)
+            case .notification:
+                slideAndFadeIn(offset: -ToastViewUX.height)
+            case .toast:
+                slideAndFadeIn(offset: ToastViewUX.height)
             default:
-                hideBottomBar = false
-            }
-
-            currentOverlay = overlay
-
-            if animate {
-                animating = true
-
-                // Used to make sure animation completes succesfully.
-                animationCompleted = {
-                    animationCompleted = nil
-                }
-
-                switch overlay {
-                case .backForwardList:
-                    slideAndFadeIn(offset: 100)
-                case .notification:
-                    slideAndFadeIn(offset: -ToastViewUX.height)
-                case .toast:
-                    slideAndFadeIn(offset: ToastViewUX.height)
-                default:
-                    withAnimation(animation) {
-                        animating = false
-                    }
+                withAnimation(animation) {
+                    animating = false
                 }
             }
         }
@@ -96,16 +141,25 @@ class OverlayManager: ObservableObject {
     }
 
     public func hideCurrentOverlay(
-        ofType: OverlayType? = nil,
-        animate: Bool = true, completion: (() -> Void)? = nil
+        ofPriority: OverlayPriority? = nil,
+        animate: Bool = true, showNext: Bool = true, completion: (() -> Void)? = nil
     ) {
         guard let overlay = currentOverlay else {
             completion?()
             return
         }
 
-        if let ofType = ofType, ofType != overlay {
+        if let ofPriority = ofPriority, overlay.priority != ofPriority {
+            completion?()
             return
+        }
+
+        let completion = {
+            completion?()
+
+            if showNext {
+                self.showNextOverlayIfNeeded()
+            }
         }
 
         if animate {
@@ -115,7 +169,7 @@ class OverlayManager: ObservableObject {
                 animationCompleted = nil
 
                 DispatchQueue.main.async {
-                    completion?()
+                    completion()
                 }
             }
 
@@ -140,7 +194,7 @@ class OverlayManager: ObservableObject {
             offsetForBottomBar = false
             hideBottomBar = false
             resetUIModifiers()
-            completion?()
+            completion()
         }
 
         func slideAndFadeOut(offset: CGFloat) {

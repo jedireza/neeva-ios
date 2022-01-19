@@ -70,6 +70,10 @@ struct ToastProgressView: View {
         .onChange(of: progressViewModel.status) { _ in
             stateDidChange?(progressViewModel.status)
         }
+        .frame(width: width, height: width)
+        .onChange(of: progressViewModel.status) { _ in
+            stateDidChange?(progressViewModel.status)
+        }
     }
 }
 
