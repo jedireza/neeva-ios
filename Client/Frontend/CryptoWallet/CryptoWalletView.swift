@@ -36,7 +36,6 @@ struct CryptoWalletView: View {
                 }
             }
             .padding(.trailing, 20)
-            .padding(.top, 15)
 
             ZStack {
                 VStack {
@@ -57,7 +56,6 @@ struct CryptoWalletView: View {
                 switch viewState {
                 case .starter:
                     WelcomeStarterView(viewState: $viewState)
-                        .padding(.horizontal, 25)
                 case .dashboard:
                     WalletDashboard()
                 case .showPhrases:
@@ -66,6 +64,7 @@ struct CryptoWalletView: View {
                     ImportWalletView(viewState: $viewState)
                 }
             }
+            Spacer()
         }
         .frame(height: UIScreen.main.bounds.height)
     }

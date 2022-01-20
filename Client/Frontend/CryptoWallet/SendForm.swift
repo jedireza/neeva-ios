@@ -65,16 +65,14 @@ struct SendForm: View {
                 Spacer()
                 Button(action: { showSendForm = false }) {
                     Text("Cancel")
-                        .font(.roobert(.semibold, size: 18))
-                        .frame(maxWidth: 120, minHeight: 40)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.neeva(.secondary))
                 .padding(.top, 8)
 
                 Button(action: sendEth) {
                     Text("Send")
-                        .font(.roobert(.semibold, size: 18))
-                        .frame(maxWidth: 120, minHeight: 40)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.neeva(.primary))
                 .padding(.top, 8)

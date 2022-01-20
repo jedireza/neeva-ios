@@ -8,6 +8,7 @@ import SwiftUI
 import web3swift
 
 struct WelcomeStarterView: View {
+    @EnvironmentObject var web3Model: Web3Model
     @State var isCreatingWallet: Bool = false
     @Binding var viewState: ViewState
 
@@ -27,20 +28,30 @@ struct WelcomeStarterView: View {
                     .frame(width: 300, height: 50, alignment: .leading)
                 Button(action: {
                     isCreatingWallet = true
-                    createWallet()
+                    web3Model.createWallet {
+                        isCreatingWallet = false
+                        viewState = .showPhrases
+                    }
                 }) {
-                    Text(isCreatingWallet ? "Creating ... " : "Create a wallet")
-                        .font(.roobert(.semibold, size: 18))
-                        .frame(width: 300)
+                    HStack {
+                        Text(isCreatingWallet ? "Creating " : "Create a wallet")
+                            .font(.roobert(.semibold, size: 18))
+                        if isCreatingWallet {
+                            ProgressView()
+                        }
+                    }.frame(maxWidth: .infinity)
+
                 }
                 .buttonStyle(.neeva(.primary))
-                .padding()
+                .padding(.vertical)
             }
-            .padding(20)
+            .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 10).stroke(Color.ui.gray91, lineWidth: 0.5)
             )
             .background(Color.white.opacity(0.8))
+            .cornerRadius(10)
+            .padding(.horizontal, 16)
             .padding(.bottom, 15)
 
             VStack {
@@ -61,22 +72,17 @@ struct WelcomeStarterView: View {
                 Button(action: { viewState = .importWallet }) {
                     Text("Import wallet")
                         .font(.roobert(.semibold, size: 18))
-                        .frame(width: 300)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.neeva(.primary))
             }
-            .padding(20)
+            .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 10).stroke(Color.ui.gray91, lineWidth: 0.5)
             )
             .background(Color.white.opacity(0.8))
-        }
-    }
-
-    func createWallet() {
-        CryptoConfig.shared.createWallet {
-            isCreatingWallet = false
-            viewState = .showPhrases
+            .cornerRadius(10)
+            .padding(.horizontal, 16)
         }
     }
 }

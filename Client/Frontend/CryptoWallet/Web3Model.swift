@@ -277,4 +277,63 @@ class Web3Model: ObservableObject, ResponseRelay {
             self.startSequence()
         }
     }
+
+    public func createWallet(completion: @escaping () -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let password = CryptoConfig.shared.password
+                let bitsOfEntropy: Int = 128
+                let mnemonics = try! BIP39.generateMnemonics(bitsOfEntropy: bitsOfEntropy)!
+
+                Defaults[.cryptoPhrases] = mnemonics
+
+                let keystore = try! BIP32Keystore(
+                    mnemonics: mnemonics,
+                    password: password,
+                    mnemonicsPassword: "",
+                    language: .english)!
+                let name = CryptoConfig.shared.walletName
+                let keyData = try! JSONEncoder().encode(keystore.keystoreParams)
+
+                let address = keystore.addresses!.first!.address
+                let wallet = Wallet(address: address, data: keyData, name: name, isHD: true)
+
+                let privateKey = try keystore.UNSAFE_getPrivateKeyData(
+                    password: password, account: EthereumAddress(address)!
+                ).toHexString()
+                Defaults[.cryptoPrivateKey] = privateKey
+
+                Defaults[.cryptoPublicKey] = wallet.address
+                completion()
+                self.wallet = WalletAccessor()
+            } catch {
+                Logger.browser.error("Unexpected create wallet error: \(error).")
+            }
+        }
+    }
+
+    public func importWallet(inputPhrase: String, completion: @escaping () -> Void) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                let password = CryptoConfig.shared.password
+                let mnemonics = inputPhrase
+                let keystore = try! BIP32Keystore(
+                    mnemonics: mnemonics,
+                    password: password,
+                    mnemonicsPassword: "",
+                    language: .english)!
+                let address = keystore.addresses!.first!.address
+                Defaults[.cryptoPhrases] = mnemonics
+                Defaults[.cryptoPublicKey] = address
+                let privateKey = try keystore.UNSAFE_getPrivateKeyData(
+                    password: password, account: EthereumAddress(address)!
+                ).toHexString()
+                Defaults[.cryptoPrivateKey] = privateKey
+                completion()
+                self.wallet = WalletAccessor()
+            } catch {
+                print("🔥 Unexpected error: \(error).")
+            }
+        }
+    }
 }

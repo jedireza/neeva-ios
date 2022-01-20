@@ -76,23 +76,23 @@ public class CryptoConfig {
         return "N/A"
     }
 
-    public func getPassword() -> String {
+    public var password: String {
         return "NeevaCrypto"
     }
 
-    public func getWalletName() -> String {
+    public var walletName: String {
         return "My Neeva Crypto Wallet"
     }
 
     public func sendEth(amount: String, sendToAccountAddress: String, completion: () -> Void) {
         do {
             let web3 = try Web3.new(nodeURL)
-            let password = CryptoConfig.shared.getPassword()
+            let password = CryptoConfig.shared.password
             let key = Defaults[.cryptoPrivateKey]
             let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
             let dataKey = Data.fromHex(formattedKey)!
             let keystore = try! EthereumKeystoreV3(privateKey: dataKey, password: password)!
-            let name = CryptoConfig.shared.getWalletName()
+            let name = CryptoConfig.shared.walletName
             let keyData = try! JSONEncoder().encode(keystore.keystoreParams)
             let address = keystore.addresses!.first!.address
             let wallet = Wallet(address: address, data: keyData, name: name, isHD: false)
@@ -187,36 +187,5 @@ public class CryptoConfig {
             log.error("Unexpected get wallet data error: \(error).")
         }
         return AccountInfo(balance: accountBalance, transactions: transactionHistory)
-    }
-
-    public func createWallet(completion: () -> Void) {
-        do {
-            let password = CryptoConfig.shared.getPassword()
-            let bitsOfEntropy: Int = 128
-            let mnemonics = try! BIP39.generateMnemonics(bitsOfEntropy: bitsOfEntropy)!
-
-            Defaults[.cryptoPhrases] = mnemonics
-
-            let keystore = try! BIP32Keystore(
-                mnemonics: mnemonics,
-                password: password,
-                mnemonicsPassword: "",
-                language: .english)!
-            let name = CryptoConfig.shared.getWalletName()
-            let keyData = try! JSONEncoder().encode(keystore.keystoreParams)
-
-            let address = keystore.addresses!.first!.address
-            let wallet = Wallet(address: address, data: keyData, name: name, isHD: true)
-
-            let privateKey = try keystore.UNSAFE_getPrivateKeyData(
-                password: password, account: EthereumAddress(address)!
-            ).toHexString()
-            Defaults[.cryptoPrivateKey] = privateKey
-
-            Defaults[.cryptoPublicKey] = wallet.address
-            completion()
-        } catch {
-            log.error("Unexpected create wallet error: \(error).")
-        }
     }
 }
