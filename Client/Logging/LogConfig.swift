@@ -280,6 +280,11 @@ public struct LogConfig {
 
         // MARK: feedback
         case FeedbackFailedToSend
+
+        // MARK: debug mode
+        case SignInWithAppleSuccess
+        case SignInWithAppleFailed
+        case ImplicitDeleteCookie
     }
 
     /// Specify a comma separated string with these values to
@@ -301,6 +306,7 @@ public struct LogConfig {
         case RecipeCheatsheet = "RecipeCheatsheet"
         case TabGroup = "TabGroup"
         case Feedback = "Feedback"
+        case DebugMode = "DebugMode"
     }
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
@@ -310,6 +316,7 @@ public struct LogConfig {
             || category == .Notification
             || category == .Suggestions
             || category == .Performance
+            || category == .DebugMode
         {
             return true
         }
@@ -493,6 +500,10 @@ public struct LogConfig {
         case .tabRemovedFromGroup: return .TabGroup
 
         case .FeedbackFailedToSend: return .Feedback
+
+        case .SignInWithAppleSuccess: return .DebugMode
+        case .SignInWithAppleFailed: return .DebugMode
+        case .ImplicitDeleteCookie: return .DebugMode
         }
     }
 

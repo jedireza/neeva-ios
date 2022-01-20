@@ -234,7 +234,13 @@ extension IntroViewController: ASAuthorizationControllerDelegate {
 
             if token != nil {
                 if let authStr = String(data: token!, encoding: .utf8) {
-
+                    // only log for users who signed in at least once
+                    if Defaults[.signedInOnce] {
+                        ClientLogger.shared.logCounter(
+                            .SignInWithAppleSuccess,
+                            attributes: EnvironmentHelper.shared.getFirstRunAttributes()
+                        )
+                    }
                     self.didFinishClosure?(.signupWithApple(self.marketingEmailOptOut, authStr))
                 }
             }
@@ -248,7 +254,18 @@ extension IntroViewController: ASAuthorizationControllerDelegate {
         controller: ASAuthorizationController,
         didCompleteWithError error: Error
     ) {
-        Logger.browser.error("Sign up with Apple failed: \(error)")
+        let errorAttribute = ClientLogCounterAttribute(
+            key: "error",
+            value: "\(error)"
+        )
+
+        // only log for users who signed in at least once
+        if Defaults[.signedInOnce] {
+            ClientLogger.shared.logCounter(
+                .SignInWithAppleFailed,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes() + [errorAttribute]
+            )
+        }
     }
 }
 
