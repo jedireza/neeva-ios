@@ -134,6 +134,24 @@ struct ExpandedCardGroupRowView: View {
                     corners: .bottom
                 )
         )
+        .contextMenu {
+            Text("2 tabs from “custom name”")
+            Button(action: {}) {
+                Label("Rename", systemSymbol: .pencil)
+            }
+            Button(action: {}) {
+                Label("Save All to Spaces", systemSymbol: .bookmark)
+            }
+            if #available(iOS 15.0, *) {
+                Button(role: .destructive, action: {}) {
+                    Label("Close All", systemSymbol: .trash)
+                }
+            } else {
+                Button(action: {}) {
+                    Label("Close All", systemSymbol: .trash)
+                }
+            }
+        }
     }
 
     func isLastRow(_ rowInfo: Range<Int>, _ groupDetails: TabGroupCardDetails) -> Bool {

@@ -199,6 +199,21 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             manager.close(item)
         }
     }
+
+    @ViewBuilder func contextMenu() -> some View {
+        Button(action: {}) {
+            Label("Duplicate Tab", systemSymbol: .plusSquare)
+        }
+        Button(action: {}) {
+            Label("Open in Incognito", image: "incognito")
+        }
+        Button(action: {}) {
+            Label("Duplicate Tab", systemSymbol: .bookmark)
+        }
+        Button(action: {}) {
+            Label("Share", systemSymbol: .squareAndArrowUp)
+        }
+    }
 }
 
 class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
