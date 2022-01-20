@@ -108,7 +108,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
         OverlayManager()
     }()
 
-    private(set) var overlaySheetViewController: UIViewController?
     private(set) lazy var simulateForwardViewController: SimulatedSwipeController? = {
         guard FeatureFlag[.swipePlusPlus] else {
             return nil
@@ -145,7 +144,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         return TrackingStatsViewModel(tabManager: tabManager)
     }()
 
-    var findInPageViewController: FindInPageViewController?
+    var findInPageModel: FindInPageModel?
     var overlayWindowManager: WindowManager?
 
     private(set) var readerModeCache: ReaderModeCache

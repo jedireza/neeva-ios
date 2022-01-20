@@ -140,6 +140,8 @@ public struct SingleLineTextField<Icon: View>: View {
 
             if let detailText = detailText, !showClearButton {
                 Text(detailText)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.1)
                     .foregroundColor(.secondaryLabel)
                     .padding(.trailing, 2)
                     .accessibilityIdentifier("Overlay_Text-Field_Detail_Text")

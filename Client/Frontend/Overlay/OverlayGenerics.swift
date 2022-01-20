@@ -98,30 +98,3 @@ struct OverlaySheetRootView: View {
             }
     }
 }
-
-class OverlayViewController: UIHostingController<OverlayRootView> {
-    init(
-        isPopover: Bool, style: OverlayStyle, content: @escaping () -> AnyView,
-        onDismiss: @escaping () -> Void, onOpenURL: @escaping (URL) -> Void,
-        headerButton: OverlayHeaderButton?
-    ) {
-        super.init(
-            rootView: OverlayRootView(
-                isPopover: isPopover, style: style, content: content, onDismiss: onDismiss,
-                onOpenURL: onOpenURL, headerButton: headerButton)
-        )
-
-        self.view.accessibilityViewIsModal = true
-    }
-
-    @objc required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    @objc override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        // By default, a UIHostingController opens as an opaque layer, so we override
-        // that behavior here.
-        view.backgroundColor = .clear
-    }
-}

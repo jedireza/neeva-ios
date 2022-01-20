@@ -8,26 +8,27 @@ import SwiftUI
 extension BrowserViewController {
     func updateFindInPageVisibility(visible: Bool, tab: Tab? = nil, query: String? = nil) {
         if visible {
-            let model = FindInPageModel(tab: tab ?? tabManager.selectedTab)
+            findInPageModel = FindInPageModel(tab: tab ?? tabManager.selectedTab)
 
             overlayManager.show(
                 overlay:
                     .findInPage(
                         FindInPageView(
-                            model: model,
+                            model: findInPageModel!,
                             onDismiss: {
                                 self.updateFindInPageVisibility(visible: false, tab: tab)
                             }
                         )
                     ))
 
-            model.searchValue = query ?? ""
+            findInPageModel!.searchValue = query ?? ""
         } else {
             let tab = tab ?? tabManager.selectedTab
             guard let webView = tab?.webView else { return }
             webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
 
             overlayManager.hideCurrentOverlay(ofPriority: .modal, animate: false)
+            findInPageModel = nil
         }
     }
 }
@@ -36,12 +37,12 @@ extension BrowserViewController: FindInPageHelperDelegate {
     func findInPageHelper(
         _ findInPageHelper: FindInPageHelper, didUpdateCurrentResult currentResult: Int
     ) {
-        findInPageViewController?.model.currentIndex = currentResult
+        findInPageModel?.currentIndex = currentResult
     }
 
     func findInPageHelper(
         _ findInPageHelper: FindInPageHelper, didUpdateTotalResults totalResults: Int
     ) {
-        findInPageViewController?.model.numberOfResults = totalResults
+        findInPageModel?.numberOfResults = totalResults
     }
 }

@@ -35,9 +35,6 @@ class ToastViewManager: QueuedViewManager<ToastView> {
         currentView = view
         currentView?.viewDelegate = self
 
-        let toastViewHostingController = UIHostingController(rootView: currentView)
-        toastViewHostingController.view.backgroundColor = .clear
-
         overlayManager.show(overlay: .toast(currentView!)) {
             if let toastProgressViewModel = view.toastProgressViewModel,
                 toastProgressViewModel.status != .inProgress
