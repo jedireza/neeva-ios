@@ -132,9 +132,10 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     public let id: String
     var manager: TabManager
+    var isChild: Bool
 
     var isPinned: Bool {
-        manager.get(for: id)?.isPinned ?? false
+        isChild ? (manager.get(for: id)?.isPinned ?? false) : false
     }
 
     var url: URL? {
@@ -164,9 +165,10 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
-    init(tab: Tab, manager: TabManager) {
+    init(tab: Tab, manager: TabManager, isChild: Bool = false) {
         self.id = tab.id
         self.manager = manager
+        self.isChild = isChild
     }
 
     public func performDrop(info: DropInfo) -> Bool {
@@ -505,7 +507,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             .map({
                 TabCardDetails(
                     tab: $0,
-                    manager: manager.tabManager)
+                    manager: manager.tabManager,
+                    isChild: true)
             }) ?? []
     }
 

@@ -462,7 +462,9 @@ class TabManager: NSObject, ObservableObject {
 
             tab.parent = parent
             if FeatureFlag[.tabGroupsPinning] {
-                tab.parent?.isPinned = (tab.parent?.parentUUID == nil)
+                // When restoring tabs, a tab's parentUUID will default to "" if it's nil. The second check
+                // is to ensure a tab is auto-pinned when it forms a tab group after the first run.
+                tab.parent?.isPinned = (tab.parent?.parentUUID == nil || tab.parent?.parentUUID == "")
             }
             tab.parentUUID = parent.tabUUID
             tab.rootUUID = parent.rootUUID
