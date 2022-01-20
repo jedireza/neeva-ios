@@ -90,7 +90,10 @@ struct BrowserView: View {
     var bottomBar: some View {
         BrowserBottomBarView(bvc: bvc)
             .transition(.opacity)
-            .frame(height: UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
+            .frame(
+                height: UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+            )
+            .ignoresSafeArea(.keyboard)
     }
 
     var mainContent: some View {
