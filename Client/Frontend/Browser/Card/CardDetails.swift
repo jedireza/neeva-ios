@@ -203,15 +203,25 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     @ViewBuilder func contextMenu() -> some View {
         Button(action: {}) {
             Label("Duplicate Tab", systemSymbol: .plusSquare)
-        }
+        }.disabled(true)
         Button(action: {}) {
             Label("Open in Incognito", image: "incognito")
-        }
+        }.disabled(true)
         Button(action: {}) {
-            Label("Duplicate Tab", systemSymbol: .bookmark)
-        }
-        Button(action: {}) {
-            Label("Share", systemSymbol: .squareAndArrowUp)
+            Label("Save to Spaces", systemSymbol: .bookmark)
+        }.disabled(true)
+        if let tab = manager.get(for: id), tab.canonicalURL?.displayURL != nil,
+            let bvc = tab.browserViewController
+        {
+            Button {
+                tab.browserViewController?.share(tab: tab, from: bvc.view, presentableVC: bvc)
+            } label: {
+                Label("Share", systemSymbol: .squareAndArrowUp)
+            }
+        } else {
+            Button(action: {}) {
+                Label("Share", systemSymbol: .squareAndArrowUp)
+            }.disabled(true)
         }
     }
 }
