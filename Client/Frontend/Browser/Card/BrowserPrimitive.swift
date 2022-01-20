@@ -303,7 +303,7 @@ extension TabGroup: BrowserPrimitive, Closeable {
         children.first!.url
     }
 
-    var displayTitle: String {
+    var inferredTitle: String? {
         if let spaceID = children.first?.parentSpaceID, spaceID == children.first?.rootUUID {
             if let spaceTitle = SpaceStore.shared.get(for: spaceID)?.displayTitle {
                 return spaceTitle
@@ -311,7 +311,11 @@ extension TabGroup: BrowserPrimitive, Closeable {
                 return "Your NFTs"
             }
         }
-        return children.first?.displayTitle ?? "\(children.count) Tabs"
+        return children.first?.displayTitle
+    }
+
+    var displayTitle: String {
+        inferredTitle ?? "\(children.count) Tabs"
     }
 
     var displayFavicon: Favicon? {

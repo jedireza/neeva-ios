@@ -492,6 +492,20 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
         manager.tabManager.selectedTab?.rootUUID == id
     }
 
+    var customTitle: String? {
+        get {
+            Defaults[.tabGroupNames][id] ?? manager.get(for: id)?.inferredTitle
+        }
+        set {
+            Defaults[.tabGroupNames][id] = newValue
+            objectWillChange.send()
+        }
+    }
+
+    var defaultTitle: String? {
+        manager.get(for: id)?.displayTitle
+    }
+
     var title: String {
         Defaults[.tabGroupNames][id] ?? manager.get(for: id)?.displayTitle ?? ""
     }

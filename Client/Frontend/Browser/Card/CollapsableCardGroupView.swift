@@ -16,6 +16,7 @@ struct CollapsedCardGroupView: View {
     @EnvironmentObject private var gridModel: GridModel
 
     @State private var frame = CGRect.zero
+    @State private var renaming = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -135,22 +136,43 @@ struct ExpandedCardGroupRowView: View {
                 )
         )
         .contextMenu {
-            Text("2 tabs from “custom name”")
-            Button(action: {}) {
+            if let title = groupDetails.customTitle {
+                Text("\(groupDetails.allDetails.count) tabs from “\(title)”")
+            } else {
+                Text("\(groupDetails.allDetails.count) Tabs")
+            }
+
+            Button(action: { renaming = true }) {
                 Label("Rename", systemSymbol: .pencil)
             }
+
             Button(action: {}) {
                 Label("Save All to Spaces", systemSymbol: .bookmark)
-            }
+            }.disabled(true)
+
             if #available(iOS 15.0, *) {
                 Button(role: .destructive, action: {}) {
                     Label("Close All", systemSymbol: .trash)
-                }
+                }.disabled(true)
             } else {
                 Button(action: {}) {
                     Label("Close All", systemSymbol: .trash)
-                }
+                }.disabled(true)
             }
+        }
+        .textFieldAlert(
+            isPresented: $renaming, title: "Rename “\(groupDetails.title)”", required: false
+        ) { newName in
+            if newName.isEmpty {
+                groupDetails.customTitle = nil
+            } else {
+                groupDetails.customTitle = newName
+            }
+        } configureTextField: { tf in
+            tf.clearButtonMode = .always
+            tf.placeholder = groupDetails.defaultTitle ?? ""
+            tf.text = groupDetails.customTitle
+            tf.autocapitalizationType = .words
         }
     }
 
