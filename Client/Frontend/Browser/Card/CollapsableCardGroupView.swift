@@ -17,6 +17,7 @@ struct CollapsedCardGroupView: View {
 
     @State private var frame = CGRect.zero
     @State private var renaming = false
+    @State private var deleting = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -151,13 +152,13 @@ struct ExpandedCardGroupRowView: View {
             }.disabled(true)
 
             if #available(iOS 15.0, *) {
-                Button(role: .destructive, action: {}) {
+                Button(role: .destructive, action: { deleting = true }) {
                     Label("Close All", systemSymbol: .trash)
-                }.disabled(true)
+                }
             } else {
-                Button(action: {}) {
+                Button(action: { deleting = true }) {
                     Label("Close All", systemSymbol: .trash)
-                }.disabled(true)
+                }
             }
         }
         .textFieldAlert(
@@ -173,6 +174,24 @@ struct ExpandedCardGroupRowView: View {
             tf.placeholder = groupDetails.defaultTitle ?? ""
             tf.text = groupDetails.customTitle
             tf.autocapitalizationType = .words
+        }
+        .actionSheet(isPresented: $deleting) {
+            let buttons: [ActionSheet.Button] = [
+                .destructive(Text("Close All")) {
+                    groupDetails.onClose()
+                },
+                .cancel(),
+            ]
+
+            if let title = groupDetails.customTitle {
+                return ActionSheet(
+                    title: Text("Close all \(groupDetails.allDetails.count) tabs from “\(title)”?"),
+                    buttons: buttons)
+            } else {
+                return ActionSheet(
+                    title: Text("Close these \(groupDetails.allDetails.count) tabs?"),
+                    buttons: buttons)
+            }
         }
     }
 
