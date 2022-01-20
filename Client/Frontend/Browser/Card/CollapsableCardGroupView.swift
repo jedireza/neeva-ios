@@ -94,6 +94,10 @@ struct CollapsableCardGroupView: View {
             ) {
                 ForEach(groupDetails.allDetails) { childTabDetail in
                     FittedCard(details: childTabDetail, dragToClose: false)
+                        .contextMenu {
+                            FeatureFlag[.tabGroupsPinning]
+                                ? TabGroupContextMenu(details: childTabDetail) : nil
+                        }
                         .matchedGeometryEffect(id: childTabDetail.id, in: cardGroup)
                         .modifier(
                             CardTransitionModifier(
@@ -129,6 +133,10 @@ struct CollapsableCardGroupView: View {
                 HStack(spacing: CardGridUX.GridSpacing) {
                     ForEach(row) { childTabDetail in
                         FittedCard(details: childTabDetail, dragToClose: false)
+                            .contextMenu {
+                                FeatureFlag[.tabGroupsPinning]
+                                    ? TabGroupContextMenu(details: childTabDetail) : nil
+                            }
                             .matchedGeometryEffect(id: childTabDetail.id, in: cardGroup)
                             .modifier(
                                 CardTransitionModifier(
