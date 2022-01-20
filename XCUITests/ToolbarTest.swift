@@ -107,31 +107,29 @@ class ToolbarTests: BaseTestCase {
     }
 
     // Check that after scrolling on a page, the URL bar is hidden. Tapping one on the status bar will reveal the URL bar, tapping again on the status will scroll to the top
-    func testRevealToolbarWhenTappingOnStatusbar() {
+    func testRevealToolbarWhenTappingOnStatusbar() throws {
+        guard !iPad() else {
+            throw XCTSkip("Does not work on iPad")
+        }
         openURL(path(forTestPage: "test-mozilla-org.html"))
         waitUntilPageLoad()
         waitForExistence(app.buttons["Show Tabs"], timeout: 15)
 
         // Workaround when testing on iPhone. If the orientation is in landscape on iPhone the tests will fail.
-        if !iPad() {
-            XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
-            waitForExistence(app.otherElements.matching(identifier: "TabToolbar").firstMatch)
-        }
+        XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
+        waitForExistence(app.otherElements.matching(identifier: "TabToolbar").firstMatch)
 
         let shareButton = app.buttons["Share"]
         let statusbarElement: XCUIElement = {
             return XCUIApplication(bundleIdentifier: "com.apple.springboard").statusBars.firstMatch
         }()
 
+        sleep(1)
+
         app.swipeUp()
         waitFor(shareButton, with: "isHittable == false")
 
-        if iPad() {
-            // test doesn't work on iPad so trying next best thing
-            app.swipeDown()
-        } else {
-            statusbarElement.tap(force: true)
-        }
+        statusbarElement.tap(force: true)
 
         waitForExistence(shareButton)
         XCTAssertTrue(shareButton.isHittable)
