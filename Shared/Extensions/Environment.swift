@@ -31,7 +31,7 @@ extension EnvironmentValues {
     public var onSigninOrJoinNeeva: () -> Void {
         get {
             self[onSigninOrJoinNeevaKey.self] ?? {
-                fatalError(".environment(\\.logSignIn) must be specified")
+                fatalError(".environment(\\.onSigninOrJoinNeeva) must be specified")
             }
         }
         set { self[onSigninOrJoinNeevaKey.self] = newValue }
