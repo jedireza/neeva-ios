@@ -147,9 +147,9 @@ struct ExpandedCardGroupRowView: View {
                 Label("Rename", systemSymbol: .pencil)
             }
 
-            Button(action: {}) {
-                Label("Save All to Spaces", systemSymbol: .bookmark)
-            }.disabled(true)
+            // Button(action: {}) {
+            //     Label("Save All to Spaces", systemSymbol: .bookmark)
+            // }.disabled(true)
 
             if #available(iOS 15.0, *) {
                 Button(role: .destructive, action: { deleting = true }) {
