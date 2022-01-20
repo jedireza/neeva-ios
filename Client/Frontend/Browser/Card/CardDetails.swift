@@ -135,12 +135,16 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     var manager: TabManager
 
+    private var tab: Tab? {
+        manager.get(for: id)
+    }
+
     var isPinned: Bool {
-        manager.get(for: id)?.isPinned ?? false
+        tab?.isPinned ?? false
     }
 
     var url: URL? {
-        manager.get(for: id)?.url
+        tab?.url
     }
 
     var closeButtonImage: UIImage? {
@@ -153,7 +157,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     var rootID: String? {
-        manager.get(for: id)?.rootUUID
+        tab?.rootUUID
     }
 
     var accessibilityLabel: String {
@@ -195,7 +199,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     func onClose() {
-        if let item = manager.get(for: id), !item.isPinned {
+        if let item = tab, !item.isPinned {
             manager.close(item)
         }
     }
@@ -204,17 +208,24 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         Button(action: {}) {
             Label("Duplicate Tab", systemSymbol: .plusSquare)
         }.disabled(true)
-        Button(action: {}) {
+
+        Button { [self] in
+            guard let url = url, let tab = tab else { return }
+            let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isPrivate: true)
+            newTab.parentUUID = nil
+            manager.selectTab(newTab, previous: tab)
+            manager.setIncognitoMode(to: true)
+        } label: {
             Label("Open in Incognito", image: "incognito")
-        }.disabled(true)
+        }.disabled(url == nil)
 
         Button(action: { [self] in
-            manager.get(for: id)?.showAddToSpacesSheet()
+            tab?.showAddToSpacesSheet()
         }) {
             Label("Save to Spaces", systemSymbol: .bookmark)
-        }.disabled(manager.get(for: id) == nil)
+        }.disabled(tab == nil)
 
-        if let tab = manager.get(for: id),
+        if let tab = tab,
             tab.canonicalURL?.displayURL != nil,
             let bvc = tab.browserViewController
         {
