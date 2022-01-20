@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import Foundation
-import Shared
 
 public struct OverlayStyle {
     let showTitle: Bool
@@ -20,8 +19,7 @@ public struct OverlayStyle {
 
     /// Use for sheets containing grouped sets of controls (e.g., like the Overflow menu).
     static let grouped = OverlayStyle(
-        showTitle: false,
-        backgroundColor: .systemGroupedBackground.elevated)
+        showTitle: false, backgroundColor: .systemGroupedBackground)
 
     static let spaces = OverlayStyle(
         showTitle: false, backgroundColor: .DefaultBackground)

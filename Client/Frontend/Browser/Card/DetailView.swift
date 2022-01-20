@@ -80,7 +80,6 @@ where
     var body: some View {
         VStack(spacing: 0) {
             topBar
-                .animation(nil)
             Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
             if tabGroupCardModel.detailedTabGroup != nil {
                 tabGroupGrid
