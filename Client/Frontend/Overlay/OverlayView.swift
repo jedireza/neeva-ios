@@ -5,6 +5,9 @@
 import SwiftUI
 
 struct OverlayView: View {
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
     @ObservedObject var overlayManager: OverlayManager
     @State var safeArea: CGFloat = 0
     @State var keyboardHidden = true
@@ -30,6 +33,22 @@ struct OverlayView: View {
                 findInPage
                     .padding(.bottom, keyboardHidden ? 0 : -14)
             }.ignoresSafeArea(.container)
+        case .fullScreenModal(let fullScreenModal):
+            if verticalSizeClass == .regular && horizontalSizeClass == .regular {
+                Color.clear
+                    .sheet(isPresented: .constant(true)) {
+                        overlayManager.hideCurrentOverlay()
+                    } content: {
+                        fullScreenModal
+                    }
+            } else {
+                Color.clear
+                    .fullScreenCover(isPresented: .constant(true)) {
+                        overlayManager.hideCurrentOverlay()
+                    } content: {
+                        fullScreenModal
+                    }
+            }
         case .notification(let notification):
             VStack {
                 notification

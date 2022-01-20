@@ -15,6 +15,7 @@ enum OverlayPriority {
 enum OverlayType: Equatable {
     case backForwardList(BackForwardListView?)
     case findInPage(FindInPageView?)
+    case fullScreenModal(AnyView)
     case notification(NotificationRow?)
     case popover(PopoverRootView?)
     case sheet(OverlaySheetRootView?)
@@ -22,7 +23,7 @@ enum OverlayType: Equatable {
 
     var priority: OverlayPriority {
         switch self {
-        case .backForwardList, .findInPage, .popover, .sheet:
+        case .backForwardList, .findInPage, .fullScreenModal, .popover, .sheet:
             return .modal
         case .notification, .toast:
             return .transient
@@ -34,6 +35,8 @@ enum OverlayType: Equatable {
         case (.backForwardList, .backForwardList):
             return true
         case (.findInPage, .findInPage):
+            return true
+        case (.fullScreenModal, .fullScreenModal):
             return true
         case (.notification, .notification):
             return true
@@ -61,6 +64,16 @@ class OverlayManager: ObservableObject {
     private let animation = Animation.easeInOut(duration: 0.2)
     /// (Overlay, Animate, Completion])
     var queuedOverlays = [(OverlayType, Bool, (() -> Void)?)]()
+
+    public func presentFullScreenModal(content: AnyView, completion: (() -> Void)? = nil) {
+        let content = AnyView(
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .ignoresSafeArea()
+        )
+
+        show(overlay: .fullScreenModal(content), completion: completion)
+    }
 
     public func show(overlay: OverlayType, animate: Bool = true, completion: (() -> Void)? = nil) {
         if overlay.priority == .transient {
@@ -178,6 +191,8 @@ class OverlayManager: ObservableObject {
             switch overlay {
             case .backForwardList:
                 slideAndFadeOut(offset: 0)
+            case .fullScreenModal:
+                slideAndFadeOut(offset: 100)
             case .notification:
                 slideAndFadeOut(offset: -ToastViewUX.height)
             case .toast:
