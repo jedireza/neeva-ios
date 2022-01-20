@@ -207,10 +207,15 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         Button(action: {}) {
             Label("Open in Incognito", image: "incognito")
         }.disabled(true)
-        Button(action: {}) {
+
+        Button(action: { [self] in
+            manager.get(for: id)?.showAddToSpacesSheet()
+        }) {
             Label("Save to Spaces", systemSymbol: .bookmark)
-        }.disabled(true)
-        if let tab = manager.get(for: id), tab.canonicalURL?.displayURL != nil,
+        }.disabled(manager.get(for: id) == nil)
+
+        if let tab = manager.get(for: id),
+            tab.canonicalURL?.displayURL != nil,
             let bvc = tab.browserViewController
         {
             Button {
