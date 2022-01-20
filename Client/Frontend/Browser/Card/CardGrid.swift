@@ -296,8 +296,6 @@ struct GridPicker: View {
     @EnvironmentObject var browserModel: BrowserModel
     @Environment(\.isIncognito) private var isIncognito
 
-    @State var selectedIndex: Int = 1
-
     @ViewBuilder
     var picker: some View {
         HStack {
@@ -308,41 +306,40 @@ struct GridPicker: View {
                     Segment(
                         symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
                         selectedIconColor: .background,
-                        selectedColor: .label,
-                        selectedAction: { gridModel.switchToTabs(incognito: true) }),
+                        selectedColor: .label),
                     Segment(
                         symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
                         selectedIconColor: .white,
-                        selectedColor: Color.ui.adaptive.blue,
-                        selectedAction: { gridModel.switchToTabs(incognito: false) }),
+                        selectedColor: Color.ui.adaptive.blue),
                     Segment(
                         symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
-                        selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
-                        selectedAction: gridModel.switchToSpaces),
-                ], selectedSegmentIndex: $selectedIndex, dragOffset: gridModel.dragOffset
+                        selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue),
+                ],
+                selectedSegmentIndex: Binding(
+                    get: {
+                        switch gridModel.switcherState {
+                        case .tabs:
+                            return isIncognito ? 0 : 1
+                        case .spaces:
+                            return 2
+                        }
+                    },
+                    set: {
+                        switch $0 {
+                        case 0:
+                            gridModel.switchToTabs(incognito: true)
+                        case 1:
+                            gridModel.switchToTabs(incognito: false)
+                        case 2:
+                            gridModel.switchToSpaces()
+                        default:
+                            // don’t crash since that would be bad UX
+                            print("Invalid segment \($0)")
+                        }
+                    }
+                ),
+                dragOffset: gridModel.dragOffset
             )
-            .useEffect(deps: gridModel.switcherState) { _ in
-                switch gridModel.switcherState {
-                case .tabs:
-                    if gridModel.dragOffset == nil {
-                        selectedIndex = 1
-                    }
-                case .spaces:
-                    if gridModel.dragOffset == nil {
-                        selectedIndex = 2
-                    }
-
-                    if isIncognito {
-                        gridModel.tabCardModel.manager.toggleIncognitoMode(
-                            fromTabTray: true, openLazyTab: false)
-                    }
-                }
-            }
-            .useEffect(deps: isIncognito) { isIncognito in
-                if gridModel.switcherState == .tabs && gridModel.dragOffset == nil {
-                    selectedIndex = isIncognito ? 0 : 1
-                }
-            }
 
             Spacer()
         }

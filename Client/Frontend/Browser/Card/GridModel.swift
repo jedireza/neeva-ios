@@ -77,6 +77,10 @@ class GridModel: ObservableObject {
 
     func switchToSpaces() {
         switcherState = .spaces
+
+        if tabCardModel.manager.isIncognito {
+            tabCardModel.manager.toggleIncognitoMode(fromTabTray: true, openLazyTab: false)
+        }
     }
 
     func buildCloseAllTabsMenu(sourceView: UIView) -> UIMenu {

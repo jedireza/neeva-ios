@@ -10,16 +10,11 @@ public struct Segment {
     var symbol: Symbol
     let selectedIconColor: Color
     let selectedColor: Color
-    let selectedAction: () -> Void
 
-    public init(
-        symbol: Symbol, selectedIconColor: Color, selectedColor: Color,
-        selectedAction: @escaping () -> Void
-    ) {
+    public init(symbol: Symbol, selectedIconColor: Color, selectedColor: Color) {
         self.symbol = symbol
         self.selectedIconColor = selectedIconColor
         self.selectedColor = selectedColor
-        self.selectedAction = selectedAction
     }
 }
 
@@ -29,10 +24,7 @@ struct SegmentTappedModifier: ViewModifier {
     @Binding var selectedSegmentIndex: Int
 
     func body(content: Content) -> some View {
-        Button(action: {
-            segment.selectedAction()
-            selectedSegmentIndex = index
-        }) {
+        Button(action: { selectedSegmentIndex = index }) {
             content
         }
         .accessibilityAddTraits(index == selectedSegmentIndex ? .isSelected : [])
@@ -45,17 +37,9 @@ public struct SegmentedPicker: View {
     let segments: [Segment]
     var dragOffset: CGFloat? = nil
 
+    @State var actualSelectedSegment: Int
     @Binding var selectedSegmentIndex: Int
     @GestureState var pressed = false
-    @State var placeholderIndex: Int? = nil
-
-    var currentIndex: Int {
-        guard let placeholderIndex = placeholderIndex else {
-            return selectedSegmentIndex
-        }
-
-        return placeholderIndex != selectedSegmentIndex ? placeholderIndex : selectedSegmentIndex
-    }
 
     var evenSegmentCount: Bool {
         CGFloat(segments.count).truncatingRemainder(dividingBy: 2) == 0
@@ -74,7 +58,7 @@ public struct SegmentedPicker: View {
     }
 
     var offset: CGFloat {
-        segmentWidth * CGFloat(selectedSegmentIndex - 1) + evenSegmentOffset + (dragOffset ?? 0)
+        segmentWidth * CGFloat(actualSelectedSegment - 1) + evenSegmentOffset + (dragOffset ?? 0)
     }
 
     @ViewBuilder private var segment: some View {
@@ -133,7 +117,7 @@ public struct SegmentedPicker: View {
             icons(selected: false)
 
             segment
-                .foregroundColor(segments[currentIndex].selectedColor)
+                .foregroundColor(segments[selectedSegmentIndex].selectedColor)
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .updating(
@@ -150,25 +134,22 @@ public struct SegmentedPicker: View {
         }
         .accessibilityElement(children: .contain)
         .frame(width: segmentWidth * CGFloat(segments.count))
-        .onChange(of: selectedSegmentIndex) { _ in
-            placeholderIndex = nil
+        .onChange(of: selectedSegmentIndex) {
+            if dragOffset == nil {
+                actualSelectedSegment = $0
+            }
         }
         .onChange(of: dragOffset) { offset in
             guard let offset = offset else {
                 // Drag ended
-                let index = placeholderIndex ?? selectedSegmentIndex
-                segments[index].selectedAction()
-                selectedSegmentIndex = index
-                placeholderIndex = nil
-
+                actualSelectedSegment = selectedSegmentIndex
                 return
             }
 
             // Add a small boost to the offset since the picker already starts in the middle of one the segments.
             let boost = offset < 0 ? -0.5 : 0.5
             // Prevents the placeholder from jumping to the last segment.
-            let jumpPrevention = abs(
-                selectedSegmentIndex - (placeholderIndex ?? selectedSegmentIndex))
+            let jumpPrevention = abs(selectedSegmentIndex - actualSelectedSegment)
             var proposedPlaceholderChange = Int((offset / segmentWidth) + boost)
 
             if offset < 0 {
@@ -177,18 +158,12 @@ public struct SegmentedPicker: View {
                 proposedPlaceholderChange -= jumpPrevention
             }
 
-            if segments.indices.contains(
-                (placeholderIndex ?? selectedSegmentIndex) + proposedPlaceholderChange)
-            {
-                let newPlaceholderIndex =
-                    (placeholderIndex ?? selectedSegmentIndex) + proposedPlaceholderChange
+            if segments.indices.contains(selectedSegmentIndex + proposedPlaceholderChange) {
+                let newSelectedIndex = selectedSegmentIndex + proposedPlaceholderChange
 
-                if newPlaceholderIndex != placeholderIndex {
-                    placeholderIndex = newPlaceholderIndex
-                    segments[newPlaceholderIndex].selectedAction()
-                    if proposedPlaceholderChange != 0 {
-                        Haptics.selection()
-                    }
+                if newSelectedIndex != selectedSegmentIndex {
+                    selectedSegmentIndex = newSelectedIndex
+                    Haptics.selection()
                 }
             }
         }
@@ -198,6 +173,7 @@ public struct SegmentedPicker: View {
     {
         self.segments = segments
         self._selectedSegmentIndex = selectedSegmentIndex
+        self._actualSelectedSegment = .init(initialValue: selectedSegmentIndex.wrappedValue)
         self.dragOffset = dragOffset
     }
 }
@@ -208,16 +184,13 @@ struct SegmentedPicker_Previews: PreviewProvider {
             segments: [
                 Segment(
                     symbol: Symbol(decorative: .incognito, weight: .medium),
-                    selectedIconColor: .background, selectedColor: .label,
-                    selectedAction: {}),
+                    selectedIconColor: .background, selectedColor: .label),
                 Segment(
                     symbol: Symbol(decorative: .squareOnSquare, weight: .medium),
-                    selectedIconColor: .white, selectedColor: .brand.blue,
-                    selectedAction: {}),
+                    selectedIconColor: .white, selectedColor: .brand.blue),
                 Segment(
                     symbol: Symbol(decorative: .bookmarkOnBookmark),
-                    selectedIconColor: .white, selectedColor: .brand.blue,
-                    selectedAction: {}),
+                    selectedIconColor: .white, selectedColor: .brand.blue),
             ], selectedSegmentIndex: .constant(1))
     }
 }
