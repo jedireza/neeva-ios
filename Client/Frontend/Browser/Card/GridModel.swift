@@ -30,10 +30,6 @@ class GridModel: ObservableObject {
 
     private let tabMenu: TabMenu
 
-    var isIncognito: Bool {
-        tabCardModel.manager.isIncognito
-    }
-
     var animateDetailTransitions = true
 
     @Published var needsScrollToSelectedTab: Int = 0
@@ -74,7 +70,7 @@ class GridModel: ObservableObject {
     func switchToTabs(incognito: Bool) {
         switcherState = .tabs
 
-        if isIncognito != incognito {
+        if tabCardModel.manager.isIncognito != incognito {
             tabCardModel.manager.toggleIncognitoMode(fromTabTray: true, openLazyTab: false)
         }
     }

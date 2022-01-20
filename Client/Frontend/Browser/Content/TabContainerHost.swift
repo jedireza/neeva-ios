@@ -127,6 +127,8 @@ struct TabContainerContent: View {
         SuggestedSearchesModel(suggestedQueries: [])
     let spaceContentSheetModel: SpaceContentSheetModel?
 
+    @Environment(\.isIncognito) private var isIncognito
+
     var yOffset: CGFloat {
         guard let scrollingController = bvc.scrollController, !FeatureFlag[.enableBrowserView]
         else {
@@ -172,7 +174,7 @@ struct TabContainerContent: View {
                     }
 
                     if NeevaFeatureFlags[.recipeCheatsheet]
-                        && !bvc.tabManager.isIncognito && NeevaUserInfo.shared.hasLoginCookie()
+                        && !isIncognito && NeevaUserInfo.shared.hasLoginCookie()
                     {
                         GeometryReader { geo in
                             VStack {

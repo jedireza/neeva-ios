@@ -10,7 +10,6 @@ class SwitcherToolbarModel: ObservableObject {
     let openLazyTab: () -> Void
     let createNewSpace: () -> Void
     private let onNeevaMenuAction: (NeevaMenuAction) -> Void
-    @Published private(set) var isIncognito: Bool
 
     init(
         tabManager: TabManager,
@@ -22,11 +21,6 @@ class SwitcherToolbarModel: ObservableObject {
         self.openLazyTab = openLazyTab
         self.createNewSpace = createNewSpace
         self.onNeevaMenuAction = onNeevaMenuAction
-
-        isIncognito = tabManager.isIncognito
-        tabManager.$isIncognito
-            .map { $0 }
-            .assign(to: &$isIncognito)
     }
 
     func onToggleIncognito() {

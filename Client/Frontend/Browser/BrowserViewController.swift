@@ -1232,7 +1232,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         openedFrom: ZeroQueryOpenedLocation = .openTab(nil), switchToIncognitoMode: Bool? = nil
     ) {
         if let switchToIncognitoMode = switchToIncognitoMode {
-            tabManager.setIncognitoMode(to: switchToIncognitoMode)
+            tabManager.isIncognito = switchToIncognitoMode
         }
 
         if FeatureFlag[.enableBrowserView] {
@@ -1863,7 +1863,7 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func applyUIMode(isIncognito: Bool) {
-        let ui: [IncognitoModeUI?] = [toolbar, topBar, tabContainerHost]
+        let ui: [IncognitoModeUI?] = [toolbar, topBar, tabContainerHost, browserHost]
         ui.forEach { $0?.applyUIMode(isIncognito: isIncognito) }
     }
 }

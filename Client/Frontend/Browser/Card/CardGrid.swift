@@ -27,6 +27,7 @@ struct CardGrid: View {
     @State private var columnCount = 2
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.isIncognito) private var isIncognito
 
     @State var detailDragOffset: CGFloat = 0
 
@@ -82,7 +83,7 @@ struct CardGrid: View {
                 .accessibilityIdentifier("CardGrid")
                 .accessibilityValue(
                     Text(
-                        "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
+                        "\(isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
                     ))
 
             if !topToolbar && !FeatureFlag[.enableBrowserView] {
@@ -293,6 +294,7 @@ struct GridPicker: View {
 
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var browserModel: BrowserModel
+    @Environment(\.isIncognito) private var isIncognito
 
     @State var selectedIndex: Int = 1
 
@@ -330,13 +332,13 @@ struct GridPicker: View {
                         selectedIndex = 2
                     }
 
-                    if gridModel.isIncognito {
+                    if isIncognito {
                         gridModel.tabCardModel.manager.toggleIncognitoMode(
                             fromTabTray: true, openLazyTab: false)
                     }
                 }
             }
-            .useEffect(deps: gridModel.isIncognito) { isIncognito in
+            .useEffect(deps: isIncognito) { isIncognito in
                 if gridModel.switcherState == .tabs && gridModel.dragOffset == nil {
                     selectedIndex = isIncognito ? 0 : 1
                 }

@@ -162,7 +162,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     var selectedTab: Tab?
-    @Published private(set) var isIncognito: Bool = false {
+    @Published var isIncognito: Bool = false {
         didSet {
             SceneDelegate.getBVC(with: scene).applyUIMode(isIncognito: isIncognito)
         }
@@ -216,9 +216,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     func getTabCountForCurrentType() -> Int {
-        let isPrivate = isIncognito
-
-        if isPrivate {
+        if isIncognito {
             return privateTabs.count
         } else {
             return normalTabs.count
@@ -512,10 +510,6 @@ class TabManager: NSObject, ObservableObject {
         if flushToDisk {
             storeChanges()
         }
-    }
-
-    func setIncognitoMode(to: Bool) {
-        self.isIncognito = to
     }
 
     func toggleIncognitoMode(

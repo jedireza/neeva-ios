@@ -9,7 +9,6 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
     @ObservedObject var details: Details
     @Environment(\.selectionCompletion) private var selectionCompletion: () -> Void
     @Environment(\.sizeCategory) var sizeCategory
-    @Environment(\.isIncognito) var isIncognito
     @EnvironmentObject var browserModel: BrowserModel
 
     var animate = false
@@ -107,7 +106,7 @@ struct CompactCard<Details>: View where Details: TabCardDetails {
                     BorderTreatment(
                         isSelected: details.isSelected,
                         thumbnailDrawsHeader: details.thumbnailDrawsHeader,
-                        isIncognito: isIncognito, cornerRadius: CardUX.CompactCornerRadius
+                        cornerRadius: CardUX.CompactCornerRadius
                     )
                 )
         }

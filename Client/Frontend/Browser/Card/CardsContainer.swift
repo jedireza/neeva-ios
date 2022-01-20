@@ -122,6 +122,8 @@ struct CardsContainer: View {
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var gridModel: GridModel
 
+    @Environment(\.isIncognito) private var isIncognito
+
     // Used to rebuild the scene when switching between portrait and landscape.
     @State var orientation: UIDeviceOrientation = .unknown
     @State var generationId: Int = 0
@@ -165,11 +167,11 @@ struct CardsContainer: View {
                 }
                 .offset(
                     x: (gridModel.switcherState == .tabs
-                        ? (gridModel.isIncognito ? geom.size.width : 0) : -geom.size.width)
+                        ? (isIncognito ? geom.size.width : 0) : -geom.size.width)
                 )
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel("Tabs")
-                .accessibilityHidden(gridModel.switcherState != .tabs || gridModel.isIncognito)
+                .accessibilityHidden(gridModel.switcherState != .tabs || isIncognito)
 
                 // Incognito Tabs
                 ZStack {
@@ -184,16 +186,16 @@ struct CardsContainer: View {
                 }
                 .offset(
                     x: (gridModel.switcherState == .tabs
-                        ? (gridModel.isIncognito ? 0 : -geom.size.width) : -geom.size.width)
+                        ? (isIncognito ? 0 : -geom.size.width) : -geom.size.width)
                 )
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel("Incognito Tabs")
-                .accessibilityHidden(gridModel.switcherState != .tabs || !gridModel.isIncognito)
+                .accessibilityHidden(gridModel.switcherState != .tabs || !isIncognito)
             }
         }
         .id(generationId)
         .animation(
-            .interactiveSpring(), value: "\(gridModel.switcherState) \(gridModel.isIncognito)"
+            .interactiveSpring(), value: "\(gridModel.switcherState) \(isIncognito)"
         )
         .onChange(of: gridModel.switcherState) { value in
             guard case .spaces = value, !seenSpacesIntro, !gridModel.isLoading else {

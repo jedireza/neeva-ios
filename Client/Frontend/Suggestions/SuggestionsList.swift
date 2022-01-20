@@ -11,6 +11,7 @@ struct SuggestionsList: View {
         url: "https://neeva.com", title: "PlaceholderLongTitleOneWord")
 
     @EnvironmentObject private var suggestionModel: SuggestionModel
+    @Environment(\.isIncognito) private var isIncognito
 
     private var content: some View {
         LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
@@ -36,7 +37,7 @@ struct SuggestionsList: View {
                 TabSuggestionsList()
                 AutocompleteSuggestionView()
 
-                if suggestionModel.shouldShowSearchSuggestions {
+                if !isIncognito && suggestionModel.shouldShowSearchSuggestions {
                     SuggestionsSection(
                         header: SearchEngine.current.isNeeva
                             ? "Neeva Search" : "\(SearchEngine.current.label) Suggestions"

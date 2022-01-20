@@ -56,13 +56,8 @@ class SuggestionModel: ObservableObject {
     @Published private(set) var querySuggestionIndexMap = [String: Int]()
     private var keyboardFocusedSuggestionIndex = -1
 
-    private var isIncognito: Bool {
-        bvc.tabManager.isIncognito
-    }
-
     var shouldShowSearchSuggestions: Bool {
-        !isIncognito && !searchQuery.isEmpty && Defaults[.showSearchSuggestions]
-            && !searchQuery.looksLikeAURL
+        !searchQuery.isEmpty && Defaults[.showSearchSuggestions] && !searchQuery.looksLikeAURL
     }
 
     fileprivate var suggestionQuery: Cancellable?
@@ -150,7 +145,7 @@ class SuggestionModel: ObservableObject {
         keyboardFocusedSuggestion = nil
         keyboardFocusedSuggestionIndex = -1
 
-        guard shouldShowSearchSuggestions else {
+        guard !bvc.tabManager.isIncognito && shouldShowSearchSuggestions else {
             clearSearchSuggestions()
             return
         }

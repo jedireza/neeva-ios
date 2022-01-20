@@ -25,8 +25,9 @@ enum CardUX {
 struct BorderTreatment: ViewModifier {
     let isSelected: Bool
     let thumbnailDrawsHeader: Bool
-    let isIncognito: Bool
     var cornerRadius: CGFloat = CardUX.CornerRadius
+
+    @Environment(\.isIncognito) private var isIncognito
 
     func body(content: Content) -> some View {
         content
@@ -197,7 +198,6 @@ struct Card<Details>: View where Details: CardDetails {
     }
 
     @Environment(\.selectionCompletion) private var selectionCompletion
-    @Environment(\.isIncognito) private var isIncognito
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @State private var isPressed = false
@@ -229,8 +229,7 @@ struct Card<Details>: View where Details: CardDetails {
                 .modifier(
                     BorderTreatment(
                         isSelected: showsSelection && details.isSelected,
-                        thumbnailDrawsHeader: details.thumbnailDrawsHeader,
-                        isIncognito: isIncognito)
+                        thumbnailDrawsHeader: details.thumbnailDrawsHeader)
                 )
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
