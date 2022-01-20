@@ -52,16 +52,9 @@ struct BrowserView: View {
 
     // MARK: - Views
     var topBar: some View {
-        GeometryReader { geom in
-            BrowserTopBarView(bvc: bvc)
-                .transition(.opacity)
-                .frame(height: topBarHeight)
-                .offset(
-                    x: detailViewVisible ? -geom.size.width : 0,
-                    y: browserModel.scrollingControlModel.headerTopOffset
-                        * (UIConstants.enableBottomURLBar ? -1 : 1)
-                )
-        }
+        BrowserTopBarView(bvc: bvc)
+            .transition(.opacity)
+            .frame(height: topBarHeight)
     }
 
     var tabContainerContent: some View {
@@ -126,10 +119,15 @@ struct BrowserView: View {
                     VStack {
                         if UIConstants.enableBottomURLBar { Spacer() }
 
-                        if !UIConstants.enableBottomURLBar, chromeModel.inlineToolbar {
-                            topBar
-                                .background(
-                                    Group {
+                        topBar
+                            .offset(
+                                x: detailViewVisible ? -geom.size.width : 0,
+                                y: browserModel.scrollingControlModel.headerTopOffset
+                                    * (UIConstants.enableBottomURLBar ? -1 : 1)
+                            )
+                            .background(
+                                Group {
+                                    if !UIConstants.enableBottomURLBar, chromeModel.inlineToolbar {
                                         // invisible tap area to show the toolbars since modern iOS
                                         // does not have a status bar in landscape.
                                         Color.clear
@@ -141,10 +139,8 @@ struct BrowserView: View {
                                                 browserModel.scrollingControlModel.showToolbars(
                                                     animated: true)
                                             }
-                                    }, alignment: .top)
-                        } else {
-                            topBar
-                        }
+                                    }
+                                }, alignment: .top)
 
                         if !UIConstants.enableBottomURLBar { Spacer() }
                     }
