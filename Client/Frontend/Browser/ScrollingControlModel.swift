@@ -268,11 +268,12 @@ extension ScrollingControlModel {
 
         DispatchQueue.main.async { [self] in
             if animated {
-                withAnimation(.spring(response: duration)) {
+                withAnimation(.interactiveSpring()) {
                     chromeModel.controlOpacity = Double(alpha)
                     self.headerTopOffset = headerOffset
                     self.footerBottomOffset = footerOffset
                 }
+                
                 UIView.animate(
                     withDuration: duration, delay: 0, options: .allowUserInteraction,
                     animations: animation, completion: completion)
@@ -364,10 +365,7 @@ extension ScrollingControlModel: UIScrollViewDelegate {
     }
 
     func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        if toolbarState == .collapsed {
-            showToolbars(animated: true)
-            return false
-        }
+        showToolbars(animated: true)
         return true
     }
 }
