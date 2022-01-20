@@ -7,7 +7,7 @@ import Shared
 import SwiftUI
 
 public struct TabGroupContextMenu: View {
-    @ObservedObject var details: TabCardDetails
+    let details: TabCardDetails
     public var body: some View {
         Button(action: {
             details.manager.get(for: details.id)?.isPinned.toggle()
