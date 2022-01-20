@@ -80,6 +80,8 @@ extension SimulatedSwipeAnimator {
         }
 
         if canceledSwipe {
+            self.model?.offset = 0
+            
             UIView.animate(
                 withDuration: params.cancelAnimationDuration,
                 animations: {
