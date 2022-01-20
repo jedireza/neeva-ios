@@ -5,6 +5,13 @@
 import Apollo
 import Combine
 
+// Neeva API access is restricted. Contact Neeva to request approval
+// before extending this list.
+private let approvedBundleIDs = [
+    "co.neeva.app.ios.browser",
+    "co.neeva.app.ios.browser-dev",
+]
+
 /// This singleton class manages access to the Neeva GraphQL API
 public class GraphQLAPI {
     /// Access the API through this instance
@@ -18,10 +25,20 @@ public class GraphQLAPI {
     public private(set) lazy var apollo: ApolloClient = {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
         let provider = DefaultInterceptorProvider(store: store)
-        let transport = NeevaNetworkTransport(
-            interceptorProvider: provider,
-            endpointURL: NeevaConstants.appURL / "graphql"
-        )
+
+        var transport: NetworkTransport
+        if approvedBundleIDs.contains(AppInfo.baseBundleIdentifier) {
+            transport = NeevaNetworkTransport(
+                interceptorProvider: provider,
+                endpointURL: NeevaConstants.appURL / "graphql"
+            )
+        } else {
+            fatalError(
+                """
+                    Bundle ID \(AppInfo.baseBundleIdentifier) cannot access the Neeva API.
+                    Contact Neeva to request approval for API access.
+                """)
+        }
 
         return ApolloClient(networkTransport: transport, store: store)
     }()
