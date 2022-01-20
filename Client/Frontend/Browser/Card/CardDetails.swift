@@ -206,18 +206,19 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     @ViewBuilder func contextMenu() -> some View {
         Button(action: {}) {
-            Label("Duplicate Tab", systemSymbol: .plusSquare)
+            Label("Duplicate Tab", systemSymbol: .plusSquareOnSquare)
         }.disabled(true)
 
-        Button { [self] in
-            guard let url = url, let tab = tab else { return }
-            let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isPrivate: true)
-            newTab.parentUUID = nil
-            manager.selectTab(newTab, previous: tab)
-            manager.setIncognitoMode(to: true)
-        } label: {
-            Label("Open in Incognito", image: "incognito")
-        }.disabled(url == nil)
+        if tab?.isIncognito == false {
+            Button { [self] in
+                guard let url = url, let tab = tab else { return }
+                let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isPrivate: true)
+                newTab.parentUUID = nil
+                manager.selectTab(newTab, previous: tab)
+            } label: {
+                Label("Open in Incognito", image: "incognito")
+            }.disabled(url == nil)
+        }
 
         Button(action: { [self] in
             tab?.showAddToSpacesSheet()
