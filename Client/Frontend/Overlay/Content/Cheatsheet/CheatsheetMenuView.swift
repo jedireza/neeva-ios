@@ -83,41 +83,6 @@ struct QueryButton: View {
     }
 }
 
-public class CheatsheetMenuViewModel: ObservableObject {
-    @Published private(set) var cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?
-    @Published private(set) var searchRichResults: [SearchController.RichResult]?
-    @Published private(set) var currentPageURL: URL?
-    @Published private(set) var cheatsheetDataLoading: Bool
-    @Published private(set) var currentCheatsheetQuery: String?
-
-    private var subscriptions: Set<AnyCancellable> = []
-
-    init(tabManager: TabManager) {
-        self.cheatsheetInfo = tabManager.selectedTab?.cheatsheetData
-        self.searchRichResults = tabManager.selectedTab?.searchRichResults
-        self.currentPageURL = tabManager.selectedTab?.webView?.url
-        self.cheatsheetDataLoading = tabManager.selectedTab?.cheatsheetDataLoading ?? false
-        self.currentCheatsheetQuery = tabManager.selectedTab?.currentCheatsheetQuery
-
-        tabManager.selectedTab?.$cheatsheetDataLoading.assign(to: \.cheatsheetDataLoading, on: self)
-            .store(in: &subscriptions)
-
-        tabManager.selectedTab?.$currentCheatsheetQuery.assign(
-            to: \.currentCheatsheetQuery, on: self
-        )
-        .store(in: &subscriptions)
-
-        tabManager.selectedTab?.$cheatsheetData.assign(to: \.cheatsheetInfo, on: self).store(
-            in: &subscriptions)
-
-        tabManager.selectedTab?.$searchRichResults.assign(to: \.searchRichResults, on: self).store(
-            in: &subscriptions)
-
-        tabManager.selectedTab?.$url.assign(to: \.currentPageURL, on: self).store(
-            in: &subscriptions)
-    }
-}
-
 public struct CheatsheetMenuView: View {
     @State var height: CGFloat = 0
     @EnvironmentObject private var model: CheatsheetMenuViewModel

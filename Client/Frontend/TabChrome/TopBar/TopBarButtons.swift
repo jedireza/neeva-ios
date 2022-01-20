@@ -6,7 +6,6 @@ import Shared
 import SwiftUI
 
 struct TopBarNeevaMenuButton: View {
-    let onTap: () -> Void
     let onNeevaMenuAction: (NeevaMenuAction) -> Void
 
     @Environment(\.isIncognito) private var isIncognito
@@ -22,8 +21,15 @@ struct TopBarNeevaMenuButton: View {
             popoverSize: CGSize(width: 300, height: 190),
             content: {
                 TabToolbarButtons.NeevaMenu(iconWidth: 24) {
-                    onTap()
-                    presenting = true
+                    if NeevaFeatureFlags[.cheatsheetQuery],
+                       let bvc = chromeModel.topBarDelegate as? BrowserViewController
+                    {
+                        bvc.showCheatSheetOverlay()
+                    } else {
+                        chromeModel.hideZeroQuery()
+                        chromeModel.topBarDelegate?.updateFeedbackImage()
+                        presenting = true
+                    }
                 }
                 .tapTargetFrame()
                 .presentAsPopover(
@@ -200,7 +206,7 @@ struct TopBarShareButton_Previews: PreviewProvider {
         TopBarShareButton(url: "https://neeva.com", onTap: { _ in })
             .environmentObject(TabChromeModel(isPage: true))
 
-        TopBarNeevaMenuButton(onTap: {}, onNeevaMenuAction: { _ in })
+        TopBarNeevaMenuButton(onNeevaMenuAction: { _ in })
             .environmentObject(TabChromeModel())
     }
 }
