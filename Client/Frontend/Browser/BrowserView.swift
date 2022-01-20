@@ -95,15 +95,14 @@ struct BrowserView: View {
             tabContainerContent
                 .opacity(browserModel.showContent ? 1 : 0)
                 .accessibilityHidden(!browserModel.showContent)
-                .offset(x: simulatedBackModel.offset / 2.5)
+                .offset(x: simulatedBackModel.contentOffset / 2.5)
 
             if browserModel.showContent {
                 GeometryReader { geom in
                     SimulatedSwipeViewRepresentable(model: simulatedBackModel)
                         .opacity(!simulatedBackModel.hidden ? 1 : 0)
-                        .offset(x: -geom.size.width + simulatedBackModel.offset)
+                        .offset(x: -geom.size.width + simulatedBackModel.overlayOffset)
                         .frame(width: geom.size.width + SwipeUX.EdgeWidth)
-                        .animation(.easeOut, value: simulatedBackModel.offset)
                 }
             }
         }

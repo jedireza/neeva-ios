@@ -80,7 +80,7 @@ extension SimulatedSwipeAnimator {
         }
 
         if canceledSwipe {
-            self.model?.offset = 0
+            self.model?.overlayOffset = 0
 
             UIView.animate(
                 withDuration: params.cancelAnimationDuration,
@@ -99,6 +99,7 @@ extension SimulatedSwipeAnimator {
                     if finished {
                         self.animatingView?.transform = .identity
                         self.animatingView?.alpha = 1
+                        self.model?.overlayOffset = 0
                     }
                 })
         }
@@ -118,10 +119,10 @@ extension SimulatedSwipeAnimator {
         let timeStep = TimeInterval(abs(translation) / speed)
 
         if FeatureFlag[.enableBrowserView] {
-            self.model?.offset = -20
+            self.model?.overlayOffset = contentView?.frame.width ?? -20
+            self.model?.contentOffset = 0
 
             withAnimation(.easeOut(duration: timeStep)) {
-                self.model?.offset = 0
                 self.animateBackToCenter(canceledSwipe: false)
             }
         } else {
@@ -160,7 +161,7 @@ extension SimulatedSwipeAnimator {
             prevOffset = containerCenter
         case .changed:
             if FeatureFlag[.enableBrowserView] {
-                model?.offset = translation.x
+                model?.overlayOffset = translation.x
             } else {
                 animatingView?.transform = transformForTranslation(translation.x)
                 contentView?.transform = self.transformForTranslation(translation.x / 2)

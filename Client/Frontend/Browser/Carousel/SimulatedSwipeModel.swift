@@ -5,8 +5,14 @@
 import UIKit
 
 class SimulatedSwipeModel: ObservableObject {
-    @Published var offset: CGFloat = 0
     @Published var hidden = true
+    @Published var overlayOffset: CGFloat = 0 {
+        didSet {
+            contentOffset = overlayOffset
+        }
+    }
+    @Published var contentOffset: CGFloat = 0
+
     let tabManager: TabManager
     let chromeModel: TabChromeModel
     let swipeDirection: SwipeDirection
