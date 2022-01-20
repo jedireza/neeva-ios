@@ -61,7 +61,9 @@ extension BrowserViewController {
             guard let webView = tab?.webView else { return }
             webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
 
-            if FeatureFlag[.enableBrowserView] {
+            if FeatureFlag[.enableBrowserView], let currentOverlay = overlayManager.currentOverlay,
+                case OverlayType.findInPage = currentOverlay
+            {
                 overlayManager.hideCurrentOverlay(ofPriority: .modal, animate: false)
             } else {
                 overlayWindowManager?.removeCurrentWindow()
