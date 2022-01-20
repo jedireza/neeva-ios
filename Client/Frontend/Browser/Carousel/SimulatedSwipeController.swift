@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Combine
 import Shared
 import SwiftUI
 import UIKit
@@ -21,6 +22,7 @@ class SimulatedSwipeController:
     var animator: SimulatedSwipeAnimator!
     var blankView: UIView!
     var progressView: UIHostingController<CarouselProgressView>!
+    var viewHiddenSubscription: AnyCancellable?
 
     init(model: SimulatedSwipeModel) {
         self.model = model
@@ -62,6 +64,10 @@ class SimulatedSwipeController:
             case .back:
                 make.leading.equalToSuperview()
             }
+        }
+
+        viewHiddenSubscription = view.publisher(for: \.isHidden).sink { hidden in
+            self.model.hidden = hidden
         }
     }
 
@@ -119,24 +125,24 @@ class SimulatedSwipeController:
 
     func updateBackVisibility(tab: Tab?) {
         guard let tab = tab else {
-            setViewHidden(to: true)
+            view.isHidden = true
             return
         }
-        
+
         if tab.canGoBack {
-            setViewHidden(to: true)
+            view.isHidden = true
         } else if let _ = tab.parent {
-            setViewHidden(to: false)
+            view.isHidden = false
             model.chromeModel.canGoBack = true
         } else if let id = tab.parentSpaceID, !id.isEmpty {
-            setViewHidden(to: false)
+            view.isHidden = false
             model.chromeModel.canGoBack = true
         }
     }
 
     func updateForwardVisibility(id: String, results: [URL]?, index: Int = -1) {
         model.forwardUrlMap[id] = results
-        setViewHidden(to: results == nil)
+        view.isHidden = results == nil
         model.chromeModel.canGoForward = !view.isHidden
 
         guard let results = results else {
@@ -180,10 +186,5 @@ class SimulatedSwipeController:
         if model.swipeDirection == .back {
             model.goBack()
         }
-    }
-
-    func setViewHidden(to: Bool) {
-        view.isHidden = to
-        model.hidden = to
     }
 }

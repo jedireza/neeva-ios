@@ -4,8 +4,8 @@
 
 import Foundation
 import Shared
-import UIKit
 import SwiftUI
+import UIKit
 
 struct SimulateForwardAnimationParameters {
     let totalRotationInDegrees: Double
@@ -81,7 +81,7 @@ extension SimulatedSwipeAnimator {
 
         if canceledSwipe {
             self.model?.offset = 0
-            
+
             UIView.animate(
                 withDuration: params.cancelAnimationDuration,
                 animations: {
