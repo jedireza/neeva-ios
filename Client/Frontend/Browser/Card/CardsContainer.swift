@@ -84,7 +84,7 @@ struct TabGridContainer: View {
         .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
             if FeatureFlag[.tabGroupsNewDesign] {
                 if let selectedRowId = selectedRowId {
-                    if let _ = tabModel.allDetailsWithExclusionList.first(where: \.isSelected) {
+                    if tabModel.allDetailsWithExclusionList.first(where: \.isSelected) != nil {
                         withAnimation(nil) {
                             scrollProxy.scrollTo(selectedRowId)
                         }
