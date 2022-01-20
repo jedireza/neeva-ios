@@ -207,7 +207,8 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     @ViewBuilder func contextMenu() -> some View {
         Button { [self] in
             guard let url = url, let tab = tab else { return }
-            let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isPrivate: tab.isIncognito)
+            let newTab = manager.addTab(
+                URLRequest(url: url), afterTab: tab, isPrivate: tab.isIncognito)
             newTab.rootUUID = UUID().uuidString
             manager.selectTab(newTab, previous: tab)
         } label: {
