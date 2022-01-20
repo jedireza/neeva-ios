@@ -96,7 +96,7 @@ extension BrowserViewController {
                 .ClickShareButton,
                 attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
             )
-            showShareSheet(buttonView: targetButtonView ?? topBar!.view)
+            showShareSheet(buttonView: targetButtonView ?? view)
         case .downloadPage:
             ClientLogger.shared.logCounter(
                 .ClickDownloadPage,

@@ -38,30 +38,13 @@ class ToastViewManager: QueuedViewManager<ToastView> {
         let toastViewHostingController = UIHostingController(rootView: currentView)
         toastViewHostingController.view.backgroundColor = .clear
 
-        if FeatureFlag[.enableBrowserView] {
-            overlayManager.show(overlay: .toast(currentView!)) {
-                if let toastProgressViewModel = view.toastProgressViewModel,
-                    toastProgressViewModel.status != .inProgress
-                {
-                    self.startViewDismissTimer(for: view)
-                } else if view.autoDismiss {
-                    self.startViewDismissTimer(for: view)
-                }
-            }
-        } else {
-            // creates new window to display Toast in
-            windowManager.createWindow(
-                with: toastViewHostingController, placement: .bottomToolbarPadding, height: height
-            ) { [weak self] in
-                guard let self = self else { return }
-
-                if let toastProgressViewModel = view.toastProgressViewModel,
-                    toastProgressViewModel.status != .inProgress
-                {
-                    self.startViewDismissTimer(for: view)
-                } else if view.autoDismiss {
-                    self.startViewDismissTimer(for: view)
-                }
+        overlayManager.show(overlay: .toast(currentView!)) {
+            if let toastProgressViewModel = view.toastProgressViewModel,
+                toastProgressViewModel.status != .inProgress
+            {
+                self.startViewDismissTimer(for: view)
+            } else if view.autoDismiss {
+                self.startViewDismissTimer(for: view)
             }
         }
     }

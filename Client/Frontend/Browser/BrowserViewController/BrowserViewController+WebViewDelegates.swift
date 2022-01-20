@@ -961,12 +961,8 @@ extension BrowserViewController: WKNavigationDelegate {
 
         locationModel.updateSecureListener(with: webView)
 
-        if FeatureFlag[.enableBrowserView] {
-            self.browserModel.scrollingControlModel.resetZoomState()
-        } else {
-            self.scrollController?.resetZoomState()
-        }
-
+        self.browserModel.scrollingControlModel.resetZoomState()
+        
         if tabManager.selectedTab === tab {
             updateUIForReaderHomeStateForTab(tab)
         }

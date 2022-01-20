@@ -9,12 +9,10 @@ import SwiftUI
 struct RecipeCheatsheetStripView: View {
     @Environment(\.onOpenURL) var onOpenURL
     let tabManager: TabManager
-    let overlayModel: OverlaySheetModel = OverlaySheetModel()
     let overlayManager: OverlayManager
     var height: CGFloat
     var yOffset: CGFloat
     @ObservedObject var recipeModel: RecipeViewModel
-    @State private var presentSheet: Bool = false
     let chromeModel: TabChromeModel
     @State private var richResults: [SearchController.RichResult]?
 
@@ -37,30 +35,26 @@ struct RecipeCheatsheetStripView: View {
 
     var body: some View {
         if !recipeModel.recipe.title.isEmpty && onAllowedDomain() {
-            if presentSheet {
-                recipeSheetView
-            } else {
-                Button(action: showOverlaySheet) {
-                    RecipeBanner(recipe: recipeModel.recipe)
-                    Spacer()
-                    Symbol(decorative: .chevronUp)
-                        .foregroundColor(Color.label)
-                        .padding(.trailing, 8)
-                }
-                .padding(.vertical, 8)
-                .padding(.horizontal, 12)
-                .background(Color.DefaultBackground)
-                .cornerRadius(10)
-                .shadow(radius: 4)
-                .padding(.bottom, 8)
-                .padding(.horizontal, 18)
-                .offset(
-                    x: 0,
-                    y: -height * yOffset
-                )
-                .animation(.easeInOut)
-                .onAppear(perform: logBannerImpression)
+            Button(action: showOverlaySheet) {
+                RecipeBanner(recipe: recipeModel.recipe)
+                Spacer()
+                Symbol(decorative: .chevronUp)
+                    .foregroundColor(Color.label)
+                    .padding(.trailing, 8)
             }
+            .padding(.vertical, 8)
+            .padding(.horizontal, 12)
+            .background(Color.DefaultBackground)
+            .cornerRadius(10)
+            .shadow(radius: 4)
+            .padding(.bottom, 8)
+            .padding(.horizontal, 18)
+            .offset(
+                x: 0,
+                y: -height * yOffset
+            )
+            .animation(.easeInOut)
+            .onAppear(perform: logBannerImpression)
         }
     }
 
@@ -107,21 +101,6 @@ struct RecipeCheatsheetStripView: View {
         }
     }
 
-    @ViewBuilder
-    var recipeSheetView: some View {
-        OverlaySheetView(
-            model: overlayModel,
-            style: .spaces,
-            onDismiss: {
-                presentSheet = false
-                self.chromeModel.toolBarContentView = .regularContent
-            },
-            headerButton: nil
-        ) {
-            recipeView
-        }.padding(.vertical, -10)
-    }
-
     func loadRelatedContent() {
         if let relatedQuery = recipeModel.relatedQuery {
             SearchController.getRichResult(query: relatedQuery) { searchResult in
@@ -146,7 +125,6 @@ struct RecipeCheatsheetStripView: View {
                 RelatedRecipeList(
                     recipes: recipes.filter { $0.url != self.tabManager.selectedTab?.url ?? "" },
                     onDismiss: {
-                        presentSheet = false
                         self.chromeModel.toolBarContentView = .regularContent
                     }
                 )
@@ -157,7 +135,6 @@ struct RecipeCheatsheetStripView: View {
                 RelatedSearchesView(
                     relatedSearches: relatedSearches,
                     onDismiss: {
-                        presentSheet = false
                         self.chromeModel.toolBarContentView = .regularContent
                     }
                 )
@@ -179,23 +156,18 @@ struct RecipeCheatsheetStripView: View {
         self.chromeModel.currentCheatsheetFaviconURL = self.tabManager.selectedTab?.favicon?.url
         self.chromeModel.toolBarContentView = .recipeContent
 
-        if FeatureFlag[.enableBrowserView] {
-            overlayManager.show(
-                overlay: .sheet(
-                    OverlaySheetRootView(
-                        overlayPosition: .top,
-                        style: .spaces,
-                        content: {
-                            AnyView(erasing: recipeView)
-                        },
-                        onDismiss: {
-                            self.chromeModel.toolBarContentView = .regularContent
-                            overlayManager.hideCurrentOverlay()
-                        }, onOpenURL: { _ in }, headerButton: nil)))
-        } else {
-            presentSheet = true
-            overlayModel.show(defaultPosition: .top)
-        }
+        overlayManager.show(
+            overlay: .sheet(
+                OverlaySheetRootView(
+                    overlayPosition: .top,
+                    style: .spaces,
+                    content: {
+                        AnyView(erasing: recipeView)
+                    },
+                    onDismiss: {
+                        self.chromeModel.toolBarContentView = .regularContent
+                        overlayManager.hideCurrentOverlay()
+                    }, onOpenURL: { _ in }, headerButton: nil)))
     }
 
     func constructReviewList(recipe: Recipe) -> [Review] {

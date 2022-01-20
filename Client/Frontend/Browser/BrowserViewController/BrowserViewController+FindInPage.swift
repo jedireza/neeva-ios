@@ -8,65 +8,26 @@ import SwiftUI
 extension BrowserViewController {
     func updateFindInPageVisibility(visible: Bool, tab: Tab? = nil, query: String? = nil) {
         if visible {
-            if FeatureFlag[.enableBrowserView] {
-                let model = FindInPageModel(tab: tab ?? tabManager.selectedTab)
+            let model = FindInPageModel(tab: tab ?? tabManager.selectedTab)
 
-                overlayManager.show(
-                    overlay:
-                        .findInPage(
-                            FindInPageView(
-                                model: model,
-                                onDismiss: {
-                                    self.updateFindInPageVisibility(visible: false, tab: tab)
-                                }
-                            )
-                        ))
+            overlayManager.show(
+                overlay:
+                    .findInPage(
+                        FindInPageView(
+                            model: model,
+                            onDismiss: {
+                                self.updateFindInPageVisibility(visible: false, tab: tab)
+                            }
+                        )
+                    ))
 
-                model.searchValue = query ?? ""
-            } else if findInPageViewController == nil {
-                findInPageViewController = FindInPageViewController(
-                    model: FindInPageModel(tab: tab ?? tabManager.selectedTab),
-                    onDismiss: {
-                        self.updateFindInPageVisibility(visible: false, tab: tab)
-                    })
-
-                let height: CGFloat = FindInPageViewUX.height
-                if let query = query {
-                    // delay displaying query till after animation to prevent weird spacing
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [weak self] in
-                        guard let self = self,
-                            let findInPageViewController = self.findInPageViewController
-                        else {
-                            return
-                        }
-
-                        self.overlayWindowManager?.createWindow(
-                            with: findInPageViewController,
-                            placement: .findInPage,
-                            height: height,
-                            addShadow: true)
-
-                        findInPageViewController.model.searchValue = query
-                    }
-                } else {
-                    overlayWindowManager?.createWindow(
-                        with: findInPageViewController!,
-                        placement: .findInPage,
-                        height: height,
-                        addShadow: true)
-                }
-            }
+            model.searchValue = query ?? ""
         } else {
             let tab = tab ?? tabManager.selectedTab
             guard let webView = tab?.webView else { return }
             webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
 
-            if FeatureFlag[.enableBrowserView] {
-                overlayManager.hideCurrentOverlay(ofPriority: .modal, animate: false)
-            } else {
-                overlayWindowManager?.removeCurrentWindow()
-                findInPageViewController = nil
-            }
+            overlayManager.hideCurrentOverlay(ofPriority: .modal, animate: false)
         }
     }
 }

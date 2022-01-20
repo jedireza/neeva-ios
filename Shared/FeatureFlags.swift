@@ -26,7 +26,6 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case updatedTabOverflowMenu = "Update Tab Overflow Menu"
     case enableSuggestedSpaces = "Show Spaces from Neeva Community"
     case enableCryptoWallet = "Enable crypto wallet"
-    case enableBrowserView = "Enable BrowserView"
     case customSearchEngine = "Custom Search Engine"
 
     public init?(caseName: String) {
