@@ -164,7 +164,9 @@ class TabManager: NSObject, ObservableObject {
     var selectedTab: Tab?
     @Published var isIncognito: Bool = false {
         didSet {
-            SceneDelegate.getBVC(with: scene).applyUIMode(isIncognito: isIncognito)
+            let bvc = SceneDelegate.getBVC(with: scene)
+            let ui: [IncognitoModeUI?] = [bvc.toolbar, bvc.topBar, bvc.tabContainerHost, bvc.browserHost]
+            ui.forEach { $0?.applyUIMode(isIncognito: isIncognito) }
         }
     }
 

@@ -355,7 +355,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
         if let tab = tabManager.selectedTab,
             let webView = tab.webView
         {
-            toolbar?.applyUIMode(isIncognito: tabManager.isIncognito)
             updateURLBarDisplayURL(tab)
             chromeModel.canGoBack = webView.canGoBack
             chromeModel.canGoForward = webView.canGoForward
@@ -1765,10 +1764,6 @@ extension BrowserViewController: TabManagerDelegate {
         if let tab = selected, let webView = tab.webView {
             updateURLBarDisplayURL(tab)
 
-            if previous == nil || tab.isIncognito != previous?.isIncognito {
-                applyUIMode(isIncognito: tab.isIncognito)
-            }
-
             readerModeCache =
                 tab.isIncognito
                 ? MemoryReaderModeCache.sharedInstance : DiskReaderModeCache.sharedInstance
@@ -1860,11 +1855,6 @@ extension BrowserViewController: TabManagerDelegate {
 
     func getSceneDelegate() -> SceneDelegate? {
         SceneDelegate.getCurrentSceneDelegate(for: self.view)
-    }
-
-    func applyUIMode(isIncognito: Bool) {
-        let ui: [IncognitoModeUI?] = [toolbar, topBar, tabContainerHost, browserHost]
-        ui.forEach { $0?.applyUIMode(isIncognito: isIncognito) }
     }
 }
 
