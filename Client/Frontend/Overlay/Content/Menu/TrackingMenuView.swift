@@ -33,6 +33,15 @@ class TrackingStatsViewModel: ObservableObject {
     @Published private(set) var hallOfShameDomains = [HallOfShameDomain]()
     @Published var preventTrackersForCurrentPage: Bool {
         didSet {
+            ClientLogger.shared.logCounter(
+                preventTrackersForCurrentPage ? .TurnOnBlockTracking : .TurnOffBlockTracking,
+                attributes: EnvironmentHelper.shared.getAttributes() + [
+                    ClientLogCounterAttribute(
+                        key: LogConfig.TrackingProtectionAttribute.toggleProtectionForURL,
+                        value: selectedTab?.currentURL()?.absoluteString)
+                ]
+            )
+
             guard let domain = selectedTab?.currentURL()?.host else {
                 return
             }

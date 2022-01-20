@@ -43,8 +43,12 @@ public struct LogConfig {
         // MARK: tracking shield
         /// Turn on block tracking from shield
         case TurnOnBlockTracking
-        /// Turn on block tracking from shield
+        /// Turn off block tracking from shield
         case TurnOffBlockTracking
+        /// Turn on block tracking from settings
+        case TurnOnGlobalBlockTracking
+        /// Turn off block tracking from settings
+        case TurnOffGlobalBlockTracking
 
         // MARK: neeva menu
         /// Open home from neeva menu
@@ -346,6 +350,8 @@ public struct LogConfig {
         case .LongPressForward: return .UI
         case .TurnOnBlockTracking: return .UI
         case .TurnOffBlockTracking: return .UI
+        case .TurnOnGlobalBlockTracking: return .UI
+        case .TurnOffGlobalBlockTracking: return .UI
 
         case .OpenHome: return .NeevaMenu
         case .OpenSpaces: return .NeevaMenu
@@ -601,5 +607,9 @@ public struct LogConfig {
 
     public struct DeeplinkAttribute {
         public static let searchRedirect = "SearchRedirect"
+    }
+
+    public struct TrackingProtectionAttribute {
+        public static let toggleProtectionForURL = "ToggleProtectionForURL"
     }
 }
