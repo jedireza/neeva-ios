@@ -7,9 +7,8 @@ import Shared
 import SwiftUI
 
 struct AppHostSetting: View {
-    @Default(.neevaHost) var appHost
-
-    @State var viewRef: UIView?
+    @Default(.neevaHost) private var appHost
+    @State private var isChanging = false
 
     var body: some View {
         HStack {
