@@ -205,9 +205,14 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     @ViewBuilder func contextMenu() -> some View {
-        Button(action: {}) {
+        Button { [self] in
+            guard let url = url, let tab = tab else { return }
+            let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isPrivate: tab.isIncognito)
+            newTab.parentUUID = nil
+            manager.selectTab(newTab, previous: tab)
+        } label: {
             Label("Duplicate Tab", systemSymbol: .plusSquareOnSquare)
-        }.disabled(true)
+        }.disabled(url == nil)
 
         if tab?.isIncognito == false {
             Button { [self] in
