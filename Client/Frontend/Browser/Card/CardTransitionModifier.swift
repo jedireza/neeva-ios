@@ -35,6 +35,7 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
             }
         }
         .ignoresSafeArea(edges: [.bottom])
+        .accessibilityHidden(true)
     }
 
     @ViewBuilder var overlayCard: some View {

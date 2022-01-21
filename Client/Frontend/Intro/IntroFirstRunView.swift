@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import Defaults
+import SafariServices
 import Shared
 import SwiftUI
 
@@ -15,102 +16,80 @@ struct FirstRunHomePage: View {
     let smallSizeScreen: CGFloat = 375.0
 
     var body: some View {
-        VStack {
-            FirstRunCloseButton(
-                action: {
-                    buttonAction(.skipToBrowser)
-                    logFirstRunSkipToBrowser()
-                }
-            )
+        GeometryReader { geom in
+            VStack(spacing: 0) {
+                Spacer(minLength: 17.5)
 
-            GeometryReader { geom in
-                VStack(alignment: .leading) {
-                    Spacer()
+                VStack(alignment: .leading, spacing: 30) {
+                    Image(decorative: "neeva-letter-only")
 
-                    Image("neeva-letter-only")
-
+                    let isSmallScreen = geom.size.width < 350
                     VStack(alignment: .leading) {
-                        Text("Welcome to")
-                        Text("Neeva, the only")
-                        Text("ad-free, private")
-                        Text("search engine")
+                        Text("Welcome To Neeva")
+                            .font(.roobert(size: isSmallScreen ? 28 : 36))
+                        Text("Create your free Neeva account")
+                            .font(.roobert(size: isSmallScreen ? 16 : 20))
                     }
-                    .minimumScaleFactor(0.1)
-                    .font(
-                        .roobert(
-                            .light, size: 42)
-                    )
-                    .foregroundColor(Color.ui.gray20)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.top, 20)
-
-                    Spacer()
                 }
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Welcome to Neeva, the only ad-free, private search engine")
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
-            }
+                .padding(.bottom, 50)
 
-            VStack {
-                SignUpWithAppleButton(
-                    action: {
+                VStack(spacing: 25) {
+                    IntroButton(
+                        icon: Image(systemSymbol: .applelogo), label: "Sign up with Apple",
+                        color: .black
+                    ) {
                         logFirstRunSignUpWithAppleClick()
                         buttonAction(.signupWithApple(marketingEmailOptOut, nil))
-                    },
-                    onSignInMode: $onSignInMode
-                )
-                .padding(.top, 40)
-
-                Button(action: {
-                    logFirstRunOtherSignupOption()
-                    onOtherOptionsPage = true
-                }) {
-                    HStack {
-                        Spacer()
-                        Text("Other sign up options")
-                            .foregroundColor(.brand.white)
-                        Spacer()
                     }
-                    .foregroundColor(.brand.white)
-                    .padding(EdgeInsets(top: 23, leading: 0, bottom: 23, trailing: 0))
+
+                    IntroButton(icon: nil, label: "Other sign up options", color: .brand.blue) {
+                        logFirstRunOtherSignupOption()
+                        onOtherOptionsPage = true
+                    }
+
+                    TermsAndPrivacyLinks(width: geom.size.width)
+
+                    Button(action: { marketingEmailOptOut.toggle() }) {
+                        HStack {
+                            marketingEmailOptOut
+                                ? Symbol(decorative: .circle, size: 20)
+                                    .foregroundColor(Color.tertiaryLabel)
+                                : Symbol(decorative: .checkmarkCircleFill, size: 20)
+                                    .foregroundColor(Color.blue)
+                            Text("Send me product & privacy tips")
+                                .font(.roobert(size: 13))
+                                .foregroundColor(Color.ui.gray20)
+                                .multilineTextAlignment(.center)
+                        }
+                    }
                 }
-                .background(Color.brand.blue)
-                .clipShape(RoundedRectangle(cornerRadius: 100))
-                .shadow(color: Color.ui.gray70, radius: 1, x: 0, y: 1)
-                .padding(.top, 20)
-            }
-            .font(.roobert(.semibold, size: 18))
 
-            Button(action: { marketingEmailOptOut.toggle() }) {
-                HStack {
-                    marketingEmailOptOut
-                        ? Symbol(decorative: .circle, size: 20)
-                            .foregroundColor(Color.tertiaryLabel)
-                        : Symbol(decorative: .checkmarkCircleFill, size: 20)
-                            .foregroundColor(Color.blue)
-                    Text("Send me product & privacy tips")
-                        .font(.roobert(size: 13))
-                        .foregroundColor(Color.ui.gray20)
-                        .multilineTextAlignment(.center)
+                Spacer(minLength: 17.5)
+
+                SignInButton {
+                    logFirstRunSignin()
+                    onOtherOptionsPage = true
+                    onSignInMode = true
                 }
             }
-            .padding(.top, 20)
-
-            Spacer()
-
-            SignInButton(action: {
-                logFirstRunSignin()
-                onOtherOptionsPage = true
-                onSignInMode = true
-            })
-            .padding(.bottom, 20)
+            .padding(.horizontal, 25)
+            .padding(.vertical, 35)
         }
-        .padding(35)
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.brand.offwhite)
-        .ignoresSafeArea(.all)
-        .colorScheme(.light)
+        .background(
+            Color.brand.offwhite
+                .ignoresSafeArea(.all)
+        )
         .onAppear(perform: logImpression)
+        .overlay(
+            FirstRunCloseButton {
+                buttonAction(.skipToBrowser)
+                logFirstRunSkipToBrowser()
+            }, alignment: .topTrailing
+        )
+        .colorScheme(.light)
     }
 
     func logImpression() {
@@ -234,6 +213,121 @@ struct IntroFirstRunView: View {
                 onSignInMode: $onSignInMode)
         }
     }
+}
+
+private struct IntroButton: View {
+    let icon: Image?
+    let label: LocalizedStringKey
+    let color: Color
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack {
+                if let icon = icon {
+                    icon.font(.system(size: 20, weight: .semibold))
+                }
+                Spacer(minLength: 0)
+                Text(label)
+                    .font(.roobert(.semibold, size: 20))
+                Spacer(minLength: 0)
+            }
+            .foregroundColor(.white)
+            .padding(.horizontal, 24)
+            .frame(height: 60)
+            .background(Capsule().fill(color))
+        }
+    }
+}
+
+// This is hacky but there isn’t a better way in the current version of SwiftUI.
+private struct TermsAndPrivacyLinks: View {
+    let width: CGFloat  // width of screen, determines line break behavior
+
+    var termsButton: some View {
+        SafariVCLink("Terms of Service", url: NeevaConstants.appTermsURL)
+    }
+
+    var privacyButton: some View {
+        SafariVCLink("Privacy Policy", url: NeevaConstants.appPrivacyURL)
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            if width < 350 {
+                Text("By creating your Neeva account you")
+                    .accessibilityLabel("By creating your Neeva account you acknowledge Neeva’s")
+                HStack(spacing: 0) {
+                    Text("acknowledge Neeva’s ")
+                        .accessibilityHidden(true)
+                    termsButton
+                    Text(" and")
+                }
+                privacyButton
+            } else {
+                Text("By creating your Neeva account you acknowledge")
+                    .accessibilityLabel("By creating your Neeva account you acknowledge Neeva’s")
+                HStack(spacing: 0) {
+                    Text("Neeva’s ")
+                        .accessibilityHidden(true)
+                    termsButton
+                    Text(" and ")
+                    privacyButton
+                }
+            }
+        }
+        .font(.system(size: 13))
+        .foregroundColor(.secondaryLabel)
+        .frame(maxWidth: .infinity, alignment: .center)
+    }
+}
+
+private struct SafariVCLink: View {
+    let title: LocalizedStringKey
+    let url: URL
+
+    @available(iOS 15.0, *)
+    @State private var token: SFSafariViewController.PrewarmingToken?
+
+    @State private var modal = ModalState()
+
+    init(_ title: LocalizedStringKey, url: URL) {
+        self.title = title
+        self.url = url
+
+        // Strictly an optimization, no need for a fallback on older versions
+        if #available(iOS 15.0, *) {
+            _token = .init(initialValue: SFSafariViewController.prewarmConnections(to: [url]))
+        } else {
+            _token = .init(initialValue: nil)
+        }
+    }
+
+    var body: some View {
+        Button {
+            modal.present()
+        } label: {
+            Text(title)
+                .underline()
+                .foregroundColor(.secondaryLabel)
+        }.modal(state: $modal) {
+            Safari(url: url)
+        }
+    }
+}
+
+private struct Safari: ViewControllerWrapper {
+    let url: URL
+
+    func makeUIViewController(context: Context) -> SFSafariViewController {
+        let config = SFSafariViewController.Configuration()
+        config.barCollapsingEnabled = false
+        let vc = SFSafariViewController(url: url, configuration: config)
+        vc.preferredControlTintColor = UIColor.ui.adaptive.blue
+        return vc
+    }
+
+    func updateUIViewController(_ vc: SFSafariViewController, context: Context) {}
 }
 
 struct IntroFirstRunView_Previews: PreviewProvider {
