@@ -19,7 +19,6 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
         content
             .zIndex(details.isSelected ? 1 : 0)
             .opacity(details.isSelected && browserModel.cardTransition != .hidden ? 0 : 1)
-            .animation(nil)
             .overlay(overlay)
     }
 
