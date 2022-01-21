@@ -8,6 +8,7 @@ import SwiftUI
 struct CollapsableCardGroupView: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
     let containerGeometry: GeometryProxy
+    @Binding var tabGroupCardFrame: CGRect
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
@@ -129,6 +130,13 @@ struct CollapsableCardGroupView: View {
                 HStack(spacing: CardGridUX.GridSpacing) {
                     ForEach(row) { childTabDetail in
                         FittedCard(details: childTabDetail, dragToClose: false)
+                            .background(
+                                GeometryReader { geom in
+                                    Color.clear.useEffect(deps: geom.frame(in: .global)) { frame in
+                                        self.tabGroupCardFrame = frame
+                                    }
+                                }
+                            )
                             .matchedGeometryEffect(id: childTabDetail.id, in: cardGroup)
                             .modifier(
                                 CardTransitionModifier(

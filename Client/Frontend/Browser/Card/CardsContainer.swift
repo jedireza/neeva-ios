@@ -35,6 +35,9 @@ struct TabGridContainer: View {
 
     @Environment(\.columns) private var columns
 
+    @State var tabGroupContainerFrame = CGRect.zero
+    @State var tabGroupCardFrame = CGRect.zero
+
     var selectedRowId: TabCardModel.Row.ID? {
         tabModel.buildRows(
             incognito: isIncognito, tabGroupModel: tabGroupModel, maxCols: columns.count
@@ -56,7 +59,7 @@ struct TabGridContainer: View {
         Group {
             if FeatureFlag[.tabGroupsNewDesign] {
                 LazyVStack(alignment: .leading, spacing: CardGridUX.GridSpacing) {
-                    SingleLevelTabCardsView(containerGeometry: geom, incognito: isIncognito)
+                    SingleLevelTabCardsView(containerGeometry: geom, incognito: isIncognito, tabGroupContainerFrame: $tabGroupContainerFrame, tabGroupCardFrame: $tabGroupCardFrame)
                 }
             } else {
                 LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
@@ -85,7 +88,7 @@ struct TabGridContainer: View {
             if FeatureFlag[.tabGroupsNewDesign] {
                 if let selectedRowId = selectedRowId {
                     withAnimation(nil) {
-                        scrollProxy.scrollTo(selectedRowId)
+                        scrollProxy.scrollTo(selectedRowId, anchor: UnitPoint(x: 0, y: (tabGroupCardFrame.minY - tabGroupContainerFrame.minY)/(tabGroupContainerFrame.maxY - tabGroupContainerFrame.minY)))
                     }
                 }
             } else {

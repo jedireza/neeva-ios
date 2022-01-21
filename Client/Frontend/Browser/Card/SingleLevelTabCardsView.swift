@@ -20,6 +20,8 @@ struct SingleLevelTabCardsView: View {
 
     let containerGeometry: GeometryProxy
     let incognito: Bool
+    @Binding var tabGroupContainerFrame: CGRect
+    @Binding var tabGroupCardFrame: CGRect
 
     var body: some View {
         ForEach(
@@ -31,7 +33,7 @@ struct SingleLevelTabCardsView: View {
                     switch details {
                     case .tabGroup(let groupDetails):
                         CollapsableCardGroupView(
-                            groupDetails: groupDetails, containerGeometry: containerGeometry
+                            groupDetails: groupDetails, containerGeometry: containerGeometry, tabGroupCardFrame: $tabGroupCardFrame
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
                     case .tab(let tabDetails):
@@ -43,6 +45,13 @@ struct SingleLevelTabCardsView: View {
                     }
                 }
             }
+            .background(
+                GeometryReader { geom in
+                    Color.clear.useEffect(deps: geom.frame(in: .global)) { frame in
+                        self.tabGroupContainerFrame = frame
+                    }
+                }
+            )
             .padding(.horizontal, CardGridUX.GridSpacing)
             .zIndex(row.cells.contains(where: \.isSelected) ? 1 : 0)
         }
