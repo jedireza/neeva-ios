@@ -1001,6 +1001,10 @@ extension BrowserViewController: WKNavigationDelegate {
             let userInfo = NeevaUserInfo.shared
             if url.path == NeevaConstants.appSigninURL.path {
                 if userInfo.hasLoginCookie() {
+                    ClientLogger.shared.logCounter(
+                        .ImplicitDeleteCookie,
+                        attributes: EnvironmentHelper.shared.getFirstRunAttributes()
+                    )
                     NotificationPermissionHelper.shared.deleteDeviceTokenFromServer()
                     userInfo.deleteLoginCookie()
                     userInfo.didLogOut()

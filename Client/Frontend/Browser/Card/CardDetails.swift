@@ -131,6 +131,8 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     typealias Manager = TabManager
 
     public let id: String
+    private var isPinnedSubscription: AnyCancellable?
+
     var manager: TabManager
 
     var isPinned: Bool {
@@ -167,6 +169,10 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     init(tab: Tab, manager: TabManager) {
         self.id = tab.id
         self.manager = manager
+
+        isPinnedSubscription = tab.$isPinned.sink { [unowned self] _ in
+            objectWillChange.send()
+        }
     }
 
     public func performDrop(info: DropInfo) -> Bool {

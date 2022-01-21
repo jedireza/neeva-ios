@@ -44,6 +44,12 @@ struct PrivacySettingsSection: View {
             }
         } else {
             Toggle("Tracking Protection", isOn: $contentBlockingEnabled)
+                .onChange(of: contentBlockingEnabled) { enabled in
+                    ClientLogger.shared.logCounter(
+                        enabled ? .TurnOnGlobalBlockTracking : .TurnOffGlobalBlockTracking,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                    )
+                }
         }
         NavigationLinkButton("Privacy Policy") {
             ClientLogger.shared.logCounter(

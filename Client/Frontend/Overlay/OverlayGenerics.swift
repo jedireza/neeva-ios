@@ -100,11 +100,16 @@ struct OverlaySheetRootView: View {
 }
 
 class OverlayViewController: UIHostingController<OverlayRootView> {
+    let isPopover: Bool
+    let style: OverlayStyle
+
     init(
         isPopover: Bool, style: OverlayStyle, content: @escaping () -> AnyView,
         onDismiss: @escaping () -> Void, onOpenURL: @escaping (URL) -> Void,
         headerButton: OverlayHeaderButton?
     ) {
+        self.isPopover = isPopover
+        self.style = style
         super.init(
             rootView: OverlayRootView(
                 isPopover: isPopover, style: style, content: content, onDismiss: onDismiss,

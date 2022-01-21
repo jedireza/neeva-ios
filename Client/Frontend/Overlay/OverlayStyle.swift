@@ -24,7 +24,14 @@ public struct OverlayStyle {
         backgroundColor: .systemGroupedBackground.elevated)
 
     static let spaces = OverlayStyle(
-        showTitle: false, backgroundColor: .DefaultBackground)
+        showTitle: false,
+        backgroundColor: .DefaultBackground
+    )
+
+    static let cheatsheet = OverlayStyle(
+        showTitle: false,
+        backgroundColor: .DefaultBackground
+    )
 
     /// Use for sheets with a title (e.g., like the AddToSpaces sheet).
     static let withTitle = OverlayStyle(showTitle: true)
