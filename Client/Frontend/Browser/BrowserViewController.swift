@@ -1800,10 +1800,10 @@ extension BrowserViewController: TabManagerDelegate {
 
         updateFindInPageVisibility(visible: false, tab: previous)
         chromeModel.canGoBack =
-            (simulateBackModel.canGoBack()
+            (simulateBackModel.canGoBack
                 || selected?.canGoBack ?? false)
         chromeModel.canGoForward =
-            (simulateForwardModel.canGoForward()
+            (simulateForwardModel.canGoForward
                 || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
             if selected?.isLoading ?? false {
