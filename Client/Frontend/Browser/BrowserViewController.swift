@@ -394,12 +394,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 SpaceStore.suggested.refresh()
             }
         }
-
-        if FeatureFlag[.enableCryptoWallet] {
-            DispatchQueue.main.async {
-                AssetStore.shared.refresh()
-            }
-        }
     }
 
     override func viewDidLoad() {
@@ -696,7 +690,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     private func hideOverlaySheetViewController() {
-        overlayManager.hideCurrentOverlay()
+       if case .sheet = overlayManager.currentOverlay {
+          overlayManager.hideCurrentOverlay()
+       }
     }
 
     private func hideOverlayPopoverViewController() {

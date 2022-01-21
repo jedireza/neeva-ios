@@ -28,18 +28,29 @@ public class AssetStore: ObservableObject {
             return
         }
         self.state = .syncing
-        if let data = try? Data(contentsOf: url) {
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.addValue("application/json", forHTTPHeaderField: "Accept")
+
+        URLSession.shared.dataTask(with: request) { (data, response, error) in
+            guard error == nil, let data = data else { return }
+
             guard let result = try? JSONDecoder().decode(AssetsResult.self, from: data) else {
-                self.state = .error
+                DispatchQueue.main.async {
+                    self.state = .error
+                }
                 return
             }
-            assets = result.assets
-            assets.forEach({
-                guard let collection = $0.collection else { return }
-                collections.insert(collection)
-            })
-            self.state = .ready
-        }
+            DispatchQueue.main.async {
+                self.assets = result.assets
+                self.assets.forEach({
+                    guard let collection = $0.collection else { return }
+                    self.collections.insert(collection)
+                })
+                self.state = .ready
+            }
+        }.resume()
     }
 
     public func fetch(collection slug: String, onFetch: @escaping (Collection) -> Void) {
