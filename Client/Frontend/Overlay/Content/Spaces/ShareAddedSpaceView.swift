@@ -50,10 +50,6 @@ struct ShareAddedSpaceView: View {
                             browserModel.openSpace(
                                 spaceID: request.targetSpaceID!, animate: false)
 
-                            if !FeatureFlag[.enableBrowserView] {
-                                hideOverlay()
-                            }
-
                             let entity: SpaceEntityData? = space?.contentData?.first
                             if let id = entity?.id, let space = space {
                                 bvc

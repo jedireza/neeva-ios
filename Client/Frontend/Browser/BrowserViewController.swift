@@ -700,19 +700,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     private func hideOverlayPopoverViewController() {
-        if FeatureFlag[.enableBrowserView] {
-            if case .popover = overlayManager.currentOverlay {
-                overlayManager.hideCurrentOverlay()
-            }
-        } else {
-            if let overlayPopoverViewController = overlayPopoverViewController,
-               let overlayViewController = overlayPopoverViewController as? OverlayViewController,
-               overlayViewController.isPopover,
-               !overlayViewController.style.nonDismissible
-            {
-                overlayPopoverViewController.dismiss(animated: true, completion: nil)
-                self.overlayPopoverViewController = nil
-            }
+        if case .popover = overlayManager.currentOverlay {
+            overlayManager.hideCurrentOverlay()
         }
     }
 
