@@ -19,9 +19,6 @@ let requestDesktopSiteLabel = "Request Desktop Site"
 
 class NavigationTest: BaseTestCase {
     func testNavigation() {
-        XCTAssert(app.buttons["Address Bar"].exists)
-        app.buttons["Address Bar"].tap()
-
         // Check that the back and forward buttons are disabled
         if iPad() {
             app.buttons["Cancel"].tap()
@@ -39,6 +36,9 @@ class NavigationTest: BaseTestCase {
                 XCTAssertFalse(element.isEnabled)
             }*/
         }
+
+        XCTAssert(app.buttons["Address Bar"].exists)
+        app.buttons["Address Bar"].tap()
 
         // The URL is opened in a new tab, so the back / forward buttons are disabled
         openURL(path(forTestPage: "test-example.html"))

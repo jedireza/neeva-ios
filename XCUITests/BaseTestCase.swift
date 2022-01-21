@@ -261,7 +261,7 @@ extension BaseTestCase {
 }
 
 extension XCUIElement {
-    func tap(force: Bool) {
+    func tap(force: Bool = true) {
         // There appears to be a bug with tapping elements sometimes, despite them being on-screen and tappable, due to hittable being false.
         // See: http://stackoverflow.com/a/33534187/1248491
         if isHittable {

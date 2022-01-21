@@ -60,7 +60,7 @@ class LazyTabTests: BaseTestCase {
     // MARK: Overflow
     func testNoTabAddedWhenCancelingNewTabFromOverflow() {
         goToOverflowMenuButton(label: "New Tab", shouldDismissOverlay: false) { element in
-            element.tap()
+            element.tap(force: true)
         }
 
         waitForExistence(app.buttons["Cancel"])
@@ -73,7 +73,7 @@ class LazyTabTests: BaseTestCase {
     func testLazyTabCreatedFromOverflow() {
         goToOverflowMenu()
 
-        app.buttons["New Tab"].tap()
+        app.buttons["New Tab"].tap(force: true)
 
         waitForExistence(app.buttons["Cancel"])
         openURL()

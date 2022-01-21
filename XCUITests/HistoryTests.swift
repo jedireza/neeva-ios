@@ -179,7 +179,6 @@ class HistoryTests: BaseTestCase {
     }
 
     func testIncognitoClosedSiteDoesNotAppearOnRecentlyClosedMenu() {
-        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
         setIncognitoMode(enabled: true)
 
         // Open the default website
@@ -192,7 +191,6 @@ class HistoryTests: BaseTestCase {
     }
 
     func testIncognitoClosedSiteDoesNotAppearOnRecentlyClosed() {
-        waitForExistence(app.buttons["Show Tabs"], timeout: 15)
         setIncognitoMode(enabled: true)
 
         // Open the default website

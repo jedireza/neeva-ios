@@ -45,7 +45,7 @@ class CreateOrSwitchToTabTests: BaseTestCase {
         openURL(path(forTestPage: "test-mozilla-book.html"))
 
         goToOverflowMenuButton(label: "New Tab", shouldDismissOverlay: false) { element in
-            element.tap()
+            element.tap(force: true)
         }
         openURL(path(forTestPage: "test-mozilla-org.html"))
 

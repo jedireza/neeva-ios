@@ -31,7 +31,7 @@ extension BaseTestCase {
     /// Launches from tab page
     func goToSettings() {
         showAppNavigationMenu(for: "Settings")
-        app.buttons["Settings"].tap()
+        app.buttons["Settings"].tap(force: true)
 
         waitForExistence(app.tables.cells["Show Search Suggestions"])
     }
@@ -39,7 +39,7 @@ extension BaseTestCase {
     /// Lauches from tab page
     func goToFindOnPage() {
         goToOverflowMenuButton(label: "Find on Page", shouldDismissOverlay: false) { element in
-            element.tap()
+            element.tap(force: true)
         }
 
         waitForExistence(app.textFields["FindInPage_TextField"])
@@ -64,7 +64,7 @@ extension BaseTestCase {
     /// Launches from tab page
     func goToHistory() {
         showAppNavigationMenu(for: "History")
-        app.buttons["History"].tap()
+        app.buttons["History"].tap(force: true)
     }
 
     /// Launches from tab page, then opens history
