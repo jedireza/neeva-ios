@@ -37,7 +37,8 @@ extension BrowserViewController {
                 .ClickForward,
                 attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
             )
-            if simulateForwardViewController?.goForward() ?? false {
+
+            if simulateForwardModel.goForward() {
                 return
             }
 

@@ -25,6 +25,7 @@ struct BrowserView: View {
     @ObservedObject var overlayManager: OverlayManager
     @ObservedObject var tabGroupModel: TabGroupCardModel
     @ObservedObject var spaceModel: SpaceCardModel
+    @ObservedObject var simulatedBackModel: SimulatedSwipeModel
 
     private var inlineToolbarHeight: CGFloat {
         return UIConstants.TopToolbarHeightWithToolbarButtonsShowing
@@ -101,6 +102,16 @@ struct BrowserView: View {
             tabContainerContent
                 .opacity(browserModel.showContent ? 1 : 0)
                 .accessibilityHidden(!browserModel.showContent)
+                .offset(x: simulatedBackModel.contentOffset / 2.5)
+
+            if browserModel.showContent {
+                GeometryReader { geom in
+                    SimulatedSwipeViewRepresentable(model: simulatedBackModel)
+                        .opacity(!simulatedBackModel.hidden ? 1 : 0)
+                        .offset(x: -geom.size.width + simulatedBackModel.overlayOffset)
+                        .frame(width: geom.size.width + SwipeUX.EdgeWidth)
+                }
+            }
         }
     }
 
@@ -121,6 +132,7 @@ struct BrowserView: View {
                             UIConstants.enableBottomURLBar ? .bottom : .top,
                             detailViewVisible ? 0 : topBarPadding
                         )
+                        .background(Color.white)
 
                     // Top Bar
                     VStack {
@@ -208,5 +220,6 @@ struct BrowserView: View {
         self.tabGroupModel = bvc.gridModel.tabGroupCardModel
         self.spaceModel = bvc.gridModel.spaceCardModel
         self.browserModel = bvc.browserModel
+        self.simulatedBackModel = bvc.simulateBackModel
     }
 }

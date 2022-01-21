@@ -130,28 +130,32 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     private(set) var overlaySheetViewController: UIViewController?
     private(set) var overlayPopoverViewController: UIViewController?
+
+    private(set) lazy var simulateForwardModel: SimulatedSwipeModel = {
+        SimulatedSwipeModel(
+            tabManager: tabManager, chromeModel: chromeModel, swipeDirection: .forward)
+    }()
     private(set) lazy var simulateForwardViewController: SimulatedSwipeController? = {
-        guard FeatureFlag[.swipePlusPlus] else {
+        guard FeatureFlag[.swipePlusPlus] && !FeatureFlag[.enableBrowserView] else {
             return nil
         }
-        let host = SimulatedSwipeController(
-            tabManager: self.tabManager,
-            chromeModel: chromeModel,
-            swipeDirection: .forward,
-            contentView: tabContainerHost?.view)
+
+        let host = SimulatedSwipeController(model: simulateForwardModel)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
         return host
     }()
 
-    private(set) lazy var simulateBackViewController: SimulatedSwipeController = {
-        let host = SimulatedSwipeController(
-            tabManager: self.tabManager,
-            chromeModel: chromeModel,
-            swipeDirection: .back,
-            contentView: FeatureFlag[.enableBrowserView] ? browserHost.view : tabContainerHost?.view
-        )
+    private(set) lazy var simulateBackModel: SimulatedSwipeModel = {
+        SimulatedSwipeModel(tabManager: tabManager, chromeModel: chromeModel, swipeDirection: .back)
+    }()
+    private(set) lazy var simulateBackViewController: SimulatedSwipeController? = {
+        guard !FeatureFlag[.enableBrowserView] else {
+            return nil
+        }
+
+        let host = SimulatedSwipeController(model: simulateBackModel)
         addChild(host)
         view.addSubview(host.view)
         host.view.isHidden = true
@@ -580,20 +584,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
             browserHost.view.snp.makeConstraints { make in
                 make.edges.equalToSuperview()
             }
-
-            simulateBackViewController.view.snp.makeConstraints { make in
-                make.top.bottom.equalTo(browserHost.view)
-                make.width.equalTo(browserHost.view).offset(SwipeUX.EdgeWidth)
-                make.trailing.equalTo(browserHost.view.snp.leading).offset(SwipeUX.EdgeWidth)
-            }
-
-            if FeatureFlag[.swipePlusPlus] {
-                simulateForwardViewController?.view.snp.makeConstraints { make in
-                    make.top.bottom.equalTo(browserHost.view)
-                    make.width.equalTo(browserHost.view).offset(SwipeUX.EdgeWidth)
-                    make.leading.equalTo(browserHost.view.snp.trailing).offset(-SwipeUX.EdgeWidth)
-                }
-            }
         } else {
             topBar?.view.snp.makeConstraints { make in
                 make.leading.trailing.equalToSuperview()
@@ -627,7 +617,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     .store(in: &subscriptions)
             }
 
-            simulateBackViewController.view.snp.makeConstraints { make in
+            simulateBackViewController?.view.snp.makeConstraints { make in
                 make.top.bottom.equalTo(tabContainerHost!.view)
                 make.width.equalTo(tabContainerHost!.view).offset(SwipeUX.EdgeWidth)
                 make.trailing.equalTo(tabContainerHost!.view.snp.leading).offset(SwipeUX.EdgeWidth)
@@ -1841,10 +1831,10 @@ extension BrowserViewController: TabManagerDelegate {
 
         updateFindInPageVisibility(visible: false, tab: previous)
         chromeModel.canGoBack =
-            (simulateBackViewController.canGoBack()
+            (simulateBackModel.canGoBack()
                 || selected?.canGoBack ?? false)
         chromeModel.canGoForward =
-            (simulateForwardViewController?.canGoForward() ?? false
+            (simulateForwardModel.canGoForward()
                 || selected?.canGoForward ?? false)
         if let url = selected?.webView?.url, !InternalURL.isValid(url: url) {
             if selected?.isLoading ?? false {

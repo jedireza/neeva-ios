@@ -3,6 +3,9 @@
 // found in the LICENSE file.
 
 import Foundation
+import Shared
+import SwiftUI
+import UIKit
 
 struct SimulateForwardAnimationParameters {
     let totalRotationInDegrees: Double
@@ -31,9 +34,8 @@ protocol SimulateForwardAnimatorDelegate: AnyObject {
 
 class SimulatedSwipeAnimator: NSObject {
     weak var delegate: SimulateForwardAnimatorDelegate?
-    weak var animatingView: UIView?
-    weak var contentView: UIView?
-    var swipeDirection: SwipeDirection
+    weak var simulatedSwipeControllerView: UIView?
+    weak var model: SimulatedSwipeModel?
 
     fileprivate var prevOffset: CGPoint?
     fileprivate let params: SimulateForwardAnimationParameters
@@ -47,19 +49,26 @@ class SimulatedSwipeAnimator: NSObject {
         return CGPoint(x: animatingView.frame.width / 2, y: animatingView.frame.height / 2)
     }
 
+    var contentView: UIView? {
+        model?.tabManager.selectedTab?.webView
+    }
+
+    var animatingView: UIView? {
+        return simulatedSwipeControllerView
+    }
+
     init(
-        swipeDirection: SwipeDirection, animatingView: UIView, contentView: UIView?,
+        model: SimulatedSwipeModel, simulatedSwipeControllerView: UIView,
         params: SimulateForwardAnimationParameters = DefaultParameters
     ) {
-        self.animatingView = animatingView
-        self.contentView = contentView
+        self.model = model
         self.params = params
-        self.swipeDirection = swipeDirection
+        self.simulatedSwipeControllerView = simulatedSwipeControllerView
 
         super.init()
 
         self.panGestureRecogniser = UIPanGestureRecognizer(target: self, action: #selector(didPan))
-        animatingView.addGestureRecognizer(self.panGestureRecogniser)
+        simulatedSwipeControllerView.addGestureRecognizer(self.panGestureRecogniser)
     }
 }
 
@@ -71,6 +80,8 @@ extension SimulatedSwipeAnimator {
         }
 
         if canceledSwipe {
+            self.model?.overlayOffset = 0
+
             UIView.animate(
                 withDuration: params.cancelAnimationDuration,
                 animations: {
@@ -88,12 +99,13 @@ extension SimulatedSwipeAnimator {
                     if finished {
                         self.animatingView?.transform = .identity
                         self.animatingView?.alpha = 1
+                        self.model?.overlayOffset = 0
                     }
                 })
         }
     }
 
-    fileprivate func animateAwayWithVelocity(_ velocity: CGPoint, speed: CGFloat) {
+    fileprivate func animateAwayWithVelocity(speed: CGFloat) {
         guard let animatingView = self.animatingView,
             let webViewContainer = self.contentView
         else {
@@ -103,20 +115,35 @@ extension SimulatedSwipeAnimator {
         // Calculate the edge to calculate distance from
         let translation =
             (-animatingView.frame.width + SwipeUX.EdgeWidth)
-            * (swipeDirection == .back ? -1 : 1)
+            * (model?.swipeDirection == .back ? -1 : 1)
         let timeStep = TimeInterval(abs(translation) / speed)
-        self.delegate?.simulateForwardAnimatorStartedSwipe(self)
-        UIView.animate(
-            withDuration: timeStep,
-            animations: {
-                animatingView.transform = self.transformForTranslation(translation)
-                webViewContainer.transform = self.transformForTranslation(translation / 2)
-            },
-            completion: { finished in
-                if finished {
+
+        if FeatureFlag[.enableBrowserView] {
+            withAnimation(.easeOut(duration: timeStep)) {
+                self.model?.overlayOffset = contentView?.frame.width ?? -20
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
+                self.model?.contentOffset = 0
+
+                withAnimation(.easeOut(duration: timeStep)) {
                     self.animateBackToCenter(canceledSwipe: false)
                 }
-            })
+            }
+        } else {
+            self.delegate?.simulateForwardAnimatorStartedSwipe(self)
+            UIView.animate(
+                withDuration: timeStep,
+                animations: {
+                    animatingView.transform = self.transformForTranslation(translation)
+                    webViewContainer.transform = self.transformForTranslation(translation / 2)
+                },
+                completion: { finished in
+                    if finished {
+                        self.animateBackToCenter(canceledSwipe: false)
+                    }
+                })
+        }
     }
 
     fileprivate func transformForTranslation(_ translation: CGFloat) -> CGAffineTransform {
@@ -138,19 +165,30 @@ extension SimulatedSwipeAnimator {
         case .began:
             prevOffset = containerCenter
         case .changed:
-            animatingView?.transform = transformForTranslation(translation.x)
-            contentView?.transform = self.transformForTranslation(translation.x / 2)
+            if FeatureFlag[.enableBrowserView] {
+                withAnimation {
+                    model?.overlayOffset = translation.x
+                }
+            } else {
+                animatingView?.transform = transformForTranslation(translation.x)
+                contentView?.transform = self.transformForTranslation(translation.x / 2)
+            }
+
             prevOffset = CGPoint(x: translation.x, y: 0)
         case .cancelled:
             animateBackToCenter(canceledSwipe: true)
         case .ended:
-            let velocity = recognizer.velocity(in: animatingView)
-            // Bounce back if the velocity is too low or if we have not reached the threshold yet
-            let speed = max(abs(velocity.x), params.minExitVelocity)
-            if speed < params.minExitVelocity || abs(prevOffset?.x ?? 0) < params.deleteThreshold {
+            let velocity = recognizer.velocity(in: animatingView).x
+
+            // Bounce back if the velocity is too low or if we have not reached the threshold yet,
+            // or if the user swipe backwards.
+            let speed = max(abs(velocity), params.minExitVelocity)
+            if velocity < 0 || speed < params.minExitVelocity
+                || abs(prevOffset?.x ?? 0) < params.deleteThreshold
+            {
                 animateBackToCenter(canceledSwipe: true)
             } else {
-                animateAwayWithVelocity(velocity, speed: speed)
+                animateAwayWithVelocity(speed: speed)
             }
         default:
             break

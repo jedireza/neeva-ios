@@ -32,7 +32,7 @@ extension BrowserViewController: ToolbarDelegate {
                     .ClickBack,
                     attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
-                if self.simulateBackViewController.goBack() {
+                if self.simulateBackModel.goBack() {
                     return
                 }
 
@@ -42,7 +42,7 @@ extension BrowserViewController: ToolbarDelegate {
                     .ClickForward,
                     attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
-                if self.simulateBackViewController.goForward() {
+                if self.simulateForwardModel.goForward() {
                     return
                 }
 

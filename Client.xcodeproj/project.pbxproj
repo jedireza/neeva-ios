@@ -227,6 +227,8 @@
 		6626BC9526B9B1A400EE0760 /* FindInPageOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6626BC9426B9B1A400EE0760 /* FindInPageOverlayView.swift */; };
 		6626BC9726B9B1AC00EE0760 /* FindInPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6626BC9626B9B1AC00EE0760 /* FindInPageViewController.swift */; };
 		6626BC9926B9BBF900EE0760 /* FindInPageModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6626BC9826B9BBF900EE0760 /* FindInPageModel.swift */; };
+		6628C8C02797BC78009A69DB /* SimulatedSwipeViewRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6628C8BF2797BC78009A69DB /* SimulatedSwipeViewRepresentable.swift */; };
+		6628C8C22797BF6D009A69DB /* SimulatedSwipeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6628C8C12797BF6D009A69DB /* SimulatedSwipeModel.swift */; };
 		662D8CD626939C3F0000364A /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 662D8CD526939C3F0000364A /* SceneDelegate.swift */; };
 		663322C0276D66220046EC1C /* KeyboardListener.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663322BF276D66220046EC1C /* KeyboardListener.swift */; };
 		663AFC4E26A25B2300E4C492 /* NSItemProviderExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663AFC4D26A25B2300E4C492 /* NSItemProviderExtensions.swift */; };
@@ -1370,6 +1372,8 @@
 		6626BC9426B9B1A400EE0760 /* FindInPageOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindInPageOverlayView.swift; sourceTree = "<group>"; };
 		6626BC9626B9B1AC00EE0760 /* FindInPageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindInPageViewController.swift; sourceTree = "<group>"; };
 		6626BC9826B9BBF900EE0760 /* FindInPageModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindInPageModel.swift; sourceTree = "<group>"; };
+		6628C8BF2797BC78009A69DB /* SimulatedSwipeViewRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeViewRepresentable.swift; sourceTree = "<group>"; };
+		6628C8C12797BF6D009A69DB /* SimulatedSwipeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimulatedSwipeModel.swift; sourceTree = "<group>"; };
 		662BF63826CEDFEE0037FAF1 /* AuthenticationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationTests.swift; sourceTree = "<group>"; };
 		662D8CD526939C3F0000364A /* SceneDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		663322BF276D66220046EC1C /* KeyboardListener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardListener.swift; sourceTree = "<group>"; };
@@ -2588,9 +2592,11 @@
 		4AF1948B266EC74C007E2C3B /* Carousel */ = {
 			isa = PBXGroup;
 			children = (
-				4AF1948C266EC78A007E2C3B /* SearchResults.swift */,
-				4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */,
 				4A46E4E326730D790001687E /* CarouselProgressView.swift */,
+				4AF1948C266EC78A007E2C3B /* SearchResults.swift */,
+				6628C8C12797BF6D009A69DB /* SimulatedSwipeModel.swift */,
+				6628C8BF2797BC78009A69DB /* SimulatedSwipeViewRepresentable.swift */,
+				4A1D054A26642BF400D63333 /* SimulatedSwipeController.swift */,
 				4A1D054C266430DA00D63333 /* SimulatedSwipeAnimator.swift */,
 			);
 			path = Carousel;
@@ -5544,6 +5550,7 @@
 				66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */,
 				BCC7CA482703E938004714C0 /* CompactNeevaMenuButtonView.swift in Sources */,
 				4A15C8B526E1815A006CD097 /* ShareSpaceView.swift in Sources */,
+				6628C8C02797BC78009A69DB /* SimulatedSwipeViewRepresentable.swift in Sources */,
 				661F4FB5269CAAE00078238B /* DownloadOverlayView.swift in Sources */,
 				4A9FCD4626F1074600725E17 /* SocialShare.swift in Sources */,
 				66F97CC226F68E01005A26C2 /* ReaderModeModel.swift in Sources */,
@@ -5664,6 +5671,7 @@
 				C9B55A0F26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift in Sources */,
 				4A39C1DB26CB76D600C999CF /* DetailView.swift in Sources */,
 				2C49854E206173C800893DAE /* photon-colors.swift in Sources */,
+				6628C8C22797BF6D009A69DB /* SimulatedSwipeModel.swift in Sources */,
 				4A9F653F2702D2CE00B7C06E /* SpaceContentSheet.swift in Sources */,
 				4A1D054B26642BF400D63333 /* SimulatedSwipeController.swift in Sources */,
 				1A840EC72788E840005F6003 /* GenericSuggestion.swift in Sources */,
