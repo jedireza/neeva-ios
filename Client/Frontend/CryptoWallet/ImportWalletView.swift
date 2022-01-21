@@ -8,6 +8,7 @@ import SwiftUI
 import web3swift
 
 struct ImportWalletView: View {
+    @EnvironmentObject var web3Model: Web3Model
     @State var inputPhrase: String = ""
     @Binding var viewState: ViewState
     @State var isImporting: Bool = false
@@ -17,7 +18,7 @@ struct ImportWalletView: View {
             Text("Import Your Wallet")
                 .font(.roobert(size: 28))
 
-            Text("Enter your secret recovery phrase below then click Import")
+            Text("Enter your secret recovery phrase below")
                 .font(.system(size: 16))
                 .multilineTextAlignment(.leading)
                 .foregroundColor(.secondary)
@@ -25,52 +26,50 @@ struct ImportWalletView: View {
             TextEditor(text: $inputPhrase)
                 .foregroundColor(Color.ui.gray20)
                 .font(.system(size: 26))
+                .modifier(NoAutoCapitalize())
                 .border(Color.brand.charcoal, width: 1)
+                .frame(maxHeight: 300)
 
             HStack {
                 Spacer()
                 Button(action: { viewState = .starter }) {
                     Text("Back")
-                        .font(.roobert(.semibold, size: 18))
-                        .frame(maxWidth: 120)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.neeva(.secondary))
                 .padding(.top, 8)
 
-                Button(action: importWallet) {
-                    Text(isImporting ? "Importing... " : "Import")
-                        .font(.roobert(.semibold, size: 18))
-                        .frame(width: 200)
+                Button(action: {
+                    isImporting = true
+                    web3Model.importWallet(inputPhrase: inputPhrase) {
+                        isImporting = false
+                        viewState = .dashboard
+                    }
+                }) {
+                    HStack {
+                        Text(isImporting ? "Importing " : "Import")
+                        if isImporting {
+                            ProgressView()
+                        }
+                    }.frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.neeva(.primary))
                 .padding(.top, 8)
                 .disabled(inputPhrase.isEmpty)
             }
         }
-        .padding(25)
+        .padding(16)
     }
+}
 
-    func importWallet() {
-        do {
-            isImporting = true
-            let password = CryptoConfig.shared.getPassword()
-            let mnemonics = inputPhrase
-            let keystore = try! BIP32Keystore(
-                mnemonics: mnemonics,
-                password: password,
-                mnemonicsPassword: "",
-                language: .english)!
-            let address = keystore.addresses!.first!.address
-            Defaults[.cryptoPhrases] = mnemonics
-            Defaults[.cryptoPublicKey] = address
-            let privateKey = try keystore.UNSAFE_getPrivateKeyData(
-                password: password, account: EthereumAddress(address)!
-            ).toHexString()
-            Defaults[.cryptoPrivateKey] = privateKey
-            isImporting = false
-            viewState = .dashboard
-        } catch {
-            print("🔥 Unexpected error: \(error).")
+struct NoAutoCapitalize: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .textInputAutocapitalization(.never)
+        } else {
+            content
+                .autocapitalization(.none)
         }
     }
 }

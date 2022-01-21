@@ -27,8 +27,13 @@ extension BrowserViewController {
             guard let webView = tab?.webView else { return }
             webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
 
-            overlayManager.hideCurrentOverlay(ofPriority: .modal, animate: false)
             findInPageModel = nil
+
+            if let currentOverlay = overlayManager.currentOverlay,
+                case OverlayType.findInPage = currentOverlay
+            {
+                overlayManager.hideCurrentOverlay(ofPriority: .modal, animate: false)
+            }
         }
     }
 }

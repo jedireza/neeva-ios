@@ -66,7 +66,7 @@ struct WalletDashboard: View {
                 content: {
                     ForEach(
                         TokenType.allCases.filter {
-                            Double(model.balanceFor($0) ?? "0") != 0
+                            $0 == .ether || Double(model.balanceFor($0) ?? "0") != 0
                         }, id: \.rawValue
                     ) {
                         token in

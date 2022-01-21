@@ -71,7 +71,6 @@ struct TopBarContent: View {
             },
             buildReloadMenu: { chromeModel.topBarDelegate?.urlBarReloadMenu() },
             onNeevaMenuAction: { chromeModel.topBarDelegate?.perform(neevaMenuAction: $0) },
-            didTapNeevaMenu: { chromeModel.topBarDelegate?.updateFeedbackImage() },
             newTab: newTab,
             onCancel: onCancel,
             onOverflowMenuAction: {

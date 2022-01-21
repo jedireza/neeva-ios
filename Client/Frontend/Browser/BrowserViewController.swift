@@ -235,6 +235,13 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         dismissVisibleMenus()
 
+        // The popover view controller is presented with `present`
+        // this hide method calls `dismiss`. When it is called inside
+        // cooridnator.animate, it breaks the UI after rotation.
+        if !chromeModel.inlineToolbar {
+            hideOverlayPopoverViewController()
+        }
+
         coordinator.animate { [self] context in
             browserModel.scrollingControlModel.updateMinimumZoom()
 
@@ -692,6 +699,25 @@ class BrowserViewController: UIViewController, ModalPresenter {
         overlayManager.hideCurrentOverlay()
     }
 
+    private func hideOverlayPopoverViewController() {
+        if FeatureFlag[.enableBrowserView] {
+            if case .popover = overlayManager.currentOverlay {
+                overlayManager.hideCurrentOverlay()
+            }
+        } else {
+            if let overlayPopoverViewController = overlayPopoverViewController,
+               let overlayViewController = overlayPopoverViewController as? OverlayViewController,
+               overlayViewController.isPopover,
+               !overlayViewController.style.nonDismissible
+            {
+                overlayPopoverViewController.dismiss(animated: true, completion: nil)
+                self.overlayPopoverViewController = nil
+            }
+        }
+    }
+
+    /// Present Content as sheet if on iPhone and in Portrait; otherwise, present as popover
+    ///  - Tag: showModal
     func showModal<Content: View>(
         style: OverlayStyle,
         headerButton: OverlayHeaderButton? = nil,
@@ -2085,22 +2111,15 @@ extension BrowserViewController {
     }
 }
 
+// MARK: - Neeva Menu Sheet (Portrait Only)
 extension BrowserViewController {
     func showNeevaMenuSheet() {
         TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
 
-        updateFeedbackImage()
-
         if NeevaFeatureFlags[.cheatsheetQuery] {
-            tabManager.selectedTab?.fetchCheatsheetInfo()
-
-            showModal(style: .spaces) { [self] in
-                CheatsheetOverlayContent(
-                    menuAction: perform(neevaMenuAction:),
-                    tabManager: tabManager
-                )
-            }
+            showCheatSheetOverlay()
         } else {
+            updateFeedbackImage()
             showModal(style: .grouped) { [self] in
                 NeevaMenuOverlayContent(
                     menuAction: perform(neevaMenuAction:),
@@ -2108,6 +2127,27 @@ extension BrowserViewController {
             }
         }
         self.dismissVC()
+    }
+}
+
+// MARK: - Cheatsheet Sheet/Popover
+extension BrowserViewController {
+    /// Fetch chearsheet info and present cheatsheet
+    ///
+    /// Cheatsheat is presented as sheet on iPhone in portrait; otherwise, it is presented as popover
+    /// This is consistent with the behaviour of [showModal](x-source-tag://showModal)
+    func showCheatSheetOverlay() {
+        // Load cheat sheet data
+        tabManager.selectedTab?.fetchCheatsheetInfo()
+
+        // if on iphone and portrait, present as sheet
+        // otherwise, present as popover
+        showModal(style: .cheatsheet) { [self] in
+            CheatsheetOverlayContent(
+                menuAction: perform(neevaMenuAction:),
+                tabManager: tabManager
+            )
+        }
     }
 }
 

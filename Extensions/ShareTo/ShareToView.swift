@@ -140,7 +140,10 @@ struct AddToSpaceView: View {
         VStack {
             switch request.state {
             case .initial:
-                Shared.AddToSpaceView(request: request)
+                ScrollView(showsIndicators: false) {
+                    Shared.AddToSpaceView(request: request)
+                }
+
                 if isCreating {
                     Spacer()
                 }

@@ -14,7 +14,6 @@ struct TopBarView: View {
     let onShare: (UIView) -> Void
     let buildReloadMenu: () -> UIMenu?
     let onNeevaMenuAction: (NeevaMenuAction) -> Void
-    let didTapNeevaMenu: () -> Void
     let newTab: () -> Void
     let onCancel: () -> Void
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
@@ -77,11 +76,7 @@ struct TopBarView: View {
 
                 if chrome.inlineToolbar && !chrome.isEditingLocation {
                     Group {
-                        TopBarNeevaMenuButton(
-                            onTap: {
-                                chrome.hideZeroQuery()
-                                didTapNeevaMenu()
-                            }, onNeevaMenuAction: onNeevaMenuAction)
+                        TopBarNeevaMenuButton(onNeevaMenuAction: onNeevaMenuAction)
 
                         TabToolbarButtons.AddToSpace(
                             weight: .regular, action: { performTabToolbarAction(.addToSpace) }

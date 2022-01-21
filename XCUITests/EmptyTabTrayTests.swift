@@ -86,7 +86,7 @@ class EmptyTabTrayTests: BaseTestCase {
         app.buttons["Incognito Tabs"].tap()
         openURLInNewTab("https://test.example/")
         goToTabTray()
-        app.buttons["Close A server with the specified hostname could not be found."].tap()
+        app.buttons["Close"].tap()
         app.buttons["Normal Tabs"].tap()
         app.buttons["Example Domain, Tab Group"].tap()
         XCTAssert(app.buttons["Example Domain, Tab"].exists)

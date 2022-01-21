@@ -30,7 +30,7 @@ struct WalletAccessor {
     init() {
         self.web3 = try! Web3.new(CryptoConfig.shared.nodeURL)
         self.polygonWeb3 = try! Web3.new(EthNode.Polygon.url)
-        self.password = CryptoConfig.shared.getPassword()
+        self.password = CryptoConfig.shared.password
         let key = Defaults[.cryptoPrivateKey]
         let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
         let dataKey = Data.fromHex(formattedKey)!

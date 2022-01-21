@@ -55,11 +55,12 @@ struct ShowPhrasesView: View {
                         .cornerRadius(10)
                     }
                 }
-                .padding(20)
+                .padding(16)
                 .background(
                     RoundedRectangle(cornerRadius: 10).stroke(Color.ui.gray91, lineWidth: 0.5)
                 )
                 .background(Color.white.opacity(0.8))
+                .cornerRadius(10)
             } else {
                 Text("Something went wrong, please try again")
             }
@@ -71,12 +72,12 @@ struct ShowPhrasesView: View {
                 }) {
                     Text("Next")
                         .font(.roobert(.semibold, size: 18))
-                        .frame(minWidth: 90)
+                        .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.neeva(.primary))
             }
             .padding(.top, 10)
         }
-        .padding(.horizontal, 25)
+        .padding(.horizontal, 16)
     }
 }
