@@ -144,7 +144,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     var url: URL? {
-        tab?.url
+        tab?.url ?? tab?.sessionData?.currentUrl
     }
 
     var closeButtonImage: UIImage? {
