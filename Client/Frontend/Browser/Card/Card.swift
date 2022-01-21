@@ -51,7 +51,8 @@ struct DragToCloseInteraction: ViewModifier {
 
     @EnvironmentObject private var browserModel: BrowserModel
 
-    @State private var offset = CGFloat.zero
+    @GestureState private var offset = CGFloat.zero
+    @State private var animatedOffset = CGFloat.zero
 
     private var dragToCloseThreshold: CGFloat {
         // Using `cardSize` here helps this scale properly with different card sizes,
@@ -60,21 +61,23 @@ struct DragToCloseInteraction: ViewModifier {
     }
 
     private var progress: CGFloat {
-        abs(offset) / (dragToCloseThreshold * 1.5)
+        (abs(offset) + abs(animatedOffset)) / (dragToCloseThreshold * 1.5)
     }
     private var angle: Angle {
-        .radians(Double(progress * (.pi / 10)).withSign(offset.sign) * layoutDirection.xSign)
+        .radians(
+            Double(progress * (.pi / 10)).withSign((offset + animatedOffset).sign)
+                * layoutDirection.xSign)
     }
 
     func body(content: Content) -> some View {
         content
             .scaleEffect(1 - (progress / 5))
             .rotation3DEffect(angle, axis: (x: 0.0, y: 1.0, z: 0.0))
-            .translate(x: offset)
+            .translate(x: offset + animatedOffset)
             .opacity(Double(1 - progress))
             .highPriorityGesture(
                 DragGesture()
-                    .onChanged { value in
+                    .updating($offset) { value, offset, _ in
                         // Workaround for SwiftUI gestures and UIScrollView not playing well
                         // together. See issue #1378 for details. Only apply an offset if the
                         // translation is mostly in the horizontal direction to avoid translating
@@ -83,31 +86,32 @@ struct DragToCloseInteraction: ViewModifier {
                             || abs(value.translation.width) > abs(value.translation.height)
                         {
                             offset = value.translation.width
-                            if abs(offset) > dragToCloseThreshold {
-                                if !hasExceededThreshold {
-                                    hasExceededThreshold = true
-                                    Haptics.swipeGesture()
+                            DispatchQueue.main.async { [offset] in
+                                if abs(offset) > dragToCloseThreshold {
+                                    if !hasExceededThreshold {
+                                        hasExceededThreshold = true
+                                        Haptics.swipeGesture()
+                                    }
+                                } else {
+                                    hasExceededThreshold = false
                                 }
-                            } else {
-                                hasExceededThreshold = false
                             }
                         }
                     }
                     .onEnded { value in
                         let finalOffset = value.translation.width
-                        withAnimation(.interactiveSpring()) {
+                        animatedOffset = finalOffset
+                        withAnimation(.interactiveSpring(dampingFraction: 0.65)) {
                             if abs(finalOffset) > dragToCloseThreshold {
-                                offset = finalOffset
+                                animatedOffset = dragToCloseThreshold * 2
                                 action()
 
                                 // work around reopening tabs causing the state to not be reset
-                                DispatchQueue.main.asyncAfter(
-                                    deadline: .now() + .milliseconds(500)
-                                ) {
-                                    offset = 0
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    animatedOffset = 0
                                 }
                             } else {
-                                offset = 0
+                                animatedOffset = 0
                             }
                         }
                     }
