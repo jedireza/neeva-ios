@@ -111,6 +111,9 @@ class ToolbarTests: BaseTestCase {
         guard !iPad() else {
             throw XCTSkip("Does not work on iPad")
         }
+
+        try skipTest(issue: 2661, "Became flaky after changes to how bars are shown+hidden")
+
         openURL(path(forTestPage: "test-mozilla-org.html"))
         waitUntilPageLoad()
         waitForExistence(app.buttons["Show Tabs"], timeout: 15)
