@@ -193,12 +193,11 @@ class TabManager: NSObject, ObservableObject {
         let options: [URL.EqualsOption] = [.normalizeHost, .ignoreFragment, .ignoreLastSlash]
 
         for tab in tabs.filter({ $0.isIncognito == self.isIncognito }) {
-            if let currentUrl = tab.webView?.url, url.equals(currentUrl, with: options) {
-                return tab
-            }
-
-            // Also check URL if tab has not been restored yet
-            if let sessionUrl = tab.sessionData?.currentUrl {
+            if let webView = tab.webView {
+                if let currentUrl = webView.url, url.equals(currentUrl, with: options) {
+                    return tab
+                }
+            } else if let sessionUrl = tab.sessionData?.currentUrl {  // Match zombie tabs
                 if url.equals(sessionUrl, with: options) {
                     return tab
                 }

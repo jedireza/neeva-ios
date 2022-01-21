@@ -34,7 +34,7 @@ class SessionRestoreHelper: TabContentScript {
                         for (index, item) in navigationList.enumerated() {
                             guard tab.sessionData?.queries.indices.contains(index) ?? false,
                                 let query = tab.sessionData?.queries[index]
-                            else { return }
+                            else { break }
 
                             tab.queryForNavigation.queryForNavigations[item] = query
                         }
