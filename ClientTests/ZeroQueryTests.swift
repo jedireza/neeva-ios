@@ -43,7 +43,6 @@ class ZeroQueryTests: XCTestCase {
     }
 
     func testZeroQueryInsideContentHost() throws {
-        try skipTest(issue: 2522, "fails with new content layout, disabling until that stabilizes")
         let tab = tabManager.addTab()
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
@@ -66,7 +65,6 @@ class ZeroQueryTests: XCTestCase {
     }
 
     func testLazyTabCancel() throws {
-        try skipTest(issue: 2522, "fails with new content layout, disabling until that stabilizes")
         let tab = tabManager.addTab()
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
@@ -89,7 +87,6 @@ class ZeroQueryTests: XCTestCase {
     }
 
     func testSuggestionUI() throws {
-        try skipTest(issue: 2522, "fails with new content layout, disabling until that stabilizes")
         let tab = tabManager.addTab()
         tab.loadRequest(URLRequest(url: .aboutBlank))
         tabManager.selectTab(tab)
@@ -121,22 +118,21 @@ class ZeroQueryTests: XCTestCase {
     }
 
     func assertTabContentOnlyContainsZeroQuery() throws {
-        let group = try tabContainerHost.rootView.inspect().find(ViewType.Group.self)
-        let content = try group.view(ZeroQueryContent.self, 0).actualView()
+        let content = try tabContainerHost.rootView.inspect().find(ZeroQueryContent.self)
+            .actualView()
         XCTAssertNotNil(content)
-        XCTAssertEqual(group.count, 1)
     }
 
     func assertTabContentOnlyContainsSuggestions() throws {
-        let group = try tabContainerHost.rootView.inspect().find(ViewType.Group.self)
-        let content = try group.view(SuggestionsContent.self, 0).actualView()
+        let content = try tabContainerHost.rootView.inspect().find(SuggestionsContent.self)
+            .actualView()
         XCTAssertNotNil(content)
-        XCTAssertEqual(group.count, 1)
     }
 
     func assertTabContentOnlyContainsWebContainer() throws {
-        let group = try tabContainerHost.rootView.inspect().find(ViewType.Group.self)
-        XCTAssertEqual(group.count, 1)
+        let content = try tabContainerHost.rootView.inspect().find(WebViewContainer.self)
+            .actualView()
+        XCTAssertNotNil(content)
     }
 
     func testDeletionOfSingleSuggestedSite() {

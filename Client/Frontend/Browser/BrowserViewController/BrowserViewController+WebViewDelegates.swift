@@ -962,7 +962,7 @@ extension BrowserViewController: WKNavigationDelegate {
         locationModel.updateSecureListener(with: webView)
 
         self.browserModel.scrollingControlModel.resetZoomState()
-        
+
         if tabManager.selectedTab === tab {
             updateUIForReaderHomeStateForTab(tab)
         }
