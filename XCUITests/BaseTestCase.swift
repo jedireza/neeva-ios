@@ -209,6 +209,7 @@ class BaseTestCase: XCTestCase {
         }
 
         if createNewTab {
+            waitForExistence(app.buttons["Add Tab"])
             openURLInNewTab()
         }
     }
