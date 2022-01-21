@@ -71,6 +71,7 @@ class Tab: NSObject, ObservableObject {
     var userActivity: NSUserActivity?
 
     private(set) var webView: WKWebView?
+
     var tabDelegate: TabDelegate?
     /// This set is cleared out when the tab is closed, ensuring that any subscriptions are invalidated.
     var webViewSubscriptions: Set<AnyCancellable> = []
@@ -229,17 +230,9 @@ class Tab: NSObject, ObservableObject {
 
             webView.accessibilityLabel = .WebViewAccessibilityLabel
             webView.allowsBackForwardNavigationGestures = true
-
-            let rc = UIRefreshControl(
-                frame: .zero,
-                primaryAction: UIAction { [weak self] _ in
-                    self?.reload()
-                    // Dismiss refresh control now as the regular progress bar will soon appear.
-                    self?.webView?.scrollView.refreshControl?.endRefreshing()
-                })
-            webView.scrollView.refreshControl = rc
-            webView.scrollView.bringSubviewToFront(rc)
             webView.allowsLinkPreview = true
+
+            addRefreshControl()
 
             // Turning off masking allows the web content to flow outside of the scrollView's frame
             // which allows the content appear beneath the toolbars in the BrowserViewController
@@ -270,6 +263,20 @@ class Tab: NSObject, ObservableObject {
             UserScriptManager.shared.injectUserScriptsIntoTab(self)
             tabDelegate?.tab?(self, didCreateWebView: webView)
         }
+    }
+
+    func addRefreshControl() {
+        guard let webView = webView else { return }
+
+        let rc = UIRefreshControl(
+            frame: .zero,
+            primaryAction: UIAction { [weak self] _ in
+                self?.reload()
+                // Dismiss refresh control now as the regular progress bar will soon appear.
+                self?.webView?.scrollView.refreshControl?.endRefreshing()
+            })
+        webView.scrollView.refreshControl = rc
+        webView.scrollView.bringSubviewToFront(rc)
     }
 
     // fetch cheatsheet info for current url

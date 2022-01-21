@@ -52,6 +52,8 @@ class ScrollingControlModel: NSObject, ObservableObject {
     fileprivate var lastZoomedScale: CGFloat = 0
     fileprivate var isUserZoom = false
 
+    private var tab: Tab?
+
     fileprivate lazy var panGesture: UIPanGestureRecognizer = {
         let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan))
         panGesture.maximumNumberOfTouches = 1
@@ -73,6 +75,7 @@ class ScrollingControlModel: NSObject, ObservableObject {
     func setupDelegates(newTab: Tab?) {
         self.scrollView?.delegate = nil
         self.scrollView?.removeGestureRecognizer(self.panGesture)
+        self.tab = newTab
 
         if let tab = newTab, let scrollView = tab.webView?.scrollView {
             scrollView.addGestureRecognizer(self.panGesture)
@@ -356,12 +359,14 @@ extension ScrollingControlModel: UIScrollViewDelegate {
 
     func scrollViewWillBeginZooming(_ scrollView: UIScrollView, with view: UIView?) {
         self.isUserZoom = true
+        scrollView.refreshControl = nil
     }
 
     func scrollViewDidEndZooming(
         _ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat
     ) {
         self.isUserZoom = false
+        tab?.addRefreshControl()
     }
 
     func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
