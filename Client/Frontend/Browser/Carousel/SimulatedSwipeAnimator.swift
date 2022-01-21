@@ -105,7 +105,7 @@ extension SimulatedSwipeAnimator {
         }
     }
 
-    fileprivate func animateAwayWithVelocity(_ velocity: CGPoint, speed: CGFloat) {
+    fileprivate func animateAwayWithVelocity(speed: CGFloat) {
         guard let animatingView = self.animatingView,
             let webViewContainer = self.contentView
         else {
@@ -119,11 +119,16 @@ extension SimulatedSwipeAnimator {
         let timeStep = TimeInterval(abs(translation) / speed)
 
         if FeatureFlag[.enableBrowserView] {
-            self.model?.overlayOffset = contentView?.frame.width ?? -20
-            self.model?.contentOffset = 0
-
             withAnimation(.easeOut(duration: timeStep)) {
-                self.animateBackToCenter(canceledSwipe: false)
+                self.model?.overlayOffset = contentView?.frame.width ?? -20
+            }
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
+                self.model?.contentOffset = 0
+
+                withAnimation(.easeOut(duration: timeStep)) {
+                    self.animateBackToCenter(canceledSwipe: false)
+                }
             }
         } else {
             self.delegate?.simulateForwardAnimatorStartedSwipe(self)
@@ -161,7 +166,9 @@ extension SimulatedSwipeAnimator {
             prevOffset = containerCenter
         case .changed:
             if FeatureFlag[.enableBrowserView] {
-                model?.overlayOffset = translation.x
+                withAnimation {
+                    model?.overlayOffset = translation.x
+                }
             } else {
                 animatingView?.transform = transformForTranslation(translation.x)
                 contentView?.transform = self.transformForTranslation(translation.x / 2)
@@ -171,13 +178,17 @@ extension SimulatedSwipeAnimator {
         case .cancelled:
             animateBackToCenter(canceledSwipe: true)
         case .ended:
-            let velocity = recognizer.velocity(in: animatingView)
-            // Bounce back if the velocity is too low or if we have not reached the threshold yet
-            let speed = max(abs(velocity.x), params.minExitVelocity)
-            if speed < params.minExitVelocity || abs(prevOffset?.x ?? 0) < params.deleteThreshold {
+            let velocity = recognizer.velocity(in: animatingView).x
+
+            // Bounce back if the velocity is too low or if we have not reached the threshold yet,
+            // or if the user swipe backwards.
+            let speed = max(abs(velocity), params.minExitVelocity)
+            if velocity < 0 || speed < params.minExitVelocity
+                || abs(prevOffset?.x ?? 0) < params.deleteThreshold
+            {
                 animateBackToCenter(canceledSwipe: true)
             } else {
-                animateAwayWithVelocity(velocity, speed: speed)
+                animateAwayWithVelocity(speed: speed)
             }
         default:
             break
