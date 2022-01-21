@@ -1893,7 +1893,7 @@ extension BrowserViewController: TabManagerDelegate {
     }
 
     func applyUIMode(isIncognito: Bool) {
-        let ui: [IncognitoModeUI?] = [toolbar, topBar, tabContainerHost]
+        let ui: [IncognitoModeUI?] = [toolbar, topBar, tabContainerHost, browserHost]
         ui.forEach { $0?.applyUIMode(isIncognito: isIncognito) }
     }
 }
