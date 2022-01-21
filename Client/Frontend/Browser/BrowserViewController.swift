@@ -479,12 +479,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 SpaceStore.suggested.refresh()
             }
         }
-
-        if FeatureFlag[.enableCryptoWallet] {
-            DispatchQueue.main.async {
-                AssetStore.shared.refresh()
-            }
-        }
     }
 
     override func viewDidLoad() {
@@ -976,9 +970,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
             }
         } else {
             if let overlayPopoverViewController = overlayPopoverViewController,
-               let overlayViewController = overlayPopoverViewController as? OverlayViewController,
-               overlayViewController.isPopover,
-               !overlayViewController.style.nonDismissible
+                let overlayViewController = overlayPopoverViewController as? OverlayViewController,
+                overlayViewController.isPopover,
+                !overlayViewController.style.nonDismissible
             {
                 overlayPopoverViewController.dismiss(animated: true, completion: nil)
                 self.overlayPopoverViewController = nil
