@@ -14,9 +14,9 @@ public class SuppressRequest: MutationRequest<CommunitySuppressResultMutation> {
                 input: CommunitySuppressResultInput(
                     query: WEB3_SUBMISSION_QUERY,
                     url: url.absoluteString,
-                    universalType: "web3Univ",
+                    universalType: "webUnivPlain",
                     navTreatmentOnly: false,
-                    reason: "Web3 Submission Test please ignore"
+                    reason: "Web3 Trust Signal Submission"
                 )))
     }
 }
@@ -28,7 +28,7 @@ public class BoostRequest: MutationRequest<CommunityBoostResultMutation> {
                 input: CommunityBoostResultInput(
                     query: WEB3_SUBMISSION_QUERY,
                     url: url.absoluteString,
-                    universalType: "web3Univ"
+                    universalType: "webUnivPlain"
                 )))
     }
 }

@@ -244,7 +244,7 @@ class Web3Model: ObservableObject, ResponseRelay {
         }
     }
 
-    func askToSign(request: Request, sign: @escaping () -> String) {
+    func askToSign(request: Request, message: String, sign: @escaping () -> String) {
         guard
             let dappInfo = server?.openSessions().first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
@@ -262,7 +262,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 dAppMeta: dappInfo.peerMeta,
                 chain: EthNode.from(chainID: dappInfo.chainId),
                 message:
-                    "This will not make any transactions with your wallet. But Neeva will be using your private key to sign the message.",
+                    message,
                 onAccept: { _ in
                     DispatchQueue.global(qos: .userInitiated).async {
                         let signature = sign()

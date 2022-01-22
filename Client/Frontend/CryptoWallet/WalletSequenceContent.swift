@@ -133,11 +133,30 @@ struct WalletSequenceContent: View {
         }
     }
 
-    var descriptionText: some View {
-        Text(model.currentSequence?.message ?? "")
-            .withFont(.bodyLarge)
-            .foregroundColor(.secondaryLabel)
-            .fixedSize(horizontal: false, vertical: true)
+    @ViewBuilder var descriptionText: some View {
+        if model.currentSequence?.type == .personalSign {
+            VStack {
+                Text(
+                    "This will not make any transactions with your wallet. But Neeva will be using your private key to sign this message."
+                )
+                .withFont(.bodySmall)
+                .foregroundColor(.label)
+                .fixedSize(horizontal: false, vertical: true)
+                ScrollView(.vertical, showsIndicators: true) {
+                    Text(model.currentSequence?.message ?? "")
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.secondaryLabel)
+                        .padding()
+                }.frame(height: 150)
+                    .background(Color.TrayBackground)
+                    .cornerRadius(16)
+            }
+        } else {
+            Text(model.currentSequence?.message ?? "")
+                .withFont(.bodyLarge)
+                .foregroundColor(.secondaryLabel)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     var body: some View {

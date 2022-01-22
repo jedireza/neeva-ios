@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import CryptoSwift
 import Defaults
 import Foundation
 import SDWebImageSwiftUI
@@ -12,7 +13,7 @@ import web3swift
 
 protocol ResponseRelay {
     func send(_ response: Response)
-    func askToSign(request: Request, sign: @escaping () -> String)
+    func askToSign(request: Request, message: String, sign: @escaping () -> String)
     func askToTransact(request: Request, value: String, transact: @escaping () -> String)
 }
 
@@ -49,7 +50,9 @@ class PersonalSignHandler: RequestHandler {
                 return
             }
 
-            relay.askToSign(request: request) {
+            let message = String(data: Data.fromHex(messageBytes) ?? Data(), encoding: .utf8) ?? ""
+
+            relay.askToSign(request: request, message: message) {
                 return
                     (try? self.wallet.sign(message: messageBytes, using: self.wallet.publicAddress))
                     ?? ""
