@@ -1930,13 +1930,19 @@ extension BrowserViewController {
     }
 
     // Default browser onboarding
-    func presentDBOnboardingViewController(_ force: Bool = false) {
+    func presentDBOnboardingViewController(
+        _ force: Bool = false,
+        modalTransitionStyle: UIModalTransitionStyle? = nil
+    ) {
         let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: { [weak self] in
             guard let self = self else { return }
             self.zeroQueryModel.updateState()
         })
 
         onboardingVC.modalPresentationStyle = .formSheet
+        if let modalTransitionStyle = modalTransitionStyle {
+            onboardingVC.modalTransitionStyle = modalTransitionStyle
+        }
         present(onboardingVC, animated: true, completion: nil)
     }
 
@@ -2027,9 +2033,70 @@ extension BrowserViewController {
                         .registerDeviceTokenWithServer(deviceToken: notificationToken)
                 }
             }
+
+            if NeevaExperiment.startExperiment(for: .defaultBrowserPrompt) == .showDBPrompt
+            {
+                self.presentDBPromptView()
+            }
+
+            if let experimentArm = NeevaExperiment.arm(for: .defaultBrowserPrompt) {
+                ClientLogger.shared.logCounter(
+                    .DefaultBrowserExperiment,
+                    attributes: [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.PromoCardAttribute.defaultBrowserPromptExperimentArm,
+                            value: experimentArm.rawValue
+                        )
+                    ]
+                )
+            }
         }
 
         self.introVCPresentHelper(introViewController: controller, completion: completion)
+    }
+
+    private func presentDBPromptView() {
+        if FeatureFlag[.enableBrowserView] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.overlayManager.presentFullScreenModal(
+                    content: AnyView(
+                        DefaultBrowserPromptView {
+                            self.overlayManager.hideCurrentOverlay()
+                        } buttonAction: {
+                            self.overlayManager.hideCurrentOverlay()
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                self.presentDBOnboardingViewController(
+                                    modalTransitionStyle: .crossDissolve
+                                )
+                            }
+                        }
+                    )
+                ) {}
+            }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                let vc = DefaultBrowserPromptViewController {
+                    self.dismiss(animated: true)
+                } buttonAction: {
+                    self.dismiss(animated: true) {
+                        self.presentDBOnboardingViewController(
+                            modalTransitionStyle: .crossDissolve
+                        )
+                    }
+                }
+
+                if self.traitCollection.horizontalSizeClass == .regular
+                    && self.traitCollection.verticalSizeClass == .regular
+                {
+                    vc.preferredContentSize = CGSize(width: 375, height: 667)
+                    vc.modalPresentationStyle = .formSheet
+                } else {
+                    vc.modalPresentationStyle = .fullScreen
+                }
+                vc.modalTransitionStyle = .crossDissolve
+                self.present(vc, animated: true)
+            }
+        }
     }
 
     private func introVCPresentHelper(

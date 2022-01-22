@@ -34,6 +34,9 @@ struct DebugSettingsSection: View {
                 makeNavigationLink(title: String("Internal Settings")) {
                     InternalSettingsView()
                 }
+                makeNavigationLink(title: String("Experiment Settings")) {
+                    ExperimentSettingsView()
+                }
                 makeNavigationLink(title: String("Logging")) {
                     LoggingSettingsView()
                 }

@@ -118,10 +118,12 @@ public class EnvironmentHelper {
             key: LogConfig.Attribute.PreviewModeQueryCount,
             value: String(Defaults[.previewModeQueries].count))
 
-        return [
+        var attributes = [
             getSessionUUID(), isUserSignedIn, deviceTheme, deviceName, firstRunPath,
             previewQueryCount,
         ]
+
+        return attributes
     }
 
     public func getSessionUUID() -> ClientLogCounterAttribute {

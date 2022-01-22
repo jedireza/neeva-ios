@@ -1017,7 +1017,8 @@ extension BrowserViewController: WKNavigationDelegate {
                     attributes.append(
                         ClientLogCounterAttribute(
                             key: LogConfig.Attribute.FirstSessionUUID,
-                            value: Defaults[.firstSessionUUID]))
+                            value: Defaults[.firstSessionUUID])
+                    )
                     ClientLogger.shared.logCounter(
                         .LoginAfterFirstRun, attributes: attributes)
                     Defaults[.firstRunSeenAndNotSignedIn] = false

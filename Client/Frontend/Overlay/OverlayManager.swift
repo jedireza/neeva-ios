@@ -9,6 +9,7 @@ import SwiftUI
 enum OverlayPriority {
     case transient
     case modal
+    case fullScreen
 }
 
 /// Specific Overlay view type.
@@ -23,7 +24,9 @@ enum OverlayType: Equatable {
 
     var priority: OverlayPriority {
         switch self {
-        case .backForwardList, .findInPage, .fullScreenModal, .popover, .sheet:
+        case .fullScreenModal:
+            return .fullScreen
+        case .backForwardList, .findInPage, .popover, .sheet:
             return .modal
         case .notification, .toast:
             return .transient
