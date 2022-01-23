@@ -83,6 +83,30 @@ struct QueryButton: View {
     }
 }
 
+struct CheatsheetNoResultView: View {
+    var body: some View {
+        VStack(alignment: .center) {
+            Text("Sorry, we couldn't find any results related to your search")
+                .withFont(.headingLarge)
+                .foregroundColor(.label)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(1)
+            Text("If this persists, let us know what happened, and we'll fix it soon.")
+                .withFont(.bodyLarge)
+                .foregroundColor(.secondaryLabel)
+            Image("question-mark", bundle: .main)
+                .resizable()
+                .scaledToFit()
+                .frame(minHeight: 115, maxHeight: 300)
+                .accessibilityHidden(true)
+                .padding(.bottom)
+        }
+        .multilineTextAlignment(.center)
+        .padding(.top, 10)
+        .padding(.horizontal, 27)
+    }
+}
+
 public struct CheatsheetMenuView: View {
     @State var height: CGFloat = 0
     @EnvironmentObject private var model: CheatsheetMenuViewModel
@@ -121,6 +145,8 @@ public struct CheatsheetMenuView: View {
                 VStack(alignment: .center) {
                     LoadingView("something good on it's way")
                 }
+            } else if model.cheatSheetIsEmpty {
+                CheatsheetNoResultView()
             } else {
                 VStack(alignment: .leading) {
                     recipeView
