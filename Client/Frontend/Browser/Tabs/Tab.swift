@@ -232,8 +232,6 @@ class Tab: NSObject, ObservableObject {
             webView.allowsBackForwardNavigationGestures = true
             webView.allowsLinkPreview = true
 
-            addRefreshControl()
-
             // Turning off masking allows the web content to flow outside of the scrollView's frame
             // which allows the content appear beneath the toolbars in the BrowserViewController
             webView.scrollView.layer.masksToBounds = false
@@ -242,6 +240,7 @@ class Tab: NSObject, ObservableObject {
             restore(webView)
 
             self.webView = webView
+            addRefreshControl()
 
             send(
                 webView: \.title, to: \.title,
