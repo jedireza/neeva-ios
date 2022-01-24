@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import Combine
+import Defaults
 import Shared
 import SwiftUI
 
@@ -83,6 +84,71 @@ struct QueryButton: View {
     }
 }
 
+struct CheatsheetInfoView: View {
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+    @Environment(\.horizontalSizeClass) var horizontalSizeClass
+
+    let buttonText: String
+    let buttonAction: () -> Void
+
+    var body: some View {
+        VStack(alignment: .center, spacing: 0) {
+            VStack(alignment: .leading) {
+                HStack(alignment: .center) {
+                    Image("neeva-logo", bundle: .main)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 18, alignment: .center)
+                    Text("Cheatsheet")
+                        .withFont(.headingXLarge)
+                }
+                Text(
+                    "Cheatsheet searches the web to find information related to the website you’re visiting."
+                )
+                .withFont(.bodyLarge)
+                .foregroundColor(.secondaryLabel)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(1)
+                Text(
+                    "Tap on the Neeva logo to bring up the cheatsheet."
+                )
+                .withFont(.bodyLarge)
+                .foregroundColor(.secondaryLabel)
+                .fixedSize(horizontal: false, vertical: true)
+                .layoutPriority(1)
+            }
+            Group {
+                Spacer(minLength: 0)
+                // hide the image on small iPhones in landscape
+                if horizontalSizeClass == .regular || verticalSizeClass == .regular {
+                    Image("notification-prompt", bundle: .main)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(minHeight: 115, maxHeight: 300)
+                        .accessibilityHidden(true)
+                        .padding(.bottom)
+                } else {
+                    Spacer()
+                }
+                Spacer(minLength: 0)
+            }
+            .layoutPriority(-1)
+            Button(action: buttonAction) {
+                HStack {
+                    Spacer()
+                    Text(buttonText)
+                        .withFont(.labelLarge)
+                    Spacer()
+                }
+            }
+            .buttonStyle(.neeva(.primary))
+        }
+        .multilineTextAlignment(.leading)
+        .padding(.top, 10)
+        .padding(.bottom, 16)
+    }
+}
+
 struct CheatsheetNoResultView: View {
     var body: some View {
         VStack(alignment: .center) {
@@ -108,8 +174,12 @@ struct CheatsheetNoResultView: View {
 }
 
 public struct CheatsheetMenuView: View {
-    @State var height: CGFloat = 0
+    @Default(.seenCheatsheetIntro) var seenCheatsheetIntro: Bool
+    @Environment(\.hideOverlay) private var hideOverlay
     @EnvironmentObject private var model: CheatsheetMenuViewModel
+
+    @State var height: CGFloat = 0
+
     private let menuAction: (NeevaMenuAction) -> Void
 
     init(menuAction: @escaping (NeevaMenuAction) -> Void) {
@@ -117,30 +187,12 @@ public struct CheatsheetMenuView: View {
     }
 
     public var body: some View {
-        GeometryReader { geom in
-            if model.currentPageURL?.origin == NeevaConstants.appURL.origin {
-                VStack(alignment: .center) {
-                    VStack(alignment: .leading) {
-                        Text("What is Neeva Cheatsheet?").withFont(.headingXLarge).padding(
-                            .top, 32)
-                        Text(
-                            "Cheatsheet will show you information about the website you're visiting."
-                        )
-                        .withFont(.bodyLarge)
-                        .foregroundColor(.secondaryLabel)
-                        Text(
-                            "Try it by visiting a website outside of Neeva and tap this Neeva logo again!"
-                        )
-                        .withFont(.bodyLarge)
-                        .foregroundColor(.secondaryLabel)
-                    }
-                    .padding(.horizontal, 32)
-                    .fixedSize(horizontal: false, vertical: true)
-                    Image("notification-prompt", bundle: .main)
-                        .resizable()
-                        .frame(width: 160, height: 140)
-                        .padding(24)
-                }
+        ZStack {
+            // Show Cheatsheet Info if on Search Result Page
+            if NeevaConstants.isNeevaSearchResultPage(model.currentPageURL) {
+                CheatsheetInfoView(buttonText: "Got it!") { hideOverlay() }
+            } else if !seenCheatsheetIntro {
+                CheatsheetInfoView(buttonText: "Let's try it!") { seenCheatsheetIntro = true }
             } else if model.cheatsheetDataLoading {
                 VStack(alignment: .center) {
                     LoadingView("something good on it's way")
@@ -164,12 +216,12 @@ public struct CheatsheetMenuView: View {
                     reviewURLSection
                     memorizedQuerySection
                 }
-                .frame(width: geom.size.width)
                 .onHeightOfViewChanged { height in
                     self.height = height
                 }
             }
-        }.frame(minHeight: height < 200 ? 200 : height)
+        }
+        .frame(maxWidth: .infinity, minHeight: height < 200 ? 200 : height)
     }
 
     @ViewBuilder

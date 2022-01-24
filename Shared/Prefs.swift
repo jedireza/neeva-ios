@@ -98,6 +98,9 @@ extension Defaults.Keys {
     public static let seenSpacesShareIntro = Defaults.BoolKey("spacesShareIntroSeen")
     public static let showDescriptions = Defaults.BoolKey("showSpaceEntityDescription")
 
+    // cheatsheet
+    public static let seenCheatsheetIntro = Defaults.BoolKey("cheatsheetIntroSeen")
+
     // notification
     public static let lastScheduledNeevaPromoID = Defaults.Key<String?>("lastScheduledNeevaPromoID")
     public static let lastNeevaPromoScheduledTimeInterval = Defaults.Key<Int?>(

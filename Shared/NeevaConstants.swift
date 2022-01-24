@@ -183,6 +183,13 @@ public struct NeevaConstants {
             && url?.hasQueryParam("c", value: "Maps") == true
     }
 
+    public static func isNeevaSearchResultPage(_ url: URL?) -> Bool {
+        guard let url = url else { return false }
+        let appSearchURL = NeevaConstants.appSearchURL
+        // origin checks for scheme and host
+        return url.origin == appSearchURL.origin && url.path == appSearchURL.path
+    }
+
     // Construct auth url for signin with apple
     public static func appleAuthURL(
         serverAuthCode: String,

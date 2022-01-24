@@ -12,6 +12,7 @@ struct InternalSettingsView: View {
     @Default(.didFirstNavigation) var didFirstNavigation
     @Default(.seenSpacesIntro) var seenSpacesIntro
     @Default(.seenSpacesShareIntro) var seenSpacesShareIntro
+    @Default(.seenCheatsheetIntro) var seenCheatsheetIntro
     @Default(.lastVersionNumber) var lastVersionNumber
     @Default(.didDismissReferralPromoCard) var didDismissReferralPromoCard
     @Default(.deletedSuggestedSites) var deletedSuggestedSites
@@ -66,19 +67,24 @@ struct InternalSettingsView: View {
                 NumberField(
                     String("maxQueryLimit"), number: $maxQueryLimit)
             }
-            Section(header: Text(verbatim: "Spaces")) {
-                Toggle(String("spacesIntroSeen"), isOn: $seenSpacesIntro)
-                Toggle(String("spacesShareIntroSeen"), isOn: $seenSpacesShareIntro)
-            }
-            Section(header: Text(verbatim: "Promo Cards")) {
-                Toggle(String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
-                Toggle(String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
-                Toggle(String("ratingsCardHidden"), isOn: $ratingsCardHidden)
-                Toggle(
-                    String("seenNotificationPermissionPromo"),
-                    isOn: $seenNotificationPermissionPromo)
-                Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
-                Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
+            Group {
+                Section(header: Text(verbatim: "Spaces")) {
+                    Toggle(String("spacesIntroSeen"), isOn: $seenSpacesIntro)
+                    Toggle(String("spacesShareIntroSeen"), isOn: $seenSpacesShareIntro)
+                }
+                Section(header: Text(verbatim: "Cheatsheet")) {
+                    Toggle(String("cheatsheetIntroSeen"), isOn: $seenCheatsheetIntro)
+                }
+                Section(header: Text(verbatim: "Promo Cards")) {
+                    Toggle(String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
+                    Toggle(String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
+                    Toggle(String("ratingsCardHidden"), isOn: $ratingsCardHidden)
+                    Toggle(
+                        String("seenNotificationPermissionPromo"),
+                        isOn: $seenNotificationPermissionPromo)
+                    Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
+                    Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
+                }
             }
             Section(header: Text(verbatim: "Default Browser")) {
                 Toggle(String("didSetDefaultBrowser"), isOn: $didSetDefaultBrowser)

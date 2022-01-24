@@ -281,14 +281,16 @@ class Tab: NSObject, ObservableObject {
     // fetch cheatsheet info for current url
     func fetchCheatsheetInfo() {
         self.cheatsheetDataLoading = true
-        guard let url = self.url else { return }
+        guard let url = self.url,
+              url.scheme == "https",
+              !NeevaConstants.isNeevaSearchResultPage(url) else {
+            self.cheatsheetDataLoading = false
+            return
+        }
+
         self.searchRichResults = nil
         self.cheatsheetData = nil
         self.currentCheatsheetQuery = ""
-
-        if url.host == NeevaConstants.appHost || url.scheme != "https" {
-            return
-        }
 
         CheatsheetQueryController.getCheatsheetInfo(url: url.absoluteString) { result in
             switch result {
