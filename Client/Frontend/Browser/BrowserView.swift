@@ -20,6 +20,7 @@ struct BrowserView: View {
     @State var bottomBarHeight: CGFloat = 0
 
     @ObservedObject var browserModel: BrowserModel
+    @ObservedObject var tabManager: TabManager
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
@@ -206,6 +207,7 @@ struct BrowserView: View {
         .environmentObject(gridModel.spaceCardModel)
         .environmentObject(gridModel.tabGroupCardModel)
         .environmentObject(bvc.web3Model)
+        .environment(\.isIncognito, tabManager.isIncognito)
     }
 
     // MARK: - Init
@@ -214,6 +216,7 @@ struct BrowserView: View {
         self.shareURL = { url, view in
             bvc.shareURL(url: url, view: view)
         }
+        self.tabManager = bvc.tabManager
         self.gridModel = bvc.gridModel
         self.chromeModel = bvc.chromeModel
         self.overlayManager = bvc.overlayManager
