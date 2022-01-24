@@ -171,7 +171,9 @@ class ZeroQueryModel: ObservableObject {
                     Defaults[.seenBlackFridayFollowPromo] = true
                     self.promoCard = nil
                 })
-        } else if !Defaults[.didDismissDefaultBrowserCard] {
+        } else if !Defaults[.didDismissDefaultBrowserCard]
+                    && !Defaults[.didSetDefaultBrowser]
+                    && !Defaults[.didShowDefaultBrowserInterstitial] {
             promoCard = .defaultBrowser {
                 ClientLogger.shared.logCounter(
                     .PromoDefaultBrowser,

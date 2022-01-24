@@ -5,7 +5,8 @@
 import Defaults
 import Foundation
 
-public protocol ExperimentArms: CaseIterable, RawRepresentable where RawValue == String {}
+public protocol ExperimentArms: Hashable, CaseIterable, RawRepresentable
+    where RawValue == String, AllCases: RandomAccessCollection {}
 
 public enum NeevaExperiment {
     private static let experimentValuesKey =
@@ -17,6 +18,7 @@ public enum NeevaExperiment {
         else {
             return nil
         }
+
         return arm
     }
 
@@ -57,9 +59,9 @@ public enum NeevaExperiment {
 
     static public func forceExperimentArm<Arm: ExperimentArms>(
         experiment: Experiment<Arm>,
-        experimentArm: Arm
+        experimentArm: String?
     ) {
-        Defaults[self.experimentValuesKey][experiment.key] = experimentArm.rawValue
+        Defaults[self.experimentValuesKey][experiment.key] = experimentArm
     }
 }
 

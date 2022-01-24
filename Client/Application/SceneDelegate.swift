@@ -154,6 +154,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 )
             }
             ClientLogger.shared.logCounter(.OpenDefaultBrowserURL, attributes: attributes)
+
+            Defaults[.didSetDefaultBrowser] = true
         }
 
         if let _ = Defaults[.appExtensionTelemetryOpenUrl] {

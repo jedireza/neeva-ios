@@ -2035,8 +2035,11 @@ extension BrowserViewController {
             }
 
             if NeevaExperiment.startExperiment(for: .defaultBrowserPrompt) == .showDBPrompt
+                && !Defaults[.didSetDefaultBrowser]
+                && !Defaults[.didShowDefaultBrowserInterstitial]
             {
                 self.presentDBPromptView()
+                Defaults[.didShowDefaultBrowserInterstitial] = true
             }
 
             if let experimentArm = NeevaExperiment.arm(for: .defaultBrowserPrompt) {

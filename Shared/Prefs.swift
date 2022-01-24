@@ -17,8 +17,6 @@ extension Defaults.Keys {
     public static let introSeen = Defaults.BoolKey("profile.IntroViewControllerSeen")
     public static let didFirstNavigation = Defaults.BoolKey("profile_didFirstNavigation")
     public static let lastVersionNumber = Defaults.Key<String?>("profile.KeyLastVersionNumber")
-    public static let didDismissDefaultBrowserCard = Defaults.BoolKey(
-        "profile.didDismissDefaultBrowserCard")
     public static let didDismissReferralPromoCard =
         Defaults.BoolKey("profile.didDismissReferralPromoCard")
     public static let firstRunSeenAndNotSignedIn = Defaults.BoolKey(
@@ -151,6 +149,14 @@ extension Defaults.Keys {
         "cryptoTransactionHashStore", default: [])
     public static let sessionsPeerIDs = Defaults.Key<Set<String>>(
         "web3SessionsPeerIDs", default: [])
+
+    // default browser
+    public static let didDismissDefaultBrowserCard = Defaults.BoolKey(
+        "profile.didDismissDefaultBrowserCard")
+    public static let didShowDefaultBrowserInterstitial = Defaults.BoolKey(
+        "didShowDefaultBrowserInterstitial")
+    public static let didSetDefaultBrowser = Defaults.BoolKey(
+        "didSetDefaultBrowser")
 }
 
 extension Defaults {

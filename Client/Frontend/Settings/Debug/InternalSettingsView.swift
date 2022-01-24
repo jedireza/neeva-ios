@@ -13,7 +13,6 @@ struct InternalSettingsView: View {
     @Default(.seenSpacesIntro) var seenSpacesIntro
     @Default(.seenSpacesShareIntro) var seenSpacesShareIntro
     @Default(.lastVersionNumber) var lastVersionNumber
-    @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
     @Default(.didDismissReferralPromoCard) var didDismissReferralPromoCard
     @Default(.deletedSuggestedSites) var deletedSuggestedSites
     @Default(.recentlyClosedTabs) var recentlyClosedTabs
@@ -38,6 +37,9 @@ struct InternalSettingsView: View {
     @Default(.signupPromptInterval) var signupPromptInterval
     @Default(.maxQueryLimit) var maxQueryLimit
     @Default(.signedInOnce) var signedInOnce
+    @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
+    @Default(.didSetDefaultBrowser) var didSetDefaultBrowser
+    @Default(.didShowDefaultBrowserInterstitial) var didShowDefaultBrowserInterstitial
 
     var body: some View {
         List {
@@ -72,13 +74,18 @@ struct InternalSettingsView: View {
                 Toggle(String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
                 Toggle(String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
                 Toggle(String("ratingsCardHidden"), isOn: $ratingsCardHidden)
-            }
-            Section(header: Text("promo-card")) {
                 Toggle(
                     String("seenNotificationPermissionPromo"),
                     isOn: $seenNotificationPermissionPromo)
                 Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
                 Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
+            }
+            Section(header: Text(verbatim: "Default Browser")) {
+                Toggle(String("didSetDefaultBrowser"), isOn: $didSetDefaultBrowser)
+                Toggle(
+                    String("didShowDefaultBrowserInterstitial"),
+                    isOn: $didShowDefaultBrowserInterstitial
+                )
             }
             Section(header: Text(verbatim: "User-generated")) {
                 HStack {
