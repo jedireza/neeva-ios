@@ -58,7 +58,7 @@ struct SendForm: View {
                 .keyboardType(.decimalPad)
 
             if !amount.isEmpty {
-                Text("= \(CryptoConfig.shared.etherToUSD(ether: amount)) USD")
+                Text("= \(CryptoConfig.shared.toUSD(amount: amount)) USD")
             }
 
             HStack {
