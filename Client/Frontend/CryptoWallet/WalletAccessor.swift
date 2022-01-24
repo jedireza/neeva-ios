@@ -59,9 +59,9 @@ struct WalletAccessor {
         return keystore?.addresses?.first?.address ?? ""
     }
 
-    func sign(message: String, using publicAddress: String) throws -> String {
+    func sign(on chain: EthNode, message: String, using publicAddress: String) throws -> String {
         return try "0x"
-            + web3.wallet.signPersonalMessage(
+            + web3(on: chain).wallet.signPersonalMessage(
                 message, account: EthereumAddress(publicAddress)!, password: password
             ).toHexString()
     }
@@ -109,24 +109,30 @@ struct WalletAccessor {
             tx.callPromise().done { tokenBalance in
                 let balanceBigUInt = tokenBalance["0"] as! BigUInt
                 completion(
-                    Web3.Utils.formatToEthereumUnits(balanceBigUInt, toUnits: .eth, decimals: 6))
+                    Web3.Utils.formatToEthereumUnits(
+                        balanceBigUInt,
+                        toUnits: token == .usdcOnPolygon ? .Mwei : .eth,
+                        decimals: 6
+                    )
+                )
             }.cauterize()
         }
     }
 
-    func gasPrice(completion: @escaping (String?) -> Void) {
+    func gasPrice(on chain: EthNode, completion: @escaping (String?) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
-            web3.eth.getGasPricePromise().done(on: DispatchQueue.main) { estimate in
+            web3(on: chain).eth.getGasPricePromise().done(on: DispatchQueue.main) { estimate in
                 completion(Web3.Utils.formatToEthereumUnits(estimate, toUnits: .Gwei))
             }.cauterize()
         }
     }
 
     func send(
+        on chain: EthNode,
         eth value: String, from fromAddress: EthereumAddress, to toAddress: EthereumAddress,
         for gas: String?, using data: String?
     ) throws -> String {
-        let contract = web3.contract(
+        let contract = web3(on: chain).contract(
             Web3.Utils.coldWalletABI, at: toAddress, abiVersion: 2)!
 
         var options = TransactionOptions.defaultOptions
@@ -147,8 +153,27 @@ struct WalletAccessor {
 public enum TokenType: String, CaseIterable {
     case ether = "Ether"
     case wrappedEther = "Wrapped Ether"
+    case matic = "Matic"
     case wrappedEtherOnPolygon = "Wrapped Ether on Polygon"
     case maticOnPolygon = "Matic on Polygon"
+    case usdcOnPolygon = "USD Coin on Polygon"
+
+    var name: String {
+        switch self {
+        case .ether:
+            return "Ether"
+        case .wrappedEther:
+            return "Wrapped Ether"
+        case .matic:
+            return "Matic"
+        case .wrappedEtherOnPolygon:
+            return "Wrapped Ether"
+        case .maticOnPolygon:
+            return "Matic"
+        case .usdcOnPolygon:
+            return "USD Coin"
+        }
+    }
 
     var network: EthNode {
         switch self {
@@ -156,16 +181,29 @@ public enum TokenType: String, CaseIterable {
             return .Ethereum
         case .wrappedEther:
             return .Ethereum
+        case .matic:
+            return .Ethereum
         case .wrappedEtherOnPolygon:
             return .Polygon
         case .maticOnPolygon:
+            return .Polygon
+        case .usdcOnPolygon:
             return .Polygon
         }
     }
 
     // TODO Internationalize this
     var conversionRateToUSD: Double {
-        return 3164.09
+        switch self {
+        case .usdcOnPolygon:
+            return 0.9998
+        case .maticOnPolygon:
+            return 1.46
+        case .matic:
+            return 1.46
+        default:
+            return 2460.78
+        }
     }
 
     var contractAddress: String {
@@ -174,10 +212,14 @@ public enum TokenType: String, CaseIterable {
             return ""
         case .wrappedEther:
             return "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2"
+        case .matic:
+            return "0x7d1afa7b718fb893db30a3abc0cfc608aacfebb0"
         case .wrappedEtherOnPolygon:
             return "0x7ceb23fd6bc0add59e62ac25578270cff1b9f619"
         case .maticOnPolygon:
             return ""
+        case .usdcOnPolygon:
+            return "0x2791bca1f2de4661ed88a30c99a7a9449aa84174"
         }
     }
 
@@ -187,10 +229,14 @@ public enum TokenType: String, CaseIterable {
             return "ETH"
         case .wrappedEther:
             return "WETH"
+        case .matic:
+            return "MATIC"
         case .wrappedEtherOnPolygon:
             return "WETH"
         case .maticOnPolygon:
             return "MATIC"
+        case .usdcOnPolygon:
+            return "USDC"
         }
     }
 
@@ -202,8 +248,25 @@ public enum TokenType: String, CaseIterable {
             .padding(4)
     }
 
-    var maticLogo: some View {
+    var polygonLogo: some View {
         Image("polygon-badge")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 24, height: 24)
+            .padding(4)
+    }
+
+    var maticLogo: some View {
+        Image("matic-logo")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 24, height: 24)
+            .padding(4)
+            .clipShape(Circle())
+    }
+
+    var usdcLogo: some View {
+        Image("usdc-logo")
             .resizable()
             .scaledToFit()
             .frame(width: 24, height: 24)
@@ -218,6 +281,8 @@ public enum TokenType: String, CaseIterable {
         case .wrappedEther:
             ethLogo
                 .background(Circle().stroke(Color.ui.gray80))
+        case .matic:
+            maticLogo
         case .wrappedEtherOnPolygon:
             if #available(iOS 15.0, *) {
                 ethLogo
@@ -234,7 +299,31 @@ public enum TokenType: String, CaseIterable {
                     .background(Circle().stroke(Color.ui.gray80))
             }
         case .maticOnPolygon:
-            maticLogo
+            if #available(iOS 15.0, *) {
+                maticLogo
+                    .overlay {
+                        Image("polygon-badge")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 14)
+                            .offset(x: -12, y: 12)
+                    }
+            } else {
+                maticLogo
+            }
+        case .usdcOnPolygon:
+            if #available(iOS 15.0, *) {
+                usdcLogo
+                    .overlay {
+                        Image("polygon-badge")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 14)
+                            .offset(x: -12, y: 12)
+                    }
+            } else {
+                usdcLogo
+            }
         }
     }
 }

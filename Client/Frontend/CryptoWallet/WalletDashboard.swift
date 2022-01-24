@@ -73,21 +73,27 @@ struct WalletDashboard: View {
                         HStack {
                             token.thumbnail
                             VStack(alignment: .leading, spacing: 8) {
-                                Text(token.rawValue)
+                                Text(token.name)
                                     .withFont(.labelSmall)
-                                    .lineLimit(2)
+                                    .fixedSize(horizontal: false, vertical: true)
                                     .foregroundColor(.label)
-                                Text("\(model.balanceFor(token) ?? "") \(token.currency)")
+                                Text(token.network.rawValue)
                                     .font(.roobert(size: 16))
                                     .foregroundColor(.secondary)
                             }
                             Spacer()
-                            Text(
-                                "$\(CryptoConfig.shared.etherToUSD(ether: model.balanceFor(token) ?? "0"))"
-                            )
-                            .foregroundColor(.label)
-                            .font(.roobert(size: 24))
-                            .frame(alignment: .center)
+                            VStack(alignment: .trailing, spacing: 8) {
+                                Text(
+                                    "$\(CryptoConfig.shared.toUSD(from: token, amount: model.balanceFor(token) ?? "0"))"
+                                )
+                                .foregroundColor(.label)
+                                .font(.roobert(size: 20))
+                                .frame(alignment: .center)
+                                Text("\(model.balanceFor(token) ?? "") \(token.currency)")
+                                    .font(.roobert(size: 12))
+                                    .foregroundColor(.secondary)
+                            }
+
                         }
                     }
                 },
@@ -106,6 +112,39 @@ struct WalletDashboard: View {
                                     .withFont(.labelSmall)
                                     .foregroundColor(.label)
                                 Spacer()
+                                Menu(
+                                    content: {
+                                        ForEach([EthNode.Ethereum, EthNode.Polygon]) { node in
+                                            Button(
+                                                action: {
+                                                    guard let walletInfo = session.walletInfo else {
+                                                        return
+                                                    }
+                                                    let info = Session.WalletInfo(
+                                                        approved: walletInfo.approved,
+                                                        accounts: walletInfo.accounts,
+                                                        chainId: node.id, peerId: walletInfo.peerId,
+                                                        peerMeta: walletInfo.peerMeta)
+                                                    try? model.server?.updateSession(
+                                                        session, with: info)
+                                                },
+                                                label: {
+                                                    Text(node.rawValue)
+                                                        .withFont(.labelSmall)
+                                                        .foregroundColor(.label)
+                                                })
+                                        }
+                                    },
+                                    label: {
+                                        let chain = EthNode.from(
+                                            chainID: session.walletInfo?.chainId)
+                                        switch chain {
+                                        case .Polygon:
+                                            TokenType.matic.polygonLogo
+                                        default:
+                                            TokenType.ether.ethLogo
+                                        }
+                                    })
                                 Button(action: {
                                     sessionToDisconnect = session
                                     showConfirmDisconnectAlert = true
@@ -143,6 +182,7 @@ struct WalletDashboard: View {
         .modifier(WalletListStyleModifier())
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal, 25)
+        .padding(.bottom, 48)
         .actionSheet(isPresented: $showConfirmDisconnectAlert) {
             ActionSheet(
                 title: Text(

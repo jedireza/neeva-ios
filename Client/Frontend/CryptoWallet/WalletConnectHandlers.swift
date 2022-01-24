@@ -13,8 +13,8 @@ import web3swift
 
 protocol ResponseRelay {
     func send(_ response: Response)
-    func askToSign(request: Request, message: String, sign: @escaping () -> String)
-    func askToTransact(request: Request, value: String, transact: @escaping () -> String)
+    func askToSign(request: Request, message: String, sign: @escaping (EthNode) -> String)
+    func askToTransact(request: Request, value: String, transact: @escaping (EthNode) -> String)
 }
 
 extension Response {
@@ -52,9 +52,10 @@ class PersonalSignHandler: RequestHandler {
 
             let message = String(data: Data.fromHex(messageBytes) ?? Data(), encoding: .utf8) ?? ""
 
-            relay.askToSign(request: request, message: message) {
+            relay.askToSign(request: request, message: message) { ethNode in
                 return
-                    (try? self.wallet.sign(message: messageBytes, using: self.wallet.publicAddress))
+                    (try? self.wallet.sign(
+                        on: ethNode, message: messageBytes, using: self.wallet.publicAddress))
                     ?? ""
             }
         } catch {
@@ -94,9 +95,10 @@ class SendTransactionHandler: RequestHandler {
         let data = params["data"]
         let gas = params["gas"]
 
-        relay.askToTransact(request: request, value: value) {
+        relay.askToTransact(request: request, value: value) { ethNode in
             return
                 (try? self.wallet.send(
+                    on: ethNode,
                     eth: value, from: fromAddress, to: toAddress, for: gas, using: data)) ?? ""
         }
     }

@@ -30,10 +30,10 @@ struct SequenceInfo {
 class Web3Model: ObservableObject, ResponseRelay {
     @Published var currentSequence: SequenceInfo? = nil {
         didSet {
-            guard let _ = currentSequence, let wallet = wallet else { return }
+            guard let sequence = currentSequence, let wallet = wallet else { return }
             tryMatchCurrentPageToCollection()
 
-            wallet.gasPrice { estimate in
+            wallet.gasPrice(on: sequence.chain) { estimate in
                 self.gasEstimate = estimate
             }
 
@@ -56,11 +56,25 @@ class Web3Model: ObservableObject, ResponseRelay {
     var wallet: WalletAccessor?
 
     var balances: [TokenType: String?] = [
-        .ether: nil, .wrappedEther: nil, .wrappedEtherOnPolygon: nil, .maticOnPolygon: nil,
+        .ether: nil, .wrappedEther: nil, .matic: nil,
+        .wrappedEtherOnPolygon: nil, .maticOnPolygon: nil, .usdcOnPolygon: nil,
     ]
 
     var ethBalance: String? {
         balances[.ether]!
+    }
+
+    var maticBalance: String? {
+        balances[.maticOnPolygon]!
+    }
+
+    func balance(on chain: EthNode) -> String? {
+        switch chain {
+        case .Polygon:
+            return "\(maticBalance ?? "") \(TokenType.maticOnPolygon.currency)"
+        default:
+            return "\(ethBalance ?? "") \(TokenType.ether.currency)"
+        }
     }
 
     func balanceFor(_ token: TokenType) -> String? {
@@ -208,28 +222,31 @@ class Web3Model: ObservableObject, ResponseRelay {
         server?.send(response)
     }
 
-    func askToTransact(request: Request, value: String, transact: @escaping () -> String) {
+    func askToTransact(request: Request, value: String, transact: @escaping (EthNode) -> String) {
         guard
-            let dappInfo = server?.openSessions().first(where: {
+            let session = server?.openSessions().first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
                     == currentSession?.dAppInfo.peerMeta.url.baseDomain
-            })?.dAppInfo
+            }), let walletInfo = session.walletInfo
         else {
             send(.reject(request))
             return
         }
+        let dappInfo = session.dAppInfo
 
         DispatchQueue.main.async {
             self.currentSequence = SequenceInfo(
                 type: .sendTransaction,
                 thumbnailURL: dappInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: dappInfo.peerMeta,
-                chain: EthNode.from(chainID: dappInfo.chainId),
+                chain: EthNode.from(chainID: walletInfo.chainId),
                 message:
                     "This will transfer this amount from your wallet to a wallet provided by \(dappInfo.peerMeta.name).",
-                onAccept: { _ in
+                onAccept: { chainId in
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.server?.send(.transaction(transact(), for: request))
+                        self.server?.send(
+                            .transaction(transact(EthNode.from(chainID: chainId)), for: request)
+                        )
                     }
                 },
                 onReject: {
@@ -244,28 +261,29 @@ class Web3Model: ObservableObject, ResponseRelay {
         }
     }
 
-    func askToSign(request: Request, message: String, sign: @escaping () -> String) {
+    func askToSign(request: Request, message: String, sign: @escaping (EthNode) -> String) {
         guard
-            let dappInfo = server?.openSessions().first(where: {
+            let session = server?.openSessions().first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
                     == currentSession?.dAppInfo.peerMeta.url.baseDomain
-            })?.dAppInfo
+            }), let walletInfo = session.walletInfo
         else {
             send(.reject(request))
             return
         }
+        let dappInfo = session.dAppInfo
 
         DispatchQueue.main.async {
             self.currentSequence = SequenceInfo(
                 type: .personalSign,
                 thumbnailURL: dappInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: dappInfo.peerMeta,
-                chain: EthNode.from(chainID: dappInfo.chainId),
+                chain: EthNode.from(chainID: walletInfo.chainId),
                 message:
                     message,
-                onAccept: { _ in
+                onAccept: { chainId in
                     DispatchQueue.global(qos: .userInitiated).async {
-                        let signature = sign()
+                        let signature = sign(EthNode.from(chainID: chainId))
                         self.server?.send(.signature(signature, for: request))
                     }
                 },

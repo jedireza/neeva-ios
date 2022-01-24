@@ -10,7 +10,8 @@ struct CommunitySubmissionView: View {
 
     let url: URL
     @Binding var trust: Bool
-    @State private var subscription: AnyCancellable? = nil
+    @State private var boostRequest: BoostRequest? = nil
+    @State private var suppressRequest: SuppressRequest? = nil
 
     var body: some View {
         VStack(spacing: 12) {
@@ -28,7 +29,7 @@ struct CommunitySubmissionView: View {
             Button(
                 action: {
                     trust = true
-                    self.subscription = BoostRequest(url: url).$state.sink { _ in }
+                    boostRequest = BoostRequest(url: url)
                 },
                 label: {
                     HStack(spacing: 6) {
@@ -48,7 +49,7 @@ struct CommunitySubmissionView: View {
                 action: {
                     trust = false
                     hideOverlaySheet()
-                    self.subscription = SuppressRequest(url: url).$state.sink { _ in }
+                    suppressRequest = SuppressRequest(url: url)
                 },
                 label: {
                     HStack(spacing: 6) {

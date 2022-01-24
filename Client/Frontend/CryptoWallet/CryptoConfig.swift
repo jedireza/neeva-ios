@@ -68,10 +68,9 @@ public class CryptoConfig {
         self.currentNode == .Ropsten
     }
 
-    public func etherToUSD(ether: String) -> String {
-        let conversionRate = 3164.09
-        if let ethAmount = Double(ether) {
-            return String(format: "%.2f", ethAmount * conversionRate)
+    public func toUSD(from token: TokenType = .ether, amount: String) -> String {
+        if let value = Double(amount) {
+            return String(format: "%.2f", value * token.conversionRateToUSD)
         }
         return "N/A"
     }

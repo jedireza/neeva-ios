@@ -15,7 +15,11 @@ struct WalletSequenceContent: View {
     @Environment(\.hideOverlay) private var hideOverlaySheet
     @ObservedObject var model: Web3Model
     @State var communityTrusted: Bool = false
-    @State var userSelectedChain: EthNode = .Ethereum
+    @State var userSelectedChain: EthNode? = nil
+
+    var chainToUse: EthNode {
+        userSelectedChain ?? model.currentSequence?.chain ?? .Ethereum
+    }
 
     var showingCommunitySubmissions: Bool {
         guard let type = model.currentSequence?.type,
@@ -79,7 +83,7 @@ struct WalletSequenceContent: View {
                     },
                     label: {
                         HStack(spacing: 6) {
-                            Text(userSelectedChain.rawValue)
+                            Text(userSelectedChain?.rawValue ?? EthNode.Ethereum.rawValue)
                                 .withFont(.labelMedium)
                                 .lineLimit(1)
                                 .foregroundColor(.label)
@@ -90,7 +94,7 @@ struct WalletSequenceContent: View {
                     })
 
             default:
-                Text(model.ethBalance == nil ? "Fetching..." : "\(model.ethBalance!) ETH")
+                Text(model.balance(on: chainToUse) ?? "Fetching...")
                     .withFont(.labelMedium)
                     .lineLimit(1)
                     .foregroundColor(.label)
@@ -213,7 +217,7 @@ struct WalletSequenceContent: View {
                 }
                 VStack(spacing: 8) {
                     if let ethAmount = sequence.ethAmount, let double = Double(ethAmount) {
-                        Text("$" + CryptoConfig.shared.etherToUSD(ether: String(double)))
+                        Text("$" + CryptoConfig.shared.toUSD(amount: String(double)))
                             .withFont(.headingXLarge)
                             .foregroundColor(.label)
                         Label {
@@ -246,7 +250,7 @@ struct WalletSequenceContent: View {
                             action: {
                                 switch sequence.type {
                                 case .sessionRequest:
-                                    sequence.onAccept(userSelectedChain.id)
+                                    sequence.onAccept(userSelectedChain?.id ?? sequence.chain.id)
                                 default:
                                     let context = LAContext()
                                     let reason =
@@ -254,7 +258,8 @@ struct WalletSequenceContent: View {
                                     let onAuth: (Bool, Error?) -> Void = {
                                         success, authenticationError in
                                         if success {
-                                            sequence.onAccept(userSelectedChain.id)
+                                            sequence.onAccept(
+                                                userSelectedChain?.id ?? sequence.chain.id)
                                         } else {
                                             sequence.onReject()
                                         }
@@ -329,8 +334,5 @@ struct WalletSequenceContent: View {
         .padding(.horizontal, 16)
         .padding(.top, 12)
         .padding(.bottom, 36)
-        .onChange(of: model.currentSequence?.chain) { chain in
-            userSelectedChain = chain ?? .Ethereum
-        }
     }
 }
