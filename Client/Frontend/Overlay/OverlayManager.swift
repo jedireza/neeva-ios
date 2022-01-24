@@ -79,6 +79,11 @@ class OverlayManager: ObservableObject {
     }
 
     public func show(overlay: OverlayType, animate: Bool = true, completion: (() -> Void)? = nil) {
+        guard animationCompleted == nil else {
+            queuedOverlays.append((overlay, animate, completion))
+            return
+        }
+
         if overlay.priority == .transient {
             guard currentOverlay == nil else {
                 queuedOverlays.append((overlay, animate, completion))
