@@ -166,7 +166,8 @@ extension BrowserViewController: ToolbarDelegate {
         }
 
         var switchModeTitle = Strings.openIncognitoModeTitle
-        var switchModeImage: UIImage? = UIImage(named: "incognito")
+        var switchModeImage: UIImage? = UIImage(named: "incognito")?.withTintColor(
+            .label, renderingMode: .alwaysOriginal)
 
         var newTabTitle = Strings.NewTabTitle
         var newTabImage = UIImage(systemSymbol: .plusSquare)
