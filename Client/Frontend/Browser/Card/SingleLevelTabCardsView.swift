@@ -29,11 +29,26 @@ struct SingleLevelTabCardsView: View {
             HStack(spacing: CardGridUX.GridSpacing) {
                 ForEach(row.cells) { details in
                     switch details {
-                    case .tabGroup(let groupDetails):
+                    case .tabGroupInline(let groupDetails):
                         CollapsableCardGroupView(
                             groupDetails: groupDetails, containerGeometry: containerGeometry
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
+                    case .tabGroupGridRow(let groupDetails, let range):
+                        // XXX
+                        HStack(spacing: CardGridUX.GridSpacing) {
+                            ForEach(groupDetails.allDetails[range]) { childTabDetail in
+                                FittedCard(details: childTabDetail, dragToClose: false)
+//                                    .matchedGeometryEffect(id: childTabDetail.id, in: cardGroup)
+                                    .modifier(
+                                        CardTransitionModifier(
+                                            details: childTabDetail,
+                                            containerGeometry: containerGeometry)
+                                    )
+                            }
+                        }
+                        .background(Color.gray)
+                        .zIndex(groupDetails.allDetails[range].contains(where: \.isSelected) ? 1 : 0)
                     case .tab(let tabDetails):
                         FittedCard(details: tabDetails)
                             .modifier(
