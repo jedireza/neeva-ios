@@ -457,7 +457,6 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     typealias Manager = TabGroupManager
 
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
-    private var tabGroupExpandedSubscriptions: Set<AnyCancellable> = Set()
 
     @Published var manager: TabGroupManager
     @Published var isShowingDetails = false
@@ -500,11 +499,6 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
         self.id = tabGroup.id
         self.manager = tabGroupManager
-
-        _tabGroupExpanded.publisher.sink {
-            [unowned self] _ in
-            self.objectWillChange.send()
-        }.store(in: &self.tabGroupExpandedSubscriptions)
 
         allDetails =
             manager.get(for: id)?.children

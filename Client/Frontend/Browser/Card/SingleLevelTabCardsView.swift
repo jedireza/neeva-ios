@@ -29,22 +29,37 @@ struct SingleLevelTabCardsView: View {
             HStack(spacing: CardGridUX.GridSpacing) {
                 ForEach(row.cells) { details in
                     switch details {
-                    case .tabGroup(let groupDetails):
-                        CollapsableCardGroupView(
+                    case .tabGroupInline(let groupDetails):
+                        CollapsedCardGroupView(
                             groupDetails: groupDetails, containerGeometry: containerGeometry
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
+                        .padding(.bottom, CardGridUX.GridSpacing)
+                    case .tabGroupGridRow(let groupDetails, let range):
+                        ExpandedCardGroupRowView(
+                            groupDetails: groupDetails, containerGeometry: containerGeometry,
+                            range: range
+                        )
+                        .padding(.horizontal, -CardGridUX.GridSpacing)
+                        .padding(
+                            .bottom,
+                            lastRowTabGroup(range, groupDetails) ? CardGridUX.GridSpacing : 0)
                     case .tab(let tabDetails):
                         FittedCard(details: tabDetails)
                             .modifier(
                                 CardTransitionModifier(
                                     details: tabDetails, containerGeometry: containerGeometry)
                             )
+                            .padding(.bottom, CardGridUX.GridSpacing)
                     }
                 }
             }
             .padding(.horizontal, CardGridUX.GridSpacing)
             .zIndex(row.cells.contains(where: \.isSelected) ? 1 : 0)
         }
+    }
+
+    func lastRowTabGroup(_ rowInfo: Range<Int>, _ groupDetails: TabGroupCardDetails) -> Bool {
+        return rowInfo.last == groupDetails.allDetails.count - 1
     }
 }

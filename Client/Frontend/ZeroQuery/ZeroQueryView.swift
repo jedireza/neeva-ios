@@ -239,7 +239,8 @@ struct ZeroQueryView: View {
                                                         ClientLogCounterAttribute(
                                                             key: LogConfig.PromoCardAttribute
                                                                 .promoCardType,
-                                                            value: viewModel.promoCard?.name ?? "None"
+                                                            value: viewModel.promoCard?.name
+                                                                ?? "None"
                                                         )
                                                     ]
                                             )
