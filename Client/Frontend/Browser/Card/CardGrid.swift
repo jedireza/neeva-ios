@@ -69,26 +69,12 @@ struct CardGrid: View {
 
     @ViewBuilder var grid: some View {
         VStack(spacing: 0) {
-            if !FeatureFlag[.enableBrowserView] {
-                topBar
-                    .modifier(
-                        SwipeToSwitchToSpacesGesture(
-                            gridModel: gridModel, tabModel: tabModel,
-                            horizontalOffsetChanged: { gridModel.dragOffset = $0 },
-                            fromPicker: true))
-            }
-
             cardContainer
                 .accessibilityIdentifier("CardGrid")
                 .accessibilityValue(
                     Text(
                         "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
                     ))
-
-            if !topToolbar && !FeatureFlag[.enableBrowserView] {
-                SwitcherToolbarView(top: false, isEmpty: tabModel.isCardGridEmpty)
-                    .frame(height: UIConstants.ToolbarHeight)
-            }
         }
     }
 

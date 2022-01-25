@@ -162,11 +162,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     var selectedTab: Tab?
-    @Published private(set) var isIncognito: Bool = false {
-        didSet {
-            SceneDelegate.getBVC(with: scene).applyUIMode(isIncognito: isIncognito)
-        }
-    }
+    @Published private(set) var isIncognito: Bool = false
 
     subscript(index: Int) -> Tab? {
         assert(Thread.isMainThread)

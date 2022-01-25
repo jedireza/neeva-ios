@@ -113,7 +113,7 @@ class NeevaSignInTests: BaseTestCase {
         app.buttons["Neeva Menu"].tap(force: true)
 
         waitForExistence(app.buttons["Home"])
-        app.buttons["Home"].tap()
+        app.buttons["Home"].tap(force: true)
 
         waitUntilPageLoad(withUrlContaining: "mock-neeva-signin")
 

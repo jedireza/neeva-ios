@@ -17,11 +17,14 @@ extension BaseTestCase {
     }
 
     func showAppNavigationMenu(for button: String) {
+        print(app.debugDescription)
         if app.buttons["SwitcherOverflowButton"].exists {
             waitForHittable(app.buttons["SwitcherOverflowButton"])
             app.buttons["SwitcherOverflowButton"].tap()
         } else if app.buttons["Neeva Menu"].exists {
             app.buttons["Neeva Menu"].tap(force: true)
+        } else if app.buttons["More"].exists {
+            app.buttons["More"].tap(force: true)
         } else {
             XCTFail("Cannot find tap target for menu to access \(button)")
         }
@@ -31,7 +34,7 @@ extension BaseTestCase {
     /// Launches from tab page
     func goToSettings() {
         showAppNavigationMenu(for: "Settings")
-        app.buttons["Settings"].tap()
+        app.buttons["Settings"].tap(force: true)
 
         waitForExistence(app.tables.cells["Show Search Suggestions"])
     }
@@ -39,7 +42,7 @@ extension BaseTestCase {
     /// Lauches from tab page
     func goToFindOnPage() {
         goToOverflowMenuButton(label: "Find on Page", shouldDismissOverlay: false) { element in
-            element.tap()
+            element.tap(force: true)
         }
 
         waitForExistence(app.textFields["FindInPage_TextField"])
@@ -64,7 +67,7 @@ extension BaseTestCase {
     /// Launches from tab page
     func goToHistory() {
         showAppNavigationMenu(for: "History")
-        app.buttons["History"].tap()
+        app.buttons["History"].tap(force: true)
     }
 
     /// Launches from tab page, then opens history
@@ -89,6 +92,7 @@ extension BaseTestCase {
         shouldDismissOverlay: Bool = true,
         action: (XCUIElement) -> Void
     ) {
+        waitForExistence(app.buttons["More"])
         app.buttons["More"].tap(force: true)
         waitForExistence(app.buttons[label], timeout: 30)
         action(app.buttons[label])
