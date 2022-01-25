@@ -29,6 +29,15 @@ struct AppHostSetting: View {
                     appHost = alert.textFields!.first!.text!
                 }
 
+                let alphaAction = UIAlertAction(title: "neeva.com (alpha)", style: .default) { _ in
+                    appHost = "neeva.com"
+                }
+                let m1Action = UIAlertAction(title: "m1.neeva.com (m1)", style: .default) { _ in
+                    appHost = "m1.neeva.com"
+                }
+
+                alert.addAction(alphaAction)
+                alert.addAction(m1Action)
                 alert.addAction(saveAction)
                 alert.addTextField { tf in
                     tf.placeholder = "Neeva server domain (required)"
