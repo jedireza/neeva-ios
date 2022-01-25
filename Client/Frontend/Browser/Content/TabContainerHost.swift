@@ -110,7 +110,6 @@ class TabContainerModel: ObservableObject {
                 currentContentUI = .previewHome
             } else {
                 currentContentUI = webContainerType
-                zeroQueryModel.reset(bvc: nil)
             }
         case .showPreviewHome:
             currentContentUI = .previewHome

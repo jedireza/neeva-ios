@@ -876,16 +876,16 @@ class BrowserViewController: UIViewController, ModalPresenter {
             }
 
             self.hideZeroQuery()
-            self.zeroQueryModel.reset(bvc: self)
         }
     }
 
     public func hideZeroQuery() {
         chromeModel.setEditingLocation(to: false)
-        zeroQueryModel.reset(bvc: self)
 
         DispatchQueue.main.async { [self] in
             tabContainerModel.updateContent(.hideZeroQuery)
+            zeroQueryModel.reset(bvc: self)
+
             if tabContainerModel.currentContentUI == .previewHome {
                 if FeatureFlag[.enableBrowserView] {
                     browserModel.scrollingControlModel.showToolbars(animated: true)
