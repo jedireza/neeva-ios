@@ -810,7 +810,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         popToBVC()
 
-        if let tab = tabManager.getTabForURL(url) {
+        if let tab = tabManager.getTabFor(url) {
             tabManager.selectTab(tab)
         } else {
             openURLInNewTab(url, isPrivate: isPrivate)
@@ -2028,6 +2028,13 @@ extension BrowserViewController {
         thumbnail: UIImage? = nil, webView: WKWebView,
         importData: SpaceImportHandler? = nil
     ) {
+        // TODO: Avoid needing to lookup the Tab when we already have the WebView.
+        // There should be a better way to do this.
+        func getTab(tabManager: TabManager, _ url: URL) -> Tab? {
+            assert(Thread.isMainThread)
+            return tabManager.tabs.filter({ $0.webView?.url == url }).first
+        }
+
         // TODO: Inject this as a ContentScript to avoid the delay here.
         webView.evaluateJavaScript(SpaceImportHandler.descriptionImageScript) {
             [weak self]
@@ -2042,7 +2049,7 @@ extension BrowserViewController {
             var set = Set<String>()
             var thumbnailUrls = [URL]()
             if let mediaURL =
-                URL(string: self.tabManager.getTabForURL(url)?.pageMetadata?.mediaURL ?? "")
+                URL(string: getTab(tabManager: self.tabManager, url)?.pageMetadata?.mediaURL ?? "")
             {
                 thumbnailUrls.append(mediaURL)
                 set.insert(mediaURL.absoluteString)
