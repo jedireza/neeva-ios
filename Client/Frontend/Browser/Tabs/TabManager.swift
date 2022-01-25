@@ -746,11 +746,6 @@ class TabManager: NSObject, ObservableObject {
         storeChanges()
     }
 
-    func getTabForURL(_ url: URL) -> Tab? {
-        assert(Thread.isMainThread)
-        return tabs.filter({ $0.webView?.url == url }).first
-    }
-
     func getRecentlyClosedTabForURL(_ url: URL) -> SavedTab? {
         assert(Thread.isMainThread)
         return recentlyClosedTabs.joined().filter({ $0.url == url }).first
