@@ -196,10 +196,12 @@ struct OtherOptionsPage: View {
         ScrollView(.vertical) {
             VStack {
                 Group {
-                    FirstRunCloseButton {
-                        buttonAction(.skipToBrowser)
-                        logOtherOptionsSkipToBrowser()
-                    }
+                    FirstRunCloseButton(
+                        action: {
+                            buttonAction(.skipToBrowser)
+                            logOtherOptionsSkipToBrowser()
+                        }
+                    )
 
                     if onSignInMode {
                         Text("Sign In")

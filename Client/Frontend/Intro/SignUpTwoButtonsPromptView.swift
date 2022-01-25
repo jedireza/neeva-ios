@@ -40,12 +40,16 @@ struct SignUpTwoButtonsPromptView: View {
     var maxQueryCharacterCount = 28
 
     var skipButton: some View {
-        FirstRunCloseButton {
-            hideOverlay()
-            ClientLogger.shared.logCounter(
-                .PreviewPromptClose,
-                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-        }
+        FirstRunCloseButton(
+            action: {
+                hideOverlay()
+                ClientLogger.shared.logCounter(
+                    .PreviewPromptClose,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+            },
+            weight: .regular,
+            size: 15
+        )
         .padding(.horizontal, 20)
         .padding(.vertical, 8)
     }

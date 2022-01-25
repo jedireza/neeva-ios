@@ -103,36 +103,9 @@ public struct ViewControllerWrapper_Presenter<Wrapper: ViewControllerWrapper>: V
     @Binding var state: ModalState
     let wrapper: Wrapper
 
-    /// `@State` is used instead of `@StateObject` because we never update the class,
-    /// instead always updating its identity when changing presented view controllers.
-    @State private var presentee: Presentee?
-
-    /// This class stores the presented view controller and the coordinator, and takes
-    /// care of dismantling + dismissing the view controller when the `.modal` modifier
-    /// is removed from the view hierarchy, or when `modal.dismiss()` called.
-    /// It has to be a `class` because `deinit` only works on classes.
-    private class Presentee {
-        let vc: Wrapper.ViewController
-        let coordinator: Wrapper.Coordinator
-
-        init(from wrapper: Wrapper, in parent: UIViewController) {
-            coordinator = wrapper.makeCoordinator()
-            vc = wrapper.makeUIViewController(context: .init(coordinator: coordinator))
-            parent.present(vc, animated: true, completion: nil)
-        }
-
-        func update(using wrapper: Wrapper) {
-            wrapper.updateUIViewController(vc, context: .init(coordinator: coordinator))
-        }
-
-        /// Dismiss the view controller
-        deinit {
-            // captures the two members to keep them alive until the VC is dismissed
-            vc.presentingViewController?.dismiss(animated: true) { [vc, coordinator] in
-                Wrapper.dismantleUIViewController(vc, coordinator: coordinator)
-            }
-        }
-    }
+    /// This stores the presented view controller and the coordinator. Since both values are either present
+    /// (when the view controller is being presented) or absent, we store them in a tuple instead of as separate optional properties.
+    @State private var presentee: (Wrapper.ViewController, Wrapper.Coordinator)?
 
     public var body: some View {
         // Reference `state` in the view body to make sure this view gets re-rendered whenever the state changes
@@ -145,23 +118,38 @@ public struct ViewControllerWrapper_Presenter<Wrapper: ViewControllerWrapper>: V
                 return
             }
 
-            if let presentee = presentee {
-                presentee.update(using: wrapper)
+            if let (presentee, coordinator) = presentee {
+                wrapper.updateUIViewController(presentee, context: .init(coordinator: coordinator))
 
                 if state.desiredAction == .dismiss {
+                    vc.dismiss(animated: true, completion: nil)
+                    // allow the view controller and coordinator to be freed now that they are no longer needed
                     self.presentee = nil
+                    Wrapper.dismantleUIViewController(presentee, coordinator: coordinator)
                     state.desiredAction = nil
-                } else if presentee.vc.presentingViewController == nil {
+                } else if presentee.presentingViewController == nil {
                     // if this view has been re-rendered after the view controller was manually dismissed, set `presentee` to nil.
+                    Wrapper.dismantleUIViewController(presentee, coordinator: coordinator)
                     self.presentee = nil
                 }
             }
 
             if state.desiredAction == .present && self.presentee == nil {
-                self.presentee = Presentee(from: wrapper, in: vc)
+                let coordinator = wrapper.makeCoordinator()
+                let presentee = wrapper.makeUIViewController(
+                    context: .init(coordinator: coordinator))
+                vc.present(presentee, animated: true, completion: nil)
+                self.presentee = (presentee, coordinator)
                 // reset the state to `nil` so that this code will be run if the view controller
                 // is manually dismissed (which we don’t detect), then `state` is set to `.present`.
                 state.desiredAction = nil
+            }
+        }.onDisappear {
+            // manually tear down the view controller when this view is unmounted.
+            // state will be thrown away, so we don’t need to worry about that.
+            if let (presentee, coordinator) = presentee {
+                Wrapper.dismantleUIViewController(presentee, coordinator: coordinator)
+                presentee.presentingViewController?.dismiss(animated: true, completion: nil)
             }
         }
     }
