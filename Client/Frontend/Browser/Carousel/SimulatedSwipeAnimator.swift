@@ -106,9 +106,7 @@ extension SimulatedSwipeAnimator {
     }
 
     fileprivate func animateAwayWithVelocity(speed: CGFloat) {
-        guard let animatingView = self.animatingView,
-            let webViewContainer = self.contentView
-        else {
+        guard let animatingView = self.animatingView else {
             return
         }
 
@@ -118,31 +116,16 @@ extension SimulatedSwipeAnimator {
             * (model?.swipeDirection == .back ? -1 : 1)
         let timeStep = TimeInterval(abs(translation) / speed)
 
-        if FeatureFlag[.enableBrowserView] {
+        withAnimation(.easeOut(duration: timeStep)) {
+            self.model?.overlayOffset = contentView?.frame.width ?? -20
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
+            self.model?.contentOffset = 0
+
             withAnimation(.easeOut(duration: timeStep)) {
-                self.model?.overlayOffset = contentView?.frame.width ?? -20
+                self.animateBackToCenter(canceledSwipe: false)
             }
-
-            DispatchQueue.main.asyncAfter(deadline: .now() + timeStep) {
-                self.model?.contentOffset = 0
-
-                withAnimation(.easeOut(duration: timeStep)) {
-                    self.animateBackToCenter(canceledSwipe: false)
-                }
-            }
-        } else {
-            self.delegate?.simulateForwardAnimatorStartedSwipe(self)
-            UIView.animate(
-                withDuration: timeStep,
-                animations: {
-                    animatingView.transform = self.transformForTranslation(translation)
-                    webViewContainer.transform = self.transformForTranslation(translation / 2)
-                },
-                completion: { finished in
-                    if finished {
-                        self.animateBackToCenter(canceledSwipe: false)
-                    }
-                })
         }
     }
 
@@ -165,13 +148,8 @@ extension SimulatedSwipeAnimator {
         case .began:
             prevOffset = containerCenter
         case .changed:
-            if FeatureFlag[.enableBrowserView] {
-                withAnimation {
-                    model?.overlayOffset = translation.x
-                }
-            } else {
-                animatingView?.transform = transformForTranslation(translation.x)
-                contentView?.transform = self.transformForTranslation(translation.x / 2)
+            withAnimation {
+                model?.overlayOffset = translation.x
             }
 
             prevOffset = CGPoint(x: translation.x, y: 0)

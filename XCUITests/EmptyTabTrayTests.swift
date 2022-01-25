@@ -80,14 +80,21 @@ class EmptyTabTrayTests: BaseTestCase {
     // https://github.com/neevaco/neeva-ios-phoenix/issues/2595
     func testTabGroupWorksAfterClosingLastTab() {
         openURLInNewTab("https://example.com")
+
+        waitForExistence(app.links["More information..."])
         app.links["More information..."].press(forDuration: 0.5)
+
+        waitForExistence(app.buttons["Open in New Tab"])
         app.buttons["Open in New Tab"].tap()
-        goToTabTray()
-        app.buttons["Incognito Tabs"].tap()
+
+        setIncognitoMode(enabled: true)
         openURLInNewTab("https://test.example/")
         goToTabTray()
-        app.buttons["Close"].tap()
-        app.buttons["Normal Tabs"].tap()
+
+        waitForExistence(app.buttons["Close"].firstMatch)
+        app.buttons["Close"].firstMatch.tap(force: true)
+
+        setIncognitoMode(enabled: false, closeTabTray: false)
         app.buttons["Example Domain, Tab Group"].tap()
         XCTAssert(app.buttons["Example Domain, Tab"].exists)
     }

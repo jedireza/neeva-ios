@@ -33,7 +33,7 @@ extension BaseTestCase {
     func reloadPage() {
         if !iPad() {
             goToOverflowMenuButton(label: "Reload") { button in
-                button.tap()
+                button.tap(force: true)
             }
         } else {
             app.buttons["Reload"].tap()
@@ -43,14 +43,14 @@ extension BaseTestCase {
     /// Launches from tab page, switches to desktop site from Overflow Menu
     func requestDesktopSite() {
         goToOverflowMenuButton(label: "Request Desktop Site") { button in
-            button.tap()
+            button.tap(force: true)
         }
     }
 
     /// Launches from tab page, switches to mobile site from Overflow Menu
     func requestMobileSite() {
         goToOverflowMenuButton(label: "Request Mobile Site") { button in
-            button.tap()
+            button.tap(force: true)
         }
     }
 
@@ -87,7 +87,7 @@ extension BaseTestCase {
     func goForward() {
         if !iPad() {
             goToOverflowMenuButton(label: "Forward") { element in
-                element.tap()
+                element.tap(force: true)
             }
         } else {
             app.buttons["Forward"].tap()

@@ -47,12 +47,11 @@ struct FindInPageView: View {
                 .accessibilityIdentifier("FindInPage_Done")
             }
             .padding(.horizontal)
-            .padding(.top, FeatureFlag[.enableBrowserView] ? 4 : 0)
+            .padding(.top, 4)
 
             Spacer()
         }.frame(height: FindInPageViewUX.height)
             .background(Color(UIColor.systemGroupedBackground))
-            .padding(.bottom, FeatureFlag[.enableBrowserView] ? 0 : 28)
     }
 }
 

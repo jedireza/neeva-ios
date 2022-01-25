@@ -127,13 +127,7 @@ struct TabContainerContent: View {
     let spaceContentSheetModel: SpaceContentSheetModel?
 
     var yOffset: CGFloat {
-        guard let scrollingController = bvc.scrollController, !FeatureFlag[.enableBrowserView]
-        else {
-            return 0.02
-        }
-
-        return scrollingController.headerTopOffset
-            / scrollingController.headerHeight
+        return 0.02
     }
 
     var body: some View {

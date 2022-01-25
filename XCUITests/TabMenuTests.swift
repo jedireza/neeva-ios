@@ -57,6 +57,8 @@ class TabMenuTests: BaseTestCase {
         openURLInNewTab(secondWebsite.url)
 
         closeAllTabs(createNewTab: false)
+
+        waitForExistence(app.buttons["Incognito Tabs"])
         setIncognitoMode(enabled: false, shouldOpenURL: false, closeTabTray: false)
 
         XCTAssertEqual(
@@ -77,6 +79,8 @@ class TabMenuTests: BaseTestCase {
         setIncognitoMode(enabled: true)
         openURLInNewTab(secondWebsite.url)
         closeAllTabs(createNewTab: false)
+
+        waitForExistence(app.buttons["Incognito Tabs"])
         setIncognitoMode(enabled: false, shouldOpenURL: false, closeTabTray: false)
 
         XCTAssertEqual(
