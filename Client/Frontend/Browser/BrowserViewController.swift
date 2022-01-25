@@ -2034,24 +2034,28 @@ extension BrowserViewController {
                 }
             }
 
-            if NeevaExperiment.startExperiment(for: .defaultBrowserPrompt) == .showDBPrompt
-                && !Defaults[.didSetDefaultBrowser]
-                && !Defaults[.didShowDefaultBrowserInterstitial]
-            {
-                self.presentDBPromptView()
-                Defaults[.didShowDefaultBrowserInterstitial] = true
-            }
+            if case .skipToBrowser = action {} else {
+                if !Defaults[.didSetDefaultBrowser]
+                    && !Defaults[.didShowDefaultBrowserInterstitial]
+                {
+                    if NeevaExperiment.startExperiment(for: .defaultBrowserPrompt) == .showDBPrompt
+                    {
+                        self.presentDBPromptView()
+                        Defaults[.didShowDefaultBrowserInterstitial] = true
+                    }
 
-            if let experimentArm = NeevaExperiment.arm(for: .defaultBrowserPrompt) {
-                ClientLogger.shared.logCounter(
-                    .DefaultBrowserExperiment,
-                    attributes: [
-                        ClientLogCounterAttribute(
-                            key: LogConfig.PromoCardAttribute.defaultBrowserPromptExperimentArm,
-                            value: experimentArm.rawValue
+                    if let experimentArm = NeevaExperiment.arm(for: .defaultBrowserPrompt) {
+                        ClientLogger.shared.logCounter(
+                            .DefaultBrowserExperiment,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.PromoCardAttribute.defaultBrowserPromptExperimentArm,
+                                    value: experimentArm.rawValue
+                                )
+                            ]
                         )
-                    ]
-                )
+                    }
+                }
             }
         }
 
