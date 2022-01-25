@@ -152,7 +152,11 @@ extension BrowserViewController: ToolbarDelegate {
                 self.showShareSheet(buttonView: self.topBar!.view)
             }
 
-            self.hideZeroQuery()
+            if self.tabContainerModel.currentContentUI == .zeroQuery
+                || self.tabContainerModel.currentContentUI == .suggestions
+            {
+                self.hideZeroQuery()
+            }
         }
     }
 
