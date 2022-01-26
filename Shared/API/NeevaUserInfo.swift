@@ -20,6 +20,7 @@ public class NeevaUserInfo: ObservableObject {
     @Published public private(set) var authProvider: SSOProvider?
     @Published public private(set) var subscriptionType: SubscriptionType?
     @Published public private(set) var isLoading = false
+    @Published public private(set) var isVerified = false
 
     /// Using optimistic approach, the user is considered `LoggedIn = true` until we receive a login required GraphQL error.
     @Published public private(set) var isUserLoggedIn: Bool = true
@@ -79,6 +80,7 @@ public class NeevaUserInfo: ObservableObject {
                     self.saveUserInfoToDefaults(userInfo: userInfo)
                     self.fetchUserPicture()
                     self.isUserLoggedIn = true
+                    self.isVerified = userInfo.isVerified
                     NeevaFeatureFlags.update(featureFlags: userInfo.featureFlags)
                     UserFlagStore.shared.onUpdateUserFlags(userInfo.userFlags)
                     /// Once we've fetched UserInfo sucessfully, we don't need to keep monitoring connectivity anymore.

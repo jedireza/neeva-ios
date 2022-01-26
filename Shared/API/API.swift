@@ -3317,6 +3317,8 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   case iosApp
   case iosAppLoggedOut
   case preview
+  case premiumSurvey
+  case protectExtension
   /// Auto generated constant for unknown enum values
   case __unknown(RawValue)
 
@@ -3332,6 +3334,8 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case "IOSApp": self = .iosApp
       case "IOSAppLoggedOut": self = .iosAppLoggedOut
       case "Preview": self = .preview
+      case "PremiumSurvey": self = .premiumSurvey
+      case "ProtectExtension": self = .protectExtension
       default: self = .__unknown(rawValue)
     }
   }
@@ -3348,6 +3352,8 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case .iosApp: return "IOSApp"
       case .iosAppLoggedOut: return "IOSAppLoggedOut"
       case .preview: return "Preview"
+      case .premiumSurvey: return "PremiumSurvey"
+      case .protectExtension: return "ProtectExtension"
       case .__unknown(let value): return value
     }
   }
@@ -3364,6 +3370,8 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case (.iosApp, .iosApp): return true
       case (.iosAppLoggedOut, .iosAppLoggedOut): return true
       case (.preview, .preview): return true
+      case (.premiumSurvey, .premiumSurvey): return true
+      case (.protectExtension, .protectExtension): return true
       case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
       default: return false
     }
@@ -3381,6 +3389,8 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       .iosApp,
       .iosAppLoggedOut,
       .preview,
+      .premiumSurvey,
+      .protectExtension,
     ]
   }
 }
@@ -3676,6 +3686,51 @@ public struct CommunitySuppressResultInput: GraphQLMapConvertible {
     set {
       graphQLMap.updateValue(newValue, forKey: "reason")
     }
+  }
+}
+
+public enum ResendVerificationEmailResult: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  case emailSent
+  case alreadyVerified
+  case unknown
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "EmailSent": self = .emailSent
+      case "AlreadyVerified": self = .alreadyVerified
+      case "Unknown": self = .unknown
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .emailSent: return "EmailSent"
+      case .alreadyVerified: return "AlreadyVerified"
+      case .unknown: return "Unknown"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: ResendVerificationEmailResult, rhs: ResendVerificationEmailResult) -> Bool {
+    switch (lhs, rhs) {
+      case (.emailSent, .emailSent): return true
+      case (.alreadyVerified, .alreadyVerified): return true
+      case (.unknown, .unknown): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [ResendVerificationEmailResult] {
+    return [
+      .emailSent,
+      .alreadyVerified,
+      .unknown,
+    ]
   }
 }
 
@@ -4701,6 +4756,7 @@ public final class UserInfoQuery: GraphQLQuery {
           pictureURL
         }
         flags
+        isVerified
         featureFlags {
           __typename
           id
@@ -4717,7 +4773,7 @@ public final class UserInfoQuery: GraphQLQuery {
 
   public let operationName: String = "UserInfo"
 
-  public let operationIdentifier: String? = "2a6d398f5f4ead696c4708bedc992bea1471ff3be71c76e6cde110e42a2d5ca2"
+  public let operationIdentifier: String? = "8cf56e9c3248d91180131675507fb3c06a45f613d81f08a51501e9bd004638bd"
 
   public init() {
   }
@@ -4760,6 +4816,7 @@ public final class UserInfoQuery: GraphQLQuery {
           GraphQLField("id", type: .nonNull(.scalar(GraphQLID.self))),
           GraphQLField("profile", type: .nonNull(.object(Profile.selections))),
           GraphQLField("flags", type: .nonNull(.list(.nonNull(.scalar(String.self))))),
+          GraphQLField("isVerified", type: .scalar(Bool.self)),
           GraphQLField("featureFlags", type: .nonNull(.list(.nonNull(.object(FeatureFlag.selections))))),
           GraphQLField("authProvider", type: .scalar(String.self)),
           GraphQLField("subscriptionType", type: .scalar(SubscriptionType.self)),
@@ -4772,8 +4829,8 @@ public final class UserInfoQuery: GraphQLQuery {
         self.resultMap = unsafeResultMap
       }
 
-      public init(id: GraphQLID, profile: Profile, flags: [String], featureFlags: [FeatureFlag], authProvider: String? = nil, subscriptionType: SubscriptionType? = nil) {
-        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "flags": flags, "featureFlags": featureFlags.map { (value: FeatureFlag) -> ResultMap in value.resultMap }, "authProvider": authProvider, "subscriptionType": subscriptionType])
+      public init(id: GraphQLID, profile: Profile, flags: [String], isVerified: Bool? = nil, featureFlags: [FeatureFlag], authProvider: String? = nil, subscriptionType: SubscriptionType? = nil) {
+        self.init(unsafeResultMap: ["__typename": "User", "id": id, "profile": profile.resultMap, "flags": flags, "isVerified": isVerified, "featureFlags": featureFlags.map { (value: FeatureFlag) -> ResultMap in value.resultMap }, "authProvider": authProvider, "subscriptionType": subscriptionType])
       }
 
       public var __typename: String {
@@ -4812,6 +4869,16 @@ public final class UserInfoQuery: GraphQLQuery {
         }
         set {
           resultMap.updateValue(newValue, forKey: "flags")
+        }
+      }
+
+      /// User's account verification status
+      public var isVerified: Bool? {
+        get {
+          return resultMap["isVerified"] as? Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "isVerified")
         }
       }
 
@@ -6907,6 +6974,95 @@ public final class CommunitySuppressResultMutation: GraphQLMutation {
       }
       set {
         resultMap.updateValue(newValue, forKey: "communitySuppressResult")
+      }
+    }
+  }
+}
+
+public final class ResendVerificationEmailMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation ResendVerificationEmail {
+      resendVerificationEmail {
+        __typename
+        result
+      }
+    }
+    """
+
+  public let operationName: String = "ResendVerificationEmail"
+
+  public let operationIdentifier: String? = "0211e7a852db584c8fb85dd9c8984941c9dadbfbb9cfddce30cd18b0c7c31fd0"
+
+  public init() {
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("resendVerificationEmail", type: .object(ResendVerificationEmail.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(resendVerificationEmail: ResendVerificationEmail? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "resendVerificationEmail": resendVerificationEmail.flatMap { (value: ResendVerificationEmail) -> ResultMap in value.resultMap }])
+    }
+
+    /// Resend account verification email
+    public var resendVerificationEmail: ResendVerificationEmail? {
+      get {
+        return (resultMap["resendVerificationEmail"] as? ResultMap).flatMap { ResendVerificationEmail(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "resendVerificationEmail")
+      }
+    }
+
+    public struct ResendVerificationEmail: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["ResendVerificationEmailResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("result", type: .scalar(ResendVerificationEmailResult.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(result: ResendVerificationEmailResult? = nil) {
+        self.init(unsafeResultMap: ["__typename": "ResendVerificationEmailResponse", "result": result])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var result: ResendVerificationEmailResult? {
+        get {
+          return resultMap["result"] as? ResendVerificationEmailResult
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "result")
+        }
       }
     }
   }

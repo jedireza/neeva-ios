@@ -161,6 +161,8 @@
 		4A72AFC2278E42F60057E58B /* MutationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC1278E42F60057E58B /* MutationRequest.swift */; };
 		4A72AFC4278E43AF0057E58B /* CommunitySubmissionRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC3278E43AF0057E58B /* CommunitySubmissionRequest.swift */; };
 		4A72AFC6278E9E500057E58B /* CommunitySubmissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */; };
+		4A72D21F27A0969900F5D14B /* EmailVerificationPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72D21E27A0969900F5D14B /* EmailVerificationPrompt.swift */; };
+		4A72D22127A0AD1300F5D14B /* EmailVerificationContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */; };
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
 		4A88F97526630EFC007C203D /* CardDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97426630EFC007C203D /* CardDetails.swift */; };
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
@@ -1303,6 +1305,8 @@
 		4A72AFC1278E42F60057E58B /* MutationRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MutationRequest.swift; sourceTree = "<group>"; };
 		4A72AFC3278E43AF0057E58B /* CommunitySubmissionRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySubmissionRequest.swift; sourceTree = "<group>"; };
 		4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySubmissionView.swift; sourceTree = "<group>"; };
+		4A72D21E27A0969900F5D14B /* EmailVerificationPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationPrompt.swift; sourceTree = "<group>"; };
+		4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationContent.swift; sourceTree = "<group>"; };
 		4A88F9722662AEAB007C203D /* CardStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStrip.swift; sourceTree = "<group>"; };
 		4A88F97426630EFC007C203D /* CardDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetails.swift; sourceTree = "<group>"; };
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -3018,6 +3022,7 @@
 			isa = PBXGroup;
 			children = (
 				4AB50DA526FA8C3E00B75AFA /* ShareAddedSpaceView.swift */,
+				4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */,
 				4AB678B726EAA8160078F61B /* SpacesIntro.swift */,
 				C832BF5826DEE0BB00B9A1F8 /* AddToSpaceOverlayContent.swift */,
 				4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */,
@@ -3186,6 +3191,7 @@
 			isa = PBXGroup;
 			children = (
 				C9C18E2A265594DE004710CD /* AddToSpaceView.swift */,
+				4A72D21E27A0969900F5D14B /* EmailVerificationPrompt.swift */,
 				C9C18E2C265594DE004710CD /* CreateSpaceView.swift */,
 				C9C18E2B265594DE004710CD /* LargeSpaceIconView.swift */,
 				C9C18E2D265594DE004710CD /* SpaceListItem.swift */,
@@ -5194,6 +5200,7 @@
 				C9F49CC6266FFB8200F3408A /* Environment.swift in Sources */,
 				E65075931E37F7AB006961AC /* AppConstants.swift in Sources */,
 				E65075B81E37F7AB006961AC /* NotificationConstants.swift in Sources */,
+				4A72D21F27A0969900F5D14B /* EmailVerificationPrompt.swift in Sources */,
 				E65075AC1E37F7AB006961AC /* StringExtensions.swift in Sources */,
 				C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */,
 				C994645F2657052200613110 /* FeatureFlags.swift in Sources */,
@@ -5527,6 +5534,7 @@
 				4AB07F29276C4E6300C85ED4 /* SingleLevelTabCardsView.swift in Sources */,
 				66ECB5DF26BB264700A1857E /* OverlayStepperModifier.swift in Sources */,
 				C9C18E0926559007004710CD /* Suggestion.swift in Sources */,
+				4A72D22127A0AD1300F5D14B /* EmailVerificationContent.swift in Sources */,
 				4A93B556277F8AE200CD5415 /* AssetStore.swift in Sources */,
 				D3C3696E1CC6B78800348A61 /* LocalRequestHelper.swift in Sources */,
 				BCAAA0D7276D9B800013223E /* CryptoWalletView.swift in Sources */,
