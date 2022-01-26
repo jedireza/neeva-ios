@@ -24,7 +24,7 @@ public struct CardGridOverflowMenuView: View {
     public var body: some View {
         GroupedStack {
             GroupedCell.Decoration {
-                NeevaMenuRowButtonView(label: "Close All Tabs", symbol: .trash) {
+                GroupedRowButtonView(label: "Close All Tabs", symbol: .trash) {
                     menuAction(.closeAllTabs)
                 }
                 .accessibilityIdentifier("CardGridOverflowMenu.CloseAllTabs")
@@ -34,21 +34,21 @@ public struct CardGridOverflowMenuView: View {
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
-                    NeevaMenuRowButtonView(label: "Support", symbol: .bubbleLeft) {
+                    GroupedRowButtonView(label: "Support", symbol: .bubbleLeft) {
                         menuAction(.support)
                     }
                     .accessibilityIdentifier("CardGridOverflowMenu.Feedback")
 
                     Color.groupedBackground.frame(height: 1)
 
-                    NeevaMenuRowButtonView(label: "Settings", symbol: .gear) {
+                    GroupedRowButtonView(label: "Settings", symbol: .gear) {
                         menuAction(.goToSettings)
                     }
                     .accessibilityIdentifier("CardGridOverflowMenu.Settings")
 
                     Color.groupedBackground.frame(height: 1)
 
-                    NeevaMenuRowButtonView(label: "History", symbol: .clock) {
+                    GroupedRowButtonView(label: "History", symbol: .clock) {
                         menuAction(.goToHistory)
                     }
                     .disabled(chromeModel.topBarDelegate?.tabManager.isIncognito ?? false)
@@ -56,7 +56,7 @@ public struct CardGridOverflowMenuView: View {
 
                     Color.groupedBackground.frame(height: 1)
 
-                    NeevaMenuRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
+                    GroupedRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
                         menuAction(.goToDownloads)
                     }
                     .accessibilityIdentifier("CardGridOverflowMenu.Downloads")

@@ -156,8 +156,9 @@ public struct OverflowMenuView: View {
         GroupedCell.Decoration {
             VStack(spacing: 0) {
                 if chromeModel.inlineToolbar,
-                   !showNewMenu {
-                    NeevaMenuRowButtonView(
+                    !showNewMenu
+                {
+                    GroupedRowButtonView(
                         label: "New Tab",
                         symbol: .plus
                     ) {
@@ -169,14 +170,14 @@ public struct OverflowMenuView: View {
                 }
 
                 if FeatureFlag[.enableCryptoWallet] {
-                    NeevaMenuRowButtonView(label: "Crypto Wallet", symbol: .creditcard) {
+                    GroupedRowButtonView(label: "Crypto Wallet", symbol: .creditcard) {
                         self.menuAction(.cryptoWallet)
                     }
                     .accentColor(Color.brand.adaptive.orange)
                     .accessibilityIdentifier("Neeva Crypto Wallet")
                 }
 
-                NeevaMenuRowButtonView(
+                GroupedRowButtonView(
                     label: "Find on Page",
                     symbol: .docTextMagnifyingglass
                 ) {
@@ -186,7 +187,7 @@ public struct OverflowMenuView: View {
 
                 Color.groupedBackground.frame(height: 1)
 
-                NeevaMenuRowButtonView(
+                GroupedRowButtonView(
                     label: "Text Size",
                     symbol: .textformatSize
                 ) {
@@ -196,7 +197,7 @@ public struct OverflowMenuView: View {
 
                 Color.groupedBackground.frame(height: 1)
 
-                NeevaMenuRowButtonView(
+                GroupedRowButtonView(
                     label: changedUserAgent == true
                         ? "Request Mobile Site"
                         : "Request Desktop Site",
@@ -210,7 +211,7 @@ public struct OverflowMenuView: View {
 
                 Color.groupedBackground.frame(height: 1)
 
-                NeevaMenuRowButtonView(
+                GroupedRowButtonView(
                     label: "Download Page",
                     symbol: .squareAndArrowDown
                 ) {
@@ -226,7 +227,7 @@ public struct OverflowMenuView: View {
     var appNavigationButtons: some View {
         GroupedCell.Decoration {
             VStack(spacing: 0) {
-                NeevaMenuRowButtonView(
+                GroupedRowButtonView(
                     label: "Support",
                     symbol: .bubbleLeft
                 ) {
@@ -235,7 +236,7 @@ public struct OverflowMenuView: View {
                 .accessibilityIdentifier("OverflowMenu.Support")
                 Color.groupedBackground.frame(height: 1)
 
-                NeevaMenuRowButtonView(
+                GroupedRowButtonView(
                     label: "Settings",
                     symbol: .gear
                 ) {
@@ -244,7 +245,7 @@ public struct OverflowMenuView: View {
                 .accessibilityIdentifier("OverflowMenu.Settings")
                 Color.groupedBackground.frame(height: 1)
 
-                NeevaMenuRowButtonView(
+                GroupedRowButtonView(
                     label: "History",
                     symbol: .clock
                 ) {
@@ -253,7 +254,7 @@ public struct OverflowMenuView: View {
                 .accessibilityIdentifier("OverflowMenu.History")
                 Color.groupedBackground.frame(height: 1)
 
-                NeevaMenuRowButtonView(
+                GroupedRowButtonView(
                     label: "Downloads",
                     symbol: .squareAndArrowDown
                 ) {

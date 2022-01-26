@@ -74,7 +74,7 @@ struct NeevaMenuView: View {
     var body: some View {
         GroupedStack {
             HStack(spacing: NeevaMenuUX.innerSectionPadding) {
-                NeevaMenuButtonView(label: "Home", nicon: .house) {
+                GroupedButtonView(label: "Home", nicon: .house) {
                     self.menuAction(.home)
                 }
                 .accessibilityIdentifier("NeevaMenu.Home")
@@ -84,7 +84,7 @@ struct NeevaMenuView: View {
                     showPopover: $openSpacesPrompt,
                     popoverSize: CGSize(width: 290, height: 150),
                     content: {
-                        NeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
+                        GroupedButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
                             self.menuAction(.spaces)
                         }
                         .accessibilityIdentifier("NeevaMenu.Spaces")
@@ -106,7 +106,7 @@ struct NeevaMenuView: View {
                     showPopover: $openSettingsPrompt,
                     popoverSize: CGSize(width: 290, height: 180),
                     content: {
-                        NeevaMenuButtonView(label: "Settings", nicon: .gear) {
+                        GroupedButtonView(label: "Settings", nicon: .gear) {
                             self.menuAction(.settings)
                         }
                         .accessibilityIdentifier("NeevaMenu.Settings")
@@ -125,7 +125,7 @@ struct NeevaMenuView: View {
                     showPopover: $openFeedbackPrompt,
                     popoverSize: CGSize(width: 290, height: 120),
                     content: {
-                        NeevaMenuButtonView(label: "Support", symbol: .bubbleLeft) {
+                        GroupedButtonView(label: "Support", symbol: .bubbleLeft) {
                             self.menuAction(.support)
                         }
                         .accessibilityIdentifier("NeevaMenu.Feedback")
@@ -143,7 +143,7 @@ struct NeevaMenuView: View {
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
                     if NeevaFeatureFlags[.referralPromo] {
-                        NeevaMenuRowButtonView(
+                        GroupedRowButtonView(
                             label: "Win $5000 by inviting friends", isPromo: true
                         ) {
                             self.menuAction(.referralPromo)
@@ -154,14 +154,14 @@ struct NeevaMenuView: View {
                         Color.groupedBackground.frame(height: 1)
                     }
 
-                    NeevaMenuRowButtonView(label: "History", symbol: .clock) {
+                    GroupedRowButtonView(label: "History", symbol: .clock) {
                         self.menuAction(.history)
                     }
                     .accessibilityIdentifier("NeevaMenu.History")
 
                     Color.groupedBackground.frame(height: 1)
 
-                    NeevaMenuRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
+                    GroupedRowButtonView(label: "Downloads", symbol: .squareAndArrowDown) {
                         ClientLogger.shared.logCounter(
                             .OpenDownloads, attributes: EnvironmentHelper.shared.getAttributes())
                         openDownloadsFolderInFilesApp()

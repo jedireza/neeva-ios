@@ -6,7 +6,7 @@ import SFSafeSymbols
 import Shared
 import SwiftUI
 
-public struct NeevaMenuRowButtonView: View {
+public struct GroupedRowButtonView: View {
     let label: LocalizedStringKey
     let nicon: Nicon?
     let symbol: SFSymbol?
@@ -69,9 +69,9 @@ public struct NeevaMenuRowButtonView: View {
     }
 }
 
-struct NeevaMenuRowButtonView_Previews: PreviewProvider {
+struct GroupedRowButtonView_Previews: PreviewProvider {
     static var previews: some View {
-        NeevaMenuRowButtonView(label: "Test", nicon: .gear) {}
+        GroupedRowButtonView(label: "Test", nicon: .gear) {}
             .previewLayout(.sizeThatFits)
     }
 }
