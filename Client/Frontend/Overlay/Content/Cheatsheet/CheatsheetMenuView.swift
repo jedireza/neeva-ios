@@ -121,10 +121,10 @@ struct CheatsheetInfoView: View {
                 Spacer(minLength: 0)
                 // hide the image on small iPhones in landscape
                 if horizontalSizeClass == .regular || verticalSizeClass == .regular {
-                    Image("notification-prompt", bundle: .main)
+                    Image("cheatsheet", bundle: .main)
                         .resizable()
                         .scaledToFit()
-                        .frame(minHeight: 115, maxHeight: 300)
+                        .frame(minHeight: 115, maxHeight: 500)
                         .accessibilityHidden(true)
                         .padding(.bottom)
                 } else {
@@ -146,6 +146,7 @@ struct CheatsheetInfoView: View {
         .multilineTextAlignment(.leading)
         .padding(.top, 10)
         .padding(.bottom, 16)
+        .padding(.horizontal, 16)
     }
 }
 
