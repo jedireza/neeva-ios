@@ -201,9 +201,11 @@ class OverlayManager: ObservableObject {
                 slideAndFadeOut(offset: 0)
             case .fullScreenModal:
                 slideAndFadeOut(offset: 100)
-            case .notification:
+            case .notification(let notification):
+                notification?.viewDelegate?.dismiss()
                 slideAndFadeOut(offset: -ToastViewUX.height)
-            case .toast:
+            case .toast(let toast):
+                toast?.viewDelegate?.dismiss()
                 slideAndFadeOut(offset: ToastViewUX.height)
             default:
                 withAnimation(animation) {
