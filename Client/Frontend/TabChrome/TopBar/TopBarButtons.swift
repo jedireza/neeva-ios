@@ -2,11 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import Shared
 import SwiftUI
 
 struct TopBarNeevaMenuButton: View {
-    let onNeevaMenuAction: (NeevaMenuAction) -> Void
+    @Default(.showNeevaMenuWillMove) var showNeevaMenuWillMove
 
     @Environment(\.isIncognito) private var isIncognito
     @EnvironmentObject var chromeModel: TabChromeModel
@@ -14,6 +15,10 @@ struct TopBarNeevaMenuButton: View {
     // TODO: sync this state variable with TabToolbarView somehow
     @State private var presenting = false
     @State private var action: NeevaMenuAction?
+
+    @State private var neevaMenuWidth: CGFloat = 0
+
+    let onNeevaMenuAction: (NeevaMenuAction) -> Void
 
     var body: some View {
         WithPopover(
@@ -44,14 +49,26 @@ struct TopBarNeevaMenuButton: View {
                         }
                     }
                 ) {
-                    VerticalScrollViewIfNeeded {
-                        NeevaMenuView(menuAction: {
-                            action = $0
-                            presenting = false
-                        })
-                        .topBarPopoverPadding()
-                        .environment(\.isIncognito, isIncognito)
+                    ScrollView {
+                        VStack {
+                            if showNeevaMenuWillMove {
+                                NeevaMenuWillMoveView()
+                                    .frame(maxWidth: neevaMenuWidth)
+                            }
+
+                            NeevaMenuView(menuAction: {
+                                action = $0
+                                presenting = false
+                            })
+                            .environment(\.isIncognito, isIncognito)
+                            .modifier(ViewWidthKey())
+                            .onPreferenceChange(ViewWidthKey.self) {
+                                neevaMenuWidth = $0
+                            }
+                        }
+                        .padding(.top)
                     }
+                    .topBarPopoverPadding()
                     .frame(minWidth: 340, minHeight: 323)
                 }
             },

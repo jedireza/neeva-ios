@@ -100,6 +100,7 @@ extension Defaults.Keys {
 
     // cheatsheet
     public static let seenCheatsheetIntro = Defaults.BoolKey("cheatsheetIntroSeen")
+    public static let showNeevaMenuWillMove = Defaults.BoolKey("showNeevaMenuWillMove", default: false)
 
     // notification
     public static let lastScheduledNeevaPromoID = Defaults.Key<String?>("lastScheduledNeevaPromoID")
@@ -163,8 +164,12 @@ extension Defaults.Keys {
 }
 
 extension Defaults {
-    static func BoolKey(_ key: String, suite: UserDefaults = .standard) -> Key<Bool> {
-        Key<Bool>(key, default: false, suite: suite)
+    static func BoolKey(
+        _ key: String,
+        default defaultValue: Bool = false,
+        suite: UserDefaults = .standard
+    ) -> Key<Bool> {
+        Key<Bool>(key, default: defaultValue, suite: suite)
     }
 }
 

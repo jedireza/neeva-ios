@@ -677,13 +677,33 @@ class BrowserViewController: UIViewController, ModalPresenter {
     func showModal<Content: View>(
         style: OverlayStyle,
         headerButton: OverlayHeaderButton? = nil,
-        content: @escaping () -> Content,
+        @ViewBuilder content: @escaping () -> Content,
+        onDismiss: (() -> Void)? = nil
+    ) {
+        showModal(
+            style: style,
+            headerButton: headerButton,
+            headerContent: { EmptyView() },
+            content: content,
+            onDismiss: onDismiss
+        )
+    }
+
+    func showModal<Content: View, HeaderContent: View>(
+        style: OverlayStyle,
+        headerButton: OverlayHeaderButton? = nil,
+        @ViewBuilder headerContent: @escaping () -> HeaderContent,
+        @ViewBuilder content: @escaping () -> Content,
         onDismiss: (() -> Void)? = nil
     ) {
         if !chromeModel.inlineToolbar {
             showAsModalOverlaySheet(
-                style: style, content: content,
-                onDismiss: onDismiss, headerButton: headerButton)
+                style: style,
+                content: content,
+                onDismiss: onDismiss,
+                headerButton: headerButton,
+                headerContent: headerContent
+            )
         } else {
             showAsModalOverlayPopover(
                 style: style, content: content, onDismiss: onDismiss, headerButton: headerButton)
@@ -691,12 +711,30 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     func showAsModalOverlaySheet<Content: View>(
-        style: OverlayStyle, content: @escaping () -> Content,
+        style: OverlayStyle,
+        @ViewBuilder content: @escaping () -> Content,
         onDismiss: (() -> Void)? = nil,
         headerButton: OverlayHeaderButton? = nil
     ) {
+        showAsModalOverlaySheet(
+            style: style,
+            content: content,
+            onDismiss: onDismiss,
+            headerButton: nil,
+            headerContent: { EmptyView() }
+        )
+    }
+
+    func showAsModalOverlaySheet<Content: View, HeaderContent: View>(
+        style: OverlayStyle,
+        @ViewBuilder content: @escaping () -> Content,
+        onDismiss: (() -> Void)? = nil,
+        headerButton: OverlayHeaderButton? = nil,
+        @ViewBuilder headerContent: @escaping () -> HeaderContent
+    ) {
         let overlayView = OverlaySheetRootView(
-            style: style, content: { AnyView(erasing: content()) },
+            style: style,
+            content: { AnyView(erasing: content()) },
             onDismiss: {
                 self.overlayManager.hideCurrentOverlay()
                 onDismiss?()
@@ -704,13 +742,17 @@ class BrowserViewController: UIViewController, ModalPresenter {
             onOpenURL: { url in
                 self.overlayManager.hideCurrentOverlay()
                 self.openURLInNewTabPreservingIncognitoState(url)
-            }, headerButton: headerButton)
+            },
+            headerButton: headerButton,
+            headerContent: { AnyView(erasing: headerContent()) }
+        )
 
         overlayManager.show(overlay: .sheet(overlayView))
     }
 
     func showAsModalOverlayPopover<Content: View>(
-        style: OverlayStyle, content: @escaping () -> Content,
+        style: OverlayStyle,
+        @ViewBuilder content: @escaping () -> Content,
         onDismiss: (() -> Void)? = nil,
         headerButton: OverlayHeaderButton? = nil
     ) {
@@ -2132,7 +2174,12 @@ extension BrowserViewController {
             showCheatSheetOverlay()
         } else {
             updateFeedbackImage()
-            showModal(style: .grouped) { [self] in
+            showModal(
+                style: .grouped,
+                headerContent: {
+                    NeevaMenuWillMoveView()
+                }
+            ) { [self] in
                 NeevaMenuOverlayContent(
                     menuAction: perform(neevaMenuAction:),
                     isIncognito: tabManager.isIncognito)

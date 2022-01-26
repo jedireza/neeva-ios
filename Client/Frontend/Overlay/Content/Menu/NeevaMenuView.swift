@@ -2,12 +2,61 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import Shared
 import SwiftUI
 
 enum NeevaMenuUX {
     static let innerSectionPadding: CGFloat = 8
     static let bottomPadding: CGFloat = 24
+}
+
+struct NeevaMenuWillMoveView: View {
+    @Default(.showNeevaMenuWillMove) var showNeevaMenuWillMove
+
+    @Environment(\.colorScheme) var colorScheme
+
+    let closeButtonImage: UIImage = UIImage(systemName: "xmark")!
+
+    var body: some View {
+        if showNeevaMenuWillMove {
+            HStack {
+                Text(
+                    "This menu is moving soon! You'll find its new home in \(Image(systemName: "ellipsis.circle")). Happy Neeva-ing!"
+                )
+                .withFont(.bodyLarge)
+                .foregroundColor(Color.label)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+
+                Spacer()
+
+                closeButton
+                    .scaledToFit()
+            }
+            .padding(20)
+            .background(colorScheme == .dark ? Color.brand.variant.gold : Color.brand.yellow)
+            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .padding(.horizontal, 16)
+        }
+    }
+
+    @ViewBuilder
+    var closeButton: some View {
+        Button(action: {
+            showNeevaMenuWillMove = false
+        }) {
+            Image(uiImage: closeButtonImage)
+                .resizable()
+                .renderingMode(.template)
+                .scaledToFit()
+                .foregroundColor(.secondaryLabel)
+                .padding(6)
+                .frame(width: 24, height: 24)
+                .background(Color(UIColor.systemGray6))
+                .clipShape(Circle())
+        }
+    }
 }
 
 struct NeevaMenuView: View {
