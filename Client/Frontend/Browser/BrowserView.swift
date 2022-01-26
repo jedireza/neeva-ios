@@ -42,10 +42,23 @@ struct BrowserView: View {
         return chromeModel.inlineToolbar ? inlineToolbarHeight : portraitHeight
     }
 
-    private var topBarPadding: CGFloat {
-        // Prevents a bug where the page content gets stuck behind the TopBar
-        let padding = topBarHeight + browserModel.scrollingControlModel.headerTopOffset
-        return padding <= 0 ? 1 : padding
+    private var containerOffsetY: CGFloat {
+        var offsetY = browserModel.scrollingControlModel.headerTopOffset
+        // Workaround a SwiftUI quirk. When the offset and padding negate one another
+        // exactly, the container view will appear to snap up by an amount equal to
+        // the padding. To avoid this, we apply the following hack :-/
+        if offsetY <= -topBarHeight {
+            offsetY = -topBarHeight + 0.1
+        }
+        return offsetY
+    }
+
+    private var containerBottomPadding: CGFloat {
+        var padding = browserModel.scrollingControlModel.headerTopOffset
+        if !chromeModel.inlineToolbar {
+            padding -= browserModel.scrollingControlModel.footerBottomOffset
+        }
+        return padding
     }
 
     private var detailViewVisible: Bool {
@@ -131,8 +144,9 @@ struct BrowserView: View {
                     containerView
                         .padding(
                             UIConstants.enableBottomURLBar ? .bottom : .top,
-                            detailViewVisible ? 0 : topBarPadding
+                            detailViewVisible ? 0 : topBarHeight
                         )
+                        .offset(y: containerOffsetY)
                         .background(Color.white)
 
                     // Top Bar
@@ -161,7 +175,7 @@ struct BrowserView: View {
 
                         if !UIConstants.enableBottomURLBar { Spacer() }
                     }
-                }.padding(.bottom, -browserModel.scrollingControlModel.footerBottomOffset)
+                }.padding(.bottom, containerBottomPadding)
 
                 // Bottom Bar
                 if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
