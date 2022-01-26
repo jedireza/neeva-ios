@@ -92,7 +92,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager: tabManager,
             openLazyTab: { self.openLazyTab(openedFrom: .tabTray) },
             createNewSpace: {
-                self.showModal(style: .grouped) {
+                self.showModal(style: .withTitle) {
                     CreateSpaceOverlayContent()
                         .environmentObject(self.gridModel.spaceCardModel)
                 }

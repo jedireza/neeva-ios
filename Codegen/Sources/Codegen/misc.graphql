@@ -7,6 +7,7 @@ query UserInfo {
       pictureURL
     }
     flags
+    isVerified
     featureFlags {
       id
       value
@@ -145,4 +146,10 @@ mutation CommunityBoostResult($input: CommunityBoostResultInput!) {
 
 mutation CommunitySuppressResult($input: CommunitySuppressResultInput!) {
     communitySuppressResult(input: $input)
+}
+
+mutation ResendVerificationEmail {
+    resendVerificationEmail {
+        result
+    }
 }
