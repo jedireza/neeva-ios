@@ -27,7 +27,7 @@ public struct GroupedStack<Content: View>: View {
     }
 
     public var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: GroupedCellUX.spacing) {
             content()
         }
         .accentColor(.ui.adaptive.blue)

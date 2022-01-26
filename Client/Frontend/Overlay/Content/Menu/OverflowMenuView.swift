@@ -79,6 +79,10 @@ public struct OverflowMenuView: View {
     @EnvironmentObject var chromeModel: TabChromeModel
     @EnvironmentObject var locationModel: LocationViewModel
 
+    @State var height: CGFloat = .zero
+    // used to show a little bit of the support option to encourage scrolling
+    private static let heightPeekingOffset: CGFloat = 50
+
     public init(
         changedUserAgent: Bool = false,
         menuAction: @escaping (OverflowMenuAction) -> Void
@@ -87,127 +91,178 @@ public struct OverflowMenuView: View {
         self.changedUserAgent = changedUserAgent
     }
 
+    var showNewMenu: Bool {
+        FeatureFlag[.updatedTabOverflowMenu] || NeevaFeatureFlags[.cheatsheetQuery]
+    }
+
     public var body: some View {
-        GroupedStack {
-            if !chromeModel.inlineToolbar {
-                HStack(spacing: OverflowMenuUX.innerSectionPadding) {
-                    OverflowMenuButtonView(
-                        label: "Forward",
-                        symbol: .arrowForward,
-                        longPressAction: {
-                            menuAction(.longPressForward)
-                        },
-                        action: {
-                            menuAction(.forward)
-                        }
-                    )
-                    .accessibilityIdentifier("OverflowMenu.Forward")
-                    .disabled(!chromeModel.canGoForward)
-
-                    OverflowMenuButtonView(
-                        label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
-                        symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
-                    ) {
-                        menuAction(.reloadStop)
+        ScrollView {
+            GroupedStack {
+                VStack(spacing: GroupedCellUX.spacing) {
+                    if !chromeModel.inlineToolbar {
+                        topButtons
                     }
-                    .accessibilityIdentifier("OverflowMenu.Reload")
 
-                    if !FeatureFlag[.updatedTabOverflowMenu] {
-                        OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                            menuAction(.newTab)
-                        }
-                        .accessibilityIdentifier("OverflowMenu.NewTab")
-                    } else {
-                        OverflowMenuButtonView(label: "Support", symbol: .bubbleLeft) {
-                            menuAction(.support)
-                        }
-                        .accessibilityIdentifier("OverflowMenu.Feedback")
-                    }
+                    tabButtons
                 }
-            }
-
-            GroupedCell.Decoration {
-                VStack(spacing: 0) {
-                    if chromeModel.inlineToolbar {
-                        if !FeatureFlag[.updatedTabOverflowMenu] {
-                            NeevaMenuRowButtonView(
-                                label: "New Tab",
-                                symbol: .plus
-                            ) {
-                                menuAction(.newTab)
-                            }
-                            .accessibilityIdentifier("OverflowMenu.NewTab")
-                        }
-
-                        Color.groupedBackground.frame(height: 1)
-
-                        if FeatureFlag[.updatedTabOverflowMenu] {
-                            NeevaMenuRowButtonView(
-                                label: "Support",
-                                symbol: .bubbleLeft
-                            ) {
-                                menuAction(.support)
-                            }
-                            .accessibilityIdentifier("OverflowMenu.Feedback")
-
-                            Color.groupedBackground.frame(height: 1)
-                        }
-                    }
-
-                    if FeatureFlag[.enableCryptoWallet] {
-                        NeevaMenuRowButtonView(label: "Crypto Wallet", symbol: .creditcard) {
-                            self.menuAction(.cryptoWallet)
-                        }
-                        .accentColor(Color.brand.adaptive.orange)
-                        .accessibilityIdentifier("Neeva Crypto Wallet")
-                    }
-
-                    NeevaMenuRowButtonView(
-                        label: "Find on Page",
-                        symbol: .docTextMagnifyingglass
-                    ) {
-                        menuAction(.findOnPage)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.FindOnPage")
-
-                    Color.groupedBackground.frame(height: 1)
-
-                    NeevaMenuRowButtonView(
-                        label: "Text Size",
-                        symbol: .textformatSize
-                    ) {
-                        menuAction(.textSize)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.TextSize")
-
-                    Color.groupedBackground.frame(height: 1)
-
-                    let hasHomeButton = UIConstants.safeArea.bottom == 0
-                    NeevaMenuRowButtonView(
-                        label: changedUserAgent == true
-                            ? "Request Mobile Site"
-                            : "Request Desktop Site",
-                        symbol: changedUserAgent == true
-                            ? (hasHomeButton ? .iphoneHomebutton : .iphone)
-                            : .desktopcomputer
-                    ) {
-                        menuAction(.desktopSite)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.RequestDesktopSite")
-
-                    Color.groupedBackground.frame(height: 1)
-
-                    NeevaMenuRowButtonView(
-                        label: "Download Page",
-                        symbol: .squareAndArrowDown
-                    ) {
-                        menuAction(.downloadPage)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.DownloadPage")
+                .modifier(ViewHeightKey())
+                .onPreferenceChange(ViewHeightKey.self) {
+                    self.height = $0
                 }
-                .accentColor(.label)
+
+                if showNewMenu {
+                    appNavigationButtons
+                }
             }
         }
+        .frame(minHeight: height + Self.heightPeekingOffset)
+    }
+
+    @ViewBuilder
+    var topButtons: some View {
+        HStack(spacing: OverflowMenuUX.innerSectionPadding) {
+            OverflowMenuButtonView(
+                label: "Forward",
+                symbol: .arrowForward,
+                longPressAction: {
+                    menuAction(.longPressForward)
+                },
+                action: {
+                    menuAction(.forward)
+                }
+            )
+            .accessibilityIdentifier("OverflowMenu.Forward")
+            .disabled(!chromeModel.canGoForward)
+
+            OverflowMenuButtonView(
+                label: chromeModel.reloadButton == .reload ? "Reload" : "Stop",
+                symbol: chromeModel.reloadButton == .reload ? .arrowClockwise : .xmark
+            ) {
+                menuAction(.reloadStop)
+            }
+            .accessibilityIdentifier("OverflowMenu.Reload")
+
+            if !showNewMenu {
+                OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
+                    menuAction(.newTab)
+                }
+                .accessibilityIdentifier("OverflowMenu.NewTab")
+            }
+        }
+    }
+
+    @ViewBuilder
+    var tabButtons: some View {
+        GroupedCell.Decoration {
+            VStack(spacing: 0) {
+                if chromeModel.inlineToolbar,
+                   !showNewMenu {
+                    NeevaMenuRowButtonView(
+                        label: "New Tab",
+                        symbol: .plus
+                    ) {
+                        menuAction(.newTab)
+                    }
+                    .accessibilityIdentifier("OverflowMenu.NewTab")
+
+                    Color.groupedBackground.frame(height: 1)
+                }
+
+                if FeatureFlag[.enableCryptoWallet] {
+                    NeevaMenuRowButtonView(label: "Crypto Wallet", symbol: .creditcard) {
+                        self.menuAction(.cryptoWallet)
+                    }
+                    .accentColor(Color.brand.adaptive.orange)
+                    .accessibilityIdentifier("Neeva Crypto Wallet")
+                }
+
+                NeevaMenuRowButtonView(
+                    label: "Find on Page",
+                    symbol: .docTextMagnifyingglass
+                ) {
+                    menuAction(.findOnPage)
+                }
+                .accessibilityIdentifier("OverflowMenu.FindOnPage")
+
+                Color.groupedBackground.frame(height: 1)
+
+                NeevaMenuRowButtonView(
+                    label: "Text Size",
+                    symbol: .textformatSize
+                ) {
+                    menuAction(.textSize)
+                }
+                .accessibilityIdentifier("OverflowMenu.TextSize")
+
+                Color.groupedBackground.frame(height: 1)
+
+                NeevaMenuRowButtonView(
+                    label: changedUserAgent == true
+                        ? "Request Mobile Site"
+                        : "Request Desktop Site",
+                    symbol: changedUserAgent == true
+                        ? (UIConstants.hasHomeButton ? .iphoneHomebutton : .iphone)
+                        : .desktopcomputer
+                ) {
+                    menuAction(.desktopSite)
+                }
+                .accessibilityIdentifier("OverflowMenu.RequestDesktopSite")
+
+                Color.groupedBackground.frame(height: 1)
+
+                NeevaMenuRowButtonView(
+                    label: "Download Page",
+                    symbol: .squareAndArrowDown
+                ) {
+                    menuAction(.downloadPage)
+                }
+                .accessibilityIdentifier("OverflowMenu.DownloadPage")
+            }
+            .accentColor(.label)
+        }
+    }
+
+    @ViewBuilder
+    var appNavigationButtons: some View {
+        GroupedCell.Decoration {
+            VStack(spacing: 0) {
+                NeevaMenuRowButtonView(
+                    label: "Support",
+                    symbol: .bubbleLeft
+                ) {
+                    menuAction(.support)
+                }
+                .accessibilityIdentifier("OverflowMenu.Support")
+                Color.groupedBackground.frame(height: 1)
+
+                NeevaMenuRowButtonView(
+                    label: "Settings",
+                    symbol: .gear
+                ) {
+                    menuAction(.goToSettings)
+                }
+                .accessibilityIdentifier("OverflowMenu.Settings")
+                Color.groupedBackground.frame(height: 1)
+
+                NeevaMenuRowButtonView(
+                    label: "History",
+                    symbol: .clock
+                ) {
+                    menuAction(.goToHistory)
+                }
+                .accessibilityIdentifier("OverflowMenu.History")
+                Color.groupedBackground.frame(height: 1)
+
+                NeevaMenuRowButtonView(
+                    label: "Downloads",
+                    symbol: .squareAndArrowDown
+                ) {
+                    menuAction(.goToDownloads)
+                }
+                .accessibilityIdentifier("OverflowMenu.Downloads")
+            }
+        }
+        .accentColor(.label)
     }
 }
 
