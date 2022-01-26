@@ -86,7 +86,7 @@ open class QueuedViewManager<View: SwiftUI.View> {
         }
 
         currentViewTimer?.invalidate()
-        overlayManager.hideCurrentOverlay(animate: animate)
+        overlayManager.hideCurrentOverlay(ofPriority: .transient, animate: animate)
 
         self.currentView = nil
         self.currentViewTimer = nil

@@ -11,7 +11,7 @@ public struct OverlayStyle {
     let nonDismissible: Bool  // disable dismiss modal by clicking the gray black
 
     init(
-        showTitle: Bool, backgroundColor: UIColor = .systemBackground, nonDismissible: Bool = false
+        showTitle: Bool, backgroundColor: UIColor = .systemGroupedBackground.elevated, nonDismissible: Bool = false
     ) {
         self.showTitle = showTitle
         self.backgroundColor = backgroundColor
