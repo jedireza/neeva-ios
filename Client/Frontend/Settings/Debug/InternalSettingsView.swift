@@ -13,6 +13,7 @@ struct InternalSettingsView: View {
     @Default(.seenSpacesIntro) var seenSpacesIntro
     @Default(.seenSpacesShareIntro) var seenSpacesShareIntro
     @Default(.seenCheatsheetIntro) var seenCheatsheetIntro
+    @Default(.cheatsheetDebugQuery) var cheatsheetDebugQuery
     @Default(.showNeevaMenuWillMove) var showNeevaMenuWillMove
     @Default(.lastVersionNumber) var lastVersionNumber
     @Default(.didDismissReferralPromoCard) var didDismissReferralPromoCard
@@ -75,6 +76,7 @@ struct InternalSettingsView: View {
                 }
                 Section(header: Text(verbatim: "Cheatsheet")) {
                     Toggle(String("cheatsheetIntroSeen"), isOn: $seenCheatsheetIntro)
+                    Toggle(String("cheatsheetDebugQuery"), isOn: $cheatsheetDebugQuery)
                     Toggle(String("showNeevaMenuWillMove"), isOn: $showNeevaMenuWillMove)
                 }
                 Section(header: Text(verbatim: "Promo Cards")) {

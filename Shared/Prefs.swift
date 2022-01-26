@@ -100,6 +100,7 @@ extension Defaults.Keys {
 
     // cheatsheet
     public static let seenCheatsheetIntro = Defaults.BoolKey("cheatsheetIntroSeen")
+    public static let cheatsheetDebugQuery = Defaults.BoolKey("cheatsheetDebugQuery")
     public static let showNeevaMenuWillMove = Defaults.BoolKey("showNeevaMenuWillMove", default: false)
 
     // notification

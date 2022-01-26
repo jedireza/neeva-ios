@@ -48,6 +48,15 @@ public class CheatsheetMenuViewModel: ObservableObject {
         return true
     }
 
+    var currentCheatsheetQueryAsURL: URL? {
+        guard let query = currentCheatsheetQuery,
+           let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlUserAllowed),
+           !encodedQuery.isEmpty else {
+               return nil
+        }
+        return URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")
+    }
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(tabManager: TabManager) {

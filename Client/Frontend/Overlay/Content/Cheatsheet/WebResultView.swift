@@ -84,23 +84,48 @@ struct WebResultItem: View {
 }
 
 struct WebResultList: View {
-    let webResult: [WebResult]
-    let currentCheatsheetQuery: String?
     @Environment(\.onOpenURL) var onOpenURL
+
+    let webResult: [WebResult]
+    let currentCheatsheetQueryAsURL: URL?
+    let showQueryString: Bool
 
     var body: some View {
         VStack(alignment: .leading) {
-            Button(action: onClick) {
-                HStack(alignment: .center) {
-                    Text("Neeva Search")
-                        .withFont(.headingXLarge)
-                        .foregroundColor(.label)
-                    Symbol(decorative: .arrowUpForward)
-                        .foregroundColor(.label)
-                        .frame(width: 18, height: 18, alignment: .center)
+            Group {
+                Button(action: onClick) {
+                    HStack(alignment: .center) {
+                        Text("Neeva Search")
+                            .withFont(.headingXLarge)
+                            .foregroundColor(.label)
+                        Symbol(decorative: .arrowUpForward)
+                            .foregroundColor(.label)
+                            .frame(width: 18, height: 18, alignment: .center)
+                    }
                 }
-                .padding(.bottom, 8)
+                if showQueryString {
+                    Button(action: {
+                        if let string = currentCheatsheetQueryAsURL?.absoluteString {
+                            UIPasteboard.general.string = string
+                        }
+                    }) {
+                        HStack(alignment: .top) {
+                            Symbol(decorative: .docOnDoc)
+                                .frame(width: 20, height: 20, alignment: .center)
+                            Text(
+                                "Query string: "
+                                    +
+                                (currentCheatsheetQueryAsURL?.absoluteString ?? "nil")
+                            )
+                            .withFont(.bodySmall)
+                            .multilineTextAlignment(.leading)
+                            .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .foregroundColor(.secondaryLabel)
+                    }
+                }
             }
+            .padding(.bottom, 8)
             VStack(alignment: .leading) {
                 ForEach(webResult, id: \.actionURL) { web in
                     WebResultItem(item: web)
@@ -111,14 +136,8 @@ struct WebResultList: View {
     }
 
     func onClick() {
-        if let query = currentCheatsheetQuery {
-            if let encodedQuery = query.addingPercentEncoding(
-                withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
-            {
-                if let url = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)") {
-                    onOpenURL(url)
-                }
-            }
+        if let url = currentCheatsheetQueryAsURL {
+            onOpenURL(url)
         }
     }
 }
