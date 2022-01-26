@@ -23,26 +23,31 @@ public struct CardGridOverflowMenuView: View {
 
     public var body: some View {
         GroupedStack {
-            HStack(spacing: OverflowMenuUX.innerSectionPadding) {
-                OverflowMenuButtonView(
-                    label: "Settings",
-                    symbol: .gear,
-                    action: {
-                        menuAction(.goToSettings)
-                    }
-                )
-                .accessibilityIdentifier("CardGridOverflowMenu.Settings")
-
-                OverflowMenuButtonView(
-                    label: "Support", nicon: .bubbleLeft
-                ) {
-                    menuAction(.support)
+            GroupedCell.Decoration {
+                NeevaMenuRowButtonView(label: "Close All Tabs", symbol: .trash) {
+                    menuAction(.closeAllTabs)
                 }
-                .accessibilityIdentifier("CardGridOverflowMenu.ToogleIncognito")
+                .accessibilityIdentifier("CardGridOverflowMenu.CloseAllTabs")
+                .accentColor(.red)
+                .disabled(chromeModel.topBarDelegate?.tabManager.getTabCountForCurrentType() == 0)
             }
 
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
+                    NeevaMenuRowButtonView(label: "Support", symbol: .bubbleLeft) {
+                        menuAction(.support)
+                    }
+                    .accessibilityIdentifier("CardGridOverflowMenu.Feedback")
+
+                    Color.groupedBackground.frame(height: 1)
+
+                    NeevaMenuRowButtonView(label: "Settings", symbol: .gear) {
+                        menuAction(.goToSettings)
+                    }
+                    .accessibilityIdentifier("CardGridOverflowMenu.Settings")
+
+                    Color.groupedBackground.frame(height: 1)
+
                     NeevaMenuRowButtonView(label: "History", symbol: .clock) {
                         menuAction(.goToHistory)
                     }
@@ -57,15 +62,6 @@ public struct CardGridOverflowMenuView: View {
                     .accessibilityIdentifier("CardGridOverflowMenu.Downloads")
                 }
                 .accentColor(.label)
-            }
-
-            GroupedCell.Decoration {
-                NeevaMenuRowButtonView(label: "Close All Tabs", symbol: .trash) {
-                    menuAction(.closeAllTabs)
-                }
-                .accessibilityIdentifier("CardGridOverflowMenu.CloseAllTabs")
-                .accentColor(.red)
-                .disabled(chromeModel.topBarDelegate?.tabManager.getTabCountForCurrentType() == 0)
             }
         }
     }
