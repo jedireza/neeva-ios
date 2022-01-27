@@ -147,31 +147,11 @@ struct SpaceEntityDetailView: View {
                                     url: details.data.url!,
                                     entity: details.data.previewEntity
                                 )
-                                if !showDescriptions, #available(iOS 15.0, *),
-                                    case .techDoc(let doc) = details.data.previewEntity,
-                                    let body = doc.body
-                                {
-                                    Text(AttributedString(body))
-                                        .withFont(.bodyLarge)
-                                        .lineLimit(3)
-                                        .modifier(DescriptionTextModifier())
-                                } else if let snippet = snippetToDisplay,
-                                    !showDescriptions, !snippet.isEmpty
-                                {
-                                    if #available(iOS 15.0, *),
-                                        let attributedSnippet = try? AttributedString(
-                                            markdown: snippet)
-                                    {
-                                        Text(attributedSnippet)
-                                            .withFont(.bodyLarge)
-                                            .lineLimit(3)
-                                            .modifier(DescriptionTextModifier())
-                                    } else {
-                                        Text(snippet)
-                                            .withFont(.bodyLarge)
-                                            .lineLimit(3)
-                                            .modifier(DescriptionTextModifier())
-                                    }
+
+                                if !showDescriptions {
+                                    SpaceMarkdownSnippet(
+                                        showDescriptions: false, details: details,
+                                        snippet: snippetToDisplay)
                                 }
                             }
                         }
@@ -395,5 +375,33 @@ struct EditSpaceActionModifier: ViewModifier {
                     })
                 )
         }
+    }
+}
+
+struct SpaceMarkdownSnippet: View {
+    let showDescriptions: Bool
+    let details: SpaceEntityThumbnail
+    let snippet: String?
+
+    @ViewBuilder
+    var content: some View {
+        if #available(iOS 15.0, *),
+            let snippet = snippet,
+            let attributedSnippet = try? AttributedString(
+                markdown: snippet)
+        {
+            Text(attributedSnippet)
+                .withFont(.bodyLarge)
+        } else if let snippet = snippet {
+            Text(snippet)
+                .withFont(.bodyLarge)
+        }
+    }
+
+    var body: some View {
+        content
+            .lineLimit(showDescriptions ? nil : 3)
+            .modifier(DescriptionTextModifier())
+            .fixedSize(horizontal: false, vertical: showDescriptions)
     }
 }
