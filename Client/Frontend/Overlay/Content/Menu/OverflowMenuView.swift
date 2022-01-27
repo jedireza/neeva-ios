@@ -160,6 +160,8 @@ public struct OverflowMenuView: View {
                         }
                         .accentColor(Color.brand.adaptive.orange)
                         .accessibilityIdentifier("Neeva Crypto Wallet")
+
+                        Color.groupedBackground.frame(height: 1)
                     }
 
                     NeevaMenuRowButtonView(

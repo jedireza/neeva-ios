@@ -102,7 +102,6 @@ public struct EmailVerificationPrompt: View {
             .padding(.vertical, 20)
             .padding(.bottom, 60)
             .frame(maxWidth: .infinity)
-            .background(Color.background)
         }
     }
 }
