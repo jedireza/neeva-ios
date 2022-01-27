@@ -84,6 +84,7 @@ private struct iOS15InputField: View {
                     )
                     .fixedSize(horizontal: false, vertical: true)
                     .focused($isFocused, equals: title)
+                    .accentColor(textEditAccentColor(type: title))
                     .animation(.easeInOut)
             } else {
                 TextField(bodyText, text: $inputText)
@@ -196,19 +197,13 @@ struct AddOrUpdateSpaceView: View {
     var body: some View {
         GroupedStack {
             inputField(
-                title: .titleField, bodyText: "Please provide a title", inputText: $titleText
-            ).modifier(TextFieldBackgroundModifier())
+                title: .titleField, bodyText: "Please provide a title", inputText: $titleText)
 
             ZStack(alignment: .topTrailing) {
                 inputField(
                     title: .descriptionField,
                     bodyText: "Please provide a description",
-                    inputText: $descriptionText
-                )
-                .onAppear {
-                    UITextView.appearance().backgroundColor = .systemBackground.elevated
-                }
-                .modifier(TextFieldBackgroundModifier())
+                    inputText: $descriptionText)
 
                 Button {
                     openMarkdownArticle()
@@ -233,7 +228,7 @@ struct AddOrUpdateSpaceView: View {
                 inputField(
                     title: .urlField, bodyText: "Add a URL to your new item (optional)",
                     inputText: $urlText
-                ).modifier(TextFieldBackgroundModifier())
+                )
             }
             Button(
                 action: {
@@ -301,13 +296,5 @@ struct AddOrUpdateSpaceView: View {
         }.onDisappear {
             thumbnailModel.showing = false
         }
-    }
-}
-
-struct TextFieldBackgroundModifier: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .background(Color(UIColor.systemBackground.elevated))
-            .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }

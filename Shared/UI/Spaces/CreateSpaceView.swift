@@ -27,7 +27,7 @@ public struct CreateSpaceView: View {
 
     public var body: some View {
         VStack(spacing: 20) {
-            SingleLineTextField("Space name", text: $spaceName, focusTextField: true)
+            SingleLineTextField("Space name", text: $spaceName)
 
             Button(action: {
                 self.onDismiss(self.spaceName)
@@ -38,6 +38,13 @@ public struct CreateSpaceView: View {
             .buttonStyle(SaveButtonStyle())
             .padding(.bottom, 11)
         }.padding(16)
+            // Focus the text field automatically when loading this view. Unfortunately,
+            // SwiftUI provides no way to do this, so we have to resort to using Introspect.
+            // See https://github.com/siteline/SwiftUI-Introspect/issues/99 for why this is
+            // here instead of right below the TextField() instantiation above.
+            .introspectTextField { textField in
+                textField.becomeFirstResponder()
+            }
     }
 }
 struct CreateSpaceView_Previews: PreviewProvider {

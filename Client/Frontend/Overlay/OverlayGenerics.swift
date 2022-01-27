@@ -24,6 +24,27 @@ extension EnvironmentValues {
     }
 }
 
+struct OverlayRootView: View {
+    let isPopover: Bool
+    let style: OverlayStyle
+    let content: () -> AnyView
+    let onDismiss: () -> Void
+    let onOpenURL: (URL) -> Void
+    let headerButton: OverlayHeaderButton?
+
+    var body: some View {
+        if isPopover {
+            PopoverRootView(
+                style: style, content: content, onDismiss: onDismiss,
+                onOpenURL: onOpenURL, headerButton: headerButton)
+        } else {
+            OverlaySheetRootView(
+                style: style, content: content, onDismiss: onDismiss,
+                onOpenURL: onOpenURL, headerButton: headerButton)
+        }
+    }
+}
+
 struct PopoverRootView: View {
     var style: OverlayStyle
     var content: () -> AnyView
@@ -41,47 +62,23 @@ struct PopoverRootView: View {
 }
 
 struct OverlaySheetRootView: View {
-    static let defaultOverlayPosition: OverlaySheetPosition = .middle
-
     let overlayModel = OverlaySheetModel()
-    var overlayPosition: OverlaySheetPosition
+    var overlayPosition: OverlaySheetPosition = .middle
 
     let style: OverlayStyle
     let content: () -> AnyView
     let onDismiss: () -> Void
     let onOpenURL: (URL) -> Void
     let headerButton: OverlayHeaderButton?
-    let headerContent: () -> AnyView
-
-    init(
-        overlayPosition: OverlaySheetPosition = Self.defaultOverlayPosition,
-        style: OverlayStyle,
-        content: @escaping () -> AnyView,
-        onDismiss: @escaping () -> Void,
-        onOpenURL: @escaping (URL) -> Void,
-        headerButton: OverlayHeaderButton?,
-        headerContent: @escaping () -> AnyView = { AnyView(erasing: EmptyView()) }
-    ) {
-        self.overlayPosition = overlayPosition
-        self.style = style
-        self.content = content
-        self.onDismiss = onDismiss
-        self.onOpenURL = onOpenURL
-        self.headerButton = headerButton
-        self.headerContent = headerContent
-    }
 
     @ViewBuilder
     var overlay: some View {
         OverlaySheetView(
-            model: overlayModel,
-            style: style,
+            model: overlayModel, style: style,
             onDismiss: {
                 onDismiss()
                 overlayModel.hide()
-            },
-            headerButton: headerButton,
-            headerContent: headerContent
+            }, headerButton: headerButton
         ) {
             content()
                 .environment(\.onOpenURL, self.onOpenURL)
