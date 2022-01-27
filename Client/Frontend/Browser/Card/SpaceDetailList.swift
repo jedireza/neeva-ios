@@ -144,12 +144,10 @@ struct SpaceDetailList: View {
                                 Text(details.title)
                                     .withFont(.headingMedium)
                                     .foregroundColor(.label)
-                                if let description = details.data.snippet, !description.isEmpty {
-                                    Text(description)
-                                        .withFont(.bodyLarge)
-                                        .lineLimit(showDescriptions ? nil : 3)
-                                        .modifier(DescriptionTextModifier())
-                                }
+
+                                SpaceMarkdownSnippet(
+                                    showDescriptions: showDescriptions, details: details,
+                                    snippet: details.data.snippet)
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
