@@ -31,13 +31,14 @@ public struct OverlayHeaderButton {
 // half-height (or middle) position. The user can drag it to a fullscreen (or
 // top) position or can drag down to dismiss.
 // Intended to present content that is flexible in height (e.g., a ScrollView).
-struct OverlaySheetView<Content: View>: View, KeyboardReadable {
+struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReadable {
     // MARK: - Properties
     @StateObject var model: OverlaySheetModel
 
     @State private var keyboardHeight: CGFloat = 0
     @State private var titleHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
+    @State private var headerHeight: CGFloat = 0
     @State private var title: LocalizedStringKey? = nil
     @State private var isFixedHeight: Bool = false
     @State private var bottomSafeArea: CGFloat = 0
@@ -45,6 +46,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
     let style: OverlayStyle
     let onDismiss: () -> Void
     let headerButton: OverlayHeaderButton?
+    let headerContent: () -> HeaderContent
     let content: () -> Content
 
     private var keyboardIsVisible: Bool {
@@ -90,9 +92,11 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             size = size + model.deltaHeight
         }
 
-        size -= keyboardHeight
+        if keyboardHeight > 0 {
+            size -= 12
+        }
 
-        let min: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+        let min: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing + headerHeight
         if size < min {
             size = min
         }
@@ -111,6 +115,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         }
     }
 
+    @ViewBuilder
     private var topBar: some View {
         VStack(spacing: 0) {
             if !isFixedHeight {
@@ -165,6 +170,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
         }
     }
 
+    @ViewBuilder
     private var sheetContent: some View {
         self.content()
             .modifier(ViewHeightKey())
@@ -174,6 +180,7 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
             }
     }
 
+    @ViewBuilder
     private var sheet: some View {
         VStack {
             VStack(spacing: 0) {
@@ -235,30 +242,44 @@ struct OverlaySheetView<Content: View>: View, KeyboardReadable {
                 keyboardHeight = height
             }
             .background(
-                HStack(spacing: 0) {
-                    Spacer().layoutPriority(0.5)
+                VStack {
+                    if case .middle = model.position {
+                        HStack(spacing: 0) {
+                            Spacer().layoutPriority(0.5)
 
-                    if let headerButton = headerButton, case .middle = model.position {
-                        Button(
-                            action: {
-                                headerButton.action()
-                                model.hide()
-                            },
-                            label: {
-                                HStack(spacing: 10) {
-                                    Text(headerButton.text)
-                                        .withFont(.labelLarge)
-                                    Symbol(decorative: headerButton.icon)
-                                }
-                                .frame(maxWidth: .infinity)
+                            if let headerButton = headerButton {
+                                Button(
+                                    action: {
+                                        headerButton.action()
+                                        model.hide()
+                                    },
+                                    label: {
+                                        HStack(spacing: 10) {
+                                            Text(headerButton.text)
+                                                .withFont(.labelLarge)
+                                            Symbol(decorative: headerButton.icon)
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                    }
+                                )
+                                .buttonStyle(.neeva(.primary))
+                                .padding(.horizontal, 6)
+                                .layoutPriority(0.5)
                             }
-                        )
-                        .buttonStyle(.neeva(.primary))
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 6)
-                        .layoutPriority(0.5)
+                        }
+
+                        headerContent()
+                            .frame(maxWidth: .infinity)
+                            .layoutPriority(0.5)
                     }
-                }.offset(y: -20 + model.deltaHeight)
+                }
+                .modifier(ViewHeightKey())
+                .onPreferenceChange(ViewHeightKey.self) { headerHeight = $0 - 12 }
+                .position(
+                    x: outerGeometry.size.width / 2,
+                    y: getSpacerHeight(outerGeometry) - headerHeight / 2
+                )
+
             )
         }
         .ignoresSafeArea()
