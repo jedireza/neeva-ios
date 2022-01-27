@@ -92,9 +92,11 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
             size = size + model.deltaHeight
         }
 
-        size -= keyboardHeight
+        if keyboardHeight > 0 {
+            size -= 12
+        }
 
-        let min: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+        let min: CGFloat = UIConstants.TopToolbarHeightWithToolbarButtonsShowing + headerHeight
         if size < min {
             size = min
         }
@@ -265,14 +267,14 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
                                 .layoutPriority(0.5)
                             }
                         }
+
                         headerContent()
                             .frame(maxWidth: .infinity)
                             .layoutPriority(0.5)
                     }
                 }
-                .padding(.vertical, 8)
                 .modifier(ViewHeightKey())
-                .onPreferenceChange(ViewHeightKey.self) { headerHeight = $0 }
+                .onPreferenceChange(ViewHeightKey.self) { headerHeight = $0 - 12 }
                 .position(
                     x: outerGeometry.size.width / 2,
                     y: getSpacerHeight(outerGeometry) - headerHeight / 2
