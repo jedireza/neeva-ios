@@ -13,6 +13,7 @@ struct CollapsedCardGroupView: View {
     @Environment(\.cardSize) private var size
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
+    @EnvironmentObject private var gridModel: GridModel
 
     @State private var frame = CGRect.zero
 
@@ -46,36 +47,47 @@ struct CollapsedCardGroupView: View {
             browserModel.cardTransition == .hidden
             ? 0 : containerGeometry.frame(in: .global).maxY - self.frame.maxY
 
-        ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(
-                spacing: SingleLevelTabCardsViewUX.TabGroupCarouselTabSpacing
-            ) {
-                ForEach(groupDetails.allDetails) { childTabDetail in
-                    FittedCard(details: childTabDetail, dragToClose: false)
-                        .modifier(
-                            CardTransitionModifier(
-                                details: childTabDetail,
-                                containerGeometry: containerGeometry)
-                        )
-                }
-            }
-            .padding(.leading, CardGridUX.GridSpacing)
-            .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
-            .padding(
-                .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
-            )
-            .background(
-                GeometryReader { geom in
-                    Color.clear.useEffect(deps: geom.frame(in: .global)) { frame in
-                        self.frame = frame
+        ScrollViewReader { scrollProxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                LazyHStack(
+                    spacing: SingleLevelTabCardsViewUX.TabGroupCarouselTabSpacing
+                ) {
+                    ForEach(groupDetails.allDetails) { childTabDetail in
+                        FittedCard(details: childTabDetail, dragToClose: false)
+                            .modifier(
+                                CardTransitionModifier(
+                                    details: childTabDetail,
+                                    containerGeometry: containerGeometry)
+                            )
+                            .id(childTabDetail.id)
                     }
                 }
-            )
-            .padding(.top, topSpace)
-            .padding(.bottom, bottomSpace)
+                .padding(.leading, CardGridUX.GridSpacing)
+                .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
+                .padding(
+                    .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
+                )
+                .background(
+                    GeometryReader { geom in
+                        Color.clear.useEffect(deps: geom.frame(in: .global)) { frame in
+                            self.frame = frame
+                        }
+                    }
+                )
+                .padding(.top, topSpace)
+                .padding(.bottom, bottomSpace)
+
+            }
+            .padding(.top, -topSpace)
+            .padding(.bottom, -bottomSpace)
+            .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
+                if groupDetails.allDetails.contains(where: \.isSelected) {
+                    withAnimation(nil) {
+                        scrollProxy.scrollTo(groupDetails.allDetails.first(where: \.isSelected)?.id)
+                    }
+                }
+            }
         }
-        .padding(.top, -topSpace)
-        .padding(.bottom, -bottomSpace)
     }
 }
 

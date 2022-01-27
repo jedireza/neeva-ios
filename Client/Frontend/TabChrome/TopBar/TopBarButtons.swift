@@ -27,7 +27,7 @@ struct TopBarNeevaMenuButton: View {
             content: {
                 TabToolbarButtons.NeevaMenu(iconWidth: 24) {
                     if NeevaFeatureFlags[.cheatsheetQuery],
-                       let bvc = chromeModel.topBarDelegate as? BrowserViewController
+                        let bvc = chromeModel.topBarDelegate as? BrowserViewController
                     {
                         bvc.showCheatSheetOverlay()
                     } else {
