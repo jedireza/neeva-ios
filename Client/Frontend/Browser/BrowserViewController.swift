@@ -2206,6 +2206,21 @@ extension BrowserViewController {
                 menuAction: perform(neevaMenuAction:),
                 tabManager: tabManager
             )
+            .environment(\.onSigninOrJoinNeeva) {
+                ClientLogger.shared.logCounter(
+                    .CheatsheetErrorSigninOrJoinNeeva,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes()
+                )
+                overlayManager.hideCurrentOverlay()
+                presentIntroViewController(
+                    true,
+                    onDismiss: {
+                        DispatchQueue.main.async {
+                            hideCardGrid(withAnimation: true)
+                        }
+                    }
+                )
+            }
         }
     }
 }

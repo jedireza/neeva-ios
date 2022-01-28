@@ -13,6 +13,8 @@ public class CheatsheetMenuViewModel: ObservableObject {
     @Published private(set) var currentPageURL: URL?
     @Published private(set) var cheatsheetDataLoading: Bool
     @Published private(set) var currentCheatsheetQuery: String?
+    @Published private(set) var cheatsheetDataError: Error?
+    @Published private(set) var searchRichResultsError: Error?
 
     var cheatSheetIsEmpty: Bool {
         if let cheatsheetInfo = cheatsheetInfo {
@@ -57,6 +59,8 @@ public class CheatsheetMenuViewModel: ObservableObject {
         return URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")
     }
 
+    var reload: () -> Void
+
     private var subscriptions: Set<AnyCancellable> = []
 
     init(tabManager: TabManager) {
@@ -65,6 +69,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
         self.currentPageURL = tabManager.selectedTab?.webView?.url
         self.cheatsheetDataLoading = tabManager.selectedTab?.cheatsheetDataLoading ?? false
         self.currentCheatsheetQuery = tabManager.selectedTab?.currentCheatsheetQuery
+        self.reload = { tabManager.selectedTab?.fetchCheatsheetInfo() }
 
         tabManager.selectedTab?.$cheatsheetDataLoading.assign(to: \.cheatsheetDataLoading, on: self)
             .store(in: &subscriptions)
@@ -82,5 +87,13 @@ public class CheatsheetMenuViewModel: ObservableObject {
 
         tabManager.selectedTab?.$url.assign(to: \.currentPageURL, on: self).store(
             in: &subscriptions)
+
+        tabManager.selectedTab?.$cheatsheetDataError
+            .assign(to: \.cheatsheetDataError, on: self)
+            .store(in: &subscriptions)
+
+        tabManager.selectedTab?.$searchRichResultsError
+            .assign(to: \.searchRichResultsError, on: self)
+            .store(in: &subscriptions)
     }
 }
