@@ -8,9 +8,9 @@ This branch works with [Xcode 13.0](https://apps.apple.com/us/app/xcode/id497799
 
 ## Getting involved
 
-Check out our [Contributor Guidelines](https://github.com/neevaco/neeva-ios-phoenix/blob/main/CONTRIBUTING.md)
+Check out our [Contributor Guidelines](https://github.com/neevaco/neeva-ios/blob/main/CONTRIBUTING.md)
 
-Want to contribute but don't know where to start? Here is a list of [good first issues](https://github.com/neevaco/neeva-ios-phoenix/labels/good%20first%20issue).
+Want to contribute but don't know where to start? Here is a list of [good first issues](https://github.com/neevaco/neeva-ios/labels/good%20first%20issue).
 
 ## Building the code
 
@@ -24,11 +24,11 @@ Want to contribute but don't know where to start? Here is a list of [good first 
    ```
 1. Clone the repository:
    ```shell
-   git clone https://github.com/neevaco/neeva-ios-phoenix.git
+   git clone https://github.com/neevaco/neeva-ios.git
    ```
 1. Pull in the project dependencies:
    ```shell
-   cd neeva-ios-phoenix
+   cd neeva-ios
    sh ./bootstrap.sh
    ```
 1. Open `Client.xcodeproj` in Xcode.
@@ -78,7 +78,7 @@ Then switch to the Periphery target in Xcode and build (⌘B). You‘ll get a la
 ## History of the codebase
 
 The Neeva browser stands on the shoulders of the excellent [Firefox for iOS](https://github.com/mozilla-mobile/firefox-ios) browser.
-We forked on Feb 18 at [c23bd56293da4e2913e1d512ee559e784dd21e48](https://github.com/neevaco/neeva-ios-phoenix/commit/c23bd56293da4e2913e1d512ee559e784dd21e48),
+We forked on Feb 18 at [c23bd56293da4e2913e1d512ee559e784dd21e48](https://github.com/neevaco/neeva-ios/commit/c23bd56293da4e2913e1d512ee559e784dd21e48),
 and the project has diverged substantially enough that it hasn't made sense to merge updates since.
 
 Thank you to Mozilla for providing such a fantastic foundation for this project

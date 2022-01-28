@@ -307,7 +307,7 @@ class NavigationTest: BaseTestCase {
     }
 
     // Confirms that the share menu shows the right contents when navigating back
-    // from a PDF. See https://github.com/neevaco/neeva-ios-phoenix/issues/634,
+    // from a PDF. See https://github.com/neevaco/neeva-ios/issues/634,
     // in which the share menu was incorrectly reporting data about the PDF after
     // navigating back.
     func testShareMenuNavigatingBackFromPDF() {

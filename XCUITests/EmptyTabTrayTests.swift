@@ -77,7 +77,7 @@ class EmptyTabTrayTests: BaseTestCase {
         waitForExistence(app.buttons["Example Domain, Tab"])
     }
 
-    // https://github.com/neevaco/neeva-ios-phoenix/issues/2595
+    // https://github.com/neevaco/neeva-ios/issues/2595
     func testTabGroupWorksAfterClosingLastTab() {
         openURLInNewTab("https://example.com")
 

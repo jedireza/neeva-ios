@@ -6,7 +6,7 @@ let sourceRootURL =
     parentFolderOfScriptFile
     .deletingLastPathComponent()  // Result: Sources folder
     .deletingLastPathComponent()  // Result: Codegen folder
-    .deletingLastPathComponent()  // Result: neeva-ios-phoenix source root folder
+    .deletingLastPathComponent()  // Result: neeva-ios source root folder
 
 func / (dir: URL, folderName: String) -> URL {
     dir.apollo.childFolderURL(folderName: folderName)

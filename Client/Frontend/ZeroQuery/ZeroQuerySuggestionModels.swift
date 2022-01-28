@@ -55,7 +55,7 @@ class SuggestedSearchesModel: ObservableObject {
             var deferredHistorySites = result.successValue?.asArray().compactMap { $0 } ?? []
             let topFrecentHistorySite = deferredHistorySites[deferredHistorySites.indices]
                 .popFirst()
-            // TODO: https://github.com/neevaco/neeva-ios-phoenix/issues/1027
+            // TODO: https://github.com/neevaco/neeva-ios/issues/1027
             deferredHistorySites.sort { siteA, siteB in
                 return siteA.latestVisit?.date ?? 0 > siteB.latestVisit?.date ?? 0
             }
