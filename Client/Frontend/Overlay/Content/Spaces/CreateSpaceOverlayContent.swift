@@ -12,7 +12,7 @@ struct CreateSpaceOverlayContent: View {
     @State private var subscription: AnyCancellable? = nil
 
     var body: some View {
-        if !NeevaUserInfo.shared.isVerified {
+        if NeevaUserInfo.shared.isUserLoggedIn, !NeevaUserInfo.shared.isVerified {
             EmailVerificationPrompt(email: NeevaUserInfo.shared.email ?? "", dismiss: hideOverlay)
                 .overlayIsFixedHeight(isFixedHeight: true)
                 .overlayTitle(title: "Create a Space")

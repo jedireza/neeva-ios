@@ -24,7 +24,7 @@ struct AddToSpaceOverlayContent: View {
 
     @ViewBuilder
     var content: some View {
-        if !NeevaUserInfo.shared.isVerified {
+        if NeevaUserInfo.shared.isUserLoggedIn, !NeevaUserInfo.shared.isVerified {
             EmailVerificationPrompt(email: NeevaUserInfo.shared.email ?? "", dismiss: hideOverlay)
         } else if request.state == .savedToSpace || request.state == .savingToSpace {
             VStack {
