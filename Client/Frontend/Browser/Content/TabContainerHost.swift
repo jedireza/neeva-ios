@@ -122,7 +122,7 @@ struct TabContainerContent: View {
     let bvc: BrowserViewController
     let zeroQueryModel: ZeroQueryModel
     let suggestionModel: SuggestionModel
-    let suggestedSearchesModel: SuggestedSearchesModel =
+    @StateObject var suggestedSearchesModel: SuggestedSearchesModel =
         SuggestedSearchesModel(suggestedQueries: [])
     let spaceContentSheetModel: SpaceContentSheetModel?
 
