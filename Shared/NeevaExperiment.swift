@@ -67,7 +67,6 @@ public enum NeevaExperiment {
 
 extension NeevaExperiment {
     public enum DefaultBrowser: String, ExperimentArms {
-        case control
         case showDBPrompt
     }
 }
