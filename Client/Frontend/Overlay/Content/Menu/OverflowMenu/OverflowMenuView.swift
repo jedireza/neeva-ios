@@ -95,6 +95,10 @@ public struct OverflowMenuView: View {
         FeatureFlag[.updatedTabOverflowMenu] || NeevaFeatureFlags[.cheatsheetQuery]
     }
 
+    var frameHeight: CGFloat {
+        height + (showNewMenu ? Self.heightPeekingOffset : 0)
+    }
+
     public var body: some View {
         ScrollView {
             GroupedStack {
@@ -115,7 +119,7 @@ public struct OverflowMenuView: View {
                 }
             }
         }
-        .frame(minHeight: height + Self.heightPeekingOffset)
+        .frame(minHeight: frameHeight)
     }
 
     @ViewBuilder

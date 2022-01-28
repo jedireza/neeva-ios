@@ -156,13 +156,12 @@ struct TopBarOverflowMenuButton: View {
                 }
             }
         ) {
-            VerticalScrollViewIfNeeded {
-                content
-                    .environment(\.isIncognito, isIncognito)
-                    .environmentObject(chromeModel)
-                    .environmentObject(locationModel)
-                    .topBarPopoverPadding()
-            }.frame(minWidth: 340, minHeight: 285)
+            content
+                .environment(\.isIncognito, isIncognito)
+                .environmentObject(chromeModel)
+                .environmentObject(locationModel)
+                .topBarPopoverPadding()
+                .frame(minWidth: 340, minHeight: 285)
         }
     }
 }
