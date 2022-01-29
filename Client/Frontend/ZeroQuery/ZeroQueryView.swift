@@ -288,13 +288,13 @@ struct ZeroQueryView: View {
                             label: "\(expandSearches ? "hides" : "shows") this section",
                             icon: expandSearches ? .chevronUp : .chevronDown
                         )
+
                         if expandSearches {
                             if !Defaults[.signedInOnce] {
                                 SuggestedPreviewSearchesView()
                             } else {
                                 SuggestedSearchesView()
                             }
-
                         }
 
                         if NeevaUserInfo.shared.isUserLoggedIn && Defaults[.signedInOnce] {
