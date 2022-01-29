@@ -19,9 +19,7 @@ struct BrowserTopBarView: View {
 
     @ViewBuilder var switcherTopBar: some View {
         if useTopToolbar {
-            SwitcherToolbarView(
-                top: true, isEmpty: bvc.tabContainerModel.tabCardModel.isCardGridEmpty
-            )
+            SwitcherToolbarView(top: true)
         } else {
             GridPicker()
         }

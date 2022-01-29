@@ -38,9 +38,7 @@ class TabCardModel: CardModel, TabEventHandler {
     }
 
     var allDetailsMatchingIncognitoState: [TabCardDetails] {
-        allDetails.filter {
-            manager.get(for: $0.id)?.isIncognito ?? false == manager.isIncognito
-        }
+        manager.isIncognito ? incognitoDetails : normalDetails
     }
 
     var normalDetails: [TabCardDetails] {

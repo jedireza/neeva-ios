@@ -98,4 +98,19 @@ class EmptyTabTrayTests: BaseTestCase {
         app.buttons["Example Domain, Tab Group"].tap()
         XCTAssert(app.buttons["Example Domain, Tab"].exists)
     }
+
+    func testDoneButtonState() {
+        // Test disabled on start
+        XCTAssertEqual(app.buttons["Done"].value as! String, "Disabled")
+
+        openURLInNewTab()
+
+        // Make sure it's enabled
+        goToTabTray()
+        XCTAssertEqual(app.buttons["Done"].value as! String, "Enabled")
+
+        // Make sure it's disabled
+        closeAllTabs(fromTabSwitcher: true, createNewTab: false)
+        XCTAssertEqual(app.buttons["Done"].value as! String, "Disabled")
+    }
 }

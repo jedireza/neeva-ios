@@ -61,7 +61,7 @@ struct CardGrid: View {
     @ViewBuilder var topBar: some View {
         if topToolbar {
             SwitcherToolbarView(
-                top: true, isEmpty: tabModel.isCardGridEmpty, dragOffset: gridModel.dragOffset)
+                top: true, dragOffset: gridModel.dragOffset)
         } else {
             GridPicker()
         }

@@ -37,7 +37,6 @@ class SwitcherToolbarModel: ObservableObject {
 /// The toolbar for the card grid/tab switcher
 struct SwitcherToolbarView: View {
     let top: Bool
-    var isEmpty: Bool
     var dragOffset: CGFloat? = nil
 
     @EnvironmentObject var gridModel: GridModel
@@ -159,18 +158,21 @@ struct SwitcherToolbarView: View {
                         string: "Done",
                         attributes: [NSAttributedString.Key.font: font])
                     button.setAttributedTitle(title, for: .normal)
-                    button.setTitleColor(isEmpty ? .secondaryLabel : .label, for: .normal)
+                    button.setTitleColor(
+                        tabModel.isCardGridEmpty ? .secondaryLabel : .label, for: .normal)
                     button.setDynamicMenu {
                         gridModel.buildCloseAllTabsMenu(sourceView: button)
                     }
-                    button.isEnabled = !isEmpty
+                    button.isEnabled = !tabModel.isCardGridEmpty
                 }
                 .tapTargetFrame()
                 .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
                 .accessibilityIdentifier("TabTrayController.doneButton")
-            }.padding(.horizontal, 16)
-                .frame(
-                    height: top ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing - 1 : nil)
+                .accessibilityValue(Text(tabModel.isCardGridEmpty ? "Disabled" : "Enabled"))
+            }
+            .padding(.horizontal, 16)
+            .frame(
+                height: top ? UIConstants.TopToolbarHeightWithToolbarButtonsShowing - 1 : nil)
 
             if top {
                 divider
