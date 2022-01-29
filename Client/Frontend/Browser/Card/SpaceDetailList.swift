@@ -40,7 +40,7 @@ struct SpaceDetailList: View {
     }
 
     var canEdit: Bool {
-        primitive.ACL >= .edit
+        primitive.ACL >= .edit && !(space?.isDigest ?? false)
     }
 
     var ownerName: String? {
@@ -73,15 +73,19 @@ struct SpaceDetailList: View {
                             .buttonStyle(.plain)
                             .modifier(ListSeparatorModifier())
                     }
-                    SpaceHeaderView(space: space!)
-                        .modifier(ListSeparatorModifier())
-                        .iPadOnlyID()
-                        .onAppear {
-                            headerVisible = UIDevice.current.userInterfaceIdiom != .pad
-                        }
-                        .onDisappear {
-                            headerVisible = false
-                        }
+
+                    if let space = space {
+                        SpaceHeaderView(space: space)
+                            .modifier(ListSeparatorModifier())
+                            .iPadOnlyID()
+                            .onAppear {
+                                headerVisible = UIDevice.current.userInterfaceIdiom != .pad
+                            }
+                            .onDisappear {
+                                headerVisible = false
+                            }
+                    }
+
                     ForEach(primitive.allDetails, id: \.id) { details in
                         let editSpaceItem = {
                             guard let space = space else {
@@ -131,7 +135,8 @@ struct SpaceDetailList: View {
                                             url: url, title: title, description: description)
                                 },
                                 editSpaceItem: editSpaceItem,
-                                index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0
+                                index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0,
+                                canEdit: canEdit
                             )
                             .modifier(ListSeparatorModifier())
                             .listRowBackground(Color.DefaultBackground)
@@ -151,15 +156,19 @@ struct SpaceDetailList: View {
                             }
                             .padding(.horizontal, 16)
                             .padding(.vertical, 12)
-                            .modifier(
-                                EditSpaceActionModifier(
-                                    details: details,
-                                    onDelete: { index in
-                                        onDelete(offsets: IndexSet([index]))
-                                    }, editSpaceItem: editSpaceItem,
-                                    index: primitive.allDetails.firstIndex { $0.id == details.id }
-                                        ?? 0)
-                            )
+                            .if(canEdit) {
+                                $0.modifier(
+                                    EditSpaceActionModifier(
+                                        details: details,
+                                        onDelete: { index in
+                                            onDelete(offsets: IndexSet([index]))
+                                        }, editSpaceItem: editSpaceItem,
+                                        index: primitive.allDetails.firstIndex {
+                                            $0.id == details.id
+                                        }
+                                            ?? 0)
+                                )
+                            }
                             .modifier(ListSeparatorModifier())
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .background(Color.secondaryBackground)
@@ -179,13 +188,13 @@ struct SpaceDetailList: View {
                                 .modifier(ListSeparatorModifier())
                         }
                     }
-                    if let space = space {
+                    if let space = space, !space.isDigest {
                         SpaceCommentsView(space: space, model: spaceCommentsModel)
                             .modifier(ListSeparatorModifier())
                             .id("CommentSection")
                     }
                 }
-                .modifier(ListStyleModifier())
+                .modifier(ListStyleModifier(isDigest: space?.isDigest ?? false))
                 .navigationBarHidden(true)
                 .edgesIgnoringSafeArea([.top, .bottom])
                 .keyboardListener { height in
@@ -303,6 +312,8 @@ struct ListStyleModifier: ViewModifier {
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var spaceModel: SpaceCardModel
 
+    var isDigest: Bool = false
+
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
             content
@@ -317,8 +328,10 @@ struct ListStyleModifier: ViewModifier {
                         return .handled
                     })
                 )
-                .refreshable {
-                    gridModel.refreshDetailedSpace()
+                .if(!isDigest) {
+                    $0.refreshable {
+                        gridModel.refreshDetailedSpace()
+                    }
                 }
         } else {
             content

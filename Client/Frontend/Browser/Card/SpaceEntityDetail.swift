@@ -17,6 +17,7 @@ struct SpaceEntityDetailView: View {
     let addToAnotherSpace: (URL, String?, String?) -> Void
     let editSpaceItem: () -> Void
     let index: Int
+    var canEdit: Bool
 
     var shouldHighlightAsUpdated: Bool {
         guard details.manager.id.id == SpaceStore.promotionalSpaceId else {
@@ -64,6 +65,7 @@ struct SpaceEntityDetailView: View {
             return doc.body?.string
         default:
             let searchPrefix = "](@"
+
             if let description = details.description, description.contains(searchPrefix) {
                 let index = description.firstIndex(of: "@")
                 var substring = description.suffix(from: index!)
@@ -75,6 +77,7 @@ struct SpaceEntityDetailView: View {
                     of: substring,
                     with: SearchEngine.current.searchURLForQuery(String(substring))!.absoluteString)
             }
+
             return details.description
         }
     }
@@ -202,18 +205,20 @@ struct SpaceEntityDetailView: View {
                     ? Color.ui.adaptive.blue.opacity(0.1) : Color.DefaultBackground)
             Spacer(minLength: 0)
         }
-        .modifier(
-            SpaceActionsModifier(
-                details: details,
-                keepNewsItem: {
-                    details.data.generatorID = nil
-                    spaceCardModel.claimGeneratedItem(
-                        spaceID: details.spaceID, entityID: details.id)
-                },
-                onDelete: {
-                    onDelete(index)
-                }, addToAnotherSpace: addToAnotherSpace, editSpaceItem: editSpaceItem)
-        )
+        .if(canEdit) {
+            $0.modifier(
+                SpaceActionsModifier(
+                    details: details,
+                    keepNewsItem: {
+                        details.data.generatorID = nil
+                        spaceCardModel.claimGeneratedItem(
+                            spaceID: details.spaceID, entityID: details.id)
+                    },
+                    onDelete: {
+                        onDelete(index)
+                    }, addToAnotherSpace: addToAnotherSpace, editSpaceItem: editSpaceItem)
+            )
+        }
         .scaleEffect(isPressed ? 0.95 : 1)
         .accessibilityLabel(details.title)
         .accessibilityHint("Space Item")

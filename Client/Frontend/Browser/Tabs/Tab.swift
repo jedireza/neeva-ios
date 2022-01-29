@@ -285,8 +285,9 @@ class Tab: NSObject, ObservableObject {
     func fetchCheatsheetInfo() {
         self.cheatsheetDataLoading = true
         guard let url = self.url,
-              url.scheme == "https",
-              !NeevaConstants.isNeevaSearchResultPage(url) else {
+            url.scheme == "https",
+            !NeevaConstants.isNeevaSearchResultPage(url)
+        else {
             self.cheatsheetDataLoading = false
             return
         }

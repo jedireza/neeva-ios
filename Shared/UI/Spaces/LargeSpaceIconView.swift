@@ -63,7 +63,7 @@ public struct LargeSpaceIconView: View {
 struct LargeSpaceIconView_Previews: PreviewProvider {
     static var previews: some View {
         Group {
-            LargeSpaceIconView(space: .empty)
+            LargeSpaceIconView(space: .empty())
             LargeSpaceIconView(space: .stackOverflow)
             LargeSpaceIconView(space: .savedForLater)
             LargeSpaceIconView(space: .savedForLaterEmpty)

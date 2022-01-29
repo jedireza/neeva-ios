@@ -22,14 +22,16 @@ public class CheatsheetMenuViewModel: ObservableObject {
                 // recipeView
                 if let ingredients = recipe.ingredients,
                     let instructions = recipe.instructions,
-                   ingredients.count > 0,
-                   instructions.count > 0 {
+                    ingredients.count > 0,
+                    instructions.count > 0
+                {
                     return false
                 }
             }
             // priceHistorySection
             if let priceHistory = cheatsheetInfo.priceHistory,
-               priceHistory.Max.Price.isEmpty || !priceHistory.Min.Price.isEmpty {
+                priceHistory.Max.Price.isEmpty || !priceHistory.Min.Price.isEmpty
+            {
                 return false
             }
             // reviewURLSection
@@ -43,7 +45,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
         }
         // renderRichResult views
         if let searchRichResults = searchRichResults,
-           !searchRichResults.isEmpty
+            !searchRichResults.isEmpty
         {
             return false
         }

@@ -80,8 +80,10 @@ struct InternalSettingsView: View {
                     Toggle(String("showNeevaMenuWillMove"), isOn: $showNeevaMenuWillMove)
                 }
                 Section(header: Text(verbatim: "Promo Cards")) {
-                    Toggle(String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
-                    Toggle(String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
+                    Toggle(
+                        String("didDismissDefaultBrowserCard"), isOn: $didDismissDefaultBrowserCard)
+                    Toggle(
+                        String("didDismissReferralPromoCard"), isOn: $didDismissReferralPromoCard)
                     Toggle(String("ratingsCardHidden"), isOn: $ratingsCardHidden)
                     Toggle(
                         String("seenNotificationPermissionPromo"),

@@ -5,17 +5,19 @@
 // Constant spaces and thumbnail images for use in previews.
 
 extension Space {
-    public static let empty = Space(
-        id: .init(value: "page-id"),
-        name: "Empty Space",
-        lastModifiedTs: "2020-12-18T16:31:52Z",
-        thumbnail: nil,
-        resultCount: 0,
-        isDefaultSpace: false,
-        isShared: false,
-        isPublic: false,
-        userACL: .owner
-    )
+    public static func empty() -> Space {
+        Space(
+            id: .init(value: "page-id"),
+            name: "Empty Space",
+            lastModifiedTs: "2020-12-18T16:31:52Z",
+            thumbnail: nil,
+            resultCount: 0,
+            isDefaultSpace: false,
+            isShared: false,
+            isPublic: false,
+            userACL: .owner
+        )
+    }
     public static let stackOverflow = Space(
         id: .init(value: "page-id-0"),
         name: "Test Space",

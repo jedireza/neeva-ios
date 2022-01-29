@@ -59,6 +59,8 @@ public struct SpaceGeneratorData {
 
 public class Space: Hashable, Identifiable {
     public typealias Acl = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
+    public typealias Notification = ListSpacesQuery.Data.ListSpace.Space.Space.Notification
+
     public let id: SpaceID
     public var name: String
     public var description: String?
@@ -70,14 +72,16 @@ public class Space: Hashable, Identifiable {
     public let isDefaultSpace: Bool
     public var isShared: Bool
     public var isPublic: Bool
-    public let userACL: SpaceACLLevel
+    public var userACL: SpaceACLLevel
     public let acls: [Acl]
+    public let notifications: [Notification]?
+    public var isDigest = false
 
     init(
         id: SpaceID, name: String, description: String? = nil, followers: Int? = nil,
         views: Int? = nil, lastModifiedTs: String, thumbnail: String?,
         resultCount: Int, isDefaultSpace: Bool, isShared: Bool, isPublic: Bool,
-        userACL: SpaceACLLevel, acls: [Acl] = []
+        userACL: SpaceACLLevel, acls: [Acl] = [], notifications: [Notification]? = nil
     ) {
         self.id = id
         self.name = name
@@ -92,6 +96,7 @@ public class Space: Hashable, Identifiable {
         self.isPublic = isPublic
         self.userACL = userACL
         self.acls = acls
+        self.notifications = notifications
     }
 
     public var url: URL {
@@ -113,6 +118,21 @@ public class Space: Hashable, Identifiable {
     }
     public static func == (lhs: Space, rhs: Space) -> Bool {
         lhs.id == rhs.id && lhs.lastModifiedTs == rhs.lastModifiedTs
+    }
+
+    // Notifications
+    public var entityAddedNotifcations: [Notification]? {
+        guard let notifications = notifications else {
+            return nil
+        }
+
+        return notifications.filter {
+            return $0.data?.asNotificationSpaceEntitiesAdded?.itemId != nil
+        }
+    }
+
+    public var hasNotificationUpdates: Bool {
+        (entityAddedNotifcations?.count ?? 0) > 0
     }
 }
 
@@ -227,7 +247,7 @@ public class SpaceStore: ObservableObject {
                 id: SpaceID(value: id), name: "", description: nil,
                 followers: nil, views: nil, lastModifiedTs: "", thumbnail: nil, resultCount: 1,
                 isDefaultSpace: false, isShared: false, isPublic: true, userACL: .publicView,
-                acls: []))
+                acls: [], notifications: []))
         refreshSpace(spaceID: id)
         GraphQLAPI.shared.isAnonymous = false
     }
@@ -306,7 +326,8 @@ public class SpaceStore: ObservableObject {
                         ?? true),
                     isPublic: space.hasPublicAcl ?? false,
                     userACL: userAcl,
-                    acls: space.acl ?? []
+                    acls: space.acl ?? [],
+                    notifications: space.notifications
                 )
 
                 /// Note, we avoid parsing `lastModifiedTs` here and instead just use it as
@@ -336,6 +357,7 @@ public class SpaceStore: ObservableObject {
                 allSpaces.append(newSpace)
             }
         }
+
         self.allSpaces = allSpaces
 
         if spacesToFetch.count > 0 {
@@ -343,6 +365,8 @@ public class SpaceStore: ObservableObject {
         } else {
             self.updatedSpacesFromLastRefresh = []
             self.state = .ready
+
+            addDailyDigestToSpaces()
         }
     }
 
@@ -373,8 +397,11 @@ public class SpaceStore: ObservableObject {
                         generators: space.generators
                     )
                 }
+
                 self.updatedSpacesFromLastRefresh = spacesToFetch
                 self.state = .ready
+                self.addDailyDigestToSpaces()
+
                 if self.queuedRefresh {
                     self.refresh()
                     self.queuedRefresh = false
@@ -402,5 +429,102 @@ public class SpaceStore: ObservableObject {
             spaces.append(space)
             urlToSpacesMap[url] = spaces
         }
+    }
+
+    // MARK: - Daily Digest
+    public func addDailyDigestToSpaces() {
+        if FeatureFlag[.showDailyDigest] {
+            self.allSpaces.removeAll(where: { $0.isDigest })
+
+            if let digest = createSpaceDailyDigest() {
+                self.allSpaces.insert(digest, at: 0)
+            }
+        }
+    }
+
+    private func createSpaceDailyDigest() -> Space? {
+        let spacesWithNotifications: [Space] = allSpaces.compactMap {
+            if $0.hasNotificationUpdates {
+                return $0
+            } else {
+                return nil
+            }
+        }
+
+        let notifications = spacesWithNotifications.compactMap {
+            $0.entityAddedNotifcations
+        }.joined()
+
+        guard spacesWithNotifications.count > 0 else {
+            return nil
+        }
+
+        let spaceDailyDigest = Space.empty()
+        spaceDailyDigest.name = "Your daily digest"
+        spaceDailyDigest.description = createDailyDigestDescription(
+            spaces: spacesWithNotifications, numberOfNotifications: notifications.count)
+        spaceDailyDigest.contentData = []
+        spaceDailyDigest.userACL = .publicView
+        spaceDailyDigest.isDigest = true
+
+        for space in spacesWithNotifications {
+            if let content = space.contentData, let notifications = space.entityAddedNotifcations {
+                let headerData = SpaceEntityData(
+                    id: space.id.id,
+                    url: nil,
+                    title: space.name,
+                    snippet: nil,
+                    thumbnail: nil,
+                    previewEntity: .webPage)
+                spaceDailyDigest.contentData?.append(headerData)
+
+                for notification in notifications {
+                    if let notification = notification.data?.asNotificationSpaceEntitiesAdded {
+                        guard
+                            let data = content.first(where: {
+                                $0.id == notification.itemId
+                            })
+                        else {
+                            continue
+                        }
+
+                        spaceDailyDigest.contentData?.append(data)
+                    }
+                }
+            }
+        }
+
+        return spaceDailyDigest
+    }
+
+    private func createDailyDigestDescription(spaces: [Space], numberOfNotifications: Int) -> String
+    {
+        var description = ""
+
+        guard spaces.count > 0 else {
+            return "No spaces have been updated"
+        }
+
+        let numberOfItems = spaces.count
+        let titles = spaces.map {
+            $0.name
+        }
+
+        for i in 0...1 where titles.indices.contains(i) {
+            description.append(contentsOf: titles[i])
+
+            if titles.indices.contains(i + 1) {
+                if i == 1 {
+                    description += ", and \(numberOfItems - (i + 1)) more of your Spaces"
+                } else {
+                    description += ", and "
+                }
+            }
+        }
+
+        description +=
+            " \(spaces.count > 1 ? "were" : "was") updated with \(numberOfNotifications) \(numberOfNotifications > 1 ? "items" : "item") total"
+
+        return description
     }
 }
