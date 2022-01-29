@@ -116,7 +116,9 @@ struct BrowserView: View {
             tabContainerContent
                 .opacity(browserModel.showContent ? 1 : 0)
                 .accessibilityHidden(!browserModel.showContent)
-                .offset(x: simulatedBackModel.contentOffset / 2.5)
+                .offset(x: simulatedBackModel.contentOffset / 2.5,
+                        y: containerOffsetY)
+                .padding(.bottom, containerBottomPadding)
 
             if browserModel.showContent {
                 GeometryReader { geom in
@@ -146,7 +148,6 @@ struct BrowserView: View {
                             UIConstants.enableBottomURLBar ? .bottom : .top,
                             detailViewVisible ? 0 : topBarHeight
                         )
-                        .offset(y: containerOffsetY)
                         .background(Color.white)
 
                     // Top Bar
@@ -175,7 +176,7 @@ struct BrowserView: View {
 
                         if !UIConstants.enableBottomURLBar { Spacer() }
                     }
-                }.padding(.bottom, containerBottomPadding)
+                }
 
                 // Bottom Bar
                 if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
