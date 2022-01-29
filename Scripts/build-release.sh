@@ -1,10 +1,25 @@
 #!/bin/sh
 
-EXPORT_BUILD=false
-while getopts ":e" option; do
+export EXPORT_BUILD=false
+export CREATE_BRANCH=false
+export BUMP_VERSION=false
+
+SCRIPTS_DIR=$(dirname $0)
+
+. $SCRIPTS_DIR/git-util.sh
+. $SCRIPTS_DIR/version-util.sh
+
+while getopts "ebv" option; do
   case $option in
     e) # export
        EXPORT_BUILD=true
+       ;;
+    b) # create branch
+       CREATE_BRANCH=true
+       ;;
+    v) # bump version
+       BUMP_VERSION=true
+       ;;
   esac
 done
 
@@ -44,15 +59,25 @@ else
     exit 1
   fi
 
-  Scripts/upload-release.sh $NEEVA_ARCHIVE_PATH/$ARCHIVE_FILENAME
+  $SCRIPTS_DIR/upload-release.sh $NEEVA_ARCHIVE_PATH/$ARCHIVE_FILENAME
   if [ ! $? -eq 0 ]; then
     exit 1
   fi
 fi
-
 
 # Confirm uploading build to app store
 Scripts/confirm-upload-binary.sh
 
 # Generate tag for build
 Scripts/tag-release.sh
+
+if $CREATE_BRANCH; then
+  $SCRIPTS_DIR/branch_release
+  $SCRIPTS_DIR/prepare-for-next-release.sh
+  # switch back to main for preparing next version
+  git checkout main
+  $SCRIPTS_DIR/prepare-for-next-release.sh
+elif $BUMP_VERSION; then
+  $SCRIPTS_DIR/prepare-for-next-release.sh
+fi
+
