@@ -126,8 +126,30 @@ struct TabContainerContent: View {
         SuggestedSearchesModel(suggestedQueries: [])
     let spaceContentSheetModel: SpaceContentSheetModel?
 
+    @EnvironmentObject private var scrollingControlModel: ScrollingControlModel
+    @EnvironmentObject private var chromeModel: TabChromeModel
+
     var yOffset: CGFloat {
         return 0.02
+    }
+
+    var webViewOffsetY: CGFloat {
+        var offsetY = scrollingControlModel.headerTopOffset
+        // Workaround a SwiftUI quirk. When the offset and padding negate one another
+        // exactly, the container view will appear to snap up by an amount equal to
+        // the padding. To avoid this, we apply the following hack :-/
+        if offsetY <= -chromeModel.topBarHeight {
+            offsetY = -chromeModel.topBarHeight + 0.1
+        }
+        return offsetY
+    }
+
+    var webViewBottomPadding: CGFloat {
+        var padding = scrollingControlModel.headerTopOffset
+        if !chromeModel.inlineToolbar {
+            padding -= scrollingControlModel.footerBottomOffset
+        }
+        return padding
     }
 
     var body: some View {
@@ -141,6 +163,8 @@ struct TabContainerContent: View {
                         .onTapGesture {
                             UIMenuController.shared.hideMenu()
                         }
+                        .offset(y: webViewOffsetY)
+                        .padding(.bottom, webViewBottomPadding)
 
                     if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip]
                         && UIDevice.current.useTabletInterface

@@ -41,6 +41,7 @@ struct SetPreferredProviderView: View {
     }
 
     @Environment(\.hideOverlay) private var hideOverlay
+    @EnvironmentObject private var scrollingControlModel: ScrollingControlModel
 
     init(
         chromeModel: TabChromeModel,
@@ -109,7 +110,7 @@ struct SetPreferredProviderView: View {
                     weight: .medium, action: { performAction(.addToSpace) })
             }
             .padding(.top, 2)
-            .opacity(chromeModel.controlOpacity)
+            .opacity(scrollingControlModel.controlOpacity)
             .accessibilityElement(children: .contain)
             .accessibilityIdentifier("CheatsheetToolBar")
             .environmentObject(chromeModel)

@@ -12,6 +12,7 @@ struct TabToolbarView: View {
     let onNeevaMenu: () -> Void
 
     @EnvironmentObject var chromeModel: TabChromeModel
+    @EnvironmentObject var scrollingControlModel: ScrollingControlModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -29,6 +30,7 @@ struct TabToolbarView: View {
         }
         .background(Color.DefaultBackground.ignoresSafeArea())
         .accentColor(.label)
+        .offset(y: scrollingControlModel.footerBottomOffset)
     }
 
     @ViewBuilder
@@ -54,7 +56,7 @@ struct TabToolbarView: View {
             ).frame(height: 44)
         }
         .padding(.top, 2)
-        .opacity(chromeModel.controlOpacity)
+        .opacity(scrollingControlModel.controlOpacity)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("TabToolbar")
         .accessibilityLabel("Toolbar")
@@ -71,7 +73,7 @@ struct TabToolbarView: View {
                 weight: .medium, action: { performAction(.addToSpace) })
         }
         .padding(.top, 2)
-        .opacity(chromeModel.controlOpacity)
+        .opacity(scrollingControlModel.controlOpacity)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("CheatsheetToolBar")
     }

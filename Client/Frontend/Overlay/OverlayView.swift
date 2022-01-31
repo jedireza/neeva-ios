@@ -8,6 +8,9 @@ struct OverlayView: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    @EnvironmentObject private var chromeModel: TabChromeModel
+    @EnvironmentObject private var scrollingControlModel: ScrollingControlModel
+
     @ObservedObject var overlayManager: OverlayManager
     @State var safeArea: CGFloat = 0
     @State var keyboardHidden = true
@@ -84,6 +87,12 @@ struct OverlayView: View {
                     safeArea = geom.safeAreaInsets.bottom
                     keyboardHidden = safeArea < 100
                 }
+                .padding(
+                    .bottom,
+                    overlayManager.offsetForBottomBar && !chromeModel.inlineToolbar
+                        && !chromeModel.keyboardShowing
+                        ? chromeModel.bottomBarHeight - scrollingControlModel.footerBottomOffset
+                        : 0)
         }
     }
 }

@@ -11,8 +11,9 @@ protocol ToolbarDelegate: AnyObject {
 }
 
 struct TabToolbarContent: View {
-    let chromeModel: TabChromeModel
     let showNeevaMenuSheet: () -> Void
+
+    @EnvironmentObject private var chromeModel: TabChromeModel
 
     var body: some View {
         TabToolbarView(
@@ -24,6 +25,5 @@ struct TabToolbarContent: View {
                 showNeevaMenuSheet()
             }
         )
-        .environmentObject(chromeModel)
     }
 }

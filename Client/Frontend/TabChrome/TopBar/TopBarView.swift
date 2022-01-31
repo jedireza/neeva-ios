@@ -19,10 +19,10 @@ struct TopBarView: View {
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
 
     @State private var shouldInsetHorizontally = false
-    @State private var opacity: Double = 1
 
     @EnvironmentObject private var chrome: TabChromeModel
     @EnvironmentObject private var location: LocationViewModel
+    @EnvironmentObject private var scrollingControlModel: ScrollingControlModel
 
     private var separator: some View {
         Color.ui.adaptive.separator.frame(height: 0.5).ignoresSafeArea()
@@ -91,13 +91,7 @@ struct TopBarView: View {
                     }.transition(.offset(x: 300, y: 0).combined(with: .opacity))
                 }
             }
-            /// Unfortunately `.opacity(chrome.controlOpacity)` doesn't work consistently.
-            /// Sometimes SwiftUI will not notice updates to `controlOpacity`. Directly
-            /// observing `controlOpacity` here seems to do the trick. /Sigh/
-            .onReceive(chrome.$controlOpacity) { value in
-                opacity = value
-            }
-            .opacity(opacity)
+            .opacity(scrollingControlModel.controlOpacity)
             .padding(.horizontal, shouldInsetHorizontally ? 12 : 0)
             .padding(.bottom, chrome.estimatedProgress == nil ? 0 : -1)
 
@@ -138,5 +132,9 @@ struct TopBarView: View {
         .background(Color.DefaultBackground.ignoresSafeArea())
         .accentColor(.label)
         .accessibilityElement(children: .contain)
+        .offset(
+            y: scrollingControlModel.headerTopOffset
+                * (UIConstants.enableBottomURLBar ? -1 : 1)
+        )
     }
 }

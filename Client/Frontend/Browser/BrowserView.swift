@@ -16,9 +16,6 @@ struct BrowserView: View {
     let bvc: BrowserViewController
     let shareURL: (URL, UIView) -> Void
 
-    @State var keyboardShowing = false
-    @State var bottomBarHeight: CGFloat = 0
-
     @ObservedObject var browserModel: BrowserModel
     @ObservedObject var tabManager: TabManager
     @ObservedObject var gridModel: GridModel
@@ -27,39 +24,6 @@ struct BrowserView: View {
     @ObservedObject var tabGroupModel: TabGroupCardModel
     @ObservedObject var spaceModel: SpaceCardModel
     @ObservedObject var simulatedBackModel: SimulatedSwipeModel
-
-    private var inlineToolbarHeight: CGFloat {
-        return UIConstants.TopToolbarHeightWithToolbarButtonsShowing
-            + (chromeModel.showTopCardStrip ? CardControllerUX.Height : 0)
-    }
-
-    private var portraitHeight: CGFloat {
-        return UIConstants.PortraitToolbarHeight
-            + (chromeModel.showTopCardStrip ? CardControllerUX.Height : 0)
-    }
-
-    private var topBarHeight: CGFloat {
-        return chromeModel.inlineToolbar ? inlineToolbarHeight : portraitHeight
-    }
-
-    private var containerOffsetY: CGFloat {
-        var offsetY = browserModel.scrollingControlModel.headerTopOffset
-        // Workaround a SwiftUI quirk. When the offset and padding negate one another
-        // exactly, the container view will appear to snap up by an amount equal to
-        // the padding. To avoid this, we apply the following hack :-/
-        if offsetY <= -topBarHeight {
-            offsetY = -topBarHeight + 0.1
-        }
-        return offsetY
-    }
-
-    private var containerBottomPadding: CGFloat {
-        var padding = browserModel.scrollingControlModel.headerTopOffset
-        if !chromeModel.inlineToolbar {
-            padding -= browserModel.scrollingControlModel.footerBottomOffset
-        }
-        return padding
-    }
 
     private var detailViewVisible: Bool {
         gridModel.showingDetailView
@@ -70,12 +34,8 @@ struct BrowserView: View {
         GeometryReader { geom in
             BrowserTopBarView(bvc: bvc)
                 .transition(.opacity)
-                .frame(height: topBarHeight)
-                .offset(
-                    x: detailViewVisible ? -geom.size.width : 0,
-                    y: browserModel.scrollingControlModel.headerTopOffset
-                        * (UIConstants.enableBottomURLBar ? -1 : 1)
-                )
+                .frame(height: chromeModel.topBarHeight)
+                .offset(x: detailViewVisible ? -geom.size.width : 0)
         }
     }
 
@@ -116,9 +76,7 @@ struct BrowserView: View {
             tabContainerContent
                 .opacity(browserModel.showContent ? 1 : 0)
                 .accessibilityHidden(!browserModel.showContent)
-                .offset(x: simulatedBackModel.contentOffset / 2.5,
-                        y: containerOffsetY)
-                .padding(.bottom, containerBottomPadding)
+                .offset(x: simulatedBackModel.contentOffset / 2.5)
 
             if browserModel.showContent {
                 GeometryReader { geom in
@@ -132,10 +90,9 @@ struct BrowserView: View {
     }
 
     var bottomBar: some View {
-        BrowserBottomBarView(bvc: bvc, chromeModel: chromeModel)
+        BrowserBottomBarView(bvc: bvc)
             .transition(.opacity)
-            .frame(
-                height: UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
+            .frame(height: UIConstants.TopToolbarHeightWithToolbarButtonsShowing)
     }
 
     var mainContent: some View {
@@ -146,7 +103,7 @@ struct BrowserView: View {
                     containerView
                         .padding(
                             UIConstants.enableBottomURLBar ? .bottom : .top,
-                            detailViewVisible ? 0 : topBarHeight
+                            detailViewVisible ? 0 : chromeModel.topBarHeight
                         )
                         .background(Color.white)
 
@@ -180,25 +137,23 @@ struct BrowserView: View {
 
                 // Bottom Bar
                 if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
-                    && !detailViewVisible && !keyboardShowing && !overlayManager.hideBottomBar
+                    && !detailViewVisible && !chromeModel.keyboardShowing
+                    && !overlayManager.hideBottomBar
                 {
                     bottomBar
-                        .offset(
-                            x: detailViewVisible ? -geom.size.width : 0,
-                            y: browserModel.scrollingControlModel.footerBottomOffset
-                        )
+                        .offset(x: detailViewVisible ? -geom.size.width : 0)
                         .onHeightOfViewChanged { height in
-                            self.bottomBarHeight = height
+                            self.chromeModel.bottomBarHeight = height
                         }
                 }
-            }.useEffect(deps: topBarHeight) { _ in
+            }.useEffect(deps: chromeModel.topBarHeight) { _ in
                 browserModel.scrollingControlModel.setHeaderFooterHeight(
-                    header: topBarHeight,
+                    header: chromeModel.topBarHeight,
                     footer: UIConstants.TopToolbarHeightWithToolbarButtonsShowing
                         + geom.safeAreaInsets.bottom)
             }.keyboardListener(adapt: false) { height in
                 DispatchQueue.main.async {
-                    keyboardShowing = height > 0
+                    chromeModel.keyboardShowing = height > 0
                 }
             }
         }
@@ -208,14 +163,10 @@ struct BrowserView: View {
         ZStack {
             mainContent
             OverlayView(overlayManager: overlayManager)
-                .padding(
-                    .bottom,
-                    overlayManager.offsetForBottomBar && !chromeModel.inlineToolbar
-                        && !keyboardShowing
-                        ? bottomBarHeight - browserModel.scrollingControlModel.footerBottomOffset
-                        : 0)
         }
-        .environmentObject(bvc.browserModel)
+        .environmentObject(browserModel)
+        .environmentObject(browserModel.scrollingControlModel)
+        .environmentObject(chromeModel)
         .environmentObject(gridModel)
         .environmentObject(bvc.toolbarModel)
         .environmentObject(gridModel.tabCardModel)

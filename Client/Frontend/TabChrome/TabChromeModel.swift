@@ -30,7 +30,6 @@ class TabChromeModel: ObservableObject {
     /// True when the toolbar is inline with the location view
     /// (when in landscape or on iPad)
     @Published var inlineToolbar: Bool
-    @Published var controlOpacity: Double = 1
 
     @Published var isPage: Bool
 
@@ -122,4 +121,21 @@ class TabChromeModel: ObservableObject {
     func hideZeroQuery() {
         SceneDelegate.getBVC(with: topBarDelegate?.tabManager.scene).hideZeroQuery()
     }
+
+    private var inlineToolbarHeight: CGFloat {
+        return UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+            + (showTopCardStrip ? CardControllerUX.Height : 0)
+    }
+
+    private var portraitHeight: CGFloat {
+        return UIConstants.PortraitToolbarHeight
+            + (showTopCardStrip ? CardControllerUX.Height : 0)
+    }
+
+    var topBarHeight: CGFloat {
+        return inlineToolbar ? inlineToolbarHeight : portraitHeight
+    }
+
+    @Published var keyboardShowing = false
+    @Published var bottomBarHeight: CGFloat = 0
 }

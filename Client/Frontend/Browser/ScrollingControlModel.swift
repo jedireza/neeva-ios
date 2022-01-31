@@ -24,6 +24,11 @@ class ScrollingControlModel: NSObject, ObservableObject {
     @Published private(set) var headerTopOffset: CGFloat = 0
     @Published private(set) var footerBottomOffset: CGFloat = 0
 
+    var controlOpacity: Double {
+        let alpha = 1 - abs(headerTopOffset / topScrollHeight)
+        return Double(alpha)
+    }
+
     private let chromeModel: TabChromeModel
 
     init(tabManager: TabManager, chromeModel: TabChromeModel) {
@@ -233,9 +238,6 @@ extension ScrollingControlModel {
 
         updatedOffset = footerBottomOffset + delta
         footerBottomOffset = clamp(updatedOffset, min: 0, max: footerHeight)
-
-        let alpha = 1 - abs(headerTopOffset / topScrollHeight)
-        chromeModel.controlOpacity = Double(alpha)
     }
 
     fileprivate func isHeaderDisplayedForGivenOffset(_ offset: CGFloat) -> Bool {
@@ -272,16 +274,14 @@ extension ScrollingControlModel {
         DispatchQueue.main.async { [self] in
             if animated {
                 withAnimation(.interactiveSpring()) {
-                    chromeModel.controlOpacity = Double(alpha)
                     self.headerTopOffset = headerOffset
                     self.footerBottomOffset = footerOffset
                 }
-                
+
                 UIView.animate(
                     withDuration: duration, delay: 0, options: .allowUserInteraction,
                     animations: animation, completion: completion)
             } else {
-                chromeModel.controlOpacity = Double(alpha)
                 animation()
                 self.headerTopOffset = headerOffset
                 self.footerBottomOffset = footerOffset

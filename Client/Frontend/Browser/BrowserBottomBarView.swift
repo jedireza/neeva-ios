@@ -6,23 +6,19 @@ import SwiftUI
 
 struct BrowserBottomBarView: View {
     let bvc: BrowserViewController
-    let chromeModel: TabChromeModel
 
     @EnvironmentObject var browserModel: BrowserModel
+    @EnvironmentObject var chromeModel: TabChromeModel
 
     var body: some View {
         if !browserModel.showGrid && !chromeModel.inlineToolbar && !chromeModel.isEditingLocation {
             TabToolbarContent(
-                chromeModel: bvc.chromeModel,
                 showNeevaMenuSheet: {
                     bvc.showNeevaMenuSheet()
                 }
             )
         } else if browserModel.showGrid {
             SwitcherToolbarView(top: false)
-                .environmentObject(bvc.gridModel)
-                .environmentObject(bvc.gridModel.tabCardModel)
-                .environmentObject(bvc.toolbarModel)
         }
     }
 }
