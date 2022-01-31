@@ -142,10 +142,8 @@ commands:
 
 jobs:
   build:
-    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
-    # info on using Xcode 13.0.0 at this time.
     macos:
-      xcode: "13.0.0"
+      xcode: "13.2.1"
     resource_class: macos.x86.medium.gen2
     steps:
       - bootstrap
@@ -157,10 +155,8 @@ jobs:
           paths:
             - ~/Library/Developer/Xcode/DerivedData
   test-client:
-    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
-    # info on using Xcode 13.0.0 at this time.
     macos:
-      xcode: "13.0.0"
+      xcode: "13.2.1"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
@@ -170,28 +166,22 @@ jobs:
       - app-clip-tests
       - swift-format-check
   ui-tests:
-    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
-    # info on using Xcode 13.0.0 at this time.
     macos:
-      xcode: "13.0.0"
+      xcode: "13.2.1"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - ui-tests
   xcui-tests:
-    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
-    # info on using Xcode 13.0.0 at this time.
     macos:
-      xcode: "13.0.0"
+      xcode: "13.2.1"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - xcui-tests
   xcui-tests-ipad:
-    # See https://github.com/CircleCI-Public/macos-big-sur-preview-docs for more
-    # info on using Xcode 13.0.0 at this time.
     macos:
-      xcode: "13.0.0"
+      xcode: "13.2.1"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache

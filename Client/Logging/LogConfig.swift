@@ -134,6 +134,8 @@ public struct LogConfig {
         case SuggestionErrorSigninOrJoinNeeva
         /// Click Sign in or Join Neeva on space error login page
         case AddToSpaceErrorSigninOrJoinNeeva
+        /// Click Sign in or Join Neeva on cheatsheet login page
+        case CheatsheetErrorSigninOrJoinNeeva
         /// Open auth panel
         case AuthImpression
         /// Close auth panel
@@ -405,6 +407,7 @@ public struct LogConfig {
         case .SuggestionErrorLoginViewImpression: return .FirstRun
         case .SuggestionErrorSigninOrJoinNeeva: return .FirstRun
         case .AddToSpaceErrorSigninOrJoinNeeva: return .FirstRun
+        case .CheatsheetErrorSigninOrJoinNeeva: return .FirstRun
         case .AuthImpression: return .FirstRun
         case .AuthClose: return .FirstRun
         case .AuthSignUpWithApple: return .FirstRun

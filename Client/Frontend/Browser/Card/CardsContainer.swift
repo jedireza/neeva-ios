@@ -55,7 +55,7 @@ struct TabGridContainer: View {
     var body: some View {
         Group {
             if FeatureFlag[.tabGroupsNewDesign] {
-                LazyVStack(alignment: .leading, spacing: CardGridUX.GridSpacing) {
+                LazyVStack(alignment: .leading, spacing: 0) {
                     SingleLevelTabCardsView(containerGeometry: geom, incognito: isIncognito)
                 }
             } else {

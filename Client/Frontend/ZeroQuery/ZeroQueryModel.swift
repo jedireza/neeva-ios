@@ -172,8 +172,9 @@ class ZeroQueryModel: ObservableObject {
                     self.promoCard = nil
                 })
         } else if !Defaults[.didDismissDefaultBrowserCard]
-                    && !Defaults[.didSetDefaultBrowser]
-                    && !Defaults[.didShowDefaultBrowserInterstitial] {
+            && !Defaults[.didSetDefaultBrowser]
+            && !Defaults[.didShowDefaultBrowserInterstitial]
+        {
             promoCard = .defaultBrowser {
                 ClientLogger.shared.logCounter(
                     .PromoDefaultBrowser,
@@ -237,6 +238,8 @@ class ZeroQueryModel: ObservableObject {
             self.profile.panelDataObservers.activityStream.refreshIfNeeded(forceTopSites: true)
             self.updateSuggestedSites()
         }
+
+        self.suggestedSitesViewModel.sites.removeAll(where: { $0 == site })
     }
 
     public func reset(bvc: BrowserViewController?, createdLazyTab: Bool = false) {

@@ -27,4 +27,19 @@ class ZeroQueryTests: BaseTestCase {
         waitForNoExistence(app.buttons["Suggested sites, expands this section"])
         assert(app.staticTexts["Example Domain"].exists)
     }
+
+    func testRemoveItemFromSuggestedSites() {
+        newTab()
+
+        app.buttons["Facebook"].press(forDuration: 1)
+        waitForExistence(app.buttons["Remove"])
+        app.buttons["Remove"].tap()
+
+        // Confirm on the ActionSheet
+        waitForExistence(app.buttons["Remove"])
+        app.buttons["Remove"].tap()
+
+        // Make sure Facebook was removed
+        waitForNoExistence(app.buttons["Facebook"])
+    }
 }

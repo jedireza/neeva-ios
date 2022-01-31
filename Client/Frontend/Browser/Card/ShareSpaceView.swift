@@ -273,7 +273,7 @@ struct ShareSpaceView: View {
                     suggestedContactsCell.padding(.horizontal, 16)
                 }
             }
-        }.background(Color.DefaultBackground)
+        }
     }
 
     var publicACLShareView: some View {
@@ -334,7 +334,7 @@ struct ShareSpaceView: View {
                     }
                     .padding(.vertical, 19)
                     .padding(.horizontal, 12)
-                    .background(Color.DefaultBackground)
+                    .background(Color.secondaryBackground)
                     .cornerRadius(16)
                     .onChange(of: editingName) { value in
                         if !value {
@@ -355,7 +355,7 @@ struct ShareSpaceView: View {
                 }
                 .padding(.vertical, 16)
                 .padding(.horizontal, 16)
-                .background(Color.secondaryBackground)
+                .background(Color.DefaultBackground)
                 .cornerRadius(16)
                 .padding(.vertical, 8)
                 .padding(.horizontal, 16)
@@ -387,33 +387,31 @@ struct ShareSpaceView: View {
                     }
                 }
             }
-        }.background(Color.DefaultBackground)
+        }
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            ScrollView(.vertical, showsIndicators: false) {
-                VStack(alignment: .leading, spacing: 2) {
-                    if !soloACLSharePresented {
-                        publicACLShareView
-                    }
-                    if space.ACL == .owner {
-                        soloACLShareView
-                    }
-                    if !fromAddToSpace {
-                        Text("Who has access")
-                            .withFont(.headingSmall)
-                            .foregroundColor(.label)
-                            .padding(.horizontal, 16)
-                            .padding(.top, 12)
-                            .padding(.bottom, 8)
-                        currentACLList
-                    }
+            VStack(alignment: .leading, spacing: 2) {
+                if !soloACLSharePresented {
+                    publicACLShareView
+                }
+                if space.ACL == .owner {
+                    soloACLShareView
+                }
+                if !fromAddToSpace {
+                    Text("Who has access")
+                        .withFont(.headingSmall)
+                        .foregroundColor(.label)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 12)
+                        .padding(.bottom, 8)
+                    currentACLList
                 }
             }
+
             Spacer()
         }
-        .background(Color.TrayBackground)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea(.all, edges: .bottom)
         .onChange(

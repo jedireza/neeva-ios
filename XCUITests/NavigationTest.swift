@@ -19,11 +19,11 @@ let requestDesktopSiteLabel = "Request Desktop Site"
 
 class NavigationTest: BaseTestCase {
     func testNavigation() {
-        XCTAssert(app.buttons["Address Bar"].exists)
-        app.buttons["Address Bar"].tap()
-
         // Check that the back and forward buttons are disabled
         if iPad() {
+            XCTAssert(app.buttons["Address Bar"].exists)
+            app.buttons["Address Bar"].tap()
+
             app.buttons["Cancel"].tap()
             XCTAssertFalse(app.buttons["Back"].isEnabled)
             goToOverflowMenuButton(label: "Forward") { element in
@@ -38,6 +38,9 @@ class NavigationTest: BaseTestCase {
             /*goToOverflowMenuButton(label: "Forward") { element in
                 XCTAssertFalse(element.isEnabled)
             }*/
+
+            XCTAssert(app.buttons["Address Bar"].exists)
+            app.buttons["Address Bar"].tap()
         }
 
         // The URL is opened in a new tab, so the back / forward buttons are disabled
@@ -304,7 +307,7 @@ class NavigationTest: BaseTestCase {
     }
 
     // Confirms that the share menu shows the right contents when navigating back
-    // from a PDF. See https://github.com/neevaco/neeva-ios-phoenix/issues/634,
+    // from a PDF. See https://github.com/neevaco/neeva-ios/issues/634,
     // in which the share menu was incorrectly reporting data about the PDF after
     // navigating back.
     func testShareMenuNavigatingBackFromPDF() {

@@ -16,9 +16,17 @@ struct AddToSpaceOverlayContent: View {
     let bvc: BrowserViewController
     let importData: SpaceImportHandler?
 
+    var isFixedHeight: Bool {
+        !NeevaUserInfo.shared.isVerified
+            || (request.mode == .saveToNewSpace
+                && (request.state == .creatingSpace || request.state == .initial))
+    }
+
     @ViewBuilder
     var content: some View {
-        if request.state == .savedToSpace || request.state == .savingToSpace {
+        if NeevaUserInfo.shared.isUserLoggedIn, !NeevaUserInfo.shared.isVerified {
+            EmailVerificationPrompt(email: NeevaUserInfo.shared.email ?? "", dismiss: hideOverlay)
+        } else if request.state == .savedToSpace || request.state == .savingToSpace {
             VStack {
                 Spacer()
 
@@ -42,8 +50,7 @@ struct AddToSpaceOverlayContent: View {
         content
             .overlayTitle(title: request.mode.title)
             .overlayIsFixedHeight(
-                isFixedHeight: request.mode == .saveToNewSpace
-                    && (request.state == .creatingSpace || request.state == .initial)
+                isFixedHeight: isFixedHeight
             )
             .environment(\.onSigninOrJoinNeeva) {
                 ClientLogger.shared.logCounter(

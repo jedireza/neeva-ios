@@ -17,7 +17,7 @@ struct SpacesFilterView: View {
         GroupedStack {
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
-                    NeevaMenuRowButtonView(
+                    GroupedRowButtonView(
                         label: "All Spaces",
                         symbol: spaceCardModel.filterState == .allSpaces ? .checkmark : nil
                     ) {
@@ -28,7 +28,7 @@ struct SpacesFilterView: View {
 
                     Color.groupedBackground.frame(height: 1)
 
-                    NeevaMenuRowButtonView(
+                    GroupedRowButtonView(
                         label: "Owned by me",
                         symbol: spaceCardModel.filterState == .ownedByMe ? .checkmark : nil
                     ) {

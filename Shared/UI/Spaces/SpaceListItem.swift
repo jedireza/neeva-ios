@@ -76,7 +76,7 @@ struct SpaceView_Previews: PreviewProvider {
             LoadingSpaceListItem()
                 .padding(.vertical, 10)
                 .padding(.leading, 16)
-            SpaceListItem(.empty, currentURL: "https://neeva.com")
+            SpaceListItem(.empty(), currentURL: "https://neeva.com")
             SpaceListItem(.savedForLaterEmpty, currentURL: "https://neeva.com")
             SpaceListItem(.savedForLater, currentURL: "https://neeva.com")
             SpaceListItem(.stackOverflow, currentURL: "https://neeva.com")

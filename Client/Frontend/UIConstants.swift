@@ -41,8 +41,12 @@ public struct UIConstants {
     static let ActiveScreenshotQuality: CGFloat = 0.5
 
     static var safeArea: UIEdgeInsets {
-        let window = UIApplication.shared.windows[0]
-        return window.safeAreaInsets
+        let keyWindow = SceneDelegate.getKeyWindow(for: nil)
+        return keyWindow.safeAreaInsets
+    }
+
+    static var hasHomeButton: Bool {
+        Self.safeArea.bottom == 0
     }
 
     static var enableBottomURLBar: Bool {

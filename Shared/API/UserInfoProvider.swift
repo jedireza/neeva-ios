@@ -18,11 +18,12 @@ public struct UserInfo {
     let featureFlags: [UserInfoQuery.Data.User.FeatureFlag]
     let userFlags: [String]
     let subscriptionType: SubscriptionType?
+    let isVerified: Bool
 
     public init(
         id: String?, name: String?, email: String?, pictureUrl: String?, authProvider: String?,
         featureFlags: [UserInfoQuery.Data.User.FeatureFlag], userFlags: [String],
-        subscriptionType: SubscriptionType?
+        subscriptionType: SubscriptionType?, isVerified: Bool
     ) {
         self.id = id
         self.name = name
@@ -32,6 +33,7 @@ public struct UserInfo {
         self.featureFlags = featureFlags
         self.userFlags = userFlags
         self.subscriptionType = subscriptionType
+        self.isVerified = isVerified
     }
 }
 
@@ -70,7 +72,8 @@ open class UserInfoProvider {
                         authProvider: data.user?.authProvider,
                         featureFlags: data.user?.featureFlags ?? [],
                         userFlags: data.user?.flags ?? [],
-                        subscriptionType: data.user?.subscriptionType
+                        subscriptionType: data.user?.subscriptionType,
+                        isVerified: data.user?.isVerified ?? true
                     ))
             case .failure(let error):
                 userInfoResult = .failureTemporaryError
@@ -88,5 +91,11 @@ open class UserInfoProvider {
             }
             completion(userInfoResult)
         }
+    }
+}
+
+public class ResendVerificationEmailRequest: MutationRequest<ResendVerificationEmailMutation> {
+    public init() {
+        super.init(mutation: ResendVerificationEmailMutation())
     }
 }

@@ -162,11 +162,7 @@ class TabManager: NSObject, ObservableObject {
     }
 
     var selectedTab: Tab?
-    @Published private(set) var isIncognito: Bool = false {
-        didSet {
-            SceneDelegate.getBVC(with: scene).applyUIMode(isIncognito: isIncognito)
-        }
-    }
+    @Published private(set) var isIncognito: Bool = false
 
     subscript(index: Int) -> Tab? {
         assert(Thread.isMainThread)
@@ -748,11 +744,6 @@ class TabManager: NSObject, ObservableObject {
         }
 
         storeChanges()
-    }
-
-    func getTabForURL(_ url: URL) -> Tab? {
-        assert(Thread.isMainThread)
-        return tabs.filter({ $0.webView?.url == url }).first
     }
 
     func getRecentlyClosedTabForURL(_ url: URL) -> SavedTab? {

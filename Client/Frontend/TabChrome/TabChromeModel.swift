@@ -114,7 +114,7 @@ class TabChromeModel: ObservableObject {
             toolBarContentView = .regularContent
         }
 
-        withAnimation(TabLocationViewUX.animation.delay(0.08)) {
+        withAnimation(TabLocationViewUX.animation) {
             isEditingLocation = value
         }
     }

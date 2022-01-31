@@ -129,6 +129,8 @@ struct ZeroQueryView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State var impressionTimer: Timer? = nil
+    @State var url: URL?
+    @State var tab: Tab?
 
     func ratingsCard(_ viewWidth: CGFloat) -> some View {
         RatingsCard(
@@ -198,14 +200,14 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
-                    if let searchQuery = viewModel.searchQuery, let url = viewModel.tabURL {
+                    if let searchQuery = viewModel.searchQuery, let url = url {
                         SearchSuggestionView(
                             Suggestion.editCurrentQuery(searchQuery, url)
                         )
                         .environmentObject(viewModel.bvc.suggestionModel)
 
                         SuggestionsDivider(height: 8)
-                    } else if let openTab = viewModel.openedFrom?.openedTab {
+                    } else if let openTab = tab {
                         SearchSuggestionView(
                             Suggestion.editCurrentURL(
                                 TabCardDetails(
@@ -237,7 +239,8 @@ struct ZeroQueryView: View {
                                                         ClientLogCounterAttribute(
                                                             key: LogConfig.PromoCardAttribute
                                                                 .promoCardType,
-                                                            value: viewModel.promoCard?.name ?? "None"
+                                                            value: viewModel.promoCard?.name
+                                                                ?? "None"
                                                         )
                                                     ]
                                             )
@@ -285,13 +288,13 @@ struct ZeroQueryView: View {
                             label: "\(expandSearches ? "hides" : "shows") this section",
                             icon: expandSearches ? .chevronUp : .chevronDown
                         )
+
                         if expandSearches {
                             if !Defaults[.signedInOnce] {
                                 SuggestedPreviewSearchesView()
                             } else {
                                 SuggestedSearchesView()
                             }
-
                         }
 
                         if NeevaUserInfo.shared.isUserLoggedIn && Defaults[.signedInOnce] {
@@ -315,7 +318,13 @@ struct ZeroQueryView: View {
 
                     Spacer()
                 }
-            }.environment(\.zeroQueryWidth, geom.size.width).animation(nil)
+            }
+            .environment(\.zeroQueryWidth, geom.size.width)
+            .animation(nil)
+            .onAppear {
+                url = viewModel.tabURL
+                tab = viewModel.openedFrom?.openedTab
+            }
         }
     }
 }

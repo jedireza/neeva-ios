@@ -81,8 +81,9 @@ where
         VStack(spacing: 0) {
             topBar
                 .animation(nil)
-            Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
+
             if tabGroupCardModel.detailedTabGroup != nil {
+                Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
                 tabGroupGrid
                 if editMode == .active {
                     Button(
@@ -166,7 +167,7 @@ where
     }
 
     @ViewBuilder var shareButton: some View {
-        if let space = space, !space.isDefaultSpace {
+        if let space = space, !space.isDefaultSpace && !space.isDigest {
             Button(
                 action: {
                     if case .owner = space.userACL {
@@ -375,14 +376,17 @@ where
                 }
             }
             Spacer()
-            if space != nil {
+            if let space = space {
                 if headerVisible {
                     addButton
                     editButton
                     layoutButton
                 }
                 shareButton
-                menuButton
+
+                if !space.isDigest {
+                    menuButton
+                }
             } else {
                 tabGroupEditButton
             }

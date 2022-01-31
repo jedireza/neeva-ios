@@ -12,9 +12,16 @@ import WalletConnectSwift
 import web3swift
 
 protocol ResponseRelay {
+    var publicAddress: String { get }
     func send(_ response: Response)
     func askToSign(request: Request, message: String, sign: @escaping (EthNode) -> String)
     func askToTransact(request: Request, value: String, transact: @escaping (EthNode) -> String)
+    func send(
+        on chain: EthNode,
+        eth value: String, from fromAddress: EthereumAddress, to toAddress: EthereumAddress,
+        for gas: String?, using data: String?
+    ) throws -> String
+    func sign(on chain: EthNode, message: String, using publicAddress: String) throws -> String
 }
 
 extension Response {
@@ -29,7 +36,6 @@ extension Response {
 
 class PersonalSignHandler: RequestHandler {
     let relay: ResponseRelay
-    let wallet = WalletAccessor()
 
     init(relay: ResponseRelay) {
         self.relay = relay
@@ -45,7 +51,7 @@ class PersonalSignHandler: RequestHandler {
             let address = try request.parameter(of: String.self, at: 1)
 
             // Match only the address not the checksum (OpenSea sends them always lowercased :( )
-            guard address.lowercased() == wallet.publicAddress.lowercased() else {
+            guard address.lowercased() == relay.publicAddress.lowercased() else {
                 relay.send(.reject(request))
                 return
             }
@@ -54,8 +60,8 @@ class PersonalSignHandler: RequestHandler {
 
             relay.askToSign(request: request, message: message) { ethNode in
                 return
-                    (try? self.wallet.sign(
-                        on: ethNode, message: messageBytes, using: self.wallet.publicAddress))
+                    (try? self.relay.sign(
+                        on: ethNode, message: messageBytes, using: self.relay.publicAddress))
                     ?? ""
             }
         } catch {
@@ -67,7 +73,6 @@ class PersonalSignHandler: RequestHandler {
 
 class SendTransactionHandler: RequestHandler {
     let relay: ResponseRelay
-    let wallet = WalletAccessor()
 
     init(relay: ResponseRelay) {
         self.relay = relay
@@ -83,7 +88,7 @@ class SendTransactionHandler: RequestHandler {
                 as? [String: Any],
             let params = (requestDict["params"] as? [[String: String]])?[0],
             let from = params["from"],
-            from.lowercased() == wallet.publicAddress.lowercased(),
+            from.lowercased() == relay.publicAddress.lowercased(),
             let fromAddress = EthereumAddress(from),
             let to = params["to"],
             let toAddress = EthereumAddress(to)
@@ -97,7 +102,7 @@ class SendTransactionHandler: RequestHandler {
 
         relay.askToTransact(request: request, value: value) { ethNode in
             return
-                (try? self.wallet.send(
+                (try? self.relay.send(
                     on: ethNode,
                     eth: value, from: fromAddress, to: toAddress, for: gas, using: data)) ?? ""
         }

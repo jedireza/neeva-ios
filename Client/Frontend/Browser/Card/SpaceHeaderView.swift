@@ -37,31 +37,33 @@ struct SpaceHeaderView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
-            if space.isPublic {
-                if let followers = space.followers {
-                    HStack(spacing: 0) {
-                        Symbol(decorative: .person2Fill, style: .bodyLarge)
-                            .foregroundColor(.label)
-                        Text(" \(followers) Followers")
-                            .withFont(.bodyLarge)
-                            .foregroundColor(.label)
-                        Spacer()
-                        if space.ACL == .owner, let views = space.views {
-                            Symbol(decorative: .eye, style: .bodyLarge)
+            if !space.isDigest {
+                if space.isPublic {
+                    if let followers = space.followers {
+                        HStack(spacing: 0) {
+                            Symbol(decorative: .person2Fill, style: .bodyLarge)
                                 .foregroundColor(.label)
-                            Text(" \(views)")
+                            Text(" \(followers) Followers")
                                 .withFont(.bodyLarge)
                                 .foregroundColor(.label)
+                            Spacer()
+                            if space.ACL == .owner, let views = space.views {
+                                Symbol(decorative: .eye, style: .bodyLarge)
+                                    .foregroundColor(.label)
+                                Text(" \(views)")
+                                    .withFont(.bodyLarge)
+                                    .foregroundColor(.label)
+                            }
                         }
                     }
-                }
-            } else {
-                HStack(spacing: 0) {
-                    Symbol(decorative: .lock, style: .bodySmall)
-                        .foregroundColor(.secondaryLabel)
-                    Text("Only visible to you and people you shared with")
-                        .withFont(.bodySmall)
-                        .foregroundColor(.secondaryLabel)
+                } else {
+                    HStack(spacing: 0) {
+                        Symbol(decorative: .lock, style: .bodySmall)
+                            .foregroundColor(.secondaryLabel)
+                        Text("Only visible to you and people you shared with")
+                            .withFont(.bodySmall)
+                            .foregroundColor(.secondaryLabel)
+                    }
                 }
             }
         }

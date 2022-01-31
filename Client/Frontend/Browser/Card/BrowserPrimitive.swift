@@ -307,8 +307,7 @@ extension TabGroup: BrowserPrimitive, Closeable {
         if let spaceID = children.first?.parentSpaceID, spaceID == children.first?.rootUUID {
             if let spaceTitle = SpaceStore.shared.get(for: spaceID)?.displayTitle {
                 return spaceTitle
-            } else if FeatureFlag[.enableCryptoWallet] && spaceID == WalletAccessor().publicAddress
-            {
+            } else if FeatureFlag[.enableCryptoWallet] && spaceID == Defaults[.cryptoPublicKey] {
                 return "Your NFTs"
             }
         }

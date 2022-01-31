@@ -86,13 +86,7 @@ open class QueuedViewManager<View: SwiftUI.View> {
         }
 
         currentViewTimer?.invalidate()
-
-        if FeatureFlag[.enableBrowserView] {
-            overlayManager.hideCurrentOverlay(animate: animate)
-        } else {
-            // removes View from window
-            windowManager.removeCurrentWindow()
-        }
+        overlayManager.hideCurrentOverlay(ofPriority: .transient, animate: animate)
 
         self.currentView = nil
         self.currentViewTimer = nil

@@ -38,9 +38,7 @@ class TabCardModel: CardModel, TabEventHandler {
     }
 
     var allDetailsMatchingIncognitoState: [TabCardDetails] {
-        allDetails.filter {
-            manager.get(for: $0.id)?.isIncognito ?? false == manager.isIncognito
-        }
+        manager.isIncognito ? incognitoDetails : normalDetails
     }
 
     var normalDetails: [TabCardDetails] {
@@ -76,14 +74,17 @@ class TabCardModel: CardModel, TabEventHandler {
         var id: Set<String> { Set(cells.map(\.id)) }
         enum Cell: Identifiable {
             case tab(TabCardDetails)
-            case tabGroup(TabGroupCardDetails)
+            case tabGroupInline(TabGroupCardDetails)
+            case tabGroupGridRow(TabGroupCardDetails, Range<Int>)
 
             var id: String {
                 switch self {
                 case .tab(let details):
                     return details.id
-                case .tabGroup(let details):
+                case .tabGroupInline(let details):
                     return details.id
+                case .tabGroupGridRow(let details, let range):
+                    return details.allDetails[range].reduce("") { $0 + $1.id + ":" }
                 }
             }
 
@@ -91,8 +92,10 @@ class TabCardModel: CardModel, TabEventHandler {
                 switch self {
                 case .tab(let details):
                     return details.isSelected
-                case .tabGroup(let details):
+                case .tabGroupInline(let details):
                     return details.isSelected
+                case .tabGroupGridRow(let details, let range):
+                    return details.allDetails[range].contains { $0.isSelected }
                 }
             }
         }
@@ -111,7 +114,20 @@ class TabCardModel: CardModel, TabEventHandler {
             if partialResult.isEmpty || partialResult.last?.cells.count == maxCols
                 || tabGroup != nil
             {
-                partialResult.append(Row(cells: [tabGroup.map(Row.Cell.tabGroup) ?? .tab(details)]))
+                if let tabGroup = tabGroup, tabGroup.isExpanded {
+                    for index in stride(from: 0, to: tabGroup.allDetails.count, by: maxCols) {
+                        var max = index + maxCols
+                        if max > tabGroup.allDetails.count {
+                            max = tabGroup.allDetails.count
+                        }
+                        let range = index..<max
+                        partialResult.append(
+                            Row(cells: [Row.Cell.tabGroupGridRow(tabGroup, range)]))
+                    }
+                } else {
+                    partialResult.append(
+                        Row(cells: [tabGroup.map(Row.Cell.tabGroupInline) ?? .tab(details)]))
+                }
                 if tabGroup != nil {
                     partialResult.append(Row(cells: []))
                 }
@@ -618,12 +634,19 @@ class TabGroupCardModel: CardModel {
         }
     }
     @Published var representativeTabs: [Tab] = []
+    @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
+    private var tabGroupExpandedSubscriptions: Set<AnyCancellable> = Set()
 
     init(manager: TabGroupManager) {
         self.manager = manager
 
         onDataUpdated()
         setupDetailsListener()
+
+        _tabGroupExpanded.publisher.sink {
+            [unowned self] _ in
+            self.objectWillChange.send()
+        }.store(in: &self.tabGroupExpandedSubscriptions)
 
         self.anyCancellable = self.manager.objectWillChange.sink {
             guard manager.tabManager.didRestoreAllTabs else {

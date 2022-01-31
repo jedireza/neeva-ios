@@ -121,10 +121,10 @@ struct CheatsheetInfoView: View {
                 Spacer(minLength: 0)
                 // hide the image on small iPhones in landscape
                 if horizontalSizeClass == .regular || verticalSizeClass == .regular {
-                    Image("notification-prompt", bundle: .main)
+                    Image("cheatsheet", bundle: .main)
                         .resizable()
                         .scaledToFit()
-                        .frame(minHeight: 115, maxHeight: 300)
+                        .frame(minHeight: 115, maxHeight: 500)
                         .accessibilityHidden(true)
                         .padding(.bottom)
                 } else {
@@ -146,6 +146,7 @@ struct CheatsheetInfoView: View {
         .multilineTextAlignment(.leading)
         .padding(.top, 10)
         .padding(.bottom, 16)
+        .padding(.horizontal, 16)
     }
 }
 
@@ -163,7 +164,7 @@ struct CheatsheetNoResultView: View {
             Image("question-mark", bundle: .main)
                 .resizable()
                 .scaledToFit()
-                .frame(minHeight: 115, maxHeight: 300)
+                .frame(minHeight: 50, maxHeight: 300)
                 .accessibilityHidden(true)
                 .padding(.bottom)
         }
@@ -175,7 +176,10 @@ struct CheatsheetNoResultView: View {
 
 public struct CheatsheetMenuView: View {
     @Default(.seenCheatsheetIntro) var seenCheatsheetIntro: Bool
+    @Default(.cheatsheetDebugQuery) var cheatsheetDebugQuery: Bool
+
     @Environment(\.hideOverlay) private var hideOverlay
+    @Environment(\.onOpenURL) var onOpenURL
     @EnvironmentObject private var model: CheatsheetMenuViewModel
 
     @State var height: CGFloat = 0
@@ -197,8 +201,47 @@ public struct CheatsheetMenuView: View {
                 VStack(alignment: .center) {
                     LoadingView("something good on it's way")
                 }
+            } else if let error = model.cheatsheetDataError {
+                ErrorView(error, in: self, tryAgain: model.reload)
+            } else if let error = model.searchRichResultsError {
+                ErrorView(error, in: self, tryAgain: model.reload)
             } else if model.cheatSheetIsEmpty {
-                CheatsheetNoResultView()
+                VStack(alignment: .center) {
+                    CheatsheetNoResultView()
+                    if cheatsheetDebugQuery {
+                        VStack(alignment: .leading) {
+                            Button(action: {
+                                if let url = model.currentCheatsheetQueryAsURL {
+                                    onOpenURL(url)
+                                }
+                            }) {
+                                HStack {
+                                    Text("View Query")
+                                    Symbol(decorative: .arrowUpForward)
+                                        .scaledToFit()
+                                }
+                                .foregroundColor(.label)
+                            }
+
+                            Button(action: {
+                                if let string = model.currentCheatsheetQueryAsURL?.absoluteString {
+                                    UIPasteboard.general.string = string
+                                }
+                            }) {
+                                HStack(alignment: .top) {
+                                    Symbol(decorative: .docOnDoc)
+                                        .frame(width: 20, height: 20, alignment: .center)
+                                    Text(model.currentCheatsheetQueryAsURL?.absoluteString ?? "nil")
+                                        .withFont(.bodySmall)
+                                        .multilineTextAlignment(.leading)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                .foregroundColor(.secondaryLabel)
+                            }
+                        }
+                        .padding(.horizontal)
+                    }
+                }
             } else {
                 VStack(alignment: .leading) {
                     recipeView
@@ -288,7 +331,8 @@ public struct CheatsheetMenuView: View {
             return AnyView(
                 WebResultList(
                     webResult: result.filter { $0.actionURL != model.currentPageURL },
-                    currentCheatsheetQuery: model.currentCheatsheetQuery
+                    currentCheatsheetQueryAsURL: model.currentCheatsheetQueryAsURL,
+                    showQueryString: cheatsheetDebugQuery
                 ))
         }
     }

@@ -70,6 +70,9 @@ extension BrowserViewController: ToolbarDelegate {
                     .OpenOverflowMenu,
                     attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
+                if NeevaFeatureFlags[.cheatsheetQuery] || FeatureFlag[.updatedTabOverflowMenu] {
+                    self.updateFeedbackImage()
+                }
                 self.showModal(style: .grouped) {
                     OverflowMenuOverlayContent(
                         menuAction: { action in
@@ -149,10 +152,14 @@ extension BrowserViewController: ToolbarDelegate {
                 }
                 break
             case .share:
-                self.showShareSheet(buttonView: self.topBar!.view)
+                self.showShareSheet(buttonView: self.view)
             }
 
-            self.hideZeroQuery()
+            if self.tabContainerModel.currentContentUI == .zeroQuery
+                || self.tabContainerModel.currentContentUI == .suggestions
+            {
+                self.hideZeroQuery()
+            }
         }
     }
 

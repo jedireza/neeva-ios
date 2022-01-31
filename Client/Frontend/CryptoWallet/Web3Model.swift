@@ -28,6 +28,22 @@ struct SequenceInfo {
 }
 
 class Web3Model: ObservableObject, ResponseRelay {
+    var publicAddress: String {
+        wallet?.publicAddress ?? ""
+    }
+
+    func send(
+        on chain: EthNode, eth value: String, from fromAddress: EthereumAddress,
+        to toAddress: EthereumAddress, for gas: String?, using data: String?
+    ) throws -> String {
+        try wallet?.send(
+            on: chain, eth: value, from: fromAddress, to: toAddress, for: gas, using: data) ?? ""
+    }
+
+    func sign(on chain: EthNode, message: String, using publicAddress: String) throws -> String {
+        try wallet?.sign(on: chain, message: message, using: publicAddress) ?? ""
+    }
+
     @Published var currentSequence: SequenceInfo? = nil {
         didSet {
             guard let sequence = currentSequence, let wallet = wallet else { return }
@@ -218,6 +234,23 @@ class Web3Model: ObservableObject, ResponseRelay {
             }, onDismiss: { self.reset() })
     }
 
+    func toggle(session: Session, to chain: EthNode) {
+        guard let walletInfo = session.walletInfo else {
+            return
+        }
+        let info = Session.WalletInfo(
+            approved: walletInfo.approved,
+            accounts: walletInfo.accounts,
+            chainId: chain.id, peerId: walletInfo.peerId,
+            peerMeta: walletInfo.peerMeta)
+        try? server?.updateSession(session, with: info)
+        var updatedSession = session
+        updatedSession.walletInfo = info
+        Defaults[.dAppsSession(updatedSession.dAppInfo.peerId)] =
+            try! JSONEncoder().encode(updatedSession)
+        Defaults[.sessionsPeerIDs].insert(updatedSession.dAppInfo.peerId)
+    }
+
     func send(_ response: Response) {
         server?.send(response)
     }
@@ -324,6 +357,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 Defaults[.cryptoPublicKey] = wallet.address
                 completion()
                 self.wallet = WalletAccessor()
+                self.updateBalances()
             } catch {
                 Logger.browser.error("Unexpected create wallet error: \(error).")
             }
@@ -349,6 +383,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 Defaults[.cryptoPrivateKey] = privateKey
                 completion()
                 self.wallet = WalletAccessor()
+                self.updateBalances()
             } catch {
                 print("🔥 Unexpected error: \(error).")
             }

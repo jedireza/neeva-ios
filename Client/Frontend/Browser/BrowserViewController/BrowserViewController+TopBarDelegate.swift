@@ -35,8 +35,7 @@ extension BrowserViewController: TopBarDelegate {
             ? !tab.changedUserAgent : tab.changedUserAgent
         if willSwitchToMobile {
             toggleActionTitle = Strings.AppMenuViewMobileSiteTitleString
-            let hasHomeButton = UIConstants.safeArea.bottom == 0
-            iconName = hasHomeButton ? .iphoneHomebutton : .iphone
+            iconName = UIConstants.hasHomeButton ? .iphoneHomebutton : .iphone
         } else {
             toggleActionTitle = Strings.AppMenuViewDesktopSiteTitleString
             iconName = .laptopcomputer

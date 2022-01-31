@@ -18,8 +18,8 @@ Get the Code
 -----------
 
 ```
-git clone https://github.com/neevaco/neeva-ios-phoenix
-cd neeva-ios-phoenix
+git clone https://github.com/neevaco/neeva-ios
+cd neeva-ios
 ```
 
 (If you have forked the repository, substitute the URL with your own repository location.)
@@ -52,14 +52,14 @@ Neeva for iOS depends internally on some of the [shared Rust components](https:/
 
 1. First ensure you can [build application-services](https://github.com/mozilla/application-services/blob/main/docs/building.md) locally.
 2. Next, `carthage build --no-skip-current --platform iOS --verbose --configuration Debug --cache-builds`.
-3. Now back in neeva-ios-phoenix, after `carthage bootstrap`, replace the application-services library with a symlink:
+3. Now back in neeva-ios, after `carthage bootstrap`, replace the application-services library with a symlink:
 
   ```
   rm -rf Carthage/Build/iOS/MozillaAppServices.framework
   ln -s ~/REPLACE_WITH_PATH_TO_YOUR_LOCAL_CHECKOUT/application-services/Carthage/Build/iOS/Static/MozillaAppServices.framework Carthage/Build/iOS
   ```
 
-4. Build neeva-ios-phoenix.
+4. Build neeva-ios.
 
 Every time you make a change to application-services, re-run the carthage build command shown in step #2.
 
@@ -143,5 +143,5 @@ $ ./configure --enable-tempstore=yes \
 CFLAGS="-I/usr/local/Cellar/openssl/1.0.2n/include -DSQLITE_HAS_CODEC" \
 LDFLAGS="-lcrypto"
 $ make
-$ cp sqlite3{.c,.h,ext.h} README.md VERSION CHANGELOG.md ~/path/to/neeva-ios-phoenix/ThirdParty/sqlcipher
+$ cp sqlite3{.c,.h,ext.h} README.md VERSION CHANGELOG.md ~/path/to/neeva-ios/ThirdParty/sqlcipher
 ```

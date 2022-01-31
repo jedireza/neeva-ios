@@ -91,11 +91,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         getAppDelegate().setUpWebServer(getAppDelegate().profile)
 
         NotificationPermissionHelper.shared.updatePermissionState()
-
-        ClientLogger.shared.logCounter(
-            .AppEnterForeground,
-            attributes: EnvironmentHelper.shared.getAttributes()
-        )
     }
 
     func sceneWillEnterForeground(_ scene: UIScene) {
@@ -106,6 +101,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
 
         bvc.downloadQueue.resumeAll()
+
+        ClientLogger.shared.logCounter(
+            .AppEnterForeground,
+            attributes: EnvironmentHelper.shared.getAttributes()
+        )
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {

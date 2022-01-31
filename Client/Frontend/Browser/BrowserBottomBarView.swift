@@ -19,12 +19,10 @@ struct BrowserBottomBarView: View {
                 }
             )
         } else if browserModel.showGrid {
-            SwitcherToolbarView(
-                top: false, isEmpty: bvc.tabContainerModel.tabCardModel.isCardGridEmpty
-            )
-            .environmentObject(bvc.gridModel)
-            .environmentObject(bvc.gridModel.tabCardModel)
-            .environmentObject(bvc.toolbarModel)
+            SwitcherToolbarView(top: false)
+                .environmentObject(bvc.gridModel)
+                .environmentObject(bvc.gridModel.tabCardModel)
+                .environmentObject(bvc.toolbarModel)
         }
     }
 }

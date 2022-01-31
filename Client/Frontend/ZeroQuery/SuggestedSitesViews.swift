@@ -125,7 +125,9 @@ struct SuggestedSiteView: View {
             ActionSheet(
                 title: Text("Permanently remove \(title) from Suggested Sites?"),
                 buttons: [
-                    .destructive(Text("Remove")) { zeroQueryHideTopSite(site) },
+                    .destructive(Text("Remove")) {
+                        zeroQueryHideTopSite(site)
+                    },
                     .cancel(),
                 ])
         }
@@ -195,19 +197,24 @@ struct SuggestedSitesView: View {
             .padding(.horizontal, ZeroQueryUX.Padding - 2)
         } else {
             FadingHorizontalScrollView { _ in
-                HStack(spacing: 0) {
-                    SuggestedHomeView()
-                    ForEach(viewModel.sites, id: \.self) { suggestedSite in
-                        Spacer().frame(width: SuggestedSiteUX.BlockSpacing)
-                        SuggestedSiteView(
-                            site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
-                        )
+                HStack {
+                    HStack(spacing: SuggestedSiteUX.BlockSpacing) {
+                        SuggestedHomeView()
+
+                        ForEach(viewModel.sites, id: \.self) { suggestedSite in
+                            SuggestedSiteView(
+                                site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
+                            )
+                        }
                     }
+                    .frame(height: SuggestedSiteUX.BlockSize)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, ZeroQueryUX.Padding - 2)
+                    .fixedSize()
+
+                    Spacer()
                 }
-                .frame(height: SuggestedSiteUX.BlockSize)
-                .padding(.vertical, 10)
-                .padding(.horizontal, ZeroQueryUX.Padding - 2)
-                .fixedSize()
             }.frame(height: SuggestedSiteUX.BlockSize + 20)
         }
     }

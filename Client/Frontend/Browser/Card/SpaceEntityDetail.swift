@@ -17,6 +17,7 @@ struct SpaceEntityDetailView: View {
     let addToAnotherSpace: (URL, String?, String?) -> Void
     let editSpaceItem: () -> Void
     let index: Int
+    var canEdit: Bool
 
     var shouldHighlightAsUpdated: Bool {
         guard details.manager.id.id == SpaceStore.promotionalSpaceId else {
@@ -64,6 +65,7 @@ struct SpaceEntityDetailView: View {
             return doc.body?.string
         default:
             let searchPrefix = "](@"
+
             if let description = details.description, description.contains(searchPrefix) {
                 let index = description.firstIndex(of: "@")
                 var substring = description.suffix(from: index!)
@@ -75,6 +77,7 @@ struct SpaceEntityDetailView: View {
                     of: substring,
                     with: SearchEngine.current.searchURLForQuery(String(substring))!.absoluteString)
             }
+
             return details.description
         }
     }
@@ -147,31 +150,11 @@ struct SpaceEntityDetailView: View {
                                     url: details.data.url!,
                                     entity: details.data.previewEntity
                                 )
-                                if !showDescriptions, #available(iOS 15.0, *),
-                                    case .techDoc(let doc) = details.data.previewEntity,
-                                    let body = doc.body
-                                {
-                                    Text(AttributedString(body))
-                                        .withFont(.bodyLarge)
-                                        .lineLimit(3)
-                                        .modifier(DescriptionTextModifier())
-                                } else if let snippet = snippetToDisplay,
-                                    !showDescriptions, !snippet.isEmpty
-                                {
-                                    if #available(iOS 15.0, *),
-                                        let attributedSnippet = try? AttributedString(
-                                            markdown: snippet)
-                                    {
-                                        Text(attributedSnippet)
-                                            .withFont(.bodyLarge)
-                                            .lineLimit(3)
-                                            .modifier(DescriptionTextModifier())
-                                    } else {
-                                        Text(snippet)
-                                            .withFont(.bodyLarge)
-                                            .lineLimit(3)
-                                            .modifier(DescriptionTextModifier())
-                                    }
+
+                                if !showDescriptions {
+                                    SpaceMarkdownSnippet(
+                                        showDescriptions: false, details: details,
+                                        snippet: snippetToDisplay)
                                 }
                             }
                         }
@@ -222,18 +205,20 @@ struct SpaceEntityDetailView: View {
                     ? Color.ui.adaptive.blue.opacity(0.1) : Color.DefaultBackground)
             Spacer(minLength: 0)
         }
-        .modifier(
-            SpaceActionsModifier(
-                details: details,
-                keepNewsItem: {
-                    details.data.generatorID = nil
-                    spaceCardModel.claimGeneratedItem(
-                        spaceID: details.spaceID, entityID: details.id)
-                },
-                onDelete: {
-                    onDelete(index)
-                }, addToAnotherSpace: addToAnotherSpace, editSpaceItem: editSpaceItem)
-        )
+        .if(canEdit) {
+            $0.modifier(
+                SpaceActionsModifier(
+                    details: details,
+                    keepNewsItem: {
+                        details.data.generatorID = nil
+                        spaceCardModel.claimGeneratedItem(
+                            spaceID: details.spaceID, entityID: details.id)
+                    },
+                    onDelete: {
+                        onDelete(index)
+                    }, addToAnotherSpace: addToAnotherSpace, editSpaceItem: editSpaceItem)
+            )
+        }
         .scaleEffect(isPressed ? 0.95 : 1)
         .accessibilityLabel(details.title)
         .accessibilityHint("Space Item")
@@ -395,5 +380,33 @@ struct EditSpaceActionModifier: ViewModifier {
                     })
                 )
         }
+    }
+}
+
+struct SpaceMarkdownSnippet: View {
+    let showDescriptions: Bool
+    let details: SpaceEntityThumbnail
+    let snippet: String?
+
+    @ViewBuilder
+    var content: some View {
+        if #available(iOS 15.0, *),
+            let snippet = snippet,
+            let attributedSnippet = try? AttributedString(
+                markdown: snippet)
+        {
+            Text(attributedSnippet)
+                .withFont(.bodyLarge)
+        } else if let snippet = snippet {
+            Text(snippet)
+                .withFont(.bodyLarge)
+        }
+    }
+
+    var body: some View {
+        content
+            .lineLimit(showDescriptions ? nil : 3)
+            .modifier(DescriptionTextModifier())
+            .fixedSize(horizontal: false, vertical: showDescriptions)
     }
 }

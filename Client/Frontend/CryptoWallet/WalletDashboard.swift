@@ -3,7 +3,9 @@
 // found in the LICENSE file.
 
 import Defaults
+import LocalAuthentication
 import MobileCoreServices
+import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 import WalletConnectSwift
@@ -21,10 +23,12 @@ struct TransactionDetail: Hashable {
 }
 
 struct WalletDashboard: View {
+    @Environment(\.hideOverlay) var hideOverlay
     @EnvironmentObject var model: Web3Model
 
     @State var showSendForm: Bool = false
     @State var showConfirmDisconnectAlert = false
+    @State var showConfirmRemoveWalletAlert = false
     @State var sessionToDisconnect: Session? = nil
 
     var body: some View {
@@ -46,14 +50,88 @@ struct WalletDashboard: View {
                             if let toastManager = model.selectedTab?.browserViewController?
                                 .getSceneDelegate()?.toastViewManager
                             {
+                                hideOverlay()
                                 toastManager.makeToast(text: "Address copied to clipboard")
                                     .enqueue(manager: toastManager)
                             }
                         }) {
                             Symbol(decorative: .docOnDoc)
                                 .foregroundColor(.label)
+                                .tapTargetFrame()
                         }
-                        .tapTargetFrame()
+                        Menu(
+                            content: {
+                                Button(
+                                    action: {
+                                        let context = LAContext()
+                                        let reason =
+                                            "Exporting wallet secret phrase requires authentication"
+                                        let onAuth: (Bool, Error?) -> Void = {
+                                            success, authenticationError in
+                                            if success {
+                                                UIPasteboard.general.setValue(
+                                                    Defaults[.cryptoPhrases],
+                                                    forPasteboardType: kUTTypePlainText as String)
+                                                if let toastManager = model.selectedTab?
+                                                    .browserViewController?
+                                                    .getSceneDelegate()?.toastViewManager
+                                                {
+                                                    hideOverlay()
+                                                    toastManager.makeToast(
+                                                        text: "Secret phrase copied to clipboard"
+                                                    )
+                                                    .enqueue(manager: toastManager)
+                                                }
+                                            }
+                                        }
+
+                                        var error: NSError?
+                                        if context.canEvaluatePolicy(
+                                            .deviceOwnerAuthenticationWithBiometrics, error: &error)
+                                        {
+                                            context.evaluatePolicy(
+                                                .deviceOwnerAuthenticationWithBiometrics,
+                                                localizedReason: reason,
+                                                reply: onAuth)
+                                        } else if context.canEvaluatePolicy(
+                                            .deviceOwnerAuthentication, error: &error)
+                                        {
+                                            context.evaluatePolicy(
+                                                .deviceOwnerAuthentication, localizedReason: reason,
+                                                reply: onAuth)
+                                        }
+                                    },
+                                    label: {
+                                        Label(
+                                            title: {
+                                                Text("Export Wallet")
+                                                    .withFont(.labelMedium)
+                                                    .foregroundColor(Color.label)
+                                            },
+                                            icon: {
+                                                Symbol(decorative: .arrowshapeTurnUpRightFill)
+                                                    .foregroundColor(.label)
+                                            }
+                                        )
+                                    })
+                                if #available(iOS 15.0, *) {
+                                    Button(
+                                        role: .destructive,
+                                        action: { showConfirmRemoveWalletAlert = true }
+                                    ) {
+                                        Label("Remove Wallet", systemSymbol: .trash)
+                                    }
+                                } else {
+                                    Button(action: { showConfirmRemoveWalletAlert = true }) {
+                                        Label("Remove Wallet", systemSymbol: .trash)
+                                    }
+                                }
+                            },
+                            label: {
+                                Symbol(decorative: .ellipsisCircle)
+                                    .foregroundColor(.label)
+                                    .tapTargetFrame()
+                            })
                     }.modifier(WalletListSeparatorModifier())
                 },
                 header: {
@@ -117,16 +195,7 @@ struct WalletDashboard: View {
                                         ForEach([EthNode.Ethereum, EthNode.Polygon]) { node in
                                             Button(
                                                 action: {
-                                                    guard let walletInfo = session.walletInfo else {
-                                                        return
-                                                    }
-                                                    let info = Session.WalletInfo(
-                                                        approved: walletInfo.approved,
-                                                        accounts: walletInfo.accounts,
-                                                        chainId: node.id, peerId: walletInfo.peerId,
-                                                        peerMeta: walletInfo.peerMeta)
-                                                    try? model.server?.updateSession(
-                                                        session, with: info)
+                                                    model.toggle(session: session, to: node)
                                                 },
                                                 label: {
                                                     Text(node.rawValue)
@@ -182,7 +251,7 @@ struct WalletDashboard: View {
         .modifier(WalletListStyleModifier())
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal, 25)
-        .padding(.bottom, 48)
+        .padding(.bottom, 72)
         .actionSheet(isPresented: $showConfirmDisconnectAlert) {
             ActionSheet(
                 title: Text(
@@ -197,6 +266,22 @@ struct WalletDashboard: View {
                                 try? model.server?.disconnect(from: session)
                             }
                             sessionToDisconnect = nil
+                        })
+                ])
+        }.actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
+            ActionSheet(
+                title: Text(
+                    "Are you sure you want to remove all keys for your wallet from this device? "
+                ),
+                buttons: [
+                    .destructive(
+                        Text("Remove Wallet from device"),
+                        action: {
+                            hideOverlay()
+                            Defaults[.cryptoPhrases] = ""
+                            Defaults[.cryptoPublicKey] = ""
+                            Defaults[.cryptoPrivateKey] = ""
+                            model.wallet = WalletAccessor()
                         })
                 ])
         }

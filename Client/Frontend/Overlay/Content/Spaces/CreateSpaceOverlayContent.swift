@@ -12,30 +12,38 @@ struct CreateSpaceOverlayContent: View {
     @State private var subscription: AnyCancellable? = nil
 
     var body: some View {
-        CreateSpaceView { spaceName in
-            if !spaceName.isEmpty {
-                let request = CreateSpaceRequest(name: spaceName)
-                subscription = request.$state.sink { state in
-                    switch state {
-                    case .success:
-                        SpaceStore.shared.refresh()
-                        subscription = spaceModel.objectWillChange.sink {
-                            if spaceModel.allDetails.first?.title == spaceName {
-                                DispatchQueue.main.async {
-                                    spaceModel.allDetails.first?.isShowingDetails = true
-                                    subscription?.cancel()
+        if NeevaUserInfo.shared.isUserLoggedIn, !NeevaUserInfo.shared.isVerified {
+            EmailVerificationPrompt(email: NeevaUserInfo.shared.email ?? "", dismiss: hideOverlay)
+                .overlayIsFixedHeight(isFixedHeight: true)
+                .overlayTitle(title: "Create a Space")
+        } else if NeevaUserInfo.shared.isUserLoggedIn {
+            CreateSpaceView { spaceName in
+                if !spaceName.isEmpty {
+                    let request = CreateSpaceRequest(name: spaceName)
+                    subscription = request.$state.sink { state in
+                        switch state {
+                        case .success:
+                            SpaceStore.shared.refresh()
+                            subscription = spaceModel.objectWillChange.sink {
+                                if spaceModel.allDetails.first?.title == spaceName {
+                                    DispatchQueue.main.async {
+                                        spaceModel.allDetails.first?.isShowingDetails = true
+                                        subscription?.cancel()
+                                    }
                                 }
                             }
+                        case .failure:
+                            subscription?.cancel()
+                        case .initial:
+                            Logger.browser.info("Waiting for result from creating space")
                         }
-                    case .failure:
-                        subscription?.cancel()
-                    case .initial:
-                        Logger.browser.info("Waiting for result from creating space")
                     }
                 }
+                hideOverlay()
             }
-            hideOverlay()
-        }.overlayIsFixedHeight(isFixedHeight: true)
+            .overlayIsFixedHeight(isFixedHeight: true)
+            .overlayTitle(title: "Create a Space")
+        }
     }
 }
 

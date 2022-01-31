@@ -82,3 +82,21 @@ extension ViewHeightKey: ViewModifier {
             })
     }
 }
+
+struct ViewWidthKey: PreferenceKey {
+    static var defaultValue: CGFloat { 0 }
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = value + nextValue()
+    }
+}
+
+// Used to extract the intrinsic size of the content and store it as
+// a preference value.
+extension ViewWidthKey: ViewModifier {
+    func body(content: Content) -> some View {
+        return content.background(
+            GeometryReader { proxy in
+                Color.clear.preference(key: Self.self, value: proxy.size.width)
+            })
+    }
+}

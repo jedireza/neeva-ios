@@ -24,27 +24,6 @@ extension EnvironmentValues {
     }
 }
 
-struct OverlayRootView: View {
-    let isPopover: Bool
-    let style: OverlayStyle
-    let content: () -> AnyView
-    let onDismiss: () -> Void
-    let onOpenURL: (URL) -> Void
-    let headerButton: OverlayHeaderButton?
-
-    var body: some View {
-        if isPopover {
-            PopoverRootView(
-                style: style, content: content, onDismiss: onDismiss,
-                onOpenURL: onOpenURL, headerButton: headerButton)
-        } else {
-            OverlaySheetRootView(
-                style: style, content: content, onDismiss: onDismiss,
-                onOpenURL: onOpenURL, headerButton: headerButton)
-        }
-    }
-}
-
 struct PopoverRootView: View {
     var style: OverlayStyle
     var content: () -> AnyView
@@ -62,23 +41,47 @@ struct PopoverRootView: View {
 }
 
 struct OverlaySheetRootView: View {
+    static let defaultOverlayPosition: OverlaySheetPosition = .middle
+
     let overlayModel = OverlaySheetModel()
-    var overlayPosition: OverlaySheetPosition = .middle
+    var overlayPosition: OverlaySheetPosition
 
     let style: OverlayStyle
     let content: () -> AnyView
     let onDismiss: () -> Void
     let onOpenURL: (URL) -> Void
     let headerButton: OverlayHeaderButton?
+    let headerContent: () -> AnyView
+
+    init(
+        overlayPosition: OverlaySheetPosition = Self.defaultOverlayPosition,
+        style: OverlayStyle,
+        content: @escaping () -> AnyView,
+        onDismiss: @escaping () -> Void,
+        onOpenURL: @escaping (URL) -> Void,
+        headerButton: OverlayHeaderButton?,
+        headerContent: @escaping () -> AnyView = { AnyView(erasing: EmptyView()) }
+    ) {
+        self.overlayPosition = overlayPosition
+        self.style = style
+        self.content = content
+        self.onDismiss = onDismiss
+        self.onOpenURL = onOpenURL
+        self.headerButton = headerButton
+        self.headerContent = headerContent
+    }
 
     @ViewBuilder
     var overlay: some View {
         OverlaySheetView(
-            model: overlayModel, style: style,
+            model: overlayModel,
+            style: style,
             onDismiss: {
                 onDismiss()
                 overlayModel.hide()
-            }, headerButton: headerButton
+            },
+            headerButton: headerButton,
+            headerContent: headerContent
         ) {
             content()
                 .environment(\.onOpenURL, self.onOpenURL)
@@ -96,37 +99,5 @@ struct OverlaySheetRootView: View {
                     self.overlayModel.show(defaultPosition: overlayPosition)
                 }
             }
-    }
-}
-
-class OverlayViewController: UIHostingController<OverlayRootView> {
-    let isPopover: Bool
-    let style: OverlayStyle
-
-    init(
-        isPopover: Bool, style: OverlayStyle, content: @escaping () -> AnyView,
-        onDismiss: @escaping () -> Void, onOpenURL: @escaping (URL) -> Void,
-        headerButton: OverlayHeaderButton?
-    ) {
-        self.isPopover = isPopover
-        self.style = style
-        super.init(
-            rootView: OverlayRootView(
-                isPopover: isPopover, style: style, content: content, onDismiss: onDismiss,
-                onOpenURL: onOpenURL, headerButton: headerButton)
-        )
-
-        self.view.accessibilityViewIsModal = true
-    }
-
-    @objc required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    @objc override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        // By default, a UIHostingController opens as an opaque layer, so we override
-        // that behavior here.
-        view.backgroundColor = .clear
     }
 }

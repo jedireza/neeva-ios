@@ -21,5 +21,5 @@ read
 git push origin "$RELEASE_BRANCH_NAME"
 
 title="Release branch *$RELEASE_BRANCH_NAME* created"
-subtitle="<https://github.com/neevaco/neeva-ios-phoenix/tree/$RELEASE_BRANCH_NAME|Github branch>"
+subtitle="<https://github.com/neevaco/neeva-ios/tree/$RELEASE_BRANCH_NAME|Github branch>"
 Scripts/send-slack-message.sh "$title" "$subtitle"
