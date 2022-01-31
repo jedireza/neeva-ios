@@ -9,6 +9,7 @@ import SwiftUI
 struct ScannerView: View {
     @Binding var showQRScanner: Bool
     @Binding var returnAddress: String
+    var onComplete: (()->Void)?
 
     var body: some View {
         VStack {
@@ -42,6 +43,10 @@ struct ScannerView: View {
             returnAddress = qrStr[1]
         case .failure(_):
             returnAddress = ""
+        }
+
+        if let onComplete = onComplete {
+            onComplete()
         }
     }
 }
