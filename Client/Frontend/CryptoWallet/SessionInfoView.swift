@@ -72,15 +72,24 @@ struct SessionInfoButton: View {
     let dAppSession: Session
     @State var showdAppSessionControls: Bool = false
 
+    var logo: String {
+        switch EthNode.from(chainID: dAppSession.walletInfo?.chainId) {
+        case .Polygon:
+            return "polygon-badge"
+        default:
+            return "ethLogo"
+        }
+    }
+
     var body: some View {
         Button(
             action: {
                 showdAppSessionControls = true
             },
             label: {
-                Image("ethLogo")
+                Image(logo)
                     .resizable()
-                    .aspectRatio(contentMode: .fit)
+                    .scaledToFit()
                     .frame(width: 16, height: 16)
                     .padding(2)
                     .background(

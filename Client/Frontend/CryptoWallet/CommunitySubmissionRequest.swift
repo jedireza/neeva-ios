@@ -13,9 +13,9 @@ public class SuppressRequest: MutationRequest<CommunitySuppressResultMutation> {
             mutation: CommunitySuppressResultMutation(
                 input: CommunitySuppressResultInput(
                     query: WEB3_SUBMISSION_QUERY,
-                    url: url.absoluteString,
-                    universalType: "webUnivPlain",
-                    navTreatmentOnly: false,
+                    url: url.domainURL.absoluteString,
+                    universalType: "web",
+                    navTreatmentOnly: true,
                     reason: "Web3 Trust Signal Submission"
                 )))
     }
@@ -27,8 +27,10 @@ public class BoostRequest: MutationRequest<CommunityBoostResultMutation> {
             mutation: CommunityBoostResultMutation(
                 input: CommunityBoostResultInput(
                     query: WEB3_SUBMISSION_QUERY,
-                    url: url.absoluteString,
-                    universalType: "webUnivPlain"
+                    url: url.domainURL.absoluteString,
+                    universalType: "web",
+                    asNav: true,
+                    userComment: "Web3 Trust Signal Submission"
                 )))
     }
 }
