@@ -25,11 +25,13 @@ struct TransactionDetail: Hashable {
 struct WalletDashboard: View {
     @Environment(\.hideOverlay) var hideOverlay
     @EnvironmentObject var model: Web3Model
-
+    @Environment(\.hideOverlay) var onDismiss
     @State var showSendForm: Bool = false
     @State var showConfirmDisconnectAlert = false
     @State var showConfirmRemoveWalletAlert = false
     @State var sessionToDisconnect: Session? = nil
+    @State var showQRScanner: Bool = false
+    @State var qrCodeStr: String = ""
 
     var body: some View {
         List {
@@ -135,10 +137,20 @@ struct WalletDashboard: View {
                     }.modifier(WalletListSeparatorModifier())
                 },
                 header: {
-                    Text("Account info")
-                        .withFont(.headingMedium)
-                        .foregroundColor(.label)
+                    HStack {
+                        Text("Account info")
+                            .withFont(.headingMedium)
+                            .foregroundColor(.label)
+                        Spacer()
+                        Button(action: { showQRScanner = true }) {
+                            Symbol(decorative: .qrcodeViewfinder, style: .labelMedium)
+                                .foregroundColor(.secondaryLabel)
+                        }
+                    }
                 })
+                .sheet(isPresented: $showQRScanner) {
+                    ScannerView(showQRScanner: $showQRScanner, returnAddress: $qrCodeStr, onComplete: onComplete)
+                }
 
             Section(
                 content: {
@@ -284,6 +296,17 @@ struct WalletDashboard: View {
                             model.wallet = WalletAccessor()
                         })
                 ])
+        }
+    }
+
+    func onComplete() -> Void {
+        onDismiss()
+
+        let wcStr = "wc:\(qrCodeStr)"
+        if let wcURL = WCURL(wcStr.removingPercentEncoding ?? "") {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                model.presenter.connectWallet(to: wcURL)
+            }
         }
     }
 }

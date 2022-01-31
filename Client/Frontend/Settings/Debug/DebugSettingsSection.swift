@@ -57,10 +57,23 @@ struct DebugSettingsSection: View {
             }
             DebugDBSettingsSection()
             DecorativeSection {
+                Button(String("Create 100 tabs")) {
+                    guard let tabManager = SceneDelegate.getTabManagerOrNil() else {
+                        return
+                    }
+
+                    var urls = [URL]()
+                    for _ in 0...99 {
+                        urls.append(URL(string: "https://example.com")!)
+                    }
+
+                    tabManager.addTabsForURLs(urls, zombie: true)
+                }
+
                 Button(String("Force Crash App")) {
                     Sentry.shared.crash()
-                }.accentColor(.red)
-            }
+                }
+            }.accentColor(.red)
         }
         .listRowBackground(Color.red.opacity(0.2).ignoresSafeArea())
     }
