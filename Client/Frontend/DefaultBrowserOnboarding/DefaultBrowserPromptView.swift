@@ -32,7 +32,12 @@ struct DefaultBrowserPromptView: View {
             Button(
                 action: {
                     buttonAction()
-                    ClientLogger.shared.logCounter(.DefaultBrowserPromptOpen)
+                    if NeevaUserInfo.shared.hasLoginCookie() {
+                        ClientLogger.shared.logCounter(.DefaultBrowserPromptOpen)
+                    } else {
+                        Defaults[.lastDefaultBrowserPromptInteraction] =
+                            LogConfig.Interaction.DefaultBrowserPromptOpen.rawValue
+                    }
                 },
                 label: {
                     Text("Set as Default Browser")
@@ -48,7 +53,12 @@ struct DefaultBrowserPromptView: View {
             Button(
                 action: {
                     skipAction()
-                    ClientLogger.shared.logCounter(.DefaultBrowserPromptSkip)
+                    if NeevaUserInfo.shared.hasLoginCookie() {
+                        ClientLogger.shared.logCounter(.DefaultBrowserPromptSkip)
+                    } else {
+                        Defaults[.lastDefaultBrowserPromptInteraction] =
+                            LogConfig.Interaction.DefaultBrowserPromptSkip.rawValue
+                    }
                 },
                 label: {
                     Text("Skip for now")

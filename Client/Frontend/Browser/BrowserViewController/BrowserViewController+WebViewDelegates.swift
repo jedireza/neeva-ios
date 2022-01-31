@@ -1020,6 +1020,29 @@ extension BrowserViewController: WKNavigationDelegate {
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 
+                if !Defaults[.loggedDefaultBrowserExperiment] && userInfo.hasLoginCookie() {
+                    if let experimentArm = NeevaExperiment.arm(for: .defaultBrowserPrompt) {
+                        ClientLogger.shared.logCounter(
+                            .DefaultBrowserExperiment,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.PromoCardAttribute.defaultBrowserPromptExperimentArm,
+                                    value: experimentArm.rawValue
+                                )
+                            ]
+                        )
+                    }
+                    Defaults[.loggedDefaultBrowserExperiment] = true
+                }
+
+                if let interactionStr = Defaults[.lastDefaultBrowserPromptInteraction],
+                    let interaction = LogConfig.Interaction(rawValue: interactionStr),
+                   userInfo.hasLoginCookie()
+                {
+                    ClientLogger.shared.logCounter(interaction)
+                    Defaults[.lastDefaultBrowserPromptInteraction] = nil
+                }
+
                 userInfo.updateLoginCookieFromWebKitCookieStore {
                     // We have a fresh login cookie.
                     Defaults[.signedInOnce] = true

@@ -431,12 +431,12 @@ public struct LogConfig {
         case .PreviewTapFakeSearchInput: return .FirstRun
         case .PreviewHomeSignin: return .FirstRun
         case .DefaultBrowserExperiment: return .FirstRun
-
+        case .DefaultBrowserPromptSkip: return .FirstRun
+        case .DefaultBrowserPromptOpen: return .FirstRun
+            
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
-        case .DefaultBrowserPromptSkip: return .PromoCard
-        case .DefaultBrowserPromptOpen: return .PromoCard
 
         case .QuerySuggestion: return .Suggestions
         case .MemorizedSuggestion: return .Suggestions
