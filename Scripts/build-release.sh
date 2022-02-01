@@ -72,7 +72,7 @@ Scripts/confirm-upload-binary.sh
 Scripts/tag-release.sh
 
 if $CREATE_BRANCH; then
-  $SCRIPTS_DIR/branch_release
+  $SCRIPTS_DIR/branch-release.sh
   $SCRIPTS_DIR/prepare-for-next-release.sh
   # switch back to main for preparing next version
   git checkout main
