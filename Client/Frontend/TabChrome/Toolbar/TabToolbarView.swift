@@ -2,17 +2,20 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import SFSafeSymbols
 import Shared
 import SwiftUI
 
 struct TabToolbarView: View {
-    let performAction: (ToolbarAction) -> Void
-    let buildTabsMenu: (_ sourceView: UIView) -> UIMenu?
-    let onNeevaMenu: () -> Void
+    @Default(.showTryCheatsheetPopover) var defaultShowTryCheatsheetPopover
 
     @EnvironmentObject var chromeModel: TabChromeModel
     @EnvironmentObject var scrollingControlModel: ScrollingControlModel
+
+    let performAction: (ToolbarAction) -> Void
+    let buildTabsMenu: (_ sourceView: UIView) -> UIMenu?
+    let onNeevaMenu: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -46,7 +49,7 @@ struct TabToolbarView: View {
                 action: {
                     performAction(.overflow)
                 })
-            TabToolbarButtons.NeevaMenu(iconWidth: 22, action: onNeevaMenu)
+            neevaButton
             TabToolbarButtons.AddToSpace(
                 weight: .medium, action: { performAction(.addToSpace) })
             TabToolbarButtons.ShowTabs(
@@ -76,6 +79,24 @@ struct TabToolbarView: View {
         .opacity(scrollingControlModel.controlOpacity)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("CheatsheetToolBar")
+    }
+
+    @ViewBuilder
+    private var neevaButton: some View {
+        WithPopover(
+            showPopover: $chromeModel.showTryCheatsheetPopover,
+            popoverSize: CGSize(width: 257, height: 114),
+            content: {
+                TabToolbarButtons.NeevaMenu(iconWidth: 22) {
+                    defaultShowTryCheatsheetPopover = false
+                    onNeevaMenu()
+                }
+            },
+            popoverContent: {
+                CheatsheetTooltipPopoverView()
+            },
+            backgroundMode: CheatsheetTooltipPopoverView.backgroundColorMode
+        )
     }
 }
 

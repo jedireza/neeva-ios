@@ -2,12 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Combine
 import Defaults
 import Shared
 import SwiftUI
 
 struct TopBarNeevaMenuButton: View {
     @Default(.showNeevaMenuWillMove) var showNeevaMenuWillMove
+    @Default(.showTryCheatsheetPopover) var defaultShowTryCheatsheetPopover
 
     @Environment(\.isIncognito) private var isIncognito
     @EnvironmentObject var chromeModel: TabChromeModel
@@ -20,21 +22,28 @@ struct TopBarNeevaMenuButton: View {
 
     let onNeevaMenuAction: (NeevaMenuAction) -> Void
 
+    static private let neevaIconWidth: CGFloat = 24
+
     var body: some View {
+        if NeevaFeatureFlags[.cheatsheetQuery] {
+            // button to open cheatsheet
+            neevaButton
+        } else {
+            // button to open neeva menu
+            neevaMenuButton
+        }
+    }
+
+    @ViewBuilder
+    private var neevaMenuButton: some View {
         WithPopover(
             showPopover: $chromeModel.showNeevaMenuTourPrompt,
             popoverSize: CGSize(width: 300, height: 190),
             content: {
-                TabToolbarButtons.NeevaMenu(iconWidth: 24) {
-                    if NeevaFeatureFlags[.cheatsheetQuery],
-                        let bvc = chromeModel.topBarDelegate as? BrowserViewController
-                    {
-                        bvc.showCheatSheetOverlay()
-                    } else {
-                        chromeModel.hideZeroQuery()
-                        chromeModel.topBarDelegate?.updateFeedbackImage()
-                        presenting = true
-                    }
+                TabToolbarButtons.NeevaMenu(iconWidth: Self.neevaIconWidth) {
+                    chromeModel.hideZeroQuery()
+                    chromeModel.topBarDelegate?.updateFeedbackImage()
+                    presenting = true
                 }
                 .tapTargetFrame()
                 .presentAsPopover(
@@ -91,6 +100,27 @@ struct TopBarNeevaMenuButton: View {
                 )
             },
             staticColorMode: true
+        )
+    }
+
+    @ViewBuilder
+    private var neevaButton: some View {
+        WithPopover(
+            showPopover: $chromeModel.showTryCheatsheetPopover,
+            popoverSize: CGSize(width: 257, height: 114),
+            content: {
+                TabToolbarButtons.NeevaMenu(iconWidth: Self.neevaIconWidth) {
+                    defaultShowTryCheatsheetPopover = false
+                    if let bvc = chromeModel.topBarDelegate as? BrowserViewController {
+                        bvc.showCheatSheetOverlay()
+                    }
+                }
+                .tapTargetFrame()
+            },
+            popoverContent: {
+                CheatsheetTooltipPopoverView()
+            },
+            backgroundMode: CheatsheetTooltipPopoverView.backgroundColorMode
         )
     }
 }

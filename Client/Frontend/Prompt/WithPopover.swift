@@ -12,13 +12,50 @@
 import Foundation
 import SwiftUI
 
+// To make signatures clean, this needs to be outside of the generic type WithPopover
+enum WithPopoverColorMode {
+    case staticBackground(UIColor)
+    case dyanmicBackground(UIColor, UIColor)
+
+    static let defaultStatic: Self = .staticBackground(.Tour.Background.lightVariant)
+    static let defaultDynamic: Self = .dyanmicBackground(.Tour.Background.lightVariant, .Tour.Background.darkVariant)
+}
+
 struct WithPopover<Content: View, PopoverContent: View>: View {
 
     @Binding var showPopover: Bool
     var popoverSize: CGSize? = nil
     let content: () -> Content
     let popoverContent: () -> PopoverContent
-    let staticColorMode: Bool?
+    let backgroundMode: WithPopoverColorMode
+
+    init(
+        showPopover: Binding<Bool>,
+        popoverSize: CGSize? = nil,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder popoverContent: @escaping () -> PopoverContent,
+        backgroundMode: WithPopoverColorMode
+    ) {
+        self._showPopover = showPopover
+        self.popoverSize = popoverSize
+        self.content = content
+        self.popoverContent = popoverContent
+        self.backgroundMode = backgroundMode
+    }
+
+    init(
+        showPopover: Binding<Bool>,
+        popoverSize: CGSize? = nil,
+        @ViewBuilder content: @escaping () -> Content,
+        @ViewBuilder popoverContent: @escaping () -> PopoverContent,
+        staticColorMode: Bool
+    ) {
+        self._showPopover = showPopover
+        self.popoverSize = popoverSize
+        self.content = content
+        self.popoverContent = popoverContent
+        self.backgroundMode = staticColorMode ? .defaultStatic : .defaultDynamic
+    }
 
     var body: some View {
         content()
@@ -27,7 +64,7 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
                     .background(
                         Wrapper(
                             showPopover: $showPopover, popoverSize: popoverSize,
-                            popoverContent: popoverContent, staticColorMode: staticColorMode
+                            popoverContent: popoverContent, backgroundMode: backgroundMode
                         )
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
                     )
@@ -39,7 +76,7 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
         @Binding var showPopover: Bool
         let popoverSize: CGSize?
         let popoverContent: () -> PopoverContent
-        let staticColorMode: Bool?
+        let backgroundMode: WithPopoverColorMode
 
         func makeUIViewController(
             context: UIViewControllerRepresentableContext<Wrapper<PopoverContent>>
@@ -47,7 +84,7 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
             return WrapperViewController(
                 popoverSize: popoverSize,
                 popoverContent: popoverContent,
-                staticColorMode: self.staticColorMode
+                backgroundMode: self.backgroundMode
             ) {
                 self.showPopover = false
             }
@@ -74,20 +111,24 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
         var popoverSize: CGSize?
         let popoverContent: () -> PopoverContent
         let onDismiss: () -> Void
-        let staticColorMode: Bool?
+        let backgroundMode: WithPopoverColorMode
         var popoverVC: UIViewController?
+
+        var isDarkMode: Bool {
+            self.traitCollection.userInterfaceStyle == .dark
+        }
 
         required init?(coder: NSCoder) { fatalError("") }
         init(
             popoverSize: CGSize?,
             popoverContent: @escaping () -> PopoverContent,
-            staticColorMode: Bool? = false,
+            backgroundMode: WithPopoverColorMode,
             onDismiss: @escaping () -> Void
         ) {
             self.popoverSize = popoverSize
             self.popoverContent = popoverContent
             self.onDismiss = onDismiss
-            self.staticColorMode = staticColorMode
+            self.backgroundMode = backgroundMode
             super.init(nibName: nil, bundle: nil)
         }
 
@@ -95,14 +136,18 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
             super.viewDidLoad()
         }
 
+        override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+            super.traitCollectionDidChange(previousTraitCollection)
+
+            setColors(vc: popoverVC)
+        }
+
         func showPopover() {
             guard popoverVC == nil else { return }
             let vc = UIHostingController(rootView: popoverContent())
             if let size = popoverSize { vc.preferredContentSize = size }
             vc.modalPresentationStyle = UIModalPresentationStyle.popover
-            vc.view.backgroundColor =
-                self.staticColorMode!
-                ? UIColor.Tour.Background.lightVariant : UIColor.Tour.Background
+            setColors(vc: vc)
             if let popover = vc.popoverPresentationController {
                 popover.sourceView = view
                 popover.delegate = self
@@ -140,6 +185,18 @@ struct WithPopover<Content: View, PopoverContent: View>: View {
             -> UIModalPresentationStyle
         {
             return .none
+        }
+
+        func setColors(vc: UIViewController?) {
+            guard let vc = vc else {
+                return
+            }
+            switch backgroundMode {
+            case .staticBackground(let color):
+                vc.view.backgroundColor = color
+            case .dyanmicBackground(let light, let dark):
+                vc.view.backgroundColor = isDarkMode ? dark : light
+            }
         }
     }
 }

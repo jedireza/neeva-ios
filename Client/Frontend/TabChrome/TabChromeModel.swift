@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import Combine
+import Defaults
 import Shared
 import SwiftUI
 
@@ -32,6 +33,11 @@ class TabChromeModel: ObservableObject {
     @Published var inlineToolbar: Bool
 
     @Published var isPage: Bool
+
+    /// True when user has clicked education on SRP and is now not on an SRP
+    @Published var showTryCheatsheetPopover: Bool = false
+    private var publishedTabObserver: AnyCancellable?
+    private var tryCheatsheetPopoverObserver: AnyCancellable?
 
     var showTopCardStrip: Bool {
         FeatureFlag[.cardStrip] && FeatureFlag[.topCardStrip] && inlineToolbar
@@ -69,6 +75,7 @@ class TabChromeModel: ObservableObject {
                     }
                 }
                 .store(in: &subscriptions)
+            setupTryCheatsheetPopoverObserver()
         }
     }
     weak var toolbarDelegate: ToolbarDelegate?
@@ -91,6 +98,23 @@ class TabChromeModel: ObservableObject {
     @Published var currentCheatsheetURL: URL? = nil
 
     @Published var currentCheatsheetFaviconURL: URL? = nil
+    
+    private var inlineToolbarHeight: CGFloat {
+        return UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+            + (showTopCardStrip ? CardControllerUX.Height : 0)
+    }
+
+    private var portraitHeight: CGFloat {
+        return UIConstants.PortraitToolbarHeight
+            + (showTopCardStrip ? CardControllerUX.Height : 0)
+    }
+
+    var topBarHeight: CGFloat {
+        return inlineToolbar ? inlineToolbarHeight : portraitHeight
+    }
+
+    @Published var keyboardShowing = false
+    @Published var bottomBarHeight: CGFloat = 0
 
     init(
         canGoBack: Bool = false, canGoForward: Bool = false, isPage: Bool = false,
@@ -122,20 +146,38 @@ class TabChromeModel: ObservableObject {
         SceneDelegate.getBVC(with: topBarDelegate?.tabManager.scene).hideZeroQuery()
     }
 
-    private var inlineToolbarHeight: CGFloat {
-        return UIConstants.TopToolbarHeightWithToolbarButtonsShowing
-            + (showTopCardStrip ? CardControllerUX.Height : 0)
-    }
+    func setupTryCheatsheetPopoverObserver() {
+        publishedTabObserver?.cancel()
+        tryCheatsheetPopoverObserver?.cancel()
 
-    private var portraitHeight: CGFloat {
-        return UIConstants.PortraitToolbarHeight
-            + (showTopCardStrip ? CardControllerUX.Height : 0)
-    }
+        guard let tabManager = topBarDelegate?.tabManager else { return }
 
-    var topBarHeight: CGFloat {
-        return inlineToolbar ? inlineToolbarHeight : portraitHeight
+        publishedTabObserver = tabManager.selectedTabPublisher
+            .sink { [weak self] tab in
+                self?.tryCheatsheetPopoverObserver?.cancel()
+                guard let tab = tab else { return }
+                self?.tryCheatsheetPopoverObserver = Publishers.CombineLatest(
+                    Defaults.publisher(.showTryCheatsheetPopover),
+                    tab.$url
+                )
+                .map { showPopover, url -> Bool in
+                    // extra check in case the query flag changed between launches
+                    guard NeevaFeatureFlags[.cheatsheetQuery],
+                          showPopover.newValue,
+                          let url = url,
+                          // this returns false for nil value
+                          !NeevaConstants.isNeevaSearchResultPage(url),
+                          // avoid flashing the popover when app launches
+                          !(url.scheme == InternalURL.scheme)
+                    else { return false }
+                    return true
+                }
+                .receive(on: DispatchQueue.main)
+                .sink { [weak self] in
+                    self?.showTryCheatsheetPopover = $0
+                    // switching tab right after setting the bool sometimes does not trigger a UI change
+                    self?.objectWillChange.send()
+                }
+            }
     }
-
-    @Published var keyboardShowing = false
-    @Published var bottomBarHeight: CGFloat = 0
 }

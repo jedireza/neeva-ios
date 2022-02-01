@@ -176,6 +176,7 @@ struct CheatsheetNoResultView: View {
 
 public struct CheatsheetMenuView: View {
     @Default(.seenCheatsheetIntro) var seenCheatsheetIntro: Bool
+    @Default(.showTryCheatsheetPopover) var defaultShowTryCheatsheetPopover: Bool
     @Default(.cheatsheetDebugQuery) var cheatsheetDebugQuery: Bool
 
     @Environment(\.hideOverlay) private var hideOverlay
@@ -194,7 +195,10 @@ public struct CheatsheetMenuView: View {
         ZStack {
             // Show Cheatsheet Info if on Search Result Page
             if NeevaConstants.isNeevaSearchResultPage(model.currentPageURL) {
-                CheatsheetInfoView(buttonText: "Got it!") { hideOverlay() }
+                CheatsheetInfoView(buttonText: "Got it!") {
+                    hideOverlay()
+                    defaultShowTryCheatsheetPopover = true
+                }
             } else if !seenCheatsheetIntro {
                 CheatsheetInfoView(buttonText: "Let's try it!") { seenCheatsheetIntro = true }
             } else if model.cheatsheetDataLoading {
