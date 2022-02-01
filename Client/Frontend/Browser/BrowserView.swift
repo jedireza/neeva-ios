@@ -103,7 +103,7 @@ struct BrowserView: View {
                             UIConstants.enableBottomURLBar ? .bottom : .top,
                             detailViewVisible ? 0 : chromeModel.topBarHeight
                         )
-                        .background(Color.white)
+                        .background(Color.background)
 
                     // Top Bar
                     VStack {
