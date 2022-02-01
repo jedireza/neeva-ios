@@ -1714,18 +1714,6 @@ extension BrowserViewController {
                         self.presentDBPromptView()
                         Defaults[.didShowDefaultBrowserInterstitial] = true
                     }
-
-                    if let experimentArm = NeevaExperiment.arm(for: .defaultBrowserPrompt) {
-                        ClientLogger.shared.logCounter(
-                            .DefaultBrowserExperiment,
-                            attributes: [
-                                ClientLogCounterAttribute(
-                                    key: LogConfig.PromoCardAttribute.defaultBrowserPromptExperimentArm,
-                                    value: experimentArm.rawValue
-                                )
-                            ]
-                        )
-                    }
                 }
             }
         }

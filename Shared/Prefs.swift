@@ -163,6 +163,11 @@ extension Defaults.Keys {
         "didShowDefaultBrowserInterstitial")
     public static let didSetDefaultBrowser = Defaults.BoolKey(
         "didSetDefaultBrowser")
+
+    public static let loggedDefaultBrowserExperiment = Defaults.BoolKey(
+        "loggedDefaultBrowserExperiment", default: false)
+    public static let lastDefaultBrowserPromptInteraction = Defaults.Key<String?>(
+        "lastDefaultBrowserPromptInteraction")
 }
 
 extension Defaults {
