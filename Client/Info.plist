@@ -53,8 +53,6 @@
 	<false/>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
-		<string>neeva-focus</string>
-		<string>neeva-klar</string>
 		<string>ymail</string>
 		<string>ms-outlook</string>
 		<string>airmail</string>
@@ -69,6 +67,7 @@
 		<string>twitter</string>
 		<string>fb</string>
 		<string>linkedin</string>
+		<string>zoomus</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
