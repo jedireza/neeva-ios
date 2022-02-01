@@ -11,6 +11,7 @@ class SwitcherToolbarModel: ObservableObject {
     let createNewSpace: () -> Void
     private let onNeevaMenuAction: (NeevaMenuAction) -> Void
     @Published private(set) var isIncognito: Bool
+    @Published var dragOffset: CGFloat? = nil
 
     init(
         tabManager: TabManager,
@@ -37,7 +38,6 @@ class SwitcherToolbarModel: ObservableObject {
 /// The toolbar for the card grid/tab switcher
 struct SwitcherToolbarView: View {
     let top: Bool
-    var dragOffset: CGFloat? = nil
 
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var browserModel: BrowserModel

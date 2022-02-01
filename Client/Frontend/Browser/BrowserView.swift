@@ -21,8 +21,6 @@ struct BrowserView: View {
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
-    @ObservedObject var tabGroupModel: TabGroupCardModel
-    @ObservedObject var spaceModel: SpaceCardModel
     @ObservedObject var simulatedBackModel: SimulatedSwipeModel
 
     private var detailViewVisible: Bool {
@@ -186,8 +184,6 @@ struct BrowserView: View {
         self.gridModel = bvc.gridModel
         self.chromeModel = bvc.chromeModel
         self.overlayManager = bvc.overlayManager
-        self.tabGroupModel = bvc.gridModel.tabGroupCardModel
-        self.spaceModel = bvc.gridModel.spaceCardModel
         self.browserModel = bvc.browserModel
         self.simulatedBackModel = bvc.simulateBackModel
     }

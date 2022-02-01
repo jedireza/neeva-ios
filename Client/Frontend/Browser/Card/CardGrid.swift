@@ -60,8 +60,7 @@ struct CardGrid: View {
 
     @ViewBuilder var topBar: some View {
         if topToolbar {
-            SwitcherToolbarView(
-                top: true, dragOffset: gridModel.dragOffset)
+            SwitcherToolbarView(top: true)
         } else {
             GridPicker()
         }
@@ -118,10 +117,7 @@ struct CardGrid: View {
                             ? Color.TrayBackground : Color.clear
                     )
                     .modifier(
-                        SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel) {
-                            offset in
-                            gridModel.dragOffset = offset
-                        })
+                        SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
 
                 if gridModel.isLoading {
                     loadingIndicator
@@ -278,6 +274,7 @@ struct GridPicker: View {
     var isInToolbar = false
 
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var switcherToolbarModel: SwitcherToolbarModel
     @EnvironmentObject var browserModel: BrowserModel
 
     @State var selectedIndex: Int = 1
@@ -303,16 +300,16 @@ struct GridPicker: View {
                         symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
                         selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
                         selectedAction: gridModel.switchToSpaces),
-                ], selectedSegmentIndex: $selectedIndex, dragOffset: gridModel.dragOffset
+                ], selectedSegmentIndex: $selectedIndex, dragOffset: switcherToolbarModel.dragOffset
             )
             .useEffect(deps: gridModel.switcherState) { _ in
                 switch gridModel.switcherState {
                 case .tabs:
-                    if gridModel.dragOffset == nil {
+                    if switcherToolbarModel.dragOffset == nil {
                         selectedIndex = 1
                     }
                 case .spaces:
-                    if gridModel.dragOffset == nil {
+                    if switcherToolbarModel.dragOffset == nil {
                         selectedIndex = 2
                     }
 
@@ -323,7 +320,7 @@ struct GridPicker: View {
                 }
             }
             .useEffect(deps: gridModel.isIncognito) { isIncognito in
-                if gridModel.switcherState == .tabs && gridModel.dragOffset == nil {
+                if gridModel.switcherState == .tabs && switcherToolbarModel.dragOffset == nil {
                     selectedIndex = isIncognito ? 0 : 1
                 }
             }
@@ -348,8 +345,9 @@ struct GridPicker: View {
 struct SwipeToSwitchToSpacesGesture: ViewModifier {
     let gridModel: GridModel
     let tabModel: TabCardModel
-    let horizontalOffsetChanged: (CGFloat?) -> Void
     var fromPicker: Bool = false
+
+    @EnvironmentObject var switcherToolbarModel: SwitcherToolbarModel
 
     private var gesture: some Gesture {
         DragGesture()
@@ -363,6 +361,10 @@ struct SwipeToSwitchToSpacesGesture: ViewModifier {
             .onEnded { value in
                 horizontalOffsetChanged(nil)
             }
+    }
+
+    private func horizontalOffsetChanged(_ offset: CGFloat?) {
+        switcherToolbarModel.dragOffset = offset
     }
 
     func body(content: Content) -> some View {
