@@ -166,7 +166,7 @@ class TabChromeModel: ObservableObject {
                           showPopover.newValue,
                           let url = url,
                           // this returns false for nil value
-                          !NeevaConstants.isNeevaSearchResultPage(url),
+                          !NeevaConstants.isInNeevaDomain(url),
                           // avoid flashing the popover when app launches
                           !(url.scheme == InternalURL.scheme)
                     else { return false }
