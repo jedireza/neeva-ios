@@ -37,16 +37,6 @@ struct CollapsedCardGroupView: View {
 
     @ViewBuilder
     private var scrollView: some View {
-        // ScrollView clips child views by default, so here ScrollView is resized
-        // to make CardTransitionModifier visible. TopSpace and BottomSpace are
-        // paddings needed to make ScrollView look in place when it's resized.
-        let topSpace =
-            browserModel.cardTransition == .hidden
-            ? 0 : self.frame.minY - containerGeometry.frame(in: .global).minY
-        let bottomSpace =
-            browserModel.cardTransition == .hidden
-            ? 0 : containerGeometry.frame(in: .global).maxY - self.frame.maxY
-
         ScrollViewReader { scrollProxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(
@@ -67,25 +57,20 @@ struct CollapsedCardGroupView: View {
                 .padding(
                     .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
                 )
-                .background(
-                    GeometryReader { geom in
-                        Color.clear.useEffect(deps: geom.frame(in: .global)) { frame in
-                            self.frame = frame
-                        }
-                    }
-                )
-                .padding(.top, topSpace)
-                .padding(.bottom, bottomSpace)
-
             }
-            .padding(.top, -topSpace)
-            .padding(.bottom, -bottomSpace)
             .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
                 if groupDetails.allDetails.contains(where: \.isSelected) {
                     withAnimation(nil) {
                         scrollProxy.scrollTo(groupDetails.allDetails.first(where: \.isSelected)?.id)
                     }
                 }
+            }
+            .introspectScrollView { scrollView in
+                // Hack: trigger SwiftUI to run this code each time an instance of this View type is
+                // instantiated. This works by referencing an input parameter (groupDetails), which causes
+                // SwiftUI to think that this ViewModifier needs to be evaluated again.
+                let _ = groupDetails
+                scrollView.clipsToBounds = false
             }
         }
     }
