@@ -38,16 +38,20 @@ increment_number() {
 
 # For version numbers of the form (major).(minor).(patch), increment the patch
 # number and return the resulting version string.
-increment_version_patch() {
-    if [ $# != 1 ]; then
-        echo "increment_version_patch: expected one argument"
+increment_version() {
+    if [ $# != 2 ]; then
+        echo "increment_version: expected two arguments"
         exit 1
     fi
     version=$1
     major=$(echo "$version" | cut -d'.' -f1)
     minor=$(echo "$version" | cut -d'.' -f2)
     patch=$(echo "$version" | cut -d'.' -f3)
-    echo "$major.$minor.$(increment_number $patch)"
+    if [ $2 = "minor" ]; then
+      echo "$major.$(increment_number $minor).$patch"
+    else
+      echo "$major.$minor.$(increment_number $patch)"
+    fi    
 }
 
 # On "main", build numbers are just single integers, but on release branches
@@ -79,7 +83,13 @@ echo "Current version info:"
 echo "  MARKETING_VERSION = $MARKETING_VERSION"
 echo "  CURRENT_PROJECT_VERSION = $CURRENT_PROJECT_VERSION"
 
-PROPOSED_MARKETING_VERSION=$(increment_version_patch $MARKETING_VERSION)
+# if CREATE_BRANCH is set in build script, we should bump the minor version
+if [ -n "$CREATE_BRANCH" ] && $CREATE_BRANCH && is_branch_of_main; then
+  PROPOSED_MARKETING_VERSION=$(increment_version $MARKETING_VERSION minor)
+else
+  PROPOSED_MARKETING_VERSION=$(increment_version $MARKETING_VERSION patch)
+fi
+
 PROPOSED_CURRENT_PROJECT_VERSION=$(increment_build_number $CURRENT_PROJECT_VERSION)
 
 echo "Proposed version info:"

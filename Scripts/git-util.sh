@@ -24,6 +24,11 @@ is_branch_of_main() {
     test "$(get_remote_branch)" = "origin/main"
 }
 
+# Check if current branch is a release branch.
+is_branch_of_release() {
+    [[ $(get_remote_branch) =~ origin/Build-* ]]
+}
+
 # Check if there are uncommitted files.
 has_uncommitted_files() {
     test -n "$(git status -s | grep -v '^?? ')"
