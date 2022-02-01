@@ -188,7 +188,7 @@ struct TabContainerContent: View {
                         )
                     }
 
-                    if NeevaFeatureFlags[.recipeCheatsheet]
+                    if NeevaFeatureFlags[.recipeCheatsheet] && !NeevaFeatureFlags[.cheatsheetQuery]
                         && !bvc.tabManager.isIncognito && NeevaUserInfo.shared.hasLoginCookie()
                     {
                         GeometryReader { geo in
