@@ -17,9 +17,6 @@ while getopts "ebv" option; do
     b) # create branch
        CREATE_BRANCH=true
        ;;
-    v) # bump version
-       BUMP_VERSION=true
-       ;;
   esac
 done
 
@@ -73,11 +70,18 @@ Scripts/tag-release.sh
 
 if $CREATE_BRANCH; then
   $SCRIPTS_DIR/branch-release.sh
-  $SCRIPTS_DIR/prepare-for-next-release.sh
-  # switch back to main for preparing next version
-  git checkout main
-  $SCRIPTS_DIR/prepare-for-next-release.sh
-elif $BUMP_VERSION; then
+fi
+
+read -r -p "Bump up the version for next build? [Y/n] " response
+if [[ "$response" =~ ^([nN][oO]?)$ ]]
+then
+  continue
+else
+  if $CREATE_BRANCH; then
+    $SCRIPTS_DIR/prepare-for-next-release.sh
+    # switch back to main for preparing next version
+    git checkout main
+  fi
   $SCRIPTS_DIR/prepare-for-next-release.sh
 fi
 
