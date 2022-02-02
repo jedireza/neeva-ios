@@ -50,8 +50,9 @@ struct FindInPageView: View {
             .padding(.top, 4)
 
             Spacer()
-        }.frame(height: FindInPageViewUX.height)
-            .background(Color(UIColor.systemGroupedBackground))
+        }
+        .frame(height: FindInPageViewUX.height)
+        .background(Color(UIColor.systemGroupedBackground))
     }
 }
 

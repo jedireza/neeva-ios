@@ -4,30 +4,12 @@
 
 import Foundation
 
+@testable import Client
+
 extension UITestBase {
     // MARK: - Tab & URL
     func closeAllTabs() {
-        if tester().viewExistsWithLabel("Done") {
-            tester().longPressView(withAccessibilityLabel: "Done", duration: 1)
-        } else {
-            tester().waitForView(withAccessibilityLabel: "Show Tabs")
-            tester().longPressView(withAccessibilityLabel: "Show Tabs", duration: 1)
-        }
-
-        if tester().viewExistsWithLabel("Close All Tabs") {
-            tester().tapView(withAccessibilityLabel: "Close All Tabs")
-
-            tester().waitForView(withAccessibilityLabel: "Confirm Close All Tabs")
-            tester().tapView(withAccessibilityLabel: "Confirm Close All Tabs")
-        } else {
-            tester().waitForView(withAccessibilityIdentifier: "Close Tab Action")
-            tester().tapView(withAccessibilityIdentifier: "Close Tab Action")
-        }
-
-        if getNumberOfTabs() == 0 {
-            tester().tapView(withAccessibilityLabel: "Add Tab")
-            openURL(openAddressBar: false)
-        }
+        SceneDelegate.getBVC(for: nil).closeAllTabsCommand()
     }
 
     func openNewTab(to url: String = "example.com ") {

@@ -164,6 +164,7 @@ struct SwitcherToolbarView: View {
                         gridModel.buildCloseAllTabsMenu(sourceView: button)
                     }
                     button.isEnabled = !tabModel.isCardGridEmpty
+                    button.accessibilityLabel = "Done"
                 }
                 .tapTargetFrame()
                 .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)

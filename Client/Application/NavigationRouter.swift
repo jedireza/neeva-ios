@@ -168,7 +168,7 @@ enum NavigationPath {
     }
 
     private static func handleClosePrivateTabs(with bvc: BrowserViewController) {
-        bvc.tabManager.removeTabs(bvc.tabManager.privateTabs, updatingSelectedTab: true)
+        bvc.tabManager.removeTabs(bvc.tabManager.privateTabs)
         guard let tab = mostRecentTab(inTabs: bvc.tabManager.normalTabs) else {
             bvc.tabManager.selectTab(bvc.tabManager.addTab())
             return

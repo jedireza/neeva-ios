@@ -145,7 +145,7 @@ extension BrowserViewController {
                 .ClickCloseAllTabs,
                 attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
             )
-            TabMenu(tabManager: tabManager).showConfirmCloseAllTabs(sourceView: nil)
+            TabMenu(tabManager: tabManager).showConfirmCloseAllTabs(sourceView: targetButtonView)
         case .support:
             // This will log twice.
             ClientLogger.shared.logCounter(
