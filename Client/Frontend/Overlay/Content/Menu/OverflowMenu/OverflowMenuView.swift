@@ -96,7 +96,7 @@ public struct OverflowMenuView: View {
     }
 
     var frameHeight: CGFloat {
-        height + (showNewMenu ? Self.heightPeekingOffset : 0)
+        height + (showNewMenu ? Self.heightPeekingOffset : GroupedCellUX.spacing * 2)
     }
 
     public var body: some View {
