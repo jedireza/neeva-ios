@@ -116,8 +116,10 @@ public struct SingleLineTextField<Icon: View>: View {
                         if focusTextField && !focusedTextField {
                             focusedTextField = true
 
-                            textField.becomeFirstResponder()
-                            textField.selectAll(nil)
+                            DispatchQueue.main.async {
+                                textField.becomeFirstResponder()
+                                textField.selectAll(nil)
+                            }
                         }
                     }
                     .background(
