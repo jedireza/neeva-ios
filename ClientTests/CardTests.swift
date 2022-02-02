@@ -81,7 +81,7 @@ class CardTests: XCTestCase {
     override func tearDown() {
         profile._shutdown()
         manager.removeDelegate(delegate)
-        manager.removeAll(updatingSelectedTab: false)
+        manager.removeAllTabs()
 
         super.tearDown()
     }

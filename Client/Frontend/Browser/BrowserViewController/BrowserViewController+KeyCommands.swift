@@ -55,7 +55,7 @@ extension BrowserViewController {
             return
         }
 
-        tabManager.removeTabsWithToast([currentTab])
+        tabManager.removeTabs([currentTab])
     }
 
     @objc func nextTabKeyCommand() {
@@ -95,13 +95,10 @@ extension BrowserViewController {
             // wait for tabManager to switch to normal mode before closing private tabs
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
                 tabManager.removeTabs(
-                    tabManager.privateTabs, showToast: true,
-                    addNormalTab: browserModel.showContent)
+                    tabManager.privateTabs, showToast: false)
             }
         } else {
-            tabManager.removeTabs(
-                tabManager.normalTabs, showToast: true,
-                addNormalTab: browserModel.showContent)
+            tabManager.removeTabs(tabManager.normalTabs)
         }
     }
 

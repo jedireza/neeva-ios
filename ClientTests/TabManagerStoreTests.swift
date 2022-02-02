@@ -44,7 +44,8 @@ class TabManagerStoreTests: XCTestCase {
             isPrivate: isPrivate)
         tab.setURL("http://yahoo.com")
         manager.configureTab(
-            tab, request: URLRequest(url: tab.url!), flushToDisk: false, zombie: false)
+            tab, request: URLRequest(url: tab.url!), flushToDisk: false, zombie: false, notify: true
+        )
         tab.sessionData = SessionData(
             currentPage: 0, urls: [tab.url!], queries: [nil],
             lastUsedTime: Date.nowMilliseconds())
@@ -83,7 +84,7 @@ class TabManagerStoreTests: XCTestCase {
         }
 
         // Remove all tabs, and add just 1 tab
-        manager.removeAll(updatingSelectedTab: true)
+        manager.removeAllTabs()
         addTabWithSessionData()
         waitForCondition {
             self.manager.testTabCountOnDisk() == 1

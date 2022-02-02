@@ -310,7 +310,7 @@ class TabManager: NSObject, ObservableObject {
         let popup = Tab(bvc: bvc, configuration: configuration, isPrivate: parentTab.isIncognito)
         configureTab(
             popup, request: nil, afterTab: parentTab, flushToDisk: true, zombie: false,
-            isPopup: true)
+            isPopup: true, notify: true)
 
         // Wait momentarily before selecting the new tab, otherwise the parent tab
         // may be unable to set `window.location` on the popup immediately after
@@ -325,11 +325,11 @@ class TabManager: NSObject, ObservableObject {
     @discardableResult func addTab(
         _ request: URLRequest! = nil, configuration: WKWebViewConfiguration! = nil,
         afterTab: Tab? = nil, isPrivate: Bool = false, query: String? = nil,
-        visitType: VisitType? = nil
+        visitType: VisitType? = nil, notify: Bool = true
     ) -> Tab {
         return self.addTab(
             request, configuration: configuration, afterTab: afterTab, flushToDisk: true,
-            zombie: false, isPrivate: isPrivate, query: query, visitType: visitType)
+            zombie: false, isPrivate: isPrivate, query: query, visitType: visitType, notify: notify)
     }
 
     func addTabsForURLs(_ urls: [URL], zombie: Bool) {
@@ -341,7 +341,8 @@ class TabManager: NSObject, ObservableObject {
 
         var tab: Tab!
         for url in urls {
-            tab = self.addTab(URLRequest(url: url), flushToDisk: false, zombie: zombie)
+            tab = self.addTab(
+                URLRequest(url: url), flushToDisk: false, zombie: zombie, notify: false)
         }
 
         // Select the most recent.
@@ -357,7 +358,7 @@ class TabManager: NSObject, ObservableObject {
         _ request: URLRequest? = nil, webView: WKWebView? = nil,
         configuration: WKWebViewConfiguration? = nil, atIndex: Int? = nil, afterTab: Tab? = nil,
         flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false, query: String? = nil,
-        visitType: VisitType? = nil
+        visitType: VisitType? = nil, notify: Bool = true
     ) -> Tab {
         assert(Thread.isMainThread)
 
@@ -369,7 +370,8 @@ class TabManager: NSObject, ObservableObject {
         let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
         configureTab(
             tab, request: request, webView: webView, atIndex: atIndex, afterTab: afterTab,
-            flushToDisk: flushToDisk, zombie: zombie, query: query, visitType: visitType)
+            flushToDisk: flushToDisk, zombie: zombie, query: query, visitType: visitType,
+            notify: notify)
 
         return tab
     }
@@ -444,7 +446,7 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil) {
+    func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil, notify: Bool) {
         if let atIndex = atIndex, atIndex <= tabs.count {
             tabs.insert(tab, at: atIndex)
         } else if parent == nil || parent?.isIncognito != tab.isIncognito {
@@ -464,16 +466,18 @@ class TabManager: NSObject, ObservableObject {
             tabs.insert(tab, at: insertIndex)
         }
 
-        delegates.forEach {
-            $0.get()?.tabManager(self, didAddTab: tab, isRestoring: store.isRestoringTabs)
+        if notify {
+            delegates.forEach {
+                $0.get()?.tabManager(self, didAddTab: tab, isRestoring: store.isRestoringTabs)
+            }
+            objectWillChange.send()
         }
-        objectWillChange.send()
     }
 
     func configureTab(
         _ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, atIndex: Int? = nil,
         afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false,
-        query: String? = nil, visitType: VisitType? = nil
+        query: String? = nil, visitType: VisitType? = nil, notify: Bool
     ) {
         assert(Thread.isMainThread)
 
@@ -481,7 +485,7 @@ class TabManager: NSObject, ObservableObject {
         // We should set request url in order to show url in url bar even no network
         tab.setURL(request?.url)
 
-        insertTab(tab, atIndex: atIndex, parent: parent)
+        insertTab(tab, atIndex: atIndex, parent: parent, notify: notify)
 
         if let webView = webView {
             tab.restore(webView)
@@ -617,34 +621,34 @@ class TabManager: NSObject, ObservableObject {
         return false
     }
 
+    func removeAllTabs() {
+        removeTabs(tabs, showToast: false)
+    }
+
     private func removeAllPrivateTabs() {
         removeTabs(privateTabs, updatingSelectedTab: true)
         privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
     }
 
-    func removeTabs(_ tabsToBeRemoved: [Tab], showToast: Bool, addNormalTab: Bool) {
-        addTabsToRecentlyClosed(tabsToBeRemoved, allowToast: showToast)
-        removeTabs(tabsToBeRemoved, updatingSelectedTab: true)
-
-        if normalTabs.isEmpty {
-            if addNormalTab {
-                selectTab(addTab())
-            } else {
-                SceneDelegate.getBVC(with: scene).showTabTray()
-            }
+    func removeTabs(
+        _ tabsToBeRemoved: [Tab], showToast: Bool = true
+    ) {
+        guard tabsToBeRemoved.count > 0 else {
+            return
         }
-    }
 
-    func removeAllTabs(addNormalTab: Bool = true) {
-        removeTabs(tabs, showToast: false, addNormalTab: addNormalTab)
-    }
+        addTabsToRecentlyClosed(tabsToBeRemoved, allowToast: showToast)
 
-    func removeTabsWithToast(_ tabsToRemove: [Tab]) {
-        addTabsToRecentlyClosed(tabsToRemove, allowToast: true)
-        removeTabs(tabsToRemove, updatingSelectedTab: true)
+        let lastTab = tabsToBeRemoved[tabsToBeRemoved.count - 1]
+        let lastTabIndex = tabs.firstIndex(of: lastTab)
+        let tabsToKeep = self.tabs.filter { !tabsToBeRemoved.contains($0) }
+        self.tabs = tabsToKeep
 
-        tabsToRemove.forEach({ $0.hideContent() })
-        delegates.forEach { $0.get()?.tabManagerDidRemoveAllTabs(self) }
+        if let lastTabIndex = lastTabIndex {
+            updateTabAfterRemovalOf(lastTab, deletedIndex: lastTabIndex)
+        }
+
+        storeChanges()
     }
 
     func addTabsToRecentlyClosed(_ tabs: [Tab], allowToast: Bool) {
@@ -730,17 +734,23 @@ class TabManager: NSObject, ObservableObject {
         _ = restoreSavedTabs(Array(recentlyClosedTabs.joined()))
     }
 
-    func removeAll(updatingSelectedTab: Bool) {
-        removeTabs(self.tabs, updatingSelectedTab: updatingSelectedTab)
-    }
-
     func removeTabs(_ tabs: [Tab], updatingSelectedTab: Bool) {
-        for index in 0..<tabs.count {
-            if index + 1 == tabs.count && updatingSelectedTab {
-                removeTabAndUpdateSelectedTab(tabs[index])
-            } else {
-                removeTab(tabs[index], flushToDisk: false, notify: true)
-            }
+        guard tabs.count > 0 else {
+            return
+        }
+
+        var tabsExcludingLast = tabs
+
+        if updatingSelectedTab {
+            tabsExcludingLast.removeLast()
+        }
+
+        let filteredTabs = self.tabs.filter { !tabs.contains($0) }
+        self.tabs = filteredTabs
+
+        // Update the selected tab after removing the last tab
+        if updatingSelectedTab {
+            removeTabAndUpdateSelectedTab(tabs[tabs.count - 1])
         }
 
         storeChanges()

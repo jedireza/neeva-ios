@@ -32,8 +32,7 @@ struct TabMenu {
             style: .destructive
         ) { [self] _ in
             tabManager.removeTabs(
-                isIncognito ? tabManager.privateTabs : tabManager.normalTabs, showToast: false,
-                addNormalTab: false)
+                isIncognito ? tabManager.privateTabs : tabManager.normalTabs, showToast: false)
         }
         closeAction.accessibilityLabel = "Confirm Close All Tabs"
 

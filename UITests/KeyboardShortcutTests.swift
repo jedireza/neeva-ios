@@ -16,14 +16,8 @@ class KeyboardShortcutTests: UITestBase {
         webRoot = SimplePageServer.start()
     }
 
-    func reset(tester: KIFUITestActor) {
-        let tabManager = bvc.tabManager
-
-        if bvc.tabManager.selectedTab?.isIncognito ?? false {
-            tabManager.toggleIncognitoMode()
-        }
-
-        tabManager.removeTabs(tabManager.tabs, showToast: false, addNormalTab: true)
+    func reset() {
+        bvc.closeAllTabsCommand()
     }
 
     func openMultipleTabs(tester: KIFUITestActor) {
@@ -37,53 +31,30 @@ class KeyboardShortcutTests: UITestBase {
         bvc.previousTabKeyCommand()
     }
 
-    func testReloadTab() {
-        openNewTab()
-        bvc.reloadTabKeyCommand()
-        reset(tester: tester())
-    }
-
-    // MARK: Navigation Tests
-    func goBack() {
-        openNewTab()
-        bvc.goBackKeyCommand()
-    }
-
-    func testGoBack() {
-        goBack()
-        reset(tester: tester())
-    }
-
-    func testGoForward() {
-        goBack()
-        bvc.goForwardKeyCommand()
-        reset(tester: tester())
-    }
-
     // MARK: Find in Page
     func testFindInPageKeyCommand() {
         openNewTab()
         bvc.findInPageKeyCommand()
-        reset(tester: tester())
+        try! tester().tryFindingView(withAccessibilityIdentifier: "FindInPage_Done")
+        
+        reset()
     }
 
     // MARK: UI
     func testSelectLocationBarKeyCommand() {
-        openURL()
+        openNewTab()
 
         bvc.selectLocationBarKeyCommand()
         openURL(openAddressBar: false)
 
-        reset(tester: tester())
+        reset()
     }
 
     func testShowTabTrayKeyCommand() {
+        openNewTab()
         bvc.showTabTrayKeyCommand()
-
-        tester().wait(forTimeInterval: 5)
-        tester().waitForView(withAccessibilityLabel: "Done")
-        tester().tapView(withAccessibilityLabel: "Done")
-        reset(tester: tester())
+        tester().waitForView(withAccessibilityLabel: "Normal Tabs")
+        reset()
     }
 
     // MARK: Tab Mangement
@@ -92,7 +63,7 @@ class KeyboardShortcutTests: UITestBase {
 
         // Make sure Lazy Tab popped up
         tester().waitForView(withAccessibilityLabel: "Cancel")
-        reset(tester: tester())
+        reset()
     }
 
     func testNewPrivateTabKeyCommand() {
@@ -102,47 +73,38 @@ class KeyboardShortcutTests: UITestBase {
         tester().waitForView(withAccessibilityLabel: "Cancel")
 
         XCTAssert(bvc.tabManager.selectedTab?.isIncognito == true)
-        reset(tester: tester())
+        reset()
     }
 
     func testCloseTabKeyCommand() {
-        openURL()
         openNewTab(to: "\(webRoot!)/numberedPage.html?page=1")
-        XCTAssert(bvc.tabManager.tabs.count == 2)
+        XCTAssertEqual(bvc.tabManager.tabs.count, 2)
         tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
 
         bvc.closeTabKeyCommand()
-        XCTAssert(bvc.tabManager.tabs.count == 1)
-        tester().waitForWebViewElementWithAccessibilityLabel("Example Domain")
+        XCTAssertEqual(bvc.tabManager.tabs.count, 1)
 
-        reset(tester: tester())
+        reset()
     }
 
     func testNextTabKeyCommand() {
         previousTab(tester: tester())
         bvc.nextTabKeyCommand()
         XCTAssert(bvc.tabManager.selectedTab == bvc.tabManager.tabs[1])
-        reset(tester: tester())
+        reset()
     }
 
     func testPreviousTabCommand() {
         previousTab(tester: tester())
         XCTAssert(bvc.tabManager.selectedTab == bvc.tabManager.tabs[0])
-        reset(tester: tester())
-    }
-
-    func testCloseAllTabKeyCommand() {
-        openNewTab()
-        bvc.closeTabKeyCommand()
-        XCTAssert(bvc.tabManager.tabs.count == 1)
-        reset(tester: tester())
+        reset()
     }
 
     func testCloseAllTabsCommand() {
         openMultipleTabs(tester: tester())
         bvc.closeAllTabsCommand()
-        XCTAssert(bvc.tabManager.tabs.count == 1)
-        reset(tester: tester())
+        XCTAssertTrue(bvc.tabManager.tabs.count == 0)
+        reset()
     }
 
     func testRestoreTabKeyCommand() {
@@ -153,6 +115,6 @@ class KeyboardShortcutTests: UITestBase {
         bvc.restoreTabKeyCommand()
 
         XCTAssert(bvc.tabManager.tabs.count > 1)
-        reset(tester: tester())
+        reset()
     }
 }

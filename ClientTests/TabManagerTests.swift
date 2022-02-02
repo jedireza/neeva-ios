@@ -113,7 +113,7 @@ class TabManagerTests: XCTestCase {
     override func tearDown() {
         profile._shutdown()
         manager.removeDelegate(delegate)
-        manager.removeAll(updatingSelectedTab: false)
+        manager.removeAllTabs()
 
         super.tearDown()
     }
@@ -340,7 +340,7 @@ class TabManagerTests: XCTestCase {
         let tab0 = manager.addTab()
         let tab1 = manager.addTab()
 
-        manager.removeAll(updatingSelectedTab: false)
+        manager.removeAllTabs()
         XCTAssert(nil == manager.tabs.firstIndex(of: tab0))
         XCTAssert(nil == manager.tabs.firstIndex(of: tab1))
     }
