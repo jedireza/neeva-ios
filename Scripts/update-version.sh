@@ -48,7 +48,7 @@ increment_version() {
     minor=$(echo "$version" | cut -d'.' -f2)
     patch=$(echo "$version" | cut -d'.' -f3)
     if [ $2 = "minor" ]; then
-      echo "$major.$(increment_number $minor).$patch"
+      echo "$major.$(increment_number $minor).0"
     else
       echo "$major.$minor.$(increment_number $patch)"
     fi    

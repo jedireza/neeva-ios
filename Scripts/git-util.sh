@@ -33,3 +33,27 @@ is_branch_of_release() {
 has_uncommitted_files() {
     test -n "$(git status -s | grep -v '^?? ')"
 }
+
+# Prompt user to review pending changes and retries 3 times before exiting
+retry_script_prompt_with_uncommitted_files() {
+    i=0
+    while true
+    do
+        # retry 3 times before giving up
+        if has_uncommitted_files; then
+        if [ $i -eq 3 ]; then
+            echo "Retried 3 times. You still have uncommitted files. Please commit or stash, and then re-run prepare next version script."
+            exit 1
+        else
+            echo "****************************************"
+            git status
+            echo "****************************************"
+            echo "You have uncommitted files. Please review changes, commit or stash, Press ENTER to retry. Ctrl+C to cancel."
+            read
+        fi
+    else
+        break
+    fi
+    ((i=i+1))
+    done
+}

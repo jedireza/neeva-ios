@@ -13,6 +13,8 @@ echo "  from = $TAG_NAME"
 echo "Create branch? Press ENTER to continue. Ctrl+C to cancel."
 read
 
+retry_script_prompt_with_uncommitted_files
+
 git checkout -b "$RELEASE_BRANCH_NAME" "$TAG_NAME"
 
 echo "Push branch? Press ENTER to continue. Ctrl+C to cancel."
