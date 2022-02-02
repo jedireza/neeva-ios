@@ -13,7 +13,16 @@ enum CardTransitionState {
 }
 
 class BrowserModel: ObservableObject {
-    @Published var showGrid = false
+    @Published var showGrid = false {
+        didSet {
+            // Ensures toolbars are visible when user closes from the CardGrid.
+            // Expand when set to true, so ready when user returns.
+            if showGrid {
+                scrollingControlModel.showToolbars(animated: true, completion: nil)
+            }
+        }
+    }
+
     /// Like `!showGrid`, but not animated and only set when the web view should be visible
     @Published private(set) var showContent = true
     @Published var cardTransition = CardTransitionState.hidden
