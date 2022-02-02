@@ -6,6 +6,9 @@ import SwiftUI
 
 /// An animatable modifier that is used for observing animations for a given animatable value.
 /// From https://www.avanderlee.com/swiftui/withanimation-completion-callback/
+///
+/// NOTE: This cannot be used reliably with spring animations!
+///
 struct AnimationCompletionObserverModifier<Value>: AnimatableModifier
 where Value: VectorArithmetic {
     /// While animating, SwiftUI changes the old input value to the new target value using this
