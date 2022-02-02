@@ -34,7 +34,6 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
                     .transition(.identity)
             }
         }
-        .ignoresSafeArea(edges: [.bottom])
         .accessibilityHidden(true)
     }
 
@@ -55,9 +54,12 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
         let cardFrame = geom.frame(in: .global)
         let containerFrame = containerGeometry.frame(in: .global)
 
-        let x = containerFrame.minX - cardFrame.minX
+        let x = -cardFrame.minX
         let y = containerFrame.minY - cardFrame.minY
-        let width = containerFrame.size.width
+
+        // It seems that the WebView screenshots are capturing the bleeds, so here we
+        // animate the card to the full width of the screen.
+        let width = UIScreen.main.bounds.width
         let height = containerFrame.size.height - extraBottomPadding + CardUX.HeaderSize
 
         return CGRect(x: x, y: y, width: width, height: height)

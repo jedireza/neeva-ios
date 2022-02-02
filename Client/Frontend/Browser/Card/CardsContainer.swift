@@ -104,12 +104,33 @@ struct CardScrollContainer<Content: View>: View {
 
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var tabModel: TabCardModel
+
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    var landscapeMode: Bool {
+        verticalSizeClass == .compact || horizontalSizeClass == .regular
+    }
 
     var body: some View {
         ScrollView(.vertical, showsIndicators: false) {
             ScrollViewReader(content: content)
         }
+        .accessibilityIdentifier("CardGrid")
+        .accessibilityValue(
+            Text(
+                "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
+            ))
         .environment(\.columns, columns)
+        .introspectScrollView { scrollView in
+            // This is to make sure the overlay card bleeds outside the horizontal and bottom
+            // area in landscape mode. Clipping should be kept in portrait mode because
+            // bottom tool bar needs to be shown.
+            if landscapeMode {
+                scrollView.clipsToBounds = false
+            }
+        }
     }
 }
 

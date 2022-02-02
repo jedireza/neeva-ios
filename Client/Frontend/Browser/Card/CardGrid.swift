@@ -69,11 +69,6 @@ struct CardGrid: View {
     @ViewBuilder var grid: some View {
         VStack(spacing: 0) {
             cardContainer
-                .accessibilityIdentifier("CardGrid")
-                .accessibilityValue(
-                    Text(
-                        "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
-                    ))
         }
     }
 

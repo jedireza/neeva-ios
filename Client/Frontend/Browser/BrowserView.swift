@@ -70,6 +70,7 @@ struct BrowserView: View {
                     gridModel.scrollToSelectedTab()
                 }
                 .accessibilityHidden(browserModel.showContent)
+                .ignoresSafeArea(edges: [.bottom])
 
             tabContainerContent
                 .opacity(browserModel.showContent ? 1 : 0)
