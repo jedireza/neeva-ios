@@ -22,10 +22,10 @@ struct ExperimentSettingsView: View {
                         .foregroundColor(Color.label)
                 }
 
-                OptionalPrefilledStringField<NeevaExperiment.DefaultBrowser>(
+                OptionalPrefilledStringField<NeevaExperiment.DefaultBrowserV2>(
                     "DefaultBrowserPromptView",
                     value: $valueText,
-                    experiment: .defaultBrowserPrompt
+                    experiment: .defaultBrowserPromptV2
                 )
             }
         }

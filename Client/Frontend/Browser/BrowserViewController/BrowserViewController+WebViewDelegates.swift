@@ -1023,12 +1023,12 @@ extension BrowserViewController: WKNavigationDelegate {
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 
-                if let experimentArm = NeevaExperiment.arm(for: .defaultBrowserPrompt),
+                if let experimentArm = NeevaExperiment.arm(for: .defaultBrowserPromptV2),
                     !Defaults[.loggedDefaultBrowserExperiment]
                         && userInfo.hasLoginCookie()
                 {
                     ClientLogger.shared.logCounter(
-                        .DefaultBrowserExperiment,
+                        .DefaultBrowserExperimentV2,
                         attributes: [
                             ClientLogCounterAttribute(
                                 key: LogConfig.PromoCardAttribute.defaultBrowserPromptExperimentArm,

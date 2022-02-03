@@ -181,7 +181,7 @@ public struct LogConfig {
         /// Click sign in on preview home
         case PreviewHomeSignin
         /// Default browser experiment
-        case DefaultBrowserExperiment
+        case DefaultBrowserExperimentV2
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -430,7 +430,7 @@ public struct LogConfig {
         case .PreviewSampleQueryClicked: return .FirstRun
         case .PreviewTapFakeSearchInput: return .FirstRun
         case .PreviewHomeSignin: return .FirstRun
-        case .DefaultBrowserExperiment: return .FirstRun
+        case .DefaultBrowserExperimentV2: return .FirstRun
         case .DefaultBrowserPromptSkip: return .FirstRun
         case .DefaultBrowserPromptOpen: return .FirstRun
             

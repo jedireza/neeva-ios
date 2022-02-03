@@ -44,6 +44,7 @@ struct InternalSettingsView: View {
     @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
     @Default(.didSetDefaultBrowser) var didSetDefaultBrowser
     @Default(.didShowDefaultBrowserInterstitial) var didShowDefaultBrowserInterstitial
+    @Default(.loggedDefaultBrowserExperiment) var loggedDefaultBrowserExperiment
 
     var body: some View {
         List {
@@ -99,6 +100,10 @@ struct InternalSettingsView: View {
                 Toggle(
                     String("didShowDefaultBrowserInterstitial"),
                     isOn: $didShowDefaultBrowserInterstitial
+                )
+                Toggle(
+                    String("loggedDefaultBrowserExperiment"),
+                    isOn: $loggedDefaultBrowserExperiment
                 )
             }
             Section(header: Text(verbatim: "User-generated")) {
