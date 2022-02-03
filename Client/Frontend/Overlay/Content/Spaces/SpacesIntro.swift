@@ -32,11 +32,12 @@ struct SpacesIntroOverlayContent: View {
 }
 
 struct SpacesShareIntroOverlayContent: View {
-    @Environment(\.hideOverlay) private var hideOverlaySheet
+    let onDismiss: () -> Void
     let onShare: () -> Void
+
     var body: some View {
         SpacesIntroView(
-            dismiss: hideOverlaySheet,
+            dismiss: onDismiss,
             imageName: "spaces-share-intro",
             imageAccessibilityLabel:
                 "Stay organized by adding images, websites, documents to a Space today",
@@ -47,9 +48,9 @@ struct SpacesShareIntroOverlayContent: View {
             secondButtonText: "Not now",
             firstButtonPressed: {
                 onShare()
-                hideOverlaySheet()
+                onDismiss()
             },
-            secondButtonPressed: hideOverlaySheet
+            secondButtonPressed: onDismiss
         )
         .overlayIsFixedHeight(isFixedHeight: true)
     }
@@ -190,7 +191,7 @@ struct SpacesIntroView_Previews: PreviewProvider {
             SpacesIntroOverlayContent().preferredColorScheme(.dark).environment(\.hideOverlay, {})
             SpacesIntroOverlayContent().environment(\.hideOverlay, {})
         }
-        SpacesShareIntroOverlayContent(onShare: {}).environment(\.hideOverlay, {})
+        SpacesShareIntroOverlayContent(onDismiss: {}, onShare: {}).environment(\.hideOverlay, {})
         EmptySpaceView()
     }
 }

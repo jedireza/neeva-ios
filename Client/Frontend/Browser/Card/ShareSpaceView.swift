@@ -28,6 +28,7 @@ extension SpaceACLLevel {
 
 struct ShareSpaceContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
+    
     let space: Space
     let shareTargetView: UIView
     let fromAddToSpace: Bool
@@ -49,7 +50,6 @@ struct ShareSpaceContent: View {
         )
         .overlayTitle(title: "Share Space")
     }
-
 }
 
 struct ShareSpaceView: View {
@@ -375,14 +375,21 @@ struct ShareSpaceView: View {
                         isPresented = false
                         onShared()
                     } else {
-                        SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
+                        let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
+                        bvc.showModal(
                             style: .spaces,
                             content: {
-                                SpacesShareIntroOverlayContent(onShare: {
-                                    seenSpacesShareIntro = true
-                                    self.isPublic = true
-                                    onShared()
-                                })
+                                SpacesShareIntroOverlayContent(
+                                    onDismiss: {
+                                        bvc.overlayManager.hideCurrentOverlay(ofPriority: .modal)
+                                        seenSpacesShareIntro = true
+                                    }, onShare: {
+                                        onShared()
+                                        bvc.overlayManager.hideCurrentOverlay(ofPriority: .modal)
+
+                                        seenSpacesShareIntro = true
+                                        self.isPublic = true
+                                    })
                             })
                     }
                 }
