@@ -393,7 +393,6 @@ public struct LogConfig {
         case .ViewTerms: return .Settings
         case .ClearPrivateData: return .Settings
         case .ClearAllWebsiteData: return .Settings
-        case .GoToSysAppSettings: return .Settings
 
         case .FirstRunSignupWithApple: return .FirstRun
         case .FirstRunOtherSignUpOptions: return .FirstRun
@@ -438,6 +437,7 @@ public struct LogConfig {
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
+        case .GoToSysAppSettings: return .PromoCard
 
         case .QuerySuggestion: return .Suggestions
         case .MemorizedSuggestion: return .Suggestions
