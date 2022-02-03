@@ -141,6 +141,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
     let tabManager: TabManager
     var server: Server? = nil
 
+    var shouldPresentDBPrompt: Bool = false
+
     // Backdrop used for displaying greyed background for private tabs
     private(set) var webViewContainerBackdrop: UIView!
     fileprivate var keyboardState: KeyboardState?
@@ -895,6 +897,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     visitType: visitType
                 )
             )
+
+            if self.shouldPresentDBPrompt {
+                self.presentDBPromptView()
+            }
             self.hideCardGrid(withAnimation: false)
         }
     }
@@ -1629,6 +1635,9 @@ extension BrowserViewController {
             {
                 DispatchQueue.main.async {
                     selectedTab.loadRequest(URLRequest(url: url))
+                    if self.shouldPresentDBPrompt {
+                        self.presentDBPromptView()
+                    }
                     self.hideCardGrid(withAnimation: false)
                 }
             } else {
@@ -1713,8 +1722,7 @@ extension BrowserViewController {
                 {
                     if NeevaExperiment.startExperiment(for: .defaultBrowserPrompt) == .showDBPrompt
                     {
-                        self.presentDBPromptView()
-                        Defaults[.didShowDefaultBrowserInterstitial] = true
+                        self.shouldPresentDBPrompt = true
                     }
                 }
             }
@@ -1724,23 +1732,23 @@ extension BrowserViewController {
     }
 
     private func presentDBPromptView() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.overlayManager.presentFullScreenModal(
-                content: AnyView(
-                    DefaultBrowserPromptView {
-                        self.overlayManager.hideCurrentOverlay()
-                    } buttonAction: {
-                        self.overlayManager.hideCurrentOverlay()
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            self.presentDBOnboardingViewController(
-                                modalTransitionStyle: .crossDissolve,
-                                triggerFrom: .defaultBrowserPrompt
-                            )
-                        }
+        self.shouldPresentDBPrompt = false
+        self.overlayManager.presentFullScreenModal(
+            content: AnyView(
+                DefaultBrowserPromptView {
+                    self.overlayManager.hideCurrentOverlay()
+                } buttonAction: {
+                    self.overlayManager.hideCurrentOverlay()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        self.presentDBOnboardingViewController(
+                            modalTransitionStyle: .crossDissolve,
+                            triggerFrom: .defaultBrowserPrompt
+                        )
                     }
-                )
-            ) {}
-        }
+                }
+            )
+        ) {}
+        Defaults[.didShowDefaultBrowserInterstitial] = true
     }
 
     private func introVCPresentHelper(
