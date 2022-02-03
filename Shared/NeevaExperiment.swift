@@ -66,12 +66,12 @@ public enum NeevaExperiment {
 }
 
 extension NeevaExperiment {
-    public enum DefaultBrowser: String, ExperimentArms {
+    public enum DefaultBrowserV2: String, ExperimentArms {
         case control
         case showDBPrompt
     }
 }
 
-extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowser {
-    public static let defaultBrowserPrompt = Self()
+extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserV2 {
+    public static let defaultBrowserPromptV2 = Self()
 }
