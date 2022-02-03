@@ -6,6 +6,12 @@ import Defaults
 import Shared
 import SwiftUI
 
+public enum OpenSysSettingTrigger: String {
+    case defaultBrowserPrompt
+    case defaultBrowserPromoCard
+    case settings
+}
+
 class DefaultBrowserOnboardingViewController: UIHostingController<
     DefaultBrowserOnboardingViewController.Content
 >
@@ -13,6 +19,7 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
     struct Content: View {
         let openSettings: () -> Void
         let onCancel: () -> Void
+        let triggerFrom: OpenSysSettingTrigger
 
         var body: some View {
             VStack {
@@ -23,13 +30,13 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
                         .padding(.top)
                         .background(Color.clear)
                 }
-                DefaultBrowserOnboardingView(openSettings: openSettings)
+                DefaultBrowserOnboardingView(openSettings: openSettings, triggerFrom: triggerFrom)
             }
         }
     }
 
-    init(didOpenSettings: @escaping () -> Void) {
-        super.init(rootView: Content(openSettings: {}, onCancel: {}))
+    init(didOpenSettings: @escaping () -> Void, triggerFrom: OpenSysSettingTrigger) {
+        super.init(rootView: Content(openSettings: {}, onCancel: {}, triggerFrom: triggerFrom))
         self.rootView = Content(
             openSettings: { [weak self] in
                 self?.dismiss(animated: true) {
@@ -42,7 +49,8 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
             },
             onCancel: { [weak self] in
                 self?.dismiss(animated: true, completion: nil)
-            }
+            },
+            triggerFrom: triggerFrom
         )
     }
 
@@ -53,6 +61,7 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
 
 struct DefaultBrowserOnboardingView: View {
     let openSettings: () -> Void
+    let triggerFrom: OpenSysSettingTrigger
 
     var body: some View {
         VStack {
@@ -98,7 +107,11 @@ struct DefaultBrowserOnboardingView: View {
                         ClientLogCounterAttribute(
                             key: LogConfig.UIInteractionAttribute.openSysSettingSourceView,
                             value: String(describing: DefaultBrowserOnboardingView.self)
-                        )
+                        ),
+                        ClientLogCounterAttribute(
+                            key: LogConfig.UIInteractionAttribute.openSysSettingTriggerFrom,
+                            value: triggerFrom.rawValue
+                        ),
                     ]
                 )
                 openSettings()
@@ -121,10 +134,10 @@ struct DefaultBrowserOnboardingView: View {
 struct DefaultBrowserOnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            DefaultBrowserOnboardingView(openSettings: {})
+            DefaultBrowserOnboardingView(openSettings: {}, triggerFrom: .defaultBrowserPrompt)
                 .navigationBarTitleDisplayMode(.inline)
         }
 
-        DefaultBrowserOnboardingViewController.Content(openSettings: {}, onCancel: {})
+        DefaultBrowserOnboardingViewController.Content(openSettings: {}, onCancel: {}, triggerFrom: .defaultBrowserPrompt)
     }
 }

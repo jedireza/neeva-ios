@@ -1603,12 +1603,13 @@ extension BrowserViewController {
     // Default browser onboarding
     func presentDBOnboardingViewController(
         _ force: Bool = false,
-        modalTransitionStyle: UIModalTransitionStyle? = nil
+        modalTransitionStyle: UIModalTransitionStyle? = nil,
+        triggerFrom: OpenSysSettingTrigger
     ) {
         let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: { [weak self] in
             guard let self = self else { return }
             self.zeroQueryModel.updateState()
-        })
+        }, triggerFrom: triggerFrom)
 
         onboardingVC.modalPresentationStyle = .formSheet
         if let modalTransitionStyle = modalTransitionStyle {
@@ -1731,7 +1732,8 @@ extension BrowserViewController {
                         self.overlayManager.hideCurrentOverlay()
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.presentDBOnboardingViewController(
-                                modalTransitionStyle: .crossDissolve
+                                modalTransitionStyle: .crossDissolve,
+                                triggerFrom: .defaultBrowserPrompt
                             )
                         }
                     }

@@ -31,7 +31,7 @@ struct GeneralSettingsSection: View {
                 DefaultBrowserOnboardingView(openSettings: {
                     UIApplication.shared.open(
                         URL(string: UIApplication.openSettingsURLString)!, options: [:])
-                })
+                }, triggerFrom: .settings)
                 .onAppear {
                     ClientLogger.shared.logCounter(
                         .SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes()
