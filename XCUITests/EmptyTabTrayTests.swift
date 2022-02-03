@@ -43,6 +43,7 @@ class EmptyTabTrayTests: BaseTestCase {
         closeAllTabs(createNewTab: false)
 
         waitForExistence(app.staticTexts["EmptyTabTray"])
+        waitForExistence(app.buttons["Add Tab"])
     }
 
     func testEmptyTabTrayShowsAfterClosingAllTabsFromTabTray() {
@@ -51,6 +52,7 @@ class EmptyTabTrayTests: BaseTestCase {
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
 
         waitForExistence(app.staticTexts["EmptyTabTray"])
+        waitForExistence(app.buttons["Add Tab"])
     }
 
     /// Tests that when closing all incognito tabs, and no normal tabs exist that empty tab tray is shown
@@ -60,6 +62,7 @@ class EmptyTabTrayTests: BaseTestCase {
         closeAllTabs(createNewTab: false)
 
         waitForExistence(app.staticTexts["EmptyTabTrayIncognito"])
+        waitForExistence(app.buttons["Add Tab"])
     }
 
     func testEmptyTabTrayShowsAfterClosingAllIncognitoTabsFromTabTray() {
@@ -69,6 +72,7 @@ class EmptyTabTrayTests: BaseTestCase {
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
 
         waitForExistence(app.staticTexts["EmptyTabTrayIncognito"])
+        waitForExistence(app.buttons["Add Tab"])
     }
 
     func testTabTrayShowsTabs() {
