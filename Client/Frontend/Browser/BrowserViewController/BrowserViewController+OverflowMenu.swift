@@ -76,8 +76,7 @@ extension BrowserViewController {
             )
             if let webView = tabManager.selectedTab?.webView {
                 UserActivityHandler.presentTextSizeView(
-                    webView: webView,
-                    overlayParent: self)
+                    webView: webView)
             }
         case .desktopSite:
             ClientLogger.shared.logCounter(

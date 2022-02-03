@@ -196,10 +196,13 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
                             .padding(.bottom, 18)
                     }
                 }
-            }.padding(.bottom, bottomSafeArea).background(
+            }
+            .padding(.bottom, keyboardHeight > 0 ? 0 : bottomSafeArea)
+            .background(
                 Color(style.backgroundColor)
                     .cornerRadius(16, corners: [.topLeading, .topTrailing])
                     .ignoresSafeArea(edges: .bottom)
+                    .padding(.bottom, -12)
             )
             .onHeightOfViewChanged { height in
                 self.contentHeight = height
@@ -239,7 +242,9 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
             }
             .padding(.top, 16)
             .keyboardListener { height in
-                keyboardHeight = height
+                withAnimation {
+                    keyboardHeight = height
+                }
             }
             .background(
                 VStack {
@@ -282,7 +287,7 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
 
             )
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea(.container)
         .safeAreaChanged { insets in
             self.bottomSafeArea = insets.bottom
         }

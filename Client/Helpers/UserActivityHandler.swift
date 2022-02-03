@@ -43,19 +43,15 @@ class UserActivityHandler {
         tab.userActivity = userActivity
     }
 
-    class func presentTextSizeView(webView: WKWebView, overlayParent: UIViewController) {
-        let sheet = UIHostingController(
-            rootView: TextSizeView(
-                model: TextSizeModel(webView: webView),
-                onDismiss: { [overlayParent] in
-                    overlayParent.presentedViewController?.dismiss(animated: true, completion: nil)
-                }
-            )
-        )
-        sheet.modalPresentationStyle = .overFullScreen
-        sheet.view.isOpaque = false
-        sheet.view.backgroundColor = .clear
-        overlayParent.present(sheet, animated: true, completion: nil)
+    class func presentTextSizeView(webView: WKWebView) {
+        let bvc = SceneDelegate.getBVC(for: webView)
+        bvc.showAsModalOverlaySheet(style: .grouped) {
+            TextSizeView(
+                model: TextSizeModel(webView: webView)
+            ) {
+                bvc.overlayManager.hideCurrentOverlay(ofPriority: .modal)
+            }
+        } onDismiss: {}
     }
 }
 

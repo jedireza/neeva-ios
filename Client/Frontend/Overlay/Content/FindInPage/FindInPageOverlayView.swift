@@ -52,7 +52,10 @@ struct FindInPageView: View {
             Spacer()
         }
         .frame(height: FindInPageViewUX.height)
-        .background(Color(UIColor.systemGroupedBackground))
+        .background(
+            Color(UIColor.systemGroupedBackground.elevated)
+                .cornerRadius(12, corners: .top)
+        )
     }
 }
 

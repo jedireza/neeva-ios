@@ -63,6 +63,7 @@ struct TopBarNeevaMenuButton: View {
                             if showNeevaMenuWillMove {
                                 NeevaMenuWillMoveView()
                                     .frame(maxWidth: neevaMenuWidth)
+                                    .padding(.top, 8)
                             }
 
                             NeevaMenuView(menuAction: {
@@ -75,10 +76,9 @@ struct TopBarNeevaMenuButton: View {
                                 neevaMenuWidth = $0
                             }
                         }
-                        .padding(.top)
                     }
-                    .topBarPopoverPadding()
-                    .frame(minWidth: 340, minHeight: 323)
+                    .topBarPopoverPadding(removeBottomPadding: !showNeevaMenuWillMove)
+                    .frame(minWidth: 340, minHeight: 315)
                 }
             },
             popoverContent: {
@@ -258,9 +258,10 @@ struct TopBarShareButton_Previews: PreviewProvider {
 }
 
 extension View {
-    fileprivate func topBarPopoverPadding() -> some View {
+    fileprivate func topBarPopoverPadding(removeBottomPadding: Bool = true) -> some View {
         self
             .padding(.horizontal, -4)
             .padding(.top, 8)
+            .padding(.bottom, removeBottomPadding ? -8 : 0)
     }
 }

@@ -11,31 +11,23 @@ struct TextSizeView: View {
     let onDismiss: () -> Void
 
     var body: some View {
-        VStack(spacing: 0) {
-            Button(action: onDismiss) {
-                Color.clear
-                    .frame(maxHeight: .infinity)
-            }.accessibilityHidden(true)
+        GroupedStack {
+            GroupedCell.Decoration {
+                VStack(spacing: 0) {
+                    // all the content in here is decorative since the accessibility element is explicitly provided below.
+                    TextSizeStepper(model: model)
 
-            GroupedStack {
-                // all the content in here is decorative since the accessibility element is explicitly provided below.
-                TextSizeStepper(model: model)
-                GroupedCellButton("Reset") { model.pageZoom = 1 }
-                    .accentColor(.red)
-                GroupedCellButton("Done", style: .labelLarge, action: onDismiss)
+                    Color.groupedBackground.frame(height: 1)
+
+                    GroupedCellButton("Reset") { model.pageZoom = 1 }
+                        .accentColor(.red)
+
+                    Color.groupedBackground.frame(height: 1)
+
+                    GroupedCellButton("Done", style: .labelLarge, action: onDismiss)
+                }.accentColor(.label)
             }
-            .background(
-                Color.groupedBackground
-                    .cornerRadius(GroupedCellUX.cornerRadius, corners: .top)
-                    .ignoresSafeArea()
-            )
-            .background(
-                RoundedRectangle(cornerRadius: GroupedCellUX.cornerRadius)
-                    .fill(Color.black.opacity(0.12))
-                    .blur(radius: 16)
-                    .offset(y: 4)
-            )
-        }
+        }.overlayIsFixedHeight(isFixedHeight: true)
     }
 }
 
@@ -47,6 +39,7 @@ struct ZoomMenuView_Previews: PreviewProvider {
                 .overlay(Text(model.label))
         }
     }
+
     static var previews: some View {
         Preview(model: TextSizeModel(webView: WKWebView()))
     }

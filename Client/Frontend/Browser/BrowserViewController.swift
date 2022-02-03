@@ -1716,7 +1716,8 @@ extension BrowserViewController {
                 }
             }
 
-            if case .skipToBrowser = action {} else {
+            if case .skipToBrowser = action {
+            } else {
                 if !Defaults[.didSetDefaultBrowser]
                     && !Defaults[.didShowDefaultBrowserInterstitial]
                 {

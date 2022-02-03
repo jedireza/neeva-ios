@@ -420,7 +420,6 @@ struct ShareSpaceView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .ignoresSafeArea(.all, edges: .bottom)
         .onChange(
             of: emailText,
             perform: { value in
