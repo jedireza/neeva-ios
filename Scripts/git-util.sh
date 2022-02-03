@@ -14,19 +14,23 @@ git_user_name() {
     git config user.email | cut -d'@' -f1
 }
 
+get_remote_origin_branch() {
+    echo "origin/$(get_remote_branch)"
+}
+
 get_remote_branch() {
     branched_from=$(git status -b -s -uno | grep '^##' | cut -d' ' -f2 | sed -E 's/.*origin\/(.*)/\1/')
-    echo "origin/$branched_from"
+    echo "$branched_from"
 }
 
 # Check if current branch is a branch from "main".
 is_branch_of_main() {
-    test "$(get_remote_branch)" = "origin/main"
+    test "$(get_remote_origin_branch)" = "origin/main"
 }
 
 # Check if current branch is a release branch.
 is_branch_of_release() {
-    [[ $(get_remote_branch) =~ origin/Build-* ]]
+    [[ $(get_remote_origin_branch) =~ origin/Build-* ]]
 }
 
 # Check if there are uncommitted files.

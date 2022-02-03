@@ -26,7 +26,8 @@ fi
 CURRENT_PROJECT_VERSION=$(get_current_project_version)
 
 BRANCH_NAME="$(git_user_name)/prepare-for-build-$CURRENT_PROJECT_VERSION"
-REMOTE_NAME="$(get_remote_branch)"
+REMOTE_ORIGIN_BRANCH_NAME="$(get_remote_origin_branch)"
+REMOTE_BRANCH_NAME="$(get_remote_branch)"
 
 if is_branch_of_release; then
   read -r -p "You are on release branch, do you want to push changes directly onto branch? [Y/n] " response
@@ -38,18 +39,18 @@ if is_branch_of_release; then
     git commit -a -m "Preparing for build $CURRENT_PROJECT_VERSION"
     echo "Push changes? Press ENTER to continue. Ctrl+C to cancel."
     read
-    git push origin $REMOTE_NAME
+    git push origin $REMOTE_BRANCH_NAME
     exit 0
   fi
 fi
 
 echo "Proposing to create branch:"
 echo "  name = $BRANCH_NAME"
-echo "  from = $REMOTE_NAME"
+echo "  from = $REMOTE_ORIGIN_BRANCH_NAME"
 echo "Create branch? Press ENTER to continue. Ctrl+C to cancel."
 read
 
-git checkout -b $BRANCH_NAME $REMOTE_NAME
+git checkout -b $BRANCH_NAME $REMOTE_ORIGIN_BRANCH_NAME
 git diff
 git commit -a -m "Preparing for build $CURRENT_PROJECT_VERSION"
 
