@@ -557,7 +557,9 @@ class TabManager: NSObject, ObservableObject {
         let bvc = SceneDelegate.getBVC(with: scene)
 
         if closedLastNormalTab || closedLastPrivateTab {
-            bvc.showTabTray()
+            DispatchQueue.main.async {
+                bvc.showTabTray()
+            }
         } else if tab == selectedTab {
             if !selectParentTab(afterRemoving: tab) {
                 if let rightOrLeftTab = viableTabs[safe: deletedIndex]

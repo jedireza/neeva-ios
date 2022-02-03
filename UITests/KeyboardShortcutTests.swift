@@ -76,17 +76,6 @@ class KeyboardShortcutTests: UITestBase {
         reset()
     }
 
-    func testCloseTabKeyCommand() {
-        openNewTab(to: "\(webRoot!)/numberedPage.html?page=1")
-        XCTAssertEqual(bvc.tabManager.tabs.count, 2)
-        tester().waitForWebViewElementWithAccessibilityLabel("Page 1")
-
-        bvc.closeTabKeyCommand()
-        XCTAssertEqual(bvc.tabManager.tabs.count, 1)
-
-        reset()
-    }
-
     func testNextTabKeyCommand() {
         previousTab(tester: tester())
         bvc.nextTabKeyCommand()
