@@ -327,6 +327,7 @@ public struct LogConfig {
             || category == .Suggestions
             || category == .Performance
             || category == .DebugMode
+            || category == .PromoCard
         {
             return true
         }
@@ -556,6 +557,7 @@ public struct LogConfig {
         /// View from which an UI Interaction is triggered
         public static let fromActionType = "fromActionType"
         public static let openSysSettingSourceView = "openSysSettingSourceView"
+        public static let openSysSettingTriggerFrom = "openSysSettingTriggerFrom"
     }
 
     public struct SuggestionAttribute {

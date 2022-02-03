@@ -180,7 +180,7 @@ class ZeroQueryModel: ObservableObject {
                     .PromoDefaultBrowser,
                     attributes: EnvironmentHelper.shared.getAttributes()
                 )
-                self.bvc.presentDBOnboardingViewController()
+                self.bvc.presentDBOnboardingViewController(triggerFrom: .defaultBrowserPromoCard)
             } onClose: {
                 ClientLogger.shared.logCounter(
                     .CloseDefaultBrowserPromo,
