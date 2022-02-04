@@ -51,7 +51,7 @@ struct TabCardsView: View {
                                 ClientLogCounterAttribute(
                                     key: LogConfig.TabGroupAttribute.numTabsInTabGroup,
                                     value: String(
-                                        tabGroupModel.manager.get(for: details.id)?.children.count
+                                        tabGroupModel.manager.get(for: rootID)?.children.count
                                             ?? 0)
                                 )
                             )
