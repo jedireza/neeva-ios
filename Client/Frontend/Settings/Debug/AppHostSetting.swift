@@ -7,7 +7,7 @@ import Shared
 import SwiftUI
 
 struct AppHostSetting: View {
-    @Default(.neevaHost) var appHost
+    @Default(.neevaHost) private var appHost
 
     @State var viewRef: UIView?
 

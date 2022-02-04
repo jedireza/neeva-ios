@@ -135,12 +135,16 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     var manager: TabManager
 
+    private var tab: Tab? {
+        manager.get(for: id)
+    }
+
     var isPinned: Bool {
-        manager.get(for: id)?.isPinned ?? false
+        tab?.isPinned ?? false
     }
 
     var url: URL? {
-        manager.get(for: id)?.url
+        tab?.url ?? tab?.sessionData?.currentUrl
     }
 
     var closeButtonImage: UIImage? {
@@ -153,7 +157,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     var rootID: String? {
-        manager.get(for: id)?.rootUUID
+        tab?.rootUUID
     }
 
     var accessibilityLabel: String {
@@ -195,8 +199,52 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     func onClose() {
-        if let item = manager.get(for: id), !item.isPinned {
+        if let item = tab, !item.isPinned {
             manager.close(item)
+        }
+    }
+
+    @ViewBuilder func contextMenu() -> some View {
+        Button { [self] in
+            guard let url = url, let tab = tab else { return }
+            let newTab = manager.addTab(
+                URLRequest(url: url), afterTab: tab, isPrivate: tab.isIncognito)
+            newTab.rootUUID = UUID().uuidString
+            manager.selectTab(newTab, previous: tab)
+        } label: {
+            Label("Duplicate Tab", systemSymbol: .plusSquareOnSquare)
+        }.disabled(url == nil)
+
+        if tab?.isIncognito == false {
+            Button { [self] in
+                guard let url = url, let tab = tab else { return }
+                let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isPrivate: true)
+                newTab.rootUUID = UUID().uuidString
+                manager.selectTab(newTab, previous: tab)
+            } label: {
+                Label("Open in Incognito", image: "incognito")
+            }.disabled(url == nil)
+        }
+
+        Button(action: { [self] in
+            tab?.showAddToSpacesSheet()
+        }) {
+            Label("Save to Spaces", systemSymbol: .bookmark)
+        }.disabled(tab == nil)
+
+        if let tab = tab,
+            tab.canonicalURL?.displayURL != nil,
+            let bvc = tab.browserViewController
+        {
+            Button {
+                tab.browserViewController?.share(tab: tab, from: bvc.view, presentableVC: bvc)
+            } label: {
+                Label("Share", systemSymbol: .squareAndArrowUp)
+            }
+        } else {
+            Button(action: {}) {
+                Label("Share", systemSymbol: .squareAndArrowUp)
+            }.disabled(true)
         }
     }
 }
@@ -475,6 +523,20 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     var id: String
     var isSelected: Bool {
         manager.tabManager.selectedTab?.rootUUID == id
+    }
+
+    var customTitle: String? {
+        get {
+            Defaults[.tabGroupNames][id] ?? manager.get(for: id)?.inferredTitle
+        }
+        set {
+            Defaults[.tabGroupNames][id] = newValue
+            objectWillChange.send()
+        }
+    }
+
+    var defaultTitle: String? {
+        manager.get(for: id)?.displayTitle
     }
 
     var title: String {

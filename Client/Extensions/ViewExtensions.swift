@@ -126,3 +126,69 @@ extension View {
             )
     }
 }
+
+extension View {
+    func textFieldAlert(
+        isPresented: Binding<Bool>, title: String?, message: String? = nil, required: Bool = true,
+        saveAction: String = "Save", onCommit: @escaping (String) -> Void,
+        configureTextField: @escaping (UITextField) -> Void
+    ) -> some View {
+        modifier(
+            TextFieldAlert(
+                isPresented: isPresented, title: title, message: message, required: required,
+                saveAction: saveAction, onCommit: onCommit, configureTextField: configureTextField))
+    }
+}
+
+private struct TextFieldAlert: ViewModifier {
+    @Binding var isPresented: Bool
+    let title: String?
+    let message: String?
+    let required: Bool
+    let saveAction: String
+    let onCommit: (String) -> Void
+    let configureTextField: (UITextField) -> Void
+
+    @State private var viewRef: UIView?
+
+    func body(content: Content) -> some View {
+        content
+            .uiViewRef($viewRef)
+            .onChange(of: isPresented) { newValue in
+                if newValue {
+                    let alert = UIAlertController(
+                        title: title, message: message, preferredStyle: .alert)
+
+                    let saveAction = UIAlertAction(title: saveAction, style: .default) { _ in
+                        onCommit(alert.textFields!.first!.text!)
+                        isPresented = false
+                    }
+                    alert.addAction(saveAction)
+
+                    alert.addAction(
+                        UIAlertAction(
+                            title: "Cancel", style: .cancel, handler: { _ in isPresented = false }))
+
+                    alert.addTextField { tf in
+                        tf.returnKeyType = .done
+                        tf.addAction(
+                            UIAction { _ in
+                                saveAction.accessibilityActivate()
+                            }, for: .primaryActionTriggered)
+
+                        if required {
+                            tf.addAction(
+                                UIAction { _ in
+                                    saveAction.isEnabled = tf.hasText
+                                }, for: .editingChanged)
+                        }
+
+                        configureTextField(tf)
+                    }
+
+                    viewRef!.window!.windowScene!.frontViewController!
+                        .present(alert, animated: true, completion: nil)
+                }
+            }
+    }
+}

@@ -627,6 +627,35 @@ class Tab: NSObject, ObservableObject {
     func applyTheme() {
         UITextField.appearance().keyboardAppearance = isIncognito ? .dark : .default
     }
+
+    func showAddToSpacesSheet() {
+        guard let url = canonicalURL?.displayURL else { return }
+        guard let webView = webView else { return }
+
+        if FeatureFlag[.spacify],
+            let domain = SpaceImportDomain(rawValue: self.url?.baseDomain ?? "")
+        {
+            webView.evaluateJavaScript(domain.script) {
+                [weak browserViewController, weak self] (result, error) in
+                guard let bvc = browserViewController, let self = self else { return }
+                guard let linkData = result as? [[String]] else {
+                    bvc.showAddToSpacesSheet(
+                        url: url, title: self.title, webView: webView)
+                    return
+                }
+
+                let importData = SpaceImportHandler(
+                    title: self.url!.path.remove("/").capitalized, data: linkData)
+                bvc.showAddToSpacesSheet(
+                    url: url, title: self.title,
+                    webView: webView,
+                    importData: importData
+                )
+            }
+        } else {
+            browserViewController?.showAddToSpacesSheet(url: url, title: title, webView: webView)
+        }
+    }
 }
 
 extension Tab: TabWebViewDelegate {

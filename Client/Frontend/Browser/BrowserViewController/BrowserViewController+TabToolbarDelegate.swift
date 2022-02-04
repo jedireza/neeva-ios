@@ -94,32 +94,8 @@ extension BrowserViewController: ToolbarDelegate {
                 self.showBackForwardList()
             case .addToSpace:
                 guard let tab = self.tabManager.selectedTab else { return }
-                guard let url = tab.canonicalURL?.displayURL else { return }
-                guard let webView = tab.webView else { return }
+                tab.showAddToSpacesSheet()
 
-                if FeatureFlag[.spacify],
-                    let domain = SpaceImportDomain(rawValue: tab.url?.baseDomain ?? "")
-                {
-                    tab.webView?.evaluateJavaScript(domain.script) {
-                        [weak self] (result, error) in
-                        guard let self = self else { return }
-                        guard let linkData = result as? [[String]] else {
-                            self.showAddToSpacesSheet(
-                                url: url, title: tab.title, webView: webView)
-                            return
-                        }
-
-                        let importData = SpaceImportHandler(
-                            title: tab.url!.path.remove("/").capitalized, data: linkData)
-                        self.showAddToSpacesSheet(
-                            url: url, title: tab.title,
-                            webView: webView,
-                            importData: importData
-                        )
-                    }
-                } else {
-                    self.showAddToSpacesSheet(url: url, title: tab.title, webView: webView)
-                }
                 ClientLogger.shared.logCounter(
                     .ClickAddToSpaceButton,
                     attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]

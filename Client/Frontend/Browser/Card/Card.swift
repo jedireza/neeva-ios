@@ -205,7 +205,7 @@ struct Card<Details>: View where Details: CardDetails {
     var body: some View {
         GeometryReader { geom in
             VStack(alignment: .center, spacing: 0) {
-                Button(action: {
+                let button = Button(action: {
                     if let tabGroupCardDetail = tabGroupCardDetail {
                         tabGroupCardModel.detailedTabGroup = tabGroupCardDetail
                     }
@@ -232,6 +232,16 @@ struct Card<Details>: View where Details: CardDetails {
                         thumbnailDrawsHeader: details.thumbnailDrawsHeader,
                         isIncognito: isIncognito)
                 )
+
+                if let tabDetails = details as? TabCardDetails {
+                    button
+                        .padding(1.5)
+                        .contextMenu(menuItems: tabDetails.contextMenu)
+                        .padding(-1.5)
+                } else {
+                    button
+                }
+
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
                         if !FeatureFlag[.tabGroupsNewDesign] && isChildTab(details: details)

@@ -27,6 +27,8 @@ class GridModel: ObservableObject {
     @Published private(set) var refreshDetailedSpaceSubscription: AnyCancellable? = nil
     @Published var showingDetailView = false
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     private let tabMenu: TabMenu
 
     var isIncognito: Bool {
@@ -44,6 +46,10 @@ class GridModel: ObservableObject {
         self.spaceCardModel = SpaceCardModel()
 
         self.tabMenu = TabMenu(tabManager: tabManager)
+
+        tabManager.$isIncognito.sink { [unowned self] _ in
+            objectWillChange.send()
+        }.store(in: &subscriptions)
     }
 
     func scrollToSelectedTab() {
@@ -62,7 +68,6 @@ class GridModel: ObservableObject {
                 {
                     detailedSpace.updateDetails()
                 }
-                self.refreshDetailedSpaceSubscription?.cancel()
                 self.refreshDetailedSpaceSubscription = nil
             }
         }

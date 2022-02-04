@@ -24,7 +24,6 @@ struct CollapsedCardGroupView: View {
         }
         .animation(nil)
         .transition(.fade)
-        .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
         .background(
             Color.secondarySystemFill
                 .cornerRadius(
@@ -53,7 +52,6 @@ struct CollapsedCardGroupView: View {
                     }
                 }
                 .padding(.leading, CardGridUX.GridSpacing)
-                .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
                 .padding(
                     .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
                 )
@@ -113,16 +111,11 @@ struct ExpandedCardGroupRowView: View {
             }
             .zIndex(groupDetails.allDetails[range].contains(where: \.isSelected) ? 1 : 0)
             .padding(
-                .top,
-                isFirstRow(range) ? SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing : 0
-            )
-            .padding(
                 .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
             )
         }
         .animation(nil)
         .transition(.fade)
-        .padding(.top, isFirstRow(range) ? SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding : 0)
         .background(
             Color.secondarySystemFill
                 .cornerRadius(
@@ -154,6 +147,9 @@ struct TabGroupHeader: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
 
+    @State private var renaming = false
+    @State private var deleting = false
+
     var groupFromSpace: Bool {
         return groupDetails.id
             == tabGroupCardModel.manager.get(for: groupDetails.id)?.children.first?.parentSpaceID
@@ -181,6 +177,10 @@ struct TabGroupHeader: View {
         }
         .padding(.leading, CardGridUX.GridSpacing)
         .frame(height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
+        // the top and bottom paddings applied below are to make the tap target
+        // of the context menu taller
+        .padding(.top, SingleLevelTabCardsViewUX.TabGroupCarouselTopPadding)
+        .padding(.bottom, SingleLevelTabCardsViewUX.TabGroupCarouselTitleSpacing)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Tab Group, \(groupDetails.title)")
         .accessibilityAddTraits([.isHeader, .isButton])
@@ -188,6 +188,59 @@ struct TabGroupHeader: View {
         .accessibilityAction {
             groupDetails.isShowingDetails.toggle()
         }
-    }
+        .contentShape(Rectangle())
+        .contextMenu {
+            if let title = groupDetails.customTitle {
+                Text("\(groupDetails.allDetails.count) tabs from “\(title)”")
+            } else {
+                Text("\(groupDetails.allDetails.count) Tabs")
+            }
 
+            Button(action: { renaming = true }) {
+                Label("Rename", systemSymbol: .pencil)
+            }
+
+            if #available(iOS 15.0, *) {
+                Button(role: .destructive, action: { deleting = true }) {
+                    Label("Close All", systemSymbol: .trash)
+                }
+            } else {
+                Button(action: { deleting = true }) {
+                    Label("Close All", systemSymbol: .trash)
+                }
+            }
+        }
+        .textFieldAlert(
+            isPresented: $renaming, title: "Rename “\(groupDetails.title)”", required: false
+        ) { newName in
+            if newName.isEmpty {
+                groupDetails.customTitle = nil
+            } else {
+                groupDetails.customTitle = newName
+            }
+        } configureTextField: { tf in
+            tf.clearButtonMode = .always
+            tf.placeholder = groupDetails.defaultTitle ?? ""
+            tf.text = groupDetails.customTitle
+            tf.autocapitalizationType = .words
+        }
+        .actionSheet(isPresented: $deleting) {
+            let buttons: [ActionSheet.Button] = [
+                .destructive(Text("Close All")) {
+                    groupDetails.onClose()
+                },
+                .cancel(),
+            ]
+
+            if let title = groupDetails.customTitle {
+                return ActionSheet(
+                    title: Text("Close all \(groupDetails.allDetails.count) tabs from “\(title)”?"),
+                    buttons: buttons)
+            } else {
+                return ActionSheet(
+                    title: Text("Close these \(groupDetails.allDetails.count) tabs?"),
+                    buttons: buttons)
+            }
+        }
+    }
 }
