@@ -23,17 +23,17 @@ extension BrowserViewController {
 
             findInPageModel!.searchValue = query ?? ""
         } else {
-            let tab = tab ?? tabManager.selectedTab
-            guard let webView = tab?.webView else { return }
-            webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
-
-            findInPageModel = nil
-
             if let currentOverlay = overlayManager.currentOverlay,
                 case OverlayType.findInPage = currentOverlay
             {
                 overlayManager.hideCurrentOverlay(ofPriority: .modal, animate: false)
             }
+
+            let tab = tab ?? tabManager.selectedTab
+            guard let webView = tab?.webView else { return }
+            webView.evaluateJavascriptInDefaultContentWorld("__firefox__.findDone()")
+
+            findInPageModel = nil
         }
     }
 }

@@ -93,7 +93,7 @@ class OverlayManager: ObservableObject {
             presentOverlay(overlay: overlay, animate: animate)
             completion?()
         } else {
-            hideCurrentOverlay(ofPriority: .transient) { [self] in
+            hideCurrentOverlay { [self] in
                 presentOverlay(overlay: overlay, animate: animate)
                 completion?()
             }
