@@ -32,6 +32,12 @@ struct TabGridContainer: View {
     @EnvironmentObject private var tabGroupModel: TabGroupCardModel
     @EnvironmentObject private var gridModel: GridModel
     @EnvironmentObject private var browserModel: BrowserModel
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    var landscapeMode: Bool {
+        verticalSizeClass == .compact || horizontalSizeClass == .regular
+    }
 
     @Environment(\.columns) private var columns
 
@@ -80,7 +86,7 @@ struct TabGridContainer: View {
                         })))
             browserModel.hideWithAnimation()
         }
-        .padding(.vertical, CardGridUX.GridSpacing)
+        .padding(.vertical, landscapeMode ? 8 : 16)
         .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
             if FeatureFlag[.tabGroupsNewDesign] {
                 if let selectedRowId = selectedRowId {

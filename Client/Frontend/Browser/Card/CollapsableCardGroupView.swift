@@ -85,7 +85,7 @@ struct ExpandedCardGroupRowView: View {
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
 
     var body: some View {
-        VStack(spacing: 0) {
+        VStack(alignment: .leading, spacing: 0) {
             if isFirstRow(range) {
                 TabGroupHeader(groupDetails: groupDetails)
             } else {
@@ -103,8 +103,6 @@ struct ExpandedCardGroupRowView: View {
                                 containerGeometry: containerGeometry)
                         )
                 }
-                .padding(
-                    .leading, isLastRowSingleTab(range, groupDetails) ? CardGridUX.GridSpacing : 0)
                 if isLastRowSingleTab(range, groupDetails) {
                     Spacer()
                 }
@@ -113,6 +111,7 @@ struct ExpandedCardGroupRowView: View {
             .padding(
                 .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
             )
+            .padding(.leading, CardGridUX.GridSpacing)
         }
         .animation(nil)
         .transition(.fade)
