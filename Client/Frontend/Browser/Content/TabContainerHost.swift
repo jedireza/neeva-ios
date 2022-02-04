@@ -126,8 +126,9 @@ struct TabContainerContent: View {
         SuggestedSearchesModel(suggestedQueries: [])
     let spaceContentSheetModel: SpaceContentSheetModel?
 
-    @EnvironmentObject private var scrollingControlModel: ScrollingControlModel
     @EnvironmentObject private var chromeModel: TabChromeModel
+    @EnvironmentObject private var scrollingControlModel: ScrollingControlModel
+    @EnvironmentObject private var simulatedSwipeModel: SimulatedSwipeModel
 
     var yOffset: CGFloat {
         return 0.02
@@ -163,8 +164,19 @@ struct TabContainerContent: View {
                         .onTapGesture {
                             UIMenuController.shared.hideMenu()
                         }
-                        .offset(y: webViewOffsetY)
+                        .offset(x: simulatedSwipeModel.contentOffset / 2.5, y: webViewOffsetY)
                         .padding(.bottom, webViewBottomPadding)
+
+                    GeometryReader { geom in
+                        SimulatedSwipeViewRepresentable(model: simulatedSwipeModel)
+                            .opacity(!simulatedSwipeModel.hidden ? 1 : 0)
+                            .offset(
+                                x: -geom.size.width + simulatedSwipeModel.overlayOffset,
+                                y: webViewOffsetY
+                            )
+                            .frame(width: geom.size.width + SwipeUX.EdgeWidth)
+                            .padding(.bottom, webViewBottomPadding)
+                    }
 
                     if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip]
                         && UIDevice.current.useTabletInterface

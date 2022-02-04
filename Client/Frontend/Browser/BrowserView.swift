@@ -21,7 +21,6 @@ struct BrowserView: View {
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
-    @ObservedObject var simulatedBackModel: SimulatedSwipeModel
 
     private var detailViewVisible: Bool {
         gridModel.showingDetailView
@@ -75,16 +74,6 @@ struct BrowserView: View {
             tabContainerContent
                 .opacity(browserModel.showContent ? 1 : 0)
                 .accessibilityHidden(!browserModel.showContent)
-                .offset(x: simulatedBackModel.contentOffset / 2.5)
-
-            if browserModel.showContent {
-                GeometryReader { geom in
-                    SimulatedSwipeViewRepresentable(model: simulatedBackModel)
-                        .opacity(!simulatedBackModel.hidden ? 1 : 0)
-                        .offset(x: -geom.size.width + simulatedBackModel.overlayOffset)
-                        .frame(width: geom.size.width + SwipeUX.EdgeWidth)
-                }
-            }
         }
     }
 
@@ -168,6 +157,7 @@ struct BrowserView: View {
         }
         .environmentObject(browserModel)
         .environmentObject(browserModel.scrollingControlModel)
+        .environmentObject(bvc.simulateBackModel)
         .environmentObject(chromeModel)
         .environmentObject(gridModel)
         .environmentObject(bvc.toolbarModel)
@@ -189,6 +179,5 @@ struct BrowserView: View {
         self.chromeModel = bvc.chromeModel
         self.overlayManager = bvc.overlayManager
         self.browserModel = bvc.browserModel
-        self.simulatedBackModel = bvc.simulateBackModel
     }
 }
