@@ -66,7 +66,8 @@ public enum Nicon: Character {
     case ellipsis = "\u{100360}"
 
     case incognito = "\u{101004}"
-    // TODO: Add more here
+
+    case incognitoSlash = "\u{101018}"
 }
 
 /// A wrapper for displaying either Neeva-specific or standard (SF Symbols) icons.

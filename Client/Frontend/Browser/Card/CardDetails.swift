@@ -205,17 +205,17 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     @ViewBuilder func contextMenu() -> some View {
-        Button { [self] in
-            guard let url = url, let tab = tab else { return }
-            let newTab = manager.addTab(
-                URLRequest(url: url), afterTab: tab, isPrivate: tab.isIncognito)
-            newTab.rootUUID = UUID().uuidString
-            manager.selectTab(newTab, previous: tab)
-        } label: {
-            Label("Duplicate Tab", systemSymbol: .plusSquareOnSquare)
-        }.disabled(url == nil)
+        if !(tab?.isIncognito ?? false) {
+            Button { [self] in
+                guard let url = url, let tab = tab else { return }
+                let newTab = manager.addTab(
+                    URLRequest(url: url), afterTab: tab, isPrivate: tab.isIncognito)
+                newTab.rootUUID = UUID().uuidString
+                manager.selectTab(newTab, previous: tab)
+            } label: {
+                Label("Duplicate Tab", systemSymbol: .plusSquareOnSquare)
+            }.disabled(url == nil)
 
-        if tab?.isIncognito == false {
             Button { [self] in
                 guard let url = url, let tab = tab else { return }
                 let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isPrivate: true)
@@ -224,27 +224,27 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             } label: {
                 Label("Open in Incognito", image: "incognito")
             }.disabled(url == nil)
-        }
 
-        Button(action: { [self] in
-            tab?.showAddToSpacesSheet()
-        }) {
-            Label("Save to Spaces", systemSymbol: .bookmark)
-        }.disabled(tab == nil)
+            Button(action: { [self] in
+                tab?.showAddToSpacesSheet()
+            }) {
+                Label("Save to Spaces", systemSymbol: .bookmark)
+            }.disabled(tab == nil)
 
-        if let tab = tab,
-            tab.canonicalURL?.displayURL != nil,
-            let bvc = tab.browserViewController
-        {
-            Button {
-                tab.browserViewController?.share(tab: tab, from: bvc.view, presentableVC: bvc)
-            } label: {
-                Label("Share", systemSymbol: .squareAndArrowUp)
+            if let tab = tab,
+                tab.canonicalURL?.displayURL != nil,
+                let bvc = tab.browserViewController
+            {
+                Button {
+                    tab.browserViewController?.share(tab: tab, from: bvc.view, presentableVC: bvc)
+                } label: {
+                    Label("Share", systemSymbol: .squareAndArrowUp)
+                }
+            } else {
+                Button(action: {}) {
+                    Label("Share", systemSymbol: .squareAndArrowUp)
+                }.disabled(true)
             }
-        } else {
-            Button(action: {}) {
-                Label("Share", systemSymbol: .squareAndArrowUp)
-            }.disabled(true)
         }
     }
 }
