@@ -320,11 +320,12 @@ class SuggestionModel: ObservableObject {
 
             self.currentDeferredHistoryQuery?.cancel()
 
+            self.autocompleteSuggestion = nil
+
             if query.isEmpty {
                 self.sites = []
                 self.completion = nil
                 self.shouldSkipNextAutocomplete = false
-                self.autocompleteSuggestion = nil
                 return
             }
 
@@ -376,7 +377,6 @@ class SuggestionModel: ObservableObject {
                 // If we should skip the next autocomplete, reset
                 // the flag and bail out here.
                 guard !self.shouldSkipNextAutocomplete else {
-                    self.autocompleteSuggestion = nil
                     self.shouldSkipNextAutocomplete = false
                     return
                 }
@@ -407,8 +407,6 @@ class SuggestionModel: ObservableObject {
                 if self.completion != nil {
                     self.completion = nil
                 }
-
-                self.autocompleteSuggestion = nil
             }
         }
     }
