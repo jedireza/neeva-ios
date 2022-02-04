@@ -10,8 +10,7 @@ struct CommunitySubmissionView: View {
 
     let url: URL
     @Binding var trust: Bool
-    @State private var boostRequest: BoostRequest? = nil
-    @State private var suppressRequest: SuppressRequest? = nil
+    @State private var request: TrustSignalRequest? = nil
 
     var body: some View {
         VStack(spacing: 12) {
@@ -29,7 +28,7 @@ struct CommunitySubmissionView: View {
             Button(
                 action: {
                     trust = true
-                    boostRequest = BoostRequest(url: url)
+                    request = TrustSignalRequest(url: url, trusted: true)
                 },
                 label: {
                     HStack(spacing: 6) {
@@ -49,7 +48,7 @@ struct CommunitySubmissionView: View {
                 action: {
                     trust = false
                     hideOverlaySheet()
-                    suppressRequest = SuppressRequest(url: url)
+                    request = TrustSignalRequest(url: url, trusted: false)
                 },
                 label: {
                     HStack(spacing: 6) {

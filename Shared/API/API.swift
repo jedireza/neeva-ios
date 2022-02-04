@@ -3557,138 +3557,6 @@ public struct UpdateUserProfileInput: GraphQLMapConvertible {
   }
 }
 
-/// Params for the communityBoostResult mutation. The url and universalType arguments
-/// are considered exclusive; passing both will be considered an error.
-public struct CommunityBoostResultInput: GraphQLMapConvertible {
-  public var graphQLMap: GraphQLMap
-
-  /// - Parameters:
-  ///   - query: Query to operate on
-  ///   - url: Result URL (web link) to insert
-  ///   - universalType: Universal type to insert
-  ///   - asNav: Insert result with nav result treatment
-  ///   - userComment: User comment about boost
-  public init(query: Swift.Optional<String?> = nil, url: Swift.Optional<String?> = nil, universalType: Swift.Optional<String?> = nil, asNav: Swift.Optional<Bool?> = nil, userComment: Swift.Optional<String?> = nil) {
-    graphQLMap = ["query": query, "url": url, "universalType": universalType, "asNav": asNav, "userComment": userComment]
-  }
-
-  /// Query to operate on
-  public var query: Swift.Optional<String?> {
-    get {
-      return graphQLMap["query"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "query")
-    }
-  }
-
-  /// Result URL (web link) to insert
-  public var url: Swift.Optional<String?> {
-    get {
-      return graphQLMap["url"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "url")
-    }
-  }
-
-  /// Universal type to insert
-  public var universalType: Swift.Optional<String?> {
-    get {
-      return graphQLMap["universalType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "universalType")
-    }
-  }
-
-  /// Insert result with nav result treatment
-  public var asNav: Swift.Optional<Bool?> {
-    get {
-      return graphQLMap["asNav"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "asNav")
-    }
-  }
-
-  /// User comment about boost
-  public var userComment: Swift.Optional<String?> {
-    get {
-      return graphQLMap["userComment"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "userComment")
-    }
-  }
-}
-
-/// Params for the communitySuppressResult mutation. The url and universalType arguments
-/// are considered exclusive; passing both will be considered an error.
-public struct CommunitySuppressResultInput: GraphQLMapConvertible {
-  public var graphQLMap: GraphQLMap
-
-  /// - Parameters:
-  ///   - query: Query to operate on
-  ///   - url: Result URL (web link) to insert
-  ///   - universalType: Universal type to insert
-  ///   - navTreatmentOnly: If true, only suppress nav treatment, but still allow as non-nav result
-  ///   - reason: Reason for suppression
-  public init(query: Swift.Optional<String?> = nil, url: Swift.Optional<String?> = nil, universalType: Swift.Optional<String?> = nil, navTreatmentOnly: Swift.Optional<Bool?> = nil, reason: Swift.Optional<String?> = nil) {
-    graphQLMap = ["query": query, "url": url, "universalType": universalType, "navTreatmentOnly": navTreatmentOnly, "reason": reason]
-  }
-
-  /// Query to operate on
-  public var query: Swift.Optional<String?> {
-    get {
-      return graphQLMap["query"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "query")
-    }
-  }
-
-  /// Result URL (web link) to insert
-  public var url: Swift.Optional<String?> {
-    get {
-      return graphQLMap["url"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "url")
-    }
-  }
-
-  /// Universal type to insert
-  public var universalType: Swift.Optional<String?> {
-    get {
-      return graphQLMap["universalType"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "universalType")
-    }
-  }
-
-  /// If true, only suppress nav treatment, but still allow as non-nav result
-  public var navTreatmentOnly: Swift.Optional<Bool?> {
-    get {
-      return graphQLMap["navTreatmentOnly"] as? Swift.Optional<Bool?> ?? Swift.Optional<Bool?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "navTreatmentOnly")
-    }
-  }
-
-  /// Reason for suppression
-  public var reason: Swift.Optional<String?> {
-    get {
-      return graphQLMap["reason"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
-    }
-    set {
-      graphQLMap.updateValue(newValue, forKey: "reason")
-    }
-  }
-}
-
 public enum ResendVerificationEmailResult: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
   public typealias RawValue = String
   case emailSent
@@ -3731,6 +3599,111 @@ public enum ResendVerificationEmailResult: RawRepresentable, Equatable, Hashable
       .alreadyVerified,
       .unknown,
     ]
+  }
+}
+
+/// Input for reportDomainTrustSignal mutation type
+public struct ReportDomainTrustSignalInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - domain
+  ///   - signal
+  public init(domain: Swift.Optional<String?> = nil, signal: Swift.Optional<TrustSignal?> = nil) {
+    graphQLMap = ["domain": domain, "signal": signal]
+  }
+
+  public var domain: Swift.Optional<String?> {
+    get {
+      return graphQLMap["domain"] as? Swift.Optional<String?> ?? Swift.Optional<String?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "domain")
+    }
+  }
+
+  public var signal: Swift.Optional<TrustSignal?> {
+    get {
+      return graphQLMap["signal"] as? Swift.Optional<TrustSignal?> ?? Swift.Optional<TrustSignal?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "signal")
+    }
+  }
+}
+
+/// Trust signal
+public enum TrustSignal: RawRepresentable, Equatable, Hashable, CaseIterable, Apollo.JSONDecodable, Apollo.JSONEncodable {
+  public typealias RawValue = String
+  /// Trust signal is unknown
+  case unknown
+  /// Domain is trusted
+  case trusted
+  /// Domain is not yet trusted
+  case notTrusted
+  /// Domain has been marked as having spammy, malicious content
+  case malicious
+  /// Auto generated constant for unknown enum values
+  case __unknown(RawValue)
+
+  public init?(rawValue: RawValue) {
+    switch rawValue {
+      case "Unknown": self = .unknown
+      case "Trusted": self = .trusted
+      case "NotTrusted": self = .notTrusted
+      case "Malicious": self = .malicious
+      default: self = .__unknown(rawValue)
+    }
+  }
+
+  public var rawValue: RawValue {
+    switch self {
+      case .unknown: return "Unknown"
+      case .trusted: return "Trusted"
+      case .notTrusted: return "NotTrusted"
+      case .malicious: return "Malicious"
+      case .__unknown(let value): return value
+    }
+  }
+
+  public static func == (lhs: TrustSignal, rhs: TrustSignal) -> Bool {
+    switch (lhs, rhs) {
+      case (.unknown, .unknown): return true
+      case (.trusted, .trusted): return true
+      case (.notTrusted, .notTrusted): return true
+      case (.malicious, .malicious): return true
+      case (.__unknown(let lhsValue), .__unknown(let rhsValue)): return lhsValue == rhsValue
+      default: return false
+    }
+  }
+
+  public static var allCases: [TrustSignal] {
+    return [
+      .unknown,
+      .trusted,
+      .notTrusted,
+      .malicious,
+    ]
+  }
+}
+
+/// Input for domainTrustSignals query type
+public struct DomainTrustSignalsInput: GraphQLMapConvertible {
+  public var graphQLMap: GraphQLMap
+
+  /// - Parameters:
+  ///   - domains
+  public init(domains: Swift.Optional<[String]?> = nil) {
+    graphQLMap = ["domains": domains]
+  }
+
+  public var domains: Swift.Optional<[String]?> {
+    get {
+      return graphQLMap["domains"] as? Swift.Optional<[String]?> ?? Swift.Optional<[String]?>.none
+    }
+    set {
+      graphQLMap.updateValue(newValue, forKey: "domains")
+    }
   }
 }
 
@@ -6871,114 +6844,6 @@ public final class UpdateUserProfileMutation: GraphQLMutation {
   }
 }
 
-public final class CommunityBoostResultMutation: GraphQLMutation {
-  /// The raw GraphQL definition of this operation.
-  public let operationDefinition: String =
-    """
-    mutation CommunityBoostResult($input: CommunityBoostResultInput!) {
-      communityBoostResult(input: $input)
-    }
-    """
-
-  public let operationName: String = "CommunityBoostResult"
-
-  public let operationIdentifier: String? = "9e0ef7ae0812a9711cd035cacb759a803121937a98be4f05082ba85015ff00e4"
-
-  public var input: CommunityBoostResultInput
-
-  public init(input: CommunityBoostResultInput) {
-    self.input = input
-  }
-
-  public var variables: GraphQLMap? {
-    return ["input": input]
-  }
-
-  public struct Data: GraphQLSelectionSet {
-    public static let possibleTypes: [String] = ["Mutation"]
-
-    public static var selections: [GraphQLSelection] {
-      return [
-        GraphQLField("communityBoostResult", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
-      ]
-    }
-
-    public private(set) var resultMap: ResultMap
-
-    public init(unsafeResultMap: ResultMap) {
-      self.resultMap = unsafeResultMap
-    }
-
-    public init(communityBoostResult: Bool) {
-      self.init(unsafeResultMap: ["__typename": "Mutation", "communityBoostResult": communityBoostResult])
-    }
-
-    /// Community revisions: boost query result
-    public var communityBoostResult: Bool {
-      get {
-        return resultMap["communityBoostResult"]! as! Bool
-      }
-      set {
-        resultMap.updateValue(newValue, forKey: "communityBoostResult")
-      }
-    }
-  }
-}
-
-public final class CommunitySuppressResultMutation: GraphQLMutation {
-  /// The raw GraphQL definition of this operation.
-  public let operationDefinition: String =
-    """
-    mutation CommunitySuppressResult($input: CommunitySuppressResultInput!) {
-      communitySuppressResult(input: $input)
-    }
-    """
-
-  public let operationName: String = "CommunitySuppressResult"
-
-  public let operationIdentifier: String? = "4607352945436fdcbb4a4d360ebed3c6bbf52602e62b020f8656acb87ddfb71a"
-
-  public var input: CommunitySuppressResultInput
-
-  public init(input: CommunitySuppressResultInput) {
-    self.input = input
-  }
-
-  public var variables: GraphQLMap? {
-    return ["input": input]
-  }
-
-  public struct Data: GraphQLSelectionSet {
-    public static let possibleTypes: [String] = ["Mutation"]
-
-    public static var selections: [GraphQLSelection] {
-      return [
-        GraphQLField("communitySuppressResult", arguments: ["input": GraphQLVariable("input")], type: .nonNull(.scalar(Bool.self))),
-      ]
-    }
-
-    public private(set) var resultMap: ResultMap
-
-    public init(unsafeResultMap: ResultMap) {
-      self.resultMap = unsafeResultMap
-    }
-
-    public init(communitySuppressResult: Bool) {
-      self.init(unsafeResultMap: ["__typename": "Mutation", "communitySuppressResult": communitySuppressResult])
-    }
-
-    /// Community revisions: suppress query result
-    public var communitySuppressResult: Bool {
-      get {
-        return resultMap["communitySuppressResult"]! as! Bool
-      }
-      set {
-        resultMap.updateValue(newValue, forKey: "communitySuppressResult")
-      }
-    }
-  }
-}
-
 public final class ResendVerificationEmailMutation: GraphQLMutation {
   /// The raw GraphQL definition of this operation.
   public let operationDefinition: String =
@@ -7062,6 +6927,209 @@ public final class ResendVerificationEmailMutation: GraphQLMutation {
         }
         set {
           resultMap.updateValue(newValue, forKey: "result")
+        }
+      }
+    }
+  }
+}
+
+public final class ReportDomainTrustSignalMutation: GraphQLMutation {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    mutation ReportDomainTrustSignal($input: ReportDomainTrustSignalInput!) {
+      reportDomainTrustSignal(input: $input) {
+        __typename
+        success
+      }
+    }
+    """
+
+  public let operationName: String = "ReportDomainTrustSignal"
+
+  public let operationIdentifier: String? = "58a10da0aae8466de03bfea1c56cd1a68858fde019b71d773e18532dd2bd6cd3"
+
+  public var input: ReportDomainTrustSignalInput
+
+  public init(input: ReportDomainTrustSignalInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Mutation"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("reportDomainTrustSignal", arguments: ["input": GraphQLVariable("input")], type: .object(ReportDomainTrustSignal.selections)),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(reportDomainTrustSignal: ReportDomainTrustSignal? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "reportDomainTrustSignal": reportDomainTrustSignal.flatMap { (value: ReportDomainTrustSignal) -> ResultMap in value.resultMap }])
+    }
+
+    /// reportDomainTrustSignal
+    public var reportDomainTrustSignal: ReportDomainTrustSignal? {
+      get {
+        return (resultMap["reportDomainTrustSignal"] as? ResultMap).flatMap { ReportDomainTrustSignal(unsafeResultMap: $0) }
+      }
+      set {
+        resultMap.updateValue(newValue?.resultMap, forKey: "reportDomainTrustSignal")
+      }
+    }
+
+    public struct ReportDomainTrustSignal: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["ReportDomainTrustSignalResponse"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("success", type: .scalar(Bool.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(success: Bool? = nil) {
+        self.init(unsafeResultMap: ["__typename": "ReportDomainTrustSignalResponse", "success": success])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var success: Bool? {
+        get {
+          return resultMap["success"] as? Bool
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "success")
+        }
+      }
+    }
+  }
+}
+
+public final class GetDomainTrustSignalsQuery: GraphQLQuery {
+  /// The raw GraphQL definition of this operation.
+  public let operationDefinition: String =
+    """
+    query getDomainTrustSignals($input: DomainTrustSignalsInput!) {
+      domainTrustSignals(input: $input) {
+        __typename
+        domain
+        signal
+      }
+    }
+    """
+
+  public let operationName: String = "getDomainTrustSignals"
+
+  public let operationIdentifier: String? = "87ddf623b789cb9cf03d4d68c205e3da2af81fd20a2555f8f3a794c598b8ec61"
+
+  public var input: DomainTrustSignalsInput
+
+  public init(input: DomainTrustSignalsInput) {
+    self.input = input
+  }
+
+  public var variables: GraphQLMap? {
+    return ["input": input]
+  }
+
+  public struct Data: GraphQLSelectionSet {
+    public static let possibleTypes: [String] = ["Query"]
+
+    public static var selections: [GraphQLSelection] {
+      return [
+        GraphQLField("domainTrustSignals", arguments: ["input": GraphQLVariable("input")], type: .list(.nonNull(.object(DomainTrustSignal.selections)))),
+      ]
+    }
+
+    public private(set) var resultMap: ResultMap
+
+    public init(unsafeResultMap: ResultMap) {
+      self.resultMap = unsafeResultMap
+    }
+
+    public init(domainTrustSignals: [DomainTrustSignal]? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "domainTrustSignals": domainTrustSignals.flatMap { (value: [DomainTrustSignal]) -> [ResultMap] in value.map { (value: DomainTrustSignal) -> ResultMap in value.resultMap } }])
+    }
+
+    /// Get trust signals for one or more domain
+    public var domainTrustSignals: [DomainTrustSignal]? {
+      get {
+        return (resultMap["domainTrustSignals"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [DomainTrustSignal] in value.map { (value: ResultMap) -> DomainTrustSignal in DomainTrustSignal(unsafeResultMap: value) } }
+      }
+      set {
+        resultMap.updateValue(newValue.flatMap { (value: [DomainTrustSignal]) -> [ResultMap] in value.map { (value: DomainTrustSignal) -> ResultMap in value.resultMap } }, forKey: "domainTrustSignals")
+      }
+    }
+
+    public struct DomainTrustSignal: GraphQLSelectionSet {
+      public static let possibleTypes: [String] = ["DomainTrustSignal"]
+
+      public static var selections: [GraphQLSelection] {
+        return [
+          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+          GraphQLField("domain", type: .scalar(String.self)),
+          GraphQLField("signal", type: .scalar(TrustSignal.self)),
+        ]
+      }
+
+      public private(set) var resultMap: ResultMap
+
+      public init(unsafeResultMap: ResultMap) {
+        self.resultMap = unsafeResultMap
+      }
+
+      public init(domain: String? = nil, signal: TrustSignal? = nil) {
+        self.init(unsafeResultMap: ["__typename": "DomainTrustSignal", "domain": domain, "signal": signal])
+      }
+
+      public var __typename: String {
+        get {
+          return resultMap["__typename"]! as! String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "__typename")
+        }
+      }
+
+      public var domain: String? {
+        get {
+          return resultMap["domain"] as? String
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "domain")
+        }
+      }
+
+      public var signal: TrustSignal? {
+        get {
+          return resultMap["signal"] as? TrustSignal
+        }
+        set {
+          resultMap.updateValue(newValue, forKey: "signal")
         }
       }
     }
@@ -7574,7 +7642,7 @@ public final class SearchQuery: GraphQLQuery {
           }
 
           public struct TypeSpecific: GraphQLSelectionSet {
-            public static let possibleTypes: [String] = ["AgendaView", "BillsView", "Computation", "Contact", "Currency", "Dictionary", "Doc", "DocView", "Email", "EmailActivity", "Entity", "Event", "EventView", "ExternalSearchProvider", "Flight", "FeedDocsView", "FeedGHView", "Image", "IpAddress", "Issue", "Journey", "KnowledgeGraphAnswer", "Lyrics", "Message", "MovieList", "MovieShowtimes", "NeevaDefinition", "News", "NewsItem", "NewsletterView", "NoAdsBanner", "PackageTracking", "PersonView", "Place", "PlaceList", "PreviewModeCTA", "PriceFollow", "ProductCategoryOverview", "ProductQNA", "ProductReviews", "ProductClusters", "ProductBrowse", "ProgrammingDoc", "Promo", "ReceiptView", "RecipeResult", "RecipeBlock", "Redirect", "RelatedSearches", "RelatedQnA", "RichEntity", "PPRanking", "ShippingView", "Social", "SpaceView", "SpaceBlock", "SportsCard", "Stock", "TechDoc", "TechQNA", "TimeCalculation", "Timezone", "TimezoneDifference", "Translation", "TravelView", "Tweet", "Vanity", "Video", "Weather", "Web"]
+            public static let possibleTypes: [String] = ["AgendaView", "BillsView", "Computation", "Contact", "Currency", "Dictionary", "Doc", "DocView", "Email", "EmailActivity", "Entity", "Event", "EventView", "ExternalSearchProvider", "Flight", "FeedDocsView", "FeedGHView", "Image", "IpAddress", "Issue", "Journey", "KnowledgeGraphAnswer", "Lyrics", "Message", "MovieList", "MovieShowtimes", "NeevaDefinition", "News", "NewsItem", "NewsletterView", "NoAdsBanner", "PackageTracking", "PersonView", "Place", "PlaceList", "PreviewModeCTA", "PriceFollow", "ProductCategoryOverview", "ProductQNA", "ProductReviews", "ProductClusters", "ProductBrowse", "ProgrammingDoc", "Promo", "ReceiptView", "RecipeResult", "RecipeBlock", "Redirect", "RelatedSearches", "RelatedQnA", "RichEntity", "PPRanking", "ShippingView", "Social", "SpaceView", "SpaceBlock", "SportsCard", "Stock", "TechDoc", "TechQNA", "TimeCalculation", "Timezone", "TimezoneDifference", "Token", "Translation", "TravelView", "Tweet", "Vanity", "Video", "Weather", "Web"]
 
             public static var selections: [GraphQLSelection] {
               return [
@@ -7827,6 +7895,10 @@ public final class SearchQuery: GraphQLQuery {
 
             public static func makeTimezoneDifference() -> TypeSpecific {
               return TypeSpecific(unsafeResultMap: ["__typename": "TimezoneDifference"])
+            }
+
+            public static func makeToken() -> TypeSpecific {
+              return TypeSpecific(unsafeResultMap: ["__typename": "Token"])
             }
 
             public static func makeTranslation() -> TypeSpecific {
@@ -12840,7 +12912,7 @@ public final class GetSpacesDataQuery: GraphQLQuery {
                 }
 
                 public struct TypeSpecific: GraphQLSelectionSet {
-                  public static let possibleTypes: [String] = ["AgendaView", "BillsView", "Computation", "Contact", "Currency", "Dictionary", "Doc", "DocView", "Email", "EmailActivity", "Entity", "Event", "EventView", "ExternalSearchProvider", "Flight", "FeedDocsView", "FeedGHView", "Image", "IpAddress", "Issue", "Journey", "KnowledgeGraphAnswer", "Lyrics", "Message", "MovieList", "MovieShowtimes", "NeevaDefinition", "News", "NewsItem", "NewsletterView", "NoAdsBanner", "PackageTracking", "PersonView", "Place", "PlaceList", "PreviewModeCTA", "PriceFollow", "ProductCategoryOverview", "ProductQNA", "ProductReviews", "ProductClusters", "ProductBrowse", "ProgrammingDoc", "Promo", "ReceiptView", "RecipeResult", "RecipeBlock", "Redirect", "RelatedSearches", "RelatedQnA", "RichEntity", "PPRanking", "ShippingView", "Social", "SpaceView", "SpaceBlock", "SportsCard", "Stock", "TechDoc", "TechQNA", "TimeCalculation", "Timezone", "TimezoneDifference", "Translation", "TravelView", "Tweet", "Vanity", "Video", "Weather", "Web"]
+                  public static let possibleTypes: [String] = ["AgendaView", "BillsView", "Computation", "Contact", "Currency", "Dictionary", "Doc", "DocView", "Email", "EmailActivity", "Entity", "Event", "EventView", "ExternalSearchProvider", "Flight", "FeedDocsView", "FeedGHView", "Image", "IpAddress", "Issue", "Journey", "KnowledgeGraphAnswer", "Lyrics", "Message", "MovieList", "MovieShowtimes", "NeevaDefinition", "News", "NewsItem", "NewsletterView", "NoAdsBanner", "PackageTracking", "PersonView", "Place", "PlaceList", "PreviewModeCTA", "PriceFollow", "ProductCategoryOverview", "ProductQNA", "ProductReviews", "ProductClusters", "ProductBrowse", "ProgrammingDoc", "Promo", "ReceiptView", "RecipeResult", "RecipeBlock", "Redirect", "RelatedSearches", "RelatedQnA", "RichEntity", "PPRanking", "ShippingView", "Social", "SpaceView", "SpaceBlock", "SportsCard", "Stock", "TechDoc", "TechQNA", "TimeCalculation", "Timezone", "TimezoneDifference", "Token", "Translation", "TravelView", "Tweet", "Vanity", "Video", "Weather", "Web"]
 
                   public static var selections: [GraphQLSelection] {
                     return [
@@ -13097,6 +13169,10 @@ public final class GetSpacesDataQuery: GraphQLQuery {
 
                   public static func makeTimezoneDifference() -> TypeSpecific {
                     return TypeSpecific(unsafeResultMap: ["__typename": "TimezoneDifference"])
+                  }
+
+                  public static func makeToken() -> TypeSpecific {
+                    return TypeSpecific(unsafeResultMap: ["__typename": "Token"])
                   }
 
                   public static func makeTranslation() -> TypeSpecific {

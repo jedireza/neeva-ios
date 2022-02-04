@@ -1,36 +1,52 @@
 // Copyright Neeva. All rights reserved.
 
 import Apollo
+import Combine
 import Foundation
 import Shared
 
-public let WEB3_SUBMISSION_QUERY = "Web3 Community Submission Label"
-public let TEMP_WEB3_ALLOW_LIST = ["opensea.io", "superrare.com", "rarible.com", "foundation.app"]
-
-public class SuppressRequest: MutationRequest<CommunitySuppressResultMutation> {
-    public init(url: URL) {
+public class TrustSignalRequest: MutationRequest<ReportDomainTrustSignalMutation> {
+    public init(url: URL, trusted: Bool) {
         super.init(
-            mutation: CommunitySuppressResultMutation(
-                input: CommunitySuppressResultInput(
-                    query: WEB3_SUBMISSION_QUERY,
-                    url: url.domainURL.absoluteString,
-                    universalType: "web",
-                    navTreatmentOnly: true,
-                    reason: "Web3 Trust Signal Submission"
+            mutation: ReportDomainTrustSignalMutation(
+                input: ReportDomainTrustSignalInput(
+                    domain: url.baseDomain, signal: trusted ? .trusted : .malicious
                 )))
     }
 }
 
-public class BoostRequest: MutationRequest<CommunityBoostResultMutation> {
-    public init(url: URL) {
-        super.init(
-            mutation: CommunityBoostResultMutation(
-                input: CommunityBoostResultInput(
-                    query: WEB3_SUBMISSION_QUERY,
-                    url: url.domainURL.absoluteString,
-                    universalType: "web",
-                    asNav: true,
-                    userComment: "Web3 Trust Signal Submission"
-                )))
+let web3Extensions = [".io", ".xyz", ".com", ".art"]
+
+typealias DomainTrustSignal = GetDomainTrustSignalsQuery.Data.DomainTrustSignal
+
+class TrustSignalController: QueryController<GetDomainTrustSignalsQuery, [DomainTrustSignal]> {
+
+    override class func processData(_ data: GetDomainTrustSignalsQuery.Data) -> [DomainTrustSignal]
+    {
+        data.domainTrustSignals ?? []
+    }
+
+    @discardableResult static func getTrustSignals(
+        domains: [String],
+        completion: @escaping (Result<[DomainTrustSignal], Error>) -> Void
+    ) -> Combine.Cancellable {
+        Self.perform(
+            query: GetDomainTrustSignalsQuery(
+                input: DomainTrustSignalsInput(domains: domains)),
+            completion: completion
+        )
+    }
+
+    @discardableResult static func getTrustSignals(
+        domain: String,
+        completion: @escaping (Result<[DomainTrustSignal], Error>) -> Void
+    ) -> Combine.Cancellable {
+        var domains = [domain]
+        if let index = domain.lastIndex(of: ".") {
+            domains.append(
+                contentsOf: web3Extensions.map({ String(domain.prefix(upTo: index)) + $0 }))
+        }
+
+        return getTrustSignals(domains: domains, completion: completion)
     }
 }

@@ -3,6 +3,9 @@
 * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 let ETLD_NAMES_LIST = [
+    "art",
+    "app",
+    "technology",
     "ac",
     "com.ac",
     "edu.ac",

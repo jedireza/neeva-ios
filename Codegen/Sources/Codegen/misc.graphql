@@ -140,16 +140,21 @@ mutation UpdateUserProfile($input: UpdateUserProfileInput!) {
   }
 }
 
-mutation CommunityBoostResult($input: CommunityBoostResultInput!) {
-    communityBoostResult(input: $input)
-}
-
-mutation CommunitySuppressResult($input: CommunitySuppressResultInput!) {
-    communitySuppressResult(input: $input)
-}
-
 mutation ResendVerificationEmail {
     resendVerificationEmail {
         result
     }
+}
+
+mutation ReportDomainTrustSignal($input: ReportDomainTrustSignalInput!)  {
+  reportDomainTrustSignal(input: $input) {
+    success
+  }
+}
+
+query getDomainTrustSignals($input: DomainTrustSignalsInput!) {
+  domainTrustSignals(input: $input) {
+    domain
+    signal
+  }
 }

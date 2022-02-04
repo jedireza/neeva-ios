@@ -8,6 +8,7 @@ import Foundation
 import Shared
 import SwiftUI
 import WalletConnectSwift
+import XCGLogger
 import web3swift
 
 enum SequenceType: String {
@@ -56,6 +57,7 @@ class Web3Model: ObservableObject, ResponseRelay {
             updateBalances()
         }
     }
+
     @Published var currentSession: Session? {
         didSet {
             guard currentSession != nil else { return }
@@ -65,11 +67,47 @@ class Web3Model: ObservableObject, ResponseRelay {
     @Published var showingWalletDetails = false
     @Published var matchingCollection: Collection?
     @Published var gasEstimate: String? = nil
+    @Published var showingMaliciousSiteWarning = false
 
     let server: Server?
     let presenter: WalletConnectPresenter
     var selectedTab: Tab?
     var wallet: WalletAccessor?
+    var communityBasedTrustSignals = [String: TrustSignal]()
+
+    var trustSignal: TrustSignal {
+        if let matchingCollection = matchingCollection,
+            matchingCollection.safelistRequestStatus >= .approved
+        {
+            return .trusted
+        }
+
+        guard let baseDomain = selectedTab?.url?.baseDomain else { return .notTrusted }
+
+        if let signal = communityBasedTrustSignals[baseDomain] {
+            return signal
+        }
+
+        return .notTrusted
+    }
+
+    var alternateTrustedDomain: String? {
+        guard
+            let url =
+                InternalURL(selectedTab?.url)?.isSessionRestore == true
+                ? InternalURL(selectedTab?.url)?.extractedUrlParam : selectedTab?.url,
+            let baseDomain = url.baseDomain,
+            case .notTrusted = trustSignal,
+            let index = baseDomain.lastIndex(of: ".")
+        else {
+            return nil
+        }
+
+        let alternateDomain = web3Extensions.map({ String(baseDomain.prefix(upTo: index)) + $0 })
+            .filter({ communityBasedTrustSignals[$0] == .trusted }).first
+
+        return alternateDomain != baseDomain ? alternateDomain : nil
+    }
 
     var balances: [TokenType: String?] = [
         .ether: nil, .wrappedEther: nil, .matic: nil,
@@ -146,6 +184,26 @@ class Web3Model: ObservableObject, ResponseRelay {
             InternalURL(selectedTab?.url)?.isSessionRestore == true
             ? InternalURL(selectedTab?.url)?.extractedUrlParam : selectedTab?.url
 
+        if let domain = url?.baseDomain, wallet?.publicAddress.isEmpty == false {
+            if self.communityBasedTrustSignals[domain] == nil {
+                TrustSignalController.getTrustSignals(domain: domain) { result in
+                    switch result {
+                    case .failure(let error):
+                        Logger.browser.info("Trust signal query failed with \(error)")
+                    case .success(let signals):
+                        signals.forEach({
+                            guard let domain = $0.domain, let signal = $0.signal else { return }
+                            self.communityBasedTrustSignals[domain] = signal
+                        })
+
+                        self.checkForMaliciousContent()
+                    }
+                }
+            } else {
+                checkForMaliciousContent()
+            }
+        }
+
         DispatchQueue.main.async {
             self.currentSession =
                 self.server?.openSessions().first(where: {
@@ -154,9 +212,18 @@ class Web3Model: ObservableObject, ResponseRelay {
         }
     }
 
+    func checkForMaliciousContent() {
+        if !showingMaliciousSiteWarning, alternateTrustedDomain != nil || trustSignal == .malicious
+        {
+            showingMaliciousSiteWarning = true
+            startSequence()
+        }
+    }
+
     func reset() {
         currentSequence = nil
         gasEstimate = nil
+        showingMaliciousSiteWarning = false
     }
 
     func tryWalletConnect() {

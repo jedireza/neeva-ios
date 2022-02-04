@@ -24,9 +24,8 @@ struct WalletSequenceContent: View {
     var showingCommunitySubmissions: Bool {
         guard let type = model.currentSequence?.type,
             case .sessionRequest = type,
-            model.matchingCollection == nil,
-            let url = model.selectedTab?.url,
-            !TEMP_WEB3_ALLOW_LIST.contains(where: { $0 == url.host }),
+            case .notTrusted = model.trustSignal,
+            model.alternateTrustedDomain == nil,
             !communityTrusted
         else {
             return false
@@ -165,7 +164,62 @@ struct WalletSequenceContent: View {
 
     var body: some View {
         VStack {
-            if let sequence = model.currentSequence {
+
+            if let trustedDomain = model.alternateTrustedDomain {
+                VStack(spacing: 8) {
+                    (Text("This page's address is very close to ") + Text(trustedDomain).bold()
+                        + Text(" which is a trusted site."))
+                    Text("This is a pattern commonly used by malicious websites.")
+                    Text("We will avoid connecting your wallet to protect its contents.")
+                }
+                .font(.roobert(size: 16))
+                .foregroundColor(.red)
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.center)
+                Button(
+                    action: {
+                        model.selectedTab?.loadRequest(
+                            URLRequest(url: URL(string: "https://\(trustedDomain)")!))
+                        DispatchQueue.main.async {
+                            hideOverlaySheet()
+                        }
+                    },
+                    label: {
+                        Text("Navigate to \(trustedDomain)")
+                            .frame(maxWidth: .infinity)
+                    }
+                ).buttonStyle(.neeva(.primary))
+                    .padding(.top, 16)
+                Button(
+                    action: {
+                        hideOverlaySheet()
+                    },
+                    label: {
+                        Text("Close")
+                            .frame(maxWidth: .infinity)
+                    }
+                ).buttonStyle(.neeva(.secondary))
+                    .padding(.bottom, 16)
+            } else if case .malicious = model.trustSignal {
+                VStack(spacing: 8) {
+                    Text("This page is a known malicious website.")
+                    Text("We will avoid connecting to protect your wallet contents.")
+                }
+                .font(.roobert(size: 16))
+                .foregroundColor(.red)
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.center)
+                Button(
+                    action: {
+                        hideOverlaySheet()
+                    },
+                    label: {
+                        Text("Close")
+                            .frame(maxWidth: .infinity)
+                    }
+                ).buttonStyle(.neeva(.primary))
+                    .padding(.bottom, 16)
+            } else if let sequence = model.currentSequence {
                 WebImage(url: sequence.thumbnailURL)
                     .resizable()
                     .placeholder {
@@ -184,7 +238,7 @@ struct WalletSequenceContent: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .center)
                 HStack {
-                    if !showingCommunitySubmissions {
+                    if case .trusted = model.trustSignal {
                         Image("twitter-verified-large")
                             .renderingMode(.template)
                             .resizable()
@@ -196,7 +250,7 @@ struct WalletSequenceContent: View {
                         sequence.dAppMeta.url.baseDomain
                             ?? sequence.dAppMeta.url.domainURL.absoluteString
                     ).withFont(.headingMedium)
-                        .foregroundColor(showingCommunitySubmissions ? .label : .ui.adaptive.blue)
+                        .foregroundColor(model.trustSignal == .trusted ? .ui.adaptive.blue : .label)
                 }
                 if case .sessionRequest = sequence.type {
                     if let collection = model.matchingCollection,
@@ -209,7 +263,7 @@ struct WalletSequenceContent: View {
                         let url = model.selectedTab?.url
                     {
                         CommunitySubmissionView(url: url, trust: $communityTrusted)
-                    } else if let _ = sequence.message {
+                    } else if let _ = sequence.message, model.alternateTrustedDomain == nil {
                         descriptionText
                     }
                 } else if let _ = sequence.message {
@@ -233,7 +287,7 @@ struct WalletSequenceContent: View {
                         }
                     }
                 }.padding(.vertical, 12)
-                if !showingCommunitySubmissions {
+                if model.trustSignal == .trusted || communityTrusted {
                     HStack {
                         Button(
                             action: {
