@@ -1,3 +1,4 @@
+#testing
 #!/bin/sh
 
 export EXPORT_BUILD=false
