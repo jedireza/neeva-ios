@@ -73,6 +73,7 @@ class BrowserModel: ObservableObject {
     }
 
     func hideWithNoAnimation() {
+        cardTransition = .hidden
         showGrid = false
         showContent = true
         gridModel.animateDetailTransitions = true

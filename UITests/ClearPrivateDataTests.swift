@@ -38,6 +38,12 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
 
         resetToHome()
 
+        // Restore the initial tab.
+        tester().waitForAnimationsToFinish()
+        tester().tapView(withAccessibilityLabel: "Add Tab")
+        openURL(openAddressBar: false)
+        tester().waitForAnimationsToFinish()
+
         return urls
     }
 
