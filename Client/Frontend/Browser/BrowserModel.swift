@@ -125,28 +125,28 @@ class BrowserModel: ObservableObject {
                 gridModel.switcherState = .spaces
                 gridModel.isLoading = true
             }
-        }
 
-        guard existingSpace == nil else {
-            return
-        }
+            guard existingSpace == nil else {
+                return
+            }
 
-        SpaceStore.openSpace(spaceId: spaceId) { [self] in
-            let spaceCardModel = bvc.gridModel.spaceCardModel
-            if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                gridModel.isLoading = false
-                openSpace(spaceID: spaceId, animate: false)
-                completion()
-            } else {
-                gridModel.isLoading = false
+            SpaceStore.openSpace(spaceId: spaceId) { [self] in
+                let spaceCardModel = bvc.gridModel.spaceCardModel
+                if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
+                    gridModel.isLoading = false
+                    openSpace(spaceID: spaceId, animate: false)
+                    completion()
+                } else {
+                    followPublicSpaceSubscription = spaceCardModel.objectWillChange.sink {
+                        [unowned self] in
+                        if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
+                            openSpace(
+                                spaceID: spaceId, animate: false)
+                            completion()
+                            followPublicSpaceSubscription = nil
+                        }
 
-                followPublicSpaceSubscription = spaceCardModel.objectWillChange.sink {
-                    [unowned self] in
-                    if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
-                        openSpace(
-                            spaceID: spaceId, animate: false)
-                        completion()
-                        followPublicSpaceSubscription = nil
+                        gridModel.isLoading = false
                     }
                 }
             }
@@ -167,6 +167,13 @@ class BrowserModel: ObservableObject {
         }
 
         detail.isShowingDetails = true
+    }
+
+    func openSpaceDigest(bvc: BrowserViewController) {
+        bvc.showTabTray()
+        gridModel.switcherState = .spaces
+
+        openSpace(spaceId: SpaceStore.dailyDigestID, bvc: bvc) { }
     }
 
     func openTabGroup(detail: TabGroupCardDetails) {

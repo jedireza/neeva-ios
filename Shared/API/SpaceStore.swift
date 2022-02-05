@@ -61,7 +61,7 @@ public class Space: Hashable, Identifiable {
     public typealias Acl = ListSpacesQuery.Data.ListSpace.Space.Space.Acl
     public typealias Notification = ListSpacesQuery.Data.ListSpace.Space.Space.Notification
 
-    public let id: SpaceID
+    public var id: SpaceID
     public var name: String
     public var description: String?
     public var thumbnail: String?
@@ -145,9 +145,10 @@ public class SpaceStore: ObservableObject {
 
     public static var promotionalSpaceId =
         "-ysvXOiH2HWXsXeN_QaVFzwWEF_ASvtOW_yylJEM"
+    public static let dailyDigestID = "spaceDailyDigest"
 
     private static var subscription: AnyCancellable? = nil
-
+    private var refreshCompletionHandlers: [() -> Void] = []
     private var suggestedSpaceID: String? = nil
 
     public init(suggestedID: String? = nil) {
@@ -199,9 +200,19 @@ public class SpaceStore: ObservableObject {
     }
 
     /// Call to refresh the SpaceStore's copy of spaces data. Ignored if already refreshing.
-    public func refresh() {
-        if case .refreshing = state { return }
-        if disableRefresh { return }
+    public func refresh(completion: (() -> Void)? = nil) {
+        if let completion = completion {
+            refreshCompletionHandlers.append(completion)
+        }
+
+        if case .refreshing = state {
+            return
+        }
+
+        if disableRefresh {
+            return
+        }
+        
         if let _ = suggestedSpaceID {
             fetchSuggestedSpaces()
             return
@@ -214,6 +225,12 @@ public class SpaceStore: ObservableObject {
             case .failure(let error):
                 self.state = .failed(error)
             }
+
+            for handler in self.refreshCompletionHandlers {
+                handler()
+            }
+
+            self.refreshCompletionHandlers.removeAll()
         }
     }
 
@@ -265,20 +282,27 @@ public class SpaceStore: ObservableObject {
     }
 
     public static func openSpace(spaceId: String, completion: @escaping () -> Void) {
-        SpacesDataQueryController.getSpacesData(spaceIds: [spaceId]) { result in
-            switch result {
-            case .success:
-                Logger.browser.info("Space followed")
-                shared.refresh()
-                subscription = SpaceStore.shared.$state.sink {
-                    state in
-                    if case .ready = state {
-                        completion()
-                        subscription?.cancel()
+        if spaceId == SpaceStore.dailyDigestID {
+            shared.refresh {
+                shared.addDailyDigestToSpaces()
+                completion()
+            }
+        } else {
+            SpacesDataQueryController.getSpacesData(spaceIds: [spaceId]) { result in
+                switch result {
+                case .success:
+                    Logger.browser.info("Space followed")
+                    shared.refresh()
+                    subscription = SpaceStore.shared.$state.sink {
+                        state in
+                        if case .ready = state {
+                            completion()
+                            subscription?.cancel()
+                        }
                     }
+                case .failure(let error):
+                    Logger.browser.error(error.localizedDescription)
                 }
-            case .failure(let error):
-                Logger.browser.error(error.localizedDescription)
             }
         }
     }
@@ -435,15 +459,12 @@ public class SpaceStore: ObservableObject {
     public func addDailyDigestToSpaces() {
         if FeatureFlag[.showDailyDigest] {
             self.allSpaces.removeAll(where: { $0.isDigest })
-
-            if let digest = createSpaceDailyDigest() {
-                self.allSpaces.insert(digest, at: 0)
-            }
+            self.allSpaces.insert(createSpaceDailyDigest(with: allSpaces), at: 0)
         }
     }
 
-    private func createSpaceDailyDigest() -> Space? {
-        let spacesWithNotifications: [Space] = allSpaces.compactMap {
+    private func createSpaceDailyDigest(with spaces: [Space]) -> Space {
+        let spacesWithNotifications: [Space] = spaces.compactMap {
             if $0.hasNotificationUpdates {
                 return $0
             } else {
@@ -451,21 +472,14 @@ public class SpaceStore: ObservableObject {
             }
         }
 
-        let notifications = spacesWithNotifications.compactMap {
-            $0.entityAddedNotifcations
-        }.joined()
-
-        guard spacesWithNotifications.count > 0 else {
-            return nil
-        }
-
         let spaceDailyDigest = Space.empty()
+        spaceDailyDigest.id = .init(value: SpaceStore.dailyDigestID)
         spaceDailyDigest.name = "Your daily digest"
-        spaceDailyDigest.description = createDailyDigestDescription(
-            spaces: spacesWithNotifications, numberOfNotifications: notifications.count)
         spaceDailyDigest.contentData = []
         spaceDailyDigest.userACL = .publicView
         spaceDailyDigest.isDigest = true
+
+        var numberOfItemsUpdated = 0
 
         for space in spacesWithNotifications {
             if let content = space.contentData, let notifications = space.entityAddedNotifcations {
@@ -488,16 +502,22 @@ public class SpaceStore: ObservableObject {
                             continue
                         }
 
-                        spaceDailyDigest.contentData?.append(data)
+                        if data.url != nil {
+                            numberOfItemsUpdated += 1
+                            spaceDailyDigest.contentData?.append(data)
+                        }
                     }
                 }
             }
         }
 
+        spaceDailyDigest.description = createDailyDigestDescription(
+            spaces: spacesWithNotifications, numberOfChanges: numberOfItemsUpdated)
+
         return spaceDailyDigest
     }
 
-    private func createDailyDigestDescription(spaces: [Space], numberOfNotifications: Int) -> String
+    private func createDailyDigestDescription(spaces: [Space], numberOfChanges: Int) -> String
     {
         var description = ""
 
@@ -523,7 +543,7 @@ public class SpaceStore: ObservableObject {
         }
 
         description +=
-            " \(spaces.count > 1 ? "were" : "was") updated with \(numberOfNotifications) \(numberOfNotifications > 1 ? "items" : "item") total"
+            " \(spaces.count > 1 ? "were" : "was") updated with \(numberOfChanges) \(numberOfChanges > 1 ? "items" : "item") total"
 
         return description
     }

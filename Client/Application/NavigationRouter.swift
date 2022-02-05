@@ -22,6 +22,7 @@ enum NavigationPath {
     case widgetUrl(webURL: URL?, uuid: String)
     case closePrivateTabs
     case space(String, [String]?, Bool)
+    case spaceDigest
     case fastTap(String, Bool)
     case configNewsProvider(isPrivate: Bool)
     case walletConnect(wcURL: WCURL)
@@ -57,6 +58,8 @@ enum NavigationPath {
                 // Use the last browsing mode the user was in
                 isPrivate: Defaults[.lastSessionPrivate]
             )
+        } else if urlString.starts(with: "\(scheme)://space-digest") {
+            self = .spaceDigest
         } else if urlString.starts(with: "\(scheme)://space"),
             let spaceId = components.valueForQuery("id")
         {
@@ -90,6 +93,8 @@ enum NavigationPath {
             NavigationPath.handleClosePrivateTabs(with: bvc)
         case .widgetUrl(let webURL, let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
+        case .spaceDigest:
+            NavigationPath.handleSpaceDigest(with: bvc)
         case .space(let spaceId, let updatedItemIds, let isPrivate):
             NavigationPath.handleSpace(
                 spaceId: spaceId, updatedItemIds: updatedItemIds, isPrivate: isPrivate, with: bvc)
@@ -203,6 +208,10 @@ enum NavigationPath {
             bvc.openLazyTab(
                 openedFrom: .openTab(bvc.tabManager.selectedTab), switchToIncognitoMode: false)
         }
+    }
+
+    private static func handleSpaceDigest(with bvc: BrowserViewController) {
+        bvc.browserModel.openSpaceDigest(bvc: bvc)
     }
 
     private static func handleSpace(
