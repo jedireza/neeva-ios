@@ -170,7 +170,7 @@ struct WalletDashboard: View {
                     HStack {
                         token.thumbnail
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(token.name)
+                            Text(token.currency.name)
                                 .withFont(.labelSmall)
                                 .fixedSize(horizontal: false, vertical: true)
                                 .foregroundColor(.label)
@@ -186,7 +186,7 @@ struct WalletDashboard: View {
                             .foregroundColor(.label)
                             .font(.roobert(size: 20))
                             .frame(alignment: .center)
-                            Text("\(model.balanceFor(token) ?? "") \(token.currency)")
+                            Text("\(model.balanceFor(token) ?? "") \(token.currency.rawValue)")
                                 .font(.roobert(size: 12))
                                 .foregroundColor(.secondary)
                         }

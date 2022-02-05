@@ -171,6 +171,7 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
 
     func updateBalances() {
+        CurrencyStore.shared.refresh()
         balances.keys.forEach { token in
             wallet?.tokenBalance(token: token) { balance in
                 self.balances[token] = balance

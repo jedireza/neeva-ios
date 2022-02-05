@@ -287,7 +287,9 @@ struct WalletSequenceContent: View {
                         }
                     }
                 }.padding(.vertical, 12)
-                if model.trustSignal == .trusted || communityTrusted {
+                if sequence.type != .sessionRequest || model.trustSignal == .trusted
+                    || communityTrusted
+                {
                     HStack {
                         Button(
                             action: {

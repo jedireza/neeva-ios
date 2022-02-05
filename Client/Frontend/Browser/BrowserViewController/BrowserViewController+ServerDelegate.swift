@@ -13,10 +13,6 @@ extension Defaults.Keys {
     static func dAppsSession(_ sessionID: String) -> Defaults.Key<Data?> {
         Defaults.Key("DataForSession" + sessionID)
     }
-
-    static func dAppsSessionChainID(_ sessionID: String) -> Defaults.Key<Int?> {
-        Defaults.Key("ChainIDForSession" + sessionID)
-    }
 }
 
 protocol WalletConnectPresenter: ModalPresenter {

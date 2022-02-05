@@ -102,7 +102,8 @@ extension Defaults.Keys {
     public static let seenCheatsheetIntro = Defaults.BoolKey("cheatsheetIntroSeen")
     public static let showTryCheatsheetPopover = Defaults.BoolKey("showTryCheatsheetPopover")
     public static let cheatsheetDebugQuery = Defaults.BoolKey("cheatsheetDebugQuery")
-    public static let showNeevaMenuWillMove = Defaults.BoolKey("showNeevaMenuWillMove", default: false)
+    public static let showNeevaMenuWillMove = Defaults.BoolKey(
+        "showNeevaMenuWillMove", default: false)
 
     // notification
     public static let lastScheduledNeevaPromoID = Defaults.Key<String?>("lastScheduledNeevaPromoID")
@@ -155,6 +156,7 @@ extension Defaults.Keys {
         "cryptoTransactionHashStore", default: [])
     public static let sessionsPeerIDs = Defaults.Key<Set<String>>(
         "web3SessionsPeerIDs", default: [])
+    public static let tickerResponse = Defaults.Key<Data?>("tickerResponse", default: nil)
 
     // default browser
     public static let didDismissDefaultBrowserCard = Defaults.BoolKey(
