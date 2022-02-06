@@ -170,8 +170,8 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         self.id = tab.id
         self.manager = manager
 
-        isPinnedSubscription = tab.$isPinned.sink { [unowned self] _ in
-            objectWillChange.send()
+        isPinnedSubscription = tab.$isPinned.sink { [weak self] _ in
+            self?.objectWillChange.send()
         }
     }
 
