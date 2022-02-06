@@ -47,6 +47,7 @@ class TabContainerModel: ObservableObject {
 
     private let zeroQueryModel: ZeroQueryModel
     let tabCardModel: TabCardModel
+    private let overlayManager: OverlayManager
 
     init(bvc: BrowserViewController) {
         let tabManager = bvc.tabManager
@@ -59,6 +60,7 @@ class TabContainerModel: ObservableObject {
         self.zeroQueryModel = bvc.zeroQueryModel
         self.tabCardModel = TabCardModel(
             manager: tabManager, groupManager: TabGroupManager(tabManager: tabManager))
+        self.overlayManager = bvc.overlayManager
 
         self.subscription = tabManager.selectedTabPublisher.sink { [weak self] tab in
             guard let self = self else { return }
@@ -93,10 +95,15 @@ class TabContainerModel: ObservableObject {
             zeroQueryModel.isPrivate = isIncognito
             zeroQueryModel.isLazyTab = isLazyTab
             zeroQueryModel.openedFrom = openedFrom
+
+            overlayManager.hideCurrentOverlay(ofPriorities: [.modal, .fullScreen])
+
             if openedFrom == .newTabButton {
                 zeroQueryModel.targetTab = .newTab
             }
         case .showSuggestions:
+            overlayManager.hideCurrentOverlay(ofPriorities: [.modal, .fullScreen])
+
             if case .zeroQuery = currentContentUI {
                 currentContentUI = .suggestions
             }

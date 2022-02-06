@@ -162,7 +162,21 @@ class OverlayManager: ObservableObject {
     }
 
     public func hideCurrentOverlay(
-        ofPriority: OverlayPriority? = nil,
+        ofPriority: OverlayPriority?,
+        animate: Bool = true, showNext: Bool = true, completion: (() -> Void)? = nil
+    ) {
+        if let ofPriority = ofPriority {
+            hideCurrentOverlay(
+                ofPriorities: [ofPriority], animate: animate, showNext: showNext,
+                completion: completion)
+        } else {
+            hideCurrentOverlay(
+                ofPriorities: nil, animate: animate, showNext: showNext, completion: completion)
+        }
+    }
+
+    public func hideCurrentOverlay(
+        ofPriorities: [OverlayPriority]? = nil,
         animate: Bool = true, showNext: Bool = true, completion: (() -> Void)? = nil
     ) {
         guard let overlay = currentOverlay else {
@@ -170,7 +184,7 @@ class OverlayManager: ObservableObject {
             return
         }
 
-        if let ofPriority = ofPriority, overlay.priority != ofPriority {
+        if let ofPriorities = ofPriorities, !ofPriorities.contains(overlay.priority) {
             completion?()
             return
         }

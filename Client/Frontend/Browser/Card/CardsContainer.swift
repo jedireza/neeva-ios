@@ -127,7 +127,8 @@ struct CardScrollContainer<Content: View>: View {
         .accessibilityValue(
             Text(
                 "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
-            ))
+            )
+        )
         .environment(\.columns, columns)
         .introspectScrollView { scrollView in
             // This is to make sure the overlay card bleeds outside the horizontal and bottom

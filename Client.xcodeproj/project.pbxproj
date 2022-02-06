@@ -315,6 +315,7 @@
 		66F0E62026EC22C3008A4327 /* OverlaySheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F0E61F26EC22C3008A4327 /* OverlaySheetModel.swift */; };
 		66F0E62326EC23AD008A4327 /* OverlayStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F0E62226EC23AD008A4327 /* OverlayStyle.swift */; };
 		66F0E62526EC2CFD008A4327 /* OverlayModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F0E62426EC2CFD008A4327 /* OverlayModifiers.swift */; };
+		66F5079627ACB84900911173 /* FocusableTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F5079527ACB84800911173 /* FocusableTextField.swift */; };
 		66F571D726BD9CE800BEECF9 /* UITestBase+GoToExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571D626BD9CE800BEECF9 /* UITestBase+GoToExtension.swift */; };
 		66F571D926BD9CF700BEECF9 /* UITestBase+ActionExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571D826BD9CF700BEECF9 /* UITestBase+ActionExtension.swift */; };
 		66F571DB26BD9D0B00BEECF9 /* UITestBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F571DA26BD9D0B00BEECF9 /* UITestBase.swift */; };
@@ -1477,6 +1478,7 @@
 		66F0E61F26EC22C3008A4327 /* OverlaySheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlaySheetModel.swift; sourceTree = "<group>"; };
 		66F0E62226EC23AD008A4327 /* OverlayStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayStyle.swift; sourceTree = "<group>"; };
 		66F0E62426EC2CFD008A4327 /* OverlayModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayModifiers.swift; sourceTree = "<group>"; };
+		66F5079527ACB84800911173 /* FocusableTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusableTextField.swift; sourceTree = "<group>"; };
 		66F571D626BD9CE800BEECF9 /* UITestBase+GoToExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestBase+GoToExtension.swift"; sourceTree = "<group>"; };
 		66F571D826BD9CF700BEECF9 /* UITestBase+ActionExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITestBase+ActionExtension.swift"; sourceTree = "<group>"; };
 		66F571DA26BD9D0B00BEECF9 /* UITestBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITestBase.swift; sourceTree = "<group>"; };
@@ -3237,6 +3239,7 @@
 			children = (
 				66BEFDC826A7678200AA32EF /* GroupedCell.swift */,
 				C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */,
+				66F5079527ACB84800911173 /* FocusableTextField.swift */,
 				C908604F266693340049C072 /* SingleLineTextField.swift */,
 				C9C18DD926558FF3004710CD /* ActivityIndicator.swift */,
 				C9C18DD226558FF2004710CD /* DecorativeSection.swift */,
@@ -5202,6 +5205,7 @@
 				C9ADD2A626727195005F9C4B /* ButtonStyles.swift in Sources */,
 				E65075A01E37F7AB006961AC /* ArrayExtensions.swift in Sources */,
 				BCF248472670967C00ACAD11 /* ViewExtensions.swift in Sources */,
+				66F5079627ACB84900911173 /* FocusableTextField.swift in Sources */,
 				C88F9D1426D961EC00FD0E04 /* UserInfoProvider.swift in Sources */,
 				E65075A31E37F7AB006961AC /* KeychainWrapperExtensions.swift in Sources */,
 				E65075921E37F7AB006961AC /* Accessibility.swift in Sources */,

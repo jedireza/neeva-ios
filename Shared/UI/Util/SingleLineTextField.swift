@@ -41,35 +41,46 @@ public struct SingleLineTextField<Icon: View>: View {
 
     @ViewBuilder
     var textField: some View {
-        if secureText {
-            SecureField("", text: $text) {
-                isEditing = false
-                onEditingChanged?(isEditing)
-            }
-            .onTapGesture {
-                isEditing = true
-                onEditingChanged?(isEditing)
+        if #available(iOSApplicationExtension 15.0, *) {
+            FocusableTextField(
+                text: $text, focus: focusTextField,
+                onEditChanged: { isEditing in
+                    self.isEditing = isEditing
+                    onEditingChanged?(isEditing)
 
-                errorMessage = ""
-
-                if focusTextField {
-                    focusedTextField = false
-                }
-            }
+                    errorMessage = ""
+                })
         } else {
-            TextField(
-                "", text: $text,
-                onEditingChanged: { editing in
-                    isEditing = editing
-                    onEditingChanged?(editing)
+            if secureText {
+                SecureField("", text: $text) {
+                    isEditing = false
+                    onEditingChanged?(isEditing)
+                }
+                .onTapGesture {
+                    isEditing = true
+                    onEditingChanged?(isEditing)
 
                     errorMessage = ""
 
-                    if editing && focusTextField {
+                    if focusTextField {
                         focusedTextField = false
                     }
                 }
-            )
+            } else {
+                TextField(
+                    "", text: $text,
+                    onEditingChanged: { editing in
+                        isEditing = editing
+                        onEditingChanged?(editing)
+
+                        errorMessage = ""
+
+                        if editing && focusTextField {
+                            focusedTextField = false
+                        }
+                    }
+                )
+            }
         }
     }
 
@@ -113,12 +124,15 @@ public struct SingleLineTextField<Icon: View>: View {
                     .accessibilityLabel(placeholder)
                     .withFont(unkerned: useCapsuleBackground ? .bodyMedium : .bodyLarge)
                     .introspectTextField { textField in
-                        if focusTextField && !focusedTextField {
-                            focusedTextField = true
+                        if #available(iOSApplicationExtension 15.0, *) {
+                        } else {
+                            if focusTextField && !focusedTextField {
+                                focusedTextField = true
 
-                            DispatchQueue.main.async {
-                                textField.becomeFirstResponder()
-                                textField.selectAll(nil)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                                    textField.becomeFirstResponder()
+                                    textField.selectAll(nil)
+                                }
                             }
                         }
                     }
