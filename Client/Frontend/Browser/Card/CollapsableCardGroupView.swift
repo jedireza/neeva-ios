@@ -18,8 +18,8 @@ struct CollapsedCardGroupView: View {
     @State private var frame = CGRect.zero
 
     var body: some View {
-        if groupDetails.allDetails.count == 2 {
-            //If there are only two tabs, don't make it a scroll view
+        if groupDetails.allDetails.count < 3 {
+            // If there are only two tabs, don't make it a scroll view
             ExpandedCardGroupRowView(
                 groupDetails: groupDetails, containerGeometry: containerGeometry,
                 range: 0..<2
@@ -165,30 +165,30 @@ struct TabGroupHeader: View {
     var body: some View {
         HStack {
             Menu {
-                 if let title = groupDetails.customTitle {
-                     Text("\(groupDetails.allDetails.count) tabs from “\(title)”")
-                 } else {
-                     Text("\(groupDetails.allDetails.count) Tabs")
-                 }
+                if let title = groupDetails.customTitle {
+                    Text("\(groupDetails.allDetails.count) tabs from “\(title)”")
+                } else {
+                    Text("\(groupDetails.allDetails.count) Tabs")
+                }
 
-                 Button(action: { renaming = true }) {
-                     Label("Rename", systemSymbol: .pencil)
-                 }
+                Button(action: { renaming = true }) {
+                    Label("Rename", systemSymbol: .pencil)
+                }
 
-                 if #available(iOS 15.0, *) {
-                     Button(role: .destructive, action: { deleting = true }) {
-                         Label("Close All", systemSymbol: .trash)
-                     }
-                 } else {
-                     Button(action: { deleting = true }) {
-                         Label("Close All", systemSymbol: .trash)
-                     }
-                 }
-             } label: {
-                 Label("ellipsis", systemImage: "ellipsis")
-                     .foregroundColor(.label)
-                     .labelStyle(.iconOnly)
-             }
+                if #available(iOS 15.0, *) {
+                    Button(role: .destructive, action: { deleting = true }) {
+                        Label("Close All", systemSymbol: .trash)
+                    }
+                } else {
+                    Button(action: { deleting = true }) {
+                        Label("Close All", systemSymbol: .trash)
+                    }
+                }
+            } label: {
+                Label("ellipsis", systemImage: "ellipsis")
+                    .foregroundColor(.label)
+                    .labelStyle(.iconOnly)
+            }
             Text(groupDetails.title)
                 .withFont(.labelLarge)
                 .foregroundColor(.label)
@@ -197,10 +197,15 @@ struct TabGroupHeader: View {
                 Button {
                     groupDetails.isExpanded.toggle()
                 } label: {
-                    Label("arrows", systemImage: groupDetails.isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
-                        .foregroundColor(.label)
-                        .labelStyle(.iconOnly)
-                        .padding()
+                    Label(
+                        "arrows",
+                        systemImage: groupDetails.isExpanded
+                            ? "arrow.down.right.and.arrow.up.left"
+                            : "arrow.up.left.and.arrow.down.right"
+                    )
+                    .foregroundColor(.label)
+                    .labelStyle(.iconOnly)
+                    .padding()
                 }.accessibilityHidden(true)
             }
         }
