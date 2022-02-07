@@ -17,7 +17,7 @@ extension Tab {
 
         private static var baseDomainList: Set<String> = {
             if let hosts = try? NSKeyedUnarchiver.unarchivedObject(
-                ofClass: NSSet.self, from: Data(contentsOf: ChangeUserAgent.file)) as? Set<String>
+                ofClasses: [NSSet.self, NSString.self], from: Data(contentsOf: ChangeUserAgent.file)) as? Set<String>
             {
                 return hosts
             }
