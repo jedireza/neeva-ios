@@ -715,10 +715,15 @@ class TabGroupCardModel: CardModel {
             }
             self.manager.getAll().forEach { tabgroup in
                 tabgroup.children.forEach { tab in
-                    tab.$screenshotUUID.sink { [unowned self] (_) in
+                    // Avoid taking a reference to `tab` within the following closure.
+                    let rootUUID = tab.rootUUID
+                    tab.$screenshotUUID.sink { [weak self] (_) in
+                        guard let self = self else {
+                            return
+                        }
                         if let index = self.allDetails.firstIndex(where: {
-                            $0.id == tab.rootUUID
-                        }), let tabGroup = self.manager.tabGroups[tab.rootUUID] {
+                            $0.id == rootUUID
+                        }), let tabGroup = self.manager.tabGroups[rootUUID] {
                             self.allDetails[index] = TabGroupCardDetails(
                                 tabGroup: tabGroup, tabGroupManager: self.manager)
                             if !FeatureFlag[.tabGroupsNewDesign] {
