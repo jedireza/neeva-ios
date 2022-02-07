@@ -70,7 +70,12 @@ class SuggestionModel: ObservableObject {
     fileprivate var suggestionQueryQueue = [(query: String, suggestionQuery: Cancellable)]()
 
     var suggestions: [Suggestion] {
-        let top = tabSuggestions
+        var top = tabSuggestions
+
+        if let autocompleteSuggestion = autocompleteSuggestion {
+            top.append(autocompleteSuggestion)
+        }
+
         rowQuerySuggestions = rowQuerySuggestions.filter { suggestion in
             if case let .navigation(autocompleteNavSuggestion) = autocompleteSuggestion,
                 case let .url(urlSuggestion) = suggestion
