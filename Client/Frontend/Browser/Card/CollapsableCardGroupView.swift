@@ -18,20 +18,28 @@ struct CollapsedCardGroupView: View {
     @State private var frame = CGRect.zero
 
     var body: some View {
-        VStack(spacing: 0) {
-            TabGroupHeader(groupDetails: groupDetails)
-            scrollView
+        if groupDetails.allDetails.count == 2 {
+            //If there are only two tabs, don't make it a scroll view
+            ExpandedCardGroupRowView(
+                groupDetails: groupDetails, containerGeometry: containerGeometry,
+                range: 0..<2
+            )
+        } else {
+            VStack(spacing: 0) {
+                TabGroupHeader(groupDetails: groupDetails)
+                scrollView
+            }
+            .animation(nil)
+            .transition(.fade)
+            .background(
+                Color.secondarySystemFill
+                    .cornerRadius(
+                        24,
+                        corners: groupDetails.allDetails.count <= 2 || groupDetails.isExpanded
+                            ? .all : .leading
+                    )
+            )
         }
-        .animation(nil)
-        .transition(.fade)
-        .background(
-            Color.secondarySystemFill
-                .cornerRadius(
-                    24,
-                    corners: groupDetails.allDetails.count <= 2 || groupDetails.isExpanded
-                        ? .all : .leading
-                )
-        )
     }
 
     @ViewBuilder
@@ -185,14 +193,16 @@ struct TabGroupHeader: View {
                 .withFont(.labelLarge)
                 .foregroundColor(.label)
             Spacer()
-            Button {
-                groupDetails.isExpanded.toggle()
-            } label: {
-                Label("caret", systemImage: "arrow.up.left.and.arrow.down.right")
-                    .foregroundColor(.label)
-                    .labelStyle(.iconOnly)
-                    .padding()
-            }.accessibilityHidden(true)
+            if groupDetails.allDetails.count > 2 {
+                Button {
+                    groupDetails.isExpanded.toggle()
+                } label: {
+                    Label("caret", systemImage: groupDetails.isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
+                        .foregroundColor(.label)
+                        .labelStyle(.iconOnly)
+                        .padding()
+                }.accessibilityHidden(true)
+            }
         }
         .padding(.leading, CardGridUX.GridSpacing)
         .frame(height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)
