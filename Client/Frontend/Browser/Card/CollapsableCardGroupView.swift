@@ -197,7 +197,7 @@ struct TabGroupHeader: View {
                 Button {
                     groupDetails.isExpanded.toggle()
                 } label: {
-                    Label("caret", systemImage: groupDetails.isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
+                    Label("arrows", systemImage: groupDetails.isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
                         .foregroundColor(.label)
                         .labelStyle(.iconOnly)
                         .padding()
