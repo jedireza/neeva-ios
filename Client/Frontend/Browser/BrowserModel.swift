@@ -20,10 +20,9 @@ class BrowserModel: ObservableObject {
     /// Like `!showGrid`, but not animated and only set when the web view should be visible
     @Published private(set) var showContent = true
 
-    private let gridModel: GridModel
-    private let tabManager: TabManager
-
+    let gridModel: GridModel
     let incognitoModel: IncognitoModel
+    let tabManager: TabManager
 
     var cardTransitionModel: CardTransitionModel
     var scrollingControlModel: ScrollingControlModel
@@ -41,25 +40,33 @@ class BrowserModel: ObservableObject {
     }
 
     func show() {
-        gridModel.switcherState = .tabs
+        if gridModel.switcherState != .tabs {
+            gridModel.switcherState = .tabs
+        }
         if gridModel.tabCardModel.allDetails.isEmpty {
             showWithNoAnimation()
         } else {
-            cardTransitionModel.state = .visibleForTrayShow
-            showContent = false
+            cardTransitionModel.update(to: .visibleForTrayShow)
+            if showContent {
+                showContent = false
+            }
             updateSpaces()
         }
     }
 
     func showWithNoAnimation() {
-        cardTransitionModel.state = .hidden
-        showContent = false
-        showGrid = true
+        cardTransitionModel.update(to: .hidden)
+        if showContent {
+            showContent = false
+        }
+        if !showGrid {
+            showGrid = true
+        }
         updateSpaces()
     }
 
     func showSpaces(forceUpdate: Bool = true) {
-        cardTransitionModel.state = .hidden
+        cardTransitionModel.update(to: .hidden)
         showContent = false
         showGrid = true
         gridModel.switcherState = .spaces
@@ -71,25 +78,33 @@ class BrowserModel: ObservableObject {
 
     func hideWithAnimation() {
         assert(!gridModel.tabCardModel.allDetails.isEmpty)
-        cardTransitionModel.state = .visibleForTrayHidden
+        cardTransitionModel.update(to: .visibleForTrayHidden)
     }
 
     func hideWithNoAnimation() {
-        cardTransitionModel.state = .hidden
-        showGrid = false
-        showContent = true
+        cardTransitionModel.update(to: .hidden)
+        if showGrid {
+            showGrid = false
+        }
+        if !showContent {
+            showContent = true
+        }
         gridModel.animateDetailTransitions = true
-        gridModel.showingDetailView = false
+        if gridModel.showingDetailView {
+            gridModel.showingDetailView = false
+        }
     }
 
     func onCompletedCardTransition() {
         if showGrid {
-            cardTransitionModel.state = .hidden
+            cardTransitionModel.update(to: .hidden)
             gridModel.animateDetailTransitions = true
         } else {
             hideWithNoAnimation()
             gridModel.animateDetailTransitions = false
-            gridModel.tabGroupCardModel.detailedTabGroup = nil
+            if gridModel.tabGroupCardModel.detailedTabGroup != nil {
+                gridModel.tabGroupCardModel.detailedTabGroup = nil
+            }
         }
     }
 

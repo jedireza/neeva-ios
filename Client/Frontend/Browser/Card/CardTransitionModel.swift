@@ -11,5 +11,12 @@ enum CardTransitionState {
 }
 
 class CardTransitionModel: ObservableObject {
-    @Published var state = CardTransitionState.hidden
+    @Published private(set) var state = CardTransitionState.hidden
+
+    func update(to state: CardTransitionState) {
+        // Avoid spurious events.
+        if self.state != state {
+            self.state = state
+        }
+    }
 }

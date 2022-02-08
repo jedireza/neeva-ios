@@ -10,13 +10,63 @@ private enum BrowserViewUX {
     static let ShowHeaderTapAreaHeight = 32.0
 }
 
+// CardGrid is a parameter to this View so that we isolate it from updates
+// to this View (specifically updates to BrowserModel.showContent).
+struct BrowserContentView: View {
+    let bvc: BrowserViewController
+    let cardGrid: CardGrid
+
+    @EnvironmentObject var browserModel: BrowserModel
+
+    var tabContainerContent: some View {
+        TabContainerContent(
+            model: bvc.tabContainerModel,
+            bvc: bvc,
+            zeroQueryModel: bvc.zeroQueryModel,
+            suggestionModel: bvc.suggestionModel,
+            spaceContentSheetModel: FeatureFlag[.spaceComments]
+                ? SpaceContentSheetModel(
+                    tabManager: bvc.tabManager,
+                    spaceModel: bvc.gridModel.spaceCardModel) : nil
+        )
+    }
+
+    var body: some View {
+        ZStack {
+            cardGrid
+                .environment(
+                    \.onOpenURL, { bvc.gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) }
+                )
+                .environment(
+                    \.onOpenURLForSpace,
+                    {
+                        bvc.gridModel.tabCardModel.manager.createOrSwitchToTabForSpace(
+                            for: $0, spaceID: $1)
+                    }
+                )
+                .opacity(browserModel.showContent ? 0 : 1)
+                .onAppear {
+                    bvc.gridModel.scrollToSelectedTab()
+                }
+                .accessibilityHidden(browserModel.showContent)
+                .ignoresSafeArea(edges: [.bottom])
+
+            tabContainerContent
+                .opacity(browserModel.showContent ? 1 : 0)
+                .accessibilityHidden(!browserModel.showContent)
+        }
+    }
+}
+
 struct BrowserView: View {
     // MARK: - Parameters
     // TODO: Eliminate this dependency
     let bvc: BrowserViewController
     let shareURL: (URL, UIView) -> Void
 
-    @ObservedObject var browserModel: BrowserModel
+    // Explicitly not an observed object to avoid costly updates.
+    let browserModel: BrowserModel
+
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
@@ -38,47 +88,6 @@ struct BrowserView: View {
         }
     }
 
-    var tabContainerContent: some View {
-        TabContainerContent(
-            model: bvc.tabContainerModel,
-            bvc: bvc,
-            zeroQueryModel: bvc.zeroQueryModel,
-            suggestionModel: bvc.suggestionModel,
-            spaceContentSheetModel: FeatureFlag[.spaceComments]
-                ? SpaceContentSheetModel(
-                    tabManager: bvc.tabManager,
-                    spaceModel: bvc.gridModel.spaceCardModel) : nil
-        )
-    }
-
-    @ViewBuilder
-    var containerView: some View {
-        ZStack {
-            CardGrid()
-                .environment(
-                    \.onOpenURL, { gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) }
-                )
-                .environment(
-                    \.onOpenURLForSpace,
-                    {
-                        gridModel.tabCardModel.manager.createOrSwitchToTabForSpace(
-                            for: $0, spaceID: $1)
-                    }
-                )
-                .environment(\.shareURL, shareURL)
-                .opacity(browserModel.showContent ? 0 : 1)
-                .onAppear {
-                    gridModel.scrollToSelectedTab()
-                }
-                .accessibilityHidden(browserModel.showContent)
-                .ignoresSafeArea(edges: [.bottom])
-
-            tabContainerContent
-                .opacity(browserModel.showContent ? 1 : 0)
-                .accessibilityHidden(!browserModel.showContent)
-        }
-    }
-
     var bottomBar: some View {
         BrowserBottomBarView(bvc: bvc)
             .transition(.opacity)
@@ -93,7 +102,8 @@ struct BrowserView: View {
             VStack(spacing: 0) {
                 ZStack {
                     // Tab content or CardGrid
-                    containerView
+                    BrowserContentView(bvc: bvc, cardGrid: CardGrid())
+                        .environment(\.shareURL, shareURL)
                         .padding(
                             UIConstants.enableBottomURLBar ? .bottom : .top,
                             detailViewVisible ? 0 : chromeModel.topBarHeight
