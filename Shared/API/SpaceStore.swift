@@ -457,10 +457,8 @@ public class SpaceStore: ObservableObject {
 
     // MARK: - Daily Digest
     public func addDailyDigestToSpaces() {
-        if FeatureFlag[.showDailyDigest] {
-            self.allSpaces.removeAll(where: { $0.isDigest })
-            self.allSpaces.insert(createSpaceDailyDigest(with: allSpaces), at: 0)
-        }
+        self.allSpaces.removeAll(where: { $0.isDigest })
+        self.allSpaces.insert(createSpaceDailyDigest(with: allSpaces), at: 0)
     }
 
     private func createSpaceDailyDigest(with spaces: [Space]) -> Space {

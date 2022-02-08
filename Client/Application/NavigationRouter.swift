@@ -211,6 +211,7 @@ enum NavigationPath {
     }
 
     private static func handleSpaceDigest(with bvc: BrowserViewController) {
+        guard NeevaFeatureFlags[.enableSpaceDigestDeeplink] else { return }
         bvc.browserModel.openSpaceDigest(bvc: bvc)
     }
 

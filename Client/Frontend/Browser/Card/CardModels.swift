@@ -281,11 +281,15 @@ class SpaceCardModel: CardModel {
     @Published var filterState: SpaceFilterState = .allSpaces
 
     var detailsMatchingFilter: [SpaceCardDetails] {
+        let spaces = allDetails.filter {
+            NeevaFeatureFlags[.enableSpaceDigestCard] || $0.id != SpaceStore.dailyDigestID
+        }
+
         switch filterState {
         case .allSpaces:
-            return allDetails
+            return spaces
         case .ownedByMe:
-            return allDetails.filter { $0.space?.userACL == .owner }
+            return spaces.filter { $0.space?.userACL == .owner }
         }
     }
 

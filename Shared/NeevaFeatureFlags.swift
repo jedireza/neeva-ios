@@ -72,6 +72,8 @@ public class NeevaFeatureFlags {
         case recipeCardNavigate = 57167
         case disableLocalNotification = 57492
         case enableBlackFridayPromoCard = 58696
+        case enableSpaceDigestDeeplink = 63826
+        case enableSpaceDigestCard = 63834
 
         public var name: String {
             switch self {
@@ -96,6 +98,8 @@ public class NeevaFeatureFlags {
             case .recipeCardNavigate: return "ios.recipe_card_navigate"
             case .disableLocalNotification: return "ios.disable_local_notification"
             case .enableBlackFridayPromoCard: return "ios.enable_black_friday_promo_card"
+            case .enableSpaceDigestDeeplink: return "ios.enable_space_digest_deep_link"
+            case .enableSpaceDigestCard: return "ios.enable_space_digest_card"
             }
         }
     }
