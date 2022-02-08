@@ -494,6 +494,7 @@
 		C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */; };
 		C8BD2A79278814DB001B3355 /* CreateOrSwitchToTabTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8BD2A78278814DB001B3355 /* CreateOrSwitchToTabTests.swift */; };
 		C8CC4F8725253E79003FDE1F /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAD46F3324A1606C001B3967 /* WidgetKit.framework */; };
+		C8CD99E227B2CEAF009BD3DB /* CardTransitionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CD99E127B2CEAF009BD3DB /* CardTransitionModel.swift */; };
 		C8CF648426ED20DF00C3816F /* BackgroundFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648326ED20DF00C3816F /* BackgroundFileWriter.swift */; };
 		C8CF648626EDB89500C3816F /* BackgroundFileWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648526EDB89500C3816F /* BackgroundFileWriterTests.swift */; };
 		C8CF648826EFCEB600C3816F /* SessionDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648726EFCEB600C3816F /* SessionDataTests.swift */; };
@@ -1635,6 +1636,7 @@
 		C8B109A4275E9CE60010EBE4 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
 		C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaConstants.swift; sourceTree = "<group>"; };
 		C8BD2A78278814DB001B3355 /* CreateOrSwitchToTabTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrSwitchToTabTests.swift; sourceTree = "<group>"; };
+		C8CD99E127B2CEAF009BD3DB /* CardTransitionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTransitionModel.swift; sourceTree = "<group>"; };
 		C8CF648326ED20DF00C3816F /* BackgroundFileWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundFileWriter.swift; sourceTree = "<group>"; };
 		C8CF648526EDB89500C3816F /* BackgroundFileWriterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundFileWriterTests.swift; sourceTree = "<group>"; };
 		C8CF648726EFCEB600C3816F /* SessionDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDataTests.swift; sourceTree = "<group>"; };
@@ -2559,36 +2561,37 @@
 			isa = PBXGroup;
 			children = (
 				8A422E9A26E19783005CC814 /* AddOrUpdateSpaceView.swift */,
-				4A9F65422710A49000B7C06E /* CustomThumbnails.swift */,
 				4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */,
 				4A88F97626630F39007C203D /* Card.swift */,
-				4A3D2992268583710082F293 /* CardModels.swift */,
-				66634E062735931D0047D336 /* CompactCard.swift */,
 				4A88F97426630EFC007C203D /* CardDetails.swift */,
 				4A3D299026850CB60082F293 /* CardGrid.swift */,
 				4A092AFA267EEA02006BE5B6 /* CardGroupView.swift */,
 				C9655DEE26A09A8600925912 /* CardListViews.swift */,
-				4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */,
-				1ADFEEF7278C884800A0E82E /* CollapsableCardGroupView.swift */,
+				4A3D2992268583710082F293 /* CardModels.swift */,
 				C9655DEC26A09A6900925912 /* CardsContainer.swift */,
 				4A88F9722662AEAB007C203D /* CardStrip.swift */,
+				C894C5882735DAF40068B0BE /* CardTransitionModifier.swift */,
 				4A1D054F2669715B00D63333 /* CardViewControllers.swift */,
+				1ADFEEF7278C884800A0E82E /* CollapsableCardGroupView.swift */,
+				66634E062735931D0047D336 /* CompactCard.swift */,
 				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
+				4A9F65422710A49000B7C06E /* CustomThumbnails.swift */,
 				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
-				4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */,
-				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
-				4A227BE72758BE5B00A89322 /* SpaceComments.swift */,
-				4AD771B32734F06800B6769D /* EntityInfoView.swift */,
-				4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */,
-				4AD771B727387B1F00B6769D /* SpaceGeneratorView.swift */,
 				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
+				4AD771B32734F06800B6769D /* EntityInfoView.swift */,
 				C9655DEA26A09A2800925912 /* GridModel.swift */,
 				4A9FCD4726F107BF00725E17 /* ProfileView.swift */,
 				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
+				4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */,
 				4A9FCD4526F1074600725E17 /* SocialShare.swift */,
+				4A227BE72758BE5B00A89322 /* SpaceComments.swift */,
+				4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */,
+				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
+				4AD771B727387B1F00B6769D /* SpaceGeneratorView.swift */,
+				4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */,
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
 				8AAB76FB2720B88A0015B2C1 /* TabGroupContextMenu.swift */,
-				C894C5882735DAF40068B0BE /* CardTransitionModifier.swift */,
+				C8CD99E127B2CEAF009BD3DB /* CardTransitionModel.swift */,
 			);
 			path = Card;
 			sourceTree = "<group>";
@@ -5909,6 +5912,7 @@
 				C9E5F2B82673F7F700025A7F /* GeometryExtensions.swift in Sources */,
 				665879CE26C3408700B53EB7 /* WindowManager.swift in Sources */,
 				C96AC26726A5C9C4001CF78C /* NeevaFeatureFlagSettingsView.swift in Sources */,
+				C8CD99E227B2CEAF009BD3DB /* CardTransitionModel.swift in Sources */,
 				66EA9BF4277683EE0013DB07 /* OverlayView.swift in Sources */,
 				66888B1E26E19A5100DDF2D4 /* NotificationPermissionHelper.swift in Sources */,
 				C9F8EB46268126EB0042CFE7 /* LocationViewTouchHandler.swift in Sources */,

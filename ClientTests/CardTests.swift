@@ -209,6 +209,7 @@ class CardTests: XCTestCase {
 
         let cardGrid = CardGrid()
             .environmentObject(browserModel)
+            .environmentObject(browserModel.cardTransitionModel)
             .environmentObject(incognitoModel)
             .environmentObject(tabCardModel).environmentObject(spaceCardModel)
             .environmentObject(tabGroupCardModel).environmentObject(gridModel)
@@ -242,6 +243,7 @@ class CardTests: XCTestCase {
             columns: Array(repeating: GridItem(.fixed(100), spacing: 20), count: 2)
         )
         .environmentObject(browserModel)
+        .environmentObject(browserModel.cardTransitionModel)
         .environmentObject(incognitoModel)
         .environmentObject(tabCardModel)
         .environmentObject(spaceCardModel)

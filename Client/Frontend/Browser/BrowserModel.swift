@@ -6,12 +6,6 @@ import Combine
 import Shared
 import SwiftUI
 
-enum CardTransitionState {
-    case hidden
-    case visibleForTrayShow
-    case visibleForTrayHidden
-}
-
 class BrowserModel: ObservableObject {
     @Published var showGrid = false {
         didSet {
@@ -25,12 +19,13 @@ class BrowserModel: ObservableObject {
 
     /// Like `!showGrid`, but not animated and only set when the web view should be visible
     @Published private(set) var showContent = true
-    @Published var cardTransition = CardTransitionState.hidden
 
     private let gridModel: GridModel
     private let tabManager: TabManager
 
-    var incognitoModel: IncognitoModel
+    let incognitoModel: IncognitoModel
+
+    var cardTransitionModel: CardTransitionModel
     var scrollingControlModel: ScrollingControlModel
 
     init(
@@ -40,6 +35,7 @@ class BrowserModel: ObservableObject {
         self.gridModel = gridModel
         self.tabManager = tabManager
         self.incognitoModel = incognitoModel
+        self.cardTransitionModel = CardTransitionModel()
         self.scrollingControlModel = ScrollingControlModel(
             tabManager: tabManager, chromeModel: chromeModel)
     }
@@ -49,21 +45,21 @@ class BrowserModel: ObservableObject {
         if gridModel.tabCardModel.allDetails.isEmpty {
             showWithNoAnimation()
         } else {
-            cardTransition = .visibleForTrayShow
+            cardTransitionModel.state = .visibleForTrayShow
             showContent = false
             updateSpaces()
         }
     }
 
     func showWithNoAnimation() {
-        cardTransition = .hidden
+        cardTransitionModel.state = .hidden
         showContent = false
         showGrid = true
         updateSpaces()
     }
 
     func showSpaces(forceUpdate: Bool = true) {
-        cardTransition = .hidden
+        cardTransitionModel.state = .hidden
         showContent = false
         showGrid = true
         gridModel.switcherState = .spaces
@@ -75,11 +71,11 @@ class BrowserModel: ObservableObject {
 
     func hideWithAnimation() {
         assert(!gridModel.tabCardModel.allDetails.isEmpty)
-        cardTransition = .visibleForTrayHidden
+        cardTransitionModel.state = .visibleForTrayHidden
     }
 
     func hideWithNoAnimation() {
-        cardTransition = .hidden
+        cardTransitionModel.state = .hidden
         showGrid = false
         showContent = true
         gridModel.animateDetailTransitions = true
@@ -88,7 +84,7 @@ class BrowserModel: ObservableObject {
 
     func onCompletedCardTransition() {
         if showGrid {
-            cardTransition = .hidden
+            cardTransitionModel.state = .hidden
             gridModel.animateDetailTransitions = true
         } else {
             hideWithNoAnimation()

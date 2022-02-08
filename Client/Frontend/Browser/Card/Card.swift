@@ -199,6 +199,7 @@ struct Card<Details>: View where Details: CardDetails {
     @Environment(\.selectionCompletion) private var selectionCompletion
     @EnvironmentObject private var incognitoModel: IncognitoModel
     @EnvironmentObject var browserModel: BrowserModel
+    @EnvironmentObject var cardTransitionModel: CardTransitionModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @State private var isPressed = false
 
@@ -245,7 +246,7 @@ struct Card<Details>: View where Details: CardDetails {
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
                         if !FeatureFlag[.tabGroupsNewDesign] && isChildTab(details: details)
-                            && (browserModel.cardTransition == .visibleForTrayShow)
+                            && (cardTransitionModel.state == .visibleForTrayShow)
                         {
                             Image(systemName: iconInMainGrid)
                                 .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
@@ -260,7 +261,7 @@ struct Card<Details>: View where Details: CardDetails {
                         }
                         Text(
                             !FeatureFlag[.tabGroupsNewDesign]
-                                && browserModel.cardTransition == .visibleForTrayShow
+                                && cardTransitionModel.state == .visibleForTrayShow
                                 ? titleInMainGrid : details.title
                         ).withFont(.labelMedium)
                             .frame(alignment: .center)
@@ -277,7 +278,7 @@ struct Card<Details>: View where Details: CardDetails {
         .modifier(ActionsModifier(close: details.closeButtonImage == nil ? nil : details.onClose))
         .accessibilityAddTraits(.isButton)
         .accesibilityFocus(
-            shouldFocus: details.isSelected, trigger: browserModel.cardTransition == .hidden
+            shouldFocus: details.isSelected, trigger: cardTransitionModel.state == .hidden
         )
         .onDrop(of: ["public.url", "public.text"], delegate: details)
         .if(let: details.closeButtonImage) { buttonImage, view in

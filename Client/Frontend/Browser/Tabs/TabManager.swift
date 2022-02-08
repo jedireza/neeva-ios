@@ -731,7 +731,7 @@ class TabManager: NSObject, ObservableObject {
         }
 
         // Prevents a sticky tab tray
-        SceneDelegate.getBVC(with: scene).browserModel.cardTransition =
+        SceneDelegate.getBVC(with: scene).browserModel.cardTransitionModel.state =
             .hidden
 
         if let selectedSavedTab = selectedSavedTab, shouldSelectTab {

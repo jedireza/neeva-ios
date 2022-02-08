@@ -14,18 +14,19 @@ struct CardTransitionModifier<Details: CardDetails>: ViewModifier {
     var extraBottomPadding: CGFloat = 0
 
     @EnvironmentObject var browserModel: BrowserModel
+    @EnvironmentObject var cardTransitionModel: CardTransitionModel
 
     func body(content: Content) -> some View {
         content
             .zIndex(details.isSelected ? 1 : 0)
-            .opacity(details.isSelected && browserModel.cardTransition != .hidden ? 0 : 1)
+            .opacity(details.isSelected && cardTransitionModel.state != .hidden ? 0 : 1)
             .animation(nil)
             .overlay(overlay)
     }
 
     var overlay: some View {
         GeometryReader { geom in
-            if details.isSelected && browserModel.cardTransition != .hidden {
+            if details.isSelected && cardTransitionModel.state != .hidden {
                 let rect = calculateCardRect(geom: geom)
                 overlayCard
                     .offset(x: rect.minX, y: rect.minY)

@@ -29,8 +29,7 @@ struct BrowserTopBarView: View {
         if browserModel.showGrid {
             switcherTopBar
                 .modifier(
-                    SwipeToSwitchToSpacesGesture(
-                        gridModel: gridModel, tabModel: gridModel.tabCardModel, fromPicker: true))
+                    SwipeToSwitchToSpacesGesture(fromPicker: true))
         } else {
             TopBarContent(
                 browserModel: browserModel,

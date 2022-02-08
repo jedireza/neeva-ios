@@ -17,7 +17,6 @@ struct BrowserView: View {
     let shareURL: (URL, UIView) -> Void
 
     @ObservedObject var browserModel: BrowserModel
-    @ObservedObject var tabManager: TabManager
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
@@ -160,6 +159,7 @@ struct BrowserView: View {
         }
         .environmentObject(browserModel)
         .environmentObject(browserModel.incognitoModel)
+        .environmentObject(browserModel.cardTransitionModel)
         .environmentObject(browserModel.scrollingControlModel)
         .environmentObject(bvc.simulateBackModel)
         .environmentObject(chromeModel)
@@ -177,7 +177,6 @@ struct BrowserView: View {
         self.shareURL = { url, view in
             bvc.shareURL(url: url, view: view)
         }
-        self.tabManager = bvc.tabManager
         self.gridModel = bvc.gridModel
         self.chromeModel = bvc.chromeModel
         self.overlayManager = bvc.overlayManager

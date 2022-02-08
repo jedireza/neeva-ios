@@ -15,9 +15,54 @@ enum CardGridUX {
     static let GridSpacing: CGFloat = 20
 }
 
-struct CardGrid: View {
+// Isolating dependency on CardTransitionModel to this sub-view for performance
+// reasons.
+struct CardGridBackground: View {
     @EnvironmentObject var browserModel: BrowserModel
+    @EnvironmentObject var cardTransitionModel: CardTransitionModel
+    @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var tabModel: TabCardModel
+
+    var color: some View {
+        cardTransitionModel.state == .hidden
+            ? Color.TrayBackground : Color.clear
+    }
+
+    var body: some View {
+        color
+            .accessibilityAction(.escape) {
+                browserModel.hideWithAnimation()
+            }
+            .onAnimationCompleted(
+                for: browserModel.showGrid,
+                completion: browserModel.onCompletedCardTransition
+            )
+            .useEffect(deps: cardTransitionModel.state) { _ in
+                // Ensure that the `Card` for the selected tab is visible. This way its
+                // `CardTransitionModifier` will be visible and run the animation.
+                if cardTransitionModel.state != .hidden {
+                    if !tabModel.allDetails.isEmpty {
+                        gridModel.scrollToSelectedTab()
+                    }
+                    // Allow some time for the `Card` to get created if it was previously
+                    // not visible.
+                    DispatchQueue.main.async {
+                        if cardTransitionModel.state != .hidden {
+                            withAnimation(CardTransitionUX.animation) {
+                                let showGrid =
+                                    (cardTransitionModel.state == .visibleForTrayShow)
+                                if browserModel.showGrid != showGrid {
+                                    browserModel.showGrid = showGrid
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+    }
+}
+
+struct CardGrid: View {
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
@@ -97,12 +142,8 @@ struct CardGrid: View {
                             || FeatureFlag[.tabGroupsNewDesign])
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
-                    .background(
-                        browserModel.cardTransition == .hidden
-                            ? Color.TrayBackground : Color.clear
-                    )
-                    .modifier(
-                        SwipeToSwitchToSpacesGesture(gridModel: gridModel, tabModel: tabModel))
+                    .background(CardGridBackground())
+                    .modifier(SwipeToSwitchToSpacesGesture())
 
                 if gridModel.isLoading {
                     loadingIndicator
@@ -178,32 +219,6 @@ struct CardGrid: View {
             }
         }
         .ignoresSafeArea(.keyboard)
-        .accessibilityAction(.escape) {
-            browserModel.hideWithAnimation()
-        }
-        .onAnimationCompleted(
-            for: browserModel.showGrid,
-            completion: browserModel.onCompletedCardTransition
-        )
-        .useEffect(deps: browserModel.cardTransition) { _ in
-            // Ensure that the `Card` for the selected tab is visible. This way its
-            // `CardTransitionModifier` will be visible and run the animation.
-            if browserModel.cardTransition != .hidden {
-                if !tabModel.allDetails.isEmpty {
-                    gridModel.scrollToSelectedTab()
-                }
-                // Allow some time for the `Card` to get created if it was previously
-                // not visible.
-                DispatchQueue.main.async {
-                    if browserModel.cardTransition != .hidden {
-                        withAnimation(CardTransitionUX.animation) {
-                            browserModel.showGrid =
-                                (browserModel.cardTransition == .visibleForTrayShow)
-                        }
-                    }
-                }
-            }
-        }
     }
 }
 
@@ -329,8 +344,6 @@ struct GridPicker: View {
 }
 
 struct SwipeToSwitchToSpacesGesture: ViewModifier {
-    let gridModel: GridModel
-    let tabModel: TabCardModel
     var fromPicker: Bool = false
 
     @EnvironmentObject var switcherToolbarModel: SwitcherToolbarModel
