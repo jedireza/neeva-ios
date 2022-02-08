@@ -8,8 +8,6 @@ import Shared
 import SwiftUI
 
 struct TabToolbarView: View {
-    @Default(.showTryCheatsheetPopover) var defaultShowTryCheatsheetPopover
-
     @EnvironmentObject var chromeModel: TabChromeModel
     @EnvironmentObject var scrollingControlModel: ScrollingControlModel
 
@@ -88,7 +86,7 @@ struct TabToolbarView: View {
             popoverSize: CGSize(width: 257, height: 114),
             content: {
                 TabToolbarButtons.NeevaMenu(iconWidth: 22) {
-                    defaultShowTryCheatsheetPopover = false
+                    chromeModel.clearCheatsheetPopoverFlags()
                     onNeevaMenu()
                 }
             },

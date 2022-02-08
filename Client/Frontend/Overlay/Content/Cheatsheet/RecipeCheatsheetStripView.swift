@@ -195,11 +195,9 @@ struct RecipeCheatsheetStripView: View {
 
     func onAllowedDomain() -> Bool {
         if let url = self.tabManager.selectedTab?.url {
-            if let host = url.host, let baseDomain = url.baseDomain {
-                return DomainAllowList.recipeDomains[host] ?? false
-                    || DomainAllowList.recipeDomains[baseDomain] ?? false
-            }
+           return RecipeViewModel.isRecipeAllowed(url: url)
+        } else {
+            return false
         }
-        return false
     }
 }

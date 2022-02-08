@@ -9,7 +9,6 @@ import SwiftUI
 
 struct TopBarNeevaMenuButton: View {
     @Default(.showNeevaMenuWillMove) var showNeevaMenuWillMove
-    @Default(.showTryCheatsheetPopover) var defaultShowTryCheatsheetPopover
 
     @EnvironmentObject var incognitoModel: IncognitoModel
     @EnvironmentObject var chromeModel: TabChromeModel
@@ -110,7 +109,7 @@ struct TopBarNeevaMenuButton: View {
             popoverSize: CGSize(width: 257, height: 114),
             content: {
                 TabToolbarButtons.NeevaMenu(iconWidth: Self.neevaIconWidth) {
-                    defaultShowTryCheatsheetPopover = false
+                    chromeModel.clearCheatsheetPopoverFlags()
                     if let bvc = chromeModel.topBarDelegate as? BrowserViewController {
                         bvc.showCheatSheetOverlay()
                     }

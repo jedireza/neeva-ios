@@ -150,27 +150,37 @@ class TabChromeModel: ObservableObject {
         publishedTabObserver?.cancel()
         tryCheatsheetPopoverObserver?.cancel()
 
-        guard let tabManager = topBarDelegate?.tabManager else { return }
+        guard let tabManager = topBarDelegate?.tabManager,
+              let tabContainerModel = topBarDelegate?.tabContainerModel
+        else { return }
 
         publishedTabObserver = tabManager.selectedTabPublisher
             .sink { [weak self] tab in
                 self?.tryCheatsheetPopoverObserver?.cancel()
                 guard let tab = tab else { return }
-                self?.tryCheatsheetPopoverObserver = Publishers.CombineLatest(
+                self?.tryCheatsheetPopoverObserver = Publishers.CombineLatest3(
                     Defaults.publisher(.showTryCheatsheetPopover),
+                    tabContainerModel.recipeModel.$recipe,
                     tab.$url
                 )
-                .map { showPopover, url -> Bool in
+                .map { showPopover, recipe, url -> Bool in
                     // extra check in case the query flag changed between launches
-                    guard NeevaFeatureFlags[.cheatsheetQuery],
-                          showPopover.newValue,
-                          let url = url,
-                          // this returns false for nil value
-                          !NeevaConstants.isInNeevaDomain(url),
-                          // avoid flashing the popover when app launches
-                          !(url.scheme == InternalURL.scheme)
-                    else { return false }
-                    return true
+                    guard NeevaFeatureFlags[.cheatsheetQuery], let url = url else { return false }
+                    // if recipe cheatsheet would've been shown, show popover
+                    if !recipe.title.isEmpty,
+                       !Defaults[.seenTryCheatsheetPopoverOnRecipe],
+                       RecipeViewModel.isRecipeAllowed(url: url) {
+                        return true
+                    }
+                    // else show popover if seen SRP intro screen
+                    if showPopover.newValue,
+                       // cheatsheet is not used on NeevaDomain
+                       !NeevaConstants.isInNeevaDomain(url),
+                       // avoid flashing the popover when app launches
+                       !(url.scheme == InternalURL.scheme) {
+                        return true
+                    }
+                    return false
                 }
                 .receive(on: DispatchQueue.main)
                 .sink { [weak self] in
@@ -179,5 +189,13 @@ class TabChromeModel: ObservableObject {
                     self?.objectWillChange.send()
                 }
             }
+    }
+
+    func clearCheatsheetPopoverFlags() {
+        Defaults[.showTryCheatsheetPopover] = false
+        if let recipeModel = topBarDelegate?.tabContainerModel.recipeModel,
+           !recipeModel.recipe.title.isEmpty {
+            Defaults[.seenTryCheatsheetPopoverOnRecipe] = true
+        }
     }
 }

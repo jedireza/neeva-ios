@@ -27,17 +27,17 @@ class RecipeViewModel: ObservableObject {
         }
     }
 
+    static public func isRecipeAllowed(url: URL) -> Bool {
+        guard let host = url.host, let baseDomain = url.baseDomain else { return false }
+        return DomainAllowList.recipeDomains[host] ?? false
+            || DomainAllowList.recipeDomains[baseDomain] ?? false
+    }
+
     public func updateContentWithURL(url: URL) {
-        if let host = url.host, let baseDomain = url.baseDomain {
-            if DomainAllowList.recipeDomains[host] ?? false
-                || DomainAllowList.recipeDomains[baseDomain] ?? false
-            {
-                setupRecipeData(url: url.absoluteString)
-            } else {
-                self.reset()
-            }
+        if Self.isRecipeAllowed(url: url) {
+            setupRecipeData(url: url.absoluteString)
         } else {
-            self.reset()
+            reset()
         }
     }
 
