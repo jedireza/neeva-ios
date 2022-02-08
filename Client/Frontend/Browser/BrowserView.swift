@@ -32,7 +32,10 @@ struct BrowserView: View {
             BrowserTopBarView(bvc: bvc)
                 .transition(.opacity)
                 .frame(height: chromeModel.topBarHeight)
-                .offset(x: detailViewVisible ? -geom.size.width : 0)
+                .offset(
+                    x: detailViewVisible
+                        ? -geom.size.width - geom.safeAreaInsets.leading
+                            - geom.safeAreaInsets.trailing : 0)
         }
     }
 

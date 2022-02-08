@@ -58,18 +58,8 @@ struct CardGrid: View {
         .background(cardContainerBackground)
     }
 
-    @ViewBuilder var topBar: some View {
-        if topToolbar {
-            SwitcherToolbarView(top: true)
-        } else {
-            GridPicker()
-        }
-    }
-
     @ViewBuilder var grid: some View {
-        VStack(spacing: 0) {
-            cardContainer
-        }
+        cardContainer
     }
 
     @ViewBuilder

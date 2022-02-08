@@ -62,155 +62,165 @@ struct SpaceDetailList: View {
     }
 
     var body: some View {
-        if gridModel.refreshDetailedSpaceSubscription != nil {
-            ProgressView().padding(12)
-        }
-        NavigationView {
-            ScrollViewReader { scrollReader in
-                List {
-                    if let promoCardType = promoCardType {
-                        PromoCard(type: promoCardType, viewWidth: 390)
-                            .buttonStyle(.plain)
-                            .modifier(ListSeparatorModifier())
-                    }
+        VStack(spacing: 0) {
+            if gridModel.refreshDetailedSpaceSubscription != nil {
+                HStack {
+                    Spacer()
 
-                    if let space = space {
-                        SpaceHeaderView(space: space)
-                            .modifier(ListSeparatorModifier())
-                            .iPadOnlyID()
-                            .onAppear {
-                                headerVisible = UIDevice.current.userInterfaceIdiom != .pad
-                            }
-                            .onDisappear {
-                                headerVisible = false
-                            }
-                    }
+                    ProgressView()
+                        .padding(12)
 
-                    ForEach(primitive.allDetails, id: \.id) { details in
-                        let editSpaceItem = {
-                            guard let space = space else {
-                                return
-                            }
+                    Spacer()
+                }.background(Color.TrayBackground)
+            }
 
-                            SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                .showModal(
-                                    style: .withTitle
-                                ) {
-                                    AddOrUpdateSpaceContent(
-                                        space: space,
-                                        config: .updateSpaceItem(details.id)
-                                    ) { helpURL in
-                                        SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                            .openURLInNewTab(helpURL)
-                                    }
-                                    .environmentObject(spacesModel)
+            NavigationView {
+                ScrollViewReader { scrollReader in
+                    List {
+                        if let promoCardType = promoCardType {
+                            PromoCard(type: promoCardType, viewWidth: 390)
+                                .buttonStyle(.plain)
+                                .modifier(ListSeparatorModifier())
+                        }
+
+                        if let space = space {
+                            SpaceHeaderView(space: space)
+                                .modifier(ListSeparatorModifier())
+                                .iPadOnlyID()
+                                .onAppear {
+                                    headerVisible = UIDevice.current.userInterfaceIdiom != .pad
+                                }
+                                .onDisappear {
+                                    headerVisible = false
                                 }
                         }
 
-                        if let url = details.data.url {
-                            SpaceEntityDetailView(
-                                details: details,
-                                onSelected: {
-                                    let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                    if let navPath = NavigationPath.navigationPath(
-                                        from: url, with: bvc)
-                                    {
+                        ForEach(primitive.allDetails, id: \.id) { details in
+                            let editSpaceItem = {
+                                guard let space = space else {
+                                    return
+                                }
+
+                                SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                    .showModal(
+                                        style: .withTitle
+                                    ) {
+                                        AddOrUpdateSpaceContent(
+                                            space: space,
+                                            config: .updateSpaceItem(details.id)
+                                        ) { helpURL in
+                                            SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                                .openURLInNewTab(helpURL)
+                                        }
+                                        .environmentObject(spacesModel)
+                                    }
+                            }
+
+                            if let url = details.data.url {
+                                SpaceEntityDetailView(
+                                    details: details,
+                                    onSelected: {
+                                        let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                        if let navPath = NavigationPath.navigationPath(
+                                            from: url, with: bvc)
+                                        {
+                                            browserModel.hideWithNoAnimation()
+                                            spacesModel.detailedSpace = nil
+
+                                            NavigationPath.handle(nav: navPath, with: bvc)
+                                            return
+                                        }
+                                        onOpenURLForSpace(url, primitive.id)
                                         browserModel.hideWithNoAnimation()
                                         spacesModel.detailedSpace = nil
-
-                                        NavigationPath.handle(nav: navPath, with: bvc)
-                                        return
-                                    }
-                                    onOpenURLForSpace(url, primitive.id)
-                                    browserModel.hideWithNoAnimation()
-                                    spacesModel.detailedSpace = nil
-                                },
-                                onDelete: { index in
-                                    onDelete(offsets: IndexSet([index]))
-                                },
-                                addToAnotherSpace: { url, title, description in
-                                    spacesModel.detailedSpace = nil
-                                    SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                        .showAddToSpacesSheet(
-                                            url: url, title: title, description: description)
-                                },
-                                editSpaceItem: editSpaceItem,
-                                index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0,
-                                canEdit: canEdit
-                            )
-                            .modifier(ListSeparatorModifier())
-                            .listRowBackground(Color.DefaultBackground)
-                            .onDrag {
-                                NSItemProvider(id: details.id)
-                            }
-                            .iPadOnlyID()
-                        } else {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(details.title)
-                                    .withFont(.headingMedium)
-                                    .foregroundColor(.label)
-
-                                SpaceMarkdownSnippet(
-                                    showDescriptions: showDescriptions, details: details,
-                                    snippet: details.data.snippet)
-                            }
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 12)
-                            .if(canEdit) {
-                                $0.modifier(
-                                    EditSpaceActionModifier(
-                                        details: details,
-                                        onDelete: { index in
-                                            onDelete(offsets: IndexSet([index]))
-                                        }, editSpaceItem: editSpaceItem,
-                                        index: primitive.allDetails.firstIndex {
-                                            $0.id == details.id
-                                        }
-                                            ?? 0)
+                                    },
+                                    onDelete: { index in
+                                        onDelete(offsets: IndexSet([index]))
+                                    },
+                                    addToAnotherSpace: { url, title, description in
+                                        spacesModel.detailedSpace = nil
+                                        SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                            .showAddToSpacesSheet(
+                                                url: url, title: title, description: description)
+                                    },
+                                    editSpaceItem: editSpaceItem,
+                                    index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0,
+                                    canEdit: canEdit
                                 )
-                            }
-                            .modifier(ListSeparatorModifier())
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(Color.secondaryBackground)
-                            .onDrag {
-                                NSItemProvider(id: details.id)
-                            }
-                        }
-                    }
-                    .onDelete(perform: canEdit ? onDelete : nil)
-                    .onMove(perform: canEdit ? onMove : nil)
-
-                    if let generators = space?.generators, !generators.isEmpty {
-                        SpaceGeneratorHeader(generators: generators)
-                            .modifier(ListSeparatorModifier())
-                        ForEach(generators, id: \.id) { generator in
-                            SpaceGeneratorView(generator: generator)
                                 .modifier(ListSeparatorModifier())
-                        }
-                    }
-                    if let space = space, !space.isDigest {
-                        SpaceCommentsView(space: space, model: spaceCommentsModel)
-                            .modifier(ListSeparatorModifier())
-                            .id("CommentSection")
-                    }
-                }
-                .modifier(ListStyleModifier(isDigest: space?.isDigest ?? false))
-                .navigationBarHidden(true)
-                .edgesIgnoringSafeArea([.top, .bottom])
-                .keyboardListener { height in
-                    guard height > 0 && addingComment else { return }
+                                .listRowBackground(Color.DefaultBackground)
+                                .onDrag {
+                                    NSItemProvider(id: details.id)
+                                }
+                                .iPadOnlyID()
+                            } else {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(details.title)
+                                        .withFont(.headingMedium)
+                                        .foregroundColor(.label)
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        withAnimation {
-                            scrollReader.scrollTo("CommentSection", anchor: .bottom)
+                                    SpaceMarkdownSnippet(
+                                        showDescriptions: showDescriptions, details: details,
+                                        snippet: details.data.snippet)
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 12)
+                                .if(canEdit) {
+                                    $0.modifier(
+                                        EditSpaceActionModifier(
+                                            details: details,
+                                            onDelete: { index in
+                                                onDelete(offsets: IndexSet([index]))
+                                            }, editSpaceItem: editSpaceItem,
+                                            index: primitive.allDetails.firstIndex {
+                                                $0.id == details.id
+                                            }
+                                                ?? 0)
+                                    )
+                                }
+                                .modifier(ListSeparatorModifier())
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .background(Color.secondaryBackground)
+                                .onDrag {
+                                    NSItemProvider(id: details.id)
+                                }
+                            }
+                        }
+                        .onDelete(perform: canEdit ? onDelete : nil)
+                        .onMove(perform: canEdit ? onMove : nil)
+
+                        if let generators = space?.generators, !generators.isEmpty {
+                            SpaceGeneratorHeader(generators: generators)
+                                .modifier(ListSeparatorModifier())
+                            ForEach(generators, id: \.id) { generator in
+                                SpaceGeneratorView(generator: generator)
+                                    .modifier(ListSeparatorModifier())
+                            }
+                        }
+                        if let space = space, !space.isDigest {
+                            SpaceCommentsView(space: space, model: spaceCommentsModel)
+                                .modifier(ListSeparatorModifier())
+                                .id("CommentSection")
                         }
                     }
-                }
-                .useEffect(deps: spaceCommentsModel.addingComment) { addingComment in
-                    self.addingComment = addingComment
-                }
-            }
-        }.modifier(iPadOnlyStackNavigation())
+                    .modifier(ListStyleModifier(isDigest: space?.isDigest ?? false))
+                    .navigationBarHidden(true)
+                    .edgesIgnoringSafeArea([.top, .bottom])
+                    .keyboardListener { height in
+                        guard height > 0 && addingComment else { return }
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            withAnimation {
+                                scrollReader.scrollTo("CommentSection", anchor: .bottom)
+                            }
+                        }
+                    }
+                    .useEffect(deps: spaceCommentsModel.addingComment) { addingComment in
+                        self.addingComment = addingComment
+                    }
+                }.ignoresSafeArea()
+            }.modifier(iPadOnlyStackNavigation())
+        }
     }
 
     private func onDelete(offsets: IndexSet) {

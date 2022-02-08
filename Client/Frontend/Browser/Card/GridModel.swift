@@ -68,11 +68,14 @@ class GridModel: ObservableObject {
                 {
                     detailedSpace.updateDetails()
                 }
-                self.refreshDetailedSpaceSubscription = nil
+
+                withAnimation(.easeOut) {
+                    self.refreshDetailedSpaceSubscription = nil
+                }
             }
         }
-        detailedSpace.manager.refreshSpace(spaceID: detailedSpace.id)
 
+        detailedSpace.manager.refreshSpace(spaceID: detailedSpace.id)
     }
 
     func switchToTabs(incognito: Bool) {
