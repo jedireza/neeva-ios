@@ -188,6 +188,7 @@ struct TabGroupHeader: View {
                 Label("ellipsis", systemImage: "ellipsis")
                     .foregroundColor(.label)
                     .labelStyle(.iconOnly)
+                    .frame(height: 44)
             }
             Text(groupDetails.title)
                 .withFont(.labelLarge)
