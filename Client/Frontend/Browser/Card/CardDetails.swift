@@ -504,6 +504,15 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     typealias Item = TabGroup
     typealias Manager = TabGroupManager
 
+    static var nextIndex = 0
+    static func getNextIndex() -> Int {
+        let result = nextIndex
+        nextIndex += 1
+        return result
+    }
+
+    let index: Int
+
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     @Published var manager: TabGroupManager
@@ -513,6 +522,7 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             tabGroupExpanded.contains(id)
         }
         set {
+            print(">>> setting isExpanded to \(newValue)")
             if newValue {
                 tabGroupExpanded.insert(id)
             } else {
@@ -561,6 +571,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
         self.id = tabGroup.id
         self.manager = tabGroupManager
+        self.index = Self.getNextIndex()
+        print(">>> TabGroupCardDetails [index: \(index)]")
 
         allDetails =
             manager.get(for: id)?.children
@@ -569,6 +581,10 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
                     tab: $0,
                     manager: manager.tabManager)
             }) ?? []
+
+        if allDetails.count < 3 {
+            isExpanded = false
+        }
     }
 
     var thumbnail: some View {

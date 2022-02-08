@@ -103,7 +103,8 @@ class TabCardModel: CardModel, TabEventHandler {
     }
 
     func buildRows(incognito: Bool, tabGroupModel: TabGroupCardModel, maxCols: Int) -> [Row] {
-        allDetails.filter { tabCard in
+        print(">>> buildRows")
+        return allDetails.filter { tabCard in
             let tab = tabCard.manager.get(for: tabCard.id)!
             return
                 (tabGroupModel.representativeTabs.contains(tab)
@@ -114,6 +115,7 @@ class TabCardModel: CardModel, TabEventHandler {
             if partialResult.isEmpty || partialResult.last?.cells.count == maxCols
                 || tabGroup != nil
             {
+                print(">>> ... tabGroup [index: \(tabGroup?.index ?? -1)]")
                 if let tabGroup = tabGroup, tabGroup.isExpanded {
                     for index in stride(from: 0, to: tabGroup.allDetails.count, by: maxCols) {
                         var max = index + maxCols
@@ -121,10 +123,12 @@ class TabCardModel: CardModel, TabEventHandler {
                             max = tabGroup.allDetails.count
                         }
                         let range = index..<max
+                        print(">>> appending .tabGroupGridRow")
                         partialResult.append(
                             Row(cells: [Row.Cell.tabGroupGridRow(tabGroup, range)]))
                     }
                 } else {
+                    print(">>> appending .tabGroupInline")
                     partialResult.append(
                         Row(cells: [tabGroup.map(Row.Cell.tabGroupInline) ?? .tab(details)]))
                 }
@@ -658,6 +662,7 @@ class TabGroupCardModel: CardModel {
     }
 
     func onDataUpdated() {
+        print(">>> TabGroupCardModel.onDataUpdated")
         onViewUpdate()
         representativeTabs = manager.getAll()
             .reduce(into: [Tab]()) { $0.append($1.children.first!) }

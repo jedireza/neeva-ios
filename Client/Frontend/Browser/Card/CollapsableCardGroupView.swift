@@ -21,6 +21,7 @@ struct CollapsedCardGroupView: View {
     var body: some View {
         if groupDetails.allDetails.count < columns.count + 1 {
             // Don't make it a scroll view if the tab group can't be expanded
+            let _ = print(">>> CollapsedCardGroupView creating ExpandedCardGroupRowView [\(groupDetails.allDetails.count) tabs, index: \(groupDetails.index)]")
             ExpandedCardGroupRowView(
                 groupDetails: groupDetails, containerGeometry: containerGeometry,
                 range: 0..<groupDetails.allDetails.count
@@ -96,6 +97,7 @@ struct ExpandedCardGroupRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if isFirstRow(range) {
+                let _ = print(">>> Creating TabGroupHeader [\(groupDetails.allDetails.count) tabs, index: \(groupDetails.index)]")
                 TabGroupHeader(groupDetails: groupDetails)
             } else {
                 HStack {
@@ -156,6 +158,11 @@ struct TabGroupHeader: View {
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @Environment(\.columns) private var columns
 
+    init(groupDetails: TabGroupCardDetails) {
+        self.groupDetails = groupDetails
+        print(">>> TabGroupHeader.init [\(groupDetails.allDetails.count) tabs, index: \(groupDetails.index)]")
+    }
+
     @State private var renaming = false
     @State private var deleting = false
 
@@ -165,6 +172,7 @@ struct TabGroupHeader: View {
     }
 
     var body: some View {
+        let _ = print(">>> TabGroupHeader.body [\(groupDetails.allDetails.count) tabs, index: \(groupDetails.index)]")
         HStack {
             Menu {
                 if let title = groupDetails.customTitle {
@@ -196,7 +204,7 @@ struct TabGroupHeader: View {
                 .withFont(.labelLarge)
                 .foregroundColor(.label)
             Spacer()
-            let _ = print(">>> in TabGroupHeader, groupDetails.allDetails.count: \(groupDetails.allDetails.count)")
+            let _ = print(">>> in TabGroupHeader, groupDetails.allDetails.count: \(groupDetails.allDetails.count), index: \(groupDetails.index)")
             if groupDetails.allDetails.count > columns.count {
                 Button {
                     groupDetails.isExpanded.toggle()

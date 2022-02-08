@@ -31,12 +31,14 @@ struct SingleLevelTabCardsView: View {
                 ForEach(row.cells) { details in
                     switch details {
                     case .tabGroupInline(let groupDetails):
+                        let _ = print(">>> .tabGroupInline case")
                         CollapsedCardGroupView(
                             groupDetails: groupDetails, containerGeometry: containerGeometry
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
                         .padding(.bottom, CardGridUX.GridSpacing)
                     case .tabGroupGridRow(let groupDetails, let range):
+                        let _ = print(">>> .tabGroupGridRow case")
                         ExpandedCardGroupRowView(
                             groupDetails: groupDetails, containerGeometry: containerGeometry,
                             range: range
