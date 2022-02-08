@@ -11,6 +11,7 @@ struct CollapsedCardGroupView: View {
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
+    @Environment(\.columns) private var columns
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @EnvironmentObject private var gridModel: GridModel
@@ -18,11 +19,11 @@ struct CollapsedCardGroupView: View {
     @State private var frame = CGRect.zero
 
     var body: some View {
-        if groupDetails.allDetails.count < 3 {
-            // If there are only two tabs, don't make it a scroll view
+        if groupDetails.allDetails.count < columns.count + 1 {
+            // Don't make it a scroll view if the tab group can't be expanded
             ExpandedCardGroupRowView(
                 groupDetails: groupDetails, containerGeometry: containerGeometry,
-                range: 0..<2
+                range: 0..<groupDetails.allDetails.count
             )
         } else {
             VStack(spacing: 0) {
@@ -153,6 +154,7 @@ struct ExpandedCardGroupRowView: View {
 struct TabGroupHeader: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
+    @Environment(\.columns) private var columns
 
     @State private var renaming = false
     @State private var deleting = false
@@ -195,7 +197,7 @@ struct TabGroupHeader: View {
                 .foregroundColor(.label)
             Spacer()
             let _ = print(">>> in TabGroupHeader, groupDetails.allDetails.count: \(groupDetails.allDetails.count)")
-            if groupDetails.allDetails.count > 2 {
+            if groupDetails.allDetails.count > columns.count {
                 Button {
                     groupDetails.isExpanded.toggle()
                 } label: {
