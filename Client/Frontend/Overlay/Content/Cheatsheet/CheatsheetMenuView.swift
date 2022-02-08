@@ -61,11 +61,11 @@ struct QueryButton: View {
                             .foregroundColor(.tertiaryLabel)
                     }
                 }
+                .padding(.vertical, 10)
             }
         }
         .withFont(unkerned: .bodyLarge)
         .lineLimit(1)
-        .padding(.bottom, 8)
     }
 
     func onClick() {
