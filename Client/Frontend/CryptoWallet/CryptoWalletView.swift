@@ -26,7 +26,7 @@ struct CryptoWalletView: View {
     @Environment(\.hideOverlay) var onDismiss
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             HStack {
                 Spacer()
                 Button(action: onDismiss) {
@@ -37,22 +37,16 @@ struct CryptoWalletView: View {
             }
             .padding(.trailing, 20)
 
+            Image("wallet-wordmark")
+                .resizable()
+                .scaledToFit()
+                .frame(height: viewState == .starter ? 32 : 20)
+                .padding(.top, viewState == .starter ? 40 : 0)
+                .animation(
+                    viewState == .showPhrases || viewState == .importWallet ? .easeInOut : nil
+                )
+
             ZStack {
-                VStack {
-                    Circle()
-                        .strokeBorder(Color.brand.pistachio, lineWidth: 2)
-                        .background(Circle().foregroundColor(Color.brand.pistachio))
-                        .frame(width: 280, height: 280)
-                        .offset(x: 200, y: 140)
-
-                    Circle()
-                        .strokeBorder(Color(hex: 0xD4F0F5), lineWidth: 2)
-                        .background(Circle().foregroundColor(Color(hex: 0xD4F0F5)))
-                        .frame(width: 300, height: 300)
-                        .offset(x: -140, y: 140)
-                }
-                .frame(maxWidth: .infinity, maxHeight: 400)
-
                 switch viewState {
                 case .starter:
                     WelcomeStarterView(viewState: $viewState)

@@ -8,75 +8,105 @@ import Shared
 import SwiftUI
 
 struct ShowPhrasesView: View {
-    @State var copyButtonText: String = "Copy"
+    @State var copyButtonText = "Copy"
+    @State var showPhrases = false
+    @Default(.cryptoPhrases) var secretPhrases: String
     @Binding var viewState: ViewState
 
     var body: some View {
-        VStack {
-            VStack(alignment: .leading, spacing: 22) {
-                Text("Congrats! Your wallet is created")
-                    .font(.roobert(size: 18))
-                Text("Secret Recovery Phrase")
-                    .font(.roobert(size: 32))
-                    .multilineTextAlignment(.leading)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(
-                    "Your Secret Recovery Phrase makes it easy to back up and restore your account. Store this phrase in a safe place. Never disclose your Secrete Recovery Phrase to anyone."
-                )
-                .font(.system(size: 14))
-                .multilineTextAlignment(.leading)
-                .foregroundColor(.secondary)
-            }
-            .padding(.bottom, 20)
-
-            if !Defaults[.cryptoPhrases].isEmpty {
-                VStack {
-                    Text("\(Defaults[.cryptoPhrases])")
-                        .multilineTextAlignment(.leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .font(.system(size: 26))
-                        .foregroundColor(Color.ui.gray20)
-                    HStack {
-                        Spacer()
-                        Button(action: {
-                            copyButtonText = "Copied!"
-                            UIPasteboard.general.setValue(
-                                Defaults[.cryptoPhrases],
-                                forPasteboardType: kUTTypePlainText as String)
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                                copyButtonText = "Copy"
-                            }
-                        }) {
-                            Text("\(copyButtonText)")
+        VStack(spacing: 16) {
+            Text("Secret Recovery Phrase")
+                .withFont(.headingXLarge)
+                .foregroundColor(.label)
+                .padding(.top, 60)
+            Text(
+                "Your Secret Recovery Phrase is the key to your wallet. Please write it down or save it in a safe place."
+            )
+            .withFont(.bodyLarge)
+            .foregroundColor(.secondaryLabel)
+            .multilineTextAlignment(.center)
+            .padding(.bottom, 24)
+            ZStack {
+                let labelColor = Color(light: Color.white, dark: Color.black)
+                HStack {
+                    VStack(alignment: .leading) {
+                        ForEach(0...5, id: \.self) { index in
+                            let phrase = secretPhrases.split(separator: " ").map { String($0) }[
+                                index]
+                            Text("\(index + 1). \(phrase)")
+                                .withFont(.bodyLarge)
+                                .foregroundColor(.label)
                         }
-                        .padding(12)
-                        .foregroundColor(Color.brand.white)
-                        .background(Color.brand.charcoal)
-                        .cornerRadius(10)
-                    }
+                    }.frame(maxWidth: .infinity)
+                    VStack(alignment: .leading) {
+                        ForEach(6...11, id: \.self) { index in
+                            let phrase = secretPhrases.split(separator: " ").map { String($0) }[
+                                index]
+                            Text("\(index + 1). \(phrase)")
+                                .withFont(.bodyLarge)
+                                .foregroundColor(.label)
+                        }
+                    }.frame(maxWidth: .infinity)
+                }.padding(24)
+                    .opacity(showPhrases ? 1 : 0)
+                    .animation(.easeInOut)
+                VStack(spacing: 16) {
+                    Text(
+                        "Anyone who has the Secret Recovery Phrase can access your wallet! Make sure your screen is safe to view"
+                    )
+                    .withFont(.bodyLarge)
+                    .foregroundColor(labelColor)
+                    .multilineTextAlignment(.center)
+                    Button(
+                        action: { showPhrases = true },
+                        label: {
+                            Text("View")
+                                .withFont(.bodyLarge)
+                                .foregroundColor(labelColor)
+                                .padding(.vertical, 12)
+                                .padding(.horizontal, 40)
+                                .roundedOuterBorder(
+                                    cornerRadius: 24, color: labelColor, lineWidth: 1)
+                        })
                 }
-                .padding(16)
-                .background(
-                    RoundedRectangle(cornerRadius: 10).stroke(Color.ui.gray91, lineWidth: 0.5)
-                )
-                .background(Color.white.opacity(0.8))
-                .cornerRadius(10)
-            } else {
-                Text("Something went wrong, please try again")
+                .padding(.horizontal, 16)
+                .padding(.vertical, 28)
+                .opacity(showPhrases ? 0 : 1)
+                .animation(.easeInOut)
             }
+            .roundedOuterBorder(cornerRadius: 12, color: .quaternarySystemFill, lineWidth: 1)
+            .background(showPhrases ? Color.clear : Color.black.opacity(0.6))
+            .background(
+                showPhrases
+                    ? Color.clear
+                    : Color(
+                        light: Color(UIColor.tertiarySystemFill.swappedForStyle),
+                        dark: Color(UIColor.quaternarySystemFill.swappedForStyle))
+            )
+            .cornerRadius(12)
+            .padding(.top, 48)
 
-            HStack {
-                Spacer()
-                Button(action: {
-                    viewState = .dashboard
-                }) {
-                    Text("Next")
-                        .font(.roobert(.semibold, size: 18))
-                        .frame(maxWidth: .infinity)
+            Button(action: {
+                copyButtonText = "Copied!"
+                UIPasteboard.general.setValue(
+                    Defaults[.cryptoPhrases],
+                    forPasteboardType: kUTTypePlainText as String)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                    copyButtonText = "Copy"
                 }
-                .buttonStyle(.neeva(.primary))
+            }) {
+                Text("Copy to clipboard")
+                    .frame(maxWidth: .infinity)
             }
-            .padding(.top, 10)
+            .buttonStyle(.wallet(.secondary))
+            Button(action: {
+                viewState = .dashboard
+            }) {
+                Text("Done")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.wallet(.primary))
+            .padding(.top, 50)
         }
         .padding(.horizontal, 16)
     }

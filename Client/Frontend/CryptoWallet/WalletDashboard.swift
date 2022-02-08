@@ -27,6 +27,7 @@ struct WalletDashboard: View {
     @Environment(\.hideOverlay) var hideOverlay
     @EnvironmentObject var model: Web3Model
 
+    @State var showBalances: Bool = true
     @State var showSessions: Bool = false
     @State var showSendForm: Bool = false
     @State var showConfirmDisconnectAlert = false
@@ -105,99 +106,121 @@ struct WalletDashboard: View {
                 }
             },
             label: {
-                Symbol(decorative: .ellipsisCircle)
+                Symbol(decorative: .chevronDown, style: .headingXLarge)
                     .foregroundColor(.label)
-                    .tapTargetFrame()
             })
     }
 
-    var accountInfoSection: some View {
-        Section(
-            content: {
-                HStack(spacing: 8) {
-                    Text("\(Defaults[.cryptoPublicKey])")
-                        .font(.roobert(size: 16))
-                        .foregroundColor(.white)
-                        .lineLimit(1)
-                        .padding(8)
-                        .background(Color.ui.adaptive.blue)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                    Button(action: {
-                        UIPasteboard.general.setValue(
-                            Defaults[.cryptoPublicKey],
-                            forPasteboardType: kUTTypePlainText as String)
-                        if let toastManager = model.selectedTab?.browserViewController?
-                            .getSceneDelegate()?.toastViewManager
-                        {
-                            hideOverlay()
-                            toastManager.makeToast(text: "Address copied to clipboard")
-                                .enqueue(manager: toastManager)
-                        }
-                    }) {
-                        Symbol(decorative: .docOnDoc)
-                            .foregroundColor(.label)
-                            .tapTargetFrame()
-                    }.buttonStyle(PlainButtonStyle())
-                    Button(action: { showQRScanner = true }) {
-                        Symbol(decorative: .qrcodeViewfinder, style: .labelMedium)
-                            .foregroundColor(.secondaryLabel)
-                            .tapTargetFrame()
-                    }.sheet(isPresented: $showQRScanner) {
-                        ScannerView(
-                            showQRScanner: $showQRScanner, returnAddress: $qrCodeStr,
-                            onComplete: onScanComplete)
-                    }.buttonStyle(PlainButtonStyle())
-                    overflowMenu
-                }.modifier(WalletListSeparatorModifier())
-            },
-            header: {
-                Text("Account info")
-                    .withFont(.headingMedium)
-                    .foregroundColor(.label)
+    var accountInfo: some View {
+        VStack(spacing: 0) {
+            Circle()
+                .fill(WalletTheme.gradient)
+                .frame(width: 48, height: 48)
+                .padding(8)
+            HStack(spacing: 0) {
+                Text("\(Defaults[.cryptoPublicKey])")
+                    .withFont(.headingXLarge)
+                    .lineLimit(1)
+                    .frame(width: 88)
+                overflowMenu
+            }
 
-            })
+            HStack(spacing: 12) {
+                Button(action: {
+                    UIPasteboard.general.setValue(
+                        Defaults[.cryptoPublicKey],
+                        forPasteboardType: kUTTypePlainText as String)
+                    if let toastManager = model.selectedTab?.browserViewController?
+                        .getSceneDelegate()?.toastViewManager
+                    {
+                        hideOverlay()
+                        toastManager.makeToast(text: "Address copied to clipboard")
+                            .enqueue(manager: toastManager)
+                    }
+                }) {
+                    HStack(spacing: 4) {
+                        Symbol(decorative: .docOnDoc, style: .bodyMedium)
+                        Text("Copy address")
+                    }
+                }.buttonStyle(WalletDashBoardButtonStyle())
+                Button(action: { showQRScanner = true }) {
+                    HStack(spacing: 4) {
+                        Symbol(decorative: .qrcodeViewfinder, style: .bodyMedium)
+                        Text("Scan")
+                    }
+                }.sheet(isPresented: $showQRScanner) {
+                    ScannerView(
+                        showQRScanner: $showQRScanner, returnAddress: $qrCodeStr,
+                        onComplete: onScanComplete)
+                }.buttonStyle(WalletDashBoardButtonStyle())
+                Button(action: { showSendForm = true }) {
+                    HStack(spacing: 4) {
+                        Symbol(decorative: .paperplane, style: .bodyMedium)
+                        Text("Send")
+                    }
+                }.buttonStyle(WalletDashBoardButtonStyle())
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+        }
+        .padding(.top, 24)
+        .modifier(WalletListSeparatorModifier())
     }
 
     var balancesSection: some View {
         Section(
             content: {
-                ForEach(
-                    TokenType.allCases.filter {
-                        $0 == .ether || Double(model.balanceFor($0) ?? "0") != 0
-                    }, id: \.rawValue
-                ) {
-                    token in
-                    HStack {
-                        token.thumbnail
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(token.currency.name)
-                                .withFont(.labelSmall)
-                                .fixedSize(horizontal: false, vertical: true)
+                if showBalances {
+                    ForEach(
+                        TokenType.allCases.filter {
+                            $0 == .ether || Double(model.balanceFor($0) ?? "0") != 0
+                        }, id: \.rawValue
+                    ) {
+                        token in
+                        HStack {
+                            token.thumbnail.padding(.leading, 4)
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text(token.currency.name)
+                                    .withFont(.bodyMedium)
+                                    .fixedSize(horizontal: false, vertical: true)
+                                    .foregroundColor(.label)
+                                Text(token.network.rawValue)
+                                    .withFont(.bodySmall)
+                                    .foregroundColor(.secondaryLabel)
+                            }
+                            Spacer()
+                            VStack(alignment: .trailing, spacing: 0) {
+                                Text(
+                                    "$\(CryptoConfig.shared.toUSD(from: token, amount: model.balanceFor(token) ?? "0"))"
+                                )
                                 .foregroundColor(.label)
-                            Text(token.network.rawValue)
-                                .font(.roobert(size: 16))
-                                .foregroundColor(.secondary)
-                        }
-                        Spacer()
-                        VStack(alignment: .trailing, spacing: 8) {
-                            Text(
-                                "$\(CryptoConfig.shared.toUSD(from: token, amount: model.balanceFor(token) ?? "0"))"
-                            )
-                            .foregroundColor(.label)
-                            .font(.roobert(size: 20))
-                            .frame(alignment: .center)
-                            Text("\(model.balanceFor(token) ?? "") \(token.currency.rawValue)")
-                                .font(.roobert(size: 12))
-                                .foregroundColor(.secondary)
-                        }
+                                .withFont(.bodyMedium)
+                                .frame(alignment: .center)
+                                Text("\(model.balanceFor(token) ?? "") \(token.currency.rawValue)")
+                                    .withFont(.bodySmall)
+                                    .foregroundColor(.secondaryLabel)
+                            }
 
+                        }.modifier(WalletListSeparatorModifier())
                     }
                 }
             },
             header: {
-                Text("Balances")
-                    .withFont(.headingMedium)
-                    .foregroundColor(.label)
+                HStack {
+                    Text("Balances")
+                        .withFont(.headingMedium)
+                        .foregroundColor(.label)
+                    Spacer()
+                    Button(action: {
+                        showBalances.toggle()
+                    }) {
+                        Symbol(
+                            decorative: showBalances ? .chevronUp : .chevronDown,
+                            style: .headingMedium
+                        )
+                        .foregroundColor(.label)
+                    }
+                }.padding(.vertical, 10)
             })
     }
 
@@ -209,50 +232,43 @@ struct WalletDashboard: View {
                         savedSessions.contains(session.dAppInfo.peerId)
                     {
                         HStack {
-                            Text(domain)
-                                .withFont(.labelSmall)
-                                .foregroundColor(.label)
-                            Spacer()
-                            Menu(
-                                content: {
-                                    ForEach([EthNode.Ethereum, EthNode.Polygon]) { node in
-                                        Button(
-                                            action: {
-                                                model.toggle(session: session, to: node)
-                                            },
-                                            label: {
-                                                Text(node.rawValue)
-                                                    .withFont(.labelSmall)
-                                                    .foregroundColor(.label)
-                                            })
-                                    }
-                                },
-                                label: {
-                                    let chain = EthNode.from(
-                                        chainID: session.walletInfo?.chainId)
-                                    switch chain {
-                                    case .Polygon:
-                                        TokenType.matic.polygonLogo
-                                    default:
-                                        TokenType.ether.ethLogo
-                                    }
-                                })
-                            Button(action: {
-                                sessionToDisconnect = session
-                                showConfirmDisconnectAlert = true
-                            }) {
-                                Symbol(decorative: .xmarkCircleFill)
+                            WebImage(url: session.dAppInfo.peerMeta.icons.first)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 34, height: 34)
+                            VStack(alignment: .leading, spacing: 0) {
+                                Text(session.dAppInfo.peerMeta.name)
+                                    .withFont(.bodyMedium)
+                                    .lineLimit(1)
                                     .foregroundColor(.label)
-                                    .tapTargetFrame()
-                            }.buttonStyle(PlainButtonStyle())
-                        }
+                                Text(domain)
+                                    .withFont(.bodySmall)
+                                    .foregroundColor(.secondaryLabel)
+                            }
+                            Spacer()
+                            let chain = EthNode.from(
+                                chainID: session.walletInfo?.chainId)
+                            switch chain {
+                            case .Polygon:
+                                TokenType.matic.polygonLogo
+                            default:
+                                TokenType.ether.ethLogo
+                            }
+                        }.modifier(
+                            SessionActionsModifier(
+                                session: session,
+                                showConfirmDisconnectAlert: $showConfirmDisconnectAlert,
+                                sessionToDisconnect: $sessionToDisconnect)
+                        )
+                        .modifier(WalletListSeparatorModifier())
+
                     }
                 }
             },
             header: {
                 if !(model.server?.openSessions() ?? []).isEmpty {
                     HStack {
-                        Text("Open Sessions")
+                        Text("Connected Sites")
                             .withFont(.headingMedium)
                             .foregroundColor(.label)
                         Spacer()
@@ -265,7 +281,7 @@ struct WalletDashboard: View {
                             )
                             .foregroundColor(.label)
                         }
-                    }
+                    }.padding(.vertical, 10)
                 }
             })
     }
@@ -283,6 +299,10 @@ struct WalletDashboard: View {
                         Defaults[.cryptoPhrases] = ""
                         Defaults[.cryptoPublicKey] = ""
                         Defaults[.cryptoPrivateKey] = ""
+                        model.server?.openSessions().forEach {
+                            Defaults[.dAppsSession($0.dAppInfo.peerId)] = nil
+                        }
+                        Defaults[.sessionsPeerIDs] = Set<String>()
                         model.wallet = WalletAccessor()
                     })
             ])
@@ -309,32 +329,23 @@ struct WalletDashboard: View {
 
     var body: some View {
         List {
-            accountInfoSection
-                .actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
-                    confirmRemoveWalletSheet
-                }
-            balancesSection
-            openSessionsSection
-                .actionSheet(isPresented: $showConfirmDisconnectAlert) {
-                    confirmDisconnectSheet
-                }
-
             if showSendForm {
                 SendForm(showSendForm: $showSendForm)
                     .modifier(WalletListSeparatorModifier())
+                    .padding(.vertical, 40)
             } else {
-                Button(action: { showSendForm = true }) {
-                    Text("Send ETH")
-                        .font(.roobert(.semibold, size: 18))
-                        .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .buttonStyle(.neeva(.primary))
-                .padding(.top, 8)
-                .modifier(WalletListSeparatorModifier())
+                accountInfo
+                    .actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
+                        confirmRemoveWalletSheet
+                    }
+                balancesSection
+                openSessionsSection
+                    .actionSheet(isPresented: $showConfirmDisconnectAlert) {
+                        confirmDisconnectSheet
+                    }
             }
         }
         .modifier(WalletListStyleModifier())
-        .clipShape(RoundedRectangle(cornerRadius: 12))
         .padding(.horizontal, 25)
         .padding(.bottom, 72)
     }
@@ -357,7 +368,7 @@ struct WalletListStyleModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
             content
-                .listStyle(.insetGrouped)
+                .listStyle(.plain)
                 .refreshable {
                     model.updateBalances()
                 }
@@ -393,8 +404,81 @@ struct WalletListSeparatorModifier: ViewModifier {
     }
 }
 
-struct WalletDashboard_Previews: PreviewProvider {
-    static var previews: some View {
-        WalletDashboard()
+struct SessionActionsModifier: ViewModifier {
+    @EnvironmentObject var model: Web3Model
+
+    let session: Session
+
+    @Binding var showConfirmDisconnectAlert: Bool
+    @Binding var sessionToDisconnect: Session?
+
+    var switchToNode: EthNode {
+        let node = EthNode.from(chainID: session.walletInfo?.chainId)
+        return node == .Ethereum ? .Polygon : .Ethereum
+    }
+
+    func switchChain() {
+        model.toggle(session: session, to: switchToNode)
+    }
+
+    func delete() {
+        sessionToDisconnect = session
+        showConfirmDisconnectAlert = true
+    }
+
+    func body(content: Content) -> some View {
+        if #available(iOS 15.0, *) {
+            content
+                .swipeActions(edge: .trailing) {
+                    Button(role: .destructive) {
+                        delete()
+                    } label: {
+                        Label("Disconnect", systemImage: "")
+                    }
+
+                    Button {
+                        switchChain()
+                    } label: {
+                        Label("Switch", systemImage: "")
+                            .foregroundColor(.white)
+                    }.tint(.blue)
+                }
+        } else {
+            content
+                .contextMenu(
+                    ContextMenu(menuItems: {
+                        Button(
+                            action: {
+                                switchChain()
+                            },
+                            label: {
+                                Label(
+                                    title: { Text("Switch") },
+                                    icon: {
+                                        switch switchToNode {
+                                        case .Polygon:
+                                            TokenType.ether.polygonLogo
+                                        default:
+                                            TokenType.ether.ethLogo
+                                        }
+                                    })
+                            })
+                    })
+                )
+        }
+    }
+}
+
+public struct WalletDashBoardButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .withFont(unkerned: .bodyMedium)
+            .foregroundColor(.label)
+            .padding(12)
+            .frame(height: 40)
+            .roundedOuterBorder(cornerRadius: 20, color: .secondarySystemFill, lineWidth: 1)
+            .clipShape(Capsule())
     }
 }

@@ -14,51 +14,58 @@ struct ImportWalletView: View {
     @State var isImporting: Bool = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("Import Your Wallet")
-                .font(.roobert(size: 28))
+        VStack(spacing: 16) {
+            Text("Import Wallet")
+                .withFont(.headingXLarge)
+                .foregroundColor(.label)
+                .padding(.top, 60)
 
-            Text("Enter your secret recovery phrase below")
-                .font(.system(size: 16))
-                .multilineTextAlignment(.leading)
-                .foregroundColor(.secondary)
-
-            TextEditor(text: $inputPhrase)
-                .foregroundColor(Color.ui.gray20)
-                .font(.system(size: 26))
-                .modifier(NoAutoCapitalize())
-                .border(Color.brand.charcoal, width: 1)
-                .frame(maxHeight: 300)
-
-            HStack {
-                Spacer()
-                Button(action: { viewState = .starter }) {
-                    Text("Back")
-                        .frame(maxWidth: .infinity)
+            ZStack {
+                TextEditor(text: $inputPhrase)
+                    .withFont(unkerned: .bodyLarge)
+                    .foregroundColor(.label)
+                    .modifier(NoAutoCapitalize())
+                    .frame(maxWidth: .infinity)
+                if inputPhrase.isEmpty {
+                    Text("Type or paste your Secret Recovery Phrase")
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.secondary)
                 }
-                .buttonStyle(.neeva(.secondary))
-                .padding(.top, 8)
-
-                Button(action: {
-                    isImporting = true
-                    web3Model.importWallet(inputPhrase: inputPhrase) {
-                        isImporting = false
-                        viewState = .dashboard
-                    }
-                }) {
-                    HStack {
-                        Text(isImporting ? "Importing " : "Import")
-                        if isImporting {
-                            ProgressView()
-                        }
-                    }.frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.neeva(.primary))
-                .padding(.top, 8)
-                .disabled(inputPhrase.isEmpty)
             }
+            .padding(12)
+            .background(Color.DefaultBackground)
+            .roundedOuterBorder(
+                cornerRadius: 12,
+                color: .quaternarySystemFill,
+                lineWidth: 1
+            )
+            .frame(maxHeight: 120)
+            .padding(.bottom, 50)
+
+            Button(action: { viewState = .starter }) {
+                Text("Back")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.wallet(.secondary))
+            Button(action: {
+                isImporting = true
+                web3Model.importWallet(inputPhrase: inputPhrase) {
+                    isImporting = false
+                    viewState = .dashboard
+                }
+            }) {
+                HStack {
+                    Text(isImporting ? "Importing  " : "Import")
+                    if isImporting {
+                        ProgressView()
+                    }
+                }.frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.wallet(.primary))
+            .disabled(inputPhrase.isEmpty)
         }
-        .padding(16)
+        .padding(.horizontal, 16)
+        .ignoresSafeArea(.keyboard)
     }
 }
 

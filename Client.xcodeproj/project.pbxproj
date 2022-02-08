@@ -180,6 +180,10 @@
 		4A93B55A2782981600CD5415 /* Web3Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B5592782981600CD5415 /* Web3Model.swift */; };
 		4A93B55C27829BE800CD5415 /* WalletDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B55B27829BE800CD5415 /* WalletDetailView.swift */; };
 		4A9EFAE727ADB8BB00F3ED7F /* CurrencyStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9EFAE627ADB8BB00F3ED7F /* CurrencyStore.swift */; };
+		4A9EFAE927AF9F6E00F3ED7F /* NeevaWalletStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9EFAE827AF9F6E00F3ED7F /* NeevaWalletStyle.swift */; };
+		4A9EFAEB27AF9FC200F3ED7F /* Wallet.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A9EFAEA27AF9FC200F3ED7F /* Wallet.xcassets */; };
+		4A9EFAED27AFBCF900F3ED7F /* Confetti.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9EFAEC27AFBCF900F3ED7F /* Confetti.swift */; };
+		4A9EFAF027B0BFD100F3ED7F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4A9EFAEF27B0BFD100F3ED7F /* README.md */; };
 		4A9F653F2702D2CE00B7C06E /* SpaceContentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F653E2702D2CE00B7C06E /* SpaceContentSheet.swift */; };
 		4A9F65412703CA2B00B7C06E /* SpaceContentSheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F65402703CA2B00B7C06E /* SpaceContentSheetModel.swift */; };
 		4A9F65432710A49000B7C06E /* CustomThumbnails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F65422710A49000B7C06E /* CustomThumbnails.swift */; };
@@ -1326,6 +1330,10 @@
 		4A93B5592782981600CD5415 /* Web3Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Web3Model.swift; sourceTree = "<group>"; };
 		4A93B55B27829BE800CD5415 /* WalletDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailView.swift; sourceTree = "<group>"; };
 		4A9EFAE627ADB8BB00F3ED7F /* CurrencyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyStore.swift; sourceTree = "<group>"; };
+		4A9EFAE827AF9F6E00F3ED7F /* NeevaWalletStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaWalletStyle.swift; sourceTree = "<group>"; };
+		4A9EFAEA27AF9FC200F3ED7F /* Wallet.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Wallet.xcassets; sourceTree = "<group>"; };
+		4A9EFAEC27AFBCF900F3ED7F /* Confetti.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Confetti.swift; sourceTree = "<group>"; };
+		4A9EFAEF27B0BFD100F3ED7F /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		4A9F653E2702D2CE00B7C06E /* SpaceContentSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceContentSheet.swift; sourceTree = "<group>"; };
 		4A9F65402703CA2B00B7C06E /* SpaceContentSheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceContentSheetModel.swift; sourceTree = "<group>"; };
 		4A9F65422710A49000B7C06E /* CustomThumbnails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomThumbnails.swift; sourceTree = "<group>"; };
@@ -2333,6 +2341,7 @@
 		28CE83EF1A1D246900576538 /* Third-Party Source */ = {
 			isa = PBXGroup;
 			children = (
+				4A9EFAEE27B0BF3E00F3ED7F /* ConfettiSwiftUI */,
 				EB912B8D22722A7800DF585A /* Deferred */,
 				D8FDEB54220CFE970069A582 /* UIImage+ImageEffects.h */,
 				D8FDEB55220CFE970069A582 /* UIImage+ImageEffects.m */,
@@ -2594,6 +2603,15 @@
 				4A93B55B27829BE800CD5415 /* WalletDetailView.swift */,
 			);
 			path = Assets;
+			sourceTree = "<group>";
+		};
+		4A9EFAEE27B0BF3E00F3ED7F /* ConfettiSwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				4A9EFAEC27AFBCF900F3ED7F /* Confetti.swift */,
+				4A9EFAEF27B0BFD100F3ED7F /* README.md */,
+			);
+			path = ConfettiSwiftUI;
 			sourceTree = "<group>";
 		};
 		4AF1948B266EC74C007E2C3B /* Carousel */ = {
@@ -3033,14 +3051,16 @@
 				4AA285AE278BA884001993EE /* ConnectWallet.swift */,
 				BCAAA0D4276D9B420013223E /* CryptoConfig.swift */,
 				BCAAA0D6276D9B800013223E /* CryptoWalletView.swift */,
+				4A9EFAE627ADB8BB00F3ED7F /* CurrencyStore.swift */,
 				BCAAA0D8276D9BA60013223E /* ImportWalletView.swift */,
+				4A9EFAE827AF9F6E00F3ED7F /* NeevaWalletStyle.swift */,
 				BC532EF0278C05230027CA11 /* ScannerView.swift */,
 				BCAAA0DB276D9BCD0013223E /* SendForm.swift */,
 				4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */,
 				BCAAA0DD276D9BF00013223E /* ShowPhrasesView.swift */,
 				BCAAA0DF276D9C190013223E /* TransactionHistoryView.swift */,
+				4A9EFAEA27AF9FC200F3ED7F /* Wallet.xcassets */,
 				4A93B54A277BC06C00CD5415 /* WalletAccessor.swift */,
-				4A9EFAE627ADB8BB00F3ED7F /* CurrencyStore.swift */,
 				4A93B53E2776709400CD5415 /* WalletConnectHandlers.swift */,
 				BCAAA0E1276D9C400013223E /* WalletDashboard.swift */,
 				4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */,
@@ -4958,6 +4978,7 @@
 				0BA1E0301B051A07007675AF /* OfflineError.css in Resources */,
 				3BC659491E5BA4AE006D560F /* TopSites in Resources */,
 				E4B7B77E1A793CF20022C5E0 /* FiraSans-SemiBold.ttf in Resources */,
+				4A9EFAEB27AF9FC200F3ED7F /* Wallet.xcassets in Resources */,
 				F84B220B1A0910F600AAB793 /* Images.xcassets in Resources */,
 				F35B8D2B1D6380EA008E3D61 /* SessionRestore.html in Resources */,
 				BCC138A02656CBE70018D87D /* nicons-500.ttf in Resources */,
@@ -4991,6 +5012,7 @@
 				BC6D34862622D4DE0050DEC4 /* Roobert-Light.otf in Resources */,
 				E4B7B7681A793CF20022C5E0 /* FiraSans-Bold.ttf in Resources */,
 				E4B7B7781A793CF20022C5E0 /* FiraSans-Italic.ttf in Resources */,
+				4A9EFAF027B0BFD100F3ED7F /* README.md in Resources */,
 				0BA1E00E1B03FB0B007675AF /* NetError.html in Resources */,
 				23BEA768251A99ED00A014BF /* NewYorkMedium-BoldItalic.otf in Resources */,
 				C9DACFEB269CEFE600456020 /* KMCGeigerCounterTick.aiff in Resources */,
@@ -5677,6 +5699,7 @@
 				4A93B552277F80C800CD5415 /* Collection.swift in Sources */,
 				4A72AFC4278E43AF0057E58B /* CommunitySubmissionRequest.swift in Sources */,
 				670029C1272D1A5C00EBB968 /* ScheduleNotificationView.swift in Sources */,
+				4A9EFAE927AF9F6E00F3ED7F /* NeevaWalletStyle.swift in Sources */,
 				D3BA7E0E1B0E934F00153782 /* ContextMenuHelper.swift in Sources */,
 				C93EFEE926716411000396B5 /* TabLocationBarButton.swift in Sources */,
 				C962778D26A20A3B0078CDAF /* WKWebView+Zoom.m in Sources */,
@@ -5893,6 +5916,7 @@
 				6626BC9926B9BBF900EE0760 /* FindInPageModel.swift in Sources */,
 				C9F49CBB266FD16000F3408A /* WebsiteDataView.swift in Sources */,
 				BC85E226264F407C0068092F /* TourPromptView.swift in Sources */,
+				4A9EFAED27AFBCF900F3ED7F /* Confetti.swift in Sources */,
 				66F0E62326EC23AD008A4327 /* OverlayStyle.swift in Sources */,
 				66F97CC626F69303005A26C2 /* TextSizeStepper.swift in Sources */,
 				E663D5781BB341C4001EF30E /* IncognitoButton.swift in Sources */,

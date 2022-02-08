@@ -43,7 +43,7 @@ struct CommunitySubmissionView: View {
 
                 }
             )
-            .buttonStyle(.neeva(.primary))
+            .buttonStyle(.wallet(.primary))
             Button(
                 action: {
                     trust = false
@@ -57,7 +57,7 @@ struct CommunitySubmissionView: View {
                         Text("Report as scam")
                     }.frame(maxWidth: .infinity)
                 }
-            ).buttonStyle(.neeva(.secondary))
+            ).buttonStyle(.wallet(.secondary))
             Spacer()
         }
     }

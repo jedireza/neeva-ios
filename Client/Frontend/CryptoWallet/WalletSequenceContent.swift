@@ -188,7 +188,7 @@ struct WalletSequenceContent: View {
                         Text("Navigate to \(trustedDomain)")
                             .frame(maxWidth: .infinity)
                     }
-                ).buttonStyle(.neeva(.primary))
+                ).buttonStyle(.wallet(.primary))
                     .padding(.top, 16)
                 Button(
                     action: {
@@ -198,7 +198,7 @@ struct WalletSequenceContent: View {
                         Text("Close")
                             .frame(maxWidth: .infinity)
                     }
-                ).buttonStyle(.neeva(.secondary))
+                ).buttonStyle(.wallet(.secondary))
                     .padding(.bottom, 16)
             } else if case .malicious = model.trustSignal {
                 VStack(spacing: 8) {
@@ -217,7 +217,7 @@ struct WalletSequenceContent: View {
                         Text("Close")
                             .frame(maxWidth: .infinity)
                     }
-                ).buttonStyle(.neeva(.primary))
+                ).buttonStyle(.wallet(.primary))
                     .padding(.bottom, 16)
             } else if let sequence = model.currentSequence {
                 WebImage(url: sequence.thumbnailURL)
@@ -300,7 +300,7 @@ struct WalletSequenceContent: View {
                                 Text("Reject")
                                     .frame(maxWidth: .infinity)
                             }
-                        ).buttonStyle(.neeva(.secondary))
+                        ).buttonStyle(.wallet(.secondary))
                             .disabled(model.currentSequence == nil)
                         Button(
                             action: {
@@ -344,7 +344,7 @@ struct WalletSequenceContent: View {
                             },
                             label: {
                                 if case .sessionRequest = sequence.type {
-                                    Text("Accept")
+                                    Text("Connect")
                                         .frame(maxWidth: .infinity)
                                 } else {
                                     Label(
@@ -359,7 +359,7 @@ struct WalletSequenceContent: View {
 
                                 }
                             }
-                        ).buttonStyle(.neeva(.primary))
+                        ).buttonStyle(.wallet(.primary))
                             .padding(.vertical, 16)
                             .disabled(model.currentSequence == nil)
                     }
