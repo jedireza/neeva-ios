@@ -194,6 +194,7 @@ struct TabGroupHeader: View {
                 .withFont(.labelLarge)
                 .foregroundColor(.label)
             Spacer()
+            let _ = print(">>> in TabGroupHeader, groupDetails.allDetails.count: \(groupDetails.allDetails.count)")
             if groupDetails.allDetails.count > 2 {
                 Button {
                     groupDetails.isExpanded.toggle()

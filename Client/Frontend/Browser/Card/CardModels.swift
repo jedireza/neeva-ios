@@ -141,7 +141,7 @@ class TabCardModel: CardModel, TabEventHandler {
         groupManager.updateTabGroups()
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
-
+        print(">>> allDetails.count: \(allDetails.count)")
         if FeatureFlag[.tabGroupsNewDesign] {
             modifyAllDetailsAvoidingSingleTabs(groupManager.childTabs)
         }

@@ -22,6 +22,7 @@ struct SingleLevelTabCardsView: View {
     let incognito: Bool
 
     var body: some View {
+        let _ = print(">>> single level tab cards view body, tabModel has \(tabModel.allDetails.count) tabs")
         ForEach(
             tabModel.buildRows(
                 incognito: incognito, tabGroupModel: tabGroupModel, maxCols: columns.count)
