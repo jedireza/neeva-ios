@@ -12,7 +12,7 @@ private enum CompactNeevaMenuUX {
 }
 
 struct CompactNeevaMenuView: View {
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject private var incognitoModel: IncognitoModel
     private let menuAction: (NeevaMenuAction) -> Void
 
     init(menuAction: @escaping (NeevaMenuAction) -> Void) {
@@ -30,14 +30,14 @@ struct CompactNeevaMenuView: View {
                     self.menuAction(.home)
                 }
                 .accessibilityIdentifier("NeevaMenu.Home")
-                .disabled(isIncognito)
+                .disabled(incognitoModel.isIncognito)
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
                 CompactNeevaMenuButtonView(label: "Spaces", nicon: .bookmarkOnBookmark) {
                     self.menuAction(.spaces)
                 }
                 .accessibilityIdentifier("NeevaMenu.Spaces")
-                .disabled(isIncognito)
+                .disabled(incognitoModel.isIncognito)
                 .frame(width: CompactNeevaMenuUX.buttonWidth)
 
                 CompactNeevaMenuButtonView(label: "Settings", nicon: .gear) {
@@ -74,8 +74,8 @@ struct CompactNeevaMenuView_Previews: PreviewProvider {
         CompactNeevaMenuView(menuAction: { _ in })
             .previewDevice("iPod touch (7th generation)")
             .environment(\.sizeCategory, .extraExtraExtraLarge)
-            .environment(\.isIncognito, false)
+            .environmentObject(IncognitoModel(isIncognito: false))
         CompactNeevaMenuView(menuAction: { _ in })
-            .environment(\.isIncognito, true)
+            .environmentObject(IncognitoModel(isIncognito: true))
     }
 }

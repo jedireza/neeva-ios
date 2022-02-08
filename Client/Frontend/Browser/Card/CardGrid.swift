@@ -259,6 +259,7 @@ struct GridPicker: View {
     var isInToolbar = false
 
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var incognitoModel: IncognitoModel
     @EnvironmentObject var switcherToolbarModel: SwitcherToolbarModel
     @EnvironmentObject var browserModel: BrowserModel
 
@@ -298,13 +299,13 @@ struct GridPicker: View {
                         selectedIndex = 2
                     }
 
-                    if gridModel.isIncognito {
+                    if incognitoModel.isIncognito {
                         gridModel.tabCardModel.manager.toggleIncognitoMode(
                             fromTabTray: true, openLazyTab: false)
                     }
                 }
             }
-            .useEffect(deps: gridModel.isIncognito) { isIncognito in
+            .useEffect(deps: incognitoModel.isIncognito) { isIncognito in
                 if gridModel.switcherState == .tabs && switcherToolbarModel.dragOffset == nil {
                     selectedIndex = isIncognito ? 0 : 1
                 }

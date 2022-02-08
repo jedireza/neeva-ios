@@ -15,7 +15,6 @@ extension WebViewContainer: Inspectable {}
 extension ZeroQueryContent: Inspectable {}
 extension SuggestionsContent: Inspectable {}
 extension ZeroQueryView: Inspectable {}
-extension IncognitoAwareHostingController._Applicator: Inspectable {}
 class ZeroQueryTests: XCTestCase {
     var profile: MockProfile!
     var zQM: ZeroQueryModel!

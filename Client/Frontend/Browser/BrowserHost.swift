@@ -5,11 +5,9 @@
 import Foundation
 import SwiftUI
 
-class BrowserHost: IncognitoAwareHostingController<BrowserView> {
+class BrowserHost: UIHostingController<BrowserView> {
     init(bvc: BrowserViewController) {
-        super.init(isIncognito: bvc.tabManager.isIncognito) {
-            BrowserView(bvc: bvc)
-        }
+        super.init(rootView: BrowserView(bvc: bvc))
     }
 
     @objc required dynamic init?(coder: NSCoder) {

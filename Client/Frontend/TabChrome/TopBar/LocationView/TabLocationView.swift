@@ -38,7 +38,7 @@ struct TabLocationView: View {
 
     @State private var isPressed = false
 
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject private var incognitoModel: IncognitoModel
     @Environment(\.colorScheme) private var colorScheme
 
     @State var token = 0
@@ -69,7 +69,7 @@ struct TabLocationView: View {
 
     var body: some View {
         let backgroundColor: Color =
-            isIncognito
+            incognitoModel.isIncognito
             ? isPressed ? .elevatedDarkBackground : .black
             : isPressed ? .tertiarySystemFill : .systemFill
         HStack(spacing: 11) {
@@ -199,7 +199,7 @@ struct TabLocationView: View {
                 }
             }
             .frame(height: TabLocationViewUX.height)
-            .colorScheme(isIncognito ? .dark : colorScheme)
+            .colorScheme(incognitoModel.isIncognito ? .dark : colorScheme)
             .onChange(of: chromeModel.isEditingLocation) { isEditing in
                 if !isEditing {
                     token += 1
@@ -214,7 +214,7 @@ struct TabLocationView: View {
                     Text("Cancel").withFont(.bodyLarge)
                 }
                 .transition(.move(edge: .trailing).combined(with: .opacity))
-                .accentColor(isIncognito ? .label : .ui.adaptive.blue)
+                .accentColor(incognitoModel.isIncognito ? .label : .ui.adaptive.blue)
             }
         }
     }
@@ -244,7 +244,7 @@ struct TabLocationView_Previews: PreviewProvider {
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
                 onCancel: {}
             )
-            .environment(\.isIncognito, true)
+            .environmentObject(IncognitoModel(isIncognito: true))
             .environmentObject(
                 LocationViewModel(previewURL: "https://neeva.com/asdf", isSecure: nil)
             )
@@ -263,7 +263,7 @@ struct TabLocationView_Previews: PreviewProvider {
                 onReload: {}, onSubmit: { _ in }, onShare: { _ in }, buildReloadMenu: { nil },
                 onCancel: {}
             )
-            .environment(\.isIncognito, true)
+            .environmentObject(IncognitoModel(isIncognito: true))
             .environmentObject(
                 LocationViewModel(previewURL: "ftp://someftpsite.com/dir/file.txt", isSecure: nil)
             )

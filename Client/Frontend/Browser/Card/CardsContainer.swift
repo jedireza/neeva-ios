@@ -124,11 +124,6 @@ struct CardScrollContainer<Content: View>: View {
             ScrollViewReader(content: content)
         }
         .accessibilityIdentifier("CardGrid")
-        .accessibilityValue(
-            Text(
-                "\(tabModel.manager.isIncognito ? tabModel.manager.privateTabs.count : tabModel.manager.normalTabs.count) tabs"
-            )
-        )
         .environment(\.columns, columns)
         .introspectScrollView { scrollView in
             // This is to make sure the overlay card bleeds outside the horizontal and bottom
@@ -149,6 +144,7 @@ struct CardsContainer: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var gridModel: GridModel
+    @EnvironmentObject var incognitoModel: IncognitoModel
 
     // Used to rebuild the scene when switching between portrait and landscape.
     @State var orientation: UIDeviceOrientation = .unknown
@@ -193,11 +189,12 @@ struct CardsContainer: View {
                 }
                 .offset(
                     x: (gridModel.switcherState == .tabs
-                        ? (gridModel.isIncognito ? geom.size.width : 0) : -geom.size.width)
+                        ? (incognitoModel.isIncognito ? geom.size.width : 0) : -geom.size.width)
                 )
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel("Tabs")
-                .accessibilityHidden(gridModel.switcherState != .tabs || gridModel.isIncognito)
+                .accessibilityValue(Text("\(tabModel.manager.normalTabs.count) tabs"))
+                .accessibilityHidden(gridModel.switcherState != .tabs || incognitoModel.isIncognito)
 
                 // Incognito Tabs
                 ZStack {
@@ -212,16 +209,18 @@ struct CardsContainer: View {
                 }
                 .offset(
                     x: (gridModel.switcherState == .tabs
-                        ? (gridModel.isIncognito ? 0 : -geom.size.width) : -geom.size.width)
+                        ? (incognitoModel.isIncognito ? 0 : -geom.size.width) : -geom.size.width)
                 )
                 .accessibilityElement(children: .contain)
                 .accessibilityLabel("Incognito Tabs")
-                .accessibilityHidden(gridModel.switcherState != .tabs || !gridModel.isIncognito)
+                .accessibilityValue(Text("\(tabModel.manager.incognitoTabs.count) tabs"))
+                .accessibilityHidden(
+                    gridModel.switcherState != .tabs || !incognitoModel.isIncognito)
             }
         }
         .id(generationId)
         .animation(
-            .interactiveSpring(), value: "\(gridModel.switcherState) \(gridModel.isIncognito)"
+            .interactiveSpring(), value: "\(gridModel.switcherState) \(incognitoModel.isIncognito)"
         )
         .onChange(of: gridModel.switcherState) { value in
             guard case .spaces = value, !seenSpacesIntro, !gridModel.isLoading else {

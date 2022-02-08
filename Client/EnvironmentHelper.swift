@@ -58,7 +58,7 @@ public class EnvironmentHelper {
         var numOfPrivateTabs = 0
         TabManager.all.forEach { tabManager in
             numOfNormalTabs += tabManager.normalTabs.count
-            numOfPrivateTabs += tabManager.privateTabs.count
+            numOfPrivateTabs += tabManager.incognitoTabs.count
         }
 
         // number of normal tabs opened

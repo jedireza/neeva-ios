@@ -31,10 +31,6 @@ class GridModel: ObservableObject {
 
     private let tabMenu: TabMenu
 
-    var isIncognito: Bool {
-        tabCardModel.manager.isIncognito
-    }
-
     var animateDetailTransitions = true
 
     @Published var needsScrollToSelectedTab: Int = 0
@@ -46,10 +42,14 @@ class GridModel: ObservableObject {
         self.spaceCardModel = SpaceCardModel()
 
         self.tabMenu = TabMenu(tabManager: tabManager)
+    }
 
-        tabManager.$isIncognito.sink { [unowned self] _ in
-            objectWillChange.send()
-        }.store(in: &subscriptions)
+    var isShowingEmpty: Bool {
+        let tabManager = tabCardModel.manager
+        if tabManager.incognitoModel.isIncognito {
+            return tabManager.incognitoTabs.isEmpty
+        }
+        return tabManager.normalTabs.isEmpty
     }
 
     func scrollToSelectedTab() {
@@ -81,9 +81,8 @@ class GridModel: ObservableObject {
     func switchToTabs(incognito: Bool) {
         switcherState = .tabs
 
-        if isIncognito != incognito {
-            tabCardModel.manager.toggleIncognitoMode(fromTabTray: true, openLazyTab: false)
-        }
+        tabCardModel.manager.switchIncognitoMode(
+            incognito: incognito, fromTabTray: true, openLazyTab: false)
     }
 
     func switchToSpaces() {

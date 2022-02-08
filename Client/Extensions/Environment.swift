@@ -42,14 +42,6 @@ extension EnvironmentValues {
         set { self[SetSearchInputKey.self] = newValue }
     }
 
-    private struct IsIncognitoKey: EnvironmentKey {
-        static var defaultValue = false
-    }
-    public var isIncognito: Bool {
-        get { self[IsIncognitoKey.self] }
-        set { self[IsIncognitoKey.self] = newValue }
-    }
-
     private struct SuggestionConfigKey: EnvironmentKey {
         static var defaultValue = SuggestionConfig.row
     }

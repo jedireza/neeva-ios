@@ -21,14 +21,14 @@ struct TabLocationBarButton<Label: View>: View {
 
 struct LocationViewTrackingButton: View {
     @State private var showingPopover = false
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject private var incognitoModel: IncognitoModel
     @EnvironmentObject private var trackingStatsModel: TrackingStatsViewModel
 
     let currentDomain: String
 
     var body: some View {
         let label =
-            isIncognito
+            incognitoModel.isIncognito
             ? Image("incognito", label: Text("Tracking Protection, Incognito"))
             : Image("tracking-protection", label: Text("Tracking Protection"))
         TabLocationBarButton(label: label.renderingMode(.template)) {
@@ -90,7 +90,7 @@ struct TabLocationBarButton_Previews: PreviewProvider {
         HStack {
             LocationViewTrackingButton(currentDomain: "neeva.com")
             LocationViewTrackingButton(currentDomain: "neeva.com")
-                .environment(\.isIncognito, true)
+                .environmentObject(IncognitoModel(isIncognito: true))
         }.previewLayout(.sizeThatFits)
         HStack {
             LocationViewReloadButton(

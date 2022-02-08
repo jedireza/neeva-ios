@@ -55,6 +55,7 @@ class TabManager: NSObject, ObservableObject {
     public let store: TabManagerStore
     public var scene: UIScene
     let profile: Profile
+    let incognitoModel: IncognitoModel
 
     let delaySelectingNewPopupTab: TimeInterval = 0.1
 
@@ -79,6 +80,8 @@ class TabManager: NSObject, ObservableObject {
     @Published fileprivate(set) var tabs = [Tab]()
     var didRestoreAllTabs: Bool = false
 
+    // Use `selectedTabPublisher` to observe changes to `selectedTab`.
+    var selectedTab: Tab?
     var selectedTabPublisher = PassthroughSubject<Tab?, Never>()
 
     fileprivate let navDelegate: TabManagerNavDelegate
@@ -123,12 +126,12 @@ class TabManager: NSObject, ObservableObject {
         return tabs.filter { !$0.isIncognito }
     }
 
-    var privateTabs: [Tab] {
+    var incognitoTabs: [Tab] {
         assert(Thread.isMainThread)
         return tabs.filter { $0.isIncognito }
     }
 
-    init(profile: Profile, scene: UIScene) {
+    init(profile: Profile, scene: UIScene, incognitoModel: IncognitoModel) {
         assert(Thread.isMainThread)
 
         self.profile = profile
@@ -136,6 +139,7 @@ class TabManager: NSObject, ObservableObject {
         self.tabEventHandlers = TabEventHandlers.create()
         self.store = TabManagerStore.shared
         self.scene = scene
+        self.incognitoModel = incognitoModel
         super.init()
 
         Self.all.insert(self)
@@ -161,8 +165,9 @@ class TabManager: NSObject, ObservableObject {
         return tabs.count
     }
 
-    var selectedTab: Tab?
-    @Published private(set) var isIncognito: Bool = false
+    private var isIncognito: Bool {
+        incognitoModel.isIncognito
+    }
 
     subscript(index: Int) -> Tab? {
         assert(Thread.isMainThread)
@@ -214,7 +219,7 @@ class TabManager: NSObject, ObservableObject {
         let isPrivate = isIncognito
 
         if isPrivate {
-            return privateTabs.count
+            return incognitoTabs.count
         } else {
             return normalTabs.count
         }
@@ -227,13 +232,13 @@ class TabManager: NSObject, ObservableObject {
         let previous = previous ?? selectedTab
 
         // Make sure to wipe the private tabs if the user has the pref turned on
-        if Defaults[.closePrivateTabs], !(tab?.isIncognito ?? false), privateTabs.count > 0 {
-            removeAllPrivateTabs()
+        if Defaults[.closePrivateTabs], !(tab?.isIncognito ?? false), incognitoTabs.count > 0 {
+            removeAllIncognitoTabs()
         }
 
         selectedTab = tab
 
-        isIncognito = tab?.isIncognito ?? false
+        incognitoModel.update(isIncognito: tab?.isIncognito ?? false)
         store.preserveTabs(tabs, selectedTab: selectedTab, for: scene)
 
         assert(tab === selectedTab, "Expected tab is selected")
@@ -300,7 +305,7 @@ class TabManager: NSObject, ObservableObject {
         Tab.ChangeUserAgent.privateModeHostList = Set<String>()
 
         if Defaults[.closePrivateTabs] && leavingPBM {
-            removeAllPrivateTabs()
+            removeAllIncognitoTabs()
         }
     }
 
@@ -381,7 +386,7 @@ class TabManager: NSObject, ObservableObject {
     ) {
         assert(Thread.isMainThread)
 
-        let currentTabs = privateMode ? privateTabs : normalTabs
+        let currentTabs = privateMode ? incognitoTabs : normalTabs
 
         guard visibleFromIndex < currentTabs.count, visibleToIndex < currentTabs.count else {
             return
@@ -513,8 +518,11 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    func setIncognitoMode(to: Bool) {
-        self.isIncognito = to
+    // TODO(darin): Refactor these methods to set incognito mode. These should probably
+    // move to `BrowserModel` and `TabManager` should just observe `IncognitoModel`.
+
+    func setIncognitoMode(to isIncognito: Bool) {
+        self.incognitoModel.update(isIncognito: isIncognito)
     }
 
     func toggleIncognitoMode(
@@ -527,10 +535,9 @@ class TabManager: NSObject, ObservableObject {
             selectedTab = nil
         }
 
-        // prevents assert from failing here
-        isIncognito.toggle()
+        incognitoModel.toggle()
 
-        if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? privateTabs : normalTabs) {
+        if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? incognitoTabs : normalTabs) {
             selectTab(mostRecentTab)
         } else if isIncognito && openLazyTab {  // no empty tab tray in incognito
             bvc.openLazyTab(openedFrom: fromTabTray ? .tabTray : .openTab(selectedTab))
@@ -539,6 +546,17 @@ class TabManager: NSObject, ObservableObject {
 
             // Creates a placeholder Tab to make sure incognito is switched in the Top Bar
             select(placeholderTab)
+        }
+    }
+
+    func switchIncognitoMode(
+        incognito: Bool, fromTabTray: Bool = true, clearSelectedTab: Bool = true,
+        openLazyTab: Bool = true
+    ) {
+        if isIncognito != incognito {
+            toggleIncognitoMode(
+                fromTabTray: fromTabTray, clearSelectedTab: clearSelectedTab,
+                openLazyTab: openLazyTab)
         }
     }
 
@@ -552,8 +570,8 @@ class TabManager: NSObject, ObservableObject {
 
     private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
         let closedLastNormalTab = !tab.isIncognito && normalTabs.isEmpty
-        let closedLastPrivateTab = tab.isIncognito && privateTabs.isEmpty
-        let viableTabs: [Tab] = tab.isIncognito ? privateTabs : normalTabs
+        let closedLastPrivateTab = tab.isIncognito && incognitoTabs.isEmpty
+        let viableTabs: [Tab] = tab.isIncognito ? incognitoTabs : normalTabs
         let bvc = SceneDelegate.getBVC(with: scene)
 
         if closedLastNormalTab || closedLastPrivateTab {
@@ -589,7 +607,7 @@ class TabManager: NSObject, ObservableObject {
         tabs.remove(at: removalIndex)
         assert(count == prevCount - 1, "Make sure the tab count was actually removed")
 
-        if tab.isIncognito && privateTabs.count < 1 {
+        if tab.isIncognito && incognitoTabs.count < 1 {
             privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
         }
 
@@ -609,7 +627,7 @@ class TabManager: NSObject, ObservableObject {
 
     // Select the most recently visited tab, IFF it is also the parent tab of the closed tab.
     func selectParentTab(afterRemoving tab: Tab) -> Bool {
-        let viableTabs = (tab.isIncognito ? privateTabs : normalTabs).filter { $0 != tab }
+        let viableTabs = (tab.isIncognito ? incognitoTabs : normalTabs).filter { $0 != tab }
         guard let parentTab = tab.parent, parentTab != tab, !viableTabs.isEmpty,
             viableTabs.contains(parentTab)
         else { return false }
@@ -627,8 +645,8 @@ class TabManager: NSObject, ObservableObject {
         removeTabs(tabs, showToast: false)
     }
 
-    private func removeAllPrivateTabs() {
-        removeTabs(privateTabs, updatingSelectedTab: true)
+    private func removeAllIncognitoTabs() {
+        removeTabs(incognitoTabs, updatingSelectedTab: true)
         privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
     }
 
@@ -1058,7 +1076,8 @@ extension TabManager {
         assert(Thread.isMainThread)
 
         let scene = SceneDelegate.getCurrentScene(for: nil)
-        self.init(profile: profile, scene: scene)
+        let incognitoModel = IncognitoModel(isIncognito: false)
+        self.init(profile: profile, scene: scene, incognitoModel: incognitoModel)
     }
 
     func testTabCountOnDisk() -> Int {

@@ -115,8 +115,6 @@ enum TabToolbarButtons {
         let action: () -> Void
         let identifier: String
 
-        @Environment(\.isIncognito) private var isIncognito
-
         init(weight: Font.Weight, action: @escaping () -> Void, identifier: String = "") {
             self.weight = weight
             self.action = action
@@ -139,12 +137,12 @@ enum TabToolbarButtons {
         let iconWidth: CGFloat
         let action: () -> Void
 
-        @Environment(\.isIncognito) private var isIncognito
+        @EnvironmentObject private var incognitoModel: IncognitoModel
 
         var body: some View {
             TabToolbarButton(
                 label: Image("neevaMenuIcon")
-                    .renderingMode(isIncognito ? .template : .original)
+                    .renderingMode(incognitoModel.isIncognito ? .template : .original)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: iconWidth)
@@ -158,7 +156,7 @@ enum TabToolbarButtons {
         let weight: NiconFont
         let action: () -> Void
 
-        @Environment(\.isIncognito) private var isIncognito
+        @EnvironmentObject private var incognitoModel: IncognitoModel
         @EnvironmentObject private var model: TabChromeModel
 
         var body: some View {
@@ -169,7 +167,7 @@ enum TabToolbarButtons {
                 action: action
             )
             .accessibilityValue(model.urlInSpace ? "Page is in a Space" : "")
-            .disabled(isIncognito || !model.isPage)
+            .disabled(incognitoModel.isIncognito || !model.isPage)
         }
     }
 

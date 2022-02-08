@@ -470,7 +470,8 @@ class Tab: NSObject, ObservableObject {
                     bvc.searchQueryModel.value = query
                     bvc.tabContainerModel.updateContent(
                         .showZeroQuery(
-                            isIncognito: bvc.tabManager.isIncognito, isLazyTab: false,
+                            isIncognito: bvc.browserModel.incognitoModel.isIncognito,
+                            isLazyTab: false,
                             .backButton))
                     bvc.tabContainerModel.updateContent(.showSuggestions)
                     bvc.zeroQueryModel.targetTab = .currentTab

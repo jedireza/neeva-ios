@@ -946,7 +946,7 @@ extension BrowserViewController: WKNavigationDelegate {
             // increment page load count
             PerformanceLogger.shared.incrementPageLoad(url: url)
 
-            if NeevaFeatureFlags[.recipeCheatsheet] && !self.tabManager.isIncognito {
+            if NeevaFeatureFlags[.recipeCheatsheet] && !self.incognitoModel.isIncognito {
                 self.tabContainerModel.recipeModel.updateContentWithURL(url: url)
                 self.chromeModel.currentCheatsheetFaviconURL = tabManager.selectedTab?.favicon?.url
                 self.chromeModel.currentCheatsheetURL = tabManager.selectedTab?.url

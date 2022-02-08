@@ -10,7 +10,6 @@ class SwitcherToolbarModel: ObservableObject {
     let openLazyTab: () -> Void
     let createNewSpace: () -> Void
     private let onNeevaMenuAction: (NeevaMenuAction) -> Void
-    @Published private(set) var isIncognito: Bool
     @Published var dragOffset: CGFloat? = nil
 
     init(
@@ -23,11 +22,6 @@ class SwitcherToolbarModel: ObservableObject {
         self.openLazyTab = openLazyTab
         self.createNewSpace = createNewSpace
         self.onNeevaMenuAction = onNeevaMenuAction
-
-        isIncognito = tabManager.isIncognito
-        tabManager.$isIncognito
-            .map { $0 }
-            .assign(to: &$isIncognito)
     }
 
     func onToggleIncognito() {
@@ -159,17 +153,17 @@ struct SwitcherToolbarView: View {
                         attributes: [NSAttributedString.Key.font: font])
                     button.setAttributedTitle(title, for: .normal)
                     button.setTitleColor(
-                        tabModel.isCardGridEmpty ? .secondaryLabel : .label, for: .normal)
+                        gridModel.isShowingEmpty ? .secondaryLabel : .label, for: .normal)
                     button.setDynamicMenu {
                         gridModel.buildCloseAllTabsMenu(sourceView: button)
                     }
-                    button.isEnabled = !tabModel.isCardGridEmpty
+                    button.isEnabled = !gridModel.isShowingEmpty
                     button.accessibilityLabel = "Done"
                 }
                 .tapTargetFrame()
                 .accessibilityLabel(String.TabTrayDoneAccessibilityLabel)
                 .accessibilityIdentifier("TabTrayController.doneButton")
-                .accessibilityValue(Text(tabModel.isCardGridEmpty ? "Disabled" : "Enabled"))
+                .accessibilityValue(Text(gridModel.isShowingEmpty ? "Disabled" : "Enabled"))
             }
             .padding(.horizontal, 16)
             .frame(

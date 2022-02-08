@@ -65,7 +65,7 @@ struct NeevaMenuView: View {
     @State private var openSpacesPrompt = false
     @State private var openFeedbackPrompt = false
     @State private var openSettingsPrompt = false
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject private var incognitoModel: IncognitoModel
 
     init(menuAction: @escaping (NeevaMenuAction) -> Void) {
         self.menuAction = menuAction
@@ -78,7 +78,7 @@ struct NeevaMenuView: View {
                     self.menuAction(.home)
                 }
                 .accessibilityIdentifier("NeevaMenu.Home")
-                .disabled(isIncognito)
+                .disabled(incognitoModel.isIncognito)
 
                 WithPopover(
                     showPopover: $openSpacesPrompt,
@@ -88,7 +88,7 @@ struct NeevaMenuView: View {
                             self.menuAction(.spaces)
                         }
                         .accessibilityIdentifier("NeevaMenu.Spaces")
-                        .disabled(isIncognito)
+                        .disabled(incognitoModel.isIncognito)
                     },
                     popoverContent: {
                         TourPromptView(
@@ -216,6 +216,6 @@ struct NeevaMenuView_Previews: PreviewProvider {
         NeevaMenuView(menuAction: { _ in }).previewDevice("iPod touch (7th generation)")
             .environment(
                 \.sizeCategory, .extraExtraExtraLarge)
-        NeevaMenuView(menuAction: { _ in }).environment(\.isIncognito, true)
+        NeevaMenuView(menuAction: { _ in }).environmentObject(IncognitoModel(isIncognito: true))
     }
 }

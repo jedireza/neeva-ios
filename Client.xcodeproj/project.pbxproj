@@ -476,6 +476,7 @@
 		C832BF8526E2DA2B00B9A1F8 /* ImageThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF8426E2DA2B00B9A1F8 /* ImageThumbnailView.swift */; };
 		C832BF8726E3CA0900B9A1F8 /* SendFeedbackPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF8626E3CA0900B9A1F8 /* SendFeedbackPanel.swift */; };
 		C8611C8E1F71904C00C3DE7D /* DiskImageStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BF8CBC1B7472FA0007AFE6 /* DiskImageStoreTests.swift */; };
+		C868193B27AF9C1A002ECEEF /* IncognitoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C868193A27AF9C1A002ECEEF /* IncognitoModel.swift */; };
 		C877037A25222F30006E38EB /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288A2D861AB8B3260023ABC3 /* Shared.framework */; };
 		C877039625222FDC006E38EB /* Shared.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288A2D861AB8B3260023ABC3 /* Shared.framework */; };
 		C87703D225223EA5006E38EB /* Shared.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 288A2D861AB8B3260023ABC3 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
@@ -554,7 +555,6 @@
 		C9A241CE269CAA05007156B3 /* SDWebImageSwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */; };
 		C9ACC464267A45AC009AE182 /* SuggestionsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC463267A45AC009AE182 /* SuggestionsList.swift */; };
 		C9ACC46A267A8A1E009AE182 /* TrackingMenuSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */; };
-		C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */; };
 		C9ADD2A626727195005F9C4B /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */; };
 		C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */; };
 		C9AFE6E126582ACE000C5A03 /* Error.css in Resources */ = {isa = PBXBuildFile; fileRef = C9AFE6E026582ACE000C5A03 /* Error.css */; };
@@ -1621,6 +1621,7 @@
 		C832BF8426E2DA2B00B9A1F8 /* ImageThumbnailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageThumbnailView.swift; sourceTree = "<group>"; };
 		C832BF8626E3CA0900B9A1F8 /* SendFeedbackPanel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SendFeedbackPanel.swift; sourceTree = "<group>"; };
 		C850CD57269A00C40096F122 /* TabMenuTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabMenuTests.swift; sourceTree = "<group>"; };
+		C868193A27AF9C1A002ECEEF /* IncognitoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoModel.swift; sourceTree = "<group>"; };
 		C87AA4A12614C1FC00F1318F /* IncognitoDescriptionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IncognitoDescriptionView.swift; sourceTree = "<group>"; };
 		C8800EA52635EF06005B7503 /* DeferredTestUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeferredTestUtils.swift; sourceTree = "<group>"; };
 		C885659D2620366400B2C228 /* SwiftUIHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftUIHelpers.swift; path = Helpers/SwiftUIHelpers.swift; sourceTree = "<group>"; };
@@ -1709,7 +1710,6 @@
 		C9A241CC269CAA05007156B3 /* SDWebImageSwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDWebImageSwiftUI.framework; path = Carthage/Build/iOS/SDWebImageSwiftUI.framework; sourceTree = "<group>"; };
 		C9ACC463267A45AC009AE182 /* SuggestionsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionsList.swift; sourceTree = "<group>"; };
 		C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuSettingsView.swift; sourceTree = "<group>"; };
-		C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncognitoAwareHostingController.swift; sourceTree = "<group>"; };
 		C9ADD2A426726F8C005F9C4B /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		C9AFE6DE2657F8DA000C5A03 /* QuickLookView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLookView.swift; sourceTree = "<group>"; };
 		C9AFE6E026582ACE000C5A03 /* Error.css */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.css; path = Error.css; sourceTree = "<group>"; };
@@ -3550,7 +3550,6 @@
 				C9299E35268F9CF300758795 /* CloseButton.swift */,
 				C9BED4C8266824D7001D9C77 /* FadingHorizontalScrollView.swift */,
 				C832BF8426E2DA2B00B9A1F8 /* ImageThumbnailView.swift */,
-				C9ACC470267BB06C009AE182 /* IncognitoAwareHostingController.swift */,
 				E663D5771BB341C4001EF30E /* IncognitoButton.swift */,
 				C9E5F2CA2678F05E00025A7F /* Popover.swift */,
 				C9655DE826A08FA600925912 /* PressReportingButtonStyle.swift */,
@@ -4118,6 +4117,7 @@
 				D38A1BEB1A9FA2CA00F6A386 /* Widgets */,
 				665879CD26C3408700B53EB7 /* WindowManager.swift */,
 				F84B22211A09122500AAB793 /* ZeroQuery */,
+				C868193A27AF9C1A002ECEEF /* IncognitoModel.swift */,
 			);
 			path = Frontend;
 			sourceTree = "<group>";
@@ -5579,6 +5579,7 @@
 				EB9A179D20E69A7F00B12184 /* Theme.swift in Sources */,
 				66EE7D9526CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift in Sources */,
 				C9C18E6626559B9C004710CD /* ClientLogger.swift in Sources */,
+				C868193B27AF9C1A002ECEEF /* IncognitoModel.swift in Sources */,
 				C9E5F2CB2678F05E00025A7F /* Popover.swift in Sources */,
 				C80E03E626B8459600A7800A /* LoggingSettingsView.swift in Sources */,
 				6614ACB026F16F30003E244C /* NotificationList.swift in Sources */,
@@ -5860,7 +5861,6 @@
 				66AC64B326E8324500D7BA83 /* SystemsHelper.swift in Sources */,
 				28EADE5D1AFC3A78007FB2FB /* UIImageViewExtensions.swift in Sources */,
 				D3968F251A38FE8500CEFD3B /* TabManager.swift in Sources */,
-				C9ACC471267BB06C009AE182 /* IncognitoAwareHostingController.swift in Sources */,
 				666CDFA8278D35DB004A9B1E /* DismissBackgroundView.swift in Sources */,
 				C9655DE926A08FA600925912 /* PressReportingButtonStyle.swift in Sources */,
 				6626BC9526B9B1A400EE0760 /* FindInPageOverlayView.swift in Sources */,

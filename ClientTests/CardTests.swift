@@ -34,6 +34,7 @@ private func assertCast<T>(_ value: Any, to _: T.Type) -> T {
 class CardTests: XCTestCase {
     var profile: TabManagerMockProfile!
     var manager: TabManager!
+    var incognitoModel: IncognitoModel!
     var browserModel: BrowserModel!
     var gridModel: GridModel!
     var delegate: MockTabManagerDelegate!
@@ -66,8 +67,10 @@ class CardTests: XCTestCase {
         profile = TabManagerMockProfile()
         manager = TabManager(profile: profile, imageStore: nil)
         gridModel = GridModel(tabManager: manager)
+        incognitoModel = IncognitoModel(isIncognito: false)
         browserModel = BrowserModel(
-            gridModel: gridModel, tabManager: manager, chromeModel: TabChromeModel())
+            gridModel: gridModel, tabManager: manager, chromeModel: .init(),
+            incognitoModel: incognitoModel)
         manager.didRestoreAllTabs = true
         delegate = MockTabManagerDelegate()
         groupManager = TabGroupManager(tabManager: manager)
@@ -204,7 +207,9 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
-        let cardGrid = CardGrid().environmentObject(browserModel)
+        let cardGrid = CardGrid()
+            .environmentObject(browserModel)
+            .environmentObject(incognitoModel)
             .environmentObject(tabCardModel).environmentObject(spaceCardModel)
             .environmentObject(tabGroupCardModel).environmentObject(gridModel)
             .environmentObject(
@@ -235,9 +240,14 @@ class CardTests: XCTestCase {
 
         let cardContainer = CardsContainer(
             columns: Array(repeating: GridItem(.fixed(100), spacing: 20), count: 2)
-        ).environmentObject(tabCardModel).environmentObject(spaceCardModel)
-            .environmentObject(tabGroupCardModel).environmentObject(gridModel)
-            .environmentObject(tabGroupCardModel).environmentObject(browserModel)
+        )
+        .environmentObject(browserModel)
+        .environmentObject(incognitoModel)
+        .environmentObject(tabCardModel)
+        .environmentObject(spaceCardModel)
+        .environmentObject(tabGroupCardModel)
+        .environmentObject(gridModel)
+        .environmentObject(tabGroupCardModel)
 
         let spaceCardsView = try cardContainer.inspect().find(SpaceCardsView.self)
         XCTAssertNotNil(spaceCardsView)

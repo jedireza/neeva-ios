@@ -197,7 +197,7 @@ struct Card<Details>: View where Details: CardDetails {
     }
 
     @Environment(\.selectionCompletion) private var selectionCompletion
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject private var incognitoModel: IncognitoModel
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @State private var isPressed = false
@@ -230,7 +230,7 @@ struct Card<Details>: View where Details: CardDetails {
                     BorderTreatment(
                         isSelected: showsSelection && details.isSelected,
                         thumbnailDrawsHeader: details.thumbnailDrawsHeader,
-                        isIncognito: isIncognito)
+                        isIncognito: incognitoModel.isIncognito)
                 )
 
                 if let tabDetails = details as? TabCardDetails {

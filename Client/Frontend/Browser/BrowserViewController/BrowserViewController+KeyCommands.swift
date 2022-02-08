@@ -41,7 +41,7 @@ extension BrowserViewController {
     }
 
     @objc func newPrivateTabKeyCommand() {
-        if !(tabManager.isIncognito) {
+        if !(incognitoModel.isIncognito) {
             tabManager.toggleIncognitoMode(openLazyTab: false)
         }
 
@@ -63,7 +63,7 @@ extension BrowserViewController {
             return
         }
 
-        let tabs = tabManager.isIncognito ? tabManager.privateTabs : tabManager.normalTabs
+        let tabs = incognitoModel.isIncognito ? tabManager.incognitoTabs : tabManager.normalTabs
         if let index = tabs.firstIndex(of: currentTab), index + 1 < tabs.count {
             tabManager.selectTab(tabs[index + 1])
         } else if let firstTab = tabs.first {
@@ -76,7 +76,7 @@ extension BrowserViewController {
             return
         }
 
-        let tabs = tabManager.isIncognito ? tabManager.privateTabs : tabManager.normalTabs
+        let tabs = incognitoModel.isIncognito ? tabManager.incognitoTabs : tabManager.normalTabs
         if let index = tabs.firstIndex(of: currentTab), index - 1 < tabs.count && index != 0 {
             tabManager.selectTab(tabs[index - 1])
         } else if let lastTab = tabs.last {
@@ -89,13 +89,13 @@ extension BrowserViewController {
     }
 
     @objc func closeAllTabsCommand() {
-        if tabManager.isIncognito {
+        if incognitoModel.isIncognito {
             tabManager.toggleIncognitoMode()
 
             // wait for tabManager to switch to normal mode before closing private tabs
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [self] in
                 tabManager.removeTabs(
-                    tabManager.privateTabs, showToast: false)
+                    tabManager.incognitoTabs, showToast: false)
             }
         } else {
             tabManager.removeTabs(tabManager.normalTabs)

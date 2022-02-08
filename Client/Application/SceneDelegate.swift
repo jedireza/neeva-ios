@@ -16,7 +16,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     public var toastViewManager: ToastViewManager!
     public var notificationViewManager: NotificationViewManager!
-    private var tabManager: TabManager!
 
     private var bvc: BrowserViewController!
     private var geigerCounter: KMCGeigerCounter?
@@ -58,8 +57,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func setupRootViewController(_ scene: UIScene) {
         let profile = getAppDelegate().profile
 
-        self.tabManager = TabManager(profile: profile, scene: scene)
-        self.bvc = BrowserViewController(profile: profile, tabManager: tabManager)
+        self.bvc = BrowserViewController(profile: profile, scene: scene)
 
         bvc.edgesForExtendedLayout = []
         bvc.restorationIdentifier = NSStringFromClass(BrowserViewController.self)
@@ -109,7 +107,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
-        tabManager.preserveTabs()
+        bvc.tabManager.preserveTabs()
 
         Self.activeSceneCount -= 1
         if Self.activeSceneCount == 0 {
@@ -323,12 +321,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     static func getTabManager(for view: UIView) -> TabManager {
-        return getCurrentSceneDelegate(for: view).tabManager
+        return getCurrentSceneDelegate(for: view).bvc.tabManager
     }
 
     @available(*, deprecated, message: "should use getTabManager with a non-nil view")
     static func getTabManagerOrNil() -> TabManager? {
-        return getCurrentSceneDelegateOrNil()?.tabManager
+        return getCurrentSceneDelegateOrNil()?.bvc.tabManager
     }
 
     // MARK: - Geiger

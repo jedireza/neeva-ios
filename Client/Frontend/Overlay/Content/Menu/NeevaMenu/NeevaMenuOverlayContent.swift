@@ -15,7 +15,7 @@ struct NeevaMenuOverlayContent: View {
             menuAction(action)
             hideOverlay()
         }
-        .environment(\.isIncognito, isIncognito)
+        .environmentObject(IncognitoModel(isIncognito: isIncognito))
         .overlayIsFixedHeight(isFixedHeight: true)
     }
 }

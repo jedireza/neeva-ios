@@ -159,6 +159,7 @@ struct BrowserView: View {
             OverlayView(overlayManager: overlayManager)
         }
         .environmentObject(browserModel)
+        .environmentObject(browserModel.incognitoModel)
         .environmentObject(browserModel.scrollingControlModel)
         .environmentObject(bvc.simulateBackModel)
         .environmentObject(chromeModel)
@@ -168,7 +169,6 @@ struct BrowserView: View {
         .environmentObject(gridModel.spaceCardModel)
         .environmentObject(gridModel.tabGroupCardModel)
         .environmentObject(bvc.web3Model)
-        .environment(\.isIncognito, tabManager.isIncognito)
     }
 
     // MARK: - Init

@@ -57,7 +57,7 @@ class SuggestionModel: ObservableObject {
     private var keyboardFocusedSuggestionIndex = -1
 
     private var isIncognito: Bool {
-        bvc.tabManager.isIncognito
+        bvc.browserModel.incognitoModel.isIncognito
     }
 
     var shouldShowSearchSuggestions: Bool {

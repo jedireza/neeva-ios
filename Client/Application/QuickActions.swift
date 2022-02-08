@@ -113,7 +113,7 @@ class QuickActions: NSObject {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             let isEmpty =
                 isPrivate
-                ? bvc.tabManager.privateTabs.count == 0 : bvc.tabManager.normalTabs.count == 0
+                ? bvc.tabManager.incognitoTabs.count == 0 : bvc.tabManager.normalTabs.count == 0
             bvc.openLazyTab(
                 openedFrom: isEmpty ? .tabTray : .openTab(nil), switchToIncognitoMode: isPrivate)
         }

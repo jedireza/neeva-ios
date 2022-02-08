@@ -80,11 +80,15 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }()
 
     let chromeModel = TabChromeModel()
+    let incognitoModel = IncognitoModel(isIncognito: false)
+
     lazy var gridModel: GridModel = {
         GridModel(tabManager: tabManager)
     }()
     lazy var browserModel: BrowserModel = {
-        BrowserModel(gridModel: gridModel, tabManager: tabManager, chromeModel: chromeModel)
+        BrowserModel(
+            gridModel: gridModel, tabManager: tabManager, chromeModel: chromeModel,
+            incognitoModel: incognitoModel)
     }()
 
     lazy var toolbarModel: SwitcherToolbarModel = {
@@ -181,9 +185,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(profile: Profile, tabManager: TabManager) {
+    init(profile: Profile, scene: UIScene) {
         self.profile = profile
-        self.tabManager = tabManager
+        self.tabManager = TabManager(profile: profile, scene: scene, incognitoModel: incognitoModel)
         self.readerModeCache = DiskReaderModeCache.sharedInstance
         super.init(nibName: nil, bundle: nil)
 
@@ -327,7 +331,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         // If we are displying a private tab, hide any elements in the tab that we wouldn't want shown
         // when the app is in the app switcher
-        guard tabManager.isIncognito else {
+        guard incognitoModel.isIncognito else {
             return
         }
 
@@ -600,7 +604,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         self.tabContainerModel.updateContent(
             .showZeroQuery(
-                isIncognito: tabManager.isIncognito,
+                isIncognito: incognitoModel.isIncognito,
                 isLazyTab: isLazyTab,
                 openedFrom))
     }
@@ -789,7 +793,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             hideZeroQuery()
             openURLInNewTab(
                 url,
-                isPrivate: zeroQueryModel.isPrivate,
+                isPrivate: zeroQueryModel.isIncognito,
                 query: searchQueryModel.value,
                 visitType: visitType
             )
@@ -906,12 +910,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     func openURLInNewTabPreservingIncognitoState(_ url: URL) {
-        let isPrivate = tabManager.isIncognito
-        self.openURLInNewTab(url, isPrivate: isPrivate)
+        self.openURLInNewTab(url, isPrivate: incognitoModel.isIncognito)
     }
 
     func openURLInBackground(_ url: URL, isPrivate: Bool? = nil) {
-        let isIncognito = isPrivate == nil ? tabManager.isIncognito : isPrivate!
+        let isIncognito = isPrivate == nil ? incognitoModel.isIncognito : isPrivate!
 
         let tab = self.tabManager.addTab(
             URLRequest(url: url), afterTab: tabManager.selectedTab, isPrivate: isIncognito
@@ -1084,7 +1087,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         {
             info["visitType"] = visitType
         }
-        info["isPrivate"] = tabManager.isIncognito
+        info["isPrivate"] = incognitoModel.isIncognito
         notificationCenter.post(name: .OnLocationChange, object: self, userInfo: info)
     }
 
@@ -1154,7 +1157,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     func showTabTray() {
         guard !browserModel.showGrid else { return }
-        
+
         // log show tap tray
         var attributes = EnvironmentHelper.shared.getAttributes()
 
@@ -1357,7 +1360,7 @@ extension BrowserViewController: TabDelegate {
         tab.addContentScript(readerMode, name: ReaderMode.name())
 
         // only add the logins helper if the tab is not a private browsing tab
-        if !tabManager.isIncognito {
+        if !incognitoModel.isIncognito {
             let logins = LoginsHelper(tab: tab, profile: profile)
             tab.addContentScript(logins, name: LoginsHelper.name())
         }
@@ -1409,7 +1412,7 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String) {
-        openSearchNewTab(isPrivate: tabManager.isIncognito, selection)
+        openSearchNewTab(isPrivate: incognitoModel.isIncognito, selection)
     }
 }
 
@@ -1613,10 +1616,11 @@ extension BrowserViewController {
         modalTransitionStyle: UIModalTransitionStyle? = nil,
         triggerFrom: OpenSysSettingTrigger
     ) {
-        let onboardingVC = DefaultBrowserOnboardingViewController(didOpenSettings: { [weak self] in
-            guard let self = self else { return }
-            self.zeroQueryModel.updateState()
-        }, triggerFrom: triggerFrom)
+        let onboardingVC = DefaultBrowserOnboardingViewController(
+            didOpenSettings: { [weak self] in
+                guard let self = self else { return }
+                self.zeroQueryModel.updateState()
+            }, triggerFrom: triggerFrom)
 
         onboardingVC.modalPresentationStyle = .formSheet
         if let modalTransitionStyle = modalTransitionStyle {
@@ -1721,7 +1725,8 @@ extension BrowserViewController {
                 if !Defaults[.didSetDefaultBrowser]
                     && !Defaults[.didShowDefaultBrowserInterstitial]
                 {
-                    if NeevaExperiment.startExperiment(for: .defaultBrowserPromptV2) == .showDBPrompt
+                    if NeevaExperiment.startExperiment(for: .defaultBrowserPromptV2)
+                        == .showDBPrompt
                     {
                         self.shouldPresentDBPrompt = true
                     }
@@ -1790,7 +1795,7 @@ extension BrowserViewController: ContextMenuHelperDelegate {
 
         if let url = elements.link, let currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString
-            let isPrivate = tabManager.isIncognito
+            let isPrivate = incognitoModel.isIncognito
             screenshotHelper.takeDelayedScreenshot(currentTab)
 
             let addTab = { (rURL: URL, isPrivate: Bool) in
@@ -2182,7 +2187,7 @@ extension BrowserViewController {
             ) { [self] in
                 NeevaMenuOverlayContent(
                     menuAction: perform(neevaMenuAction:),
-                    isIncognito: tabManager.isIncognito)
+                    isIncognito: incognitoModel.isIncognito)
             }
         }
         self.dismissVC()

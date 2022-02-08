@@ -33,14 +33,6 @@ class TabCardModel: CardModel, TabEventHandler {
     @Published private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
     @Published private(set) var selectedTabID: String? = nil
 
-    var isCardGridEmpty: Bool {
-        return allDetailsMatchingIncognitoState.isEmpty
-    }
-
-    var allDetailsMatchingIncognitoState: [TabCardDetails] {
-        manager.isIncognito ? incognitoDetails : normalDetails
-    }
-
     var normalDetails: [TabCardDetails] {
         allDetails.filter {
             manager.get(for: $0.id)?.isIncognito == false

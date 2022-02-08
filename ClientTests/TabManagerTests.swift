@@ -131,7 +131,7 @@ class TabManagerTests: XCTestCase {
         delegate.expect([didAdd])
         manager.addTab(isPrivate: true)
         delegate.verify("Not all delegate methods were called")
-        XCTAssertEqual(manager.privateTabs.count, 1, "There should be one private tab")
+        XCTAssertEqual(manager.incognitoTabs.count, 1, "There should be one private tab")
     }
 
     func testAddTabAndSelect() {
@@ -151,29 +151,29 @@ class TabManagerTests: XCTestCase {
 
         XCTAssertEqual(
             manager.selectedTab?.isIncognito, true, "The selected tab should be the private tab")
-        XCTAssertEqual(manager.privateTabs.count, 1, "There should only be one private tab")
+        XCTAssertEqual(manager.incognitoTabs.count, 1, "There should only be one private tab")
 
         manager.selectTab(tab)
         XCTAssertEqual(
-            manager.privateTabs.count, 0,
+            manager.incognitoTabs.count, 0,
             "If the normal tab is selected the private tab should have been deleted")
         XCTAssertEqual(manager.normalTabs.count, 1, "The regular tab should stil be around")
 
         manager.selectTab(manager.addTab(isPrivate: true))
-        XCTAssertEqual(manager.privateTabs.count, 1, "There should be one new private tab")
+        XCTAssertEqual(manager.incognitoTabs.count, 1, "There should be one new private tab")
         manager.willSwitchTabMode(leavingPBM: true)
         XCTAssertEqual(
-            manager.privateTabs.count, 0,
+            manager.incognitoTabs.count, 0,
             "After willSwitchTabMode there should be no more private tabs")
 
         manager.selectTab(manager.addTab(isPrivate: true))
         manager.selectTab(manager.addTab(isPrivate: true))
         XCTAssertEqual(
-            manager.privateTabs.count, 2,
+            manager.incognitoTabs.count, 2,
             "Private tabs should not be deleted when another one is added")
         manager.selectTab(manager.addTab())
         XCTAssertEqual(
-            manager.privateTabs.count, 0,
+            manager.incognitoTabs.count, 0,
             "But once we add a normal tab we've switched out of private mode. Private tabs should be deleted"
         )
         XCTAssertEqual(
@@ -186,7 +186,7 @@ class TabManagerTests: XCTestCase {
         XCTAssertEqual(
             manager.selectedTab?.isIncognito, false, "The selected tab should not be private")
         XCTAssertEqual(
-            manager.privateTabs.count, 1,
+            manager.incognitoTabs.count, 1,
             "If the flag is false then private tabs should still exist")
     }
 
@@ -199,9 +199,9 @@ class TabManagerTests: XCTestCase {
         manager.selectTab(manager.addTab(isPrivate: true))
 
         manager.willSwitchTabMode(leavingPBM: false)
-        XCTAssertEqual(manager.privateTabs.count, 1, "There should be 1 private tab")
+        XCTAssertEqual(manager.incognitoTabs.count, 1, "There should be 1 private tab")
         manager.willSwitchTabMode(leavingPBM: true)
-        XCTAssertEqual(manager.privateTabs.count, 0, "There should be 0 private tab")
+        XCTAssertEqual(manager.incognitoTabs.count, 0, "There should be 0 private tab")
         manager.removeTabAndUpdateSelectedTab(tab)
         XCTAssertEqual(manager.normalTabs.count, 1, "There should be 1 normal tab")
     }
@@ -291,13 +291,13 @@ class TabManagerTests: XCTestCase {
         // Double check a few things
         XCTAssertEqual(
             manager.selectedTab?.isIncognito, true, "The selected tab should be the private tab")
-        XCTAssertEqual(manager.privateTabs.count, 1, "There should only be one private tab")
+        XCTAssertEqual(manager.incognitoTabs.count, 1, "There should only be one private tab")
 
         // switch to normal mode. Which should delete the private tabs
         manager.select(tab)
 
         //make sure tabs are cleared properly and indexes are reset
-        XCTAssertEqual(manager.privateTabs.count, 0, "Private tab should have been deleted")
+        XCTAssertEqual(manager.incognitoTabs.count, 0, "Private tab should have been deleted")
 
         // didSelect should still be called when switching between a nil tab
         let didSelect = MethodSpy(functionName: spyDidSelectedTabChange) { tabs in

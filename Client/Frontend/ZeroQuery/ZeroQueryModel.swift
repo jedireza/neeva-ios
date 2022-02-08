@@ -46,7 +46,7 @@ enum ZeroQueryTarget {
 }
 
 class ZeroQueryModel: ObservableObject {
-    @Published var isPrivate = false
+    @Published var isIncognito = false
     @Published private(set) var promoCard: PromoCardType?
     @Published var showRatingsCard: Bool = false
     @Published var openedFrom: ZeroQueryOpenedLocation?
@@ -109,7 +109,7 @@ class ZeroQueryModel: ObservableObject {
     }
 
     func updateState() {
-        isPrivate = bvc.tabManager.isIncognito
+        isIncognito = bvc.incognitoModel.isIncognito
 
         // TODO: remove once all users have upgraded
         if UserDefaults.standard.bool(forKey: "DidDismissDefaultBrowserCard") {
@@ -243,7 +243,7 @@ class ZeroQueryModel: ObservableObject {
     }
 
     public func reset(bvc: BrowserViewController?, createdLazyTab: Bool = false) {
-        if let bvc = bvc, bvc.tabManager.isIncognito, !(bvc.tabManager.privateTabs.count > 0),
+        if let bvc = bvc, bvc.incognitoModel.isIncognito, !(bvc.tabManager.incognitoTabs.count > 0),
             isLazyTab && !createdLazyTab
                 && (openedFrom != .tabTray)
         {

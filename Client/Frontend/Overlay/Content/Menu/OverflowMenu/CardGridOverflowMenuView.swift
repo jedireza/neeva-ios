@@ -51,7 +51,9 @@ public struct CardGridOverflowMenuView: View {
                     GroupedRowButtonView(label: "History", symbol: .clock) {
                         menuAction(.goToHistory)
                     }
-                    .disabled(chromeModel.topBarDelegate?.tabManager.isIncognito ?? false)
+                    .disabled(
+                        chromeModel.topBarDelegate?.tabManager.incognitoModel.isIncognito ?? false
+                    )
                     .accessibilityIdentifier("CardGridOverflowMenu.History")
 
                     Color.groupedBackground.frame(height: 1)

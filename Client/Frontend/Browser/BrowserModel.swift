@@ -29,11 +29,17 @@ class BrowserModel: ObservableObject {
 
     private let gridModel: GridModel
     private let tabManager: TabManager
-    @ObservedObject var scrollingControlModel: ScrollingControlModel
 
-    init(gridModel: GridModel, tabManager: TabManager, chromeModel: TabChromeModel) {
+    var incognitoModel: IncognitoModel
+    var scrollingControlModel: ScrollingControlModel
+
+    init(
+        gridModel: GridModel, tabManager: TabManager, chromeModel: TabChromeModel,
+        incognitoModel: IncognitoModel
+    ) {
         self.gridModel = gridModel
         self.tabManager = tabManager
+        self.incognitoModel = incognitoModel
         self.scrollingControlModel = ScrollingControlModel(
             tabManager: tabManager, chromeModel: chromeModel)
     }
@@ -113,7 +119,7 @@ class BrowserModel: ObservableObject {
 
         let existingSpace = gridModel.spaceCardModel.allDetails.first(where: { $0.id == spaceId })
         DispatchQueue.main.async { [self] in
-            if tabManager.isIncognito {
+            if incognitoModel.isIncognito {
                 tabManager.toggleIncognitoMode()
             }
 
@@ -173,7 +179,7 @@ class BrowserModel: ObservableObject {
         bvc.showTabTray()
         gridModel.switcherState = .spaces
 
-        openSpace(spaceId: SpaceStore.dailyDigestID, bvc: bvc) { }
+        openSpace(spaceId: SpaceStore.dailyDigestID, bvc: bvc) {}
     }
 
     func openTabGroup(detail: TabGroupCardDetails) {

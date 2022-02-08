@@ -220,7 +220,7 @@ struct ZeroQueryView: View {
                         SuggestionsDivider(height: 8)
                     }
 
-                    if viewModel.isPrivate {
+                    if viewModel.isIncognito {
                         IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0))
                             .padding(ZeroQueryUX.Padding)
                     } else {

@@ -117,12 +117,12 @@ struct TabToolbarView_Previews: PreviewProvider {
         VStack {
             Spacer()
             make(TabChromeModel(canGoBack: true, canGoForward: false))
-                .environment(\.isIncognito, true)
+                .environmentObject(IncognitoModel(isIncognito: true))
         }
         VStack {
             Spacer()
             make(TabChromeModel(canGoBack: true, canGoForward: false))
-                .environment(\.isIncognito, true)
+                .environmentObject(IncognitoModel(isIncognito: true))
         }.preferredColorScheme(.dark)
     }
 }

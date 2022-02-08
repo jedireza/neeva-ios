@@ -11,7 +11,7 @@ struct TopBarNeevaMenuButton: View {
     @Default(.showNeevaMenuWillMove) var showNeevaMenuWillMove
     @Default(.showTryCheatsheetPopover) var defaultShowTryCheatsheetPopover
 
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject var incognitoModel: IncognitoModel
     @EnvironmentObject var chromeModel: TabChromeModel
 
     // TODO: sync this state variable with TabToolbarView somehow
@@ -70,7 +70,7 @@ struct TopBarNeevaMenuButton: View {
                                 action = $0
                                 presenting = false
                             })
-                            .environment(\.isIncognito, isIncognito)
+                            .environmentObject(incognitoModel)
                             .modifier(ViewWidthKey())
                             .onPreferenceChange(ViewWidthKey.self) {
                                 neevaMenuWidth = $0
@@ -130,7 +130,7 @@ struct TopBarOverflowMenuButton: View {
     let onOverflowMenuAction: (OverflowMenuAction, UIView) -> Void
     let location: OverflowMenuLocation
 
-    @Environment(\.isIncognito) private var isIncognito
+    @EnvironmentObject var incognitoModel: IncognitoModel
 
     // TODO: sync this state variable with TabToolbarView somehow
     @State private var presenting = false
@@ -187,8 +187,8 @@ struct TopBarOverflowMenuButton: View {
             }
         ) {
             content
-                .environment(\.isIncognito, isIncognito)
                 .environmentObject(chromeModel)
+                .environmentObject(incognitoModel)
                 .environmentObject(locationModel)
                 .topBarPopoverPadding()
                 .frame(minWidth: 340, minHeight: 285)

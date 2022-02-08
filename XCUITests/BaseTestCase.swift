@@ -221,11 +221,22 @@ class BaseTestCase: XCTestCase {
             goToTabTray()
         }
 
-        guard let numTabsString = app.scrollViews["CardGrid"].firstMatch.value as? String,
-            let numTabs = Int(
-                numTabsString.components(separatedBy: CharacterSet.decimalDigits.inverted).joined())
-        else {
-            return app.buttons.matching(NSPredicate(format: "label ENDSWITH ', Tab'")).count
+        func valueAsInt(_ name: String) -> Int {
+            guard let numTabsString = app.otherElements[name].value as? String,
+                let numTabs = Int(
+                    numTabsString.components(separatedBy: CharacterSet.decimalDigits.inverted)
+                        .joined())
+            else { return 0 }
+            return numTabs
+        }
+
+        let numTabs: Int
+        if app.buttons["Normal Tabs"].isSelected {
+            numTabs = valueAsInt("Tabs")
+        } else if app.buttons["Incognito Tabs"].isSelected {
+            numTabs = valueAsInt("Incognito Tabs")
+        } else {
+            numTabs = 0
         }
 
         return numTabs

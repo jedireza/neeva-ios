@@ -13,7 +13,7 @@ struct TabMenu {
     // MARK: Close All Tabs
     func showConfirmCloseAllTabs(sourceView: UIView?) {
         let numberOfTabs = tabManager.getTabCountForCurrentType()
-        let isIncognito = tabManager.isIncognito
+        let isIncognito = tabManager.incognitoModel.isIncognito
         guard
             let scene = tabManager.scene as? UIWindowScene,
             let alertVC = scene.frontViewController
@@ -32,7 +32,7 @@ struct TabMenu {
             style: .destructive
         ) { [self] _ in
             tabManager.removeTabs(
-                isIncognito ? tabManager.privateTabs : tabManager.normalTabs, showToast: false)
+                isIncognito ? tabManager.incognitoTabs : tabManager.normalTabs, showToast: false)
         }
         closeAction.accessibilityLabel = "Confirm Close All Tabs"
 
@@ -51,9 +51,9 @@ struct TabMenu {
     }
 
     func createCloseAllTabsAction(sourceView: UIView?) -> UIAction {
-        let isPrivate = tabManager.isIncognito
+        let isIncognito = tabManager.incognitoModel.isIncognito
         let action = UIAction(
-            title: "Close All \(isPrivate ? "Incognito " : "")Tabs",
+            title: "Close All \(isIncognito ? "Incognito " : "")Tabs",
             image: UIImage(systemName: "trash"), attributes: .destructive
         ) { _ in
             // make sure the user really wants to close all tabs

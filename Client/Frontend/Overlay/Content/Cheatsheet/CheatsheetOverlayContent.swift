@@ -14,7 +14,7 @@ struct CheatsheetOverlayContent: View {
     init(menuAction: @escaping (NeevaMenuAction) -> Void, tabManager: TabManager) {
         self.menuAction = menuAction
         self.model = CheatsheetMenuViewModel(tabManager: tabManager)
-        self.isIncognito = tabManager.isIncognito
+        self.isIncognito = tabManager.incognitoModel.isIncognito
         self.tabManager = tabManager
     }
 
@@ -26,7 +26,6 @@ struct CheatsheetOverlayContent: View {
         .background(Color.DefaultBackground)
         .overlayIsFixedHeight(isFixedHeight: false)
         .environmentObject(model)
-        .environment(\.isIncognito, isIncognito)
         .environment(\.onOpenURL) { url in
             hideOverlay()
             self.tabManager.createOrSwitchToTab(for: url)

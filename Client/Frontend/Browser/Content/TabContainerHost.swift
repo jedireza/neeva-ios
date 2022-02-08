@@ -71,7 +71,7 @@ class TabContainerModel: ObservableObject {
 
             self.webContainerType = .webPage(webView)
 
-            if NeevaFeatureFlags[.recipeCheatsheet] && !tabManager.isIncognito {
+            if NeevaFeatureFlags[.recipeCheatsheet] && !bvc.incognitoModel.isIncognito {
                 if let url = webView.url {
                     self.recipeModel.updateContentWithURL(url: url)
                     bvc.chromeModel.currentCheatsheetFaviconURL =
@@ -92,7 +92,7 @@ class TabContainerModel: ObservableObject {
         switch event {
         case .showZeroQuery(let isIncognito, let isLazyTab, let openedFrom):
             currentContentUI = .zeroQuery
-            zeroQueryModel.isPrivate = isIncognito
+            zeroQueryModel.isIncognito = isIncognito
             zeroQueryModel.isLazyTab = isLazyTab
             zeroQueryModel.openedFrom = openedFrom
 
@@ -134,6 +134,7 @@ struct TabContainerContent: View {
     let spaceContentSheetModel: SpaceContentSheetModel?
 
     @EnvironmentObject private var chromeModel: TabChromeModel
+    @EnvironmentObject private var incognitoModel: IncognitoModel
     @EnvironmentObject private var scrollingControlModel: ScrollingControlModel
     @EnvironmentObject private var simulatedSwipeModel: SimulatedSwipeModel
 
@@ -208,7 +209,7 @@ struct TabContainerContent: View {
                     }
 
                     if NeevaFeatureFlags[.recipeCheatsheet] && !NeevaFeatureFlags[.cheatsheetQuery]
-                        && !bvc.tabManager.isIncognito && NeevaUserInfo.shared.hasLoginCookie()
+                        && !incognitoModel.isIncognito && NeevaUserInfo.shared.hasLoginCookie()
                     {
                         GeometryReader { geo in
                             VStack {
@@ -288,10 +289,11 @@ struct TabContainerContent: View {
     }
 }
 
-class TabContainerHost: IncognitoAwareHostingController<TabContainerContent> {
+// TODO: This class is only used by tests. We should be able to remove it.
+class TabContainerHost: UIHostingController<TabContainerContent> {
     init(model: TabContainerModel, bvc: BrowserViewController) {
-        super.init(isIncognito: bvc.tabManager.isIncognito) {
-            TabContainerContent(
+        super.init(
+            rootView: TabContainerContent(
                 model: model,
                 bvc: bvc,
                 zeroQueryModel: bvc.zeroQueryModel,
@@ -300,7 +302,7 @@ class TabContainerHost: IncognitoAwareHostingController<TabContainerContent> {
                     ? SpaceContentSheetModel(
                         tabManager: bvc.tabManager,
                         spaceModel: bvc.gridModel.spaceCardModel) : nil)
-        }
+        )
     }
 
     @objc required dynamic init?(coder: NSCoder) {
