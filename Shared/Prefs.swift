@@ -104,7 +104,7 @@ extension Defaults.Keys {
     public static let seenTryCheatsheetPopoverOnRecipe = Defaults.BoolKey("seenTryCheatsheetPopoverOnRecipe")
     public static let cheatsheetDebugQuery = Defaults.BoolKey("cheatsheetDebugQuery")
     public static let showNeevaMenuWillMove = Defaults.BoolKey(
-        "showNeevaMenuWillMove", default: false)
+        "showNeevaMenuWillMove", default: true)
 
     // notification
     public static let lastScheduledNeevaPromoID = Defaults.Key<String?>("lastScheduledNeevaPromoID")
