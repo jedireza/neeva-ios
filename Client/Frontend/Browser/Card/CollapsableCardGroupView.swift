@@ -11,6 +11,7 @@ struct CollapsedCardGroupView: View {
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
+    @Environment(\.columns) private var columns
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @EnvironmentObject private var gridModel: GridModel
@@ -18,20 +19,28 @@ struct CollapsedCardGroupView: View {
     @State private var frame = CGRect.zero
 
     var body: some View {
-        VStack(spacing: 0) {
-            TabGroupHeader(groupDetails: groupDetails)
-            scrollView
+        if groupDetails.allDetails.count <= columns.count {
+            // Don't make it a scroll view if the tab group can't be expanded
+            ExpandedCardGroupRowView(
+                groupDetails: groupDetails, containerGeometry: containerGeometry,
+                range: 0..<groupDetails.allDetails.count
+            )
+        } else {
+            VStack(spacing: 0) {
+                TabGroupHeader(groupDetails: groupDetails)
+                scrollView
+            }
+            .animation(nil)
+            .transition(.fade)
+            .background(
+                Color.secondarySystemFill
+                    .cornerRadius(
+                        24,
+                        corners: groupDetails.allDetails.count <= 2 || groupDetails.isExpanded
+                            ? .all : .leading
+                    )
+            )
         }
-        .animation(nil)
-        .transition(.fade)
-        .background(
-            Color.secondarySystemFill
-                .cornerRadius(
-                    24,
-                    corners: groupDetails.allDetails.count <= 2 || groupDetails.isExpanded
-                        ? .all : .leading
-                )
-        )
     }
 
     @ViewBuilder
@@ -145,6 +154,7 @@ struct ExpandedCardGroupRowView: View {
 struct TabGroupHeader: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
+    @Environment(\.columns) private var columns
 
     @State private var renaming = false
     @State private var deleting = false
@@ -157,42 +167,50 @@ struct TabGroupHeader: View {
     var body: some View {
         HStack {
             Menu {
-                 if let title = groupDetails.customTitle {
-                     Text("\(groupDetails.allDetails.count) tabs from “\(title)”")
-                 } else {
-                     Text("\(groupDetails.allDetails.count) Tabs")
-                 }
+                if let title = groupDetails.customTitle {
+                    Text("\(groupDetails.allDetails.count) tabs from “\(title)”")
+                } else {
+                    Text("\(groupDetails.allDetails.count) Tabs")
+                }
 
-                 Button(action: { renaming = true }) {
-                     Label("Rename", systemSymbol: .pencil)
-                 }
+                Button(action: { renaming = true }) {
+                    Label("Rename", systemSymbol: .pencil)
+                }
 
-                 if #available(iOS 15.0, *) {
-                     Button(role: .destructive, action: { deleting = true }) {
-                         Label("Close All", systemSymbol: .trash)
-                     }
-                 } else {
-                     Button(action: { deleting = true }) {
-                         Label("Close All", systemSymbol: .trash)
-                     }
-                 }
-             } label: {
-                 Label("ellipsis", systemImage: "ellipsis")
-                     .foregroundColor(.label)
-                     .labelStyle(.iconOnly)
-             }
+                if #available(iOS 15.0, *) {
+                    Button(role: .destructive, action: { deleting = true }) {
+                        Label("Close All", systemSymbol: .trash)
+                    }
+                } else {
+                    Button(action: { deleting = true }) {
+                        Label("Close All", systemSymbol: .trash)
+                    }
+                }
+            } label: {
+                Label("ellipsis", systemImage: "ellipsis")
+                    .foregroundColor(.label)
+                    .labelStyle(.iconOnly)
+                    .frame(height: 44)
+            }
             Text(groupDetails.title)
                 .withFont(.labelLarge)
                 .foregroundColor(.label)
             Spacer()
-            Button {
-                groupDetails.isExpanded.toggle()
-            } label: {
-                Label("caret", systemImage: "arrow.up.left.and.arrow.down.right")
+            if groupDetails.allDetails.count > columns.count {
+                Button {
+                    groupDetails.isExpanded.toggle()
+                } label: {
+                    Label(
+                        "arrows",
+                        systemImage: groupDetails.isExpanded
+                            ? "arrow.down.right.and.arrow.up.left"
+                            : "arrow.up.left.and.arrow.down.right"
+                    )
                     .foregroundColor(.label)
                     .labelStyle(.iconOnly)
                     .padding()
-            }.accessibilityHidden(true)
+                }.accessibilityHidden(true)
+            }
         }
         .padding(.leading, CardGridUX.GridSpacing)
         .frame(height: SingleLevelTabCardsViewUX.TabGroupCarouselTitleSize)

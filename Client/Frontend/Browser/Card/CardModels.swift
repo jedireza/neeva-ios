@@ -32,6 +32,7 @@ class TabCardModel: CardModel, TabEventHandler {
     @Published var allDetails: [TabCardDetails] = []
     @Published private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
     @Published private(set) var selectedTabID: String? = nil
+    @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     var normalDetails: [TabCardDetails] {
         allDetails.filter {
@@ -95,7 +96,17 @@ class TabCardModel: CardModel, TabEventHandler {
     }
 
     func buildRows(incognito: Bool, tabGroupModel: TabGroupCardModel, maxCols: Int) -> [Row] {
-        allDetails.filter { tabCard in
+        // When the number of tabs in a tab group decreases and makes the group
+        // unable to expand, we remove the group from the expanded list. A side-effect
+        // of this resolves a problem where TabGroupHeader doesn't hide arrows button
+        // when the number of tabs drops below maxCols.
+        tabGroupExpanded.forEach { groupID in
+            if let tabGroup = tabGroupModel.allDetails.first(where: { groupID == $0.id }), tabGroup.allDetails.count <= maxCols {
+                tabGroupExpanded.remove(groupID)
+            }
+        }
+
+        return allDetails.filter { tabCard in
             let tab = tabCard.manager.get(for: tabCard.id)!
             return
                 (tabGroupModel.representativeTabs.contains(tab)
@@ -133,7 +144,6 @@ class TabCardModel: CardModel, TabEventHandler {
         groupManager.updateTabGroups()
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
-
         if FeatureFlag[.tabGroupsNewDesign] {
             modifyAllDetailsAvoidingSingleTabs(groupManager.childTabs)
         }
