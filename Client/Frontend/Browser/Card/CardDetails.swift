@@ -134,6 +134,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     private var isPinnedSubscription: AnyCancellable?
 
     var manager: TabManager
+    var isChild: Bool
 
     private var tab: Tab? {
         manager.get(for: id)
@@ -170,9 +171,10 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
-    init(tab: Tab, manager: TabManager) {
+    init(tab: Tab, manager: TabManager, isChild: Bool = false) {
         self.id = tab.id
         self.manager = manager
+        self.isChild = isChild
 
         isPinnedSubscription = tab.$isPinned.sink { [weak self] _ in
             self?.objectWillChange.send()
@@ -244,6 +246,18 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                 Button(action: {}) {
                     Label("Share", systemSymbol: .squareAndArrowUp)
                 }.disabled(true)
+            }
+
+            if isChild {
+                Button(
+                    action: { [self] in
+                        manager.get(for: id)?.rootUUID = UUID().uuidString
+                        manager.objectWillChange.send()
+                    },
+                    label: {
+                        Label("Remove from group", systemSymbol: .arrowUpForwardSquare)
+                    }
+                )
             }
         }
     }
@@ -567,7 +581,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             .map({
                 TabCardDetails(
                     tab: $0,
-                    manager: manager.tabManager)
+                    manager: manager.tabManager,
+                    isChild: true)
             }) ?? []
     }
 
