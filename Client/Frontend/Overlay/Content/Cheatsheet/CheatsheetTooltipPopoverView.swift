@@ -13,16 +13,17 @@ struct CheatsheetTooltipPopoverView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("Try the Cheatsheet!")
+            Text("Try NeevaScope!")
                 .withFont(.headingMedium)
                 .foregroundColor(isDarkMode ? Color(hex: 0x000000) : Color.brand.white)
-            Text("Tap on the Neeva logo to bring it up")
+            Text("Tap on the Neeva logo to scope out related content, reviews, and more.")
                 .withFont(.bodyLarge)
                 .foregroundColor(isDarkMode ? .brand.charcoal : .brand.offwhite)
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.leading)
         }
         .padding(.vertical, 20)
+        .padding(.horizontal, 10)
     }
 }
 

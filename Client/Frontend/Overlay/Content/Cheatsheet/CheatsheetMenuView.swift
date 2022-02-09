@@ -99,18 +99,18 @@ struct CheatsheetInfoView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(height: 18, alignment: .center)
-                    Text("Cheatsheet")
+                    Text("NeevaScope")
                         .withFont(.headingXLarge)
                 }
                 Text(
-                    "Cheatsheet searches the web to find information related to the website you’re visiting."
+                    "Tap on the Neeva logo to see information related to the website you're visiting."
                 )
                 .withFont(.bodyLarge)
                 .foregroundColor(.secondaryLabel)
                 .fixedSize(horizontal: false, vertical: true)
                 .layoutPriority(1)
                 Text(
-                    "Tap on the Neeva logo to bring up the cheatsheet."
+                    "From related content to reviews, NeevaScope is your guide to the web!"
                 )
                 .withFont(.bodyLarge)
                 .foregroundColor(.secondaryLabel)
