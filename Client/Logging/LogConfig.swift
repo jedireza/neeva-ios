@@ -433,7 +433,7 @@ public struct LogConfig {
         case .DefaultBrowserExperimentV2: return .FirstRun
         case .DefaultBrowserPromptSkip: return .FirstRun
         case .DefaultBrowserPromptOpen: return .FirstRun
-            
+
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard

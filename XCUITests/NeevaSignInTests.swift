@@ -40,9 +40,7 @@ class NeevaSignInTests: BaseTestCase {
         textField.tap()
         textField.press(forDuration: 2)
         app.menus.firstMatch.menuItems["Paste"].tap()
-
-        waitForExistence(app.buttons["Sign in"])
-        app.buttons["Sign in"].tap()
+        app.buttons["Sign in"].tap(force: true)
 
         waitUntilPageLoad(withUrlContaining: "mock-neeva-home")
 

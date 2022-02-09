@@ -8,11 +8,7 @@ import Shared
 import SwiftUI
 
 struct FirstRunHomePage: View {
-    var buttonAction: (FirstRunButtonActions) -> Void
-    @Binding var marketingEmailOptOut: Bool
-    @Binding var onOtherOptionsPage: Bool
-    @Binding var onSignInMode: Bool
-
+    @EnvironmentObject var model: IntroViewModel
     let smallSizeScreen: CGFloat = 375.0
 
     var body: some View {
@@ -42,19 +38,19 @@ struct FirstRunHomePage: View {
                         color: .black
                     ) {
                         logFirstRunSignUpWithAppleClick()
-                        buttonAction(.signupWithApple(marketingEmailOptOut, nil))
+                        model.buttonAction(.signupWithApple(model.marketingEmailOptOut, nil))
                     }
 
                     IntroButton(icon: nil, label: "Other sign up options", color: .brand.blue) {
                         logFirstRunOtherSignupOption()
-                        onOtherOptionsPage = true
+                        model.onOtherOptionsPage = true
                     }
 
                     TermsAndPrivacyLinks(width: geom.size.width)
 
-                    Button(action: { marketingEmailOptOut.toggle() }) {
+                    Button(action: { model.marketingEmailOptOut.toggle() }) {
                         HStack {
-                            marketingEmailOptOut
+                            model.marketingEmailOptOut
                                 ? Symbol(decorative: .circle, size: 20)
                                     .foregroundColor(Color.tertiaryLabel)
                                 : Symbol(decorative: .checkmarkCircleFill, size: 20)
@@ -71,25 +67,14 @@ struct FirstRunHomePage: View {
 
                 SignInButton {
                     logFirstRunSignin()
-                    onOtherOptionsPage = true
-                    onSignInMode = true
+                    model.onOtherOptionsPage = true
+                    model.onSignInMode = true
                 }
             }
             .padding(.horizontal, 25)
             .padding(.vertical, 35)
         }
-        .background(
-            Color.brand.offwhite
-                .ignoresSafeArea(.all)
-        )
         .onAppear(perform: logImpression)
-        .overlay(
-            FirstRunCloseButton {
-                buttonAction(.skipToBrowser)
-                logFirstRunSkipToBrowser()
-            }, alignment: .topTrailing
-        )
-        .colorScheme(.light)
     }
 
     func logImpression() {
@@ -110,7 +95,7 @@ struct FirstRunHomePage: View {
     }
 
     func logFirstRunSignUpWithAppleClick() {
-        if onSignInMode {
+        if model.onSignInMode {
             return
         }
 
@@ -127,25 +112,8 @@ struct FirstRunHomePage: View {
         }
     }
 
-    func logFirstRunSkipToBrowser() {
-        if onSignInMode {
-            return
-        }
-
-        if Defaults[.introSeen] {
-            // beyond first run screen
-            ClientLogger.shared.logCounter(
-                .AuthClose,
-                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-        } else {
-            ClientLogger.shared.logCounter(
-                .FirstRunSkipToBrowser,
-                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-        }
-    }
-
     func logFirstRunOtherSignupOption() {
-        if onSignInMode {
+        if model.onSignInMode {
             return
         }
 
@@ -180,37 +148,62 @@ struct FirstRunHomePage: View {
 }
 
 struct IntroFirstRunView: View {
-    var buttonAction: (FirstRunButtonActions) -> Void
+    @EnvironmentObject var model: IntroViewModel
 
-    @State var marketingEmailOptOut = false
-    @State var onOtherOptionsPage = false
-    @State var onSignInMode = false
+    var body: some View {
+        VStack {
+            FirstRunCloseButton {
+                model.buttonAction(.skipToBrowser)
 
-    init(
-        buttonAction: @escaping ((FirstRunButtonActions) -> Void), signInMode: Bool = false,
-        onOtherOptionsPage: Bool = false
-    ) {
-        self.buttonAction = buttonAction
-        _onSignInMode = .init(initialValue: signInMode)
-        _onOtherOptionsPage = .init(initialValue: onOtherOptionsPage)
-        if signInMode {
-            _onOtherOptionsPage = .init(initialValue: true)
+                if model.onOtherOptionsPage {
+                    logOtherOptionsSkipToBrowser()
+                } else {
+                    logFirstRunSkipToBrowser()
+                }
+            }.padding(.top, 24)
+
+            Spacer()
+
+            if model.onOtherOptionsPage {
+                OtherOptionsPage()
+            } else {
+                FirstRunHomePage()
+            }
+        }.background(
+            Color.brand.offwhite
+                .ignoresSafeArea(.all)
+        )
+        .colorScheme(.light)
+    }
+
+    func logFirstRunSkipToBrowser() {
+        if model.onSignInMode {
+            return
+        }
+
+        if Defaults[.introSeen] {
+            // beyond first run screen
+            ClientLogger.shared.logCounter(
+                .AuthClose,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+        } else {
+            ClientLogger.shared.logCounter(
+                .FirstRunSkipToBrowser,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
         }
     }
 
-    var body: some View {
-        if onOtherOptionsPage {
-            OtherOptionsPage(
-                buttonAction: buttonAction,
-                marketingEmailOptOut: $marketingEmailOptOut,
-                onSignInMode: $onSignInMode
-            )
+    func logOtherOptionsSkipToBrowser() {
+        if Defaults[.introSeen] {
+            // beyond first run screen
+            ClientLogger.shared.logCounter(
+                .AuthOptionClosePanel,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
         } else {
-            FirstRunHomePage(
-                buttonAction: buttonAction,
-                marketingEmailOptOut: $marketingEmailOptOut,
-                onOtherOptionsPage: $onOtherOptionsPage,
-                onSignInMode: $onSignInMode)
+            // first run screen
+            ClientLogger.shared.logCounter(
+                .OptionClosePanel,
+                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
         }
     }
 }
@@ -330,8 +323,6 @@ private struct Safari: ViewControllerWrapper {
 
 struct IntroFirstRunView_Previews: PreviewProvider {
     static var previews: some View {
-        IntroFirstRunView { _ in
-            print("action button pressed")
-        }
+        IntroFirstRunView()
     }
 }

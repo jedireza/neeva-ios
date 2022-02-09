@@ -64,6 +64,9 @@ class OverlayManager: ObservableObject {
     @Published var offsetForBottomBar = false
     @Published var hideBottomBar = false
 
+    /// Used to control full screen/popover sheets
+    @Published var showFullScreenPopoverSheet = false
+
     private let animation = Animation.easeInOut(duration: 0.2)
     /// (Overlay, Animate, Completion])
     var queuedOverlays = [(OverlayType, Bool, (() -> Void)?)]()
@@ -139,6 +142,11 @@ class OverlayManager: ObservableObject {
             switch overlay {
             case .backForwardList:
                 slideAndFadeIn(offset: 100)
+            case .fullScreenModal, .popover:
+                withAnimation(animation) {
+                    showFullScreenPopoverSheet = true
+                    animating = false
+                }
             case .notification:
                 slideAndFadeIn(offset: -ToastViewUX.height)
             case .toast:
@@ -213,8 +221,11 @@ class OverlayManager: ObservableObject {
             switch overlay {
             case .backForwardList:
                 slideAndFadeOut(offset: 0)
-            case .fullScreenModal:
-                slideAndFadeOut(offset: 100)
+            case .fullScreenModal, .popover:
+                withAnimation(animation) {
+                    showFullScreenPopoverSheet = false
+                    animating = false
+                }
             case .notification(let notification):
                 notification?.viewDelegate?.dismiss()
                 slideAndFadeOut(offset: -ToastViewUX.height)
@@ -232,6 +243,7 @@ class OverlayManager: ObservableObject {
             currentOverlay = nil
             offsetForBottomBar = false
             hideBottomBar = false
+            showFullScreenPopoverSheet = false
             resetUIModifiers()
             completion()
         }

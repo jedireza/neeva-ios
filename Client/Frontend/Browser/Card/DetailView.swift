@@ -118,7 +118,9 @@ where
                     .buttonStyle(.neeva(.primary))
                     .padding(16)
                 }
-            } else if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty {
+            } else if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty
+                && !(space?.isDigest ?? false)
+            {
                 EmptySpaceView()
             } else if showingAsList {
                 spaceList

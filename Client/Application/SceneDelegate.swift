@@ -389,9 +389,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             // view alpha is set to 0 in viewWillAppear creating a blank screen
             bvc.view.alpha = 1
 
-            if let introVC = bvc.introViewController {
-                introVC.dismiss(animated: true, completion: nil)
-                log.info("Dismissed introVC")
+            if let introViewModel = bvc.introViewModel {
+                introViewModel.dismiss {
+                    log.info("Dismissed introVC")
+                }
             }
         }
     }

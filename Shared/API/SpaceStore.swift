@@ -200,7 +200,9 @@ public class SpaceStore: ObservableObject {
     }
 
     /// Call to refresh the SpaceStore's copy of spaces data. Ignored if already refreshing.
-    public func refresh(completion: (() -> Void)? = nil) {
+    /// - Parameters:
+    ///   - force: If true, updates the details in SpaceCardModel.
+    public func refresh(force: Bool = false, completion: (() -> Void)? = nil) {
         if let completion = completion {
             refreshCompletionHandlers.append(completion)
         }
@@ -212,16 +214,18 @@ public class SpaceStore: ObservableObject {
         if disableRefresh {
             return
         }
-        
+
         if let _ = suggestedSpaceID {
             fetchSuggestedSpaces()
             return
         }
+
         state = .refreshing
+
         SpaceListController.getSpaces { result in
             switch result {
             case .success(let spaces):
-                self.onUpdateSpaces(spaces)
+                self.onUpdateSpaces(spaces, force: force)
             case .failure(let error):
                 self.state = .failed(error)
             }
@@ -319,7 +323,7 @@ public class SpaceStore: ObservableObject {
         }
     }
 
-    private func onUpdateSpaces(_ spaces: [SpaceListController.Space]) {
+    private func onUpdateSpaces(_ spaces: [SpaceListController.Space], force: Bool = false) {
         let oldSpaceMap: [SpaceID: Space] = Dictionary(
             uniqueKeysWithValues: allSpaces.map { ($0.id, $0) })
 
@@ -387,7 +391,7 @@ public class SpaceStore: ObservableObject {
         if spacesToFetch.count > 0 {
             fetch(spaces: spacesToFetch)
         } else {
-            self.updatedSpacesFromLastRefresh = []
+            self.updatedSpacesFromLastRefresh = force ? allSpaces : []
             self.state = .ready
 
             addDailyDigestToSpaces()
@@ -515,8 +519,7 @@ public class SpaceStore: ObservableObject {
         return spaceDailyDigest
     }
 
-    private func createDailyDigestDescription(spaces: [Space], numberOfChanges: Int) -> String
-    {
+    private func createDailyDigestDescription(spaces: [Space], numberOfChanges: Int) -> String {
         var description = ""
 
         guard spaces.count > 0 else {

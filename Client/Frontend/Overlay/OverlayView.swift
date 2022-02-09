@@ -14,6 +14,7 @@ struct OverlayView: View {
     @ObservedObject var overlayManager: OverlayManager
     @State var safeArea: CGFloat = 0
     @State var keyboardHidden = true
+    @State var presentSheet = false
 
     var isSheet: Bool {
         if let currentOverlay = overlayManager.currentOverlay,
@@ -39,15 +40,17 @@ struct OverlayView: View {
         case .fullScreenModal(let fullScreenModal):
             if verticalSizeClass == .regular && horizontalSizeClass == .regular {
                 Color.clear
-                    .sheet(isPresented: .constant(true)) {
-                        overlayManager.hideCurrentOverlay()
+                    .sheet(isPresented: $overlayManager.showFullScreenPopoverSheet) {
+                        // OnDismiss
+                        // Nothing to do here
                     } content: {
                         fullScreenModal
                     }
             } else {
                 Color.clear
-                    .fullScreenCover(isPresented: .constant(true)) {
-                        overlayManager.hideCurrentOverlay()
+                    .fullScreenCover(isPresented: $overlayManager.showFullScreenPopoverSheet) {
+                        // OnDismiss
+                        // Nothing to do here
                     } content: {
                         fullScreenModal
                     }

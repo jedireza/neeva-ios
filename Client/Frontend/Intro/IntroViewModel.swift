@@ -1,12 +1,12 @@
-/* This Source Code Form is subject to the terms of the Mozilla Public
- * License, v. 2.0. If a copy of the MPL was not distributed with this
- * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+// Copyright 2022 Neeva Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
 import AuthenticationServices
+import Combine
+import CryptoKit
 import Defaults
-import Foundation
 import Shared
-import SnapKit
 import UIKit
 
 enum FirstRunButtonActions {
@@ -20,49 +20,16 @@ enum FirstRunButtonActions {
     case oktaAccountCreated(String)  // token
 }
 
-class IntroViewController: UIViewController {
+class IntroViewModel: NSObject, ObservableObject {
+    @Published var marketingEmailOptOut = true
+    @Published var onOtherOptionsPage: Bool = false
+    @Published var onSignInMode: Bool = false
 
-    private lazy var welcomeCard = UIView()
-    private var marketingEmailOptOut: Bool = true
-    private var signInMode: Bool
-    private var onOtherOptionsPage: Bool
+    public var presentationController: UIViewController
+    public var overlayManager: OverlayManager
+    public var onDismiss: ((FirstRunButtonActions) -> Void)
 
-    // Closure delegate
-    var didFinishClosure: ((FirstRunButtonActions) -> Void)?
-
-    // MARK: Initializer
-    init(
-        signInMode: Bool = false, onOtherOptionsPage: Bool = false,
-        marketingEmailOptOut: Bool = true
-    ) {
-        self.signInMode = signInMode
-        self.onOtherOptionsPage = onOtherOptionsPage
-        self.marketingEmailOptOut = marketingEmailOptOut
-        super.init(nibName: nil, bundle: nil)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        initialViewSetup()
-    }
-
-    // MARK: View setup
-    private func initialViewSetup() {
-        setupIntroView()
-    }
-
-    private func setupWelcomeCard() {
-        // Constraints
-        welcomeCard.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-    }
-
-    private func buttonAction(_ option: FirstRunButtonActions) {
+    public func buttonAction(_ option: FirstRunButtonActions) {
         // Make sure all actions are run on the main thread to prevent runtime errors
         DispatchQueue.main.async {
             switch option {
@@ -72,15 +39,12 @@ class IntroViewController: UIViewController {
                 }
                 self.marketingEmailOptOut = marketingEmailOptOut ?? false
                 self.doSignupWithApple()
-            case FirstRunButtonActions.signin:
-                break
-            case .signupWithOther:
-                break
             case FirstRunButtonActions.skipToBrowser:
                 if !Defaults[.introSeen] {
                     Defaults[.firstRunPath] = "FirstRunSkipToBrowser"
                 }
-                self.didFinishClosure?(.skipToBrowser)
+
+                self.onDismiss(.skipToBrowser)
             case FirstRunButtonActions.oktaSignup(
                 let email,
                 let firstname,
@@ -93,36 +57,30 @@ class IntroViewController: UIViewController {
                     password: password,
                     marketingEmailOptOut: marketingEmailOptOut
                 )
-                break
             case FirstRunButtonActions.oktaSignin(let email):
-                self.didFinishClosure?(.oktaSignin(email))
-                break
+                self.onDismiss(.oktaSignin(email))
             case FirstRunButtonActions.oauthWithProvider(
                 let provider, let marketingEmailOptOut, _, let email):
                 self.marketingEmailOptOut = marketingEmailOptOut
                 self.oauthWithProvider(provider: provider, email: email)
-                break
-            case FirstRunButtonActions.oktaAccountCreated(_):
+            default:
                 break
             }
         }
     }
 
-    //onboarding intro view
-    private func setupIntroView() {
-        // Initialize
-        view.addSubview(welcomeCard)
-        welcomeCard.snp.makeConstraints { make in
-            make.top.left.right.bottom.equalTo(self.view)
+    // MARK: - Presenting/Dismissing
+    public func dismiss(completion: @escaping () -> Void) {
+        Defaults[.introSeen] = true
+
+        presentationController.view.alpha = 1
+
+        overlayManager.hideCurrentOverlay(ofPriority: .fullScreen) {
+            completion()
         }
-        addSubSwiftUIView(
-            IntroFirstRunView(
-                buttonAction: buttonAction, signInMode: self.signInMode,
-                onOtherOptionsPage: onOtherOptionsPage),
-            to: welcomeCard)
-        setupWelcomeCard()
     }
 
+    // MARK: - Auth Methods
     private func doSignupWithApple() {
         let appleIDProvider = ASAuthorizationAppleIDProvider()
         let request = appleIDProvider.createRequest()
@@ -191,7 +149,7 @@ class IntroViewController: UIViewController {
                 }
                 showErrorAlert(errMsg: errorMessage)
             } else if let cookie = token {
-                self.didFinishClosure?(
+                self.onDismiss(
                     .oauthWithProvider(provider, self.marketingEmailOptOut, cookie, email))
             }
         }
@@ -212,17 +170,35 @@ class IntroViewController: UIViewController {
                 }
             )
         )
-        self.present(alert, animated: true, completion: nil)
+
+        presentationController.present(alert, animated: true, completion: nil)
+    }
+
+    // MARK: - Init
+    public init(
+        presentationController: UIViewController, overlayManager: OverlayManager,
+        onDismiss: @escaping ((FirstRunButtonActions) -> Void)
+    ) {
+        self.presentationController = presentationController
+        self.overlayManager = overlayManager
+        self.onDismiss = onDismiss
     }
 }
 
-extension IntroViewController: ASWebAuthenticationPresentationContextProviding {
+// MARK: - Sign In With Apple
+extension IntroViewModel: ASWebAuthenticationPresentationContextProviding,
+    ASAuthorizationControllerPresentationContextProviding
+{
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        return self.view.window!
+        return presentationController.view.window!
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        return presentationController.view.window!
     }
 }
 
-extension IntroViewController: ASAuthorizationControllerDelegate {
+extension IntroViewModel: ASAuthorizationControllerDelegate {
     func authorizationController(
         controller: ASAuthorizationController,
         didCompleteWithAuthorization authorization: ASAuthorization
@@ -241,7 +217,7 @@ extension IntroViewController: ASAuthorizationControllerDelegate {
                             attributes: EnvironmentHelper.shared.getFirstRunAttributes()
                         )
                     }
-                    self.didFinishClosure?(.signupWithApple(self.marketingEmailOptOut, authStr))
+                    self.onDismiss(.signupWithApple(self.marketingEmailOptOut, authStr))
                 }
             }
             break
@@ -269,25 +245,122 @@ extension IntroViewController: ASAuthorizationControllerDelegate {
     }
 }
 
-extension IntroViewController: ASAuthorizationControllerPresentationContextProviding {
-    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return self.view.window!
+// MARK: - OKTA
+extension IntroViewModel {
+    struct OktaAccountRequestBodyModel: Codable {
+        let email: String
+        let firstname: String
+        let lastname: String
+        let password: String
+        let salt: String
+        let visitorID: String
+        let expVisitorID: String
+        let expVisitorOverrides: String
+        let emailSubmissionID: String
+        let referralCode: String
+        let marketingEmailOptOut: Bool
+        let ignoreCountryCode: Bool
     }
-}
 
-// MARK: UIViewController setup
-extension IntroViewController {
-    override var prefersStatusBarHidden: Bool {
-        return true
+    struct ErrorResponse: Codable {
+        let error: String
     }
 
-    override var shouldAutorotate: Bool {
-        return false
+    func createOktaAccount(
+        email: String,
+        firstname: String,
+        password: String,
+        marketingEmailOptOut: Bool
+    ) {
+        var request = URLRequest(url: NeevaConstants.createOktaAccountURL)
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpMethod = "POST"
+
+        let salt = generateSalt()
+        let salt_and_password = salt + password
+
+        let saltAndPasswordData = Data(salt_and_password.utf8)
+        let hashedSaltAndPassword = SHA512.hash(data: saltAndPasswordData)
+
+        let hashedSaltAndPasswordEncoded = Data(hashedSaltAndPassword).base64EncodedString()
+
+        guard let saltEncoded = salt.data(using: .utf8)?.base64EncodedString()
+        else { return }
+
+        let requestBody = OktaAccountRequestBodyModel(
+            email: email,
+            firstname: firstname.isEmpty ? "Member" : firstname,
+            lastname: "",
+            password: hashedSaltAndPasswordEncoded,
+            salt: saltEncoded,
+            visitorID: "",
+            expVisitorID: "",
+            expVisitorOverrides: "",
+            emailSubmissionID: "",
+            referralCode: "",
+            marketingEmailOptOut: marketingEmailOptOut,
+            ignoreCountryCode: true
+        )
+        guard let jsonData = try? JSONEncoder().encode(requestBody) else {
+            Logger.browser.error(
+                "Error decoding request body for create okta account")
+            return
+        }
+
+        request.httpBody = jsonData
+
+        let config = URLSessionConfiguration.default
+        let delegate = OktaAccountCreatedDelegate(onDismiss: onDismiss)
+
+        let session = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
+
+        session.dataTask(with: request) { data, response, error in
+            if let response = response as? HTTPURLResponse {
+                if response.statusCode == 400 {
+                    if let data = data {
+                        var errorMsg = "Some unknown error occurred"
+                        do {
+                            let res = try JSONDecoder().decode(ErrorResponse.self, from: data)
+                            switch res.error {
+                            case "UsedEmail":
+                                errorMsg = "This email is associated with an existing Neeva account"
+                                break
+                            case "InternalError":
+                                errorMsg = "Unexpected error occurred"
+                                break
+                            case "InvalidEmail":
+                                errorMsg = "Invalid email used to register"
+                                break
+                            case "InvalidRequest":
+                                errorMsg = "Invalid name and/or password"
+                                break
+                            case "InvalidToken":
+                                errorMsg = "Token has already been used"
+                                break
+                            case "UsedToken":
+                                errorMsg = "Token has already been used"
+                                break
+                            default:
+                                errorMsg = res.error
+                            }
+                        } catch let err {
+                            Logger.browser.error(
+                                "Error creating Okta account: \(String(describing: err))")
+                        }
+
+                        DispatchQueue.main.async {
+                            self.showErrorAlert(errMsg: errorMsg)
+                        }
+                    }
+                }
+            }
+        }.resume()
     }
 
-    override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
-        // This actually does the right thing on iPad where the modally
-        // presented version happily rotates with the iPad orientation.
-        return .portrait
+    func generateSalt() -> String {
+        let letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        let salt = String((0..<12).map { _ in letters.randomElement()! })
+        return salt
     }
 }

@@ -57,7 +57,9 @@ class GridModel: ObservableObject {
     }
 
     func refreshDetailedSpace() {
-        guard let detailedSpace = spaceCardModel.detailedSpace else {
+        guard let detailedSpace = spaceCardModel.detailedSpace,
+            !(detailedSpace.space?.isDigest ?? false)
+        else {
             return
         }
 

@@ -34,7 +34,6 @@ protocol ModalPresenter {
 }
 
 class BrowserViewController: UIViewController, ModalPresenter {
-    private(set) var introViewController: IntroViewController?
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
     lazy var readerModeModel: ReaderModeModel = {
@@ -131,6 +130,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     var findInPageModel: FindInPageModel?
     var overlayWindowManager: WindowManager?
+    var introViewModel: IntroViewModel?
 
     private(set) var readerModeCache: ReaderModeCache
     private(set) var screenshotHelper: ScreenshotHelper!
@@ -974,15 +974,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
             browserModel.hideWithNoAnimation()
         }
 
-        if let introViewController = introViewController {
-            // Undo the alpha change from `viewWillAppear`.
-            view.alpha = 1
-
-            // Do not show the IntroViewController again.
-            Defaults[.introSeen] = true
-
-            self.introViewController = nil
-            introViewController.dismiss(animated: true)
+        if let introViewModel = introViewModel {
+            introViewModel.dismiss {
+                self.introViewModel = nil
+            }
         }
 
         if let presentedViewController = presentedViewController {
@@ -1593,19 +1588,19 @@ extension BrowserViewController: UIAdaptivePresentationControllerDelegate {
 extension BrowserViewController {
     func presentIntroViewController(
         _ alwaysShow: Bool = false,
-        onDismiss: (() -> Void)? = nil,
         signInMode: Bool = false,
         onOtherOptionsPage: Bool = false,
         marketingEmailOptOut: Bool = false,
-        completion: (() -> Void)? = nil
+        completion: (() -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil
     ) {
         if alwaysShow || !Defaults[.introSeen] {
             showProperIntroVC(
-                onDismiss: onDismiss,
                 signInMode: signInMode,
                 onOtherOptionsPage: onOtherOptionsPage,
                 marketingEmailOptOut: marketingEmailOptOut,
-                completion: completion
+                completion: completion,
+                onDismiss: onDismiss
             )
         }
     }
@@ -1630,8 +1625,9 @@ extension BrowserViewController {
     }
 
     private func showProperIntroVC(
-        onDismiss: (() -> Void)? = nil, signInMode: Bool = false, onOtherOptionsPage: Bool = false,
-        marketingEmailOptOut: Bool = false, completion: (() -> Void)? = nil
+        signInMode: Bool = false, onOtherOptionsPage: Bool = false,
+        marketingEmailOptOut: Bool = false, completion: (() -> Void)? = nil,
+        onDismiss: (() -> Void)? = nil
     ) {
         func createOrSwitchToTabFromAuth(_ url: URL) {
             if let selectedTab = self.tabManager.selectedTab,
@@ -1665,95 +1661,106 @@ extension BrowserViewController {
             }
         }
 
-        let controller = IntroViewController(
-            signInMode: signInMode, onOtherOptionsPage: onOtherOptionsPage,
-            marketingEmailOptOut: marketingEmailOptOut)
-        // Keep a reference to this controller so we can also clear from `popToBVC`.
-        self.introViewController = controller
+        introViewModel = IntroViewModel(
+            presentationController: self, overlayManager: overlayManager,
+            onDismiss: { action in
+                self.introViewModel?.dismiss {
+                    self.introViewModel = nil
 
-        controller.didFinishClosure = { [weak controller] action in
-            Defaults[.introSeen] = true
+                    switch action {
+                    case .signupWithApple(let marketingEmailOptOut, let serverAuthCode):
+                        if let serverAuthCode = serverAuthCode {
+                            let authURL = NeevaConstants.appleAuthURL(
+                                serverAuthCode: serverAuthCode,
+                                marketingEmailOptOut: marketingEmailOptOut ?? false,
+                                signup: true)
+                            let httpCookieStore = self.tabManager.configuration.websiteDataStore
+                                .httpCookieStore
+                            httpCookieStore.setCookie(
+                                NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)
+                            ) {
+                                self.openURLInNewTab(authURL)
+                            }
+                        }
+                    case .skipToBrowser:
+                        if let onDismiss = onDismiss {
+                            onDismiss()
+                        }
+                    case .oktaSignin(let email):
+                        createOrSwitchToTabFromAuth(NeevaConstants.oktaSigninURL(email: email))
+                    case .oauthWithProvider(_, _, let token, _):
+                        // loading appSearchURL to prevent showing marketing site
+                        setTokenAndOpenURL(token: token, url: NeevaConstants.appSearchURL)
+                    case .oktaAccountCreated(let token):
+                        setTokenAndOpenURL(
+                            token: token, url: NeevaConstants.verificationRequiredURL)
+                    default:
+                        break
+                    }
 
-            self.introViewController = nil
-            controller?.dismiss(animated: true) { [self] in
-                switch action {
-                case .signin:
-                    break
-                case .signupWithApple(let marketingEmailOptOut, let serverAuthCode):
-                    if let serverAuthCode = serverAuthCode {
-                        let authURL = NeevaConstants.appleAuthURL(
-                            serverAuthCode: serverAuthCode,
-                            marketingEmailOptOut: marketingEmailOptOut ?? false,
-                            signup: true)
-                        let httpCookieStore = self.tabManager.configuration.websiteDataStore
-                            .httpCookieStore
-                        httpCookieStore.setCookie(
-                            NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)
-                        ) {
-                            self.openURLInNewTab(authURL)
+                    if NeevaUserInfo.shared.hasLoginCookie() {
+                        if let notificationToken = Defaults[.notificationToken] {
+                            NotificationPermissionHelper.shared
+                                .registerDeviceTokenWithServer(deviceToken: notificationToken)
                         }
                     }
-                case .signupWithOther:
-                    break
-                case .skipToBrowser:
-                    if let onDismiss = onDismiss {
-                        onDismiss()
-                    }
-                    break
-                case .oktaSignin(let email):
-                    createOrSwitchToTabFromAuth(NeevaConstants.oktaSigninURL(email: email))
-                    break
-                case .oktaSignup(_, _, _, _):
-                    break
-                case .oauthWithProvider(_, _, let token, _):
-                    // loading appSearchURL to prevent showing marketing site
-                    setTokenAndOpenURL(token: token, url: NeevaConstants.appSearchURL)
-                case .oktaAccountCreated(let token):
-                    setTokenAndOpenURL(token: token, url: NeevaConstants.verificationRequiredURL)
-                }
-            }
 
-            if NeevaUserInfo.shared.hasLoginCookie() {
-                if let notificationToken = Defaults[.notificationToken] {
-                    NotificationPermissionHelper.shared
-                        .registerDeviceTokenWithServer(deviceToken: notificationToken)
-                }
-            }
-
-            if case .skipToBrowser = action {
-            } else {
-                if !Defaults[.didSetDefaultBrowser]
-                    && !Defaults[.didShowDefaultBrowserInterstitial]
-                {
-                    if NeevaExperiment.startExperiment(for: .defaultBrowserPromptV2)
-                        == .showDBPrompt
-                    {
-                        self.shouldPresentDBPrompt = true
+                    if case .skipToBrowser = action {
+                    } else {
+                        if !Defaults[.didSetDefaultBrowser]
+                            && !Defaults[.didShowDefaultBrowserInterstitial]
+                        {
+                            if NeevaExperiment.startExperiment(for: .defaultBrowserPromptV2)
+                                == .showDBPrompt
+                            {
+                                self.shouldPresentDBPrompt = true
+                            }
+                        }
                     }
+
+                    SpaceStore.shared.refresh(force: true)
                 }
-            }
+            })
+
+        introViewModel?.onSignInMode = signInMode
+        introViewModel?.onOtherOptionsPage = onOtherOptionsPage
+        introViewModel?.marketingEmailOptOut = marketingEmailOptOut
+
+        overlayManager.presentFullScreenModal(
+            content: AnyView(
+                IntroFirstRunView()
+                    .environmentObject(introViewModel!)
+                    .onAppear {
+                        AppDelegate.setRotationLock(to: .portrait)
+                    }
+                    .onDisappear {
+                        AppDelegate.setRotationLock(to: .all)
+                    }
+            )
+        ) {
+            completion?()
         }
-
-        self.introVCPresentHelper(introViewController: controller, completion: completion)
     }
 
     private func presentDBPromptView() {
         self.shouldPresentDBPrompt = false
+
         self.overlayManager.presentFullScreenModal(
             content: AnyView(
                 DefaultBrowserPromptView {
                     self.overlayManager.hideCurrentOverlay()
                 } buttonAction: {
                     self.overlayManager.hideCurrentOverlay()
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         self.presentDBOnboardingViewController(
-                            modalTransitionStyle: .crossDissolve,
-                            triggerFrom: .defaultBrowserPrompt
+                            modalTransitionStyle: .crossDissolve, triggerFrom: .defaultBrowserPrompt
                         )
                     }
                 }
             )
         ) {}
+
         Defaults[.didShowDefaultBrowserInterstitial] = true
     }
 

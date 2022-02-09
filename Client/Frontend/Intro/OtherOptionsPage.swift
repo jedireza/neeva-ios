@@ -29,6 +29,7 @@ enum PasswordStrength: String {
 }
 
 public struct EmailForm: View {
+    @EnvironmentObject var model: IntroViewModel
     @Binding private var email: String
     @Binding private var firstname: String
     @Binding private var password: String
@@ -38,20 +39,17 @@ public struct EmailForm: View {
     @State private var passwordStrengthPercent = 0.0
 
     var action: () -> Void
-    @Binding var onSignInMode: Bool
 
     init(
         email: Binding<String>,
         firstname: Binding<String>,
         password: Binding<String>,
-        action: @escaping () -> Void,
-        onSignInMode: Binding<Bool>
+        action: @escaping () -> Void
     ) {
         self._email = email
         self._firstname = firstname
         self._password = password
         self.action = action
-        self._onSignInMode = onSignInMode
     }
 
     public var body: some View {
@@ -67,7 +65,7 @@ public struct EmailForm: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .background(Color.brand.white)
 
-            if !onSignInMode {
+            if !model.onSignInMode {
                 VStack {
                     SecureField("Password (required)", text: $password)
                         .textContentType(.newPassword)
@@ -136,7 +134,7 @@ public struct EmailForm: View {
     }
 
     func emailPlaceHolder() -> String {
-        return onSignInMode ? "Email" : "Email (required)"
+        return model.onSignInMode ? "Email" : "Email (required)"
     }
 
     func passwordOnChange(newValue: String) {
@@ -185,9 +183,8 @@ public struct EmailForm: View {
 }
 
 struct OtherOptionsPage: View {
-    var buttonAction: (FirstRunButtonActions) -> Void
-    @Binding var marketingEmailOptOut: Bool
-    @Binding var onSignInMode: Bool
+    @EnvironmentObject var model: IntroViewModel
+
     @State var email = ""
     @State var firstname = ""
     @State var password = ""
@@ -195,19 +192,16 @@ struct OtherOptionsPage: View {
     var body: some View {
         ScrollView(.vertical) {
             VStack {
-                Group {
-                    FirstRunCloseButton {
-                        buttonAction(.skipToBrowser)
-                        logOtherOptionsSkipToBrowser()
-                    }
+                Spacer()
 
-                    if onSignInMode {
+                Group {
+                    if model.onSignInMode {
                         Text("Sign In")
                             .font(.roobert(.medium, size: 20))
                             .padding(.top, 20)
                             .padding(.bottom, 6)
                         SignUpButton(action: {
-                            onSignInMode = false
+                            model.onSignInMode = false
                         })
                     } else {
                         Text("Join Neeva")
@@ -215,23 +209,25 @@ struct OtherOptionsPage: View {
                             .padding(.top, 20)
                             .padding(.bottom, 6)
                         SignInButton(action: {
-                            onSignInMode = true
+                            model.onSignInMode = true
                         })
                     }
                 }
+
                 Spacer()
+
                 EmailForm(
                     email: $email,
                     firstname: $firstname,
                     password: $password,
                     action: {
-                        buttonAction(
-                            onSignInMode
-                                ? .oauthWithProvider(.okta, marketingEmailOptOut, "", email)
-                                : .oktaSignup(email, firstname, password, marketingEmailOptOut)
+                        model.buttonAction(
+                            model.onSignInMode
+                                ? .oauthWithProvider(.okta, model.marketingEmailOptOut, "", email)
+                                : .oktaSignup(
+                                    email, firstname, password, model.marketingEmailOptOut)
                         )
-                    },
-                    onSignInMode: $onSignInMode
+                    }
                 )
                 Spacer()
                 OrDivider()
@@ -240,31 +236,31 @@ struct OtherOptionsPage: View {
                     SignUpWithAppleButton(
                         action: {
                             logOtherOptionsSignUpWithAppleClick()
-                            buttonAction(.signupWithApple(marketingEmailOptOut, nil))
-                        },
-                        onSignInMode: $onSignInMode
+                            model.buttonAction(.signupWithApple(model.marketingEmailOptOut, nil))
+                        }, onSignInMode: $model.onSignInMode
                     )
 
                     SignUpWithGoogleButton(
                         action: {
                             logOtherOptionsSignUpWithGoogleClick()
-                            buttonAction(.oauthWithProvider(.google, marketingEmailOptOut, "", ""))
+                            model.buttonAction(
+                                .oauthWithProvider(.google, model.marketingEmailOptOut, "", ""))
                         },
-                        onSignInMode: $onSignInMode
+                        onSignInMode: $model.onSignInMode
                     ).padding(.top, 10)
 
                     SignUpWithMicrosoftButton(
                         action: {
                             logOtherOptionsSignupWithMicrosoftClick()
-                            buttonAction(
-                                .oauthWithProvider(.microsoft, marketingEmailOptOut, "", ""))
+                            model.buttonAction(
+                                .oauthWithProvider(.microsoft, model.marketingEmailOptOut, "", ""))
                         },
-                        onSignInMode: $onSignInMode
+                        onSignInMode: $model.onSignInMode
                     ).padding(.top, 10)
                 }
                 Spacer()
 
-                if onSignInMode {
+                if model.onSignInMode {
                     Spacer()
                     Spacer()
                 }
@@ -272,9 +268,6 @@ struct OtherOptionsPage: View {
             .padding(35)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.brand.offwhite)
-        .ignoresSafeArea(.all)
-        .colorScheme(.light)
     }
 
     func logOtherOptionsSignUpWithAppleClick() {
@@ -315,20 +308,6 @@ struct OtherOptionsPage: View {
             // first run screen
             ClientLogger.shared.logCounter(
                 .OptionSignupWithMicrosoft,
-                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-        }
-    }
-
-    func logOtherOptionsSkipToBrowser() {
-        if Defaults[.introSeen] {
-            // beyond first run screen
-            ClientLogger.shared.logCounter(
-                .AuthOptionClosePanel,
-                attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-        } else {
-            // first run screen
-            ClientLogger.shared.logCounter(
-                .OptionClosePanel,
                 attributes: EnvironmentHelper.shared.getFirstRunAttributes())
         }
     }

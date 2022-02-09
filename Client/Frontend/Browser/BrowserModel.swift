@@ -27,18 +27,6 @@ class BrowserModel: ObservableObject {
     var cardTransitionModel: CardTransitionModel
     var scrollingControlModel: ScrollingControlModel
 
-    init(
-        gridModel: GridModel, tabManager: TabManager, chromeModel: TabChromeModel,
-        incognitoModel: IncognitoModel
-    ) {
-        self.gridModel = gridModel
-        self.tabManager = tabManager
-        self.incognitoModel = incognitoModel
-        self.cardTransitionModel = CardTransitionModel()
-        self.scrollingControlModel = ScrollingControlModel(
-            tabManager: tabManager, chromeModel: chromeModel)
-    }
-
     func show() {
         if gridModel.switcherState != .tabs {
             gridModel.switcherState = .tabs
@@ -196,5 +184,17 @@ class BrowserModel: ObservableObject {
     func openTabGroup(detail: TabGroupCardDetails) {
         gridModel.tabGroupCardModel.detailedTabGroup = detail
         show()
+    }
+
+    init(
+        gridModel: GridModel, tabManager: TabManager, chromeModel: TabChromeModel,
+        incognitoModel: IncognitoModel
+    ) {
+        self.gridModel = gridModel
+        self.tabManager = tabManager
+        self.incognitoModel = incognitoModel
+        self.cardTransitionModel = CardTransitionModel()
+        self.scrollingControlModel = ScrollingControlModel(
+            tabManager: tabManager, chromeModel: chromeModel)
     }
 }

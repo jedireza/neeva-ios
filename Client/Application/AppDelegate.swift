@@ -18,6 +18,8 @@ import XCGLogger
 private let log = Logger.browser
 
 class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestoration {
+    static var orientationLock = UIInterfaceOrientationMask.all
+
     public static func viewController(
         withRestorationIdentifierPath identifierComponents: [String], coder: NSCoder
     ) -> UIViewController? {
@@ -191,6 +193,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
         }
 
         shutdownProfile()
+    }
+
+    // MARK: - Rotation
+    func application(
+        _ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?
+    ) -> UIInterfaceOrientationMask {
+        return AppDelegate.orientationLock
+    }
+
+    static func setRotationLock(to: UIInterfaceOrientationMask) {
+        DispatchQueue.main.async {
+            orientationLock = to
+            UIDevice.current.setValue(
+                UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
+            UINavigationController.attemptRotationToDeviceOrientation()
+        }
     }
 
     // MARK: - Scene
