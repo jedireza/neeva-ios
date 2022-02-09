@@ -1,0 +1,189 @@
+// Code Adapted from FlowCommoniOS. See README.md for license
+
+import Foundation
+import UIKit
+import AVFoundation
+
+open class FlowTimeline {
+    public var view: UIView
+    public var duration: TimeInterval
+    public let animations: [FlowAnimation]
+    public let sounds: [(sound: AVAudioPlayer, delay: TimeInterval)]
+
+    /// Specifies whether or not the timeline's animations autoreverse.
+    public let autoreverses: Bool
+
+    /// Determines the number of times the timeline's animations will repeat.
+    ///
+    /// May be fractional. If the repeatCount is 0, it is ignored.
+    /// Setting this property to greatestFiniteMagnitude will cause the timeline to repeat forever.
+    public let repeatCount: Float
+
+    /// The length of time a Timeline will repeat.
+    ///
+    /// Calculated using repeatCount and duration.
+    public var repeatDuration: TimeInterval {
+        return duration * TimeInterval(repeatCount == 0 ? 1 : repeatCount)
+    }
+
+    public var time: TimeInterval {
+        return animations.first?.time ?? 0
+    }
+
+    public var playing: Bool {
+        return animations.first?.playing ?? false
+    }
+
+    public weak var delegate: FlowTimelineDelegate?
+
+    private var resetDispatchGroup: DispatchGroup?
+
+    // MARK: - Initializers
+
+    public convenience init(view: UIView, animationsByLayer: [CALayer: [CAKeyframeAnimation]], sounds: [(sound: AVAudioPlayer, delay: TimeInterval)], duration: TimeInterval, autoreverses: Bool = false, repeatCount: Float = 0) {
+
+        let animations = animationsByLayer.map {
+            FlowAnimation(layer: $0.0, keyframeAnimations: $0.1, autoreverses: autoreverses, repeatCount: repeatCount)
+        }
+
+        self.init(view: view, animations: animations, sounds: sounds, duration: duration, autoreverses: autoreverses, repeatCount: repeatCount)
+    }
+
+    public init(view: UIView, animations: [FlowAnimation], sounds: [(sound: AVAudioPlayer, delay: TimeInterval)], duration: TimeInterval, autoreverses: Bool, repeatCount: Float) {
+        self.view = view
+        self.duration = duration
+        self.sounds = sounds
+        self.autoreverses = autoreverses
+        self.repeatCount = repeatCount
+        self.animations = animations
+        for animation in animations {
+            animation.delegate = self
+        }
+    }
+
+    // MARK: - Timeline Playback controls
+
+    /// Reset to the initial state of the timeline
+    public func reset(onCompletion: ((FlowTimeline) -> Void)? = nil) {
+        // Create a dispatch group to track when all animations have reset
+        resetDispatchGroup = DispatchGroup()
+
+        for animation in animations {
+            guard let resetDispatchGroup = resetDispatchGroup else {
+                return
+            }
+            
+            resetDispatchGroup.enter()
+            animation.reset { _ in resetDispatchGroup.leave() }
+        }
+
+        resetDispatchGroup?.notify(queue: .main) { [weak self] in
+            guard let strongSelf = self else {
+                return
+            }
+
+            strongSelf.delegate?.didReset(timeline: strongSelf)
+            onCompletion?(strongSelf)
+        }
+    }
+
+    /// Resume playing the timeline.
+    public func play() {
+        pause()
+
+        // If the timeline playback has reached the end of the timeline duration
+        // replay the timeline from the beginning
+        if time >= repeatDuration {
+            reset { timeline in timeline.playTimeline() }
+        } else {
+            playTimeline()
+        }
+    }
+
+    private func playTimeline() {
+        playAnimations()
+        playSounds()
+        delegate?.didPlay(timeline: self)
+    }
+
+    private func playAnimations() {
+        for animation in animations {
+            animation.play()
+        }
+    }
+
+    private func playSounds() {
+        for (sound, delay) in sounds {
+            FlowSound.playAudio(sound, delay: delay)
+        }
+    }
+
+    /// Pause playing of timeline.
+    public func pause() {
+        for animation in animations {
+            animation.pause()
+        }
+        delegate?.didPause(timeline: self)
+    }
+
+    /// Show timeline at time `time`.
+    public func offset(to newTime: TimeInterval) {
+        let clampedNewTime = max(min(newTime, duration), 0)
+        for animation in animations {
+            animation.offset(to: clampedNewTime)
+        }
+    }
+
+    /// Returns a reverses version of `self`.
+    var reversed: FlowTimeline {
+        let reversedAnimations = animations.map { $0.reversed }
+        return FlowTimeline(view: view, animations: reversedAnimations, sounds: sounds, duration: duration, autoreverses: autoreverses, repeatCount: repeatCount)
+    }
+}
+
+extension FlowTimeline: FlowAnimationDelegate {
+    func didStop(animation: FlowAnimation) {
+        // Notify the delegate a single time, when the first animation is complete
+        // We can do this because all animations are CAKeyframeAnimations that have identical durations (e.g. Timeline.duration)
+        if animation == animations.first {
+            delegate?.didStop(timeline: self)
+            reset() { _ in
+                self.pause()
+                self.offset(to: self.repeatDuration)
+            }
+        }
+    }
+}
+
+public protocol FlowTimelineDelegate: AnyObject {
+    /// Informs the delegate that the timeline `timeline` was reset.
+    func didReset(timeline: FlowTimeline)
+
+    /// Informs the delegate that the timeline `timeline` did start playing.
+    func didPlay(timeline: FlowTimeline)
+
+    /// Informs the delegate that the timeline `timeline` was paused.
+    func didPause(timeline: FlowTimeline)
+
+    /// Informs the delegate that the timeline `timeline` was offset.
+    ///
+    /// - Parameters:
+    ///   - timeline: The timeline which was offset.
+    ///   - time: The time to which `timeline` was offset to.
+    func didOffset(timeline: FlowTimeline, to time: TimeInterval)
+
+    /// Informs the delegate that the timeline `timeline` was stopped because it completed its active duration.
+    func didStop(timeline: FlowTimeline)
+}
+
+extension FlowTimelineDelegate {
+    public func didReset(timeline: FlowTimeline) { }
+
+    public func didPlay(timeline: FlowTimeline) { }
+
+    public func didPause(timeline: FlowTimeline) { }
+
+    public func didOffset(timeline: FlowTimeline, to time: TimeInterval) { }
+
+    public func didStop(timeline: FlowTimeline) { }
+}
