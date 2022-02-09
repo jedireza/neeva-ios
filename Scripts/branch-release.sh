@@ -24,4 +24,15 @@ git push origin "$RELEASE_BRANCH_NAME"
 
 title="Release branch *$RELEASE_BRANCH_NAME* created"
 subtitle="<https://github.com/neevaco/neeva-ios/tree/$RELEASE_BRANCH_NAME|Github branch>"
-Scripts/send-slack-message.sh "$title" "$subtitle"
+
+if test -f "$NEEVA_REPO/client/browser/scripts/send-slack-message.sh"; then
+  $NEEVA_REPO/client/browser/scripts/send-slack-message.sh "$title" "$subtitle"
+else
+  if [ -z ${NEEVA_REPO} ]; then
+    echo 'Set $NEEVA_REPO to point to your neeva main repository'
+  else
+    echo "No slack script detected, make sure you have the latest changes from main Neeva repo"
+  fi
+  exit 1
+fi
+
