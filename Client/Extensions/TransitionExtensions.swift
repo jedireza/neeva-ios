@@ -16,7 +16,7 @@ private struct PageOverlayTransition: ViewModifier {
                 .blur(radius: visible ? 0 : 10)
                 .saturation(visible ? 1 : 0)
         }
-        .ignoresSafeArea(edges: .bottom)
+        .ignoresSafeArea(.container, edges: .bottom)
     }
 }
 
