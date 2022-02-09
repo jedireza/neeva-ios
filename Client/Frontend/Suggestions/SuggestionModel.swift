@@ -527,11 +527,13 @@ class SuggestionModel: ObservableObject {
         return nil
     }
 
-    private func finishEditingAndSubmit(url: URL) {
+    private func finishEditingAndSubmit(url: URL, for suggestedQuery: String? = nil) {
         bvc.finishEditingAndSubmit(
             url,
             visitType: VisitType.link,
-            forTab: bvc.tabManager.selectedTab)
+            forTab: bvc.tabManager.selectedTab,
+            with: suggestedQuery
+        )
     }
 
     // MARK: - Suggestion Handling
@@ -576,7 +578,7 @@ class SuggestionModel: ObservableObject {
             }
 
             if let suggestedUrl = URL(string: suggestion.suggestedUrl) {
-                finishEditingAndSubmit(url: suggestedUrl)
+                finishEditingAndSubmit(url: suggestedUrl, for: suggestedQuery)
             } else {
                 log.error(
                     "Malformed memorized url \(suggestion.suggestedUrl) for query \(suggestedQuery ?? "empty")"

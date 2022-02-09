@@ -51,14 +51,16 @@ class SessionData: NSObject, NSCoding {
 
     /// For each URL there is a corresponding query or nil.
     /// If a query is nil, there is not a query for that specific navigation.
-    let queries: [String?]
+    let typedQueries: [String?]
+    let suggestedQueries: [String?]
     let lastUsedTime: Timestamp
 
     var jsonDictionary: [String: Any] {
         return [
             "currentPage": String(self.currentPage),
             "urls": urls.map { $0.absoluteString },
-            "queries": queries,
+            "queries": typedQueries,
+            "suggestedQueries": suggestedQueries,
             "lastUsedTime": String(self.lastUsedTime),
         ]
     }
@@ -75,10 +77,11 @@ class SessionData: NSObject, NSCoding {
     ///                  where 1-N is the first page in history, and 0 is the last.
     ///   - urls: The sequence of URLs in this tab's session history.
     ///   - lastUsedTime: The last time this tab was modified.
-    init(currentPage: Int, urls: [URL], queries: [String?], lastUsedTime: Timestamp) {
+    init(currentPage: Int, urls: [URL], queries: [String?], suggestedQueries: [String?], lastUsedTime: Timestamp) {
         self.currentPage = currentPage
         self.urls = migrate(urls: urls)
-        self.queries = queries
+        self.typedQueries = queries
+        self.suggestedQueries = suggestedQueries
         self.lastUsedTime = lastUsedTime
 
         assert(urls.count > 0, "Session has at least one entry")
@@ -89,14 +92,17 @@ class SessionData: NSObject, NSCoding {
     required init?(coder: NSCoder) {
         self.currentPage = coder.decodeInteger(forKey: "currentPage")
         self.urls = migrate(urls: coder.decodeObject(forKey: "urls") as? [URL] ?? [URL]())
-        self.queries = coder.decodeObject(forKey: "queries") as? [String?] ?? [String]()
+        let queries = coder.decodeObject(forKey: "queries") as? [String?] ?? [String]()
+        self.typedQueries = queries
+        self.suggestedQueries = coder.decodeObject(forKey: "suggestedQueries") as? [String?] ?? Array(repeating: nil, count: queries.count)
         self.lastUsedTime = Timestamp(coder.decodeInt64(forKey: "lastUsedTime"))
     }
 
     func encode(with coder: NSCoder) {
         coder.encode(currentPage, forKey: "currentPage")
         coder.encode(migrate(urls: urls), forKey: "urls")
-        coder.encode(queries, forKey: "queries")
+        coder.encode(typedQueries, forKey: "queries")
+        coder.encode(suggestedQueries, forKey: "suggestedQueries")
         coder.encode(Int64(lastUsedTime), forKey: "lastUsedTime")
     }
 }

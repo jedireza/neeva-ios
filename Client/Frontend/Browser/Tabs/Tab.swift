@@ -312,7 +312,7 @@ class Tab: NSObject, ObservableObject {
                 {
                     // if we don't have memorized query from the url
                     // use last tab query
-                    query = recentQuery
+                    query = recentQuery.suggested ?? recentQuery.typed
                 } else {
                     // use current url as query for fallback
                     query = url.absoluteString
@@ -467,7 +467,7 @@ class Tab: NSObject, ObservableObject {
 
                 // Small delayed needed to prevent animation intefernce
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                    bvc.searchQueryModel.value = query
+                    bvc.searchQueryModel.value = query.typed
                     bvc.tabContainerModel.updateContent(
                         .showZeroQuery(
                             isIncognito: bvc.browserModel.incognitoModel.isIncognito,
@@ -535,7 +535,7 @@ class Tab: NSObject, ObservableObject {
         }
     }
 
-    func getMostRecentQuery(restrictToCurrentNavigation: Bool = false) -> String? {
+    func getMostRecentQuery(restrictToCurrentNavigation: Bool = false) -> QueryForNavigation.Query? {
         guard let webView = webView else {
             return nil
         }

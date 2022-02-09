@@ -5,24 +5,33 @@
 import Foundation
 import WebKit
 
+
 class QueryForNavigation {
-    @Published var queryForNavigations = [WKBackForwardListItem: String]()
-    var currentSearchQuery: String?
+
+    struct Query {
+        let typed: String
+        let suggested: String?
+    }
+
+    @Published var queryForNavigations = [WKBackForwardListItem: Query]()
+    var currentQuery: Query?
 
     func findQueryIndexFor(navigation: WKBackForwardListItem) -> Int? {
         return Array(queryForNavigations.keys).firstIndex { $0 == navigation }
     }
 
-    func findQueryFor(navigation: WKBackForwardListItem) -> String? {
+    func findQueryFor(navigation: WKBackForwardListItem) -> Query? {
         return queryForNavigations[navigation]
     }
 
     func attachCurrentSearchQueryToCurrentNavigation(webView: WKWebView) {
+        // attach current suggested query?
         if let navigation = webView.backForwardList.currentItem,
-            let query = currentSearchQuery, !query.isEmpty
+            let query = currentQuery,
+           !query.typed.isEmpty
         {
             queryForNavigations[navigation] = query
-            currentSearchQuery = nil
+            currentQuery = nil
 
             let backForwardList = webView.backForwardList.all
             queryForNavigations = queryForNavigations.filter {
