@@ -52,6 +52,7 @@ struct SendForm: View {
                 )
                 .disableAutocorrection(true)
                 .autocapitalization(.none)
+                .keyboardType(.numbersAndPunctuation)
                 .fixedSize(horizontal: false, vertical: true)
                 .background(Color.brand.white.opacity(0.8))
                 .cornerRadius(12)
@@ -61,23 +62,18 @@ struct SendForm: View {
                 Text("= \(CryptoConfig.shared.toUSD(amount: amount)) USD")
             }
 
-            HStack {
-                Spacer()
+            VStack(spacing: 16) {
+                NeevaWalletLongPressButton(action: sendEth) {
+                    Text("Press and hold to send")
+                        .frame(maxWidth: .infinity)
+                }
+                .disabled(amount.isEmpty && sendToAccountAddress.isEmpty)
                 Button(action: { showSendForm = false }) {
                     Text("Cancel")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.neeva(.secondary))
-                .padding(.top, 8)
-
-                Button(action: sendEth) {
-                    Text("Send")
-                        .frame(maxWidth: .infinity)
-                }
-                .buttonStyle(.neeva(.primary))
-                .padding(.top, 8)
-                .disabled(amount.isEmpty && sendToAccountAddress.isEmpty)
-            }
+                .buttonStyle(.wallet(.secondary))
+            }.padding(.top, 8)
         }
         .sheet(isPresented: $showQRScanner) {
             ScannerView(showQRScanner: $showQRScanner, returnAddress: $sendToAccountAddress)

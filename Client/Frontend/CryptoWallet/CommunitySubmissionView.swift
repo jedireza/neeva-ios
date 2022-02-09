@@ -15,17 +15,21 @@ struct CommunitySubmissionView: View {
     var body: some View {
         VStack(spacing: 12) {
             Spacer()
-            Text(
-                """
-                We were not able to confirm the validity of this site. Please proceed with caution.
-                """
-            )
+            VStack(spacing: 8) {
+                Text(
+                    "We were not able to confirm the validity of this site. Please proceed with caution."
+                )
+                Text(
+                    "You can help the Neeva community by verifying sites you know about or by reporting scams."
+                )
+            }
             .font(.roobert(size: 16))
             .foregroundColor(.label)
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.bottom, 8)
-            Button(
+
+            NeevaWalletLongPressButton(
                 action: {
                     trust = true
                     request = TrustSignalRequest(url: url, trusted: true)
@@ -37,13 +41,12 @@ struct CommunitySubmissionView: View {
                             .resizable()
                             .scaledToFit()
                             .foregroundColor(.white)
-                            .frame(width: 16, height: 16)
-                        Text("Report as trusted")
+                            .frame(width: 12, height: 12)
+                        Text("Press and hold to verify")
                     }.frame(maxWidth: .infinity)
 
                 }
             )
-            .buttonStyle(.wallet(.primary))
             Button(
                 action: {
                     trust = false

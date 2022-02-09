@@ -2343,7 +2343,7 @@
 		28CE83EF1A1D246900576538 /* Third-Party Source */ = {
 			isa = PBXGroup;
 			children = (
-				4A9EFAEE27B0BF3E00F3ED7F /* ConfettiSwiftUI */,
+				4A3255A627B326FD000A700E /* ConfettiSwiftUI */,
 				EB912B8D22722A7800DF585A /* Deferred */,
 				D8FDEB54220CFE970069A582 /* UIImage+ImageEffects.h */,
 				D8FDEB55220CFE970069A582 /* UIImage+ImageEffects.m */,
@@ -2596,6 +2596,16 @@
 			path = Card;
 			sourceTree = "<group>";
 		};
+		4A3255A627B326FD000A700E /* ConfettiSwiftUI */ = {
+			isa = PBXGroup;
+			children = (
+				4A9EFAEC27AFBCF900F3ED7F /* Confetti.swift */,
+				4A9EFAEF27B0BFD100F3ED7F /* README.md */,
+			);
+			name = ConfettiSwiftUI;
+			path = ThirdParty/ConfettiSwiftUI;
+			sourceTree = "<group>";
+		};
 		4A93B550277F80A400CD5415 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -2606,15 +2616,6 @@
 				4A93B55B27829BE800CD5415 /* WalletDetailView.swift */,
 			);
 			path = Assets;
-			sourceTree = "<group>";
-		};
-		4A9EFAEE27B0BF3E00F3ED7F /* ConfettiSwiftUI */ = {
-			isa = PBXGroup;
-			children = (
-				4A9EFAEC27AFBCF900F3ED7F /* Confetti.swift */,
-				4A9EFAEF27B0BFD100F3ED7F /* README.md */,
-			);
-			path = ConfettiSwiftUI;
 			sourceTree = "<group>";
 		};
 		4AF1948B266EC74C007E2C3B /* Carousel */ = {

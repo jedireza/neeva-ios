@@ -63,6 +63,55 @@ public struct NeevaWalletButtonStyle: ButtonStyle {
     }
 }
 
+public struct NeevaWalletLongPressButton<Content: View>: View {
+    @State var unlocked = false
+    @State var unlockActive = false
+    @State var countDown = 4
+    @State var timer: Timer? = nil
+
+    let action: () -> Void
+    let label: () -> Content
+
+    public var body: some View {
+        label()
+            .foregroundColor(.wallet.primaryLabel)
+            .padding(.vertical, 8)
+            .frame(height: 48)
+            .animation(nil)
+            .background(
+                LinearGradient(
+                    colors: unlockActive || unlocked
+                        ? [.wallet.gradientStart, .wallet.gradientEnd] : [.wallet.gradientEnd],
+                    startPoint: .leading,
+                    endPoint: unlockActive || unlocked ? .trailing : .leading)
+            )
+            .animation(unlockActive ? .linear(duration: 4) : nil)
+            .clipShape(Capsule())
+            .disabled(!unlocked)
+            .overlay(
+                Text("\(countDown)")
+                    .bold()
+                    .foregroundColor(.wallet.primaryLabel)
+                    .padding(.leading, 24)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            )
+            .onLongPressGesture(
+                minimumDuration: 4,
+                pressing: { pressing in
+                    unlockActive = pressing
+                    if pressing, timer == nil {
+                        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                            countDown -= 1
+                        }
+                    } else if !pressing, let timer = self.timer {
+                        timer.invalidate()
+                        self.timer = nil
+                        countDown = 4
+                    }
+                }, perform: action)
+    }
+}
+
 extension ButtonStyle where Self == NeevaWalletButtonStyle {
     public static func wallet(_ visualSpec: NeevaWalletButtonStyle.VisualSpec) -> Self {
         .init(visualSpec: visualSpec)

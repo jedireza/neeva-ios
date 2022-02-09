@@ -47,21 +47,50 @@ struct SessionInfoView: View {
                 .padding(16)
                 .frame(minHeight: 300)
             }
-            Button(
-                action: {
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        try? web3Model.server?.disconnect(from: dAppSession)
-                    }
-                    Defaults[.dAppsSession(dAppSession.dAppInfo.peerId)] = nil
-                    Defaults[.sessionsPeerIDs].remove(dAppSession.dAppInfo.peerId)
-                    showdAppSessionControls = false
-                    web3Model.currentSession = nil
-                },
-                label: {
-                    Text("Disconnect")
-                        .frame(width: 300)
+            VStack(spacing: 8) {
+                HStack(spacing: 12) {
+                    Button(action: {
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            try? web3Model.server?.disconnect(from: dAppSession)
+                        }
+                        Defaults[.dAppsSession(dAppSession.dAppInfo.peerId)] = nil
+                        Defaults[.sessionsPeerIDs].remove(dAppSession.dAppInfo.peerId)
+                        showdAppSessionControls = false
+                        web3Model.currentSession = nil
+                    }) {
+                        HStack(spacing: 4) {
+                            Symbol(decorative: .wifiSlash, style: .bodyMedium)
+                            Text("Disconnect")
+                        }
+                    }.buttonStyle(WalletDashBoardButtonStyle())
+                    let nodeToSwitchTo =
+                        EthNode.from(chainID: dAppSession.walletInfo?.chainId)
+                            == .Ethereum ? EthNode.Polygon : EthNode.Ethereum
+                    Button(action: {
+                        web3Model.toggle(session: dAppSession, to: nodeToSwitchTo)
+                        showdAppSessionControls = false
+                    }) {
+                        HStack(spacing: 4) {
+                            switch nodeToSwitchTo {
+                            case .Ethereum:
+                                TokenType.ether.ethLogo
+                            default:
+                                TokenType.matic.polygonLogo
+                            }
+                            Text("Switch to \(nodeToSwitchTo.rawValue)")
+                        }
+                    }.buttonStyle(WalletDashBoardButtonStyle())
                 }
-            ).buttonStyle(.neeva(.primary))
+                Button(action: {
+                    web3Model.showWalletPanel()
+                    showdAppSessionControls = false
+                }) {
+                    HStack(spacing: 2) {
+                        Symbol(decorative: .gear, style: .bodyMedium)
+                        Text("Wallet Settings")
+                    }
+                }.buttonStyle(WalletDashBoardButtonStyle())
+            }
         }.padding(.vertical, 16)
     }
 }

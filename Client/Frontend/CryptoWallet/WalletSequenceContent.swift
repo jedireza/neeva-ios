@@ -168,12 +168,14 @@ struct WalletSequenceContent: View {
             if let trustedDomain = model.alternateTrustedDomain {
                 VStack(spacing: 8) {
                     (Text("This page's address is very close to ") + Text(trustedDomain).bold()
-                        + Text(" which is a trusted site."))
-                    Text("This is a pattern commonly used by malicious websites.")
+                        + Text(" which is a verified site."))
+                    Text(
+                        "Using a popular top level domain and a different extension is a pattern commonly used by malicious websites."
+                    )
                     Text("We will avoid connecting your wallet to protect its contents.")
                 }
                 .font(.roobert(size: 16))
-                .foregroundColor(.red)
+                .foregroundColor(Color(light: .brand.variant.red, dark: .brand.red))
                 .fixedSize(horizontal: false, vertical: true)
                 .multilineTextAlignment(.center)
                 Button(

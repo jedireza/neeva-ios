@@ -254,14 +254,14 @@ struct WalletDashboard: View {
                             default:
                                 TokenType.ether.ethLogo
                             }
-                        }.modifier(
+                        }
+                        .modifier(
                             SessionActionsModifier(
                                 session: session,
                                 showConfirmDisconnectAlert: $showConfirmDisconnectAlert,
                                 sessionToDisconnect: $sessionToDisconnect)
                         )
                         .modifier(WalletListSeparatorModifier())
-
                     }
                 }
             },
@@ -328,26 +328,29 @@ struct WalletDashboard: View {
     }
 
     var body: some View {
-        List {
-            if showSendForm {
-                SendForm(showSendForm: $showSendForm)
-                    .modifier(WalletListSeparatorModifier())
-                    .padding(.vertical, 40)
-            } else {
-                accountInfo
-                    .actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
-                        confirmRemoveWalletSheet
-                    }
-                balancesSection
-                openSessionsSection
-                    .actionSheet(isPresented: $showConfirmDisconnectAlert) {
-                        confirmDisconnectSheet
-                    }
+        NavigationView {
+            List {
+                if showSendForm {
+                    SendForm(showSendForm: $showSendForm)
+                        .modifier(WalletListSeparatorModifier())
+                        .padding(.vertical, 40)
+                } else {
+                    accountInfo
+                        .actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
+                            confirmRemoveWalletSheet
+                        }
+                    balancesSection
+                    openSessionsSection
+                        .actionSheet(isPresented: $showConfirmDisconnectAlert) {
+                            confirmDisconnectSheet
+                        }
+                }
             }
-        }
-        .modifier(WalletListStyleModifier())
-        .padding(.horizontal, 25)
-        .padding(.bottom, 72)
+            .modifier(WalletListStyleModifier())
+            .padding(.horizontal, 25)
+            .padding(.bottom, 72)
+            .navigationBarHidden(true)
+        }.navigationViewStyle(.automatic)
     }
 
     func onScanComplete() {
@@ -478,6 +481,7 @@ public struct WalletDashBoardButtonStyle: ButtonStyle {
             .foregroundColor(.label)
             .padding(12)
             .frame(height: 40)
+            .background(configuration.isPressed ? Color.tertiarySystemFill : Color.clear)
             .roundedOuterBorder(cornerRadius: 20, color: .secondarySystemFill, lineWidth: 1)
             .clipShape(Capsule())
     }
