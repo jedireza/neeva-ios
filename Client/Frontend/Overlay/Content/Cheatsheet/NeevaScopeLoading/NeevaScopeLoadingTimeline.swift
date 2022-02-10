@@ -144,8 +144,16 @@ public class NeevaScopeLoadingTimeline: FlowTimeline {
             transform_rotation_z_scope
         ]
 
-        animationsByLayer[view.glare.layer] = glareAnimations + glareAnimations.map { $0.reversed }
-        animationsByLayer[view.scope.layer] = scopeAnimations + scopeAnimations.map { $0.reversed }
+        animationsByLayer[view.glare.layer] = glareAnimations + glareAnimations.map {
+            let reversedAnimation = $0.reversed
+            reversedAnimation.timingFunctions = [.easeOut]
+            return reversedAnimation
+        }
+        animationsByLayer[view.scope.layer] = scopeAnimations + scopeAnimations.map {
+            let reversedAnimation = $0.reversed
+            reversedAnimation.timingFunctions = [.easeOut]
+            return reversedAnimation
+        }
 
         return animationsByLayer
     }
