@@ -10,7 +10,6 @@ import UIKit
 public class NeevaScopeKeyFrameView: UIView {
     public struct Defaults {
         public static let size = CGSize(width: 82.09, height: 74.74)
-        public static let backgroundColor = UIColor.white
     }
 
     public var scope: UIView!
@@ -31,7 +30,7 @@ public class NeevaScopeKeyFrameView: UIView {
     }
 
     private func setup() {
-        backgroundColor = Defaults.backgroundColor
+        backgroundColor = .clear
         clipsToBounds = false
         createViews()
         addSubviews()
