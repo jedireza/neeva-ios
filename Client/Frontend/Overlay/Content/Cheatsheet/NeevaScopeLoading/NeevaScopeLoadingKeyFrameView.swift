@@ -29,6 +29,11 @@ public class NeevaScopeKeyFrameView: UIView {
         setup()
     }
 
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        fillView()
+    }
+
     private func setup() {
         backgroundColor = .clear
         clipsToBounds = false
@@ -36,6 +41,13 @@ public class NeevaScopeKeyFrameView: UIView {
         addSubviews()
         layer.name = "neevaScopeSceneLayer"
 //        scale(to: frame.size)
+    }
+
+    private func fillView() {
+        // scale subview
+        let x = bounds.size.width / Defaults.size.width
+        let y = bounds.size.height / Defaults.size.height
+        scope.transform = CGAffineTransform(scaleX: x, y: y)
     }
 
     /// Scales `self` and its subviews to `size`.
