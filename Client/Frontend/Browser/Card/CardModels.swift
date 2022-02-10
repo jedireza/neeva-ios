@@ -49,13 +49,12 @@ class TabCardModel: CardModel {
     init(manager: TabManager, groupManager: TabGroupManager) {
         self.manager = manager
         self.groupManager = groupManager
-        // Process updates to the TabManager state asynchronously, avoiding duplicates. This
-        // way we wait until after `tabs` has been updated before we do any work.
-        self.subscription = manager.$tabs.receive(on: DispatchQueue.main).removeDuplicates().sink {
-            [weak self] (_) in
-            if manager.didRestoreAllTabs {
-                self?.onDataUpdated()
-            }
+        // Process updates to the TabManager state asynchronously. This way we wait
+        // until after `tabs` has been updated before we do any work.
+        self.subscription = manager.objectWillChange.filter({ [weak self] (_) in
+            self?.manager.didRestoreAllTabs ?? false
+        }).receive(on: DispatchQueue.main).sink { [weak self] (_) in
+            self?.onDataUpdated()
         }
     }
 
