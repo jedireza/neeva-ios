@@ -192,6 +192,14 @@ public struct CheatsheetMenuView: View {
     }
 
     public var body: some View {
+        NeevaScopeLoadingView()
+            .frame(width: 200, height: 200, alignment: .center)
+            .padding()
+            .background(Color.pink)
+    }
+
+    /*
+    public var body: some View {
         ZStack {
             // Show Cheatsheet Info if on Neeva domain page
             if NeevaConstants.isInNeevaDomain(model.currentPageURL) {
@@ -270,6 +278,7 @@ public struct CheatsheetMenuView: View {
         }
         .frame(maxWidth: .infinity, minHeight: height < 200 ? 200 : height)
     }
+     */
 
     @ViewBuilder
     var recipeView: some View {
