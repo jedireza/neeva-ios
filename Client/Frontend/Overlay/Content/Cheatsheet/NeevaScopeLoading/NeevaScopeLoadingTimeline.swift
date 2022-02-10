@@ -127,7 +127,8 @@ public class NeevaScopeLoadingTimeline: FlowTimeline {
 
         // Organize CAKeyframeAnimations by CALayer
         var animationsByLayer = [CALayer: [CAKeyframeAnimation]]()
-        animationsByLayer[view.glare.layer] = [
+
+        let glareAnimations = [
             position_y_glare,
             bounds_size_height_glare,
             bounds_size_width_glare,
@@ -135,12 +136,16 @@ public class NeevaScopeLoadingTimeline: FlowTimeline {
             position_x_glare,
             path_glare
         ]
-        animationsByLayer[view.scope.layer] = [
+
+        let scopeAnimations = [
             position_x_scope,
             bounds_size_width_scope,
             position_y_scope,
             transform_rotation_z_scope
         ]
+
+        animationsByLayer[view.glare.layer] = glareAnimations + glareAnimations.map { $0.reversed }
+        animationsByLayer[view.scope.layer] = scopeAnimations + scopeAnimations.map { $0.reversed }
 
         return animationsByLayer
     }

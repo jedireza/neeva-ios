@@ -16,7 +16,6 @@ open class FlowTimeline {
     /// Determines the number of times the timeline's animations will repeat.
     ///
     /// May be fractional. If the repeatCount is 0, it is ignored.
-    /// Setting this property to greatestFiniteMagnitude will cause the timeline to repeat forever.
     public let repeatCount: Float
 
     /// The length of time a Timeline will repeat.
