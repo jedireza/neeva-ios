@@ -32,7 +32,7 @@ public class NeevaScopeLoadingViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        timeline = NeevaScopeLoadingTimeline(view: neevaScopeView, duration: 0.8, repeatCount: 30)
+        timeline = NeevaScopeLoadingTimeline(view: neevaScopeView, duration: 0.8, repeatCount: 100)
 
         timeline.play()
     }
