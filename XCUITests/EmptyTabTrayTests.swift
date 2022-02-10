@@ -99,7 +99,7 @@ class EmptyTabTrayTests: BaseTestCase {
         app.buttons["Close"].firstMatch.tap(force: true)
 
         setIncognitoMode(enabled: false, closeTabTray: false)
-        app.buttons["Example Domain, Tab Group"].tap()
+        app.buttons["Tab Group, Example Domain"].tap()
         XCTAssert(app.buttons["Example Domain, Tab"].exists)
     }
 
@@ -111,10 +111,10 @@ class EmptyTabTrayTests: BaseTestCase {
 
         // Make sure it's enabled
         goToTabTray()
-        XCTAssertEqual(app.buttons["Done"].value as! String, "Enabled")
+        waitForValueContains(app.buttons["Done"], value: "Enabled")
 
         // Make sure it's disabled
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
-        XCTAssertEqual(app.buttons["Done"].value as! String, "Disabled")
+        waitForValueContains(app.buttons["Done"], value: "Disabled")
     }
 }

@@ -92,9 +92,7 @@ struct CardGrid: View {
                 grid
                     .offset(
                         x: (spaceModel.detailedSpace == nil
-                            && tabGroupModel.detailedTabGroup == nil
-                            && !web3Model.showingWalletDetails
-                            || FeatureFlag[.tabGroupsNewDesign])
+                            && !web3Model.showingWalletDetails)
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
                     .background(
@@ -126,28 +124,6 @@ struct CardGrid: View {
                         )
                         .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
                     }
-                    if !FeatureFlag[.tabGroupsNewDesign] {
-                        if let tabGroupDetails = tabGroupModel.detailedTabGroup {
-                            DetailView(primitive: tabGroupDetails) {
-                                gridModel.showingDetailView = false
-                                withAnimation(.easeInOut(duration: 0.4)) {
-                                    detailDragOffset = geom.size.width
-                                    tabGroupModel.detailedTabGroup = nil
-                                }
-                            }
-                            .frame(width: geom.size.width, height: geom.size.height)
-                            .background(
-                                Color.groupedBackground.edgesIgnoringSafeArea([
-                                    .bottom, .horizontal,
-                                ])
-                            )
-                            .transition(
-                                gridModel.animateDetailTransitions ? .flipFromRight : .identity
-                            )
-                            .environment(\.cardSize, cardSize)
-                            .environment(\.columns, columns)
-                        }
-                    }
                     if web3Model.showingWalletDetails {
                         WalletDetailView()
                             .frame(width: geom.size.width, height: geom.size.height)
@@ -171,9 +147,6 @@ struct CardGrid: View {
                 deps: geom.size.width, topToolbar, perform: updateCardSize
             )
             .useEffect(deps: spaceModel.detailedSpace) { value in
-                gridModel.showingDetailView = value != nil
-            }
-            .useEffect(deps: tabGroupModel.detailedTabGroup) { value in
                 gridModel.showingDetailView = value != nil
             }
         }
@@ -224,7 +197,6 @@ private struct DraggableDetail: ViewModifier {
             .onAnimationCompleted(for: detailDragOffset) {
                 if detailDragOffset == width {
                     spaceModel.detailedSpace = nil
-                    tabGroupModel.detailedTabGroup = nil
                     web3Model.showingWalletDetails = false
                     detailDragOffset = 0
                     gridModel.showingDetailView = false

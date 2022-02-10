@@ -82,43 +82,7 @@ where
             topBar
                 .animation(nil)
 
-            if tabGroupCardModel.detailedTabGroup != nil {
-                Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
-                tabGroupGrid
-                if editMode == .active {
-                    Button(
-                        action: {
-                            selectedTabIDs.forEach {
-                                tabModel.manager.get(for: $0)?.rootUUID =
-                                    UUID().uuidString
-                            }
-                            tabModel.manager.objectWillChange.send()
-                            editMode = .inactive
-
-                            var attributes = EnvironmentHelper.shared.getAttributes()
-
-                            attributes.append(
-                                ClientLogCounterAttribute(
-                                    key: LogConfig.TabGroupAttribute.numTabsRemoved,
-                                    value: String(selectedTabIDs.count)
-                                )
-                            )
-
-                            ClientLogger.shared.logCounter(
-                                .tabRemovedFromGroup, attributes: attributes)
-                        },
-                        label: {
-                            Text("Remove from group")
-                                .withFont(.labelLarge)
-                                .frame(maxWidth: .infinity)
-                                .clipShape(Capsule())
-                        }
-                    )
-                    .environment(\.isEnabled, selectedTabIDs.count > 0)
-                    .buttonStyle(.neeva(.primary))
-                    .padding(16)
-                }
-            } else if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty {
+            if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty {
                 EmptySpaceView()
             } else if showingAsList {
                 spaceList
@@ -457,46 +421,6 @@ where
                 }
             }
         }
-    }
-
-    var tabGroupGrid: some View {
-        GeometryReader { scrollGeometry in
-            ScrollView(.vertical, showsIndicators: false) {
-                ScrollViewReader { scrollProxy in
-                    LazyVGrid(columns: gridColumns, spacing: CardGridUX.GridSpacing) {
-                        ForEach(tabGroupDetail!.allDetails, id: \.id) { details in
-                            FittedCard(details: details)
-                                .contextMenu {
-                                    FeatureFlag[.tabGroupsPinning]
-                                        ? TabGroupContextMenu(details: details) : nil
-                                }
-                                .modifier(
-                                    CardTransitionModifier(
-                                        details: details, containerGeometry: scrollGeometry,
-                                        extraBottomPadding: topToolbar
-                                            ? 0 : UIConstants.ToolbarHeight)
-                                )
-                                .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                                .environment(\.selectionCompletion) {
-                                    ClientLogger.shared.logCounter(.tabInTabGroupClicked)
-                                    browserModel.hideWithAnimation()
-                                }
-                                .overlay(
-                                    tabSelectButtonOverlay(details: details),
-                                    alignment: .topTrailing)
-                        }
-                    }
-                    .padding(.vertical, CardGridUX.GridSpacing)
-                    .onAppear {
-                        if let selectedItem = primitive.allDetails.first(where: \.isSelected) {
-                            scrollProxy.scrollTo(selectedItem.id)
-                        }
-                    }
-                }
-            }
-            .environment(\.columns, gridColumns)
-        }
-        .ignoresSafeArea(edges: topToolbar ? [.bottom] : [])
     }
 }
 

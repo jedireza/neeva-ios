@@ -23,11 +23,11 @@ protocol CardModel: ThumbnailModel {
     func onDataUpdated()
 }
 
-class TabCardModel: CardModel, TabEventHandler {
+class TabCardModel: CardModel {
     private var onViewUpdate: () -> Void = {}
     var manager: TabManager
     private var groupManager: TabGroupManager
-    private var anyCancellable: AnyCancellable? = nil
+    private var subscription: AnyCancellable? = nil
 
     @Published var allDetails: [TabCardDetails] = []
     @Published private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
@@ -49,18 +49,14 @@ class TabCardModel: CardModel, TabEventHandler {
     init(manager: TabManager, groupManager: TabGroupManager) {
         self.manager = manager
         self.groupManager = groupManager
-        register(self, forTabEvents: .didClose, .didChangeURL)
-        onDataUpdated()
-        self.anyCancellable = manager.objectWillChange.sink { [weak self] (_) in
+        // Process updates to the TabManager state asynchronously, avoiding duplicates. This
+        // way we wait until after `tabs` has been updated before we do any work.
+        self.subscription = manager.$tabs.receive(on: DispatchQueue.main).removeDuplicates().sink {
+            [weak self] (_) in
             if manager.didRestoreAllTabs {
                 self?.onDataUpdated()
-                self?.objectWillChange.send()
             }
         }
-    }
-
-    func tabDidClose(_ tab: Tab) {
-        onDataUpdated()
     }
 
     struct Row: Identifiable {
@@ -144,9 +140,8 @@ class TabCardModel: CardModel, TabEventHandler {
         groupManager.updateTabGroups()
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
-        if FeatureFlag[.tabGroupsNewDesign] {
-            modifyAllDetailsAvoidingSingleTabs(groupManager.childTabs)
-        }
+
+        modifyAllDetailsAvoidingSingleTabs(groupManager.childTabs)
 
         allDetailsWithExclusionList = manager.getAll().filter {
             !groupManager.childTabs.contains($0)
@@ -629,16 +624,6 @@ class TabGroupCardModel: CardModel {
         }
     }
     @Published var allDetailsWithExclusionList: [TabGroupCardDetails] = []
-    @Published var detailedTabGroup: TabGroupCardDetails? {
-        willSet {
-            if !FeatureFlag[.tabGroupsNewDesign] {
-                guard let tabgroup = detailedTabGroup, newValue == nil else {
-                    return
-                }
-                tabgroup.isShowingDetails = false
-            }
-        }
-    }
     @Published var representativeTabs: [Tab] = []
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
     private var tabGroupExpandedSubscriptions: Set<AnyCancellable> = Set()
@@ -676,24 +661,6 @@ class TabGroupCardModel: CardModel {
         objectWillChange.send()
     }
 
-    private func createIsShowingDetailsSink(
-        details: TabGroupCardDetails?, storeIn: inout Set<AnyCancellable>
-    ) {
-        let id = details?.id
-        details?.$isShowingDetails.sink { [weak self] showingDetails in
-            DispatchQueue.main.async {
-                if showingDetails {
-                    if !FeatureFlag[.tabGroupsNewDesign] {
-                        withAnimation {
-                            self?.detailedTabGroup =
-                                self?.allDetails.first(where: { $0.id == id })
-                        }
-                    }
-                }
-            }
-        }.store(in: &storeIn)
-    }
-
     func setupDetailsListener() {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
@@ -702,45 +669,9 @@ class TabGroupCardModel: CardModel {
             self.allDetails = self.manager.getAll().map {
                 TabGroupCardDetails(tabGroup: $0, tabGroupManager: self.manager)
             }
-            if !FeatureFlag[.tabGroupsNewDesign] {
-                if self.detailedTabGroup != nil {
-                    self.detailedTabGroup = self.allDetails.first {
-                        $0.id == self.detailedTabGroup?.id
-                    }
-                    self.detailedTabGroup?.isShowingDetails = true
-                }
-            }
             self.manager.cleanUpTabGroupNames()
             self.representativeTabs = self.manager.getAll()
                 .reduce(into: [Tab]()) { $0.append($1.children.first!) }
-            if !FeatureFlag[.tabGroupsNewDesign] {
-                self.allDetails.forEach { details in
-                    self.createIsShowingDetailsSink(
-                        details: details, storeIn: &self.detailsSubscriptions)
-                }
-            }
-            self.manager.getAll().forEach { tabgroup in
-                tabgroup.children.forEach { tab in
-                    // Avoid taking a reference to `tab` within the following closure.
-                    let rootUUID = tab.rootUUID
-                    tab.$screenshotUUID.sink { [weak self] (_) in
-                        guard let self = self else {
-                            return
-                        }
-                        if let index = self.allDetails.firstIndex(where: {
-                            $0.id == rootUUID
-                        }), let tabGroup = self.manager.tabGroups[rootUUID] {
-                            self.allDetails[index] = TabGroupCardDetails(
-                                tabGroup: tabGroup, tabGroupManager: self.manager)
-                            if !FeatureFlag[.tabGroupsNewDesign] {
-                                self.createIsShowingDetailsSink(
-                                    details: self.allDetails[index],
-                                    storeIn: &self.screenshotsSubscriptions)
-                            }
-                        }
-                    }.store(in: &self.screenshotsSubscriptions)
-                }
-            }
         }
     }
 }
