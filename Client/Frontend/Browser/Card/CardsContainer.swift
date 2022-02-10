@@ -60,23 +60,12 @@ struct TabGridContainer: View {
 
     var body: some View {
         Group {
-            if FeatureFlag[.tabGroupsNewDesign] {
-                LazyVStack(alignment: .leading, spacing: 0) {
-                    SingleLevelTabCardsView(containerGeometry: geom, incognito: isIncognito)
-                }
-            } else {
-                LazyVGrid(columns: columns, spacing: CardGridUX.GridSpacing) {
-                    TabCardsView(containerGeometry: geom, incognito: isIncognito)
-                }
+            LazyVStack(alignment: .leading, spacing: 0) {
+                SingleLevelTabCardsView(containerGeometry: geom, incognito: isIncognito)
             }
         }
         .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
         .environment(\.selectionCompletion) {
-            if !FeatureFlag[.tabGroupsNewDesign] {
-                guard tabGroupModel.detailedTabGroup == nil else {
-                    return
-                }
-            }
             ClientLogger.shared.logCounter(
                 .SelectTab,
                 attributes: getLogCounterAttributesForTabs(
@@ -88,15 +77,9 @@ struct TabGridContainer: View {
         }
         .padding(.vertical, landscapeMode ? 8 : 16)
         .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
-            if FeatureFlag[.tabGroupsNewDesign] {
-                if let selectedRowId = selectedRowId {
-                    withAnimation(nil) {
-                        scrollProxy.scrollTo(selectedRowId)
-                    }
-                }
-            } else {
-                if let selectedCardID = selectedCardID {
-                    scrollProxy.scrollTo(selectedCardID)
+            if let selectedRowId = selectedRowId {
+                withAnimation(nil) {
+                    scrollProxy.scrollTo(selectedRowId)
                 }
             }
         }
