@@ -1,0 +1,11 @@
+// Copyright 2022 Neeva Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+OPENSEA_API_KEY = "$OPENSEA_API_KEY"
+CRYPTO_ETH_URL = "$CRYPTO_ETH_URL"
+CRYPTO_ROPSTEN_URL = "$CRYPTO_ROPSTEN_URL"
+CRYPTO_POLYGON_URL = "$CRYPTO_POLYGON_URL"

@@ -1511,6 +1511,7 @@
 		67AA22F126C476F300F33D09 /* BrowserViewController+OverflowMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+OverflowMenu.swift"; sourceTree = "<group>"; };
 		67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuView.swift; sourceTree = "<group>"; };
 		67B0FAB5279A82B00023A1C5 /* NeevaExperiment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaExperiment.swift; sourceTree = "<group>"; };
+		67B649C727B453E5006024C0 /* APIConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = APIConfig.xcconfig; path = Client/APIConfig.xcconfig; sourceTree = "<group>"; };
 		67C5994F279B261D00660699 /* ExperimentSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentSettingsView.swift; sourceTree = "<group>"; };
 		67F2A52D27306AE900CAE11A /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		744B0FFD1B4F172E00100422 /* ToolbarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarTests.swift; sourceTree = "<group>"; };
@@ -3144,6 +3145,7 @@
 		C9098F6026B0533200D2B5F4 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				67B649C727B453E5006024C0 /* APIConfig.xcconfig */,
 				C9098F6526B0534D00D2B5F4 /* .circleci */,
 				C9098F6626B0534D00D2B5F4 /* .cron.yml */,
 				C9098F6A26B0535C00D2B5F4 /* .gitattributes */,
@@ -7198,6 +7200,7 @@
 		};
 		F0FF957225E03EFF00008BD2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 67B649C727B453E5006024C0 /* APIConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -7471,6 +7474,7 @@
 		};
 		F0FF95C125E03F8F00008BD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 67B649C727B453E5006024C0 /* APIConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_Developer;

@@ -101,3 +101,6 @@ Client/Assets/*.js.LICENSE.txt
 
 /Shared/API/schema.json
 /Shared/API/operationIDs.json
+
+# Config
+/Client/APIConfig.xcconfig
