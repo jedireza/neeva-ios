@@ -33,6 +33,10 @@ public class NeevaScopeLoadingViewController: UIViewController {
         super.viewDidLoad()
 
         timeline = NeevaScopeLoadingTimeline(view: neevaScopeView, duration: 0.8, repeatCount: 100)
+    }
+
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
 
         timeline.play()
     }
