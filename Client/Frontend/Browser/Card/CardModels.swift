@@ -102,7 +102,10 @@ class TabCardModel: CardModel {
         }
 
         return allDetails.filter { tabCard in
-            let tab = tabCard.manager.get(for: tabCard.id)!
+            // The tab may have been removed, and `allDetails` could be out of date. This
+            // possibility exists because `TabCardModel.onDataUpdated` runs asynchronously.
+            // TODO(darin): Figure out how to update `allDetails` synchronously instead.
+            guard let tab = tabCard.manager.get(for: tabCard.id) else { return false }
             return
                 (tabGroupModel.representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
