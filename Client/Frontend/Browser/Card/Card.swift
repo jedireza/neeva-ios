@@ -183,24 +183,10 @@ struct Card<Details>: View where Details: CardDetails {
         }
     }
 
-    var iconInMainGrid: String {
-        details.id == tabGroupCardModel.manager.get(for: details.id)?.children.first?.parentSpaceID
-            ? "bookmark.fill" : "square.grid.2x2.fill"
-    }
-
-    func isChildTab(details: Details) -> Bool {
-        if let currentTab = tabCardDetail?.manager.get(for: details.id) {
-            return tabGroupCardModel.manager.childTabs.contains(currentTab)
-        } else {
-            return false
-        }
-    }
-
     @Environment(\.selectionCompletion) private var selectionCompletion
     @EnvironmentObject private var incognitoModel: IncognitoModel
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var cardTransitionModel: CardTransitionModel
-    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @State private var isPressed = false
 
     var body: some View {
