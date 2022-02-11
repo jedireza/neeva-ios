@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 JABT Labs Inc.
+// Copyright © 2016-2019 JABT
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -17,15 +17,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import AVFoundation
+/*
+ Changes
+ - Renamed to FlowSound
+ */
 
-public final class Sound {
+import UIKit
 
-    static func playAudio(_ audio: AVAudioPlayer, delay: TimeInterval) {
-        audio.prepareToPlay()
-        let time = DispatchTime.now() + Double(Int64(delay * Double(NSEC_PER_SEC))) / Double(NSEC_PER_SEC)
-        DispatchQueue.main.asyncAfter(deadline: time) {
-            audio.play()
-        }
+open class FlowTextView: UILabel {
+    open var textLayer: CATextLayer {
+        return layer as! CATextLayer
+    }
+
+    override open class var layerClass: AnyClass {
+        return CATextLayer.self
     }
 }

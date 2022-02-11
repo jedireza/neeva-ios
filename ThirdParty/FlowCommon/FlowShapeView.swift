@@ -17,9 +17,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+/*
+ Changes
+ - Renamed to FlowShapeView
+ */
+
 import UIKit
 
-open class ShapeView: UIView {
+open class FlowShapeView: UIView {
     open var shapeLayer: CAShapeLayer {
         return layer as! CAShapeLayer
     }

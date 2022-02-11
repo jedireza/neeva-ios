@@ -17,9 +17,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+/*
+ Changes
+ - Renamed to FlowAnimation and FlowAnimationDelegate
+ */
+
 import UIKit
 
-open class Animation: NSObject, CAAnimationDelegate {
+open class FlowAnimation: NSObject, CAAnimationDelegate {
     /// Key frame animations which animate the properties of `layer`.
     fileprivate var keyframeAnimations: [CAKeyframeAnimation]
 
@@ -47,10 +52,9 @@ open class Animation: NSObject, CAAnimationDelegate {
     /// Determines the number of times the animation will repeat.
     ///
     /// May be fractional. If the repeatCount is 0, it is ignored.
-    /// Setting this property to greatestFiniteMagnitude will cause the animation to repeat forever.
     var repeatCount: Float
 
-    weak var delegate: AnimationDelegate?
+    weak var delegate: FlowAnimationDelegate?
 
     /// The current time of the animation. i.e. what time is being displayed.
     var time: TimeInterval {
@@ -113,7 +117,7 @@ open class Animation: NSObject, CAAnimationDelegate {
 
     /// Resets the animation to time 0,
     /// and asychronously executes the completion block when the animation is ready to be played.
-    open func reset(onCompletion: ((Animation) -> Void)? = nil) {
+    open func reset(onCompletion: ((FlowAnimation) -> Void)? = nil) {
         DispatchQueue.main.async { [weak self] in
             CATransaction.suppressAnimations {
                 guard let strongSelf = self,
@@ -137,7 +141,7 @@ open class Animation: NSObject, CAAnimationDelegate {
     }
 
     /// Adds all the animations to `layer` so they can be played.
-    private func addAllAnimations(onCompletion: ((Animation) -> Void)? = nil) {
+    private func addAllAnimations(onCompletion: ((FlowAnimation) -> Void)? = nil) {
         for keyframeAnimation in keyframeAnimations {
             layer.add(keyframeAnimation, forKey: keyframeAnimation.keyPath)
         }
@@ -174,13 +178,13 @@ open class Animation: NSObject, CAAnimationDelegate {
     }
 }
 
-public extension Animation {
-    var reversed: Animation {
+public extension FlowAnimation {
+    var reversed: FlowAnimation {
         let reversedKeyFrameAnimations = keyframeAnimations.map { $0.reversed }
-        return Animation(layer: layer, keyframeAnimations: reversedKeyFrameAnimations)
+        return FlowAnimation(layer: layer, keyframeAnimations: reversedKeyFrameAnimations)
     }
 }
 
-protocol AnimationDelegate: AnyObject {
-    func didStop(animation: Animation)
+protocol FlowAnimationDelegate: AnyObject {
+    func didStop(animation: FlowAnimation)
 }
