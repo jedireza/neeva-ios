@@ -2,6 +2,14 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>CRYPTO_POLYGON_URL</key>
+	<string>$(CRYPTO_POLYGON_URL)</string>
+	<key>CRYPTO_ROPSTEN_URL</key>
+	<string>$(CRYPTO_ROPSTEN_URL)</string>
+	<key>CRYPTO_ETH_URL</key>
+	<string>$(CRYPTO_ETH_URL)</string>
+	<key>OPENSEA_API_KEY</key>
+	<string>$(OPENSEA_API_KEY)</string>
 	<key>AppIdentifierPrefix</key>
 	<string>$(APP_IDENTIFIER_PREFIX)</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>

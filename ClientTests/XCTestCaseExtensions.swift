@@ -14,16 +14,18 @@ extension XCTestCase {
         waitForExpectations(timeout: time + 1, handler: nil)
     }
 
-    func waitForCondition(timeout: TimeInterval = 10, condition: () -> Bool) {
+    func waitForCondition(timeout: TimeInterval = 10, condition: () throws -> Bool) {
         let timeoutTime = Date.timeIntervalSinceReferenceDate + timeout
-
-        while !condition() {
-            if Date.timeIntervalSinceReferenceDate > timeoutTime {
-                XCTFail("Condition timed out")
-                return
+        do {
+            while !(try condition()) {
+                if Date.timeIntervalSinceReferenceDate > timeoutTime {
+                    XCTFail("Condition timed out")
+                    return
+                }
+                wait(0.1)
             }
-
-            wait(0.1)
+        } catch {
+            XCTFail("Condition threw error")
         }
     }
 }

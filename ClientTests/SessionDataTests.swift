@@ -16,7 +16,9 @@ class SessionDataTests: XCTestCase {
         ].map({ URL(string: $0)! })
 
         let input = SessionData(
-            currentPage: -1, urls: testUrls, queries: testUrls.map { _ in return nil },
+            currentPage: -1, urls: testUrls,
+            queries: testUrls.map { _ in return nil },
+            suggestedQueries: Array.init(repeating: nil, count: testUrls.count),
             lastUsedTime: Date.nowMilliseconds())
 
         let data = try! NSKeyedArchiver.archivedData(

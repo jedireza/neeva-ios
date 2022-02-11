@@ -17,7 +17,6 @@ extension BaseTestCase {
     }
 
     func showAppNavigationMenu(for button: String) {
-        print(app.debugDescription)
         if app.buttons["SwitcherOverflowButton"].exists {
             waitForHittable(app.buttons["SwitcherOverflowButton"])
             app.buttons["SwitcherOverflowButton"].tap()

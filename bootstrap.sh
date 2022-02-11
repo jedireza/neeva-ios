@@ -43,6 +43,9 @@ if [ "$1" == "--importLocales" ]; then
   exit 0
 fi
 
+# Build API Config
+Scripts/build-api-config.sh
+
 # Run carthage
 ./carthage_command.sh
 

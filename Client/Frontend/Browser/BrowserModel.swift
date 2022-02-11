@@ -90,9 +90,6 @@ class BrowserModel: ObservableObject {
         } else {
             hideWithNoAnimation()
             gridModel.animateDetailTransitions = false
-            if gridModel.tabGroupCardModel.detailedTabGroup != nil {
-                gridModel.tabGroupCardModel.detailedTabGroup = nil
-            }
         }
     }
 
@@ -179,11 +176,6 @@ class BrowserModel: ObservableObject {
         gridModel.switcherState = .spaces
 
         openSpace(spaceId: SpaceStore.dailyDigestID, bvc: bvc) {}
-    }
-
-    func openTabGroup(detail: TabGroupCardDetails) {
-        gridModel.tabGroupCardModel.detailedTabGroup = detail
-        show()
     }
 
     init(

@@ -123,6 +123,20 @@
 		3215C63C27B475E200D593BF /* NeevaScopeLoadingKeyFrameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C63B27B475E200D593BF /* NeevaScopeLoadingKeyFrameView.swift */; };
 		3215C63E27B47B9500D593BF /* NeevaScopeLoadingTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C63D27B47B9500D593BF /* NeevaScopeLoadingTimeline.swift */; };
 		3215C64027B5925500D593BF /* NeevaScopeLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C63F27B5925500D593BF /* NeevaScopeLoadingView.swift */; };
+		3215C66C27B6191B00D593BF /* FlowAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C65F27B6191B00D593BF /* FlowAnimation.swift */; };
+		3215C66D27B6191B00D593BF /* CGPath+SVG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66027B6191B00D593BF /* CGPath+SVG.swift */; };
+		3215C66E27B6191B00D593BF /* FlowShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66127B6191B00D593BF /* FlowShapeView.swift */; };
+		3215C66F27B6191B00D593BF /* FlowTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66227B6191B00D593BF /* FlowTextView.swift */; };
+		3215C67027B6191B00D593BF /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66327B6191B00D593BF /* UIView+Extension.swift */; };
+		3215C67127B6191B00D593BF /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66427B6191B00D593BF /* UIImage+Extension.swift */; };
+		3215C67227B6191B00D593BF /* CAKeyframeAnimation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66527B6191B00D593BF /* CAKeyframeAnimation+Extension.swift */; };
+		3215C67327B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66627B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift */; };
+		3215C67427B6191B00D593BF /* CATransaction+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66727B6191B00D593BF /* CATransaction+Extension.swift */; };
+		3215C67527B6191B00D593BF /* FlowTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66827B6191B00D593BF /* FlowTimeline.swift */; };
+		3215C67627B6191B00D593BF /* CAMediaTimingFunction+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66927B6191B00D593BF /* CAMediaTimingFunction+Extension.swift */; };
+		3215C67727B6191B00D593BF /* FlowSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66A27B6191B00D593BF /* FlowSound.swift */; };
+		3215C67827B6191B00D593BF /* NSShadow+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66B27B6191B00D593BF /* NSShadow+Extension.swift */; };
+		3215C67A27B6194D00D593BF /* CharacterSet+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C67927B6194D00D593BF /* CharacterSet+Extension.swift */; };
 		32D7F0EB2797025C000203C7 /* CheatsheetMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */; };
 		32D95B0427A37C8100447507 /* CheatsheetTooltipPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */; };
 		39236E721FCC600200A38F1B /* TabEventHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39236E711FCC600200A38F1B /* TabEventHandlerTests.swift */; };
@@ -1289,6 +1303,20 @@
 		3215C63B27B475E200D593BF /* NeevaScopeLoadingKeyFrameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaScopeLoadingKeyFrameView.swift; sourceTree = "<group>"; };
 		3215C63D27B47B9500D593BF /* NeevaScopeLoadingTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaScopeLoadingTimeline.swift; sourceTree = "<group>"; };
 		3215C63F27B5925500D593BF /* NeevaScopeLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaScopeLoadingView.swift; sourceTree = "<group>"; };
+		3215C65F27B6191B00D593BF /* FlowAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowAnimation.swift; sourceTree = "<group>"; };
+		3215C66027B6191B00D593BF /* CGPath+SVG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPath+SVG.swift"; sourceTree = "<group>"; };
+		3215C66127B6191B00D593BF /* FlowShapeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowShapeView.swift; sourceTree = "<group>"; };
+		3215C66227B6191B00D593BF /* FlowTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTextView.swift; sourceTree = "<group>"; };
+		3215C66327B6191B00D593BF /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		3215C66427B6191B00D593BF /* UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
+		3215C66527B6191B00D593BF /* CAKeyframeAnimation+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAKeyframeAnimation+Extension.swift"; sourceTree = "<group>"; };
+		3215C66627B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableParagraphStyle+Extension.swift"; sourceTree = "<group>"; };
+		3215C66727B6191B00D593BF /* CATransaction+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CATransaction+Extension.swift"; sourceTree = "<group>"; };
+		3215C66827B6191B00D593BF /* FlowTimeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTimeline.swift; sourceTree = "<group>"; };
+		3215C66927B6191B00D593BF /* CAMediaTimingFunction+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAMediaTimingFunction+Extension.swift"; sourceTree = "<group>"; };
+		3215C66A27B6191B00D593BF /* FlowSound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowSound.swift; sourceTree = "<group>"; };
+		3215C66B27B6191B00D593BF /* NSShadow+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSShadow+Extension.swift"; sourceTree = "<group>"; };
+		3215C67927B6194D00D593BF /* CharacterSet+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+Extension.swift"; sourceTree = "<group>"; };
 		32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetMenuViewModel.swift; sourceTree = "<group>"; };
 		32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetTooltipPopoverView.swift; sourceTree = "<group>"; };
 		3905274B1C874D35007E0BB7 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
@@ -1546,6 +1574,7 @@
 		67AA22F126C476F300F33D09 /* BrowserViewController+OverflowMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+OverflowMenu.swift"; sourceTree = "<group>"; };
 		67B0AAF526BA08A4000731E0 /* OverflowMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverflowMenuView.swift; sourceTree = "<group>"; };
 		67B0FAB5279A82B00023A1C5 /* NeevaExperiment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaExperiment.swift; sourceTree = "<group>"; };
+		67B649C727B453E5006024C0 /* APIConfig.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = APIConfig.xcconfig; path = Client/APIConfig.xcconfig; sourceTree = "<group>"; };
 		67C5994F279B261D00660699 /* ExperimentSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExperimentSettingsView.swift; sourceTree = "<group>"; };
 		67F2A52D27306AE900CAE11A /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
 		744B0FFD1B4F172E00100422 /* ToolbarTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToolbarTests.swift; sourceTree = "<group>"; };
@@ -2378,8 +2407,8 @@
 		28CE83EF1A1D246900576538 /* Third-Party Source */ = {
 			isa = PBXGroup;
 			children = (
+				3215C65E27B6191B00D593BF /* FlowCommon */,
 				4A3255A627B326FD000A700E /* ConfettiSwiftUI */,
-				3215C61927B46B1600D593BF /* FlowCommon */,
 				EB912B8D22722A7800DF585A /* Deferred */,
 				D8FDEB54220CFE970069A582 /* UIImage+ImageEffects.h */,
 				D8FDEB55220CFE970069A582 /* UIImage+ImageEffects.m */,
@@ -2522,24 +2551,23 @@
 			path = ThirdParty;
 			sourceTree = "<group>";
 		};
-		3215C61927B46B1600D593BF /* FlowCommon */ = {
+		3215C65E27B6191B00D593BF /* FlowCommon */ = {
 			isa = PBXGroup;
 			children = (
-				3215C62127B46B6900D593BF /* FlowAnimation.swift */,
-				3215C62827B46B6B00D593BF /* CAKeyframeAnimation+Extension.swift */,
-				3215C61E27B46B6800D593BF /* CAMediaTimingFunction+Extension.swift */,
-				3215C62527B46B6A00D593BF /* CATransaction+Extension.swift */,
-				3215C63727B471D700D593BF /* CharacterSet+Extension.swift */,
-				3215C62227B46B6900D593BF /* CGPath+SVG.swift */,
-				3215C62027B46B6900D593BF /* NSMutableParagraphStyle+Extension.swift */,
-				3215C61D27B46B6800D593BF /* NSShadow+Extension.swift */,
-				3215C62327B46B6900D593BF /* FlowShapeView.swift */,
-				3215C61F27B46B6900D593BF /* FlowSound.swift */,
-				3215C62427B46B6A00D593BF /* FlowTextView.swift */,
-				3215C62627B46B6A00D593BF /* FlowTimeline.swift */,
-				3215C62727B46B6A00D593BF /* UIView+Extension.swift */,
-				3215C61A27B46B5900D593BF /* UIImage+Extension.swift */,
-				3215C63627B46BB900D593BF /* README.md */,
+				3215C66527B6191B00D593BF /* CAKeyframeAnimation+Extension.swift */,
+				3215C66927B6191B00D593BF /* CAMediaTimingFunction+Extension.swift */,
+				3215C66727B6191B00D593BF /* CATransaction+Extension.swift */,
+				3215C66027B6191B00D593BF /* CGPath+SVG.swift */,
+				3215C67927B6194D00D593BF /* CharacterSet+Extension.swift */,
+				3215C65F27B6191B00D593BF /* FlowAnimation.swift */,
+				3215C66127B6191B00D593BF /* FlowShapeView.swift */,
+				3215C66A27B6191B00D593BF /* FlowSound.swift */,
+				3215C66227B6191B00D593BF /* FlowTextView.swift */,
+				3215C66827B6191B00D593BF /* FlowTimeline.swift */,
+				3215C66627B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift */,
+				3215C66B27B6191B00D593BF /* NSShadow+Extension.swift */,
+				3215C66327B6191B00D593BF /* UIView+Extension.swift */,
+				3215C66427B6191B00D593BF /* UIImage+Extension.swift */,
 			);
 			name = FlowCommon;
 			path = ThirdParty/FlowCommon;
@@ -3071,7 +3099,6 @@
 		BC07524126C20C42008B607A /* Cheatsheet */ = {
 			isa = PBXGroup;
 			children = (
-				3215C63A27B4733E00D593BF /* NeevaScopeLoading */,
 				BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */,
 				32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */,
 				32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */,
@@ -3214,6 +3241,7 @@
 		C9098F6026B0533200D2B5F4 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				67B649C727B453E5006024C0 /* APIConfig.xcconfig */,
 				C9098F6526B0534D00D2B5F4 /* .circleci */,
 				C9098F6626B0534D00D2B5F4 /* .cron.yml */,
 				C9098F6A26B0535C00D2B5F4 /* .gitattributes */,
@@ -5273,27 +5301,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3215C66E27B6191B00D593BF /* FlowShapeView.swift in Sources */,
+				3215C67427B6191B00D593BF /* CATransaction+Extension.swift in Sources */,
 				C9C18E4C265596C5004710CD /* ActivityIndicator.swift in Sources */,
 				E65075991E37F7AB006961AC /* Cancellable.swift in Sources */,
 				C9C18E3D26559504004710CD /* Incognito.swift in Sources */,
 				C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */,
 				C9BED4CB2669451B001D9C77 /* ViewControllerWrapper.swift in Sources */,
+				3215C67727B6191B00D593BF /* FlowSound.swift in Sources */,
+				3215C67A27B6194D00D593BF /* CharacterSet+Extension.swift in Sources */,
 				C9C18E59265598B4004710CD /* CreateSpaceView.swift in Sources */,
 				E65075BE1E37F7AB006961AC /* TimeConstants.swift in Sources */,
-				3215C62C27B46B6B00D593BF /* FlowSound.swift in Sources */,
-				3215C63927B471DE00D593BF /* CharacterSet+Extension.swift in Sources */,
 				C9C18E50265597A6004710CD /* SpacesSearchHeaderView.swift in Sources */,
 				E65075B21E37F7AB006961AC /* Functions.swift in Sources */,
-				3215C62E27B46B6B00D593BF /* FlowAnimation.swift in Sources */,
 				E65075BA1E37F7AB006961AC /* Prefs.swift in Sources */,
 				C9C18E4726559616004710CD /* MultilineTextField.swift in Sources */,
 				BC8EE02C271A3CBB00D6BE2A /* PreferredProviderRequest.swift in Sources */,
 				C9C18E5C265598EA004710CD /* QueryController.swift in Sources */,
 				C9C18E5726559874004710CD /* NeevaColors.swift in Sources */,
 				C9C18E58265598A0004710CD /* SpaceListItem.swift in Sources */,
-				3215C61B27B46B5900D593BF /* UIImage+Extension.swift in Sources */,
 				1A840EC52788DDB9005F6003 /* CancellableExtensions.swift in Sources */,
 				C9C18E402655955D004710CD /* Reachability.swift in Sources */,
+				3215C67327B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift in Sources */,
 				C9E5F2BC2674025700025A7F /* EdgeInsetsExtensions.swift in Sources */,
 				C93EFEE226713AF7000396B5 /* ErrorConstants.swift in Sources */,
 				C9F49CD226711B8700F3408A /* LockProtected.swift in Sources */,
@@ -5304,12 +5333,9 @@
 				C9BED4C326680A33001D9C77 /* ColorExtensions.swift in Sources */,
 				C9ADD2A626727195005F9C4B /* ButtonStyles.swift in Sources */,
 				E65075A01E37F7AB006961AC /* ArrayExtensions.swift in Sources */,
-				3215C63227B46B6B00D593BF /* CATransaction+Extension.swift in Sources */,
-				3215C63027B46B6B00D593BF /* FlowShapeView.swift in Sources */,
 				BCF248472670967C00ACAD11 /* ViewExtensions.swift in Sources */,
 				66F5079627ACB84900911173 /* FocusableTextField.swift in Sources */,
 				C88F9D1426D961EC00FD0E04 /* UserInfoProvider.swift in Sources */,
-				3215C62A27B46B6B00D593BF /* NSShadow+Extension.swift in Sources */,
 				E65075A31E37F7AB006961AC /* KeychainWrapperExtensions.swift in Sources */,
 				E65075921E37F7AB006961AC /* Accessibility.swift in Sources */,
 				675EEDD326D9AF1700473332 /* LongPressButton.swift in Sources */,
@@ -5321,33 +5347,33 @@
 				E65075B51E37F7AB006961AC /* LaunchArguments.swift in Sources */,
 				C9F49CD326711B8B00F3408A /* ReadWriteLock.swift in Sources */,
 				C9C18E43265595D2004710CD /* SendFeedbackView.swift in Sources */,
+				3215C66D27B6191B00D593BF /* CGPath+SVG.swift in Sources */,
 				1AC43C8B278F1FED000BF750 /* SubscriptionType.swift in Sources */,
 				677858C726CB377800274BC3 /* APIExtension.swift in Sources */,
 				E65075BB1E37F7AB006961AC /* RollingFileLogger.swift in Sources */,
 				E650759D1E37F7AB006961AC /* DeviceInfo.swift in Sources */,
-				3215C63327B46B6B00D593BF /* FlowTimeline.swift in Sources */,
 				E65075A51E37F7AB006961AC /* NSFileManagerExtensions.swift in Sources */,
 				E65075A11E37F7AB006961AC /* HashExtensions.swift in Sources */,
 				E65075981E37F7AB006961AC /* Bytes.swift in Sources */,
-				3215C62F27B46B6B00D593BF /* CGPath+SVG.swift in Sources */,
 				E65075B11E37F7AB006961AC /* FSUtils.m in Sources */,
 				CE7F11941F3CEEC800ABFC0B /* RemoteDevices.swift in Sources */,
 				C9C18E3F26559504004710CD /* API.swift in Sources */,
 				BC8EE030271AA2B200D6BE2A /* ProviderList.swift in Sources */,
-				3215C62B27B46B6B00D593BF /* CAMediaTimingFunction+Extension.swift in Sources */,
 				BC07524626C324A3008B607A /* CheatsheetController.swift in Sources */,
 				D3A14C221CB3145E00253BC6 /* Strings.swift in Sources */,
-				3215C62D27B46B6B00D593BF /* NSMutableParagraphStyle+Extension.swift in Sources */,
 				C9F49CC6266FFB8200F3408A /* Environment.swift in Sources */,
 				E65075931E37F7AB006961AC /* AppConstants.swift in Sources */,
 				E65075B81E37F7AB006961AC /* NotificationConstants.swift in Sources */,
 				4A72D21F27A0969900F5D14B /* EmailVerificationPrompt.swift in Sources */,
+				3215C66C27B6191B00D593BF /* FlowAnimation.swift in Sources */,
 				E65075AC1E37F7AB006961AC /* StringExtensions.swift in Sources */,
 				C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */,
 				C994645F2657052200613110 /* FeatureFlags.swift in Sources */,
 				C9255AA226C4392F00AA1C2E /* GroupedCell.swift in Sources */,
 				665451DF2759B9B50077CA1F /* SegmentedPicker.swift in Sources */,
 				E65075951E37F7AB006961AC /* GeneralUtils.swift in Sources */,
+				3215C66F27B6191B00D593BF /* FlowTextView.swift in Sources */,
+				3215C67227B6191B00D593BF /* CAKeyframeAnimation+Extension.swift in Sources */,
 				BC8ABEA226D88F2500E4A415 /* SearchController.swift in Sources */,
 				E683F0C21E93D4E90035D990 /* DictionaryExtensions.swift in Sources */,
 				E650759B1E37F7AB006961AC /* CrashSimulator.m in Sources */,
@@ -5355,7 +5381,6 @@
 				C80E03E826B88FF000A7800A /* OptionalLogger.swift in Sources */,
 				C9C18E5A265598B4004710CD /* LargeSpaceIconView.swift in Sources */,
 				BC4E98012669572A00A8FBD6 /* TourManager.swift in Sources */,
-				3215C63527B46B6B00D593BF /* CAKeyframeAnimation+Extension.swift in Sources */,
 				4A51E57026BDBCDF00AD7CDE /* ImportToSpace.swift in Sources */,
 				C9C18E6126559A7B004710CD /* DataURIBody.swift in Sources */,
 				E65075A91E37F7AB006961AC /* URLExtensions.swift in Sources */,
@@ -5365,12 +5390,14 @@
 				C9C18E5B265598D1004710CD /* TestSpaces.swift in Sources */,
 				E65075B31E37F7AB006961AC /* KeyboardHelper.swift in Sources */,
 				BCC39A2126C7258600EEC559 /* UserFlagStore.swift in Sources */,
+				3215C67027B6191B00D593BF /* UIView+Extension.swift in Sources */,
 				661E829A2783FF2100040C3E /* CGFloatExtension.swift in Sources */,
 				E65075AA1E37F7AB006961AC /* URLProtectionSpaceExtensions.swift in Sources */,
 				EB7FFFC820A9D38D003E1E34 /* AlertController.swift in Sources */,
 				C9BED4BF2667F83E001D9C77 /* SSOProvider.swift in Sources */,
 				C9C18E4E26559766004710CD /* AddToSpaceView.swift in Sources */,
 				C9C18E5426559827004710CD /* Space.swift in Sources */,
+				3215C67127B6191B00D593BF /* UIImage+Extension.swift in Sources */,
 				C9086050266693340049C072 /* SingleLineTextField.swift in Sources */,
 				E65075BF1E37F7AB006961AC /* UserAgent.swift in Sources */,
 				C9C18E5D265598EA004710CD /* AbstractController.swift in Sources */,
@@ -5383,16 +5410,16 @@
 				E65075AE1E37F7AB006961AC /* UIImageExtensions.swift in Sources */,
 				C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */,
 				4A72AFC2278E42F60057E58B /* MutationRequest.swift in Sources */,
+				3215C67627B6191B00D593BF /* CAMediaTimingFunction+Extension.swift in Sources */,
 				E65075A21E37F7AB006961AC /* HexExtensions.swift in Sources */,
 				4A9F65452713E06F00B7C06E /* SocialInfoUpdater.swift in Sources */,
 				288A2DB61AB8B38D0023ABC3 /* Result.swift in Sources */,
 				66B54EB926EC414000744358 /* Haptics.swift in Sources */,
-				3215C63127B46B6B00D593BF /* FlowTextView.swift in Sources */,
 				E65075AD1E37F7AB006961AC /* UIColorExtensions.swift in Sources */,
+				3215C67527B6191B00D593BF /* FlowTimeline.swift in Sources */,
 				E650759C1E37F7AB006961AC /* DeferredUtils.swift in Sources */,
 				C9C18E4D26559711004710CD /* ModalPresentationController.swift in Sources */,
 				E65075941E37F7AB006961AC /* AppInfo.swift in Sources */,
-				3215C63427B46B6B00D593BF /* UIView+Extension.swift in Sources */,
 				67B0FAB6279A82B00023A1C5 /* NeevaExperiment.swift in Sources */,
 				C9C18E4626559613004710CD /* DecorativeSection.swift in Sources */,
 				D03DCD95211B63D000151ACA /* DateGroupedTableData.swift in Sources */,
@@ -5403,6 +5430,7 @@
 				E65075961E37F7AB006961AC /* AsyncReducer.swift in Sources */,
 				4AD771B62738697A00B6769D /* SpaceEntityData.swift in Sources */,
 				C9C18E4B265596AC004710CD /* Network.swift in Sources */,
+				3215C67827B6191B00D593BF /* NSShadow+Extension.swift in Sources */,
 				C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */,
 				7B9BF91C1E43472E00CB24F4 /* JSONExtensions.swift in Sources */,
 				C9C18E51265597B0004710CD /* Symbol.swift in Sources */,
@@ -7285,6 +7313,7 @@
 		};
 		F0FF957225E03EFF00008BD2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 67B649C727B453E5006024C0 /* APIConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -7558,6 +7587,7 @@
 		};
 		F0FF95C125E03F8F00008BD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 67B649C727B453E5006024C0 /* APIConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_Developer;
