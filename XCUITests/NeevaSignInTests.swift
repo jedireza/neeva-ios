@@ -102,7 +102,8 @@ class NeevaSignInTests: BaseTestCase {
     //        doSignOut()
     //    }
 
-    func testSignInWithStaleLoginCookie() {
+    func testSignInWithStaleLoginCookie() throws {
+        try skipTest(issue: 2832, "this test is flaky")
         // See the setUp() function where the stale login cookie is specified
         // as a launch argument to the browser.
 
