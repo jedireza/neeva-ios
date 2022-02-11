@@ -211,6 +211,15 @@ class OverlayManager: ObservableObject {
                 resetUIModifiers()
                 animationCompleted = nil
 
+                switch overlay {
+                case .notification(let notification):
+                    notification?.viewDelegate?.dismiss()
+                case .toast(let toast):
+                    toast?.viewDelegate?.dismiss()
+                default:
+                    break
+                }
+
                 DispatchQueue.main.async {
                     completion()
                 }
@@ -226,11 +235,9 @@ class OverlayManager: ObservableObject {
                     showFullScreenPopoverSheet = false
                     animating = false
                 }
-            case .notification(let notification):
-                notification?.viewDelegate?.dismiss()
+            case .notification:
                 slideAndFadeOut(offset: -ToastViewUX.height)
-            case .toast(let toast):
-                toast?.viewDelegate?.dismiss()
+            case .toast:
                 slideAndFadeOut(offset: ToastViewUX.height)
             default:
                 withAnimation(animation) {
