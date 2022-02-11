@@ -60,7 +60,7 @@ struct CollapsedCardGroupView: View {
                             .id(childTabDetail.id)
                     }
                 }
-                .padding(.leading, CardGridUX.GridSpacing)
+                .padding(.horizontal, CardGridUX.GridSpacing)
                 .padding(
                     .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
                 )
