@@ -174,6 +174,24 @@ struct CheatsheetNoResultView: View {
     }
 }
 
+struct CheatsheetLoadingView: View {
+    public var body: some View {
+        VStack(alignment: .center, spacing: 36) {
+            Spacer()
+            NeevaScopeLoadingView()
+                .aspectRatio(1, contentMode: .fit)
+                .frame(height: 100)
+            Text("Your NeevaScope is coming into focus...")
+                .withFont(.headingLarge)
+                .foregroundColor(.label)
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: 170)
+            Spacer()
+        }
+    }
+}
+
 public struct CheatsheetMenuView: View {
     @Default(.seenCheatsheetIntro) var seenCheatsheetIntro: Bool
     @Default(.showTryCheatsheetPopover) var defaultShowTryCheatsheetPopover: Bool
@@ -202,9 +220,7 @@ public struct CheatsheetMenuView: View {
             } else if !seenCheatsheetIntro {
                 CheatsheetInfoView(buttonText: "Let's try it!") { seenCheatsheetIntro = true }
             } else if model.cheatsheetDataLoading {
-                VStack(alignment: .center) {
-                    LoadingView("something good on it's way")
-                }
+                CheatsheetLoadingView()
             } else if let error = model.cheatsheetDataError {
                 ErrorView(error, in: self, tryAgain: model.reload)
             } else if let error = model.searchRichResultsError {

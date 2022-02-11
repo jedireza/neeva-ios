@@ -1,27 +1,25 @@
-// Made With Flow.
-//
-// DO NOT MODIFY, your changes will be lost when this file is regenerated.
-//
+// Copyright 2022 Neeva Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
 
+// Made With Flow.
+
+import Foundation
+import Shared
 import UIKit
 
 @IBDesignable
-public class Stage1View: UIView {
+public class NeevaScopeKeyFrameView: UIView {
     public struct Defaults {
         public static let size = CGSize(width: 82.09, height: 74.74)
-        public static let backgroundColor = UIColor.white
     }
 
     public var scope: UIView!
     public var handle: UIView!
-    public var lens: ShapeView!
-    public var glare: ShapeView!
-    public var body: ShapeView!
-    public var band: ShapeView!
-
-    public override var intrinsicContentSize: CGSize {
-        return Defaults.size
-    }
+    public var lens: FlowShapeView!
+    public var glare: FlowShapeView!
+    public var body: FlowShapeView!
+    public var band: FlowShapeView!
 
     public override init(frame: CGRect) {
         super.init(frame: frame)
@@ -33,13 +31,25 @@ public class Stage1View: UIView {
         setup()
     }
 
+    public override func layoutSubviews() {
+        super.layoutSubviews()
+        fillView()
+    }
+
     private func setup() {
-        backgroundColor = Defaults.backgroundColor
+        backgroundColor = .clear
         clipsToBounds = false
         createViews()
         addSubviews()
-        layer.name = "sceneLayer"
+        layer.name = "neevaScopeSceneLayer"
         //scale(to: frame.size)
+    }
+
+    private func fillView() {
+        // scale subview
+        let x = bounds.size.width / Defaults.size.width
+        let y = bounds.size.height / Defaults.size.height
+        scope.transform = CGAffineTransform(scaleX: x, y: y)
     }
 
     /// Scales `self` and its subviews to `size`.
@@ -103,7 +113,7 @@ public class Stage1View: UIView {
     }
 
     private func createLens() {
-        lens = ShapeView(frame: CGRect(x: 55.14, y: 0, width: 39.12, height: 34.38))
+        lens = FlowShapeView(frame: CGRect(x: 55.14, y: 0, width: 39.12, height: 34.38))
         lens.backgroundColor = UIColor.clear
         lens.layer.anchorPoint = CGPoint(x: 0, y: 0)
         lens.transform = CGAffineTransform(rotationAngle: 0.288889 * CGFloat.pi)
@@ -122,13 +132,16 @@ public class Stage1View: UIView {
         lens.shapeLayer.lineDashPattern = []
         lens.shapeLayer.lineDashPhase = 0
         lens.shapeLayer.lineWidth = 0
-        lens.shapeLayer.path = CGPathCreateWithSVGString("M3.414,7.489c6.096,-7.837,18.267,-9.846,27.184,-4.489 8.916,5.358,11.202,16.053,5.108,23.89 -6.096,7.837,-18.267,9.846,-27.185,4.489 -8.917,-5.358,-11.204,-16.053,-5.108,-23.89l0,0zM7.351,9.802c-4.584,5.895,-2.865,13.94,3.842,17.97l0,-0.008c3.222,1.939,7.19,2.673,11.028,2.039 3.838,-0.634,7.232,-2.582,9.434,-5.417 4.579,-5.898,2.853,-13.941,-3.857,-17.968 -6.71,-4.027,-15.863,-2.512,-20.447,3.383l0,0zM7.351,9.802")!
-
+        if let path = CGPathCreateWithSVGString(
+            "M3.414,7.489c6.096,-7.837,18.267,-9.846,27.184,-4.489 8.916,5.358,11.202,16.053,5.108,23.89 -6.096,7.837,-18.267,9.846,-27.185,4.489 -8.917,-5.358,-11.204,-16.053,-5.108,-23.89l0,0zM7.351,9.802c-4.584,5.895,-2.865,13.94,3.842,17.97l0,-0.008c3.222,1.939,7.19,2.673,11.028,2.039 3.838,-0.634,7.232,-2.582,9.434,-5.417 4.579,-5.898,2.853,-13.941,-3.857,-17.968 -6.71,-4.027,-15.863,-2.512,-20.447,3.383l0,0zM7.351,9.802"
+        ) {
+            lens.shapeLayer.path = path
+        }
 
     }
 
     private func createGlare() {
-        glare = ShapeView(frame: CGRect(x: 54.84, y: 9.47, width: 18.96, height: 7.59))
+        glare = FlowShapeView(frame: CGRect(x: 54.84, y: 9.47, width: 18.96, height: 7.59))
         glare.backgroundColor = UIColor.clear
         glare.layer.anchorPoint = CGPoint(x: 0, y: 0)
         glare.transform = CGAffineTransform(rotationAngle: 0.288889 * CGFloat.pi)
@@ -147,13 +160,16 @@ public class Stage1View: UIView {
         glare.shapeLayer.lineDashPattern = []
         glare.shapeLayer.lineDashPhase = 0
         glare.shapeLayer.lineWidth = 0.63
-        glare.shapeLayer.path = CGPathCreateWithSVGString("M0.779,7.319c-0.814,-0.509,-1.023,-1.51,-0.469,-2.249 4.053,-5.303,12.117,-6.664,18.037,-3.045 0.686,0.544,0.813,1.462,0.296,2.141 -0.516,0.679,-1.515,0.906,-2.328,0.529 -2.052,-1.264,-4.58,-1.744,-7.026,-1.333 -2.446,0.411,-4.61,1.678,-6.015,3.523 -0.561,0.731,-1.67,0.924,-2.495,0.435l0,0 0,0zM0.779,7.319")!
-
+        if let path = CGPathCreateWithSVGString(
+            "M0.779,7.319c-0.814,-0.509,-1.023,-1.51,-0.469,-2.249 4.053,-5.303,12.117,-6.664,18.037,-3.045 0.686,0.544,0.813,1.462,0.296,2.141 -0.516,0.679,-1.515,0.906,-2.328,0.529 -2.052,-1.264,-4.58,-1.744,-7.026,-1.333 -2.446,0.411,-4.61,1.678,-6.015,3.523 -0.561,0.731,-1.67,0.924,-2.495,0.435l0,0 0,0zM0.779,7.319"
+        ) {
+            glare.shapeLayer.path = path
+        }
 
     }
 
     private func createBody() {
-        body = ShapeView(frame: CGRect(x: 38.14, y: 0, width: 36.5, height: 47.93))
+        body = FlowShapeView(frame: CGRect(x: 38.14, y: 0, width: 36.5, height: 47.93))
         body.backgroundColor = UIColor.clear
         body.layer.anchorPoint = CGPoint(x: 0, y: 0)
         body.transform = CGAffineTransform(rotationAngle: 0.293 * CGFloat.pi)
@@ -172,13 +188,16 @@ public class Stage1View: UIView {
         body.shapeLayer.lineDashPattern = []
         body.shapeLayer.lineDashPhase = 0
         body.shapeLayer.lineWidth = 0
-        body.shapeLayer.path = CGPathCreateWithSVGString("M17.035,9.818l19.465,-9.067 -14.415,45.008c-0.424,1.439,-2.017,2.171,-3.247,2.171 -1.23,0,-2.878,-0.848,-3.413,-2.57l-15.425,-45.36 17.035,9.818 0,0zM17.035,9.818")!
-
+        if let path = CGPathCreateWithSVGString(
+            "M17.035,9.818l19.465,-9.067 -14.415,45.008c-0.424,1.439,-2.017,2.171,-3.247,2.171 -1.23,0,-2.878,-0.848,-3.413,-2.57l-15.425,-45.36 17.035,9.818 0,0zM17.035,9.818"
+        ) {
+            body.shapeLayer.path = path
+        }
 
     }
 
     private func createBand() {
-        band = ShapeView(frame: CGRect(x: 31.64, y: 0, width: 28, height: 32.57))
+        band = FlowShapeView(frame: CGRect(x: 31.64, y: 0, width: 28, height: 32.57))
         band.backgroundColor = UIColor.clear
         band.layer.anchorPoint = CGPoint(x: 0, y: 0)
         band.layer.shadowOffset = CGSize(width: 0, height: 0)
@@ -196,8 +215,11 @@ public class Stage1View: UIView {
         band.shapeLayer.lineDashPattern = []
         band.shapeLayer.lineDashPhase = 0
         band.shapeLayer.lineWidth = 0
-        band.shapeLayer.path = CGPathCreateWithSVGString("M19.267,32.57c-3.348,-0.434,-6.648,-1.643,-9.626,-3.679 -6.607,-4.516,-9.996,-11.98,-9.611,-19.426l6.471,-9.464 0.239,1.863c-4.538,7.935,-2.287,18.155,5.389,23.405l0,-0.011c3.848,2.635,8.578,3.645,13.164,2.815l2.708,1.425 -8.733,3.072 0,0zM19.267,32.57")!
-
+        if let path = CGPathCreateWithSVGString(
+            "M19.267,32.57c-3.348,-0.434,-6.648,-1.643,-9.626,-3.679 -6.607,-4.516,-9.996,-11.98,-9.611,-19.426l6.471,-9.464 0.239,1.863c-4.538,7.935,-2.287,18.155,5.389,23.405l0,-0.011c3.848,2.635,8.578,3.645,13.164,2.815l2.708,1.425 -8.733,3.072 0,0zM19.267,32.57"
+        ) {
+            band.shapeLayer.path = path
+        }
 
     }
 
