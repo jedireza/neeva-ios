@@ -106,6 +106,20 @@
 		2FCAE2841ABB533A00877008 /* MockFiles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCAE2791ABB533A00877008 /* MockFiles.swift */; };
 		2FCAE2851ABB533A00877008 /* TestSQLiteRemoteClientsAndTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FCAE27A1ABB533A00877008 /* TestSQLiteRemoteClientsAndTabs.swift */; };
 		318FB6EB1DB5600D0004E40F /* SQLiteHistoryFactories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318FB6EA1DB5600D0004E40F /* SQLiteHistoryFactories.swift */; };
+		3215C66C27B6191B00D593BF /* FlowAnimation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C65F27B6191B00D593BF /* FlowAnimation.swift */; };
+		3215C66D27B6191B00D593BF /* CGPath+SVG.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66027B6191B00D593BF /* CGPath+SVG.swift */; };
+		3215C66E27B6191B00D593BF /* FlowShapeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66127B6191B00D593BF /* FlowShapeView.swift */; };
+		3215C66F27B6191B00D593BF /* FlowTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66227B6191B00D593BF /* FlowTextView.swift */; };
+		3215C67027B6191B00D593BF /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66327B6191B00D593BF /* UIView+Extension.swift */; };
+		3215C67127B6191B00D593BF /* UIImage+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66427B6191B00D593BF /* UIImage+Extension.swift */; };
+		3215C67227B6191B00D593BF /* CAKeyframeAnimation+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66527B6191B00D593BF /* CAKeyframeAnimation+Extension.swift */; };
+		3215C67327B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66627B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift */; };
+		3215C67427B6191B00D593BF /* CATransaction+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66727B6191B00D593BF /* CATransaction+Extension.swift */; };
+		3215C67527B6191B00D593BF /* FlowTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66827B6191B00D593BF /* FlowTimeline.swift */; };
+		3215C67627B6191B00D593BF /* CAMediaTimingFunction+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66927B6191B00D593BF /* CAMediaTimingFunction+Extension.swift */; };
+		3215C67727B6191B00D593BF /* FlowSound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66A27B6191B00D593BF /* FlowSound.swift */; };
+		3215C67827B6191B00D593BF /* NSShadow+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C66B27B6191B00D593BF /* NSShadow+Extension.swift */; };
+		3215C67A27B6194D00D593BF /* CharacterSet+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3215C67927B6194D00D593BF /* CharacterSet+Extension.swift */; };
 		32D7F0EB2797025C000203C7 /* CheatsheetMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */; };
 		32D95B0427A37C8100447507 /* CheatsheetTooltipPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */; };
 		39236E721FCC600200A38F1B /* TabEventHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39236E711FCC600200A38F1B /* TabEventHandlerTests.swift */; };
@@ -1254,6 +1268,20 @@
 		2FCAE33D1ABB5F1800877008 /* Storage-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Storage-Bridging-Header.h"; sourceTree = "<group>"; };
 		2FEBABAE1AB3659000DB5728 /* ResultTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResultTests.swift; sourceTree = "<group>"; };
 		318FB6EA1DB5600D0004E40F /* SQLiteHistoryFactories.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteHistoryFactories.swift; sourceTree = "<group>"; };
+		3215C65F27B6191B00D593BF /* FlowAnimation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowAnimation.swift; sourceTree = "<group>"; };
+		3215C66027B6191B00D593BF /* CGPath+SVG.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPath+SVG.swift"; sourceTree = "<group>"; };
+		3215C66127B6191B00D593BF /* FlowShapeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowShapeView.swift; sourceTree = "<group>"; };
+		3215C66227B6191B00D593BF /* FlowTextView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTextView.swift; sourceTree = "<group>"; };
+		3215C66327B6191B00D593BF /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		3215C66427B6191B00D593BF /* UIImage+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+Extension.swift"; sourceTree = "<group>"; };
+		3215C66527B6191B00D593BF /* CAKeyframeAnimation+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAKeyframeAnimation+Extension.swift"; sourceTree = "<group>"; };
+		3215C66627B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSMutableParagraphStyle+Extension.swift"; sourceTree = "<group>"; };
+		3215C66727B6191B00D593BF /* CATransaction+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CATransaction+Extension.swift"; sourceTree = "<group>"; };
+		3215C66827B6191B00D593BF /* FlowTimeline.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowTimeline.swift; sourceTree = "<group>"; };
+		3215C66927B6191B00D593BF /* CAMediaTimingFunction+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CAMediaTimingFunction+Extension.swift"; sourceTree = "<group>"; };
+		3215C66A27B6191B00D593BF /* FlowSound.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowSound.swift; sourceTree = "<group>"; };
+		3215C66B27B6191B00D593BF /* NSShadow+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSShadow+Extension.swift"; sourceTree = "<group>"; };
+		3215C67927B6194D00D593BF /* CharacterSet+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CharacterSet+Extension.swift"; sourceTree = "<group>"; };
 		32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetMenuViewModel.swift; sourceTree = "<group>"; };
 		32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetTooltipPopoverView.swift; sourceTree = "<group>"; };
 		3905274B1C874D35007E0BB7 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
@@ -2344,6 +2372,7 @@
 		28CE83EF1A1D246900576538 /* Third-Party Source */ = {
 			isa = PBXGroup;
 			children = (
+				3215C65E27B6191B00D593BF /* FlowCommon */,
 				4A3255A627B326FD000A700E /* ConfettiSwiftUI */,
 				EB912B8D22722A7800DF585A /* Deferred */,
 				D8FDEB54220CFE970069A582 /* UIImage+ImageEffects.h */,
@@ -2485,6 +2514,28 @@
 				2FCAE25B1ABB531100877008 /* SwiftData.swift */,
 			);
 			path = ThirdParty;
+			sourceTree = "<group>";
+		};
+		3215C65E27B6191B00D593BF /* FlowCommon */ = {
+			isa = PBXGroup;
+			children = (
+				3215C66527B6191B00D593BF /* CAKeyframeAnimation+Extension.swift */,
+				3215C66927B6191B00D593BF /* CAMediaTimingFunction+Extension.swift */,
+				3215C66727B6191B00D593BF /* CATransaction+Extension.swift */,
+				3215C66027B6191B00D593BF /* CGPath+SVG.swift */,
+				3215C67927B6194D00D593BF /* CharacterSet+Extension.swift */,
+				3215C65F27B6191B00D593BF /* FlowAnimation.swift */,
+				3215C66127B6191B00D593BF /* FlowShapeView.swift */,
+				3215C66A27B6191B00D593BF /* FlowSound.swift */,
+				3215C66227B6191B00D593BF /* FlowTextView.swift */,
+				3215C66827B6191B00D593BF /* FlowTimeline.swift */,
+				3215C66627B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift */,
+				3215C66B27B6191B00D593BF /* NSShadow+Extension.swift */,
+				3215C66327B6191B00D593BF /* UIView+Extension.swift */,
+				3215C66427B6191B00D593BF /* UIImage+Extension.swift */,
+			);
+			name = FlowCommon;
+			path = ThirdParty/FlowCommon;
 			sourceTree = "<group>";
 		};
 		39A359BD1BFCCE7B006B9E87 /* Helpers */ = {
@@ -5205,11 +5256,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3215C66E27B6191B00D593BF /* FlowShapeView.swift in Sources */,
+				3215C67427B6191B00D593BF /* CATransaction+Extension.swift in Sources */,
 				C9C18E4C265596C5004710CD /* ActivityIndicator.swift in Sources */,
 				E65075991E37F7AB006961AC /* Cancellable.swift in Sources */,
 				C9C18E3D26559504004710CD /* Incognito.swift in Sources */,
 				C90860522666BEE30049C072 /* SpacerExtensions.swift in Sources */,
 				C9BED4CB2669451B001D9C77 /* ViewControllerWrapper.swift in Sources */,
+				3215C67727B6191B00D593BF /* FlowSound.swift in Sources */,
+				3215C67A27B6194D00D593BF /* CharacterSet+Extension.swift in Sources */,
 				C9C18E59265598B4004710CD /* CreateSpaceView.swift in Sources */,
 				E65075BE1E37F7AB006961AC /* TimeConstants.swift in Sources */,
 				C9C18E50265597A6004710CD /* SpacesSearchHeaderView.swift in Sources */,
@@ -5222,6 +5277,7 @@
 				C9C18E58265598A0004710CD /* SpaceListItem.swift in Sources */,
 				1A840EC52788DDB9005F6003 /* CancellableExtensions.swift in Sources */,
 				C9C18E402655955D004710CD /* Reachability.swift in Sources */,
+				3215C67327B6191B00D593BF /* NSMutableParagraphStyle+Extension.swift in Sources */,
 				C9E5F2BC2674025700025A7F /* EdgeInsetsExtensions.swift in Sources */,
 				C93EFEE226713AF7000396B5 /* ErrorConstants.swift in Sources */,
 				C9F49CD226711B8700F3408A /* LockProtected.swift in Sources */,
@@ -5246,6 +5302,7 @@
 				E65075B51E37F7AB006961AC /* LaunchArguments.swift in Sources */,
 				C9F49CD326711B8B00F3408A /* ReadWriteLock.swift in Sources */,
 				C9C18E43265595D2004710CD /* SendFeedbackView.swift in Sources */,
+				3215C66D27B6191B00D593BF /* CGPath+SVG.swift in Sources */,
 				1AC43C8B278F1FED000BF750 /* SubscriptionType.swift in Sources */,
 				677858C726CB377800274BC3 /* APIExtension.swift in Sources */,
 				E65075BB1E37F7AB006961AC /* RollingFileLogger.swift in Sources */,
@@ -5263,12 +5320,15 @@
 				E65075931E37F7AB006961AC /* AppConstants.swift in Sources */,
 				E65075B81E37F7AB006961AC /* NotificationConstants.swift in Sources */,
 				4A72D21F27A0969900F5D14B /* EmailVerificationPrompt.swift in Sources */,
+				3215C66C27B6191B00D593BF /* FlowAnimation.swift in Sources */,
 				E65075AC1E37F7AB006961AC /* StringExtensions.swift in Sources */,
 				C8B45FC4265EDFBA008E5231 /* NeevaConstants.swift in Sources */,
 				C994645F2657052200613110 /* FeatureFlags.swift in Sources */,
 				C9255AA226C4392F00AA1C2E /* GroupedCell.swift in Sources */,
 				665451DF2759B9B50077CA1F /* SegmentedPicker.swift in Sources */,
 				E65075951E37F7AB006961AC /* GeneralUtils.swift in Sources */,
+				3215C66F27B6191B00D593BF /* FlowTextView.swift in Sources */,
+				3215C67227B6191B00D593BF /* CAKeyframeAnimation+Extension.swift in Sources */,
 				BC8ABEA226D88F2500E4A415 /* SearchController.swift in Sources */,
 				E683F0C21E93D4E90035D990 /* DictionaryExtensions.swift in Sources */,
 				E650759B1E37F7AB006961AC /* CrashSimulator.m in Sources */,
@@ -5285,12 +5345,14 @@
 				C9C18E5B265598D1004710CD /* TestSpaces.swift in Sources */,
 				E65075B31E37F7AB006961AC /* KeyboardHelper.swift in Sources */,
 				BCC39A2126C7258600EEC559 /* UserFlagStore.swift in Sources */,
+				3215C67027B6191B00D593BF /* UIView+Extension.swift in Sources */,
 				661E829A2783FF2100040C3E /* CGFloatExtension.swift in Sources */,
 				E65075AA1E37F7AB006961AC /* URLProtectionSpaceExtensions.swift in Sources */,
 				EB7FFFC820A9D38D003E1E34 /* AlertController.swift in Sources */,
 				C9BED4BF2667F83E001D9C77 /* SSOProvider.swift in Sources */,
 				C9C18E4E26559766004710CD /* AddToSpaceView.swift in Sources */,
 				C9C18E5426559827004710CD /* Space.swift in Sources */,
+				3215C67127B6191B00D593BF /* UIImage+Extension.swift in Sources */,
 				C9086050266693340049C072 /* SingleLineTextField.swift in Sources */,
 				E65075BF1E37F7AB006961AC /* UserAgent.swift in Sources */,
 				C9C18E5D265598EA004710CD /* AbstractController.swift in Sources */,
@@ -5303,11 +5365,13 @@
 				E65075AE1E37F7AB006961AC /* UIImageExtensions.swift in Sources */,
 				C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */,
 				4A72AFC2278E42F60057E58B /* MutationRequest.swift in Sources */,
+				3215C67627B6191B00D593BF /* CAMediaTimingFunction+Extension.swift in Sources */,
 				E65075A21E37F7AB006961AC /* HexExtensions.swift in Sources */,
 				4A9F65452713E06F00B7C06E /* SocialInfoUpdater.swift in Sources */,
 				288A2DB61AB8B38D0023ABC3 /* Result.swift in Sources */,
 				66B54EB926EC414000744358 /* Haptics.swift in Sources */,
 				E65075AD1E37F7AB006961AC /* UIColorExtensions.swift in Sources */,
+				3215C67527B6191B00D593BF /* FlowTimeline.swift in Sources */,
 				E650759C1E37F7AB006961AC /* DeferredUtils.swift in Sources */,
 				C9C18E4D26559711004710CD /* ModalPresentationController.swift in Sources */,
 				E65075941E37F7AB006961AC /* AppInfo.swift in Sources */,
@@ -5321,6 +5385,7 @@
 				E65075961E37F7AB006961AC /* AsyncReducer.swift in Sources */,
 				4AD771B62738697A00B6769D /* SpaceEntityData.swift in Sources */,
 				C9C18E4B265596AC004710CD /* Network.swift in Sources */,
+				3215C67827B6191B00D593BF /* NSShadow+Extension.swift in Sources */,
 				C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */,
 				7B9BF91C1E43472E00CB24F4 /* JSONExtensions.swift in Sources */,
 				C9C18E51265597B0004710CD /* Symbol.swift in Sources */,

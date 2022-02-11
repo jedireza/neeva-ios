@@ -302,9 +302,3 @@ class SVGPathStringTokenizer {
     }
 
 }
-
-extension CharacterSet {
-    public func isMember(_ c: UnicodeScalar) -> Bool {
-        return contains(UnicodeScalar(c.value)!)
-    }
-}

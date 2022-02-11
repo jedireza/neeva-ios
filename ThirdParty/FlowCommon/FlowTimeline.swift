@@ -17,14 +17,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+/*
+ Changes
+ - Renamed to FlowTimeline and FlowTimelineDelegate
+ */
+
 import Foundation
 import UIKit
 import AVFoundation
 
-open class Timeline {
+open class FlowTimeline {
     public var view: UIView
     public var duration: TimeInterval
-    public let animations: [Animation]
+    public let animations: [FlowAnimation]
     public let sounds: [(sound: AVAudioPlayer, delay: TimeInterval)]
 
     /// Specifies whether or not the timeline's animations autoreverse.
@@ -51,22 +56,35 @@ open class Timeline {
         return animations.first?.playing ?? false
     }
 
-    public weak var delegate: TimelineDelegate?
+    public weak var delegate: FlowTimelineDelegate?
 
     private var resetDispatchGroup: DispatchGroup?
 
     // MARK: - Initializers
 
-    public convenience init(view: UIView, animationsByLayer: [CALayer: [CAKeyframeAnimation]], sounds: [(sound: AVAudioPlayer, delay: TimeInterval)], duration: TimeInterval, autoreverses: Bool = false, repeatCount: Float = 0) {
-
+    public convenience init(
+        view: UIView,
+        animationsByLayer: [CALayer: [CAKeyframeAnimation]],
+        sounds: [(sound: AVAudioPlayer, delay: TimeInterval)],
+        duration: TimeInterval,
+        autoreverses: Bool = false,
+        repeatCount: Float = 0
+    ) {
         let animations = animationsByLayer.map {
-            Animation(layer: $0.0, keyframeAnimations: $0.1, autoreverses: autoreverses, repeatCount: repeatCount)
+            FlowAnimation(layer: $0.0, keyframeAnimations: $0.1, autoreverses: autoreverses, repeatCount: repeatCount)
         }
 
         self.init(view: view, animations: animations, sounds: sounds, duration: duration, autoreverses: autoreverses, repeatCount: repeatCount)
     }
 
-    public init(view: UIView, animations: [Animation], sounds: [(sound: AVAudioPlayer, delay: TimeInterval)], duration: TimeInterval, autoreverses: Bool, repeatCount: Float) {
+    public init(
+        view: UIView,
+        animations: [FlowAnimation],
+        sounds: [(sound: AVAudioPlayer, delay: TimeInterval)],
+        duration: TimeInterval,
+        autoreverses: Bool,
+        repeatCount: Float
+    ) {
         self.view = view
         self.duration = duration
         self.sounds = sounds
@@ -81,7 +99,7 @@ open class Timeline {
     // MARK: - Timeline Playback controls
 
     /// Reset to the initial state of the timeline
-    public func reset(onCompletion: ((Timeline) -> Void)? = nil) {
+    public func reset(onCompletion: ((FlowTimeline) -> Void)? = nil) {
         // Create a dispatch group to track when all animations have reset
         resetDispatchGroup = DispatchGroup()
 
@@ -132,7 +150,7 @@ open class Timeline {
 
     private func playSounds() {
         for (sound, delay) in sounds {
-            Sound.playAudio(sound, delay: delay)
+            FlowSound.playAudio(sound, delay: delay)
         }
     }
 
@@ -153,14 +171,14 @@ open class Timeline {
     }
 
     /// Returns a reverses version of `self`.
-    var reversed: Timeline {
+    var reversed: FlowTimeline {
         let reversedAnimations = animations.map { $0.reversed }
-        return Timeline(view: view, animations: reversedAnimations, sounds: sounds, duration: duration, autoreverses: autoreverses, repeatCount: repeatCount)
+        return FlowTimeline(view: view, animations: reversedAnimations, sounds: sounds, duration: duration, autoreverses: autoreverses, repeatCount: repeatCount)
     }
 }
 
-extension Timeline: AnimationDelegate {
-    func didStop(animation: Animation) {
+extension FlowTimeline: FlowAnimationDelegate {
+    func didStop(animation: FlowAnimation) {
         // Notify the delegate a single time, when the first animation is complete
         // We can do this because all animations are CAKeyframeAnimations that have identical durations (e.g. Timeline.duration)
         if animation == animations.first {
@@ -173,35 +191,35 @@ extension Timeline: AnimationDelegate {
     }
 }
 
-public protocol TimelineDelegate: AnyObject {
+public protocol FlowTimelineDelegate: AnyObject {
     /// Informs the delegate that the timeline `timeline` was reset.
-    func didReset(timeline: Timeline)
+    func didReset(timeline: FlowTimeline)
 
     /// Informs the delegate that the timeline `timeline` did start playing.
-    func didPlay(timeline: Timeline)
+    func didPlay(timeline: FlowTimeline)
 
     /// Informs the delegate that the timeline `timeline` was paused.
-    func didPause(timeline: Timeline)
+    func didPause(timeline: FlowTimeline)
 
     /// Informs the delegate that the timeline `timeline` was offset.
     ///
     /// - Parameters:
     ///   - timeline: The timeline which was offset.
     ///   - time: The time to which `timeline` was offset to.
-    func didOffset(timeline: Timeline, to time: TimeInterval)
+    func didOffset(timeline: FlowTimeline, to time: TimeInterval)
 
     /// Informs the delegate that the timeline `timeline` was stopped because it completed its active duration.
-    func didStop(timeline: Timeline)
+    func didStop(timeline: FlowTimeline)
 }
 
-extension TimelineDelegate {
-    public func didReset(timeline: Timeline) { }
+extension FlowTimelineDelegate {
+    public func didReset(timeline: FlowTimeline) { }
 
-    public func didPlay(timeline: Timeline) { }
+    public func didPlay(timeline: FlowTimeline) { }
 
-    public func didPause(timeline: Timeline) { }
+    public func didPause(timeline: FlowTimeline) { }
 
-    public func didOffset(timeline: Timeline, to time: TimeInterval) { }
+    public func didOffset(timeline: FlowTimeline, to time: TimeInterval) { }
 
-    public func didStop(timeline: Timeline) { }
+    public func didStop(timeline: FlowTimeline) { }
 }

@@ -1,4 +1,4 @@
-// Copyright © 2016-2019 JABT
+// Copyright © 2016-2019 JABT Labs Inc.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to
@@ -17,14 +17,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import UIKit
+/*
+ Changes
+ - Extracted from CGPath+SVG.swift
+ */
 
-open class TextView: UILabel {
-    open var textLayer: CATextLayer {
-        return layer as! CATextLayer
-    }
+import Foundation
 
-    override open class var layerClass: AnyClass {
-        return CATextLayer.self
+extension CharacterSet {
+    public func isMember(_ c: UnicodeScalar) -> Bool {
+        return contains(UnicodeScalar(c.value)!)
     }
 }
