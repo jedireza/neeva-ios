@@ -32,11 +32,16 @@ class SessionRestoreHelper: TabContentScript {
 
                     if let navigationList = tab.webView?.backForwardList.all {
                         for (index, item) in navigationList.enumerated() {
-                            guard tab.sessionData?.queries.indices.contains(index) ?? false,
-                                let query = tab.sessionData?.queries[index]
+                            guard let sessionData = tab.sessionData,
+                                sessionData.typedQueries.indices.contains(index),
+                                let query = sessionData.typedQueries[index]
                             else { break }
 
-                            tab.queryForNavigation.queryForNavigations[item] = query
+                            var suggestedQuery: String? = nil
+                            if sessionData.suggestedQueries.indices.contains(index) {
+                                suggestedQuery = sessionData.suggestedQueries[index]
+                            }
+                            tab.queryForNavigation.queryForNavigations[item] = .init(typed: query, suggested: suggestedQuery)
                         }
                     }
 

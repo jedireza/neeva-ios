@@ -27,7 +27,9 @@ extension SavedTab {
                 }
 
                 sessionData = SessionData(
-                    currentPage: currentPage, urls: urls, queries: queries,
+                    currentPage: currentPage, urls: urls,
+                    queries: queries.map { $0?.typed },
+                    suggestedQueries: queries.map { $0?.suggested },
                     lastUsedTime: tab.lastExecutedTime ?? Date.nowMilliseconds())
             }
         }

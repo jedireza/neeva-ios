@@ -776,7 +776,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
         overlayManager.show(overlay: .popover(popoverView))
     }
 
-    func finishEditingAndSubmit(_ url: URL, visitType: VisitType, forTab tab: Tab?) {
+    func finishEditingAndSubmit(
+        _ url: URL,
+        visitType: VisitType,
+        forTab tab: Tab?,
+        with suggestedQuery: String? = nil
+    ) {
         if BrowserViewController.isCommandKeyPressed && tabManager.getTabCountForCurrentType() > 0 {
             openURLInBackground(url)
             return
@@ -787,6 +792,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager.createOrSwitchToTab(
                 for: url,
                 query: searchQueryModel.value,
+                suggestedQuery: suggestedQuery,
                 visitType: visitType
             )
         } else if zeroQueryModel.isLazyTab || zeroQueryModel.targetTab == .newTab {
@@ -809,7 +815,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
                 }
             } else if let nav = tab.loadRequest(URLRequest(url: url)) {
-                tab.queryForNavigation.currentSearchQuery = searchQueryModel.value
+                tab.queryForNavigation.currentQuery = .init(typed: searchQueryModel.value, suggested: suggestedQuery)
                 recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             }
         }

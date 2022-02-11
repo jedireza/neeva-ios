@@ -417,8 +417,10 @@ class TabManagerTests: XCTestCase {
         let tabToSave = Tab(
             bvc: SceneDelegate.getBVC(for: nil), configuration: WKWebViewConfiguration())
         tabToSave.sessionData = SessionData(
-            currentPage: 0, urls: [URL(string: "url")!], queries: [nil],
-            lastUsedTime: Date.nowMilliseconds())
+            currentPage: 0, urls: [URL(string: "url")!],
+            queries: [nil], suggestedQueries: [nil],
+            lastUsedTime: Date.nowMilliseconds()
+        )
 
         manager.removeTabs([tab], updatingSelectedTab: true)
         manager.restoreAllClosedTabs()

@@ -207,10 +207,6 @@ struct Card<Details>: View where Details: CardDetails {
         GeometryReader { geom in
             VStack(alignment: .center, spacing: 0) {
                 let button = Button(action: {
-                    if let tabGroupCardDetail = tabGroupCardDetail {
-                        tabGroupCardModel.detailedTabGroup = tabGroupCardDetail
-                    }
-
                     details.onSelect()
                     selectionCompletion()
                 }) {
@@ -245,24 +241,12 @@ struct Card<Details>: View where Details: CardDetails {
 
                 if !details.thumbnailDrawsHeader {
                     HStack(spacing: 0) {
-                        if !FeatureFlag[.tabGroupsNewDesign] && isChildTab(details: details)
-                            && (cardTransitionModel.state == .visibleForTrayShow)
-                        {
-                            Image(systemName: iconInMainGrid)
-                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                                .cornerRadius(CardUX.FaviconCornerRadius)
-                                .padding(5)
-
-                        } else {
-                            details.favicon
-                                .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
-                                .cornerRadius(CardUX.FaviconCornerRadius)
-                                .padding(5)
-                        }
+                        details.favicon
+                            .frame(width: CardUX.FaviconSize, height: CardUX.FaviconSize)
+                            .cornerRadius(CardUX.FaviconCornerRadius)
+                            .padding(5)
                         Text(
-                            !FeatureFlag[.tabGroupsNewDesign]
-                                && cardTransitionModel.state == .visibleForTrayShow
-                                ? titleInMainGrid : details.title
+                            details.title
                         ).withFont(.labelMedium)
                             .frame(alignment: .center)
                             .padding(.trailing, 5).padding(.vertical, 4).lineLimit(1)
