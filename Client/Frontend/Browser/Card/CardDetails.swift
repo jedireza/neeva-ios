@@ -252,7 +252,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                 Button(
                     action: { [self] in
                         manager.get(for: id)?.rootUUID = UUID().uuidString
-                        manager.objectWillChange.send()
+                        manager.tabsUpdatedPublisher.send()
                     },
                     label: {
                         Label("Remove from group", systemSymbol: .arrowUpForwardSquare)

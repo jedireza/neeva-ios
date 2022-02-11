@@ -51,9 +51,9 @@ class TabCardModel: CardModel {
         self.groupManager = groupManager
         // Process updates to the TabManager state asynchronously. This way we wait
         // until after `tabs` has been updated before we do any work.
-        self.subscription = manager.objectWillChange.filter({ [weak self] (_) in
+        self.subscription = manager.tabsUpdatedPublisher.filter({ [weak self] in
             self?.manager.didRestoreAllTabs ?? false
-        }).receive(on: DispatchQueue.main).sink { [weak self] (_) in
+        }).sink { [weak self] in
             self?.onDataUpdated()
         }
     }
@@ -102,10 +102,7 @@ class TabCardModel: CardModel {
         }
 
         return allDetails.filter { tabCard in
-            // The tab may have been removed, and `allDetails` could be out of date. This
-            // possibility exists because `TabCardModel.onDataUpdated` runs asynchronously.
-            // TODO(darin): Figure out how to update `allDetails` synchronously instead.
-            guard let tab = tabCard.manager.get(for: tabCard.id) else { return false }
+            let tab = tabCard.manager.get(for: tabCard.id)!
             return
                 (tabGroupModel.representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })

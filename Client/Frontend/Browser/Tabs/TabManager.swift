@@ -49,7 +49,7 @@ extension TabManager: TabEventHandler {
 }
 
 // TabManager must extend NSObjectProtocol in order to implement WKNavigationDelegate
-class TabManager: NSObject, ObservableObject {
+class TabManager: NSObject {
     fileprivate var delegates = [WeakTabManagerDelegate]()
     fileprivate let tabEventHandlers: [TabEventHandler]
     public let store: TabManagerStore
@@ -77,7 +77,9 @@ class TabManager: NSObject, ObservableObject {
         }
     }
 
-    @Published fileprivate(set) var tabs = [Tab]()
+    private(set) var tabs = [Tab]()
+    private(set) var tabsUpdatedPublisher = PassthroughSubject<Void, Never>()
+
     var didRestoreAllTabs: Bool = false
 
     // Use `selectedTabPublisher` to observe changes to `selectedTab`.
@@ -265,7 +267,8 @@ class TabManager: NSObject, ObservableObject {
             TabEvent.post(.didGainFocus, for: tab)
             tab.applyTheme()
         }
-        objectWillChange.send()
+        // TODO(darin): This should not be necessary.
+        tabsUpdatedPublisher.send()
 
         if let tab = tab, tab.isIncognito, let url = tab.url, NeevaConstants.isAppHost(url.host),
             !url.path.starts(with: "/incognito")
@@ -388,24 +391,6 @@ class TabManager: NSObject, ObservableObject {
         return tab
     }
 
-    func moveTab(
-        isPrivate privateMode: Bool, fromIndex visibleFromIndex: Int, toIndex visibleToIndex: Int
-    ) {
-        assert(Thread.isMainThread)
-
-        let currentTabs = privateMode ? incognitoTabs : normalTabs
-
-        guard visibleFromIndex < currentTabs.count, visibleToIndex < currentTabs.count else {
-            return
-        }
-
-        let fromIndex = tabs.firstIndex(of: currentTabs[visibleFromIndex]) ?? tabs.count - 1
-        let toIndex = tabs.firstIndex(of: currentTabs[visibleToIndex]) ?? tabs.count - 1
-
-        tabs.insert(tabs.remove(at: fromIndex), at: toIndex)
-        storeChanges()
-    }
-
     enum CreateOrSwitchToTabResult {
         case createdNewTab
         case switchedToExistingTab
@@ -485,7 +470,7 @@ class TabManager: NSObject, ObservableObject {
             delegates.forEach {
                 $0.get()?.tabManager(self, didAddTab: tab, isRestoring: store.isRestoringTabs)
             }
-            objectWillChange.send()
+            tabsUpdatedPublisher.send()
         }
     }
 
@@ -631,6 +616,7 @@ class TabManager: NSObject, ObservableObject {
                 $0.get()?.tabManager(self, didRemoveTab: tab, isRestoring: store.isRestoringTabs)
             }
             TabEvent.post(.didClose, for: tab)
+            tabsUpdatedPublisher.send()
         }
 
         if flushToDisk {
@@ -682,6 +668,8 @@ class TabManager: NSObject, ObservableObject {
         }
 
         storeChanges()
+
+        tabsUpdatedPublisher.send()
     }
 
     func addTabsToRecentlyClosed(_ tabs: [Tab], allowToast: Bool) {
@@ -717,6 +705,9 @@ class TabManager: NSObject, ObservableObject {
         // makes sure at least one tab is selected
         // if no tab selected, select the last one (most recently closed)
         var selectedSavedTab: Tab?
+
+        // TODO(darin): pass `notify: false` to `addTab` and defer notifications until
+        // the end of this function to reduce spam.
 
         for index in 0..<savedTabs.count {
             let savedTab = savedTabs[index]
@@ -766,6 +757,7 @@ class TabManager: NSObject, ObservableObject {
         _ = restoreSavedTabs(Array(recentlyClosedTabs.joined()))
     }
 
+    // TODO(darin): De-dupe this with the other variant of `removeTabs` above.
     func removeTabs(_ tabs: [Tab], updatingSelectedTab: Bool) {
         guard tabs.count > 0 else {
             return
@@ -786,6 +778,8 @@ class TabManager: NSObject, ObservableObject {
         }
 
         storeChanges()
+
+        tabsUpdatedPublisher.send()
     }
 
     func getRecentlyClosedTabForURL(_ url: URL) -> SavedTab? {

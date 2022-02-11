@@ -151,6 +151,9 @@ class TabManagerStore {
             savedTabs = savedTabs.filter { !$0.isPrivate }
         }
 
+        // TODO(darin): Ideally we'd pass `notify: false` to `addTab` here and instead
+        // do notifications after all of the mutations to `TabManager.tabs` are done.
+
         var tabToSelect: Tab?
         for savedTab in savedTabs {
             // Provide an empty request to prevent a new tab from loading the home screen
