@@ -13,7 +13,7 @@ struct TabToolbarView: View {
 
     let performAction: (ToolbarAction) -> Void
     let buildTabsMenu: (_ sourceView: UIView) -> UIMenu?
-    let onNeevaMenu: () -> Void
+    let onNeevaButtonPressed: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -86,8 +86,7 @@ struct TabToolbarView: View {
             popoverSize: CGSize(width: 257, height: 114),
             content: {
                 TabToolbarButtons.NeevaMenu(iconWidth: 22) {
-                    chromeModel.clearCheatsheetPopoverFlags()
-                    onNeevaMenu()
+                    onNeevaButtonPressed()
                 }
             },
             popoverContent: {
@@ -101,7 +100,7 @@ struct TabToolbarView: View {
 struct TabToolbarView_Previews: PreviewProvider {
     static var previews: some View {
         let make = { (model: TabChromeModel) in
-            TabToolbarView(performAction: { _ in }, buildTabsMenu: { _ in nil }, onNeevaMenu: {})
+            TabToolbarView(performAction: { _ in }, buildTabsMenu: { _ in nil }, onNeevaButtonPressed: {})
                 .environmentObject(model)
         }
         VStack {

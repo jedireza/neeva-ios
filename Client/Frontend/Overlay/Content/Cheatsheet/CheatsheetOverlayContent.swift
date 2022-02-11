@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import SwiftUI
+import Shared
 
 struct CheatsheetOverlayContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
@@ -28,6 +29,17 @@ struct CheatsheetOverlayContent: View {
         .environmentObject(model)
         .environment(\.onOpenURL) { url in
             hideOverlay()
+            ClientLogger.shared.logCounter(
+                .OpenLinkFromCheatsheet,
+                attributes:
+                    EnvironmentHelper.shared.getAttributes()
+                        +
+                    model.loggerAttributes
+                        +
+                    [
+                        ClientLogCounterAttribute(key: "url", value: url.absoluteString)
+                    ]
+            )
             self.tabManager.createOrSwitchToTab(for: url)
         }
     }

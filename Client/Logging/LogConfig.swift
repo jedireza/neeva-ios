@@ -282,6 +282,14 @@ public struct LogConfig {
         case RelatedRecipeClick
         case RelatedSearchClick
 
+        // MARK: Cheatsheet(NeevaScope)
+        case CheatsheetPopoverImpression
+        case OpenCheatsheet
+        case AckCheatsheetEducationOnSRP
+        case AckCheatsheetEducationOnPage
+        case CheatsheetEmpty
+        case OpenLinkFromCheatsheet
+
         // MARK: tab group
         case tabGroupClicked
         case tabGroupClosed
@@ -314,6 +322,7 @@ public struct LogConfig {
         case RatingsCard = "RatingsCard"
         case Notification = "Notification"
         case RecipeCheatsheet = "RecipeCheatsheet"
+        case Cheatsheet = "Cheatsheet"
         case TabGroup = "TabGroup"
         case Feedback = "Feedback"
         case DebugMode = "DebugMode"
@@ -511,6 +520,13 @@ public struct LogConfig {
         case .RelatedRecipeClick: return .RecipeCheatsheet
         case .RelatedSearchClick: return .RecipeCheatsheet
 
+        case .CheatsheetPopoverImpression: return .Cheatsheet
+        case .OpenCheatsheet: return .Cheatsheet
+        case .AckCheatsheetEducationOnSRP: return .Cheatsheet
+        case .AckCheatsheetEducationOnPage: return .Cheatsheet
+        case .CheatsheetEmpty: return .Cheatsheet
+        case .OpenLinkFromCheatsheet: return .Cheatsheet
+
         case .tabGroupClicked: return .TabGroup
         case .tabGroupClosed: return .TabGroup
         case .tabInTabGroupClicked: return .TabGroup
@@ -603,6 +619,11 @@ public struct LogConfig {
     public struct PromoCardAttribute {
         public static let promoCardType = "promoCardType"
         public static let defaultBrowserPromptExperimentArm = "defaultBrowserPromptExperimentArm"
+    }
+
+    public struct CheatsheetAttribute {
+        public static let currentCheatsheetQuery = "currentCheatsheetQuery"
+        public static let currentPageURL = "currentCheatsheetPageURL"
     }
 
     public struct TabsAttribute {

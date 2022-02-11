@@ -2188,21 +2188,18 @@ extension BrowserViewController {
     func showNeevaMenuSheet() {
         TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
 
-        if NeevaFeatureFlags[.cheatsheetQuery] {
-            showCheatSheetOverlay()
-        } else {
-            updateFeedbackImage()
-            showModal(
-                style: .grouped,
-                headerContent: {
-                    NeevaMenuWillMoveView()
-                }
-            ) { [self] in
-                NeevaMenuOverlayContent(
-                    menuAction: perform(neevaMenuAction:),
-                    isIncognito: incognitoModel.isIncognito)
+        updateFeedbackImage()
+        showModal(
+            style: .grouped,
+            headerContent: {
+                NeevaMenuWillMoveView()
             }
+        ) { [self] in
+            NeevaMenuOverlayContent(
+                menuAction: perform(neevaMenuAction:),
+                isIncognito: incognitoModel.isIncognito)
         }
+
         self.dismissVC()
     }
 }
@@ -2240,6 +2237,8 @@ extension BrowserViewController {
                 )
             }
         }
+
+        self.dismissVC()
     }
 }
 

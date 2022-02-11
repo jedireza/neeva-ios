@@ -65,6 +65,19 @@ public class CheatsheetMenuViewModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    var loggerAttributes: [ClientLogCounterAttribute] {
+        [
+            ClientLogCounterAttribute(
+                key: LogConfig.CheatsheetAttribute.currentPageURL,
+                value: currentPageURL?.absoluteString
+            ),
+            ClientLogCounterAttribute(
+                key: LogConfig.CheatsheetAttribute.currentCheatsheetQuery,
+                value: currentCheatsheetQuery
+            )
+        ]
+    }
+
     init(tabManager: TabManager) {
         self.cheatsheetInfo = tabManager.selectedTab?.cheatsheetData
         self.searchRichResults = tabManager.selectedTab?.searchRichResults

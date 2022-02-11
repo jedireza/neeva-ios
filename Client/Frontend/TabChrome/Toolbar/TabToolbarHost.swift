@@ -11,7 +11,7 @@ protocol ToolbarDelegate: AnyObject {
 }
 
 struct TabToolbarContent: View {
-    let showNeevaMenuSheet: () -> Void
+    let onNeevaButtonPressed: () -> Void
 
     @EnvironmentObject private var chromeModel: TabChromeModel
 
@@ -19,11 +19,7 @@ struct TabToolbarContent: View {
         TabToolbarView(
             performAction: { chromeModel.toolbarDelegate?.performTabToolbarAction($0) },
             buildTabsMenu: { chromeModel.toolbarDelegate?.tabToolbarTabsMenu(sourceView: $0) },
-            onNeevaMenu: {
-                ClientLogger.shared.logCounter(
-                    .OpenNeevaMenu, attributes: EnvironmentHelper.shared.getAttributes())
-                showNeevaMenuSheet()
-            }
+            onNeevaButtonPressed: onNeevaButtonPressed
         )
     }
 }

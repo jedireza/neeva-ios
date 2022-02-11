@@ -109,6 +109,10 @@ struct TopBarNeevaMenuButton: View {
             popoverSize: CGSize(width: 257, height: 114),
             content: {
                 TabToolbarButtons.NeevaMenu(iconWidth: Self.neevaIconWidth) {
+                    ClientLogger.shared.logCounter(
+                        .OpenCheatsheet,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                    )
                     chromeModel.clearCheatsheetPopoverFlags()
                     if let bvc = chromeModel.topBarDelegate as? BrowserViewController {
                         bvc.showCheatSheetOverlay()

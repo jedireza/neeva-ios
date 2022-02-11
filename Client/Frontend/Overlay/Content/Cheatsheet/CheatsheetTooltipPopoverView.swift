@@ -5,11 +5,15 @@
 import Shared
 import SwiftUI
 
+private let cheatsheetTolltipPopoverImpressionTimerInterval: TimeInterval = 1
+
 struct CheatsheetTooltipPopoverView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var isDarkMode: Bool { colorScheme == .dark }
     static let backgroundColorMode: WithPopoverColorMode = .dyanmicBackground(.brand.blue, .brand.variant.polar)
+
+    @State var impressionTimer: Timer? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -24,6 +28,22 @@ struct CheatsheetTooltipPopoverView: View {
         }
         .padding(.vertical, 20)
         .padding(.horizontal, 10)
+        .onAppear {
+            impressionTimer?.invalidate()
+            impressionTimer = Timer.scheduledTimer(
+                withTimeInterval: cheatsheetTolltipPopoverImpressionTimerInterval,
+                repeats: false
+            ) { _ in
+                ClientLogger.shared.logCounter(
+                    .CheatsheetPopoverImpression,
+                    attributes: EnvironmentHelper.shared.getAttributes()
+                )
+            }
+        }
+        .onDisappear {
+            impressionTimer?.invalidate()
+            impressionTimer = nil
+        }
     }
 }
 

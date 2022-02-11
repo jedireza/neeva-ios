@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Shared
 import SwiftUI
 
 struct BrowserBottomBarView: View {
@@ -13,8 +14,21 @@ struct BrowserBottomBarView: View {
     var body: some View {
         if !browserModel.showGrid && !chromeModel.inlineToolbar && !chromeModel.isEditingLocation {
             TabToolbarContent(
-                showNeevaMenuSheet: {
-                    bvc.showNeevaMenuSheet()
+                onNeevaButtonPressed: {
+                    if NeevaFeatureFlags[.cheatsheetQuery] {
+                        ClientLogger.shared.logCounter(
+                            .OpenCheatsheet,
+                            attributes: EnvironmentHelper.shared.getAttributes()
+                        )
+                        chromeModel.clearCheatsheetPopoverFlags()
+                        bvc.showCheatSheetOverlay()
+                    } else {
+                        ClientLogger.shared.logCounter(
+                            .OpenNeevaMenu,
+                            attributes: EnvironmentHelper.shared.getAttributes()
+                        )
+                        bvc.showNeevaMenuSheet()
+                    }
                 }
             )
         } else if browserModel.showGrid {

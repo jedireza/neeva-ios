@@ -192,6 +192,7 @@ class TabChromeModel: ObservableObject {
     }
 
     func clearCheatsheetPopoverFlags() {
+        guard NeevaFeatureFlags[.cheatsheetQuery] else { return }
         Defaults[.showTryCheatsheetPopover] = false
         if let recipeModel = topBarDelegate?.tabContainerModel.recipeModel,
            !recipeModel.recipe.title.isEmpty {

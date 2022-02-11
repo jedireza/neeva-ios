@@ -214,11 +214,21 @@ public struct CheatsheetMenuView: View {
             // Show Cheatsheet Info if on Neeva domain page
             if NeevaConstants.isInNeevaDomain(model.currentPageURL) {
                 CheatsheetInfoView(buttonText: "Got it!") {
+                    ClientLogger.shared.logCounter(
+                        .AckCheatsheetEducationOnSRP,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                    )
                     hideOverlay()
                     defaultShowTryCheatsheetPopover = !seenCheatsheetIntro
                 }
             } else if !seenCheatsheetIntro {
-                CheatsheetInfoView(buttonText: "Let's try it!") { seenCheatsheetIntro = true }
+                CheatsheetInfoView(buttonText: "Let's try it!") {
+                    ClientLogger.shared.logCounter(
+                        .AckCheatsheetEducationOnPage,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                    )
+                    seenCheatsheetIntro = true
+                }
             } else if model.cheatsheetDataLoading {
                 CheatsheetLoadingView()
             } else if let error = model.cheatsheetDataError {
@@ -228,6 +238,13 @@ public struct CheatsheetMenuView: View {
             } else if model.cheatSheetIsEmpty {
                 VStack(alignment: .center) {
                     CheatsheetNoResultView()
+                        .onAppear {
+                            // there are some false positives
+                            ClientLogger.shared.logCounter(
+                                .CheatsheetEmpty,
+                                attributes: EnvironmentHelper.shared.getAttributes() + model.loggerAttributes
+                            )
+                        }
                     if cheatsheetDebugQuery {
                         VStack(alignment: .leading) {
                             Button(action: {
