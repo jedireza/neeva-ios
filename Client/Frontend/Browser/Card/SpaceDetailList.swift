@@ -218,7 +218,7 @@ struct SpaceDetailList: View {
                     .useEffect(deps: spaceCommentsModel.addingComment) { addingComment in
                         self.addingComment = addingComment
                     }
-                }.ignoresSafeArea()
+                }.ignoresSafeArea(.container)
             }.modifier(iPadOnlyStackNavigation())
         }
     }

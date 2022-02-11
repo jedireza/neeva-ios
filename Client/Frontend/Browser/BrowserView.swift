@@ -94,7 +94,6 @@ struct BrowserView: View {
             .frame(
                 height: UIConstants.TopToolbarHeightWithToolbarButtonsShowing
             )
-            .ignoresSafeArea(.keyboard)
     }
 
     var mainContent: some View {
@@ -139,16 +138,18 @@ struct BrowserView: View {
                 }
 
                 // Bottom Bar
-                if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
-                    && !detailViewVisible && !chromeModel.keyboardShowing
-                    && !overlayManager.hideBottomBar
-                {
-                    bottomBar
-                        .offset(x: detailViewVisible ? -geom.size.width : 0)
-                        .onHeightOfViewChanged { height in
-                            self.chromeModel.bottomBarHeight = height
-                        }
-                }
+                ZStack {
+                    if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
+                        && !detailViewVisible && !chromeModel.keyboardShowing
+                        && !overlayManager.hideBottomBar
+                    {
+                        bottomBar
+                            .offset(x: detailViewVisible ? -geom.size.width : 0)
+                            .onHeightOfViewChanged { height in
+                                self.chromeModel.bottomBarHeight = height
+                            }
+                    }
+                }.ignoresSafeArea(.keyboard)
             }.useEffect(deps: chromeModel.topBarHeight) { _ in
                 browserModel.scrollingControlModel.setHeaderFooterHeight(
                     header: chromeModel.topBarHeight,

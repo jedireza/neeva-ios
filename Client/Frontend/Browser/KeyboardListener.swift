@@ -36,7 +36,11 @@ struct KeyboardListener: ViewModifier {
                         }
                     }
                     .map { rect in
-                        rect.height - geometry.safeAreaInsets.bottom
+                        if currentHeight == 0 {
+                            return rect.height - geometry.safeAreaInsets.bottom
+                        } else {
+                            return currentHeight
+                        }
                     }
                     .subscribe(Subscribers.Assign(object: self, keyPath: \.currentHeight))
 

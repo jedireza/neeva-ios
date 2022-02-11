@@ -35,7 +35,7 @@ class KeyboardShortcutTests: UITestBase {
     func testFindInPageKeyCommand() {
         openNewTab()
         bvc.findInPageKeyCommand()
-        try! tester().tryFindingView(withAccessibilityIdentifier: "FindInPage_Done")
+        tester().tryFindingView(withAccessibilityIdentifier: "FindInPage_Done")
 
         reset()
     }

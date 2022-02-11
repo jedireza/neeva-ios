@@ -168,7 +168,7 @@ struct TabContainerContent: View {
             case .webPage(let currentWebView):
                 ZStack {
                     WebViewContainer(webView: currentWebView)
-                        .ignoresSafeArea()
+                        .ignoresSafeArea(.container)
                         .onTapGesture {
                             UIMenuController.shared.hideMenu()
                         }
