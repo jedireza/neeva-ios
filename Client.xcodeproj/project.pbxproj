@@ -2535,8 +2535,7 @@
 				3215C61A27B46B5900D593BF /* UIImage+Extension.swift */,
 				3215C63627B46BB900D593BF /* README.md */,
 			);
-			name = FlowCommon;
-			path = ThirdParty/FlowCommon;
+			path = FlowCommon;
 			sourceTree = "<group>";
 		};
 		3215C63A27B4733E00D593BF /* NeevaScopeLoading */ = {
