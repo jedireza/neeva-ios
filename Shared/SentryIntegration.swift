@@ -33,10 +33,6 @@ public enum SentryTag: String {
 public class Sentry {
     public static let shared = Sentry()
 
-    public static var crashedLastLaunch: Bool {
-        return false  // TODO: implement
-    }
-
     private var enabled = false
 
     private var attributes: [String: Any] = [:]

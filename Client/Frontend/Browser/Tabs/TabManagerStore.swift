@@ -134,7 +134,7 @@ class TabManagerStore {
         return selectedTab
     }
 
-    func restoreTabs(savedTabs: [SavedTab], clearPrivateTabs: Bool, tabManager: TabManager) -> Tab?
+    private func restoreTabs(savedTabs: [SavedTab], clearPrivateTabs: Bool, tabManager: TabManager) -> Tab?
     {
         assertIsMainThread("Restoration is a main-only operation")
         guard !lockedForReading, savedTabs.count > 0 else { return nil }
@@ -158,7 +158,7 @@ class TabManagerStore {
         for savedTab in savedTabs {
             // Provide an empty request to prevent a new tab from loading the home screen
             var tab = tabManager.addTab(
-                flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate)
+                flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate, notify: false)
             tab = savedTab.configureSavedTabUsing(tab, imageStore: imageStore)
 
             if savedTab.isSelected {

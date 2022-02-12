@@ -16,12 +16,6 @@ protocol TabManagerDelegate: AnyObject {
     func tabManager(
         _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
         isRestoring: Bool, updateZeroQuery: Bool)
-    func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool)
-    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool)
-
-    func tabManagerDidRestoreTabs(_ tabManager: TabManager)
-    func tabManagerDidAddTabs(_ tabManager: TabManager)
-    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager)
 }
 
 // We can't use a WeakList here because this is a protocol.
@@ -267,8 +261,6 @@ class TabManager: NSObject {
             TabEvent.post(.didGainFocus, for: tab)
             tab.applyTheme()
         }
-        // TODO(darin): This should not be necessary.
-        tabsUpdatedPublisher.send()
 
         if let tab = tab, tab.isIncognito, let url = tab.url, NeevaConstants.isAppHost(url.host),
             !url.path.starts(with: "/incognito")
@@ -359,8 +351,9 @@ class TabManager: NSObject {
 
         // Select the most recent.
         selectTab(tab)
+
         // Okay now notify that we bulk-loaded so we can adjust counts and animate changes.
-        delegates.forEach { $0.get()?.tabManagerDidAddTabs(self) }
+        tabsUpdatedPublisher.send()
 
         // Flush.
         storeChanges()
@@ -467,9 +460,6 @@ class TabManager: NSObject {
         }
 
         if notify {
-            delegates.forEach {
-                $0.get()?.tabManager(self, didAddTab: tab, isRestoring: store.isRestoringTabs)
-            }
             tabsUpdatedPublisher.send()
         }
     }
@@ -612,9 +602,6 @@ class TabManager: NSObject {
         tab.close()
 
         if notify {
-            delegates.forEach {
-                $0.get()?.tabManager(self, didRemoveTab: tab, isRestoring: store.isRestoringTabs)
-            }
             TabEvent.post(.didClose, for: tab)
             tabsUpdatedPublisher.send()
         }
@@ -670,6 +657,9 @@ class TabManager: NSObject {
         storeChanges()
 
         tabsUpdatedPublisher.send()
+
+        // TODO(darin): Don't we need to call Tab.close() on each of the removed tabs, and
+        // don't we need to generate a .didClose TabEvent?
     }
 
     func addTabsToRecentlyClosed(_ tabs: [Tab], allowToast: Bool) {
@@ -706,9 +696,6 @@ class TabManager: NSObject {
         // if no tab selected, select the last one (most recently closed)
         var selectedSavedTab: Tab?
 
-        // TODO(darin): pass `notify: false` to `addTab` and defer notifications until
-        // the end of this function to reduce spam.
-
         for index in 0..<savedTabs.count {
             let savedTab = savedTabs[index]
             let urlRequest: URLRequest? = savedTab.url != nil ? URLRequest(url: savedTab.url!) : nil
@@ -717,11 +704,11 @@ class TabManager: NSObject {
             if let tabIndex = savedTab.tabIndex {
                 tab = addTab(
                     urlRequest, atIndex: tabIndex, flushToDisk: false, zombie: false,
-                    isPrivate: isPrivate)
+                    isPrivate: isPrivate, notify: false)
             } else {
                 tab = addTab(
                     urlRequest, afterTab: getTabForUUID(uuid: savedTab.parentUUID ?? ""),
-                    flushToDisk: false, zombie: false, isPrivate: isPrivate)
+                    flushToDisk: false, zombie: false, isPrivate: isPrivate, notify: false)
             }
 
             tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
@@ -734,14 +721,14 @@ class TabManager: NSObject {
             }
         }
 
+        tabsUpdatedPublisher.send()
+
         // Prevents a sticky tab tray
         SceneDelegate.getBVC(with: scene).browserModel.cardTransitionModel.update(to: .hidden)
 
         if let selectedSavedTab = selectedSavedTab, shouldSelectTab {
             self.selectTab(selectedSavedTab)
         }
-
-        delegates.forEach({ $0.get()?.tabManagerDidRestoreTabs(self) })
 
         // remove restored tabs from recently closed
         if let index = recentlyClosedTabs.firstIndex(of: savedTabs) {
@@ -780,6 +767,9 @@ class TabManager: NSObject {
         storeChanges()
 
         tabsUpdatedPublisher.send()
+
+        // TODO(darin): Don't we need to call Tab.close() on each of the removed tabs, and
+        // don't we need to generate a .didClose TabEvent?
     }
 
     func getRecentlyClosedTabForURL(_ url: URL) -> SavedTab? {
@@ -817,7 +807,7 @@ class TabManager: NSObject {
 }
 
 extension TabManager {
-    fileprivate func saveTabs(toProfile profile: Profile, _ tabs: [Tab]) {
+    private func saveTabs(toProfile profile: Profile, _ tabs: [Tab]) {
         // It is possible that not all tabs have loaded yet, so we filter out tabs with a nil URL.
         let storedTabs: [RemoteTab] = tabs.compactMap(Tab.toRemoteTab)
 
@@ -828,13 +818,13 @@ extension TabManager {
         }
     }
 
-    func storeChanges() {
+    private func storeChanges() {
         saveTabs(toProfile: profile, normalTabs)
         store.preserveTabs(
             tabs, selectedTab: selectedTab, for: scene)
     }
 
-    func hasTabsToRestoreAtStartup() -> Bool {
+    private func hasTabsToRestoreAtStartup() -> Bool {
         return store.getStartupTabs(for: scene).count > 0
     }
 
@@ -847,21 +837,19 @@ extension TabManager {
         else {
             log.info("Skipping tab restore")
             didRestoreAllTabs = true
+            tabsUpdatedPublisher.send()
             return false
         }
 
         var tabToSelect = store.restoreStartupTabs(
             for: scene, clearPrivateTabs: Defaults[.closePrivateTabs], tabManager: self)
         if Defaults[.lastSessionPrivate], !(tabToSelect?.isIncognito ?? false) {
-            tabToSelect = addTab(isPrivate: true)
+            tabToSelect = addTab(isPrivate: true, notify: false)
         }
 
         selectTab(tabToSelect)
 
-        for delegate in self.delegates {
-            delegate.get()?.tabManagerDidRestoreTabs(self)
-        }
-
+        tabsUpdatedPublisher.send()
         return true
     }
 }

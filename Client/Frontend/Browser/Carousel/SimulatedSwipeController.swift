@@ -166,16 +166,6 @@ class SimulatedSwipeController:
         }
     }
 
-    func tabManager(_ tabManager: TabManager, didAddTab tab: Tab, isRestoring: Bool) {}
-
-    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) {}
-
-    func tabManagerDidRestoreTabs(_ tabManager: TabManager) {}
-
-    func tabManagerDidAddTabs(_ tabManager: TabManager) {}
-
-    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager) {}
-
     func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator) {
         if model.swipeDirection == .forward {
             model.goForward()

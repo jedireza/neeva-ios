@@ -2095,19 +2095,6 @@ extension String {
         "Don’t Send", comment: "Used as a button label for crash dialog prompt")
 }
 
-// RestoreTabsAlert
-extension String {
-    public static let RestoreTabsAlertTitle = MZLocalizedString(
-        "Well, this is embarrassing.", comment: "Restore Tabs Prompt Title")
-    public static let RestoreTabsAlertMessage = MZLocalizedString(
-        "Looks like Neeva crashed previously. Would you like to restore your tabs?",
-        comment: "Restore Tabs Prompt Description")
-    public static let RestoreTabsAlertNo = MZLocalizedString(
-        "No", comment: "Restore Tabs Negative Action")
-    public static let RestoreTabsAlertOkay = MZLocalizedString(
-        "Okay", comment: "Restore Tabs Affirmative Action")
-}
-
 // ClearPrivateDataAlert
 extension String {
     public static let ClearPrivateDataAlertMessage = MZLocalizedString(

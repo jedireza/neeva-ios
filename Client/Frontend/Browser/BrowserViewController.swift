@@ -20,11 +20,6 @@ import XCGLogger
 
 private let ActionSheetTitleMaxLength = 120
 
-struct UrlToOpenModel {
-    var url: URL?
-    var isPrivate: Bool
-}
-
 protocol ModalPresenter {
     func showModal<Content: View>(
         style: OverlayStyle,
@@ -134,8 +129,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     private(set) var readerModeCache: ReaderModeCache
     private(set) var screenshotHelper: ScreenshotHelper!
-    private var urlFromAnotherApp: UrlToOpenModel?
-    private var isCrashAlertShowing: Bool = false
 
     // popover rotation handling
     var displayedPopoverController: UIViewController?
@@ -496,64 +489,25 @@ class BrowserViewController: UIViewController, ModalPresenter {
         // config log environment variable
         ClientLogger.shared.env = EnvironmentHelper.shared.env
 
-        if !displayedRestoreTabsAlert && !cleanlyBackgrounded() && crashedLastLaunch() {
-            displayedRestoreTabsAlert = true
-            showRestoreTabsAlert()
-        } else {
-            let _ = tabManager.restoreTabs()
+        let _ = tabManager.restoreTabs()
 
-            // Handle the case of an existing user upgrading to a version of the app
-            // that supports preview mode. They will have tabs already, so we don't
-            // want to show them the preview home experience.
-            // TODO: This is flawed as an existing user may have closed their tabs.
-            if !tabManager.tabs.isEmpty {
-                Defaults[.didFirstNavigation] = true
-            }
+        // Handle the case of an existing user upgrading to a version of the app
+        // that supports preview mode. They will have tabs already, so we don't
+        // want to show them the preview home experience.
+        // TODO: This is flawed as an existing user may have closed their tabs.
+        if !tabManager.tabs.isEmpty {
+            Defaults[.didFirstNavigation] = true
+        }
 
-            DispatchQueue.main.async {
-                if Self.createNewTabOnStartForTesting {
-                    self.tabManager.select(self.tabManager.addTab())
-                } else if !Defaults[.didFirstNavigation] {
-                    self.showPreviewHome()
-                } else if self.tabManager.normalTabs.isEmpty {
-                    self.showTabTray()
-                }
+        DispatchQueue.main.async {
+            if Self.createNewTabOnStartForTesting {
+                self.tabManager.select(self.tabManager.addTab())
+            } else if !Defaults[.didFirstNavigation] {
+                self.showPreviewHome()
+            } else if self.tabManager.normalTabs.isEmpty {
+                self.showTabTray()
             }
         }
-    }
-
-    fileprivate func crashedLastLaunch() -> Bool {
-        return Sentry.crashedLastLaunch
-    }
-
-    fileprivate func cleanlyBackgrounded() -> Bool {
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return false
-        }
-        return appDelegate.cleanlyBackgroundedLastTime
-    }
-
-    fileprivate func showRestoreTabsAlert() {
-        guard tabManager.hasTabsToRestoreAtStartup() else {
-            tabManager.selectTab(tabManager.addTab())
-            return
-        }
-        let alert = UIAlertController.restoreTabsAlert(
-            okayCallback: { _ in
-                self.isCrashAlertShowing = false
-
-                if !self.tabManager.restoreTabs(true) {
-                    self.showTabTray()
-                }
-            },
-            noCallback: { _ in
-                self.isCrashAlertShowing = false
-                self.tabManager.selectTab(self.tabManager.addTab())
-                self.openUrlAfterRestore()
-            }
-        )
-        self.present(alert, animated: true, completion: nil)
-        isCrashAlertShowing = true
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -857,13 +811,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     // MARK: Opening New Tabs
     func switchToTabForURLOrOpen(_ url: URL, isPrivate: Bool = false) {
-        guard !isCrashAlertShowing else {
-            urlFromAnotherApp = UrlToOpenModel(url: url, isPrivate: isPrivate)
-            return
-        }
-
         popToBVC()
-
         if let tab = tabManager.getTabFor(url) {
             tabManager.selectTab(tab)
         } else {
@@ -872,10 +820,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     func switchToTabForWidgetURLOrOpen(_ url: URL, uuid: String, isPrivate: Bool = false) {
-        guard !isCrashAlertShowing else {
-            urlFromAnotherApp = UrlToOpenModel(url: url, isPrivate: isPrivate)
-            return
-        }
         popToBVC()
         if let tab = tabManager.getTabForUUID(uuid: uuid) {
             tabManager.selectTab(tab)
@@ -1542,28 +1486,6 @@ extension BrowserViewController: TabManagerDelegate {
             updateInZeroQuery(selected?.url as URL?)
         }
     }
-
-    func tabManager(_: TabManager, didAddTab tab: Tab, isRestoring: Bool) {
-        tab.tabDelegate = self
-    }
-
-    func tabManager(_ tabManager: TabManager, didRemoveTab tab: Tab, isRestoring: Bool) {}
-
-    func tabManagerDidAddTabs(_ tabManager: TabManager) {
-
-    }
-
-    func tabManagerDidRestoreTabs(_ tabManager: TabManager) {
-        openUrlAfterRestore()
-    }
-
-    func openUrlAfterRestore() {
-        guard let url = urlFromAnotherApp?.url else { return }
-        openURLInNewTab(url, isPrivate: urlFromAnotherApp?.isPrivate ?? false)
-        urlFromAnotherApp = nil
-    }
-
-    func tabManagerDidRemoveAllTabs(_ tabManager: TabManager) {}
 
     func getSceneDelegate() -> SceneDelegate? {
         SceneDelegate.getCurrentSceneDelegate(for: self.view)
