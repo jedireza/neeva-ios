@@ -345,32 +345,29 @@ public struct CheatsheetMenuView: View {
         }
     }
 
-    func renderRichResult(for richResult: SearchController.RichResult) -> AnyView {
+    @ViewBuilder
+    func renderRichResult(for richResult: SearchController.RichResult) -> some View {
         switch richResult.resultType {
         case .ProductCluster(let productCluster):
-            return AnyView(
-                ProductClusterList(
-                    products: productCluster, currentURL: model.currentPageURL?.absoluteString ?? ""
-                ))
+            ProductClusterList(
+                products: productCluster, currentURL: model.currentPageURL?.absoluteString ?? ""
+            )
         case .RecipeBlock(let recipes):
             // filter out result already showing on the current page
-            return AnyView(
-                RelatedRecipeList(
-                    recipes: recipes.filter { $0.url != model.currentPageURL },
-                    onDismiss: nil
-                )
-                .padding(.bottom, 20)
+            RelatedRecipeList(
+                recipes: recipes.filter { $0.url != model.currentPageURL },
+                onDismiss: nil
             )
+            .padding(.bottom, 20)
         case .RelatedSearches(let relatedSearches):
-            return AnyView(RelatedSearchesView(relatedSearches: relatedSearches, onDismiss: nil))
+            RelatedSearchesView(relatedSearches: relatedSearches, onDismiss: nil)
         case .WebGroup(let result):
             // filter out result already showing on the current page
-            return AnyView(
-                WebResultList(
-                    webResult: result.filter { $0.actionURL != model.currentPageURL },
-                    currentCheatsheetQueryAsURL: model.currentCheatsheetQueryAsURL,
-                    showQueryString: cheatsheetDebugQuery
-                ))
+            WebResultList(
+                webResult: result.filter { $0.actionURL != model.currentPageURL },
+                currentCheatsheetQueryAsURL: model.currentCheatsheetQueryAsURL,
+                showQueryString: cheatsheetDebugQuery
+            )
         }
     }
 
