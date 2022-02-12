@@ -22,7 +22,7 @@ public class NeevaFeatureFlags {
         "neevaIntFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
     private static let floatFlagsKey = Defaults.Key<[Int: Double]>(
         "neevaFloatFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
-    private static let stringFlagsKey = Defaults.Key<[Int: String]>(
+    public static let stringFlagsKey = Defaults.Key<[Int: String]>(
         "neevaStringFlags", default: [:], suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 
     private static let boolFlagOverridesKey = Defaults.Key<[Int: Bool]>(
@@ -34,7 +34,7 @@ public class NeevaFeatureFlags {
     private static let floatFlagOverridesKey = Defaults.Key<[Int: Double]>(
         "neevaFloatFlagOverrides", default: [:],
         suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
-    private static let stringFlagOverridesKey = Defaults.Key<[Int: String]>(
+    public static let stringFlagOverridesKey = Defaults.Key<[Int: String]>(
         "neevaStringFlagOverrides", default: [:],
         suite: UserDefaults(suiteName: NeevaConstants.appGroup)!)
 

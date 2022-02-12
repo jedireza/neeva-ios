@@ -4,6 +4,8 @@
 
 import Foundation
 import Shared
+import Defaults
+import Combine
 
 public struct LogConfig {
     public enum Interaction: String {
@@ -330,6 +332,8 @@ public struct LogConfig {
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
 
+    private static var flagsObserver: AnyCancellable?
+
     public static func featureFlagEnabled(for category: InteractionCategory) -> Bool {
         if category == .FirstRun
             || category == .Notification
@@ -343,15 +347,27 @@ public struct LogConfig {
 
         if enabledLoggingCategories == nil {
             enabledLoggingCategories = Set<InteractionCategory>()
-            NeevaFeatureFlags[.loggingCategories].components(separatedBy: ",").forEach { token in
+            flagsObserver = Defaults.publisher(NeevaFeatureFlags.stringFlagsKey)
+                .combineLatest(
+                    Defaults.publisher(NeevaFeatureFlags.stringFlagOverridesKey)
+                ).sink { _ in
+                    updateLoggingCategory()
+                }
+            updateLoggingCategory()
+        }
+        return enabledLoggingCategories?.contains(category) ?? false
+    }
+
+    private static func updateLoggingCategory() {
+        enabledLoggingCategories?.removeAll()
+        NeevaFeatureFlags.latestValue(.loggingCategories)
+            .components(separatedBy: ",").forEach { token in
                 if let category = InteractionCategory(
                     rawValue: token.stringByTrimmingLeadingCharactersInSet(.whitespaces)
                 ) {
                     enabledLoggingCategories?.insert(category)
                 }
             }
-        }
-        return enabledLoggingCategories?.contains(category) ?? false
     }
 
     public static func category(for interaction: Interaction) -> InteractionCategory {
