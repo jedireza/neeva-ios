@@ -30,6 +30,7 @@ struct OverflowMenuOverlayContent: View {
                 hideOverlay()
                 menuAction(action)
             }
+            .overlayIsFixedHeight(isFixedHeight: true)
         }
     }
 
@@ -37,6 +38,5 @@ struct OverflowMenuOverlayContent: View {
         content
             .environmentObject(chromeModel)
             .environmentObject(locationModel)
-            .overlayIsFixedHeight(isFixedHeight: true)
     }
 }

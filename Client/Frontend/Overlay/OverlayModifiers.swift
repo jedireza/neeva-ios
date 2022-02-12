@@ -60,3 +60,51 @@ extension View {
         self.modifier(OverlayIsFixedHeightViewModifier(isFixedHeight: isFixedHeight))
     }
 }
+
+
+/// This PreferenceKey may be used by a child View of the OverlaySheetView
+/// to specify a preferred height in the middle position
+struct OverlaySheetMiddleHeightPreferenceKey: PreferenceKey {
+    typealias Value = CGFloat?
+    static var defaultValue: Value = nil
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value = nextValue()
+    }
+}
+
+struct OverlaySheetMiddleHeightViewModifier: ViewModifier {
+    let middleHeight: CGFloat?
+    func body(content: Content) -> some View {
+        content.preference(key: OverlaySheetMiddleHeightPreferenceKey.self, value: middleHeight)
+    }
+}
+
+extension View {
+    func overlaySheetMiddleHeight(height: CGFloat?) -> some View {
+        self.modifier(OverlaySheetMiddleHeightViewModifier(middleHeight: height))
+    }
+}
+
+
+/// This PreferenceKey may be used by a child View of the OverlaySheetView
+/// to be layed out as if safe can be ignored
+struct OverlaySheetIgnoreSafeAreaPreferenceKey: PreferenceKey {
+    typealias Value = Edge.Set
+    static var defaultValue: Value = []
+    static func reduce(value: inout Value, nextValue: () -> Value) {
+        value = nextValue()
+    }
+}
+
+struct OverlaySheetIgnoreSafeAreaViewModifier: ViewModifier {
+    let edges: Edge.Set
+    func body(content: Content) -> some View {
+        content.preference(key: OverlaySheetIgnoreSafeAreaPreferenceKey.self, value: edges)
+    }
+}
+
+extension View {
+    func overlaySheetIgnoreSafeArea(edges: Edge.Set) -> some View {
+        self.modifier(OverlaySheetIgnoreSafeAreaViewModifier(edges: edges))
+    }
+}

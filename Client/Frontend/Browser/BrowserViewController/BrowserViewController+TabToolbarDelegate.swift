@@ -73,7 +73,7 @@ extension BrowserViewController: ToolbarDelegate {
                 if NeevaFeatureFlags[.cheatsheetQuery] || FeatureFlag[.updatedTabOverflowMenu] {
                     self.updateFeedbackImage()
                 }
-                self.showModal(style: .grouped) {
+                self.showModal(style: .nonScrollableMenu) {
                     OverflowMenuOverlayContent(
                         menuAction: { action in
                             self.perform(overflowMenuAction: action, targetButtonView: nil)

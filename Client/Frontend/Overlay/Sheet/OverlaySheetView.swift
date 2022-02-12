@@ -19,6 +19,12 @@ enum OverlaySheetUX {
 
     /// Width of the sheet when in landscape mode.
     static let landscapeModeWidth: CGFloat = 500
+
+    /// Top padding applied to the whole sheet
+    static let topPadding: CGFloat = 16
+
+    /// Bottom padding applied to the sheet content
+    static let bottomPadding: CGFloat = 18
 }
 
 public struct OverlayHeaderButton {
@@ -42,6 +48,8 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
     @State private var title: LocalizedStringKey? = nil
     @State private var isFixedHeight: Bool = false
     @State private var bottomSafeArea: CGFloat = 0
+    @State private var middlePreferredHeight: CGFloat? = nil
+    @State private var childIgnoreSafeArea: Edge.Set = []
 
     let style: OverlayStyle
     let onDismiss: () -> Void
@@ -51,6 +59,14 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
 
     private var keyboardIsVisible: Bool {
         return keyboardHeight > 0
+    }
+
+    private var applyBottomSafeAreaToSheet: Bool {
+        childIgnoreSafeArea.contains(.bottom) && !(keyboardHeight > 0)
+    }
+
+    private var showHandle: Bool {
+        !isFixedHeight && style.embedScrollView
     }
 
     // MARK: - View Functions
@@ -80,7 +96,14 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
                     size += titleHeight
                 }
             case .middle:
-                if isPortraitMode(outerGeometry) {
+                if let middlePreferredHeight = middlePreferredHeight {
+                    let approxContentHeight = middlePreferredHeight
+                        + model.topBarHeight
+                        + OverlaySheetUX.topPadding
+                        + OverlaySheetUX.bottomPadding
+                        + (applyBottomSafeAreaToSheet ? 0 : bottomSafeArea)
+                    size = viewHeight - approxContentHeight
+                } else if isPortraitMode(outerGeometry) {
                     size = viewHeight / 2
                 } else {
                     size = 0
@@ -90,6 +113,10 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
             }
 
             size = size + model.deltaHeight
+
+            if !style.embedScrollView {
+                size = max(size, viewHeight - contentHeight - NeevaMenuUX.bottomPadding)
+            }
         }
 
         if keyboardHeight > 0 {
@@ -118,7 +145,7 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
     @ViewBuilder
     private var topBar: some View {
         VStack(spacing: 0) {
-            if !isFixedHeight {
+            if showHandle {
                 Capsule()
                     .fill(Color.tertiaryLabel)
                     .frame(width: 32, height: 4)
@@ -178,6 +205,12 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
             .onPreferenceChange(OverlayIsFixedHeightPreferenceKey.self) {
                 self.isFixedHeight = $0
             }
+            .onPreferenceChange(OverlaySheetMiddleHeightPreferenceKey.self) {
+                self.middlePreferredHeight = $0
+            }
+            .onPreferenceChange(OverlaySheetIgnoreSafeAreaPreferenceKey.self) {
+                self.childIgnoreSafeArea = $0
+            }
     }
 
     @ViewBuilder
@@ -190,25 +223,28 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
 
                 if isFixedHeight {
                     sheetContent
+                } else if !style.embedScrollView {
+                    sheetContent
                 } else {
                     ScrollView(model.position == .top ? [.vertical] : [], showsIndicators: false) {
                         sheetContent
-                            .padding(.bottom, 18)
+                            .padding(.bottom, OverlaySheetUX.bottomPadding)
                     }
                 }
             }
-            .padding(.bottom, keyboardHeight > 0 ? 0 : bottomSafeArea)
-            .background(
-                Color(style.backgroundColor)
-                    .cornerRadius(16, corners: [.topLeading, .topTrailing])
-                    .ignoresSafeArea(edges: .bottom)
-                    .padding(.bottom, -12)
-            )
+            .padding(.bottom, applyBottomSafeAreaToSheet ? 0 : bottomSafeArea)
             .onHeightOfViewChanged { height in
                 self.contentHeight = height
             }
-            .gesture(topDrag)
+            Spacer()
         }
+        .background(
+            Color(style.backgroundColor)
+                .cornerRadius(16, corners: [.topLeading, .topTrailing])
+                .ignoresSafeArea(edges: .bottom)
+                .padding(.bottom, -12)
+        )
+        .highPriorityGesture(topDrag)
     }
 
     var body: some View {
@@ -217,7 +253,7 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
                 opacity: model.backdropOpacity, position: model.position,
                 onDismiss: style.nonDismissible ? {} : onDismiss)
 
-            VStack {
+            VStack(spacing: 0) {
                 // The height of this spacer is what controls the apparent height of
                 // the sheet. By sizing this spacer instead of the sheet directly
                 // we avoid encroaching on the safe area. That's because the spacer
@@ -240,7 +276,7 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
                     Spacer(minLength: 0)
                 }
             }
-            .padding(.top, 16)
+            .padding(.top, OverlaySheetUX.topPadding)
             .keyboardListener { height in
                 withAnimation {
                     keyboardHeight = height

@@ -81,7 +81,7 @@ public struct OverflowMenuView: View {
 
     @State var height: CGFloat = .zero
     // used to show a little bit of the support option to encourage scrolling
-    private static let heightPeekingOffset: CGFloat = 50
+    private static let heightPeekingOffset: CGFloat = 80
 
     public init(
         changedUserAgent: Bool = false,
@@ -100,26 +100,25 @@ public struct OverflowMenuView: View {
     }
 
     public var body: some View {
-        ScrollView {
-            GroupedStack {
-                VStack(spacing: GroupedCellUX.spacing) {
-                    if !chromeModel.inlineToolbar {
-                        topButtons
-                    }
-
-                    tabButtons
-                }
-                .modifier(ViewHeightKey())
-                .onPreferenceChange(ViewHeightKey.self) {
-                    self.height = $0
+        GroupedStack {
+            VStack(spacing: GroupedCellUX.spacing) {
+                if !chromeModel.inlineToolbar {
+                    topButtons
                 }
 
-                if showNewMenu {
-                    appNavigationButtons
-                }
+                tabButtons
+            }
+            .modifier(ViewHeightKey())
+            .onPreferenceChange(ViewHeightKey.self) {
+                self.height = $0
+            }
+
+            if showNewMenu {
+                appNavigationButtons
             }
         }
-        .frame(minHeight: frameHeight)
+        .overlaySheetMiddleHeight(height: frameHeight)
+        .overlaySheetIgnoreSafeArea(edges: .bottom)
     }
 
     @ViewBuilder

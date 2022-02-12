@@ -91,7 +91,7 @@ struct SwitcherToolbarView: View {
                                 )
                                 // Refesh feedback screenshot before presenting overflow menu
                                 bvc.updateFeedbackImage()
-                                bvc.showModal(style: .grouped) {
+                                bvc.showModal(style: .nonScrollableMenu) {
                                     OverflowMenuOverlayContent(
                                         menuAction: { action in
                                             bvc.perform(
