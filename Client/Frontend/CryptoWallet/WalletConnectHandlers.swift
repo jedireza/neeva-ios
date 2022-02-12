@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import BigInt
 import CryptoSwift
 import Defaults
 import Foundation
@@ -15,11 +16,15 @@ protocol ResponseRelay {
     var publicAddress: String { get }
     func send(_ response: Response)
     func askToSign(request: Request, message: String, sign: @escaping (EthNode) -> String)
-    func askToTransact(request: Request, value: String, transact: @escaping (EthNode) -> String)
+    func askToTransact(
+        request: Request,
+        options: TransactionOptions,
+        transaction: EthereumTransaction,
+        transact: @escaping (EthNode) -> String
+    )
     func send(
         on chain: EthNode,
-        eth value: String, from fromAddress: EthereumAddress, to toAddress: EthereumAddress,
-        for gas: String?, using data: String?
+        transactionData: TransactionData
     ) throws -> String
     func sign(on chain: EthNode, message: String, using publicAddress: String) throws -> String
 }
@@ -84,27 +89,79 @@ class SendTransactionHandler: RequestHandler {
 
     func handle(request: Request) {
         guard let requestData = request.jsonString.data(using: .utf8),
-            let requestDict = try? JSONSerialization.jsonObject(with: requestData, options: [])
-                as? [String: Any],
-            let params = (requestDict["params"] as? [[String: String]])?[0],
-            let from = params["from"],
-            from.lowercased() == relay.publicAddress.lowercased(),
-            let fromAddress = EthereumAddress(from),
-            let to = params["to"],
-            let toAddress = EthereumAddress(to)
+            let transactionRequest = try? JSONDecoder().decode(
+                TransactionRequest.self, from: requestData),
+            let transactionData = transactionRequest.params.first,
+            let transaction = transactionData.ethereumTransaction,
+            let _ = EthereumAddress(transactionData.from)
         else {
             relay.send(.invalid(request))
             return
         }
-        let value = params["value"] ?? "0x0"
-        let data = params["data"]
-        let gas = params["gas"]
 
-        relay.askToTransact(request: request, value: value) { ethNode in
+        relay.askToTransact(
+            request: request,
+            options: transactionData.transactionOptions,
+            transaction: transaction
+        ) { ethNode in
             return
                 (try? self.relay.send(
                     on: ethNode,
-                    eth: value, from: fromAddress, to: toAddress, for: gas, using: data)) ?? ""
+                    transactionData: transactionData
+                )) ?? ""
         }
     }
+}
+
+public struct TransactionRequest: Codable {
+    let params: [TransactionData]
+}
+
+public struct TransactionData: Codable {
+    let from: String
+    let to: String
+    let value: String?
+    let data: String?
+    let gas: String?
+
+    var ethereumTransaction: EthereumTransaction? {
+        guard let toAddress = EthereumAddress(to) else { return nil }
+        return EthereumTransaction(
+            gasPrice: .zero,
+            gasLimit: convertedGasPrice,
+            to: toAddress,
+            value: convertedValue,
+            data: convertedData
+        )
+    }
+
+    var convertedData: Data {
+        data != nil ? Web3.Utils.hexToData(data!) ?? Data() : Data()
+    }
+
+    var convertedValue: BigUInt {
+        Web3.Utils.hexToBigUInt(value ?? "0x0") ?? .zero
+    }
+
+    var convertedGasPrice: BigUInt {
+        gas != nil ? Web3.Utils.hexToBigUInt(gas!) ?? .zero : .zero
+    }
+
+    var fromAddress: EthereumAddress {
+        EthereumAddress(from)!
+    }
+
+    var toAddress: EthereumAddress {
+        EthereumAddress(to)!
+    }
+
+    var transactionOptions: TransactionOptions {
+        var options = TransactionOptions.defaultOptions
+        options.value = convertedValue
+        options.from = fromAddress
+        options.gasPrice = .automatic
+        options.gasLimit = gas != nil ? .manual(convertedGasPrice) : .automatic
+        return options
+    }
+
 }

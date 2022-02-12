@@ -164,6 +164,7 @@
 		4A255AB2265C48EC00422839 /* TrackingPreventionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AAF265C48EB00422839 /* TrackingPreventionUtils.swift */; };
 		4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB0265C48EB00422839 /* TrackingPreventionRules.swift */; };
 		4A255AB6265C4A2A00422839 /* TrackingPreventionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB5265C4A2A00422839 /* TrackingPreventionConfig.swift */; };
+		4A3255A827B622A7000A700E /* TransactionFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3255A727B622A7000A700E /* TransactionFee.swift */; };
 		4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A360214268CF74500C56328 /* SuggestionBlocks.swift */; };
 		4A39C1DB26CB76D600C999CF /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A39C1DA26CB76D600C999CF /* DetailView.swift */; };
 		4A3D299126850CB60082F293 /* CardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3D299026850CB60082F293 /* CardGrid.swift */; };
@@ -1334,6 +1335,7 @@
 		4A255AAF265C48EB00422839 /* TrackingPreventionUtils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionUtils.swift; sourceTree = "<group>"; };
 		4A255AB0265C48EB00422839 /* TrackingPreventionRules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionRules.swift; sourceTree = "<group>"; };
 		4A255AB5265C4A2A00422839 /* TrackingPreventionConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionConfig.swift; sourceTree = "<group>"; };
+		4A3255A727B622A7000A700E /* TransactionFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFee.swift; sourceTree = "<group>"; };
 		4A360214268CF74500C56328 /* SuggestionBlocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBlocks.swift; sourceTree = "<group>"; };
 		4A39C1DA26CB76D600C999CF /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		4A3D299026850CB60082F293 /* CardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGrid.swift; sourceTree = "<group>"; };
@@ -3131,6 +3133,7 @@
 				BCAAA0DB276D9BCD0013223E /* SendForm.swift */,
 				4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */,
 				BCAAA0DD276D9BF00013223E /* ShowPhrasesView.swift */,
+				4A3255A727B622A7000A700E /* TransactionFee.swift */,
 				BCAAA0DF276D9C190013223E /* TransactionHistoryView.swift */,
 				4A9EFAEA27AF9FC200F3ED7F /* Wallet.xcassets */,
 				4A93B54A277BC06C00CD5415 /* WalletAccessor.swift */,
@@ -5646,6 +5649,7 @@
 				C9F8EB352680DA8A0042CFE7 /* TabToolbarHost.swift in Sources */,
 				C9946461265706D500613110 /* FeatureFlagSettingsView.swift in Sources */,
 				D029A04920A62DB0001DB72F /* TemporaryDocument.swift in Sources */,
+				4A3255A827B622A7000A700E /* TransactionFee.swift in Sources */,
 				4A5CCE8326524B7F0063783D /* FaviconView.swift in Sources */,
 				C9E5F2C42677F0A600025A7F /* LocationLabel.swift in Sources */,
 				D38F02D11C05127100175932 /* Authenticator.swift in Sources */,

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import BigInt
 import Combine
 import Defaults
 import Foundation
@@ -25,7 +26,8 @@ struct SequenceInfo {
     let message: String
     let onAccept: (Int) -> Void
     let onReject: () -> Void
-    var ethAmount: String? = nil
+    var transaction: EthereumTransaction? = nil
+    var options: TransactionOptions? = nil
 }
 
 class Web3Model: ObservableObject, ResponseRelay {
@@ -34,11 +36,10 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
 
     func send(
-        on chain: EthNode, eth value: String, from fromAddress: EthereumAddress,
-        to toAddress: EthereumAddress, for gas: String?, using data: String?
+        on chain: EthNode, transactionData: TransactionData
     ) throws -> String {
         try wallet?.send(
-            on: chain, eth: value, from: fromAddress, to: toAddress, for: gas, using: data) ?? ""
+            on: chain, transactionData: transactionData) ?? ""
     }
 
     func sign(on chain: EthNode, message: String, using publicAddress: String) throws -> String {
@@ -49,10 +50,6 @@ class Web3Model: ObservableObject, ResponseRelay {
         didSet {
             guard let sequence = currentSequence, let wallet = wallet else { return }
             tryMatchCurrentPageToCollection()
-
-            wallet.gasPrice(on: sequence.chain) { estimate in
-                self.gasEstimate = estimate
-            }
 
             updateBalances()
         }
@@ -66,7 +63,6 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
     @Published var showingWalletDetails = false
     @Published var matchingCollection: Collection?
-    @Published var gasEstimate: String? = nil
     @Published var showingMaliciousSiteWarning = false
 
     let server: Server?
@@ -110,26 +106,9 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
 
     var balances: [TokenType: String?] = [
-        .ether: nil, .wrappedEther: nil, .matic: nil,
-        .wrappedEtherOnPolygon: nil, .maticOnPolygon: nil, .usdcOnPolygon: nil,
+        .ether: nil, .wrappedEther: nil, .matic: nil, .usdc: nil, .usdt: nil, .shib: nil,
+        .wrappedEtherOnPolygon: nil, .maticOnPolygon: nil, .usdcOnPolygon: nil, .usdtOnPolygon: nil,
     ]
-
-    var ethBalance: String? {
-        balances[.ether]!
-    }
-
-    var maticBalance: String? {
-        balances[.maticOnPolygon]!
-    }
-
-    func balance(on chain: EthNode) -> String? {
-        switch chain {
-        case .Polygon:
-            return "\(maticBalance ?? "") \(TokenType.maticOnPolygon.currency)"
-        default:
-            return "\(ethBalance ?? "") \(TokenType.ether.currency)"
-        }
-    }
 
     func balanceFor(_ token: TokenType) -> String? {
         balances[token]!
@@ -223,7 +202,6 @@ class Web3Model: ObservableObject, ResponseRelay {
 
     func reset() {
         currentSequence = nil
-        gasEstimate = nil
         showingMaliciousSiteWarning = false
     }
 
@@ -323,7 +301,12 @@ class Web3Model: ObservableObject, ResponseRelay {
         server?.send(response)
     }
 
-    func askToTransact(request: Request, value: String, transact: @escaping (EthNode) -> String) {
+    func askToTransact(
+        request: Request,
+        options: TransactionOptions,
+        transaction: EthereumTransaction,
+        transact: @escaping (EthNode) -> String
+    ) {
         guard
             let session = server?.openSessions().first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
@@ -355,8 +338,8 @@ class Web3Model: ObservableObject, ResponseRelay {
                         self.server?.send(.reject(request))
                     }
                 },
-                ethAmount: Web3.Utils.formatToEthereumUnits(
-                    Web3.Utils.hexToBigUInt(value) ?? .zero, decimals: 4)
+                transaction: transaction,
+                options: options
             )
             self.startSequence()
         }

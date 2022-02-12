@@ -111,7 +111,7 @@ struct WalletAccessor {
                 completion(
                     Web3.Utils.formatToEthereumUnits(
                         balanceBigUInt,
-                        toUnits: token == .usdcOnPolygon ? .Mwei : .eth,
+                        toUnits: token.currency == .USDC ? .Mwei : .eth,
                         decimals: 6
                     )
                 )
@@ -119,32 +119,44 @@ struct WalletAccessor {
         }
     }
 
-    func gasPrice(on chain: EthNode, completion: @escaping (String?) -> Void) {
+    func gasPrice(on chain: EthNode, completion: @escaping (BigUInt?) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             web3(on: chain).eth.getGasPricePromise().done(on: DispatchQueue.main) { estimate in
-                completion(Web3.Utils.formatToEthereumUnits(estimate, toUnits: .Gwei))
+                completion(estimate)
             }.cauterize()
         }
     }
 
-    func send(
+    func estimateGasForTransaction(
         on chain: EthNode,
-        eth value: String, from fromAddress: EthereumAddress, to toAddress: EthereumAddress,
-        for gas: String?, using data: String?
-    ) throws -> String {
-        let contract = web3(on: chain).contract(
-            Web3.Utils.coldWalletABI, at: toAddress, abiVersion: 2)!
+        options: TransactionOptions,
+        transaction: EthereumTransaction,
+        completion: @escaping (BigUInt, BigUInt?) -> Void
+    ) {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let gasPrice: BigUInt =
+                (try? web3(on: chain).eth.getGasPrice()) ?? transaction.gasPrice
+            var tx = transaction
+            tx.gasPrice = gasPrice
+            var opts = options
+            opts.gasPrice = .manual(gasPrice)
 
-        var options = TransactionOptions.defaultOptions
-        options.value = Web3.Utils.hexToBigUInt(value)
-        options.from = fromAddress
-        options.gasPrice = .automatic
-        options.gasLimit = gas != nil ? .manual(Web3.Utils.hexToBigUInt(gas!)!) : .automatic
+            web3(on: chain).eth.estimateGasPromise(tx, transactionOptions: opts)
+                .done(on: DispatchQueue.main) { estimate in
+                    completion(gasPrice, estimate)
+                }.cauterize()
+        }
+    }
+
+    func send(on chain: EthNode, transactionData: TransactionData) throws -> String {
+        let contract = web3(on: chain).contract(
+            Web3.Utils.coldWalletABI, at: transactionData.toAddress, abiVersion: 2)!
+
         let tx = contract.write(
             "fallback",
             parameters: [AnyObject](),
-            extraData: data != nil ? Web3.Utils.hexToData(data!) ?? Data() : Data(),
-            transactionOptions: options)!
+            extraData: transactionData.convertedData,
+            transactionOptions: transactionData.transactionOptions)!
 
         return try tx.send(password: password).transaction.txhash ?? ""
     }

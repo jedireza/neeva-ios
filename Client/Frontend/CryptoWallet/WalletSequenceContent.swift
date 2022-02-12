@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import BigInt
 import Combine
 import Foundation
 import LocalAuthentication
@@ -54,7 +55,7 @@ struct WalletSequenceContent: View {
 
         switch type {
         case .sendTransaction:
-            return "Gas Estimate"
+            return "Transaction Fee"
         default:
             return "Wallet"
         }
@@ -82,7 +83,7 @@ struct WalletSequenceContent: View {
                     },
                     label: {
                         HStack(spacing: 6) {
-                            Text(userSelectedChain?.rawValue ?? EthNode.Ethereum.rawValue)
+                            Text(chainToUse.rawValue)
                                 .withFont(.labelMedium)
                                 .lineLimit(1)
                                 .foregroundColor(.label)
@@ -93,28 +94,27 @@ struct WalletSequenceContent: View {
                     })
 
             default:
-                Text(model.balance(on: chainToUse) ?? "Fetching...")
-                    .withFont(.labelMedium)
-                    .lineLimit(1)
-                    .foregroundColor(.label)
-                    .frame(maxWidth: 150, alignment: .trailing)
+                Text(
+                    "\(model.balanceFor(chainToUse.currency) ?? " ") \(chainToUse.currency.currency.rawValue)"
+                )
+                .withFont(.labelMedium)
+                .lineLimit(1)
+                .foregroundColor(.label)
+                .frame(maxWidth: 150, alignment: .trailing)
             }
         }
     }
 
     @ViewBuilder var bottomLeftInfo: some View {
-        if let type = model.currentSequence?.type {
-            switch type {
+        if let sequence = model.currentSequence {
+            switch sequence.type {
             case .sendTransaction:
-                if let gasEstimate = model.gasEstimate {
-                    Label {
-                        Text("\(gasEstimate) Gwei")
-                            .withFont(.bodyLarge)
-                            .foregroundColor(.label)
-                    } icon: {
-                        Symbol(decorative: .flameFill, style: .bodyLarge)
-                    }
-                }
+                TransactionFeeView(
+                    wallet: model.wallet,
+                    chain: sequence.chain,
+                    transaction: sequence.transaction!,
+                    options: sequence.options!
+                )
             default:
                 Text(model.wallet?.publicAddress ?? "")
                     .withFont(.labelMedium)
@@ -164,7 +164,6 @@ struct WalletSequenceContent: View {
 
     var body: some View {
         VStack {
-
             if let trustedDomain = model.alternateTrustedDomain {
                 VStack(spacing: 8) {
                     (Text("This page's address is very close to ") + Text(trustedDomain).bold()
@@ -272,8 +271,12 @@ struct WalletSequenceContent: View {
                     descriptionText
                 }
                 VStack(spacing: 8) {
-                    if let ethAmount = sequence.ethAmount, let double = Double(ethAmount) {
-                        Text("$" + CryptoConfig.shared.toUSD(amount: String(double)))
+                    if let value = sequence.options?.value,
+                        let amount = Web3.Utils.formatToEthereumUnits(
+                            value, toUnits: .eth, decimals: 4),
+                        let double = Double(amount)
+                    {
+                        Text("$" + chainToUse.currency.toUSD(amount))
                             .withFont(.headingXLarge)
                             .foregroundColor(.label)
                         Label {
@@ -281,11 +284,12 @@ struct WalletSequenceContent: View {
                                 .withFont(.bodyLarge)
                                 .foregroundColor(.secondaryLabel)
                         } icon: {
-                            Image("ethLogo")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 16, height: 16)
-                                .padding(4)
+                            switch chainToUse {
+                            case .Polygon:
+                                Currency.MATIC.logo
+                            default:
+                                Currency.ETH.logo
+                            }
                         }
                     }
                 }.padding(.vertical, 12)
@@ -308,7 +312,7 @@ struct WalletSequenceContent: View {
                             action: {
                                 switch sequence.type {
                                 case .sessionRequest:
-                                    sequence.onAccept(userSelectedChain?.id ?? sequence.chain.id)
+                                    sequence.onAccept(chainToUse.id)
                                 default:
                                     let context = LAContext()
                                     let reason =
@@ -316,8 +320,7 @@ struct WalletSequenceContent: View {
                                     let onAuth: (Bool, Error?) -> Void = {
                                         success, authenticationError in
                                         if success {
-                                            sequence.onAccept(
-                                                userSelectedChain?.id ?? sequence.chain.id)
+                                            sequence.onAccept(chainToUse.id)
                                         } else {
                                             sequence.onReject()
                                         }

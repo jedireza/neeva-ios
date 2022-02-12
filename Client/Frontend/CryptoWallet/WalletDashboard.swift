@@ -191,7 +191,7 @@ struct WalletDashboard: View {
                             Spacer()
                             VStack(alignment: .trailing, spacing: 0) {
                                 Text(
-                                    "$\(CryptoConfig.shared.toUSD(from: token, amount: model.balanceFor(token) ?? "0"))"
+                                    "$\(token.toUSD(model.balanceFor(token) ?? "0"))"
                                 )
                                 .foregroundColor(.label)
                                 .withFont(.bodyMedium)

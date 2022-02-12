@@ -59,7 +59,7 @@ struct SendForm: View {
                 .keyboardType(.decimalPad)
 
             if !amount.isEmpty {
-                Text("= \(CryptoConfig.shared.toUSD(amount: amount)) USD")
+                Text("= \(TokenType.ether.toUSD(amount)) USD")
             }
 
             VStack(spacing: 16) {

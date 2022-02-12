@@ -47,6 +47,17 @@ public enum EthNode: String, CaseIterable, Identifiable {
             return "https://polygon-mainnet.infura.io/v3/25b0f8c5b9004da38236104927e630b5"
         }
     }
+
+    var currency: TokenType {
+        switch self {
+        case .Ethereum:
+            return .ether
+        case .Ropsten:
+            return .ether
+        case .Polygon:
+            return .maticOnPolygon
+        }
+    }
 }
 
 public class CryptoConfig {
@@ -66,13 +77,6 @@ public class CryptoConfig {
 
     public var isOnTestingNetwork: Bool {
         self.currentNode == .Ropsten
-    }
-
-    public func toUSD(from token: TokenType = .ether, amount: String) -> String {
-        if let value = Double(amount) {
-            return String(format: "%.2f", value * token.conversionRateToUSD)
-        }
-        return "N/A"
     }
 
     public var password: String {
