@@ -151,10 +151,10 @@ struct SpaceEntityDetailView: View {
                                     entity: details.data.previewEntity
                                 )
 
-                                if !showDescriptions {
+                                if !showDescriptions, let snippet = snippetToDisplay {
                                     SpaceMarkdownSnippet(
                                         showDescriptions: false, details: details,
-                                        snippet: snippetToDisplay)
+                                        snippet: snippet)
                                 }
                             }
                         }
@@ -386,18 +386,17 @@ struct EditSpaceActionModifier: ViewModifier {
 struct SpaceMarkdownSnippet: View {
     let showDescriptions: Bool
     let details: SpaceEntityThumbnail
-    let snippet: String?
+    let snippet: String
 
     @ViewBuilder
     var content: some View {
         if #available(iOS 15.0, *),
-            let snippet = snippet,
             let attributedSnippet = try? AttributedString(
                 markdown: snippet)
         {
             Text(attributedSnippet)
                 .withFont(.bodyLarge)
-        } else if let snippet = snippet {
+        } else {
             Text(snippet)
                 .withFont(.bodyLarge)
         }

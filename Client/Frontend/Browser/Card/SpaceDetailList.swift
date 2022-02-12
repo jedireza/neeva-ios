@@ -159,9 +159,11 @@ struct SpaceDetailList: View {
                                         .withFont(.headingMedium)
                                         .foregroundColor(.label)
 
-                                    SpaceMarkdownSnippet(
-                                        showDescriptions: showDescriptions, details: details,
-                                        snippet: details.data.snippet)
+                                    if let snippet = details.data.snippet, !snippet.isEmptyOrWhitespace() {
+                                        SpaceMarkdownSnippet(
+                                            showDescriptions: showDescriptions, details: details,
+                                            snippet: snippet)
+                                    }
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 12)
