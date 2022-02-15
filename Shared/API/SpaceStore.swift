@@ -146,6 +146,7 @@ public class SpaceStore: ObservableObject {
     public static var promotionalSpaceId =
         "-ysvXOiH2HWXsXeN_QaVFzwWEF_ASvtOW_yylJEM"
     public static let dailyDigestID = "spaceDailyDigest"
+    public static let dailyDigestSeeMoreID = "\(SpaceStore.dailyDigestID)SeeMore"
 
     private static var subscription: AnyCancellable? = nil
     private var refreshCompletionHandlers: [() -> Void] = []
@@ -476,7 +477,7 @@ public class SpaceStore: ObservableObject {
 
         let spaceDailyDigest = Space.empty()
         spaceDailyDigest.id = .init(value: SpaceStore.dailyDigestID)
-        spaceDailyDigest.name = "Your daily digest"
+
         spaceDailyDigest.contentData = []
         spaceDailyDigest.userACL = .publicView
         spaceDailyDigest.isDigest = true
@@ -491,30 +492,51 @@ public class SpaceStore: ObservableObject {
                     title: space.name,
                     snippet: nil,
                     thumbnail: nil,
-                    previewEntity: .webPage)
+                    previewEntity: .spaceLink(space.id))
                 spaceDailyDigest.contentData?.append(headerData)
 
-                for notification in notifications {
-                    if let notification = notification.data?.asNotificationSpaceEntitiesAdded {
-                        guard
-                            let data = content.first(where: {
-                                $0.id == notification.itemId
-                            })
-                        else {
-                            continue
-                        }
+                var extraItemCount = 0
 
-                        if data.url != nil {
-                            numberOfItemsUpdated += 1
+                for (index, notification) in notifications.enumerated() {
+                    guard
+                        let notification = notification.data?.asNotificationSpaceEntitiesAdded,
+                        let data = content.first(where: {
+                            $0.id == notification.itemId
+                        })
+                    else {
+                        continue
+                    }
+
+                    if data.url != nil {
+                        numberOfItemsUpdated += 1
+
+                        if index < 2 {
                             spaceDailyDigest.contentData?.append(data)
+                        } else {
+                            extraItemCount += 1
                         }
                     }
+                }
+
+                if extraItemCount > 0 {
+                    let seeMore = SpaceEntityData(
+                        id: .init(SpaceStore.dailyDigestSeeMoreID),
+                        url: space.url,
+                        title: "\(extraItemCount) more",
+                        snippet: nil,
+                        thumbnail: nil,
+                        previewEntity: .spaceLink(space.id))
+                    spaceDailyDigest.contentData?.append(seeMore)
                 }
             }
         }
 
-        spaceDailyDigest.description = createDailyDigestDescription(
-            spaces: spacesWithNotifications, numberOfChanges: numberOfItemsUpdated)
+        spaceDailyDigest.name =
+            "Daily Digest\(numberOfItemsUpdated > 0 ? " (\(numberOfItemsUpdated))" : "")"
+
+        // (Evan) Commenting this out as we're testing hiding the description.
+        /* spaceDailyDigest.description = createDailyDigestDescription(
+            spaces: spacesWithNotifications, numberOfChanges: numberOfItemsUpdated) */
 
         return spaceDailyDigest
     }
@@ -526,23 +548,12 @@ public class SpaceStore: ObservableObject {
             return "No spaces have been updated"
         }
 
-        let numberOfItems = spaces.count
-        let titles = spaces.map {
-            $0.name
-        }
+        let numberOfSpaces = spaces.count
 
-        for i in 0...1 where titles.indices.contains(i) {
-            description.append(contentsOf: titles[i])
+        // 1 Space / 2 Spaces
+        description += "\(numberOfSpaces) Space\(numberOfSpaces > 1 ? "s" : "")"
 
-            if titles.indices.contains(i + 1) {
-                if i == 1 {
-                    description += ", and \(numberOfItems - (i + 1)) more of your Spaces"
-                } else {
-                    description += ", and "
-                }
-            }
-        }
-
+        // was / were updated with 1 item / 2 items total
         description +=
             " \(spaces.count > 1 ? "were" : "was") updated with \(numberOfChanges) \(numberOfChanges > 1 ? "items" : "item") total"
 

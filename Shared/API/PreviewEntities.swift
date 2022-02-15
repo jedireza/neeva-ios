@@ -4,13 +4,35 @@
 
 import Foundation
 
-public enum PreviewEntity {
+public enum PreviewEntity: Equatable {
     case richEntity(RichEntity)
     case recipe(Recipe)
     case techDoc(TechDoc)
     case retailProduct(RetailProduct)
     case newsItem(NewsItem)
     case webPage
+    case spaceLink(SpaceID)
+
+    public static func == (lhs: PreviewEntity, rhs: PreviewEntity) -> Bool {
+        switch (lhs, rhs) {
+        case (.richEntity, .richEntity):
+            return true
+        case (.recipe, .recipe):
+            return true
+        case (.techDoc, .techDoc):
+            return true
+        case (.retailProduct, .retailProduct):
+            return true
+        case (.newsItem, .newsItem):
+            return true
+        case (.webPage, .webPage):
+            return true
+        case (.spaceLink, .spaceLink):
+            return true
+        default:
+            return false
+        }
+    }
 }
 
 public struct NewsItem {

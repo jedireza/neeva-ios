@@ -22,7 +22,7 @@ struct EntityInfoView: View {
             RecipeInfoView(recipe: recipe, url: url)
         case .techDoc:
             ProviderInfo(url: url)
-        case .webPage:
+        case .webPage, .spaceLink:
             URLDisplayView(url: url)
         }
     }
