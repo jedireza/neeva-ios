@@ -104,27 +104,25 @@ struct TopBarNeevaMenuButton: View {
 
     @ViewBuilder
     private var neevaButton: some View {
-        WithPopover(
-            showPopover: $chromeModel.showTryCheatsheetPopover,
-            popoverSize: CGSize(width: 257, height: 114),
-            content: {
-                TabToolbarButtons.NeevaMenu(iconWidth: Self.neevaIconWidth) {
-                    ClientLogger.shared.logCounter(
-                        .OpenCheatsheet,
-                        attributes: EnvironmentHelper.shared.getAttributes()
-                    )
-                    chromeModel.clearCheatsheetPopoverFlags()
-                    if let bvc = chromeModel.topBarDelegate as? BrowserViewController {
-                        bvc.showCheatSheetOverlay()
-                    }
-                }
-                .tapTargetFrame()
-            },
-            popoverContent: {
-                CheatsheetTooltipPopoverView()
-            },
-            backgroundMode: CheatsheetTooltipPopoverView.backgroundColorMode
-        )
+        TabToolbarButtons.NeevaMenu(iconWidth: Self.neevaIconWidth) {
+            ClientLogger.shared.logCounter(
+                .OpenCheatsheet,
+                attributes: EnvironmentHelper.shared.getAttributes()
+            )
+            chromeModel.clearCheatsheetPopoverFlags()
+            if let bvc = chromeModel.topBarDelegate as? BrowserViewController {
+                bvc.showCheatSheetOverlay()
+            }
+        }
+        .tapTargetFrame()
+        .presentAsPopover(
+            isPresented: $chromeModel.showTryCheatsheetPopover,
+            backgroundColor: CheatsheetTooltipPopoverView.backgroundColor,
+            dismissOnTransition: true
+        ) {
+            CheatsheetTooltipPopoverView()
+                .frame(maxWidth: 270)
+        }
     }
 }
 

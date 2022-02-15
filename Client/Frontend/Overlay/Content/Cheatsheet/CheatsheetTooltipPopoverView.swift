@@ -11,7 +11,10 @@ struct CheatsheetTooltipPopoverView: View {
     @Environment(\.colorScheme) var colorScheme
 
     var isDarkMode: Bool { colorScheme == .dark }
-    static let backgroundColorMode: WithPopoverColorMode = .dyanmicBackground(.brand.blue, .brand.variant.polar)
+
+    static var backgroundColor = UIColor { (trait: UITraitCollection) -> UIColor in
+        return (trait.userInterfaceStyle == .dark) ? .brand.variant.polar : .brand.blue
+    }
 
     @State var impressionTimer: Timer? = nil
 

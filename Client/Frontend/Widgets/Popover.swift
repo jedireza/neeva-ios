@@ -87,10 +87,10 @@ struct Popover<Content: View>: UIViewControllerRepresentable {
             }
         }
 
-        override func viewDidDisappear(_ animated: Bool) {
+        override func viewWillDisappear(_ animated: Bool) {
             // Dismiss the popover when removing this view controller.
             presentee = nil
-            super.viewDidDisappear(animated)
+            super.viewWillDisappear(animated)
         }
 
         override func viewWillTransition(

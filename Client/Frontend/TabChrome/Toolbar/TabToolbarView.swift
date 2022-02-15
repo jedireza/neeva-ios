@@ -81,19 +81,17 @@ struct TabToolbarView: View {
 
     @ViewBuilder
     private var neevaButton: some View {
-        WithPopover(
-            showPopover: $chromeModel.showTryCheatsheetPopover,
-            popoverSize: CGSize(width: 257, height: 114),
-            content: {
-                TabToolbarButtons.NeevaMenu(iconWidth: 22) {
-                    onNeevaButtonPressed()
-                }
-            },
-            popoverContent: {
-                CheatsheetTooltipPopoverView()
-            },
-            backgroundMode: CheatsheetTooltipPopoverView.backgroundColorMode
-        )
+        TabToolbarButtons.NeevaMenu(iconWidth: 22) {
+            onNeevaButtonPressed()
+        }
+        .presentAsPopover(
+            isPresented: $chromeModel.showTryCheatsheetPopover,
+            backgroundColor: CheatsheetTooltipPopoverView.backgroundColor,
+            dismissOnTransition: true
+        ) {
+            CheatsheetTooltipPopoverView()
+                .frame(maxWidth: 270)
+        }
     }
 }
 
