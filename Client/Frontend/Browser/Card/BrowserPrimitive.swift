@@ -343,6 +343,7 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
     @Published private(set) var tabGroups: [String: TabGroup] = [:]
     var childTabs: [Tab] = []
     private var anyCancellable: AnyCancellable? = nil
+    static var all = WeakList<TabGroupManager>()
 
     init(tabManager: TabManager) {
         self.tabManager = tabManager
@@ -350,6 +351,7 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
         self.anyCancellable = tabManager.tabsUpdatedPublisher.sink { [weak self] (_) in
             self?.updateTabGroups()
         }
+        Self.all.insert(self)
     }
 
     func updateTabGroups() {

@@ -65,7 +65,8 @@ class CardTests: XCTestCase {
 
         profile = TabManagerMockProfile()
         manager = TabManager(profile: profile, imageStore: nil)
-        gridModel = GridModel(tabManager: manager)
+        groupManager = TabGroupManager(tabManager: manager)
+        gridModel = GridModel(tabManager: manager, tabGroupManager: groupManager)
         incognitoModel = IncognitoModel(isIncognito: false)
         browserModel = BrowserModel(
             gridModel: gridModel, tabManager: manager, chromeModel: .init(),

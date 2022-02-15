@@ -35,8 +35,7 @@ class GridModel: ObservableObject {
 
     @Published var needsScrollToSelectedTab: Int = 0
 
-    init(tabManager: TabManager) {
-        let tabGroupManager = TabGroupManager(tabManager: tabManager)
+    init(tabManager: TabManager, tabGroupManager: TabGroupManager) {
         self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)
         self.tabGroupCardModel = TabGroupCardModel(manager: tabGroupManager)
         self.spaceCardModel = SpaceCardModel()
