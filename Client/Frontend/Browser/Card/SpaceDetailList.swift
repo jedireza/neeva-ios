@@ -71,7 +71,7 @@ struct SpaceDetailList: View {
                         .padding(12)
 
                     Spacer()
-                }.background(Color.TrayBackground)
+                }.background(Color.secondaryBackground)
             }
 
             NavigationView {
@@ -116,7 +116,15 @@ struct SpaceDetailList: View {
                                     }
                             }
 
-                            if let url = details.data.url {
+                            let spaceLink: SpaceID? = {
+                                if case .spaceLink(let id) = details.data.previewEntity {
+                                    return id
+                                }
+
+                                return nil
+                            }()
+
+                            if let url = details.data.url, spaceLink == nil {
                                 SpaceEntityDetailView(
                                     details: details,
                                     onSelected: {
@@ -144,7 +152,8 @@ struct SpaceDetailList: View {
                                                 url: url, title: title, description: description)
                                     },
                                     editSpaceItem: editSpaceItem,
-                                    index: primitive.allDetails.firstIndex { $0.id == details.id } ?? 0,
+                                    index: primitive.allDetails.firstIndex { $0.id == details.id }
+                                        ?? 0,
                                     canEdit: canEdit
                                 )
                                 .modifier(ListSeparatorModifier())
@@ -154,12 +163,20 @@ struct SpaceDetailList: View {
                                 }
                                 .iPadOnlyID()
                             } else {
+                                let isDigestSeeMore: Bool = {
+                                    return spaceLink != nil
+                                        && details.id == .init(SpaceStore.dailyDigestSeeMoreID)
+                                }()
+
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(details.title)
-                                        .withFont(.headingMedium)
-                                        .foregroundColor(.label)
+                                        .withFont(isDigestSeeMore ? .bodyLarge : .headingMedium)
+                                        .foregroundColor(
+                                            isDigestSeeMore ? .ui.adaptive.blue : .label)
 
-                                    if let snippet = details.data.snippet, !snippet.isEmptyOrWhitespace() {
+                                    if let snippet = details.data.snippet,
+                                        !snippet.isEmptyOrWhitespace()
+                                    {
                                         SpaceMarkdownSnippet(
                                             showDescriptions: showDescriptions, details: details,
                                             snippet: snippet)
@@ -180,9 +197,20 @@ struct SpaceDetailList: View {
                                                 ?? 0)
                                     )
                                 }
+                                .if(spaceLink != nil) {
+                                    $0.onTapGesture {
+                                        browserModel.openSpace(
+                                            spaceId: spaceLink!.id,
+                                            bvc: SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                        ) {}
+                                    }
+                                }
                                 .modifier(ListSeparatorModifier())
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .background(Color.secondaryBackground)
+                                .background(
+                                    isDigestSeeMore
+                                        ? Color.DefaultBackground : Color.secondaryBackground
+                                )
                                 .onDrag {
                                     NSItemProvider(id: details.id)
                                 }
@@ -284,7 +312,7 @@ struct ListSeparatorModifier: ViewModifier {
                 )
                 .listSectionSeparator(Visibility.hidden)
                 .listRowSeparator(Visibility.hidden)
-                .listSectionSeparatorTint(Color.TrayBackground)
+                .listSectionSeparatorTint(Color.secondaryBackground)
         } else {
             content
                 .listRowInsets(
@@ -330,7 +358,7 @@ struct ListStyleModifier: ViewModifier {
         if #available(iOS 15.0, *) {
             content
                 .listStyle(.plain)
-                .background(Color.TrayBackground)
+                .background(Color.secondaryBackground)
                 .environment(
                     \.openURL,
                     OpenURLAction(handler: {

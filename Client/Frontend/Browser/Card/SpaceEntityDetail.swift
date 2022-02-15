@@ -46,7 +46,7 @@ struct SpaceEntityDetailView: View {
             return newsItem.title
         case .recipe(let recipe):
             return recipe.title
-        case .webPage:
+        case .webPage, .spaceLink:
             return details.title
         }
     }

@@ -14,9 +14,18 @@ struct SpaceHeaderView: View {
         space.acls.first(where: { $0.acl == .owner })
     }
 
+    var displayTitle: String {
+        if space.isDigest {
+            // This removes the count from the end of title.
+            return "Daily Digest"
+        } else {
+            return space.displayTitle
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(space.displayTitle)
+            Text(displayTitle)
                 .withFont(.displayMedium)
                 .foregroundColor(.label)
                 .fixedSize(horizontal: false, vertical: true)

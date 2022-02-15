@@ -96,7 +96,9 @@ class TabCardModel: CardModel {
         // of this resolves a problem where TabGroupHeader doesn't hide arrows button
         // when the number of tabs drops below maxCols.
         tabGroupExpanded.forEach { groupID in
-            if let tabGroup = tabGroupModel.allDetails.first(where: { groupID == $0.id }), tabGroup.allDetails.count <= maxCols {
+            if let tabGroup = tabGroupModel.allDetails.first(where: { groupID == $0.id }),
+                tabGroup.allDetails.count <= maxCols
+            {
                 tabGroupExpanded.remove(groupID)
             }
         }
