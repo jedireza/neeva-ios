@@ -22,11 +22,12 @@ struct ExperimentSettingsView: View {
                         .foregroundColor(Color.label)
                 }
 
-                OptionalPrefilledStringField<NeevaExperiment.DefaultBrowserV2>(
-                    "DefaultBrowserPromptView",
-                    value: $valueText,
-                    experiment: .defaultBrowserPromptV2
-                )
+                /* Experiment Example */
+                //OptionalPrefilledStringField<NeevaExperiment.DefaultBrowserV2>(
+                //    "DefaultBrowserPromptView",
+                //    value: $valueText,
+                //    experiment: .defaultBrowserPromptV2
+                //)
             }
         }
         .listStyle(.insetGrouped)

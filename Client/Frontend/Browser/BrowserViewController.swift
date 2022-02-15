@@ -769,7 +769,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     self.recordNavigationInTab(tab, navigation: nav, visitType: visitType)
                 }
             } else if let nav = tab.loadRequest(URLRequest(url: url)) {
-                tab.queryForNavigation.currentQuery = .init(typed: searchQueryModel.value, suggested: suggestedQuery)
+                tab.queryForNavigation.currentQuery = .init(
+                    typed: searchQueryModel.value, suggested: suggestedQuery)
                 recordNavigationInTab(tab, navigation: nav, visitType: visitType)
             }
         }
@@ -853,6 +854,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
             )
 
             if self.shouldPresentDBPrompt {
+                ClientLogger.shared.logCounter(
+                    .DefaultBrowserInterstitialImp
+                )
                 self.presentDBPromptView()
             }
             self.hideCardGrid(withAnimation: false)
@@ -1564,6 +1568,9 @@ extension BrowserViewController {
                 DispatchQueue.main.async {
                     selectedTab.loadRequest(URLRequest(url: url))
                     if self.shouldPresentDBPrompt {
+                        ClientLogger.shared.logCounter(
+                            .DefaultBrowserInterstitialImp
+                        )
                         self.presentDBPromptView()
                     }
                     self.hideCardGrid(withAnimation: false)
@@ -1638,11 +1645,7 @@ extension BrowserViewController {
                         if !Defaults[.didSetDefaultBrowser]
                             && !Defaults[.didShowDefaultBrowserInterstitial]
                         {
-                            if NeevaExperiment.startExperiment(for: .defaultBrowserPromptV2)
-                                == .showDBPrompt
-                            {
-                                self.shouldPresentDBPrompt = true
-                            }
+                            self.shouldPresentDBPrompt = true
                         }
                     }
 
@@ -1680,7 +1683,7 @@ extension BrowserViewController {
                 } buttonAction: {
                     self.overlayManager.hideCurrentOverlay()
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                         self.presentDBOnboardingViewController(
                             modalTransitionStyle: .crossDissolve, triggerFrom: .defaultBrowserPrompt
                         )

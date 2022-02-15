@@ -2,10 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Combine
+import Defaults
 import Foundation
 import Shared
-import Defaults
-import Combine
 
 public struct LogConfig {
     public enum Interaction: String {
@@ -182,8 +182,8 @@ public struct LogConfig {
         case PreviewTapFakeSearchInput
         /// Click sign in on preview home
         case PreviewHomeSignin
-        /// Default browser experiment
-        case DefaultBrowserExperimentV2
+        /// Default browser interstitial impression
+        case DefaultBrowserInterstitialImp
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -455,9 +455,9 @@ public struct LogConfig {
         case .PreviewSampleQueryClicked: return .FirstRun
         case .PreviewTapFakeSearchInput: return .FirstRun
         case .PreviewHomeSignin: return .FirstRun
-        case .DefaultBrowserExperimentV2: return .FirstRun
         case .DefaultBrowserPromptSkip: return .FirstRun
         case .DefaultBrowserPromptOpen: return .FirstRun
+        case .DefaultBrowserInterstitialImp: return .FirstRun
 
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard

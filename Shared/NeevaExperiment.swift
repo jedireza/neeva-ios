@@ -6,7 +6,7 @@ import Defaults
 import Foundation
 
 public protocol ExperimentArms: Hashable, CaseIterable, RawRepresentable
-    where RawValue == String, AllCases: RandomAccessCollection {}
+where RawValue == String, AllCases: RandomAccessCollection {}
 
 public enum NeevaExperiment {
     private static let experimentValuesKey =
@@ -66,12 +66,16 @@ public enum NeevaExperiment {
 }
 
 extension NeevaExperiment {
-    public enum DefaultBrowserV2: String, ExperimentArms {
-        case control
-        case showDBPrompt
-    }
+
+    /* Experiment Example */
+    //    public enum DefaultBrowserV2: String, ExperimentArms {
+    //        case control
+    //        case showDBPrompt
+    //    }
+
 }
 
-extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserV2 {
-    public static let defaultBrowserPromptV2 = Self()
-}
+// Experiment Example */
+//extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserV2 {
+//public static let defaultBrowserPromptV2 = Self()
+//}
