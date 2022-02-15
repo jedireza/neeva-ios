@@ -289,7 +289,8 @@ where
                                 spacesModel.removeSpace(
                                     spaceID: space.id.id, isOwner: space.ACL == .owner)
                             }
-                        })
+                        }),
+                    .cancel(),
                 ])
         }
     }

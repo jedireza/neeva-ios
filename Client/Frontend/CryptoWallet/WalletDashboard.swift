@@ -304,7 +304,8 @@ struct WalletDashboard: View {
                         }
                         Defaults[.sessionsPeerIDs] = Set<String>()
                         model.wallet = WalletAccessor()
-                    })
+                    }),
+                .cancel(),
             ])
     }
 
@@ -323,7 +324,8 @@ struct WalletDashboard: View {
                         }
                         Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
                         sessionToDisconnect = nil
-                    })
+                    }),
+                .cancel(),
             ])
     }
 
