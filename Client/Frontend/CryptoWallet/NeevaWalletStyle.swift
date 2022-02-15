@@ -87,7 +87,6 @@ public struct NeevaWalletLongPressButton<Content: View>: View {
             )
             .animation(unlockActive ? .linear(duration: 4) : nil)
             .clipShape(Capsule())
-            .disabled(!unlocked)
             .overlay(
                 Text("\(countDown)")
                     .bold()
@@ -101,14 +100,25 @@ public struct NeevaWalletLongPressButton<Content: View>: View {
                     unlockActive = pressing
                     if pressing, timer == nil {
                         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                            countDown -= 1
+                            if countDown > 0 {
+                                countDown -= 1
+                            } else {
+                                action()
+                                timer?.invalidate()
+                            }
                         }
                     } else if !pressing, let timer = self.timer {
                         timer.invalidate()
                         self.timer = nil
                         countDown = 4
                     }
-                }, perform: action)
+                },
+                perform: {
+                    unlocked = true
+                    unlockActive = false
+                    action()
+                    timer?.invalidate()
+                })
     }
 }
 

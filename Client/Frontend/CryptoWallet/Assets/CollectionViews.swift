@@ -19,18 +19,18 @@ struct CollectionStatView: View {
                     Image("ethLogo")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 24, height: 24)
+                        .frame(width: 16, height: 16)
                     Text(statAmount)
-                        .withFont(.headingXLarge)
+                        .withFont(.labelLarge)
                         .foregroundColor(.label)
                 }
             } else {
                 Text(statAmount)
-                    .withFont(.headingXLarge)
+                    .withFont(.labelLarge)
                     .foregroundColor(.label)
             }
             Text(statName)
-                .withFont(.headingXSmall)
+                .withFont(.headingSmall)
                 .foregroundColor(.label)
         }
     }
@@ -125,6 +125,29 @@ struct CollectionWindowStatsView: View {
                     statName: "AVG PRICE", statAmount: window.averagePrice(from: stats),
                     inEth: true)
             }
+        }
+    }
+}
+
+struct CompactStatsView: View {
+    let stats: CollectionStats
+
+    var body: some View {
+        HStack(spacing: 16) {
+            CollectionStatView(
+                statName: "Items", statAmount: String(stats.count),
+                inEth: false)
+            CollectionStatView(
+                statName: "Owners", statAmount: String(stats.numOwners),
+                inEth: false)
+            CollectionStatView(
+                statName: "Floor",
+                statAmount: String(format: "%.2f", stats.floorPrice ?? 0),
+                inEth: true)
+            CollectionStatView(
+                statName: "Traded",
+                statAmount: String(format: "%.1f", stats.overallVolume / 1000) + "K",
+                inEth: true)
         }
     }
 }

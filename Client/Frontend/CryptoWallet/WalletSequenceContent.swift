@@ -34,26 +34,346 @@ struct WalletSequenceContent: View {
         return true
     }
 
-    var header: String {
-        guard let sequence = model.currentSequence else {
-            return ""
-        }
+    var domain: String {
+        model.currentSequence?.dAppMeta.url.baseDomain
+            ?? model.currentSequence?.dAppMeta.url.domainURL.absoluteString ?? ""
+    }
 
-        switch sequence.type {
-        case .sessionRequest:
-            return " wants to connect to your wallet"
-        case .personalSign:
-            return
-                " wants to sign a message using your wallet."
-        case .sendTransaction:
-            return " wants to send a transaction"
+    var body: some View {
+        if let sequence = model.currentSequence {
+            if showingCommunitySubmissions, let url = model.selectedTab?.url {
+                CommunitySubmissionView(
+                    iconURL: sequence.thumbnailURL, domain: domain, url: url,
+                    trust: $communityTrusted)
+            } else {
+                VStack(spacing: 24) {
+                    VStack(spacing: 8) {
+                        if case .sessionRequest = sequence.type,
+                            let collection = model.matchingCollection,
+                            collection.safelistRequestStatus >= .approved,
+                            let stats = collection.stats
+                        {
+                            WalletSequenceSiteHeader(
+                                iconURL: collection.imageURL,
+                                domain: collection.name,
+                                trusted: model.trustSignal == .trusted
+                            )
+                            CompactStatsView(stats: stats)
+                                .frame(maxWidth: .infinity)
+                        } else {
+                            DefaultHeader(
+                                sequence: sequence,
+                                trusted: model.trustSignal == .trusted,
+                                userSelectedChain: $userSelectedChain
+                            )
+                        }
+                    }
+                    .padding(12)
+                    .background(WalletTheme.gradient.opacity(0.08))
+                    .cornerRadius(12)
+                    WalletSequenceMessage(type: sequence.type, dAppName: sequence.dAppMeta.name)
+                    if sequence.type != .sessionRequest || model.trustSignal == .trusted
+                        || communityTrusted
+                    {
+                        WalletSequenceMainButtons(
+                            sequence: sequence,
+                            userSelectedChain: $userSelectedChain
+                        )
+                    }
+                    if let sequence = model.currentSequence,
+                        let wallet = model.wallet
+                    {
+                        WalletSequenceBottomInfoPanel(
+                            sequence: sequence,
+                            wallet: wallet,
+                            balance: model.balanceFor(chainToUse.currency),
+                            userSelectedChain: $userSelectedChain
+                        )
+                    }
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                .padding(.bottom, 36)
+            }
+        } else {
+            VStack {
+                Spacer(minLength: 150)
+                ProgressView()
+                    .scaleEffect(x: 2, y: 2, anchor: .center)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                Spacer(minLength: 150)
+            }
         }
+    }
+}
+
+struct DefaultHeader: View {
+    let sequence: SequenceInfo
+    let trusted: Bool
+    @Binding var userSelectedChain: EthNode?
+
+    var chainToUse: EthNode {
+        userSelectedChain ?? sequence.chain
+    }
+
+    var domain: String {
+        sequence.dAppMeta.url.baseDomain
+            ?? sequence.dAppMeta.url.domainURL.absoluteString
+    }
+
+    var body: some View {
+        WalletSequenceSiteHeader(
+            iconURL: sequence.thumbnailURL,
+            domain: domain,
+            trusted: trusted
+        )
+        switch sequence.type {
+        case .personalSign:
+            VStack {
+                Text("Message:")
+                    .withFont(.bodyLarge)
+                    .foregroundColor(.label)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                ScrollView(.vertical, showsIndicators: true) {
+                    Text(sequence.message)
+                        .withFont(.bodyLarge)
+                        .foregroundColor(.label)
+                        .padding()
+                }.frame(height: 150)
+            }
+        case .sendTransaction:
+            if let value = sequence.options?.value,
+                let amount = Web3.Utils.formatToEthereumUnits(
+                    value, toUnits: .eth, decimals: 4),
+                let double = Double(amount)
+            {
+                Group {
+                    Text("$" + chainToUse.currency.toUSD(amount))
+                        .withFont(.displayMedium)
+                        .foregroundColor(.label)
+                    Label {
+                        Text(String(double))
+                            .withFont(.headingMedium)
+                            .foregroundColor(.label)
+                    } icon: {
+                        switch chainToUse {
+                        case .Polygon:
+                            Currency.MATIC.logo
+                        default:
+                            Currency.ETH.logo
+                        }
+                    }
+                }.frame(maxWidth: .infinity, alignment: .center)
+            }
+        default:
+            Text(sequence.message)
+                .withFont(.bodyLarge)
+                .foregroundColor(.label)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+}
+
+struct WalletSequenceMainButtons: View {
+    @Environment(\.hideOverlay) private var hideOverlaySheet
+    let sequence: SequenceInfo
+    @Binding var userSelectedChain: EthNode?
+
+    var chainToUse: EthNode {
+        userSelectedChain ?? sequence.chain
+    }
+
+    var body: some View {
+        HStack {
+            Button(
+                action: {
+                    sequence.onReject()
+                    hideOverlaySheet()
+                },
+                label: {
+                    Text("Cancel")
+                        .frame(maxWidth: .infinity)
+                }
+            ).buttonStyle(.wallet(.secondary))
+            Button(
+                action: {
+                    switch sequence.type {
+                    case .sessionRequest:
+                        sequence.onAccept(chainToUse.id)
+                    default:
+                        let context = LAContext()
+                        let reason =
+                            "Signing in and transactions require authentication"
+                        let onAuth: (Bool, Error?) -> Void = {
+                            success, authenticationError in
+                            if success {
+                                sequence.onAccept(chainToUse.id)
+                            } else {
+                                sequence.onReject()
+                            }
+                        }
+
+                        var error: NSError?
+                        if context.canEvaluatePolicy(
+                            .deviceOwnerAuthenticationWithBiometrics, error: &error)
+                        {
+                            context.evaluatePolicy(
+                                .deviceOwnerAuthenticationWithBiometrics,
+                                localizedReason: reason,
+                                reply: onAuth)
+                        } else if context.canEvaluatePolicy(
+                            .deviceOwnerAuthentication, error: &error)
+                        {
+                            context.evaluatePolicy(
+                                .deviceOwnerAuthentication, localizedReason: reason,
+                                reply: onAuth)
+                        } else {
+                            sequence.onReject()
+                        }
+                    }
+
+                    hideOverlaySheet()
+                },
+                label: {
+                    if case .sessionRequest = sequence.type {
+                        Text("Connect")
+                            .frame(maxWidth: .infinity)
+                    } else {
+                        Label(
+                            title: {
+                                Text("Confirm")
+                            },
+                            icon: {
+                                Symbol(decorative: .faceid)
+                            }
+                        )
+                        .frame(maxWidth: .infinity)
+
+                    }
+                }
+            ).buttonStyle(.wallet(.primary))
+        }
+    }
+}
+
+struct MaliciousSiteView: View {
+    @Environment(\.hideOverlay) private var hideOverlaySheet
+    let iconURL: URL?
+    let domain: String
+    let trustSignal: TrustSignal
+    let alternativeDomain: String?
+
+    let navigateToAlternateDomain: () -> Void
+    let closeTab: () -> Void
+
+    var body: some View {
+        VStack(spacing: 24) {
+            VStack(spacing: 8) {
+                WalletSequenceSiteHeader(
+                    iconURL: iconURL ?? .aboutBlank,
+                    domain: domain,
+                    trusted: false
+                )
+                if let trustedDomain = alternativeDomain {
+                    (Text("This site has a similar address to a verified site ")
+                        + Text(trustedDomain).bold())
+                    Text(
+                        "Using a popular domain and a different extension is a pattern commonly used by malicious websites."
+                    )
+                } else if case .malicious = trustSignal {
+                    Text("This site is identified as a malicious website.")
+                }
+            }
+            .withFont(unkerned: .bodyLarge)
+            .foregroundColor(Color(light: .brand.variant.red, dark: .brand.red))
+            .fixedSize(horizontal: false, vertical: true)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity)
+            .padding(12)
+            .background(Color.quaternarySystemFill)
+            .cornerRadius(12)
+            Text("To protect your wallet, we will not connect to this site.")
+                .withFont(.bodyXLarge)
+                .foregroundColor(.label)
+                .fixedSize(horizontal: false, vertical: true)
+                .multilineTextAlignment(.center)
+            VStack(spacing: 16) {
+                if let trustedDomain = alternativeDomain {
+                    Button(
+                        action: {
+                            navigateToAlternateDomain()
+                            DispatchQueue.main.async {
+                                hideOverlaySheet()
+                            }
+                        },
+                        label: {
+                            Text("Navigate to \(trustedDomain)")
+                                .frame(maxWidth: .infinity)
+                        }
+                    ).buttonStyle(.wallet(.primary))
+                }
+                Button(
+                    action: {
+                        closeTab()
+                        hideOverlaySheet()
+                    },
+                    label: {
+                        Text("Close")
+                            .frame(maxWidth: .infinity)
+                    }
+                ).buttonStyle(.wallet(.secondary))
+            }.padding(.bottom, 16)
+        }
+        .padding(12)
+        .padding(.bottom, 24)
+    }
+}
+
+struct WalletSequenceSiteHeader: View {
+    let iconURL: URL
+    let domain: String
+    let trusted: Bool
+
+    var body: some View {
+        WebImage(url: iconURL)
+            .resizable()
+            .placeholder {
+                Color.secondarySystemFill
+            }
+            .transition(.opacity)
+            .scaledToFit()
+            .frame(width: 48, height: 48)
+            .background(Color.white)
+            .clipShape(Circle())
+        HStack {
+            if trusted {
+                Image("twitter-verified-large")
+                    .renderingMode(.template)
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.ui.adaptive.blue)
+                    .frame(width: 16, height: 16)
+            }
+            Text(domain)
+                .withFont(.labelLarge)
+                .foregroundColor(trusted ? .ui.adaptive.blue : .label)
+        }
+    }
+}
+
+struct WalletSequenceBottomInfoPanel: View {
+    let sequence: SequenceInfo
+    let wallet: WalletAccessor
+    let balance: String?
+
+    @Binding var userSelectedChain: EthNode?
+
+    var chainToUse: EthNode {
+        userSelectedChain ?? sequence.chain
     }
 
     var bottomLeftHeader: String {
-        guard let type = model.currentSequence?.type else { return "" }
-
-        switch type {
+        switch sequence.type {
         case .sendTransaction:
             return "Transaction Fee"
         default:
@@ -62,73 +382,73 @@ struct WalletSequenceContent: View {
     }
 
     @ViewBuilder var bottomRightInfo: some View {
-        if let type = model.currentSequence?.type {
-            switch type {
-            case .sessionRequest:
-                Menu(
-                    content: {
-                        ForEach(EthNode.allCases) { node in
-                            Button(
-                                action: {
-                                    userSelectedChain = node
-                                },
-                                label: {
-                                    Text(node.rawValue)
-                                        .withFont(.labelMedium)
-                                        .lineLimit(1)
-                                        .foregroundColor(.label)
-                                        .frame(maxWidth: 150, alignment: .trailing)
-                                })
+        switch sequence.type {
+        case .sessionRequest:
+            Menu(
+                content: {
+                    ForEach(EthNode.allCases) { node in
+                        Button(
+                            action: {
+                                userSelectedChain = node
+                            },
+                            label: {
+                                Text(node.rawValue)
+                                    .withFont(.labelMedium)
+                                    .lineLimit(1)
+                                    .foregroundColor(.label)
+                                    .frame(maxWidth: 150, alignment: .trailing)
+                            })
+                    }
+                },
+                label: {
+                    HStack(spacing: 6) {
+                        switch chainToUse {
+                        case .Polygon:
+                            TokenType.matic.polygonLogo
+                        default:
+                            TokenType.matic.ethLogo
                         }
-                    },
-                    label: {
-                        HStack(spacing: 6) {
-                            Text(chainToUse.rawValue)
-                                .withFont(.labelMedium)
-                                .lineLimit(1)
-                                .foregroundColor(.label)
-                                .frame(maxWidth: 150, alignment: .trailing)
-                            Symbol(decorative: .arrowtriangleDownFill)
-                                .foregroundColor(.label)
-                        }
-                    })
+                        Text(chainToUse.rawValue)
+                            .withFont(.labelLarge)
+                            .lineLimit(1)
+                            .foregroundColor(.label)
+                        Symbol(decorative: .chevronDown)
+                            .foregroundColor(.label)
+                    }.frame(maxWidth: 150, alignment: .trailing)
 
-            default:
-                Text(
-                    "\(model.balanceFor(chainToUse.currency) ?? " ") \(chainToUse.currency.currency.rawValue)"
-                )
-                .withFont(.labelMedium)
-                .lineLimit(1)
-                .foregroundColor(.label)
-                .frame(maxWidth: 150, alignment: .trailing)
-            }
+                })
+
+        default:
+            Text(
+                "\(balance ?? " ") \(chainToUse.currency.currency.rawValue)"
+            )
+            .withFont(.labelLarge)
+            .lineLimit(1)
+            .foregroundColor(.label)
+            .frame(maxWidth: 150, alignment: .trailing)
         }
     }
 
     @ViewBuilder var bottomLeftInfo: some View {
-        if let sequence = model.currentSequence {
-            switch sequence.type {
-            case .sendTransaction:
-                TransactionFeeView(
-                    wallet: model.wallet,
-                    chain: sequence.chain,
-                    transaction: sequence.transaction!,
-                    options: sequence.options!
-                )
-            default:
-                Text(model.wallet?.publicAddress ?? "")
-                    .withFont(.labelMedium)
-                    .lineLimit(1)
-                    .foregroundColor(.label)
-                    .frame(maxWidth: 150, alignment: .leading)
-            }
+        switch sequence.type {
+        case .sendTransaction:
+            TransactionFeeView(
+                wallet: wallet,
+                chain: sequence.chain,
+                transaction: sequence.transaction!,
+                options: sequence.options!
+            )
+        default:
+            Text(wallet.publicAddress)
+                .withFont(.labelLarge)
+                .lineLimit(1)
+                .foregroundColor(.label)
+                .frame(maxWidth: 150, alignment: .leading)
         }
     }
 
     var bottomRightHeader: String {
-        guard let type = model.currentSequence?.type else { return "" }
-
-        switch type {
+        switch sequence.type {
         case .sessionRequest:
             return "Network"
         default:
@@ -136,264 +456,48 @@ struct WalletSequenceContent: View {
         }
     }
 
-    @ViewBuilder var descriptionText: some View {
-        if model.currentSequence?.type == .personalSign {
-            VStack {
-                Text(
-                    "This will not make any transactions with your wallet. But Neeva will be using your private key to sign this message."
-                )
-                .withFont(.bodySmall)
-                .foregroundColor(.label)
-                .fixedSize(horizontal: false, vertical: true)
-                ScrollView(.vertical, showsIndicators: true) {
-                    Text(model.currentSequence?.message ?? "")
-                        .withFont(.bodyLarge)
-                        .foregroundColor(.secondaryLabel)
-                        .padding()
-                }.frame(height: 150)
-                    .background(Color.TrayBackground)
-                    .cornerRadius(16)
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(bottomLeftHeader)
+                    .withFont(.headingSmall)
+                    .foregroundColor(.secondaryLabel)
+                bottomLeftInfo
             }
-        } else {
-            Text(model.currentSequence?.message ?? "")
-                .withFont(.bodyLarge)
-                .foregroundColor(.secondaryLabel)
-                .fixedSize(horizontal: false, vertical: true)
+            Spacer()
+            VStack(alignment: .trailing, spacing: 8) {
+                Text(bottomRightHeader)
+                    .withFont(.headingSmall)
+                    .foregroundColor(.secondaryLabel)
+                bottomRightInfo
+            }
+        }
+    }
+}
+
+struct WalletSequenceMessage: View {
+    let type: SequenceType
+    let dAppName: String
+
+    var message: String {
+        switch type {
+        case .sessionRequest:
+            return " wants to connect to your wallet"
+        case .personalSign:
+            return
+                " wants to sign a message using your wallet."
+        case .sendTransaction:
+            return " wants to send a transaction from your wallet"
         }
     }
 
     var body: some View {
-        VStack {
-            if let trustedDomain = model.alternateTrustedDomain {
-                VStack(spacing: 8) {
-                    (Text("This page's address is very close to ") + Text(trustedDomain).bold()
-                        + Text(" which is a verified site."))
-                    Text(
-                        "Using a popular top level domain and a different extension is a pattern commonly used by malicious websites."
-                    )
-                    Text("We will avoid connecting your wallet to protect its contents.")
-                }
-                .font(.roobert(size: 16))
-                .foregroundColor(Color(light: .brand.variant.red, dark: .brand.red))
-                .fixedSize(horizontal: false, vertical: true)
-                .multilineTextAlignment(.center)
-                Button(
-                    action: {
-                        model.selectedTab?.loadRequest(
-                            URLRequest(url: URL(string: "https://\(trustedDomain)")!))
-                        DispatchQueue.main.async {
-                            hideOverlaySheet()
-                        }
-                    },
-                    label: {
-                        Text("Navigate to \(trustedDomain)")
-                            .frame(maxWidth: .infinity)
-                    }
-                ).buttonStyle(.wallet(.primary))
-                    .padding(.top, 16)
-                Button(
-                    action: {
-                        hideOverlaySheet()
-                    },
-                    label: {
-                        Text("Close")
-                            .frame(maxWidth: .infinity)
-                    }
-                ).buttonStyle(.wallet(.secondary))
-                    .padding(.bottom, 16)
-            } else if case .malicious = model.trustSignal {
-                VStack(spacing: 8) {
-                    Text("This page is a known malicious website.")
-                    Text("We will avoid connecting to protect your wallet contents.")
-                }
-                .font(.roobert(size: 16))
-                .foregroundColor(.red)
-                .fixedSize(horizontal: false, vertical: true)
-                .multilineTextAlignment(.center)
-                Button(
-                    action: {
-                        hideOverlaySheet()
-                    },
-                    label: {
-                        Text("Close")
-                            .frame(maxWidth: .infinity)
-                    }
-                ).buttonStyle(.wallet(.primary))
-                    .padding(.bottom, 16)
-            } else if let sequence = model.currentSequence {
-                WebImage(url: sequence.thumbnailURL)
-                    .resizable()
-                    .placeholder {
-                        Color.secondarySystemFill
-                    }
-                    .transition(.opacity)
-                    .scaledToFit()
-                    .frame(width: 48, height: 48)
-                    .cornerRadius(12)
-                (Text(sequence.dAppMeta.name).bold()
-                    + Text(header))
-                    .withFont(.headingLarge)
-                    .lineLimit(2)
-                    .foregroundColor(.label)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                HStack {
-                    if case .trusted = model.trustSignal {
-                        Image("twitter-verified-large")
-                            .renderingMode(.template)
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundColor(.ui.adaptive.blue)
-                            .frame(width: 16, height: 16)
-                    }
-                    Text(
-                        sequence.dAppMeta.url.baseDomain
-                            ?? sequence.dAppMeta.url.domainURL.absoluteString
-                    ).withFont(.headingMedium)
-                        .foregroundColor(model.trustSignal == .trusted ? .ui.adaptive.blue : .label)
-                }
-                if case .sessionRequest = sequence.type {
-                    if let collection = model.matchingCollection,
-                        collection.safelistRequestStatus >= .approved,
-                        let stats = collection.stats
-                    {
-                        CollectionStatsView(stats: stats)
-                            .padding(.vertical, 12)
-                    } else if showingCommunitySubmissions,
-                        let url = model.selectedTab?.url
-                    {
-                        CommunitySubmissionView(url: url, trust: $communityTrusted)
-                    } else if let _ = sequence.message, model.alternateTrustedDomain == nil {
-                        descriptionText
-                    }
-                } else if let _ = sequence.message {
-                    descriptionText
-                }
-                VStack(spacing: 8) {
-                    if let value = sequence.options?.value,
-                        let amount = Web3.Utils.formatToEthereumUnits(
-                            value, toUnits: .eth, decimals: 4),
-                        let double = Double(amount)
-                    {
-                        Text("$" + chainToUse.currency.toUSD(amount))
-                            .withFont(.headingXLarge)
-                            .foregroundColor(.label)
-                        Label {
-                            Text(String(double))
-                                .withFont(.bodyLarge)
-                                .foregroundColor(.secondaryLabel)
-                        } icon: {
-                            switch chainToUse {
-                            case .Polygon:
-                                Currency.MATIC.logo
-                            default:
-                                Currency.ETH.logo
-                            }
-                        }
-                    }
-                }.padding(.vertical, 12)
-                if sequence.type != .sessionRequest || model.trustSignal == .trusted
-                    || communityTrusted
-                {
-                    HStack {
-                        Button(
-                            action: {
-                                sequence.onReject()
-                                hideOverlaySheet()
-                            },
-                            label: {
-                                Text("Reject")
-                                    .frame(maxWidth: .infinity)
-                            }
-                        ).buttonStyle(.wallet(.secondary))
-                            .disabled(model.currentSequence == nil)
-                        Button(
-                            action: {
-                                switch sequence.type {
-                                case .sessionRequest:
-                                    sequence.onAccept(chainToUse.id)
-                                default:
-                                    let context = LAContext()
-                                    let reason =
-                                        "Signing in and transactions require authentication"
-                                    let onAuth: (Bool, Error?) -> Void = {
-                                        success, authenticationError in
-                                        if success {
-                                            sequence.onAccept(chainToUse.id)
-                                        } else {
-                                            sequence.onReject()
-                                        }
-                                    }
-
-                                    var error: NSError?
-                                    if context.canEvaluatePolicy(
-                                        .deviceOwnerAuthenticationWithBiometrics, error: &error)
-                                    {
-                                        context.evaluatePolicy(
-                                            .deviceOwnerAuthenticationWithBiometrics,
-                                            localizedReason: reason,
-                                            reply: onAuth)
-                                    } else if context.canEvaluatePolicy(
-                                        .deviceOwnerAuthentication, error: &error)
-                                    {
-                                        context.evaluatePolicy(
-                                            .deviceOwnerAuthentication, localizedReason: reason,
-                                            reply: onAuth)
-                                    } else {
-                                        sequence.onReject()
-                                    }
-                                }
-
-                                hideOverlaySheet()
-                            },
-                            label: {
-                                if case .sessionRequest = sequence.type {
-                                    Text("Connect")
-                                        .frame(maxWidth: .infinity)
-                                } else {
-                                    Label(
-                                        title: {
-                                            Text("Accept")
-                                        },
-                                        icon: {
-                                            Symbol(decorative: .faceid)
-                                        }
-                                    )
-                                    .frame(maxWidth: .infinity)
-
-                                }
-                            }
-                        ).buttonStyle(.wallet(.primary))
-                            .padding(.vertical, 16)
-                            .disabled(model.currentSequence == nil)
-                    }
-                }
-                HStack {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(bottomLeftHeader)
-                            .withFont(.labelSmall)
-                            .foregroundColor(.secondaryLabel)
-                        bottomLeftInfo
-                    }
-                    Spacer()
-                    VStack(alignment: .trailing, spacing: 8) {
-                        Text(bottomRightHeader)
-                            .withFont(.labelSmall)
-                            .foregroundColor(.secondaryLabel)
-                        bottomRightInfo
-                    }
-                }
-            } else {
-                Spacer(minLength: 150)
-                ProgressView()
-                    .scaleEffect(x: 2, y: 2, anchor: .center)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                Spacer(minLength: 150)
-            }
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, 12)
-        .padding(.bottom, 36)
+        (Text(dAppName).bold()
+            + Text(message))
+            .withFont(.headingLarge)
+            .foregroundColor(.label)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 }

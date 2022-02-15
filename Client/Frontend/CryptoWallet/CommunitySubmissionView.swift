@@ -8,60 +8,58 @@ import SwiftUI
 struct CommunitySubmissionView: View {
     @Environment(\.hideOverlay) private var hideOverlaySheet
 
+    let iconURL: URL
+    let domain: String
     let url: URL
     @Binding var trust: Bool
     @State private var request: TrustSignalRequest? = nil
 
     var body: some View {
-        VStack(spacing: 12) {
-            Spacer()
+        VStack(spacing: 24) {
             VStack(spacing: 8) {
-                Text(
-                    "We were not able to confirm the validity of this site. Please proceed with caution."
-                )
-                Text(
-                    "You can help the Neeva community by verifying sites you know about or by reporting scams."
-                )
+                WalletSequenceSiteHeader(iconURL: iconURL, domain: domain, trusted: false)
+                Text("We were not able to confirm the validity of this site.")
+                    .withFont(.bodyLarge)
+                    .foregroundColor(Color(light: .brand.variant.blue, dark: .brand.blue))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+
             }
-            .font(.roobert(size: 16))
-            .foregroundColor(.label)
-            .multilineTextAlignment(.center)
-            .fixedSize(horizontal: false, vertical: true)
-            .padding(.bottom, 8)
+            .padding(12)
+            .background(Color.quaternarySystemFill)
+            .cornerRadius(12)
+            Text("You can help the community by verifying sites you know about or reporting scams.")
+                .withFont(.bodyXLarge)
+                .foregroundColor(.label)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+            VStack(spacing: 16) {
+                NeevaWalletLongPressButton(
+                    action: {
+                        trust = true
+                        request = TrustSignalRequest(url: url, trusted: true)
+                    },
+                    label: {
+                        Text("Hold to verify")
+                            .frame(maxWidth: .infinity)
 
-            NeevaWalletLongPressButton(
-                action: {
-                    trust = true
-                    request = TrustSignalRequest(url: url, trusted: true)
-                },
-                label: {
-                    HStack(spacing: 6) {
-                        Image("twitter-verified-large")
-                            .renderingMode(.template)
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundColor(.white)
-                            .frame(width: 12, height: 12)
-                        Text("Press and hold to verify")
-                    }.frame(maxWidth: .infinity)
-
-                }
-            )
-            Button(
-                action: {
-                    trust = false
-                    hideOverlaySheet()
-                    request = TrustSignalRequest(url: url, trusted: false)
-                },
-                label: {
-                    HStack(spacing: 6) {
-                        Symbol(decorative: .xmarkOctagonFill)
-                            .foregroundColor(.red)
+                    }
+                )
+                Button(
+                    action: {
+                        trust = false
+                        hideOverlaySheet()
+                        request = TrustSignalRequest(url: url, trusted: false)
+                    },
+                    label: {
                         Text("Report as scam")
-                    }.frame(maxWidth: .infinity)
-                }
-            ).buttonStyle(.wallet(.secondary))
-            Spacer()
+                            .frame(maxWidth: .infinity)
+                    }
+                ).buttonStyle(.wallet(.secondary))
+            }
         }
+        .padding(.horizontal, 16)
+        .padding(.top, 12)
+        .padding(.bottom, 36)
     }
 }

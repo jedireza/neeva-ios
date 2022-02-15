@@ -35,12 +35,12 @@ struct TransactionFeeView: View {
 
     var body: some View {
         HStack(spacing: 6) {
-            Symbol(decorative: .flameFill, style: .bodyLarge)
+            Symbol(decorative: .flameFill, style: .labelLarge)
             let gasInGwei: String =
                 Web3.Utils.formatToEthereumUnits(
                     model.gasPrice ?? .zero, toUnits: .Gwei, decimals: 0) ?? ""
             Text("\(gasInGwei) Gwei ~ $\(transactionFee)")
-                .withFont(.bodyLarge)
+                .withFont(.labelLarge)
                 .foregroundColor(.label)
                 .opacity(model.updatingGas ? 0 : 1)
                 .animation(model.updatingGas ? .easeInOut(duration: 1).repeatCount(6) : nil)

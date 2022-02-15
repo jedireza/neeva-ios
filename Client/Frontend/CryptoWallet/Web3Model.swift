@@ -176,11 +176,11 @@ class Web3Model: ObservableObject, ResponseRelay {
                             self.communityBasedTrustSignals[domain] = signal
                         })
 
-                        self.checkForMaliciousContent()
+                        self.checkForMaliciousContent(domain: domain)
                     }
                 }
             } else {
-                checkForMaliciousContent()
+                checkForMaliciousContent(domain: domain)
             }
         }
 
@@ -192,11 +192,28 @@ class Web3Model: ObservableObject, ResponseRelay {
         }
     }
 
-    func checkForMaliciousContent() {
+    func checkForMaliciousContent(domain: String) {
         if !showingMaliciousSiteWarning, alternateTrustedDomain != nil || trustSignal == .malicious
         {
             showingMaliciousSiteWarning = true
-            startSequence()
+            presenter.showModal(
+                style: .spaces,
+                headerButton: nil,
+                content: {
+                    MaliciousSiteView(
+                        iconURL: self.selectedTab?.favicon?.url,
+                        domain: domain,
+                        trustSignal: self.trustSignal,
+                        alternativeDomain: self.alternateTrustedDomain,
+                        navigateToAlternateDomain: {
+                            self.selectedTab?.loadRequest(
+                                URLRequest(
+                                    url: URL(
+                                        string: "https://\(self.alternateTrustedDomain ?? "")")!))
+                        }, closeTab: {}
+                    )
+                    .overlayIsFixedHeight(isFixedHeight: true)
+                }, onDismiss: { self.reset() })
         }
     }
 
