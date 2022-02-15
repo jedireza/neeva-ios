@@ -81,7 +81,7 @@ struct OverlayView: View {
             content
                 .offset(y: overlayManager.offset)
                 .opacity(overlayManager.opacity)
-                .onAnimationCompleted(for: overlayManager.animating) {
+                .onAnimationCompleted(for: overlayManager.displaying) {
                     if let animationCompleted = overlayManager.animationCompleted {
                         animationCompleted()
                     }

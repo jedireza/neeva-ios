@@ -107,7 +107,7 @@ struct NeevaAccountInfoView: View {
                         .withFont(.bodyLarge)
                         .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding(.vertical, 5)
+                    .padding(.vertical, 20)
                     .accessibilityElement(children: .combine)
 
                     NavigationLinkButton("View Benefits") {

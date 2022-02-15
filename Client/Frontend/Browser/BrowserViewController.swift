@@ -138,8 +138,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
     let tabManager: TabManager
     var server: Server? = nil
 
-    var shouldPresentDBPrompt: Bool = false
-
     // Backdrop used for displaying greyed background for private tabs
     private(set) var webViewContainerBackdrop: UIView!
     fileprivate var keyboardState: KeyboardState?
@@ -853,12 +851,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 )
             )
 
-            if self.shouldPresentDBPrompt {
-                ClientLogger.shared.logCounter(
-                    .DefaultBrowserInterstitialImp
-                )
-                self.presentDBPromptView()
-            }
             self.hideCardGrid(withAnimation: false)
         }
     }
@@ -1567,12 +1559,6 @@ extension BrowserViewController {
             {
                 DispatchQueue.main.async {
                     selectedTab.loadRequest(URLRequest(url: url))
-                    if self.shouldPresentDBPrompt {
-                        ClientLogger.shared.logCounter(
-                            .DefaultBrowserInterstitialImp
-                        )
-                        self.presentDBPromptView()
-                    }
                     self.hideCardGrid(withAnimation: false)
                 }
             } else {
@@ -1645,7 +1631,11 @@ extension BrowserViewController {
                         if !Defaults[.didSetDefaultBrowser]
                             && !Defaults[.didShowDefaultBrowserInterstitial]
                         {
-                            self.shouldPresentDBPrompt = true
+                            ClientLogger.shared.logCounter(
+                                .DefaultBrowserInterstitialImp
+                            )
+
+                            self.presentDBPromptView()
                         }
                     }
 
@@ -1674,8 +1664,6 @@ extension BrowserViewController {
     }
 
     private func presentDBPromptView() {
-        self.shouldPresentDBPrompt = false
-
         self.overlayManager.presentFullScreenModal(
             content: AnyView(
                 DefaultBrowserPromptView {

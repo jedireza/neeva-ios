@@ -57,7 +57,7 @@ enum OverlayType: Equatable {
 
 class OverlayManager: ObservableObject {
     @Published private(set) var currentOverlay: OverlayType?
-    @Published private(set) var animating = false
+    @Published private(set) var displaying = false
     @Published var offset: CGFloat = 0
     @Published var opacity: CGFloat = 1
     @Published var animationCompleted: (() -> Void)? = nil
@@ -132,8 +132,6 @@ class OverlayManager: ObservableObject {
         currentOverlay = overlay
 
         if animate {
-            animating = true
-
             // Used to make sure animation completes succesfully.
             animationCompleted = {
                 self.animationCompleted = nil
@@ -145,7 +143,7 @@ class OverlayManager: ObservableObject {
             case .fullScreenModal, .popover:
                 withAnimation(animation) {
                     showFullScreenPopoverSheet = true
-                    animating = false
+                    displaying = true
                 }
             case .notification:
                 slideAndFadeIn(offset: -ToastViewUX.height)
@@ -153,9 +151,11 @@ class OverlayManager: ObservableObject {
                 slideAndFadeIn(offset: ToastViewUX.height)
             default:
                 withAnimation(animation) {
-                    animating = false
+                    displaying = true
                 }
             }
+        } else {
+            displaying = true
         }
 
         func slideAndFadeIn(offset: CGFloat) {
@@ -164,7 +164,7 @@ class OverlayManager: ObservableObject {
 
             withAnimation(animation) {
                 resetUIModifiers()
-                animating = false
+                displaying = true
             }
         }
     }
@@ -225,15 +225,17 @@ class OverlayManager: ObservableObject {
                 }
             }
 
-            animating = true
-
             switch overlay {
             case .backForwardList:
                 slideAndFadeOut(offset: 0)
             case .fullScreenModal, .popover:
-                withAnimation(animation) {
-                    showFullScreenPopoverSheet = false
-                    animating = false
+                showFullScreenPopoverSheet = false
+
+                // How long it takes for the system sheet to dismiss
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                    withAnimation(self.animation) {
+                        self.displaying = false
+                    }
                 }
             case .notification:
                 slideAndFadeOut(offset: -ToastViewUX.height)
@@ -241,7 +243,7 @@ class OverlayManager: ObservableObject {
                 slideAndFadeOut(offset: ToastViewUX.height)
             default:
                 withAnimation(animation) {
-                    animating = false
+                    displaying = false
                     offsetForBottomBar = false
                     hideBottomBar = false
                 }
@@ -251,6 +253,7 @@ class OverlayManager: ObservableObject {
             offsetForBottomBar = false
             hideBottomBar = false
             showFullScreenPopoverSheet = false
+            displaying = false
             resetUIModifiers()
             completion()
         }
@@ -259,7 +262,7 @@ class OverlayManager: ObservableObject {
             withAnimation(animation) {
                 self.offset = offset
                 opacity = 0
-                animating = false
+                displaying = false
                 offsetForBottomBar = false
                 hideBottomBar = false
             }
