@@ -31,6 +31,9 @@ protocol ModalPresenter {
 class BrowserViewController: UIViewController, ModalPresenter {
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
+
+    private var shouldPresentDBPrompt = false
+
     lazy var readerModeModel: ReaderModeModel = {
         let model = ReaderModeModel(
             setReadingMode: { [self] enabled in
@@ -851,6 +854,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 )
             )
 
+            if self.shouldPresentDBPrompt {
+                self.presentDBPromptView()
+            }
             self.hideCardGrid(withAnimation: false)
         }
     }
@@ -1559,6 +1565,9 @@ extension BrowserViewController {
             {
                 DispatchQueue.main.async {
                     selectedTab.loadRequest(URLRequest(url: url))
+                    if self.shouldPresentDBPrompt {
+                        self.presentDBPromptView()
+                    }
                     self.hideCardGrid(withAnimation: false)
                 }
             } else {
@@ -1631,11 +1640,7 @@ extension BrowserViewController {
                         if !Defaults[.didSetDefaultBrowser]
                             && !Defaults[.didShowDefaultBrowserInterstitial]
                         {
-                            ClientLogger.shared.logCounter(
-                                .DefaultBrowserInterstitialImp
-                            )
-
-                            self.presentDBPromptView()
+                            self.shouldPresentDBPrompt = true
                         }
                     }
 
@@ -1664,6 +1669,8 @@ extension BrowserViewController {
     }
 
     private func presentDBPromptView() {
+        self.shouldPresentDBPrompt = false
+
         self.overlayManager.presentFullScreenModal(
             content: AnyView(
                 DefaultBrowserPromptView {
