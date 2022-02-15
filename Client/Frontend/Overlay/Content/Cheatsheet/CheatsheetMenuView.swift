@@ -242,7 +242,8 @@ public struct CheatsheetMenuView: View {
                             // there are some false positives
                             ClientLogger.shared.logCounter(
                                 .CheatsheetEmpty,
-                                attributes: EnvironmentHelper.shared.getAttributes() + model.loggerAttributes
+                                attributes: EnvironmentHelper.shared.getAttributes()
+                                    + model.loggerAttributes
                             )
                         }
                     if cheatsheetDebugQuery {
@@ -281,8 +282,11 @@ public struct CheatsheetMenuView: View {
                 }
             } else {
                 VStack(alignment: .leading) {
-                    recipeView
-                        .padding()
+                    if isRecipeAllowed() {
+                        recipeView
+                            .padding()
+                    }
+
                     if let richResults = model.searchRichResults {
                         VStack(alignment: .leading) {
                             ForEach(richResults) { richResult in
@@ -457,6 +461,14 @@ public struct CheatsheetMenuView: View {
             }
             .padding()
         }
+    }
+
+    func isRecipeAllowed() -> Bool {
+        guard let host = model.currentPageURL?.host,
+            let baseDomain = model.currentPageURL?.baseDomain
+        else { return false }
+        return DomainAllowList.recipeDomains[host] ?? false
+            || DomainAllowList.recipeDomains[baseDomain] ?? false
     }
 }
 
