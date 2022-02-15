@@ -1023,6 +1023,15 @@ extension BrowserViewController: WKNavigationDelegate {
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 
+                if !Defaults[.loggedDefaultBrowserExperiment]
+                    && userInfo.hasLoginCookie()
+                {
+                    ClientLogger.shared.logCounter(
+                        .DefaultBrowserInterstitialImp
+                    )
+                    Defaults[.loggedDefaultBrowserExperiment] = true
+                }
+
                 if let interactionStr = Defaults[.lastDefaultBrowserPromptInteraction],
                     let interaction = LogConfig.Interaction(rawValue: interactionStr),
                     userInfo.hasLoginCookie()
