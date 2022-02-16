@@ -100,13 +100,14 @@ struct SessionInfoButton: View {
 
     let dAppSession: Session
     @State var showdAppSessionControls: Bool = false
+    @State var rotationAngle: Double = 0
 
     var logo: String {
         switch EthNode.from(chainID: dAppSession.walletInfo?.chainId) {
         case .Polygon:
             return "polygon-badge"
         default:
-            return "ethLogo"
+            return "eth"
         }
     }
 
@@ -121,17 +122,20 @@ struct SessionInfoButton: View {
                     .scaledToFit()
                     .frame(width: 16, height: 16)
                     .padding(2)
+                    .background(Circle().fill(Color.white))
+                    .padding(2)
+                    .animation(nil)
                     .background(
                         Circle()
-                            .fill(
-                                web3Model.matchingCollection == nil
-                                    ? Color.clear : Color.ui.adaptive.blue.opacity(0.3))
-                    ).roundedOuterBorder(
-                        cornerRadius: 10,
-                        color: web3Model.matchingCollection == nil
-                            ? Color.label : Color.ui.adaptive.blue,
-                        lineWidth: web3Model.matchingCollection == nil
-                            ? 1 : 2)
+                            .fill(WalletTheme.gradient)
+                            .rotationEffect(.degrees(rotationAngle))
+                            .animation(nil)
+                            .onAppear {
+                                withAnimation(.easeInOut(duration: 3).repeatForever()) {
+                                    rotationAngle = 360
+                                }
+                            }
+                    )
             }
         ).presentAsPopover(
             isPresented: $showdAppSessionControls,

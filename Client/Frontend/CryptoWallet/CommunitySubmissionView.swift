@@ -23,7 +23,7 @@ struct CommunitySubmissionView: View {
                     .foregroundColor(Color(light: .brand.variant.blue, dark: .brand.blue))
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
-
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
             .padding(12)
             .background(Color.quaternarySystemFill)
@@ -58,8 +58,7 @@ struct CommunitySubmissionView: View {
                 ).buttonStyle(.wallet(.secondary))
             }
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 12)
-        .padding(.bottom, 36)
+        .padding(12)
+        .padding(.bottom, 24)
     }
 }

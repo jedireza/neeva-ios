@@ -32,6 +32,8 @@ enum Currency: String, CaseIterable, Codable {
             .scaledToFit()
             .frame(width: 24, height: 24)
             .padding(4)
+            .background(Color.white)
+            .clipShape(Circle())
     }
 }
 
@@ -111,7 +113,6 @@ public enum TokenType: String, CaseIterable {
     case maticOnPolygon = "Matic on Polygon"
     case usdcOnPolygon = "USD Coin on Polygon"
     case usdtOnPolygon = "Tether on Polygon"
-
 
     var network: EthNode {
         switch self {
@@ -228,11 +229,7 @@ public enum TokenType: String, CaseIterable {
     }
 
     var ethLogo: some View {
-        Image("ethLogo")
-            .resizable()
-            .scaledToFit()
-            .frame(width: 24, height: 24)
-            .padding(4)
+        Currency.ETH.logo
     }
 
     var polygonLogo: some View {

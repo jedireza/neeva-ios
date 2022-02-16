@@ -117,12 +117,16 @@ class Web3Model: ObservableObject, ResponseRelay {
     private var selectedTabSubscription: AnyCancellable? = nil
     private var urlSubscription: AnyCancellable? = nil
     private var walletConnectSubscription: AnyCancellable? = nil
+    private let closeTab: (Tab) -> Void
 
     init(server: Server?, presenter: WalletConnectPresenter, tabManager: TabManager) {
         self.server = server
         self.presenter = presenter
+        self.closeTab = { tab in
+            tabManager.close(tab)
+        }
         self.currentSession =
-            server?.openSessions().first(where: {
+            allSavedSessions.first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
                     == tabManager.selectedTab?.url?.baseDomain
             })
@@ -147,6 +151,13 @@ class Web3Model: ObservableObject, ResponseRelay {
                 }
             }
         }
+    }
+
+    var allSavedSessions: [Session] {
+        let decoder = JSONDecoder()
+        return Defaults[.sessionsPeerIDs].compactMap { Defaults[.dAppsSession($0)] }.map {
+            try? decoder.decode(Session.self, from: $0)
+        }.compactMap { $0 }
     }
 
     func updateBalances() {
@@ -186,14 +197,22 @@ class Web3Model: ObservableObject, ResponseRelay {
 
         DispatchQueue.main.async {
             self.currentSession =
-                self.server?.openSessions().first(where: {
+                self.allSavedSessions.first(where: {
                     $0.dAppInfo.peerMeta.url.baseDomain == url?.baseDomain
                 })
+            if let session = self.currentSession, let server = self.server,
+                !(server.openSessions().contains(where: {
+                    session.dAppInfo.peerId == $0.dAppInfo.peerId
+                }))
+            {
+                try? self.server?.reconnect(to: session)
+            }
         }
     }
 
     func checkForMaliciousContent(domain: String) {
-        if !showingMaliciousSiteWarning, alternateTrustedDomain != nil || trustSignal == .malicious
+        if let tab = self.selectedTab, !showingMaliciousSiteWarning,
+            alternateTrustedDomain != nil || trustSignal == .malicious
         {
             showingMaliciousSiteWarning = true
             presenter.showModal(
@@ -201,7 +220,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 headerButton: nil,
                 content: {
                     MaliciousSiteView(
-                        iconURL: self.selectedTab?.favicon?.url,
+                        iconURL: tab.favicon?.url,
                         domain: domain,
                         trustSignal: self.trustSignal,
                         alternativeDomain: self.alternateTrustedDomain,
@@ -210,7 +229,8 @@ class Web3Model: ObservableObject, ResponseRelay {
                                 URLRequest(
                                     url: URL(
                                         string: "https://\(self.alternateTrustedDomain ?? "")")!))
-                        }, closeTab: {}
+                        },
+                        closeTab: { self.closeTab(tab) }
                     )
                     .overlayIsFixedHeight(isFixedHeight: true)
                 }, onDismiss: { self.reset() })
@@ -306,12 +326,22 @@ class Web3Model: ObservableObject, ResponseRelay {
             accounts: walletInfo.accounts,
             chainId: chain.id, peerId: walletInfo.peerId,
             peerMeta: walletInfo.peerMeta)
-        try? server?.updateSession(session, with: info)
+
         var updatedSession = session
         updatedSession.walletInfo = info
         Defaults[.dAppsSession(updatedSession.dAppInfo.peerId)] =
             try! JSONEncoder().encode(updatedSession)
         Defaults[.sessionsPeerIDs].insert(updatedSession.dAppInfo.peerId)
+
+        if let server = server,
+            server.openSessions().contains(where: { session.dAppInfo.peerId == $0.dAppInfo.peerId })
+        {
+            try? server.updateSession(session, with: info)
+            try? server.reconnect(to: updatedSession)
+            if updatedSession.dAppInfo.peerId == currentSession?.dAppInfo.peerId {
+                currentSession = updatedSession
+            }
+        }
     }
 
     func send(_ response: Response) {
@@ -325,7 +355,7 @@ class Web3Model: ObservableObject, ResponseRelay {
         transact: @escaping (EthNode) -> String
     ) {
         guard
-            let session = server?.openSessions().first(where: {
+            let session = allSavedSessions.first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
                     == currentSession?.dAppInfo.peerMeta.url.baseDomain
             }), let walletInfo = session.walletInfo
@@ -364,7 +394,7 @@ class Web3Model: ObservableObject, ResponseRelay {
 
     func askToSign(request: Request, message: String, sign: @escaping (EthNode) -> String) {
         guard
-            let session = server?.openSessions().first(where: {
+            let session = allSavedSessions.first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
                     == currentSession?.dAppInfo.peerMeta.url.baseDomain
             }), let walletInfo = session.walletInfo

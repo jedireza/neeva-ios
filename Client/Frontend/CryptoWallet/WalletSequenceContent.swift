@@ -65,7 +65,7 @@ struct WalletSequenceContent: View {
                                 sequence: sequence,
                                 trusted: model.trustSignal == .trusted,
                                 userSelectedChain: $userSelectedChain
-                            )
+                            ).frame(maxWidth: .infinity, alignment: .center)
                         }
                     }
                     .padding(12)
@@ -169,6 +169,7 @@ struct DefaultHeader: View {
             Text(sequence.message)
                 .withFont(.bodyLarge)
                 .foregroundColor(.label)
+                .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
         }
     }
@@ -275,7 +276,7 @@ struct MaliciousSiteView: View {
                     trusted: false
                 )
                 if let trustedDomain = alternativeDomain {
-                    (Text("This site has a similar address to a verified site ")
+                    (Text("This site has a similar address to the verified site ")
                         + Text(trustedDomain).bold())
                     Text(
                         "Using a popular domain and a different extension is a pattern commonly used by malicious websites."
@@ -318,7 +319,7 @@ struct MaliciousSiteView: View {
                         hideOverlaySheet()
                     },
                     label: {
-                        Text("Close")
+                        Text("Close Tab")
                             .frame(maxWidth: .infinity)
                     }
                 ).buttonStyle(.wallet(.secondary))
@@ -439,11 +440,14 @@ struct WalletSequenceBottomInfoPanel: View {
                 options: sequence.options!
             )
         default:
-            Text(wallet.publicAddress)
-                .withFont(.labelLarge)
-                .lineLimit(1)
-                .foregroundColor(.label)
-                .frame(maxWidth: 150, alignment: .leading)
+            HStack(spacing: 8) {
+                Circle().fill(WalletTheme.gradient).frame(width: 22, height: 22)
+                Text(wallet.publicAddress)
+                    .withFont(.labelLarge)
+                    .lineLimit(1)
+                    .foregroundColor(.label)
+                    .frame(maxWidth: 100, alignment: .leading)
+            }
         }
     }
 

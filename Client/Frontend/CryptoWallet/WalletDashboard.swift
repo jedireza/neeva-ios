@@ -28,7 +28,7 @@ struct WalletDashboard: View {
     @EnvironmentObject var model: Web3Model
 
     @State var showBalances: Bool = true
-    @State var showSessions: Bool = false
+    @State var showSessions: Bool = true
     @State var showSendForm: Bool = false
     @State var showConfirmDisconnectAlert = false
     @State var showConfirmRemoveWalletAlert = false
@@ -227,7 +227,7 @@ struct WalletDashboard: View {
     var openSessionsSection: some View {
         Section(
             content: {
-                ForEach(model.server?.openSessions() ?? [], id: \.url) { session in
+                ForEach(model.allSavedSessions, id: \.url) { session in
                     if showSessions, let domain = session.dAppInfo.peerMeta.url.baseDomain,
                         savedSessions.contains(session.dAppInfo.peerId)
                     {
@@ -266,7 +266,7 @@ struct WalletDashboard: View {
                 }
             },
             header: {
-                if !(model.server?.openSessions() ?? []).isEmpty {
+                if !model.allSavedSessions.isEmpty {
                     HStack {
                         Text("Connected Sites")
                             .withFont(.headingMedium)
@@ -299,8 +299,8 @@ struct WalletDashboard: View {
                         Defaults[.cryptoPhrases] = ""
                         Defaults[.cryptoPublicKey] = ""
                         Defaults[.cryptoPrivateKey] = ""
-                        model.server?.openSessions().forEach {
-                            Defaults[.dAppsSession($0.dAppInfo.peerId)] = nil
+                        Defaults[.sessionsPeerIDs].forEach {
+                            Defaults[.dAppsSession($0)] = nil
                         }
                         Defaults[.sessionsPeerIDs] = Set<String>()
                         model.wallet = WalletAccessor()
@@ -351,8 +351,10 @@ struct WalletDashboard: View {
             .modifier(WalletListStyleModifier())
             .padding(.horizontal, 25)
             .padding(.bottom, 72)
+            .background(Color.DefaultBackground)
             .navigationBarHidden(true)
-        }.navigationViewStyle(.automatic)
+        }
+        .navigationViewStyle(.automatic)
     }
 
     func onScanComplete() {

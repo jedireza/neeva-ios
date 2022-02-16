@@ -14,13 +14,12 @@ struct CollectionStatView: View {
 
     var body: some View {
         VStack(spacing: 6) {
+            Text(statName)
+                .withFont(.headingSmall)
+                .foregroundColor(.label)
             if inEth {
                 HStack(spacing: 0) {
-                    Image("ethLogo")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 16, height: 16)
-                    Text(statAmount)
+                    Text("\(statAmount) ETH")
                         .withFont(.labelLarge)
                         .foregroundColor(.label)
                 }
@@ -29,9 +28,6 @@ struct CollectionStatView: View {
                     .withFont(.labelLarge)
                     .foregroundColor(.label)
             }
-            Text(statName)
-                .withFont(.headingSmall)
-                .foregroundColor(.label)
         }
     }
 }
@@ -141,7 +137,7 @@ struct CompactStatsView: View {
                 statName: "Owners", statAmount: String(stats.numOwners),
                 inEth: false)
             CollectionStatView(
-                statName: "Floor",
+                statName: "Floor Price",
                 statAmount: String(format: "%.2f", stats.floorPrice ?? 0),
                 inEth: true)
             CollectionStatView(

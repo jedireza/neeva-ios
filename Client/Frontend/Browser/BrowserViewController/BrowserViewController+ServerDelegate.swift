@@ -39,13 +39,6 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
         server!.register(handler: PersonalSignHandler(relay: self.web3Model))
         server!.register(handler: SendTransactionHandler(relay: self.web3Model))
         web3Model.updateCurrentSession()
-        for session in Defaults[.sessionsPeerIDs] {
-            if let oldSessionObject = Defaults[.dAppsSession(session)],
-                let session = try? JSONDecoder().decode(Session.self, from: oldSessionObject)
-            {
-                try? server!.reconnect(to: session)
-            }
-        }
     }
 
     func server(_ server: Server, didFailToConnect url: WCURL) {
