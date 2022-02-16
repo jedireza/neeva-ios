@@ -118,7 +118,7 @@ struct ExpandedCardGroupRowView: View {
             HStack(spacing: CardGridUX.GridSpacing) {
                 ForEach(Array(zip(range, groupDetails.allDetails[range])), id: \.1.id) {
                     index, childTabDetail in
-                    FittedCard(details: childTabDetail, dragToClose: true)
+                    FittedCard(details: childTabDetail)
                         .modifier(
                             CardTransitionModifier(
                                 details: childTabDetail,

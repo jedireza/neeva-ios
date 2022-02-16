@@ -146,7 +146,7 @@ extension EnvironmentValues {
 /// A card that constrains itself to the default height and provided width.
 struct FittedCard<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
-    var dragToClose: Bool = true
+    var dragToClose: Bool = FeatureFlag[.swipeToCloseTabs]
 
     @Environment(\.cardSize) private var cardSize
     @Environment(\.aspectRatio) private var aspectRatio
@@ -160,7 +160,7 @@ struct FittedCard<Details>: View where Details: CardDetails {
 /// A flexible card that takes up as much space as it is allotted.
 struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
-    var dragToClose = true
+    var dragToClose = false
     /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
     var animate = false
