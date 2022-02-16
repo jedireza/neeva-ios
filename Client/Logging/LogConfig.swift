@@ -293,8 +293,13 @@ public struct LogConfig {
         case OpenLinkFromCheatsheet
 
         // MARK: tab group
-        case tabGroupClicked
-        case tabGroupClosed
+        case tabGroupExpanded
+        case tabGroupCollapsed
+        case tabGroupRenameThroughThreeDotMenu
+        case tabGroupDeleteThroughThreeDotMenu
+        case tabGroupLongPressMenuClicked
+        case tabGroupRemaneThroughLongPressMenu
+        case tabGroupDeleteThroughLongPressMenu
         case tabInTabGroupClicked
         case tabRemovedFromGroup
 
@@ -543,8 +548,13 @@ public struct LogConfig {
         case .CheatsheetEmpty: return .Cheatsheet
         case .OpenLinkFromCheatsheet: return .Cheatsheet
 
-        case .tabGroupClicked: return .TabGroup
-        case .tabGroupClosed: return .TabGroup
+        case .tabGroupExpanded: return .TabGroup
+        case .tabGroupCollapsed: return .TabGroup
+        case .tabGroupRenameThroughThreeDotMenu: return .TabGroup
+        case .tabGroupDeleteThroughThreeDotMenu: return .TabGroup
+        case .tabGroupLongPressMenuClicked: return .TabGroup
+        case .tabGroupRemaneThroughLongPressMenu: return .TabGroup
+        case .tabGroupDeleteThroughLongPressMenu: return .TabGroup
         case .tabInTabGroupClicked: return .TabGroup
         case .tabRemovedFromGroup: return .TabGroup
 
@@ -563,6 +573,10 @@ public struct LogConfig {
         public static let NormalTabsOpened = "NormalTabsOpened"
         /// Number of incognito tabs opened
         public static let PrivateTabsOpened = "PrivateTabsOpened"
+        /// Number of tab groups in total
+        public static let numTabGroupsTotal = "NumTabGroupsTotal"
+        /// Number of tabs inside all the tab groups
+        public static let numChildTabsTotal = "NumChildTabsTotal"
         /// User theme setting, i.e dark, light
         public static let UserInterfaceStyle = "UserInterfaceStyle"
         /// Device orientation, i.e. portrait, landscape
@@ -644,6 +658,7 @@ public struct LogConfig {
 
     public struct TabsAttribute {
         public static let selectedTabIndex = "SelectedTabIndex"
+        public static let selectedTabRow = "SelectedTabRow"
     }
 
     public struct NotificationAttribute {
@@ -661,9 +676,10 @@ public struct LogConfig {
     }
 
     public struct TabGroupAttribute {
-        public static let numTabsRemoved = "NumTabsRemoved"
-        public static let numTabGroupsTotal = "NumTabGroupsTotal"
         public static let numTabsInTabGroup = "NumTabsInTabGroup"
+        public static let TabGroupRowIndex = "SelectedTabGroupRowIndex"
+        public static let isExpanded = "IsExpanded"
+        public static let selectedChildTabIndex = "SelectedChildTabIndex"
     }
 
     public struct DeeplinkAttribute {

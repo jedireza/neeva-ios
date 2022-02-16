@@ -88,6 +88,7 @@ class TabCardModel: CardModel {
             }
         }
         var cells: [Cell]
+        var index: Int?
     }
 
     func buildRows(incognito: Bool, tabGroupModel: TabGroupCardModel, maxCols: Int) -> [Row] {
@@ -103,7 +104,7 @@ class TabCardModel: CardModel {
             }
         }
 
-        return allDetails.filter { tabCard in
+        var rowList = allDetails.filter { tabCard in
             let tab = tabCard.manager.get(for: tabCard.id)!
             return
                 (tabGroupModel.representativeTabs.contains(tab)
@@ -134,7 +135,13 @@ class TabCardModel: CardModel {
             } else {
                 partialResult[partialResult.endIndex - 1].cells.append(.tab(details))
             }
-        }.filter { !$0.cells.isEmpty }
+        }.filter { !($0 as Row).cells.isEmpty }
+
+        for id in 0..<rowList.count {
+            rowList[id].index = id + 1
+        }
+
+        return rowList
     }
 
     func onDataUpdated() {

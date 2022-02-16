@@ -61,6 +61,13 @@ public class EnvironmentHelper {
             numOfPrivateTabs += tabManager.incognitoTabs.count
         }
 
+        var numOfChildTabs = 0
+        var numOfTabGroups = 0
+        TabGroupManager.all.forEach { tabGroupManager in
+            numOfTabGroups += tabGroupManager.tabGroups.count
+            numOfChildTabs += tabGroupManager.childTabs.count
+        }
+
         // number of normal tabs opened
         let normalTabsOpened = ClientLogCounterAttribute(
             key: LogConfig.Attribute.NormalTabsOpened,
@@ -70,6 +77,18 @@ public class EnvironmentHelper {
         let privateTabsOpened = ClientLogCounterAttribute(
             key: LogConfig.Attribute.PrivateTabsOpened,
             value: String(numOfPrivateTabs))
+        
+        // number of tab groups
+        let numTabGroupsTotal = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.numTabGroupsTotal,
+            value: String(numOfTabGroups)
+        )
+
+        // number of tabs inside tab groups
+        let numChildTabsTotal = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.numChildTabsTotal,
+            value: String(numOfChildTabs)
+        )
 
         // user theme setting
         let deviceTheme = ClientLogCounterAttribute(
@@ -89,7 +108,7 @@ public class EnvironmentHelper {
             value: String(NeevaUserInfo.shared.hasLoginCookie()))
 
         let attributes = [
-            normalTabsOpened, privateTabsOpened, deviceTheme, deviceOrientation,
+            normalTabsOpened, privateTabsOpened, numTabGroupsTotal, numChildTabsTotal, deviceTheme, deviceOrientation,
             deviceScreensSize, isUserSignedIn, getSessionUUID(),
         ]
         return attributes

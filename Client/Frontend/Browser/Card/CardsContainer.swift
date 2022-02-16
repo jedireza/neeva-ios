@@ -31,7 +31,6 @@ struct TabGridContainer: View {
     @EnvironmentObject private var tabModel: TabCardModel
     @EnvironmentObject private var tabGroupModel: TabGroupCardModel
     @EnvironmentObject private var gridModel: GridModel
-    @EnvironmentObject private var browserModel: BrowserModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -65,16 +64,6 @@ struct TabGridContainer: View {
             }
         }
         .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-        .environment(\.selectionCompletion) {
-            ClientLogger.shared.logCounter(
-                .SelectTab,
-                attributes: getLogCounterAttributesForTabs(
-                    selectedTabIndex: tabModel.allDetails.firstIndex(
-                        where: {
-                            $0.id == tabModel.selectedTabID
-                        })))
-            browserModel.hideWithAnimation()
-        }
         .padding(.vertical, landscapeMode ? 8 : 16)
         .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
             if let selectedRowId = selectedRowId {
@@ -231,12 +220,12 @@ struct CardsContainer: View {
     }
 }
 
-func getLogCounterAttributesForTabs(selectedTabIndex: Int?) -> [ClientLogCounterAttribute] {
+func getLogCounterAttributesForTabs(selectedTabRow: Int?) -> [ClientLogCounterAttribute] {
     var attributes = EnvironmentHelper.shared.getAttributes()
     attributes.append(
         ClientLogCounterAttribute(
-            key: LogConfig.TabsAttribute.selectedTabIndex,
-            value: String(selectedTabIndex ?? 0)))
+            key: LogConfig.TabsAttribute.selectedTabRow,
+            value: String(selectedTabRow ?? 0)))
     return attributes
 }
 

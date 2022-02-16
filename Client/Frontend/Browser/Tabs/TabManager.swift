@@ -129,7 +129,6 @@ class TabManager: NSObject {
 
     init(profile: Profile, scene: UIScene, incognitoModel: IncognitoModel) {
         assert(Thread.isMainThread)
-
         self.profile = profile
         self.navDelegate = TabManagerNavDelegate()
         self.tabEventHandlers = TabEventHandlers.create()

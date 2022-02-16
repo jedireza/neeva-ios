@@ -8,6 +8,7 @@ import SwiftUI
 struct CollapsedCardGroupView: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
     let containerGeometry: GeometryProxy
+    let rowIndex: Int?
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
@@ -23,11 +24,11 @@ struct CollapsedCardGroupView: View {
             // Don't make it a scroll view if the tab group can't be expanded
             ExpandedCardGroupRowView(
                 groupDetails: groupDetails, containerGeometry: containerGeometry,
-                range: 0..<groupDetails.allDetails.count
+                range: 0..<groupDetails.allDetails.count, rowIndex: rowIndex
             )
         } else {
             VStack(spacing: 0) {
-                TabGroupHeader(groupDetails: groupDetails)
+                TabGroupHeader(groupDetails: groupDetails, rowIndex: rowIndex)
                 scrollView
             }
             .animation(nil)
@@ -50,7 +51,8 @@ struct CollapsedCardGroupView: View {
                 LazyHStack(
                     spacing: SingleLevelTabCardsViewUX.TabGroupCarouselTabSpacing
                 ) {
-                    ForEach(groupDetails.allDetails) { childTabDetail in
+                    ForEach(Array(groupDetails.allDetails.enumerated()), id: \.1.id) {
+                        index, childTabDetail in
                         FittedCard(details: childTabDetail, dragToClose: false)
                             .modifier(
                                 CardTransitionModifier(
@@ -58,6 +60,15 @@ struct CollapsedCardGroupView: View {
                                     containerGeometry: containerGeometry)
                             )
                             .id(childTabDetail.id)
+                            .environment(\.selectionCompletion) {
+                                ClientLogger.shared.logCounter(
+                                    .tabInTabGroupClicked,
+                                    attributes: getLogCounterAttributesForTabGroups(
+                                        TabGroupRowIndex: rowIndex, selectedChildTabIndex: index,
+                                        expanded: false, numTabs: groupDetails.allDetails.count))
+
+                                browserModel.hideWithAnimation()
+                            }
                     }
                 }
                 .padding(.horizontal, CardGridUX.GridSpacing)
@@ -87,6 +98,7 @@ struct ExpandedCardGroupRowView: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
     let containerGeometry: GeometryProxy
     var range: Range<Int>
+    let rowIndex: Int?
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
@@ -96,7 +108,7 @@ struct ExpandedCardGroupRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if isFirstRow(range) {
-                TabGroupHeader(groupDetails: groupDetails)
+                TabGroupHeader(groupDetails: groupDetails, rowIndex: rowIndex)
             } else {
                 HStack {
                     // Spacer to expand the width of the view
@@ -104,13 +116,23 @@ struct ExpandedCardGroupRowView: View {
                 }
             }
             HStack(spacing: CardGridUX.GridSpacing) {
-                ForEach(groupDetails.allDetails[range]) { childTabDetail in
+                ForEach(Array(zip(range, groupDetails.allDetails[range])), id: \.1.id) {
+                    index, childTabDetail in
                     FittedCard(details: childTabDetail, dragToClose: true)
                         .modifier(
                             CardTransitionModifier(
                                 details: childTabDetail,
                                 containerGeometry: containerGeometry)
                         )
+                        .environment(\.selectionCompletion) {
+
+                            ClientLogger.shared.logCounter(
+                                .tabInTabGroupClicked,
+                                attributes: getLogCounterAttributesForTabGroups(
+                                    TabGroupRowIndex: rowIndex, selectedChildTabIndex: index+1,
+                                    expanded: true, numTabs: groupDetails.allDetails.count))
+                            browserModel.hideWithAnimation()
+                        }
                 }
                 if isLastRowSingleTab(range, groupDetails) {
                     Spacer()
@@ -155,6 +177,7 @@ struct TabGroupHeader: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @Environment(\.columns) private var columns
+    let rowIndex: Int?
 
     @State private var renaming = false
     @State private var deleting = false
@@ -173,16 +196,28 @@ struct TabGroupHeader: View {
                     Text("\(groupDetails.allDetails.count) Tabs")
                 }
 
-                Button(action: { renaming = true }) {
+                Button(action: {
+                    ClientLogger.shared.logCounter(.tabGroupRenameThroughThreeDotMenu)
+                    renaming = true
+                }) {
                     Label("Rename", systemSymbol: .pencil)
                 }
 
                 if #available(iOS 15.0, *) {
-                    Button(role: .destructive, action: { deleting = true }) {
+                    Button(
+                        role: .destructive,
+                        action: {
+                            ClientLogger.shared.logCounter(.tabGroupDeleteThroughThreeDotMenu)
+                            deleting = true
+                        }
+                    ) {
                         Label("Close All", systemSymbol: .trash)
                     }
                 } else {
-                    Button(action: { deleting = true }) {
+                    Button(action: {
+                        ClientLogger.shared.logCounter(.tabGroupDeleteThroughThreeDotMenu)
+                        deleting = true
+                    }) {
                         Label("Close All", systemSymbol: .trash)
                     }
                 }
@@ -198,6 +233,19 @@ struct TabGroupHeader: View {
             Spacer()
             if groupDetails.allDetails.count > columns.count {
                 Button {
+                    if groupDetails.isExpanded {
+                        ClientLogger.shared.logCounter(
+                            .tabGroupCollapsed,
+                            attributes: getLogCounterAttributesForTabGroups(
+                                TabGroupRowIndex: rowIndex, selectedChildTabIndex: nil,
+                                expanded: nil, numTabs: groupDetails.allDetails.count))
+                    } else {
+                        ClientLogger.shared.logCounter(
+                            .tabGroupExpanded,
+                            attributes: getLogCounterAttributesForTabGroups(
+                                TabGroupRowIndex: rowIndex, selectedChildTabIndex: nil,
+                                expanded: nil, numTabs: groupDetails.allDetails.count))
+                    }
                     groupDetails.isExpanded.toggle()
                 } label: {
                     Label(
@@ -233,16 +281,28 @@ struct TabGroupHeader: View {
                 Text("\(groupDetails.allDetails.count) Tabs")
             }
 
-            Button(action: { renaming = true }) {
+            Button(action: {
+                ClientLogger.shared.logCounter(.tabGroupRemaneThroughLongPressMenu)
+                renaming = true
+            }) {
                 Label("Rename", systemSymbol: .pencil)
             }
 
             if #available(iOS 15.0, *) {
-                Button(role: .destructive, action: { deleting = true }) {
+                Button(
+                    role: .destructive,
+                    action: {
+                        ClientLogger.shared.logCounter(.tabGroupDeleteThroughLongPressMenu)
+                        deleting = true
+                    }
+                ) {
                     Label("Close All", systemSymbol: .trash)
                 }
             } else {
-                Button(action: { deleting = true }) {
+                Button(action: {
+                    ClientLogger.shared.logCounter(.tabGroupDeleteThroughLongPressMenu)
+                    deleting = true
+                }) {
                     Label("Close All", systemSymbol: .trash)
                 }
             }
@@ -280,4 +340,36 @@ struct TabGroupHeader: View {
             }
         }
     }
+}
+
+func getLogCounterAttributesForTabGroups(
+    TabGroupRowIndex: Int?, selectedChildTabIndex: Int?, expanded: Bool?, numTabs: Int
+) -> [ClientLogCounterAttribute] {
+    var attributes = EnvironmentHelper.shared.getAttributes()
+
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.TabGroupAttribute.TabGroupRowIndex, value: String(TabGroupRowIndex ?? -1)
+        )
+    )
+
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.TabGroupAttribute.selectedChildTabIndex,
+            value: String(selectedChildTabIndex ?? -1)
+
+        )
+    )
+    if let expanded = expanded {
+        attributes.append(
+            ClientLogCounterAttribute(
+                key: LogConfig.TabGroupAttribute.isExpanded, value: String(expanded))
+        )
+    }
+
+    attributes.append(
+        ClientLogCounterAttribute(
+            key: LogConfig.TabGroupAttribute.numTabsInTabGroup, value: String(numTabs))
+    )
+    return attributes
 }

@@ -251,6 +251,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             if isChild {
                 Button(
                     action: { [self] in
+                        ClientLogger.shared.logCounter(.tabRemovedFromGroup)
                         manager.get(for: id)?.rootUUID = UUID().uuidString
                         manager.tabsUpdatedPublisher.send()
                     },
@@ -598,7 +599,5 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
         if let item = manager.get(for: id) {
             manager.close(item)
         }
-
-        ClientLogger.shared.logCounter(.tabGroupClosed)
     }
 }

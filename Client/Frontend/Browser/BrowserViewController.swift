@@ -1108,17 +1108,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
         guard !browserModel.showGrid else { return }
 
         // log show tap tray
-        var attributes = EnvironmentHelper.shared.getAttributes()
-
-        attributes.append(
-            ClientLogCounterAttribute(
-                key: LogConfig.TabGroupAttribute.numTabGroupsTotal,
-                value: String(gridModel.tabGroupCardModel.allDetails.count)
-            )
-        )
-
         ClientLogger.shared.logCounter(
-            .ShowTabTray, attributes: attributes)
+            .ShowTabTray, attributes: EnvironmentHelper.shared.getAttributes())
 
         Sentry.shared.clearBreadcrumbs()
 
