@@ -260,6 +260,34 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                     }
                 )
             }
+
+            Divider()
+
+            if #available(iOS 15.0, *) {
+                Button(
+                    role: .destructive,
+                    action: { [self] in
+                        if let item = tab {
+                            manager.close(item)
+                        }
+                    },
+                    label: {
+                        Label("Close Tab", systemSymbol: .trash)
+                    }
+                )
+            } else {
+                Button(
+                    action: { [self] in
+                        if let item = tab {
+                            manager.close(item)
+                        }
+                    },
+                    label: {
+                        Label("Close Tab", systemSymbol: .trash)
+                    }
+                )
+            }
+
         }
     }
 }
