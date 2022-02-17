@@ -6,6 +6,11 @@ import Defaults
 import Shared
 import SwiftUI
 
+private func crash() {
+    let ptr = UnsafeMutablePointer<Int>(bitPattern: 1)
+    ptr?.pointee = 0
+}
+
 struct DebugSettingsSection: View {
     @Environment(\.onOpenURL) var openURL
     @Default(.enableGeigerCounter) var enableGeigerCounter
@@ -71,7 +76,7 @@ struct DebugSettingsSection: View {
                 }
 
                 Button(String("Force Crash App")) {
-                    Sentry.shared.crash()
+                    crash()
                 }
             }.accentColor(.red)
         }

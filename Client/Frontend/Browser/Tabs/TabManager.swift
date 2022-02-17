@@ -584,9 +584,7 @@ class TabManager: NSObject {
         assert(Thread.isMainThread)
 
         guard let removalIndex = tabs.firstIndex(where: { $0 === tab }) else {
-            Sentry.shared.sendWithStacktrace(
-                message: "Could not find index of tab to remove", tag: .tabManager,
-                severity: .fatal, description: "Tab count: \(count)")
+            log.error("Could not find index of tab to remove, tab count: \(count)")
             return
         }
 

@@ -5,6 +5,8 @@
 import Foundation
 import Shared
 
+private let log = Logger.browser
+
 // Struct that retrives saved tabs and simple tabs dictionary for WidgetKit
 struct SiteArchiver {
     static func tabsToRestore(tabsStateArchivePath: String?) -> [SavedTab]? {
@@ -37,9 +39,7 @@ struct SiteArchiver {
         unarchiver.decodingFailurePolicy = .setErrorAndReturn
 
         guard let oldRestoredTabs = unarchiver.decodeObject(forKey: "tabs") as? [SavedTab] else {
-            Sentry.shared.send(
-                message: "Failed to restore tabs", tag: .tabManager, severity: .error,
-                description: "\(unarchiver.error ??? "nil")")
+            log.error("Failed to restore tabs: \(unarchiver.error ??? "nil")")
             return nil
         }
 

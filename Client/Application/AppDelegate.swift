@@ -117,11 +117,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
             }
         }
 
-        // Need to get "settings.sendUsageData" this way so that Sentry can be initialized
-        // before getting the Profile.
-        let sendUsageData = false
-        Sentry.shared.setup(sendUsageData: sendUsageData)
-
         // Set the Neeva UA for browsing.
         setUserAgent()
 

@@ -6,6 +6,8 @@ import Foundation
 import Shared
 import WebKit
 
+private let log = Logger.browser
+
 /// Handles screenshots for a given tab, including pages with non-webview content.
 class ScreenshotHelper {
     var viewIsVisible = false
@@ -25,9 +27,7 @@ class ScreenshotHelper {
     /// If taking a screenshot of a website, uses apple's `takeSnapshot` function
     func takeScreenshot(_ tab: Tab) {
         guard let webView = tab.webView else {
-            Sentry.shared.send(
-                message: "Tab Snapshot Error", tag: .tabManager, severity: .debug,
-                description: "Tab webView or url is nil")
+            log.error("Tab Snapshot Error: webView is nil")
             return
         }
 
@@ -45,13 +45,9 @@ class ScreenshotHelper {
                     self.controller?.tabContainerModel.tabCardModel.onDataUpdated()
                 }
             } else if let error = error {
-                Sentry.shared.send(
-                    message: "Tab snapshot error", tag: .tabManager, severity: .debug,
-                    description: error.localizedDescription)
+                log.error("Tab snapshot error: \(error.localizedDescription)")
             } else {
-                Sentry.shared.send(
-                    message: "Tab snapshot error", tag: .tabManager, severity: .debug,
-                    description: "No error description")
+                log.error("Tab snapshot error: bad image!?")
             }
         }
     }

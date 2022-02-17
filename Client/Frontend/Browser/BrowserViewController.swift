@@ -1111,8 +1111,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
         ClientLogger.shared.logCounter(
             .ShowTabTray, attributes: EnvironmentHelper.shared.getAttributes())
 
-        Sentry.shared.clearBreadcrumbs()
-
         updateFindInPageVisibility(visible: false)
 
         if zeroQueryModel.isLazyTab {
