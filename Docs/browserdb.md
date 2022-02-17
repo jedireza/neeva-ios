@@ -2,8 +2,8 @@
 
 * Launch Neeva.
 * Open Settings.
-* Scroll down to "Version" and tap it several times.
-* Scroll down and hit "Debug: copy databases to app container".
+* Scroll down to "Neeva Browser $version", tap it once and choose "Toggle Debug Settings".
+* Scroll down and hit "Copy Databases to App Container".
 * Connect your device via USB.
 * Open Xcode.
 * Window > Devices. Choose your device.
