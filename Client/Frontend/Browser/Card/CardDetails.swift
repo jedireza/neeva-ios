@@ -623,9 +623,9 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
         isShowingDetails = true
     }
 
-    func onClose() {
+    func onClose(showToast: Bool) {
         if let item = manager.get(for: id) {
-            manager.close(item)
+            manager.close(item, showToast: showToast)
         }
     }
 }

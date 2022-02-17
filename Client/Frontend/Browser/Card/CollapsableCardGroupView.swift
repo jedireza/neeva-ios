@@ -324,7 +324,7 @@ struct TabGroupHeader: View {
         .actionSheet(isPresented: $deleting) {
             let buttons: [ActionSheet.Button] = [
                 .destructive(Text("Close All")) {
-                    groupDetails.onClose()
+                    groupDetails.onClose(showToast: false)
                 },
                 .cancel(),
             ]

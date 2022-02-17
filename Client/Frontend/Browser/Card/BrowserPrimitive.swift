@@ -374,7 +374,11 @@ class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
     }
 
     func close(_ item: TabGroup) {
-        item.children.forEach { tabManager.close($0) }
+        tabManager.removeTabs(item.children)
+    }
+
+    func close(_ item: TabGroup, showToast: Bool) {
+        tabManager.removeTabs(item.children, showToast: showToast)
     }
 
     func cleanUpTabGroupNames() {
