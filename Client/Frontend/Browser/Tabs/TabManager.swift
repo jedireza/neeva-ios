@@ -190,19 +190,25 @@ class TabManager: NSObject {
 
         for tab in tabs.filter({ $0.isIncognito == self.isIncognito }) {
             if let webView = tab.webView {
-                if let currentUrl = webView.url, url.equals(currentUrl, with: options) {
-                    return tab
+                if let currentUrl = webView.url {
+                    log.info("Checking webView.url: \(currentUrl)")
+                    if url.equals(currentUrl, with: options) {
+                        return tab
+                    }
                 }
             } else if let sessionUrl = tab.sessionData?.currentUrl {  // Match zombie tabs
+                log.info("Checking sessionUrl: \(sessionUrl)")
                 if url.equals(sessionUrl, with: options) {
                     return tab
                 }
 
                 if let internalUrl = InternalURL(sessionUrl), internalUrl.isSessionRestore,
-                    let extractedUrlParam = internalUrl.extractedUrlParam,
-                    url.equals(extractedUrlParam, with: options)
+                    let extractedUrlParam = internalUrl.extractedUrlParam
                 {
-                    return tab
+                    log.info("Checking extractedUrlParam: \(extractedUrlParam)")
+                    if url.equals(extractedUrlParam, with: options) {
+                        return tab
+                    }
                 }
             }
         }
