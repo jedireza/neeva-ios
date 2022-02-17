@@ -118,7 +118,7 @@ struct CheatsheetInfoView: View {
                 .layoutPriority(1)
             }
             Group {
-                Spacer(minLength: 0)
+                Spacer(minLength: 10)
                 // hide the image on small iPhones in landscape
                 if horizontalSizeClass == .regular || verticalSizeClass == .regular {
                     Image("cheatsheet", bundle: .main)
