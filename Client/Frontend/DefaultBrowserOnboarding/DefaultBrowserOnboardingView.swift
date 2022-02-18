@@ -6,12 +6,6 @@ import Defaults
 import Shared
 import SwiftUI
 
-public enum OpenSysSettingTrigger: String {
-    case defaultBrowserPrompt
-    case defaultBrowserPromoCard
-    case settings
-}
-
 class DefaultBrowserOnboardingViewController: UIHostingController<
     DefaultBrowserOnboardingViewController.Content
 >
@@ -40,8 +34,10 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
         self.rootView = Content(
             openSettings: { [weak self] in
                 self?.dismiss(animated: true) {
-                    UIApplication.shared.open(
-                        URL(string: UIApplication.openSettingsURLString)!, options: [:])
+                    UIApplication.shared.openSettings(
+                        triggerFrom: triggerFrom,
+                        sourceView: String(describing: DefaultBrowserOnboardingView.self)
+                    )
                     didOpenSettings()
                 }
                 // Don't show default browser card if this button is tapped
@@ -101,19 +97,6 @@ struct DefaultBrowserOnboardingView: View {
             Spacer().repeated(3)
 
             Button(action: {
-                ClientLogger.shared.logCounter(
-                    .GoToSysAppSettings,
-                    attributes: EnvironmentHelper.shared.getAttributes() + [
-                        ClientLogCounterAttribute(
-                            key: LogConfig.UIInteractionAttribute.openSysSettingSourceView,
-                            value: String(describing: DefaultBrowserOnboardingView.self)
-                        ),
-                        ClientLogCounterAttribute(
-                            key: LogConfig.UIInteractionAttribute.openSysSettingTriggerFrom,
-                            value: triggerFrom.rawValue
-                        ),
-                    ]
-                )
                 openSettings()
             }) {
                 HStack {

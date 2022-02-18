@@ -1023,13 +1023,15 @@ extension BrowserViewController: WKNavigationDelegate {
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 
-                if !Defaults[.loggedDefaultBrowserExperiment]
+                if shouldLogDBPrompt
                     && userInfo.hasLoginCookie()
                 {
                     ClientLogger.shared.logCounter(
                         .DefaultBrowserInterstitialImp
                     )
+                    NeevaExperiment.logStartExperiment(for: .defaultBrowserSkipEducation)
                     Defaults[.loggedDefaultBrowserExperiment] = true
+                    shouldLogDBPrompt = false
                 }
 
                 if let interactionStr = Defaults[.lastDefaultBrowserPromptInteraction],

@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import Defaults
-import Foundation
 
 public protocol ExperimentArms: Hashable, CaseIterable, RawRepresentable
 where RawValue == String, AllCases: RandomAccessCollection {}
@@ -73,9 +72,17 @@ extension NeevaExperiment {
     //        case showDBPrompt
     //    }
 
+    public enum DefaultBrowserSkipEducation: String, ExperimentArms {
+        case control
+        case skipEducation
+    }
 }
 
 // Experiment Example */
 //extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserV2 {
 //public static let defaultBrowserPromptV2 = Self()
 //}
+
+extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserSkipEducation {
+    public static let defaultBrowserSkipEducation = Self()
+}

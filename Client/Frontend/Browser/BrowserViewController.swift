@@ -35,6 +35,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     private(set) var locationModel = LocationViewModel()
 
     private var shouldPresentDBPrompt = false
+    var shouldLogDBPrompt = false
 
     lazy var readerModeModel: ReaderModeModel = {
         let model = ReaderModeModel(
@@ -1642,6 +1643,7 @@ extension BrowserViewController {
                             && !Defaults[.didShowDefaultBrowserInterstitial]
                         {
                             self.shouldPresentDBPrompt = true
+                            self.shouldLogDBPrompt = true
                         }
                     }
 
@@ -1672,6 +1674,8 @@ extension BrowserViewController {
     private func presentDBPromptView() {
         self.shouldPresentDBPrompt = false
 
+        let arm = NeevaExperiment.startExperiment(for: .defaultBrowserSkipEducation)
+
         self.overlayManager.presentFullScreenModal(
             content: AnyView(
                 DefaultBrowserPromptView {
@@ -1679,10 +1683,15 @@ extension BrowserViewController {
                 } buttonAction: {
                     self.overlayManager.hideCurrentOverlay()
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        self.presentDBOnboardingViewController(
-                            modalTransitionStyle: .crossDissolve, triggerFrom: .defaultBrowserPrompt
-                        )
+                    if arm == .skipEducation {
+                        UIApplication.shared.openSettings(triggerFrom: .defaultBrowserPromptDirect)
+                    } else {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            self.presentDBOnboardingViewController(
+                                modalTransitionStyle: .crossDissolve,
+                                triggerFrom: .defaultBrowserPrompt
+                            )
+                        }
                     }
                 }
             )

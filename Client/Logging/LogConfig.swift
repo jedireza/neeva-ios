@@ -184,6 +184,8 @@ public struct LogConfig {
         case PreviewHomeSignin
         /// Default browser interstitial impression
         case DefaultBrowserInterstitialImp
+        /// Start an experiment
+        case StartExperiment
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -463,6 +465,7 @@ public struct LogConfig {
         case .DefaultBrowserPromptSkip: return .FirstRun
         case .DefaultBrowserPromptOpen: return .FirstRun
         case .DefaultBrowserInterstitialImp: return .FirstRun
+        case .StartExperiment: return .FirstRun
 
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
@@ -648,7 +651,11 @@ public struct LogConfig {
 
     public struct PromoCardAttribute {
         public static let promoCardType = "promoCardType"
-        public static let defaultBrowserPromptExperimentArm = "defaultBrowserPromptExperimentArm"
+    }
+
+    public struct ExperimentAttribute {
+        public static let experiment = "Experiment"
+        public static let experimentArm = "ExperimentArm"
     }
 
     public struct CheatsheetAttribute {

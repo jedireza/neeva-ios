@@ -28,6 +28,11 @@ struct ExperimentSettingsView: View {
                 //    value: $valueText,
                 //    experiment: .defaultBrowserPromptV2
                 //)
+                OptionalPrefilledStringField<NeevaExperiment.DefaultBrowserSkipEducation>(
+                    "DefaultBrowserSkipEducation",
+                    value: $valueText,
+                    experiment: .defaultBrowserSkipEducation
+                )
             }
         }
         .listStyle(.insetGrouped)
