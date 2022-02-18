@@ -220,7 +220,6 @@ class Web3Model: ObservableObject, ResponseRelay {
                 headerButton: nil,
                 content: {
                     MaliciousSiteView(
-                        iconURL: tab.favicon?.url,
                         domain: domain,
                         trustSignal: self.trustSignal,
                         alternativeDomain: self.alternateTrustedDomain,
@@ -306,15 +305,15 @@ class Web3Model: ObservableObject, ResponseRelay {
 
     func showWalletPanel() {
         updateBalances()
-        presenter.showModal(
-            style: .spaces,
-            headerButton: nil,
-            content: {
-                CryptoWalletView()
+        presenter.presentFullScreenModal(
+            content: AnyView(
+                CryptoWalletView(dismiss: { self.presenter.dismissCurrentOverlay() })
                     .environmentObject(self)
                     .overlayIsFixedHeight(isFixedHeight: true)
-
-            }, onDismiss: { self.reset() })
+                    .onDisappear {
+                        self.reset()
+                    }
+            ), completion: nil)
     }
 
     func toggle(session: Session, to chain: EthNode) {
@@ -342,6 +341,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 currentSession = updatedSession
             }
         }
+        objectWillChange.send()
     }
 
     func send(_ response: Response) {

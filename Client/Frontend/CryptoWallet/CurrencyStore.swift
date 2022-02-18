@@ -27,11 +27,10 @@ enum Currency: String, CaseIterable, Codable {
     }
 
     var logo: some View {
-        Image(self == .WETH ? "eth" : self.rawValue.lowercased())
+        Image(self.rawValue.lowercased())
             .resizable()
             .scaledToFit()
-            .frame(width: 24, height: 24)
-            .padding(4)
+            .frame(width: 28, height: 28)
             .background(Color.white)
             .clipShape(Circle())
     }
@@ -211,13 +210,12 @@ public enum TokenType: String, CaseIterable {
         case .Polygon:
             if #available(iOS 15.0, *) {
                 currency.logo
-                    .background(Circle().stroke(Color.ui.gray80))
                     .overlay {
                         Image("polygon-badge")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 14, height: 14)
-                            .offset(x: -12, y: 12)
+                            .offset(x: -9, y: 9)
                     }
             } else {
                 currency.logo
@@ -229,14 +227,18 @@ public enum TokenType: String, CaseIterable {
     }
 
     var ethLogo: some View {
-        Currency.ETH.logo
+        Image("ethLogo")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 20, height: 20)
+            .padding(4)
     }
 
     var polygonLogo: some View {
         Image("polygon-badge")
             .resizable()
             .scaledToFit()
-            .frame(width: 24, height: 24)
+            .frame(width: 20, height: 20)
             .padding(4)
     }
 }

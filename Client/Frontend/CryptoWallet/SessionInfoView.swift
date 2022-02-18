@@ -10,52 +10,55 @@ import SwiftUI
 import WalletConnectSwift
 
 struct SessionInfoView: View {
+    @Environment(\.hideOverlay) private var hideOverlaySheet
     @EnvironmentObject var web3Model: Web3Model
 
-    let dAppSession: Session
-    @Binding var showdAppSessionControls: Bool
+    let session: Session
+
+    var sequence: SequenceInfo {
+        SequenceInfo(
+            type: .sessionRequest,
+            thumbnailURL: session.dAppInfo.peerMeta.icons.first ?? .aboutBlank,
+            dAppMeta: session.dAppInfo.peerMeta,
+            chain: EthNode.from(chainID: session.walletInfo?.chainId),
+            message: session.dAppInfo.peerMeta.description ?? "",
+            onAccept: { _ in },
+            onReject: {}
+        )
+    }
+
+    var chain: EthNode {
+        EthNode.from(chainID: session.walletInfo?.chainId)
+    }
 
     var body: some View {
-        VStack {
+        VStack(spacing: 36) {
             if let matchingCollection = web3Model.matchingCollection {
                 CollectionView(collection: matchingCollection)
+                    .background(WalletTheme.gradient.opacity(0.08))
+                    .cornerRadius(16)
             } else {
-                VStack {
-                    HStack(alignment: .center, spacing: 8) {
-                        WebImage(url: dAppSession.dAppInfo.peerMeta.icons.first)
-                            .resizable()
-                            .placeholder {
-                                Color.secondarySystemFill
-                            }
-                            .transition(.opacity)
-                            .scaledToFit()
-                            .frame(width: 36, height: 36)
-                            .cornerRadius(8)
-                        Text(
-                            dAppSession.dAppInfo.peerMeta.url.baseDomain ?? ""
-                        )
-                        .withFont(.labelLarge)
-                        .foregroundColor(.ui.adaptive.blue)
-                    }
-                    if let description = dAppSession.dAppInfo.peerMeta.description {
-                        Text(description)
-                            .withFont(.bodyLarge)
-                            .foregroundColor(.secondaryLabel)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
+                VStack(spacing: 8) {
+                    DefaultHeader(
+                        sequence: sequence,
+                        trusted: web3Model.trustSignal == .trusted,
+                        userSelectedChain: .constant(chain)
+                    )
                 }
                 .padding(16)
-                .frame(minHeight: 300)
+                .frame(maxWidth: .infinity)
+                .background(WalletTheme.gradient.opacity(0.08))
+                .cornerRadius(16)
             }
             VStack(spacing: 8) {
                 HStack(spacing: 12) {
                     Button(action: {
                         DispatchQueue.global(qos: .userInitiated).async {
-                            try? web3Model.server?.disconnect(from: dAppSession)
+                            try? web3Model.server?.disconnect(from: session)
                         }
-                        Defaults[.dAppsSession(dAppSession.dAppInfo.peerId)] = nil
-                        Defaults[.sessionsPeerIDs].remove(dAppSession.dAppInfo.peerId)
-                        showdAppSessionControls = false
+                        Defaults[.dAppsSession(session.dAppInfo.peerId)] = nil
+                        Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
+                        hideOverlaySheet()
                         web3Model.currentSession = nil
                     }) {
                         HStack(spacing: 4) {
@@ -64,11 +67,10 @@ struct SessionInfoView: View {
                         }
                     }.buttonStyle(WalletDashBoardButtonStyle())
                     let nodeToSwitchTo =
-                        EthNode.from(chainID: dAppSession.walletInfo?.chainId)
-                            == .Ethereum ? EthNode.Polygon : EthNode.Ethereum
+                        chain == .Ethereum ? EthNode.Polygon : EthNode.Ethereum
                     Button(action: {
-                        web3Model.toggle(session: dAppSession, to: nodeToSwitchTo)
-                        showdAppSessionControls = false
+                        web3Model.toggle(session: session, to: nodeToSwitchTo)
+                        hideOverlaySheet()
                     }) {
                         HStack(spacing: 4) {
                             switch nodeToSwitchTo {
@@ -77,21 +79,22 @@ struct SessionInfoView: View {
                             default:
                                 TokenType.matic.polygonLogo
                             }
-                            Text("Switch to \(nodeToSwitchTo.rawValue)")
+                            Text("Switch Chain")
                         }
                     }.buttonStyle(WalletDashBoardButtonStyle())
                 }
                 Button(action: {
                     web3Model.showWalletPanel()
-                    showdAppSessionControls = false
+                    hideOverlaySheet()
                 }) {
                     HStack(spacing: 2) {
-                        Symbol(decorative: .gear, style: .bodyMedium)
-                        Text("Wallet Settings")
+                        Symbol(decorative: .arrowUpRight, style: .bodyMedium)
+                        Text("Open Neeva Wallet")
                     }
                 }.buttonStyle(WalletDashBoardButtonStyle())
             }
-        }.padding(.vertical, 16)
+            Spacer()
+        }
     }
 }
 
@@ -107,14 +110,21 @@ struct SessionInfoButton: View {
         case .Polygon:
             return "polygon-badge"
         default:
-            return "eth"
+            return "ethLogo"
         }
     }
 
     var body: some View {
         Button(
             action: {
-                showdAppSessionControls = true
+                web3Model.presenter.showModal(
+                    style: .spaces, headerButton: nil,
+                    content: {
+                        SessionInfoView(session: dAppSession)
+                            .padding(.top, -12)
+                            .overlayIsFixedHeight(isFixedHeight: true)
+                            .environmentObject(web3Model)
+                    }, onDismiss: {})
             },
             label: {
                 Image(logo)
@@ -137,14 +147,6 @@ struct SessionInfoButton: View {
                             }
                     )
             }
-        ).presentAsPopover(
-            isPresented: $showdAppSessionControls,
-            dismissOnTransition: true
-        ) {
-            SessionInfoView(
-                dAppSession: dAppSession,
-                showdAppSessionControls: $showdAppSessionControls
-            ).environmentObject(web3Model)
-        }
+        )
     }
 }

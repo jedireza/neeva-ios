@@ -13,13 +13,17 @@ struct CollectionStatView: View {
     let inEth: Bool
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 2) {
             Text(statName)
                 .withFont(.headingSmall)
-                .foregroundColor(.label)
+                .foregroundColor(.secondaryLabel)
             if inEth {
                 HStack(spacing: 0) {
-                    Text("\(statAmount) ETH")
+                    Image("ethLogo")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 15, height: 15)
+                    Text("\(statAmount)")
                         .withFont(.labelLarge)
                         .foregroundColor(.label)
                 }
@@ -29,6 +33,8 @@ struct CollectionStatView: View {
                     .foregroundColor(.label)
             }
         }
+        .padding(.vertical, 8)
+        .padding(.horizontal, 4)
     }
 }
 
@@ -36,7 +42,7 @@ enum CollectionStatsWindow: String, CaseIterable, Identifiable {
     case today = "Today"
     case week = "Week"
     case month = "Month"
-    case overall = "All"
+    case overall = "All time"
 
     var id: String { self.rawValue }
 
@@ -80,48 +86,41 @@ enum CollectionStatsWindow: String, CaseIterable, Identifiable {
     }
 }
 
-struct CollectionWindowStatsView: View {
-    @State var window = CollectionStatsWindow.overall
+struct CollectionWindowStatsMenu: View {
     let stats: CollectionStats
+    @Binding var window: CollectionStatsWindow
 
     var body: some View {
-        VStack {
-            HStack(spacing: 16) {
-                Menu(
-                    content: {
-                        ForEach(CollectionStatsWindow.allCases) { win in
-                            Button(
-                                action: {
-                                    window = win
-                                },
-                                label: {
-                                    Text(win.rawValue.capitalized)
-                                        .withFont(.headingXSmall)
-                                })
-                        }
-                    },
-                    label: {
-                        VStack(spacing: 6) {
-                            Symbol(decorative: .calendar, style: .headingXLarge)
-                                .foregroundColor(.label)
-                            HStack {
-                                Text(window.rawValue.capitalized)
-                                    .withFont(.headingXSmall)
-                                    .foregroundColor(.label)
-                                Symbol(decorative: .arrowtriangleDownFill, style: .headingXSmall)
-                                    .foregroundColor(.label)
-                            }
-                        }
-                    })
-                CollectionStatView(
-                    statName: "VOLUME", statAmount: window.volume(from: stats), inEth: true)
-                CollectionStatView(
-                    statName: "SALES", statAmount: window.sales(from: stats), inEth: false)
-                CollectionStatView(
-                    statName: "AVG PRICE", statAmount: window.averagePrice(from: stats),
-                    inEth: true)
+        Menu(
+            content: {
+                ForEach(CollectionStatsWindow.allCases) { win in
+                    Button(
+                        action: {
+                            window = win
+                        },
+                        label: {
+                            Text(win.rawValue)
+                        })
+                }
+            },
+            label: {
+                HStack(spacing: 6) {
+                    Text(window.rawValue)
+                        .withFont(.labelLarge)
+                    Symbol(decorative: .chevronDown, style: .labelLarge)
+                }
+                .gradientForeground()
+                .padding(12)
             }
-        }
+        )
+    }
+}
+
+extension View {
+    fileprivate func gradientForeground() -> some View {
+        self
+            .overlay(WalletTheme.gradient)
+            .mask(self)
     }
 }
 
@@ -150,26 +149,28 @@ struct CompactStatsView: View {
 
 struct CollectionStatsView: View {
     let stats: CollectionStats
-    var verified: Bool = false
+    @State var window = CollectionStatsWindow.overall
 
     var body: some View {
-        VStack {
-            HStack(spacing: 16) {
-                if verified {
-                    Image("twitter-verified-large")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 24, height: 24)
-                }
+        VStack(spacing: 0) {
+            HStack(spacing: 4) {
                 CollectionStatView(
-                    statName: "COUNT", statAmount: String(stats.count),
+                    statName: "Items", statAmount: String(stats.count),
                     inEth: false)
                 CollectionStatView(
-                    statName: "FLOOR",
+                    statName: "Owners", statAmount: String(stats.numOwners),
+                    inEth: false)
+                CollectionStatView(
+                    statName: "Floor Price",
                     statAmount: String(format: "%.2f", stats.floorPrice ?? 0),
                     inEth: true)
+                CollectionStatView(
+                    statName: "Traded", statAmount: window.volume(from: stats), inEth: true)
+                CollectionStatView(
+                    statName: "Average", statAmount: window.averagePrice(from: stats),
+                    inEth: true)
             }
-            CollectionWindowStatsView(stats: stats)
+            CollectionWindowStatsMenu(stats: stats, window: $window)
         }
     }
 }
@@ -178,15 +179,22 @@ struct CollectionView: View {
     let collection: Collection
 
     var body: some View {
-        VStack(spacing: 4) {
-            WebImage(url: collection.bannerImageURL)
-                .placeholder {
-                    Color.TrayBackground
-                }
-                .resizable()
-                .scaledToFill()
-                .frame(maxHeight: 128)
-            VStack(spacing: 4) {
+        VStack(spacing: 0) {
+            ZStack(alignment: .topTrailing) {
+                WebImage(url: collection.bannerImageURL)
+                    .placeholder {
+                        Color.TrayBackground
+                    }
+                    .resizable()
+                    .scaledToFill()
+                    .frame(maxHeight: 128)
+                Image("opensea-badge")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: 18)
+                    .padding(8)
+            }
+            VStack(spacing: 8) {
                 WebImage(url: collection.imageURL)
                     .placeholder {
                         Color.TrayBackground
@@ -196,19 +204,22 @@ struct CollectionView: View {
                     .frame(width: 48, height: 48)
                     .clipShape(Circle())
                     .roundedOuterBorder(cornerRadius: 24, color: .white, lineWidth: 2)
-                Text(collection.name)
-                    .withFont(.headingXLarge)
-                    .foregroundColor(.label)
-                if let stats = collection.stats {
-                    CollectionStatsView(
-                        stats: stats,
-                        verified: collection.safelistRequestStatus == .verified)
+                HStack(spacing: 4) {
+                    if collection.safelistRequestStatus >= .approved {
+                        Image("twitter-verified-large")
+                            .renderingMode(.template)
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.ui.adaptive.blue)
+                            .frame(width: 16, height: 16)
+                    }
+                    Text(collection.name)
+                        .withFont(.labelLarge)
+                        .foregroundColor(.label)
                 }
-                Image("open-sea-badge")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 18)
-                    .padding(.vertical, 20)
+                if let stats = collection.stats {
+                    CollectionStatsView(stats: stats)
+                }
             }
             .offset(y: -28)
         }

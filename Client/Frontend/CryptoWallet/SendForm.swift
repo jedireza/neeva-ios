@@ -15,15 +15,16 @@ struct SendForm: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Send To")
-                .font(.roobert(size: 14))
+            Text("Send")
+                .withFont(.headingMedium)
+                .foregroundColor(.label)
             HStack {
                 TextField("Recipient Address", text: $sendToAccountAddress)
                 Spacer()
                 Button(action: { showQRScanner = true }) {
                     Symbol(decorative: .qrcodeViewfinder, style: .labelMedium)
                         .foregroundColor(.secondaryLabel)
-                }
+                }.buttonStyle(.plain)
             }
             .padding()
             .overlay(
@@ -36,31 +37,23 @@ struct SendForm: View {
             .background(Color.brand.white.opacity(0.8))
             .cornerRadius(12)
 
-            if !sendToAccountAddress.isEmpty {
-                Text("Send to address: \(sendToAccountAddress)")
-                    .fixedSize(horizontal: false, vertical: true)
-                    .multilineTextAlignment(.leading)
-                    .font(.system(size: 13))
-                    .foregroundColor(.secondary)
+            HStack {
+                TextField("Amount (ETH)", text: $amount)
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
+                    .keyboardType(.numbersAndPunctuation)
+                    .keyboardType(.decimalPad)
+                Spacer()
+                Text("\(TokenType.ether.toUSD(amount.isEmpty ? "0" : amount)) USD")
+                    .withFont(.bodyLarge)
+                    .foregroundColor(.secondaryLabel)
             }
-
-            TextField("Amount (ETH)", text: $amount)
-                .padding()
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12.0)
-                        .stroke(Color(UIColor.systemGray5), lineWidth: 1.0)
-                )
-                .disableAutocorrection(true)
-                .autocapitalization(.none)
-                .keyboardType(.numbersAndPunctuation)
-                .fixedSize(horizontal: false, vertical: true)
-                .background(Color.brand.white.opacity(0.8))
-                .cornerRadius(12)
-                .keyboardType(.decimalPad)
-
-            if !amount.isEmpty {
-                Text("= \(TokenType.ether.toUSD(amount)) USD")
-            }
+            .padding()
+            .overlay(
+                RoundedRectangle(cornerRadius: 12.0)
+                    .stroke(Color(UIColor.systemGray5), lineWidth: 1.0)
+            ).fixedSize(horizontal: false, vertical: true)
+            .cornerRadius(12)
 
             VStack(spacing: 16) {
                 NeevaWalletLongPressButton(action: sendEth) {

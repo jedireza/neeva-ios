@@ -118,10 +118,11 @@ struct WalletDashboard: View {
                 .frame(width: 48, height: 48)
                 .padding(8)
             HStack(spacing: 0) {
-                Text("\(Defaults[.cryptoPublicKey])")
-                    .withFont(.headingXLarge)
-                    .lineLimit(1)
-                    .frame(width: 88)
+                Text(
+                    "\(String(Defaults[.cryptoPublicKey].prefix(3)))...\(String(Defaults[.cryptoPublicKey].suffix(3)))"
+                )
+                .withFont(.headingXLarge)
+                .lineLimit(1)
                 overflowMenu
             }
 
@@ -227,7 +228,10 @@ struct WalletDashboard: View {
     var openSessionsSection: some View {
         Section(
             content: {
-                ForEach(model.allSavedSessions, id: \.url) { session in
+                ForEach(
+                    model.allSavedSessions.sorted(by: { $0.dAppInfo.peerId > $1.dAppInfo.peerId }),
+                    id: \.url
+                ) { session in
                     if showSessions, let domain = session.dAppInfo.peerMeta.url.baseDomain,
                         savedSessions.contains(session.dAppInfo.peerId)
                     {
@@ -255,6 +259,7 @@ struct WalletDashboard: View {
                                 TokenType.ether.ethLogo
                             }
                         }
+                        .padding(16)
                         .modifier(
                             SessionActionsModifier(
                                 session: session,
@@ -349,8 +354,7 @@ struct WalletDashboard: View {
                 }
             }
             .modifier(WalletListStyleModifier())
-            .padding(.horizontal, 25)
-            .padding(.bottom, 72)
+            .padding(.horizontal, 16)
             .background(Color.DefaultBackground)
             .navigationBarHidden(true)
         }
@@ -446,7 +450,7 @@ struct SessionActionsModifier: ViewModifier {
                     Button {
                         switchChain()
                     } label: {
-                        Label("Switch", systemImage: "")
+                        Label("Switch Chain", systemImage: "")
                             .foregroundColor(.white)
                     }.tint(.blue)
                 }

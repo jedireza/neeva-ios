@@ -23,28 +23,26 @@ enum ViewState {
 
 struct CryptoWalletView: View {
     @State var viewState: ViewState = Defaults[.cryptoPhrases].isEmpty ? .starter : .dashboard
-    @Environment(\.hideOverlay) var onDismiss
+    let dismiss: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Spacer()
-                Button(action: onDismiss) {
-                    Symbol(decorative: .xmark)
-                        .foregroundColor(.label)
-                        .tapTargetFrame()
-                }
-            }
-            .padding(.trailing, 20)
-
             Image("wallet-wordmark")
                 .resizable()
                 .scaledToFit()
                 .frame(height: viewState == .starter ? 32 : 20)
-                .padding(.top, viewState == .starter ? 40 : 0)
+                .padding(.top, viewState == .starter ? 40 : 16)
                 .animation(
                     viewState == .showPhrases || viewState == .importWallet ? .easeInOut : nil
                 )
+                .padding(.bottom, 16)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 16)
+                .padding(.top, 44)
+
+            if viewState != .starter {
+                Color.ui.adaptive.separator.frame(height: 1)
+            }
 
             ZStack {
                 switch viewState {
@@ -58,8 +56,19 @@ struct CryptoWalletView: View {
                     ImportWalletView(viewState: $viewState)
                 }
             }
-            Spacer()
         }
-        .frame(height: UIScreen.main.bounds.height)
+        .ignoresSafeArea()
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(
+            Button(action: dismiss) {
+                Text("Done")
+                    .withFont(.labelLarge)
+                    .foregroundColor(.ui.adaptive.blue)
+                    .frame(height: 48)
+            }
+            .padding(.top, 44)
+            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        )
     }
 }

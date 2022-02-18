@@ -58,6 +58,14 @@ class CardTests: XCTestCase {
         ) where Content: View {
             // Do nothing.
         }
+
+        func presentFullScreenModal(content: AnyView, completion: (() -> Void)?) {
+            // Do nothing.
+        }
+
+        func dismissCurrentOverlay() {
+            // Do nothing.
+        }
     }
 
     override func setUp() {

@@ -98,7 +98,7 @@ struct AssetView: View {
                     .withFont(.bodyMedium)
                     .foregroundColor(.secondaryLabel)
                     .lineLimit(4)
-                Image("open-sea-badge")
+                Image("opensea-badge")
                     .resizable()
                     .scaledToFit()
                     .frame(height: 24)

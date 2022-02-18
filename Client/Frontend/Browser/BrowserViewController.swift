@@ -26,6 +26,8 @@ protocol ModalPresenter {
         headerButton: OverlayHeaderButton?,
         content: @escaping () -> Content,
         onDismiss: (() -> Void)?)
+    func presentFullScreenModal(content: AnyView, completion: (() -> Void)?)
+    func dismissCurrentOverlay()
 }
 
 class BrowserViewController: UIViewController, ModalPresenter {
@@ -633,6 +635,14 @@ class BrowserViewController: UIViewController, ModalPresenter {
         if case .popover = overlayManager.currentOverlay {
             overlayManager.hideCurrentOverlay()
         }
+    }
+
+    func presentFullScreenModal(content: AnyView, completion: (() -> Void)? = nil) {
+        overlayManager.presentFullScreenModal(content: content, completion: completion)
+    }
+
+    func dismissCurrentOverlay() {
+        overlayManager.hideCurrentOverlay()
     }
 
     /// Present Content as sheet if on iPhone and in Portrait; otherwise, present as popover

@@ -259,7 +259,6 @@ struct WalletSequenceMainButtons: View {
 
 struct MaliciousSiteView: View {
     @Environment(\.hideOverlay) private var hideOverlaySheet
-    let iconURL: URL?
     let domain: String
     let trustSignal: TrustSignal
     let alternativeDomain: String?
@@ -270,11 +269,15 @@ struct MaliciousSiteView: View {
     var body: some View {
         VStack(spacing: 24) {
             VStack(spacing: 8) {
-                WalletSequenceSiteHeader(
-                    iconURL: iconURL ?? .aboutBlank,
-                    domain: domain,
-                    trusted: false
-                )
+                Image("malicious-warning")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 48, height: 48)
+                    .background(Color.white)
+                    .clipShape(Circle())
+                Text(domain)
+                    .withFont(.labelLarge)
+                    .foregroundColor(.label)
                 if let trustedDomain = alternativeDomain {
                     (Text("This site has a similar address to the verified site ")
                         + Text(trustedDomain).bold())
@@ -442,11 +445,13 @@ struct WalletSequenceBottomInfoPanel: View {
         default:
             HStack(spacing: 8) {
                 Circle().fill(WalletTheme.gradient).frame(width: 22, height: 22)
-                Text(wallet.publicAddress)
-                    .withFont(.labelLarge)
-                    .lineLimit(1)
-                    .foregroundColor(.label)
-                    .frame(maxWidth: 100, alignment: .leading)
+                Text(
+                    "\(String(wallet.publicAddress.prefix(3)))...\(String(wallet.publicAddress.suffix(3)))"
+                )
+                .withFont(.labelLarge)
+                .lineLimit(1)
+                .foregroundColor(.label)
+                .frame(maxWidth: 100, alignment: .leading)
             }
         }
     }
@@ -489,7 +494,7 @@ struct WalletSequenceMessage: View {
             return " wants to connect to your wallet"
         case .personalSign:
             return
-                " wants to sign a message using your wallet."
+                " wants to sign a message using your wallet. This does not involve any transactions."
         case .sendTransaction:
             return " wants to send a transaction from your wallet"
         }
