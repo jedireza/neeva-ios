@@ -2,14 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>CRYPTO_POLYGON_URL</key>
-	<string>$(CRYPTO_POLYGON_URL)</string>
-	<key>CRYPTO_ROPSTEN_URL</key>
-	<string>$(CRYPTO_ROPSTEN_URL)</string>
-	<key>CRYPTO_ETH_URL</key>
-	<string>$(CRYPTO_ETH_URL)</string>
-	<key>OPENSEA_API_KEY</key>
-	<string>$(OPENSEA_API_KEY)</string>
 	<key>AppIdentifierPrefix</key>
 	<string>$(APP_IDENTIFIER_PREFIX)</string>
 	<key>BGTaskSchedulerPermittedIdentifiers</key>
@@ -53,6 +45,12 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CRYPTO_ETH_URL</key>
+	<string>$(CRYPTO_ETH_URL)</string>
+	<key>CRYPTO_POLYGON_URL</key>
+	<string>$(CRYPTO_POLYGON_URL)</string>
+	<key>CRYPTO_ROPSTEN_URL</key>
+	<string>$(CRYPTO_ROPSTEN_URL)</string>
 	<key>INIntentsSupported</key>
 	<array>
 		<string>QuickActionIntent</string>
@@ -98,12 +96,15 @@
 	<string>Websites you visit may request your location.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
+		<string>co.neeva.app.ios.browser.browsing</string>
 		<string>IntentHandler</string>
 		<string>IntentIntent</string>
 		<string>NSUserActivityTypeBrowsingWeb</string>
 		<string>OpenURLIntent</string>
 		<string>SearchNeevaIntent</string>
 	</array>
+	<key>OPENSEA_API_KEY</key>
+	<string>$(OPENSEA_API_KEY)</string>
 	<key>SentryDSN</key>
 	<string>$(SENTRY_DSN)</string>
 	<key>UIAppFonts</key>

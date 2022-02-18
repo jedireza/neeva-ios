@@ -169,6 +169,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        if userActivity.activityType == UserActivityHandler.browsingActivityType {
+            if let urlString = userActivity.userInfo?["url"] as? String,
+               let url = URL(string: urlString) {
+                self.bvc.switchToTabForURLOrOpen(url)
+            }
+        }
         if !continueSiriIntent(continue: userActivity) {
             _ = checkForUniversalURL(continue: userActivity)
         }

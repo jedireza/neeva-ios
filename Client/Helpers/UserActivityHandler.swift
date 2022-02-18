@@ -2,19 +2,19 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import CoreServices
 import CoreSpotlight
 import Foundation
-import MobileCoreServices
 import Shared
 import Storage
 import SwiftUI
 import WebKit
 
-private let browsingActivityType: String = "co.neeva.app.ios.browser.browsing"
-
 private let searchableIndex = CSSearchableIndex(name: "neeva")
 
 class UserActivityHandler {
+    static let browsingActivityType: String = "co.neeva.app.ios.browser.browsing"
+
     init() {
         register(
             self, forTabEvents: .didClose, .didLoseFocus, .didGainFocus, .didChangeURL,
@@ -36,8 +36,24 @@ class UserActivityHandler {
 
         tab.userActivity?.invalidate()
 
-        let userActivity = NSUserActivity(activityType: browsingActivityType)
-        userActivity.webpageURL = url
+        // Create user activity for browsing a webpage
+        let userActivity = NSUserActivity(activityType: Self.browsingActivityType)
+        userActivity.title = tab.title
+        // Indicate activity should be added to spotlight index
+        userActivity.isEligibleForSearch = true
+        // Carry url payload instead of using webpageURL in case neeva app is not DB
+        userActivity.requiredUserInfoKeys = ["url"]
+        userActivity.userInfo = ["url": url.absoluteString]
+        // we can set userActivity.keywords = [String] to specify additional queries with which this item can be found in spotlight
+
+        // create rich attributes for spotlight card in place of NSUserActivity properties
+        let attributes = CSSearchableItemAttributeSet(contentType: .url)
+        attributes.title = tab.pageMetadata?.title
+        attributes.contentDescription = tab.pageMetadata?.description
+        userActivity.contentAttributeSet = attributes
+        userActivity.needsSave = true
+
+        // Set activity as active and makes it available for indexing (if isEligibleForSearch)
         userActivity.becomeCurrent()
 
         tab.userActivity = userActivity
