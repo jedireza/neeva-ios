@@ -105,12 +105,16 @@ struct SessionInfoButton: View {
     @State var showdAppSessionControls: Bool = false
     @State var rotationAngle: Double = 0
 
-    var logo: String {
+    @ViewBuilder var logo: some View {
         switch EthNode.from(chainID: dAppSession.walletInfo?.chainId) {
         case .Polygon:
-            return "polygon-badge"
+            Image("polygon-badge")
+                .resizable()
         default:
-            return "ethLogo"
+            Image("ethLogo")
+                .resizable()
+                .renderingMode(.template)
+                .foregroundColor(.label)
         }
     }
 
@@ -127,12 +131,11 @@ struct SessionInfoButton: View {
                     }, onDismiss: {})
             },
             label: {
-                Image(logo)
-                    .resizable()
+                logo
                     .scaledToFit()
                     .frame(width: 16, height: 16)
                     .padding(2)
-                    .background(Circle().fill(Color.white))
+                    .background(Circle().fill(Color.secondaryBackground))
                     .padding(2)
                     .animation(nil)
                     .background(

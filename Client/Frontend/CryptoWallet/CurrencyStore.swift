@@ -229,6 +229,8 @@ public enum TokenType: String, CaseIterable {
     var ethLogo: some View {
         Image("ethLogo")
             .resizable()
+            .renderingMode(.template)
+            .foregroundColor(.label)
             .scaledToFit()
             .frame(width: 20, height: 20)
             .padding(4)

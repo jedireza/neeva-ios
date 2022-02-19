@@ -58,7 +58,7 @@ struct CryptoWalletView: View {
             }
         }
         .ignoresSafeArea()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .overlay(
             Button(action: dismiss) {
                 Text("Done")
