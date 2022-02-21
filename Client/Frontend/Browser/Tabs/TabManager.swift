@@ -188,13 +188,14 @@ class TabManager: NSObject {
 
         let options: [URL.EqualsOption] = [.normalizeHost, .ignoreFragment, .ignoreLastSlash]
 
+        log.info("Looking for matching tab, url: \(url)")
+
         for tab in tabs.filter({ $0.isIncognito == self.isIncognito }) {
-            if let webView = tab.webView {
-                if let currentUrl = webView.url {
-                    log.info("Checking webView.url: \(currentUrl)")
-                    if url.equals(currentUrl, with: options) {
-                        return tab
-                    }
+            // Tab.url will be nil if the Tab is yet to be restored.
+            if let tabUrl = tab.url {
+                log.info("Checking tabUrl: \(tabUrl)")
+                if url.equals(tabUrl, with: options) {
+                    return tab
                 }
             } else if let sessionUrl = tab.sessionData?.currentUrl {  // Match zombie tabs
                 log.info("Checking sessionUrl: \(sessionUrl)")
