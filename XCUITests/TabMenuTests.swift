@@ -87,4 +87,20 @@ class TabMenuTests: BaseTestCase {
             getNumberOfTabs(openTabTray: false), 0,
             "Expected number of tabs remaining is not correct")
     }
+
+    func testCloseAllTabsWithoutConfirmation() {
+        goToSettings()
+        app.switches["Require Confirmation, When Closing All Tabs"].firstMatch.tap()
+        app.navigationBars["Settings"].buttons["Done"].tap()
+
+        openURLInNewTab(firstWebsite.url)
+        openURLInNewTab(secondWebsite.url)
+
+        waitForExistence(app.buttons["Show Tabs"], timeout: 3)
+        app.buttons["Show Tabs"].press(forDuration: 1)
+        app.buttons["Close All Tabs"].tap()
+
+        // Check that the Toast appears
+        waitForExistence(app.buttons["restore"])
+    }
 }

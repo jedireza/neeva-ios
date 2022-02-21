@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import Shared
 import SwiftUI
 
@@ -129,7 +130,7 @@ struct ExpandedCardGroupRowView: View {
                             ClientLogger.shared.logCounter(
                                 .tabInTabGroupClicked,
                                 attributes: getLogCounterAttributesForTabGroups(
-                                    TabGroupRowIndex: rowIndex, selectedChildTabIndex: index+1,
+                                    TabGroupRowIndex: rowIndex, selectedChildTabIndex: index + 1,
                                     expanded: true, numTabs: groupDetails.allDetails.count))
                             browserModel.hideWithAnimation()
                         }
@@ -180,7 +181,17 @@ struct TabGroupHeader: View {
     let rowIndex: Int?
 
     @State private var renaming = false
-    @State private var deleting = false
+    @State private var deleting = false {
+        didSet {
+            if deleting {
+                guard Defaults[.confirmCloseAllTabs] else {
+                    groupDetails.onClose()
+                    deleting = false
+                    return
+                }
+            }
+        }
+    }
 
     var groupFromSpace: Bool {
         return groupDetails.id

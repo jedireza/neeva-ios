@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import Shared
 import Storage
 import UIKit
@@ -18,6 +19,12 @@ struct TabMenu {
             let scene = tabManager.scene as? UIWindowScene,
             let alertVC = scene.frontViewController
         else { return }
+
+        guard Defaults[.confirmCloseAllTabs] else {
+            tabManager.removeTabs(
+                isIncognito ? tabManager.incognitoTabs : tabManager.normalTabs)
+            return
+        }
 
         let actionSheet = UIAlertController(
             title: nil,

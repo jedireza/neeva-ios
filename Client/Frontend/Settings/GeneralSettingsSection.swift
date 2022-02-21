@@ -23,15 +23,18 @@ struct GeneralSettingsSection: View {
     @Default(.showSearchSuggestions) var showSearchSuggestions
     @Default(.blockPopups) var blockPopups
     @Default(.contextMenuShowLinkPreviews) var showLinkPreviews
+    @Default(.confirmCloseAllTabs) var confirmCloseAllTabs
 
     var body: some View {
         NavigationLink(
             "Default Browser",
             destination:
-                DefaultBrowserOnboardingView(openSettings: {
-                    UIApplication.shared.open(
-                        URL(string: UIApplication.openSettingsURLString)!, options: [:])
-                }, triggerFrom: .settings)
+                DefaultBrowserOnboardingView(
+                    openSettings: {
+                        UIApplication.shared.open(
+                            URL(string: UIApplication.openSettingsURLString)!, options: [:])
+                    }, triggerFrom: .settings
+                )
                 .onAppear {
                     ClientLogger.shared.logCounter(
                         .SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes()
@@ -49,6 +52,12 @@ struct GeneralSettingsSection: View {
             DetailedSettingsLabel(
                 title: "Show Link Previews",
                 description: "When Long-pressing Links"
+            )
+        }
+        Toggle(isOn: $confirmCloseAllTabs) {
+            DetailedSettingsLabel(
+                title: "Require Confirmation",
+                description: "When Closing All Tabs"
             )
         }
     }
