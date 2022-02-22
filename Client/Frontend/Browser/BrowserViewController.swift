@@ -870,6 +870,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             if self.shouldPresentDBPrompt {
                 self.presentDBPromptView()
             }
+
             self.hideCardGrid(withAnimation: false)
         }
     }
@@ -950,6 +951,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
         } else if chromeModel.isEditingLocation {
             chromeModel.setEditingLocation(to: false)
         }
+
+        overlayManager.hideCurrentOverlay()
     }
 
     func presentActivityViewController(
