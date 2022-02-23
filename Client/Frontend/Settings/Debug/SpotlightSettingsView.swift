@@ -10,6 +10,7 @@ import SwiftUI
 struct SpotlightSettingsView: View {
     @Default(.createUserActivities) var createUserActivities
     @Default(.makeActivityAvailForSearch) var makeActivityAvailForSearch
+    @Default(.addThumbnailToActivities) var addThumbnailToActivities
 
     @State private var deletingActivities = false
 
@@ -18,6 +19,7 @@ struct SpotlightSettingsView: View {
             Section(header: Text(verbatim: "Browsing User Activity")) {
                 Toggle(String("Create User Activities"), isOn: $createUserActivities)
                 Toggle(String("Add User Activities to Spotlight"), isOn: $makeActivityAvailForSearch)
+                Toggle(String("Add Thumbnails to Attributes"), isOn: $addThumbnailToActivities)
                 Button(action: {
                     deletingActivities = true
                     NSUserActivity.deleteAllSavedUserActivities {

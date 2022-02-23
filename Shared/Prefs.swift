@@ -178,6 +178,7 @@ extension Defaults.Keys {
     // Spotlight Search
     public static let createUserActivities = Defaults.BoolKey("createUserActivities", default: true)
     public static let makeActivityAvailForSearch = Defaults.BoolKey("makeActivityAvailForSearch", default: false)
+    public static let addThumbnailToActivities = Defaults.BoolKey("addThumbnailToActivities", default: false)
 }
 
 extension Defaults {
