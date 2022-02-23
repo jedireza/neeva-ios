@@ -174,6 +174,10 @@ extension Defaults.Keys {
         "loggedDefaultBrowserExperiment", default: false)
     public static let lastDefaultBrowserPromptInteraction = Defaults.Key<String?>(
         "lastDefaultBrowserPromptInteraction")
+
+    // Spotlight Search
+    public static let createUserActivities = Defaults.BoolKey("createUserActivities", default: true)
+    public static let makeActivityAvailForSearch = Defaults.BoolKey("makeActivityAvailForSearch", default: false)
 }
 
 extension Defaults {
