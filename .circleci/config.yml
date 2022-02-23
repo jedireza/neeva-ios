@@ -22,13 +22,13 @@ commands:
           command: echo "$(xcodebuild -version)" >| xcode_version
       - restore_cache:
           name: Restore Carthage/ cache
-          key: carthage-dir-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "Cartfile.resolved" }}
+          key: carthage-dir-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "Cartfile.resolved" }}-v2
       - run:
           name: Bootstrap Carthage dependencies
           command: ./carthage_command.sh
       - save_cache:
           name: Save Carthage/ cache
-          key: carthage-dir-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "Cartfile.resolved" }}
+          key: carthage-dir-cache-{{ arch }}-{{ checksum "xcode_version" }}-{{ checksum "Cartfile.resolved" }}-v2
           paths:
             - Carthage
   unset-clone-via-ssh:
