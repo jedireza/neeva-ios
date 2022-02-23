@@ -8,10 +8,21 @@ import SwiftUI
 struct PopoverView<Content: View>: View {
     @State private var title: LocalizedStringKey? = nil
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
     let style: OverlayStyle
     let onDismiss: () -> Void
     let headerButton: OverlayHeaderButton?
     let content: () -> Content
+    
+    var horizontalPadding: CGFloat {
+        paddingForSizeClass(horizontalSizeClass)
+    }
+    
+    var verticalPadding: CGFloat {
+        paddingForSizeClass(verticalSizeClass)
+    }
 
     var body: some View {
         GeometryReader { geo in
@@ -48,8 +59,6 @@ struct PopoverView<Content: View>: View {
                                 }
                             )
                             .buttonStyle(.neeva(.primary))
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 6)
                             .layoutPriority(0.5)
                         }
                     }
@@ -78,7 +87,6 @@ struct PopoverView<Content: View>: View {
                                 .onPreferenceChange(OverlayTitlePreferenceKey.self) {
                                     self.title = $0
                                 }
-                                .padding(.bottom, 18)
                         }
                     }
                     .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -86,10 +94,22 @@ struct PopoverView<Content: View>: View {
                         Color(style.backgroundColor)
                             .cornerRadius(16)
                     )
-                    .padding()
-                }.frame(width: geo.size.width / 1.5)
+                    // 60 is button height + VStack padding
+                    .frame(maxHeight: geo.size.height - verticalPadding - 60)
+                    .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.horizontal, horizontalPadding)
+                .padding(.vertical, verticalPadding)
             }
             .accessibilityAction(.escape, onDismiss)
+        }
+    }
+
+    func paddingForSizeClass(_ sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+        if let sizeClass = sizeClass, case .regular = sizeClass {
+            return 50
+        } else {
+            return 12
         }
     }
 }
