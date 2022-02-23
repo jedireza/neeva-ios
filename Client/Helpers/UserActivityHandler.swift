@@ -4,6 +4,7 @@
 
 import CoreServices
 import CoreSpotlight
+import Defaults
 import Foundation
 import Shared
 import Storage
@@ -26,7 +27,8 @@ class UserActivityHandler {
     }
 
     fileprivate func setUserActivityForTab(_ tab: Tab, url: URL) {
-        guard !tab.isIncognito, url.isWebPage(includeDataURIs: false),
+        guard Defaults[.createUserActivities],
+            !tab.isIncognito, url.isWebPage(includeDataURIs: false),
             !InternalURL.isValid(url: url)
         else {
             tab.userActivity?.resignCurrent()
@@ -40,7 +42,7 @@ class UserActivityHandler {
         let userActivity = NSUserActivity(activityType: Self.browsingActivityType)
         userActivity.title = tab.title
         // Indicate activity should be added to spotlight index
-        userActivity.isEligibleForSearch = true
+        userActivity.isEligibleForSearch = Defaults[.makeActivityAvailForSearch]
         // Carry url payload instead of using webpageURL in case neeva app is not DB
         userActivity.requiredUserInfoKeys = ["url"]
         userActivity.userInfo = ["url": url.absoluteString]

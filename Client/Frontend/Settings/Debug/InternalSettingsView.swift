@@ -187,6 +187,10 @@ struct InternalSettingsView: View {
 
                 NumberField("fastTapPromoTimeInterval", number: $fastTapPromoTimeInterval)
             }
+
+            makeNavigationLink(title: String("Spotlight Search")) {
+                SpotlightSettingsView()
+            }
         }
         .font(.system(.footnote, design: .monospaced))
         .minimumScaleFactor(0.75)
