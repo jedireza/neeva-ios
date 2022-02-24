@@ -46,6 +46,9 @@ struct InternalSettingsView: View {
     @Default(.didSetDefaultBrowser) var didSetDefaultBrowser
     @Default(.didShowDefaultBrowserInterstitial) var didShowDefaultBrowserInterstitial
     @Default(.loggedDefaultBrowserExperiment) var loggedDefaultBrowserExperiment
+    @Default(.numOfDailyZeroQueryImpression) var numOfDailyZeroQueryImpression
+    @Default(.lastZeroQueryImpUpdatedTimestamp) var lastZeroQueryImpUpdatedTimestamp
+
 
     var body: some View {
         List {
@@ -107,6 +110,21 @@ struct InternalSettingsView: View {
                     String("loggedDefaultBrowserExperiment"),
                     isOn: $loggedDefaultBrowserExperiment
                 )
+                NumberField(
+                    String("numOfDailyZeroQueryImpression"), number: $numOfDailyZeroQueryImpression)
+                HStack {
+                    VStack(alignment: .leading) {
+                        Text(verbatim: "lastZeroQueryImpUpdatedTimestamp")
+                        Text(verbatim: "\(lastZeroQueryImpUpdatedTimestamp?.timeIntervalSince1970)")
+                            .foregroundColor(.secondaryLabel)
+                            .font(.caption)
+                    }
+                    Spacer()
+                    Button(String("Clear")) { lastZeroQueryImpUpdatedTimestamp = nil }
+                        .font(.body)
+                        .accentColor(.red)
+                        .buttonStyle(.borderless)
+                }
             }
             Section(header: Text(verbatim: "User-generated")) {
                 HStack {

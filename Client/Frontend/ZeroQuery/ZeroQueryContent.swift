@@ -53,6 +53,13 @@ struct ZeroQueryContent: View {
                     description: description)
             }
             .onAppear {
+                if let date = Defaults[.lastZeroQueryImpUpdatedTimestamp],
+                   Calendar.current.isDateInYesterday(date) {
+                    Defaults[.numOfDailyZeroQueryImpression] = 0
+                }
+                Defaults[.numOfDailyZeroQueryImpression] += 1
+                Defaults[.lastZeroQueryImpUpdatedTimestamp] = Date()
+
                 self.model.updateState()
                 self.suggestedSearchesModel.reload(from: self.model.profile)
             }
