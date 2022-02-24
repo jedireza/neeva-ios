@@ -289,6 +289,10 @@
 		66A6A71F26840376005425D0 /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66A6A6D42683E632005425D0 /* Intents.framework */; };
 		66A6A72226840376005425D0 /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66A6A72126840376005425D0 /* IntentHandler.swift */; };
 		66A6A73626840376005425D0 /* ClientIntent.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 66A6A71E26840376005425D0 /* ClientIntent.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		66A7639227C7505D0047F999 /* SDWebImage.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03627C51840009460DE /* SDWebImage.xcframework */; };
+		66A7639327C7505D0047F999 /* SDWebImage.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03627C51840009460DE /* SDWebImage.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		66A7639427C7505D0047F999 /* SDWebImageSwiftUI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02627C516F3009460DE /* SDWebImageSwiftUI.xcframework */; };
+		66A7639527C7505D0047F999 /* SDWebImageSwiftUI.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02627C516F3009460DE /* SDWebImageSwiftUI.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		66AC64B326E8324500D7BA83 /* SystemsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AC64B226E8324500D7BA83 /* SystemsHelper.swift */; };
 		66B379DB26DDAD1800087B04 /* FeedbackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665CE64726DDA7E70069EFDD /* FeedbackRequest.swift */; };
 		66B379DD26DDAD4400087B04 /* FeedbackHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */; };
@@ -388,7 +392,6 @@
 		85EFC02227C515A7009460DE /* KIF.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02127C515A7009460DE /* KIF.xcframework */; };
 		85EFC02327C515C2009460DE /* Fuzi.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01C27C51589009460DE /* Fuzi.xcframework */; };
 		85EFC02527C515EE009460DE /* OnePasswordExtension.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02427C515EE009460DE /* OnePasswordExtension.xcframework */; };
-		85EFC02727C516F3009460DE /* SDWebImageSwiftUI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02627C516F3009460DE /* SDWebImageSwiftUI.xcframework */; };
 		85EFC02827C516F9009460DE /* SDWebImageSwiftUI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02627C516F3009460DE /* SDWebImageSwiftUI.xcframework */; };
 		85EFC02A27C51714009460DE /* SnapKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02927C51714009460DE /* SnapKit.xcframework */; };
 		85EFC02C27C5172A009460DE /* SwiftKeychainWrapper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02B27C5172A009460DE /* SwiftKeychainWrapper.xcframework */; };
@@ -398,18 +401,14 @@
 		85EFC03227C51772009460DE /* ObjcExceptionBridging.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02F27C51754009460DE /* ObjcExceptionBridging.xcframework */; };
 		85EFC03427C51788009460DE /* XCGLogger.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03327C51788009460DE /* XCGLogger.xcframework */; };
 		85EFC03527C5179F009460DE /* XCGLogger.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03327C51788009460DE /* XCGLogger.xcframework */; };
-		85EFC03827C519DF009460DE /* SDWebImage.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03627C51840009460DE /* SDWebImage.xcframework */; };
-		85EFC03927C519DF009460DE /* SDWebImage.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03627C51840009460DE /* SDWebImage.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03B27C51C46009460DE /* SwiftKeychainWrapper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02B27C5172A009460DE /* SwiftKeychainWrapper.xcframework */; };
 		85EFC03C27C51E8B009460DE /* Fuzi.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01C27C51589009460DE /* Fuzi.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03D27C51E8B009460DE /* GCDWebServers.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01E27C5158D009460DE /* GCDWebServers.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03E27C51E8B009460DE /* ObjcExceptionBridging.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02F27C51754009460DE /* ObjcExceptionBridging.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03F27C51E8B009460DE /* OnePasswordExtension.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02427C515EE009460DE /* OnePasswordExtension.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		85EFC04027C51E8B009460DE /* SDWebImageSwiftUI.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02627C516F3009460DE /* SDWebImageSwiftUI.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC04127C51E8B009460DE /* SnapKit.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02927C51714009460DE /* SnapKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC04227C51E8B009460DE /* SwiftyJSON.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02D27C5174A009460DE /* SwiftyJSON.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC04327C51E8B009460DE /* XCGLogger.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03327C51788009460DE /* XCGLogger.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		85EFC04427C51EC5009460DE /* SDWebImage.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03627C51840009460DE /* SDWebImage.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC04527C51EEC009460DE /* SwiftKeychainWrapper.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02B27C5172A009460DE /* SwiftKeychainWrapper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		8A2401CB26BB4D75006ABF7D /* RatingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2401CA26BB4D75006ABF7D /* RatingsCard.swift */; };
 		8A422E9B26E19783005CC814 /* AddOrUpdateSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A422E9A26E19783005CC814 /* AddOrUpdateSpaceView.swift */; };
@@ -1147,17 +1146,6 @@
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		85EFC03A27C519DF009460DE /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				85EFC03927C519DF009460DE /* SDWebImage.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		E6B09CD31C74EEDB00C63FA1 /* Copy Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1165,14 +1153,14 @@
 			dstSubfolderSpec = 10;
 			files = (
 				85EFC04527C51EEC009460DE /* SwiftKeychainWrapper.xcframework in Copy Frameworks */,
-				85EFC04427C51EC5009460DE /* SDWebImage.xcframework in Copy Frameworks */,
 				85EFC03C27C51E8B009460DE /* Fuzi.xcframework in Copy Frameworks */,
 				85EFC03D27C51E8B009460DE /* GCDWebServers.xcframework in Copy Frameworks */,
+				66A7639527C7505D0047F999 /* SDWebImageSwiftUI.xcframework in Copy Frameworks */,
 				85EFC03E27C51E8B009460DE /* ObjcExceptionBridging.xcframework in Copy Frameworks */,
 				85EFC03F27C51E8B009460DE /* OnePasswordExtension.xcframework in Copy Frameworks */,
-				85EFC04027C51E8B009460DE /* SDWebImageSwiftUI.xcframework in Copy Frameworks */,
 				85EFC04127C51E8B009460DE /* SnapKit.xcframework in Copy Frameworks */,
 				85EFC04227C51E8B009460DE /* SwiftyJSON.xcframework in Copy Frameworks */,
+				66A7639327C7505D0047F999 /* SDWebImage.xcframework in Copy Frameworks */,
 				85EFC04327C51E8B009460DE /* XCGLogger.xcframework in Copy Frameworks */,
 				C87703D225223EA5006E38EB /* Shared.framework in Copy Frameworks */,
 			);
@@ -2141,7 +2129,6 @@
 				C9C18E2326559322004710CD /* KeychainAccess in Frameworks */,
 				C9C18E45265595EC004710CD /* Apollo in Frameworks */,
 				C9C18E4226559567004710CD /* Reachability in Frameworks */,
-				85EFC03827C519DF009460DE /* SDWebImage.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2152,6 +2139,7 @@
 				6786EA792761C58300B53127 /* libswift_Concurrency.tbd in Frameworks */,
 				F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */,
 				C877037A25222F30006E38EB /* Shared.framework in Frameworks */,
+				66A7639427C7505D0047F999 /* SDWebImageSwiftUI.xcframework in Frameworks */,
 				4A93B53D2775909600CD5415 /* WalletConnectSwift in Frameworks */,
 				C8E18F20222EDED000E30E52 /* SafariServices.framework in Frameworks */,
 				BC532EEF278C00550027CA11 /* CodeScanner in Frameworks */,
@@ -2162,10 +2150,10 @@
 				85EFC01D27C5158A009460DE /* Fuzi.xcframework in Frameworks */,
 				85EFC01F27C5158D009460DE /* GCDWebServers.xcframework in Frameworks */,
 				0B8E0FF41A932BD500161DC3 /* ImageIO.framework in Frameworks */,
+				66A7639227C7505D0047F999 /* SDWebImage.xcframework in Frameworks */,
 				85EFC02527C515EE009460DE /* OnePasswordExtension.xcframework in Frameworks */,
 				85EFC03027C51754009460DE /* ObjcExceptionBridging.xcframework in Frameworks */,
 				BCAAA0D0276D979B0013223E /* web3swift in Frameworks */,
-				85EFC02727C516F3009460DE /* SDWebImageSwiftUI.xcframework in Frameworks */,
 				85EFC02A27C51714009460DE /* SnapKit.xcframework in Frameworks */,
 				6786EA772759545A00B53127 /* CrashReporter in Frameworks */,
 				85EFC02E27C5174B009460DE /* SwiftyJSON.xcframework in Frameworks */,
@@ -4354,7 +4342,6 @@
 				288A2D811AB8B3260023ABC3 /* Sources */,
 				288A2D821AB8B3260023ABC3 /* Frameworks */,
 				288A2D841AB8B3260023ABC3 /* Resources */,
-				85EFC03A27C519DF009460DE /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
