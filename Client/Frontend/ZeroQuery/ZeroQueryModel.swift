@@ -173,8 +173,10 @@ class ZeroQueryModel: ObservableObject {
                 })
         } else if !Defaults[.didDismissDefaultBrowserCard]
             && !Defaults[.didSetDefaultBrowser]
-            && !Defaults[.didShowDefaultBrowserInterstitial]
+            && (!Defaults[.didShowDefaultBrowserInterstitial]
+                || satisfyDefaultBrowserPromoFreqRule())
         {
+            ClientLogger.shared.logCounter(.DefaultBrowserPromoCardImp)
             promoCard = .defaultBrowser {
                 ClientLogger.shared.logCounter(
                     .PromoDefaultBrowser,
@@ -212,6 +214,13 @@ class ZeroQueryModel: ObservableObject {
         if showRatingsCard {
             ClientLogger.shared.logCounter(.RatingsRateExperience)
         }
+    }
+
+    func satisfyDefaultBrowserPromoFreqRule() -> Bool {
+        return Defaults[.numOfDailyZeroQueryImpression] != 0
+                && Defaults[.numOfDailyZeroQueryImpression]%DefaultBrowserPromoRules.nthZeroQueryImpression == 0
+                && Defaults[.numOfDailyZeroQueryImpression] <=
+                    DefaultBrowserPromoRules.nthZeroQueryImpression*DefaultBrowserPromoRules.maxDailyPromoImpression
     }
 
     func updateSuggestedSites() {

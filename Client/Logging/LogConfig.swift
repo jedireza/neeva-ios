@@ -196,6 +196,8 @@ public struct LogConfig {
         case CloseDefaultBrowserPromo
         case DefaultBrowserPromptSkip
         case DefaultBrowserPromptOpen
+        /// Promo card impression (without 2 second)
+        case DefaultBrowserPromoCardImp
 
         // MARK: selected suggestion
         case QuerySuggestion
@@ -471,6 +473,7 @@ public struct LogConfig {
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
         case .GoToSysAppSettings: return .PromoCard
+        case .DefaultBrowserPromoCardImp: return .PromoCard
 
         case .QuerySuggestion: return .Suggestions
         case .MemorizedSuggestion: return .Suggestions

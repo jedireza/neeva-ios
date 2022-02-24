@@ -178,6 +178,11 @@ extension Defaults.Keys {
     // Spotlight Search
     public static let createUserActivities = Defaults.BoolKey("createUserActivities", default: true)
     public static let makeActivityAvailForSearch = Defaults.BoolKey("makeActivityAvailForSearch", default: false)
+
+    public static let addThumbnailToActivities = Defaults.BoolKey("addThumbnailToActivities", default: false)
+
+    public static let numOfDailyZeroQueryImpression = Defaults.Key<Int>("numOfDailyZeroQueryImpression", default: 0)
+    public static let lastZeroQueryImpUpdatedTimestamp = Defaults.Key<Date?>("lastZeroQueryImpUpdatedTimestamp")
 }
 
 extension Defaults {

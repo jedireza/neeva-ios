@@ -5,6 +5,11 @@
 import Shared
 import SwiftUI
 
+enum DefaultBrowserPromoRules {
+    static let nthZeroQueryImpression = 4
+    static let maxDailyPromoImpression = 3
+}
+
 enum PromoCardType {
     case previewModeSignUp(action: () -> Void)
     case neevaSignIn(action: () -> Void)
