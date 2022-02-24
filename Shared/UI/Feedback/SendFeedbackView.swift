@@ -227,8 +227,8 @@ public struct SendFeedbackView: View {
         @State private var urlString: String
 
         var body: some View {
-            Form {
-                DecorativeSection {
+            GroupedStack {
+                GroupedCell {
                     MultilineTextField(
                         "Enter a URL to submit with the feedback",
                         text: $urlString,
@@ -240,13 +240,18 @@ public struct SendFeedbackView: View {
                             tf.autocorrectionType = .no
                         }
                     )
-                    .padding(.horizontal, -10)
+                    .padding(.vertical, 7)
                     .onChange(of: urlString) { value in
                         self.url = URL(string: urlString)
                     }
                 }
+                .padding(.vertical, 12)
+
+                Spacer()
             }
+            .background(Color.groupedBackground.ignoresSafeArea())
             .navigationTitle("Edit URL")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Done") { isActive = false }
