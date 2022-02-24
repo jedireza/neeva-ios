@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import Combine
+import CoreSpotlight
 import Defaults
 import SDWebImage
 import Shared
@@ -174,8 +175,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                let url = URL(string: urlString) {
                 self.bvc.switchToTabForURLOrOpen(url)
             }
-        }
-        if !continueSiriIntent(continue: userActivity) {
+        } else if userActivity.activityType == CSSearchableItemActionType,
+           let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+            // this itemIdentifier is the spaces id
+            self.bvc.browserModel.openSpace(spaceId: itemIdentifier, bvc: self.bvc, completion: {})
+        } else if !continueSiriIntent(continue: userActivity) {
             _ = checkForUniversalURL(continue: userActivity)
         }
     }

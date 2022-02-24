@@ -123,6 +123,7 @@
 		323E460A27C6C76900F325E2 /* SpotlightSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323E460927C6C76900F325E2 /* SpotlightSettingsView.swift */; };
 		324948F227BDE84B00082FCF /* NavigationRouter+MaybeRewriteURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324948F127BDE84B00082FCF /* NavigationRouter+MaybeRewriteURL.swift */; };
 		324948F827BE027B00082FCF /* NavigationRouterSearchRewriteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324948F327BDEBE400082FCF /* NavigationRouterSearchRewriteTests.swift */; };
+		323E460C27C6ED7400F325E2 /* SpaceStore+CoreSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323E460B27C6ED7400F325E2 /* SpaceStore+CoreSpotlight.swift */; };
 		32D7F0EB2797025C000203C7 /* CheatsheetMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */; };
 		32D95B0427A37C8100447507 /* CheatsheetTooltipPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */; };
 		32FAB3DE27B62A5F00FEBDFE /* NeevaScopeLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32FAB3DB27B62A5E00FEBDFE /* NeevaScopeLoadingView.swift */; };
@@ -1323,6 +1324,7 @@
 		323E460927C6C76900F325E2 /* SpotlightSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightSettingsView.swift; sourceTree = "<group>"; };
 		324948F127BDE84B00082FCF /* NavigationRouter+MaybeRewriteURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavigationRouter+MaybeRewriteURL.swift"; sourceTree = "<group>"; };
 		324948F327BDEBE400082FCF /* NavigationRouterSearchRewriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRouterSearchRewriteTests.swift; sourceTree = "<group>"; };
+		323E460B27C6ED7400F325E2 /* SpaceStore+CoreSpotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SpaceStore+CoreSpotlight.swift"; sourceTree = "<group>"; };
 		32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetMenuViewModel.swift; sourceTree = "<group>"; };
 		32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetTooltipPopoverView.swift; sourceTree = "<group>"; };
 		32FAB3DB27B62A5E00FEBDFE /* NeevaScopeLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaScopeLoadingView.swift; sourceTree = "<group>"; };
@@ -3447,6 +3449,7 @@
 				4A15C8B826E1BFAB006CD097 /* SpaceRequest.swift */,
 				4A72AFC1278E42F60057E58B /* MutationRequest.swift */,
 				C9C18E31265594DE004710CD /* SpaceStore.swift */,
+				323E460B27C6ED7400F325E2 /* SpaceStore+CoreSpotlight.swift */,
 				4AD771B52738697A00B6769D /* SpaceEntityData.swift */,
 				4AD771AD2729C4C000B6769D /* PreviewEntities.swift */,
 				C9BED4BE2667F83E001D9C77 /* SSOProvider.swift */,
@@ -5392,6 +5395,7 @@
 				C9AFE6DF2657F8DA000C5A03 /* QuickLookView.swift in Sources */,
 				7B9BF91C1E43472E00CB24F4 /* JSONExtensions.swift in Sources */,
 				C9C18E51265597B0004710CD /* Symbol.swift in Sources */,
+				323E460C27C6ED7400F325E2 /* SpaceStore+CoreSpotlight.swift in Sources */,
 				66C5224C27607965003C7F2D /* UIDeviceExtension.swift in Sources */,
 				66B379DB26DDAD1800087B04 /* FeedbackRequest.swift in Sources */,
 				E65075BD1E37F7AB006961AC /* SystemUtils.swift in Sources */,

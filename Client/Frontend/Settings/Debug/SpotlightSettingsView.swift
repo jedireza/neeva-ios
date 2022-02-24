@@ -11,8 +11,13 @@ struct SpotlightSettingsView: View {
     @Default(.createUserActivities) var createUserActivities
     @Default(.makeActivityAvailForSearch) var makeActivityAvailForSearch
     @Default(.addThumbnailToActivities) var addThumbnailToActivities
+    @Default(.addSpacesToCS) var addSpacesToCS
 
     @State private var deletingActivities = false
+
+    @State private var deletingSpaces = false
+    @State private var deletingAllSpaceIndex = false
+    var spaceIndexBusy: Bool { deletingSpaces || deletingAllSpaceIndex }
 
     var body: some View {
         List {
@@ -35,6 +40,51 @@ struct SpotlightSettingsView: View {
                             .opacity(deletingActivities ? 1 : 0)
                     }
                 })
+            }
+
+            Section(header: Text(verbatim: "Spaces")) {
+                Toggle(String("Add Spaces Data to Spotlight"), isOn: $addSpacesToCS)
+                // Delete Buttons
+                Group {
+                    Button(action: {
+                        deletingSpaces = true
+                        SpaceStore.removeAllSpacesFromCoreSpotlight { error in
+                            if let error = error {
+                                print(error.localizedDescription)
+                            }
+                            deletingSpaces = false
+                        }
+                    }, label: {
+                        HStack {
+                        Text("Remove All Spaces from Index")
+                            .foregroundColor(.red)
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .opacity(deletingSpaces ? 1 : 0)
+                        }
+                    })
+
+                    Button(action: {
+                        deletingAllSpaceIndex = true
+                        SpaceStore.clearIndex { error in
+                            if let error = error {
+                                print(error.localizedDescription)
+                            }
+                            deletingAllSpaceIndex = false
+                        }
+                    }, label: {
+                        HStack {
+                        Text("Clear Space Index")
+                            .foregroundColor(.red)
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .opacity(deletingAllSpaceIndex ? 1 : 0)
+                        }
+                    })
+                }
+                .disabled(spaceIndexBusy)
             }
 
         }

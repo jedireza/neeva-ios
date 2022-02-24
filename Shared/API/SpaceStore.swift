@@ -4,6 +4,8 @@
 
 import Apollo
 import Combine
+import Defaults
+import CoreSpotlight
 import Foundation
 
 public struct SpaceID: Hashable, Identifiable {
@@ -384,6 +386,24 @@ public class SpaceStore: ObservableObject {
                 }
 
                 allSpaces.append(newSpace)
+            }
+        }
+
+        // Schedule Spaces Operations
+        if Defaults[.addSpacesToCS] {
+            // add spaces to CS
+            Self.addSpacesToCoreSpotlight(allSpaces) { error in
+                if let error = error {
+                    Logger.storage.error("Error: \(error)")
+                }
+            }
+
+            // remove spaces that are gone
+            let removedSpaces = Set(oldSpaceMap.keys).subtracting(allSpaces.map { $0.id })
+            Self.removeSpacesFromCoreSpotlight(Array(removedSpaces)) { error in
+                if let error = error {
+                    Logger.storage.error("Error: \(error)")
+                }
             }
         }
 
