@@ -22,6 +22,15 @@ extension EnvironmentValues {
         get { self[OverlayModelKey.self] }
         set { self[OverlayModelKey.self] = newValue }
     }
+
+    private struct OverlayMinHeightToFillScrollViewKey: EnvironmentKey {
+        static let defaultValue: CGFloat = .zero
+    }
+
+    public var overlayMinHeightToFillScrollView: CGFloat {
+        get { self[OverlayMinHeightToFillScrollViewKey.self] }
+        set { self[OverlayMinHeightToFillScrollViewKey.self] = newValue }
+    }
 }
 
 struct PopoverRootView: View {

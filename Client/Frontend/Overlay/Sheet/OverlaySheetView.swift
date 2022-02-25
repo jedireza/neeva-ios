@@ -45,6 +45,7 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
     @State private var titleHeight: CGFloat = 0
     @State private var contentHeight: CGFloat = 0
     @State private var headerHeight: CGFloat = 0
+    @State private var minHeightToFillScrollView: CGFloat = 0
     @State private var title: LocalizedStringKey? = nil
     @State private var isFixedHeight: Bool = false
     @State private var bottomSafeArea: CGFloat = 0
@@ -226,9 +227,15 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
                 } else if !style.embedScrollView {
                     sheetContent
                 } else {
-                    ScrollView(model.position == .top ? [.vertical] : [], showsIndicators: false) {
-                        sheetContent
-                            .padding(.bottom, OverlaySheetUX.bottomPadding)
+                    GeometryReader { proxy in
+                        ScrollView(model.position == .top ? [.vertical] : [], showsIndicators: false) {
+                            sheetContent
+                                .padding(.bottom, OverlaySheetUX.bottomPadding)
+                                .environment(\.overlayMinHeightToFillScrollView, minHeightToFillScrollView)
+                        }
+                    }
+                    .onHeightOfViewChanged {
+                        minHeightToFillScrollView = $0
                     }
                 }
             }

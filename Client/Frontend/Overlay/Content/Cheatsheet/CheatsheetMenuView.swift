@@ -87,66 +87,101 @@ struct QueryButton: View {
 struct CheatsheetInfoView: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
+    @Environment(\.overlayMinHeightToFillScrollView) var minHeightToFillScrollView
+
+    @State private var textWidth: CGFloat = 0
+    @State private var textHeight: CGFloat = 0
+    @State private var buttonHeight: CGFloat = 0
 
     let buttonText: String
     let buttonAction: () -> Void
 
+    let verticalPadding: CGFloat = 10
+
+    var imageHeight: CGFloat {
+        let height = minHeightToFillScrollView - verticalPadding - textHeight - buttonHeight
+        // in popover, we can't get any minHeightToFillScrollView, so this value will be negative
+        return (height < 0) ? 250 : height
+    }
+
     var body: some View {
         VStack(alignment: .center, spacing: 0) {
             VStack(alignment: .leading) {
-                HStack(alignment: .center) {
-                    Image("neeva-logo", bundle: .main)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 18, alignment: .center)
-                    Text("NeevaScope")
-                        .withFont(.headingXLarge)
-                }
-                Text(
-                    "Tap on the Neeva logo to see information related to the website you're visiting."
-                )
-                .withFont(.bodyLarge)
-                .foregroundColor(.secondaryLabel)
-                .fixedSize(horizontal: false, vertical: true)
-                .layoutPriority(1)
-                Text(
-                    "From related content to reviews, NeevaScope is your guide to the web!"
-                )
-                .withFont(.bodyLarge)
-                .foregroundColor(.secondaryLabel)
-                .fixedSize(horizontal: false, vertical: true)
-                .layoutPriority(1)
+                header
+                text
+            }.onSizeOfViewChanged { size in
+                textHeight = size.height
+                textWidth = size.width
             }
-            Group {
-                Spacer(minLength: 10)
+
+            ZStack {
+                Spacer()
                 // hide the image on small iPhones in landscape
                 if horizontalSizeClass == .regular || verticalSizeClass == .regular {
                     Image("cheatsheet", bundle: .main)
                         .resizable()
                         .scaledToFit()
-                        .frame(minHeight: 115, maxHeight: 500)
+                        .padding(.vertical)
+                        .frame(maxHeight: imageHeight)
                         .accessibilityHidden(true)
-                        .padding(.bottom)
-                } else {
-                    Spacer()
-                }
-                Spacer(minLength: 0)
-            }
-            .layoutPriority(-1)
-            Button(action: buttonAction) {
-                HStack {
-                    Spacer()
-                    Text(buttonText)
-                        .withFont(.labelLarge)
-                    Spacer()
+                        .layoutPriority(-1)
                 }
             }
-            .buttonStyle(.neeva(.primary))
+
+            button
+                .frame(maxWidth: textWidth)
+                .onHeightOfViewChanged {
+                    buttonHeight = $0
+                }
         }
         .multilineTextAlignment(.leading)
-        .padding(.top, 10)
-        .padding(.bottom, 16)
+        .padding(.vertical, verticalPadding)
         .padding(.horizontal, 16)
+        .layoutPriority(1)
+        .frame(minHeight: minHeightToFillScrollView)
+    }
+
+    @ViewBuilder
+    var header: some View {
+        HStack(alignment: .center) {
+            Image("neeva-logo", bundle: .main)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 18, alignment: .center)
+            Text("NeevaScope")
+                .withFont(.headingXLarge)
+        }
+    }
+
+    @ViewBuilder
+    var text: some View {
+        Text(
+            "Tap on the Neeva logo to see information related to the website you're visiting."
+        )
+        .withFont(.bodyLarge)
+        .foregroundColor(.secondaryLabel)
+        .fixedSize(horizontal: false, vertical: true)
+        .layoutPriority(1)
+        Text(
+            "From related content to reviews, NeevaScope is your guide to the web!"
+        )
+        .withFont(.bodyLarge)
+        .foregroundColor(.secondaryLabel)
+        .fixedSize(horizontal: false, vertical: true)
+        .layoutPriority(1)
+    }
+
+    @ViewBuilder
+    var button: some View {
+        Button(action: buttonAction) {
+            HStack {
+                Spacer()
+                Text(buttonText)
+                    .withFont(.labelLarge)
+                Spacer()
+            }
+        }
+        .buttonStyle(.neeva(.primary))
     }
 }
 
@@ -167,6 +202,7 @@ struct CheatsheetNoResultView: View {
                 .frame(minHeight: 50, maxHeight: 300)
                 .accessibilityHidden(true)
                 .padding(.bottom)
+            Spacer()
         }
         .multilineTextAlignment(.center)
         .padding(.top, 10)
