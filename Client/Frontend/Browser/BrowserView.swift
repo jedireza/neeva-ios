@@ -144,6 +144,7 @@ struct BrowserView: View {
                         && !overlayManager.hideBottomBar
                     {
                         bottomBar
+                            .fixedSize(horizontal: false, vertical: true)
                             .offset(x: detailViewVisible ? -geom.size.width : 0)
                             .onHeightOfViewChanged { height in
                                 self.chromeModel.bottomBarHeight = height
