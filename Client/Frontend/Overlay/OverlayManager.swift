@@ -123,7 +123,7 @@ class OverlayManager: ObservableObject {
         }
 
         switch overlay {
-        case .findInPage:
+        case .findInPage, .sheet, .fullScreenModal:
             hideBottomBar = true
         default:
             hideBottomBar = false
@@ -251,7 +251,6 @@ class OverlayManager: ObservableObject {
         } else {
             currentOverlay = nil
             offsetForBottomBar = false
-            hideBottomBar = false
             showFullScreenPopoverSheet = false
             displaying = false
             resetUIModifiers()
@@ -267,6 +266,8 @@ class OverlayManager: ObservableObject {
                 hideBottomBar = false
             }
         }
+
+        hideBottomBar = false
     }
 
     private func resetUIModifiers() {
