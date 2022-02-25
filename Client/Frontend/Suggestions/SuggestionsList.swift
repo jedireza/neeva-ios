@@ -66,11 +66,11 @@ struct SuggestionsList: View {
             if #available(iOS 15.0, *) {
                 ScrollView(.vertical, showsIndicators: false) {
                     content
-                        .safeAreaInset(edge: .leading) {
+                        .safeAreaInset(edge: .leading, spacing: 0) {
                             Color.clear.frame(width: geom.safeAreaInsets.leading)
 
                         }
-                        .safeAreaInset(edge: .trailing) {
+                        .safeAreaInset(edge: .trailing, spacing: 0) {
                             Color.clear.frame(width: geom.safeAreaInsets.trailing)
                         }
                 }

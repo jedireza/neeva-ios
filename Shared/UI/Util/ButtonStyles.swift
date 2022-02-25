@@ -16,6 +16,7 @@ public struct TableCellButtonStyle: ButtonStyle {
                 Color.selectedCell
                     .opacity(configuration.isPressed ? 1 : 0)
                     .padding(padding)
+                    .ignoresSafeArea(.container)
             )
     }
 }
