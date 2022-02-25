@@ -123,7 +123,7 @@ class OverlayManager: ObservableObject {
         }
 
         switch overlay {
-        case .findInPage, .sheet, .fullScreenModal:
+        case .findInPage:
             hideBottomBar = true
         default:
             hideBottomBar = false
