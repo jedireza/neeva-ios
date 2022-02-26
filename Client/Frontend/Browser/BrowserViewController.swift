@@ -935,11 +935,19 @@ class BrowserViewController: UIViewController, ModalPresenter {
         }
     }
 
+    /// Closes or hides any overlayed views and returns to the selected tab
     fileprivate func popToBVC() {
         if browserModel.showGrid {
+            // Hides CardGrid
             browserModel.hideWithNoAnimation()
-        }
 
+            // Closes any Space that may be open
+            gridModel.spaceCardModel.detailedSpace = nil
+
+            // Resets the CardGrid to be showing tabs for when user reopens the CardGrid
+            gridModel.switchToTabs(incognito: incognitoModel.isIncognito)
+        }
+        
         if let introViewModel = introViewModel {
             introViewModel.dismiss {
                 self.introViewModel = nil
@@ -949,6 +957,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         if let presentedViewController = presentedViewController {
             presentedViewController.dismiss(animated: true, completion: nil)
         } else if chromeModel.isEditingLocation {
+            // Closes the Suggest UI
             chromeModel.setEditingLocation(to: false)
         }
 
