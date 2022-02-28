@@ -49,7 +49,6 @@ struct InternalSettingsView: View {
     @Default(.numOfDailyZeroQueryImpression) var numOfDailyZeroQueryImpression
     @Default(.lastZeroQueryImpUpdatedTimestamp) var lastZeroQueryImpUpdatedTimestamp
 
-
     var body: some View {
         List {
             Section(header: Text(verbatim: "First Run")) {
@@ -83,7 +82,9 @@ struct InternalSettingsView: View {
                 Section(header: Text(verbatim: "Cheatsheet")) {
                     Toggle(String("cheatsheetIntroSeen"), isOn: $seenCheatsheetIntro)
                     Toggle(String("showTryCheatsheetPopover"), isOn: $showTryCheatsheetPopover)
-                    Toggle(String("seenTryCheatsheetPopoverOnRecipe"), isOn: $seenTryCheatsheetPopoverOnRecipe)
+                    Toggle(
+                        String("seenTryCheatsheetPopoverOnRecipe"),
+                        isOn: $seenTryCheatsheetPopoverOnRecipe)
                     Toggle(String("cheatsheetDebugQuery"), isOn: $cheatsheetDebugQuery)
                     Toggle(String("showNeevaMenuWillMove"), isOn: $showNeevaMenuWillMove)
                 }
@@ -115,9 +116,12 @@ struct InternalSettingsView: View {
                 HStack {
                     VStack(alignment: .leading) {
                         Text(verbatim: "lastZeroQueryImpUpdatedTimestamp")
-                        Text(verbatim: "\(lastZeroQueryImpUpdatedTimestamp?.timeIntervalSince1970)")
-                            .foregroundColor(.secondaryLabel)
-                            .font(.caption)
+                        Text(
+                            verbatim:
+                                "\(lastZeroQueryImpUpdatedTimestamp?.timeIntervalSince1970 ?? 0)"
+                        )
+                        .foregroundColor(.secondaryLabel)
+                        .font(.caption)
                     }
                     Spacer()
                     Button(String("Clear")) { lastZeroQueryImpUpdatedTimestamp = nil }

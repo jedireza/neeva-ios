@@ -77,7 +77,7 @@ public class EnvironmentHelper {
         let privateTabsOpened = ClientLogCounterAttribute(
             key: LogConfig.Attribute.PrivateTabsOpened,
             value: String(numOfPrivateTabs))
-        
+
         // number of tab groups
         let numTabGroupsTotal = ClientLogCounterAttribute(
             key: LogConfig.Attribute.numTabGroupsTotal,
@@ -108,7 +108,8 @@ public class EnvironmentHelper {
             value: String(NeevaUserInfo.shared.hasLoginCookie()))
 
         let attributes = [
-            normalTabsOpened, privateTabsOpened, numTabGroupsTotal, numChildTabsTotal, deviceTheme, deviceOrientation,
+            normalTabsOpened, privateTabsOpened, numTabGroupsTotal, numChildTabsTotal, deviceTheme,
+            deviceOrientation,
             deviceScreensSize, isUserSignedIn, getSessionUUID(),
         ]
         return attributes
@@ -137,7 +138,7 @@ public class EnvironmentHelper {
             key: LogConfig.Attribute.PreviewModeQueryCount,
             value: String(Defaults[.previewModeQueries].count))
 
-        var attributes = [
+        let attributes = [
             getSessionUUID(), isUserSignedIn, deviceTheme, deviceName, firstRunPath,
             previewQueryCount,
         ]

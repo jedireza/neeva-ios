@@ -48,9 +48,8 @@ class Web3Model: ObservableObject, ResponseRelay {
 
     @Published var currentSequence: SequenceInfo? = nil {
         didSet {
-            guard let sequence = currentSequence, let wallet = wallet else { return }
+            guard currentSequence != nil, wallet != nil else { return }
             tryMatchCurrentPageToCollection()
-
             updateBalances()
         }
     }

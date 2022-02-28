@@ -91,7 +91,7 @@ class SuggestionViewsTests: XCTestCase {
         let secondaryLabelView = try navSuggestion.inspect().find(URLDisplayView.self).actualView()
         let displayURLHStack = try secondaryLabelView.inspect().find(ViewType.HStack.self)
         XCTAssertNotNil(hStack)
-        let secondaryLabels = try displayURLHStack.findAll(ViewType.Text.self)
+        let secondaryLabels = displayURLHStack.findAll(ViewType.Text.self)
         let secondaryLabel = try secondaryLabels[0].string(locale: Locale(identifier: "en"))
         XCTAssertEqual("neeva.com", secondaryLabel)
     }

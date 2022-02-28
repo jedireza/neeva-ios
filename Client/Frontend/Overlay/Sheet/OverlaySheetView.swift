@@ -98,7 +98,8 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
                 }
             case .middle:
                 if let middlePreferredHeight = middlePreferredHeight {
-                    let approxContentHeight = middlePreferredHeight
+                    let approxContentHeight =
+                        middlePreferredHeight
                         + model.topBarHeight
                         + OverlaySheetUX.topPadding
                         + OverlaySheetUX.bottomPadding
