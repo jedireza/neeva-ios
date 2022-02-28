@@ -132,7 +132,19 @@ class BrowserModel: ObservableObject {
                 return
             }
 
-            SpaceStore.openSpace(spaceId: spaceId) { [self] in
+            SpaceStore.openSpace(spaceId: spaceId) { [self] error in
+                if error != nil {
+                    gridModel.isLoading = false
+
+                    ToastDefaults().showToast(
+                        with: "Unable to find Space",
+                        toastViewManager: SceneDelegate.getCurrentSceneDelegate(for: bvc.view)
+                            .toastViewManager
+                    )
+
+                    return
+                }
+
                 let spaceCardModel = bvc.gridModel.spaceCardModel
                 if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
                     gridModel.isLoading = false

@@ -4,8 +4,8 @@
 
 import Apollo
 import Combine
-import Defaults
 import CoreSpotlight
+import Defaults
 import Foundation
 
 public struct SpaceID: Hashable, Identifiable {
@@ -288,11 +288,11 @@ public class SpaceStore: ObservableObject {
         }
     }
 
-    public static func openSpace(spaceId: String, completion: @escaping () -> Void) {
+    public static func openSpace(spaceId: String, completion: @escaping (Error?) -> Void) {
         if spaceId == SpaceStore.dailyDigestID {
             shared.refresh {
                 shared.addDailyDigestToSpaces()
-                completion()
+                completion(nil)
             }
         } else {
             SpacesDataQueryController.getSpacesData(spaceIds: [spaceId]) { result in
@@ -303,12 +303,13 @@ public class SpaceStore: ObservableObject {
                     subscription = SpaceStore.shared.$state.sink {
                         state in
                         if case .ready = state {
-                            completion()
+                            completion(nil)
                             subscription?.cancel()
                         }
                     }
                 case .failure(let error):
                     Logger.browser.error(error.localizedDescription)
+                    completion(error)
                 }
             }
         }

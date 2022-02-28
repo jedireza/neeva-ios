@@ -14,7 +14,6 @@ class GridModel: ObservableObject {
 
     @Published private(set) var pickerHeight: CGFloat = UIConstants
         .TopToolbarHeightWithToolbarButtonsShowing
-    @Published var isLoading = false
     @Published var switcherState: SwitcherViews = .tabs {
         didSet {
             if case .spaces = switcherState {
@@ -24,16 +23,17 @@ class GridModel: ObservableObject {
             }
         }
     }
-    @Published private(set) var refreshDetailedSpaceSubscription: AnyCancellable? = nil
+
     @Published var showingDetailView = false
+    @Published var needsScrollToSelectedTab: Int = 0
+
+    // Spaces
+    @Published var isLoading = false
+    @Published private(set) var refreshDetailedSpaceSubscription: AnyCancellable? = nil
 
     private var subscriptions: Set<AnyCancellable> = []
-
     private let tabMenu: TabMenu
-
     var animateDetailTransitions = true
-
-    @Published var needsScrollToSelectedTab: Int = 0
 
     init(tabManager: TabManager, tabGroupManager: TabGroupManager) {
         self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)

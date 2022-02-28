@@ -13,6 +13,12 @@ class ToastDefaults: NSObject {
 
     private var requestListener: AnyCancellable?
 
+    func showToast(with text: String, toastViewManager: ToastViewManager) {
+        let toastView = toastViewManager.makeToast(text: LocalizedStringKey(text))
+        toast = toastView
+        toastViewManager.enqueue(view: toastView)
+    }
+
     func showToastForClosedTabs(_ savedTabs: [SavedTab], tabManager: TabManager) {
         guard savedTabs.count > 0 else {
             return
