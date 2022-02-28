@@ -42,9 +42,9 @@ struct ZeroQueryContent: View {
             }
             .environment(\.shareURL, model.shareURLHandler)
             .environment(\.zeroQueryHideTopSite, model.hideURLFromTopSites)
-            .environment(\.openInNewTab) { url, isPrivate in
+            .environment(\.openInNewTab) { url, isIncognito in
                 model.delegate?.zeroQueryPanelDidRequestToOpenInNewTab(
-                    url, isPrivate: isPrivate)
+                    url, isIncognito: isIncognito)
             }
             .environment(\.saveToSpace) { url, title, description in
                 model.delegate?.zeroQueryPanelDidRequestToSaveToSpace(
@@ -54,7 +54,8 @@ struct ZeroQueryContent: View {
             }
             .onAppear {
                 if let date = Defaults[.lastZeroQueryImpUpdatedTimestamp],
-                   Calendar.current.isDateInYesterday(date) {
+                    Calendar.current.isDateInYesterday(date)
+                {
                     Defaults[.numOfDailyZeroQueryImpression] = 0
                 }
                 Defaults[.numOfDailyZeroQueryImpression] += 1

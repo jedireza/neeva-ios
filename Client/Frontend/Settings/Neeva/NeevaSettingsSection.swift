@@ -17,7 +17,7 @@ struct NeevaSettingsSection: View {
 
     // Used by FeatureFlag[.inlineAccountSettings] to render inline settings
     static var webView: WKWebView = {
-        let config = TabManager.makeWebViewConfig(isPrivate: false)
+        let config = TabManager.makeWebViewConfig(isIncognito: false)
         config.preferences.javaScriptCanOpenWindowsAutomatically = false
 
         let webView = WKWebView(

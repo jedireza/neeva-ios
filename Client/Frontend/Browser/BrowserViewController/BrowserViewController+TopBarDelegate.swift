@@ -51,7 +51,7 @@ extension BrowserViewController: TopBarDelegate {
                         Tab.ChangeUserAgent.updateDomainList(
                             forUrl: url,
                             isChangedUA: tab.changedUserAgent,
-                            isPrivate: self.incognitoModel.isIncognito
+                            isIncognito: self.incognitoModel.isIncognito
                         )
                     }
                 }

@@ -100,22 +100,22 @@ class QuickActions: NSObject {
     ) {
         switch type {
         case .newTab:
-            handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: false)
+            handleOpenNewTab(withBrowserViewController: browserViewController, isIncognito: false)
         case .newIncognitoTab:
-            handleOpenNewTab(withBrowserViewController: browserViewController, isPrivate: true)
+            handleOpenNewTab(withBrowserViewController: browserViewController, isIncognito: true)
         }
     }
 
     fileprivate func handleOpenNewTab(
-        withBrowserViewController bvc: BrowserViewController, isPrivate: Bool
+        withBrowserViewController bvc: BrowserViewController, isIncognito: Bool
     ) {
         // Wait for animations that run when returning to foreground to finish
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
             let isEmpty =
-                isPrivate
+                isIncognito
                 ? bvc.tabManager.incognitoTabs.count == 0 : bvc.tabManager.normalTabs.count == 0
             bvc.openLazyTab(
-                openedFrom: isEmpty ? .tabTray : .openTab(nil), switchToIncognitoMode: isPrivate)
+                openedFrom: isEmpty ? .tabTray : .openTab(nil), switchToIncognitoMode: isIncognito)
         }
     }
 }

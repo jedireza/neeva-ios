@@ -9,18 +9,18 @@ import SwiftUI
 enum QuickLink: Int {
     case search = 1
     case copiedLink
-    case privateSearch
-    case closePrivateTabs
+    case incognitoSearch
+    case closeIncognitoTabs
 
     public var imageName: String {
         switch self {
         case .search:
             return "faviconNeeva"
-        case .privateSearch:
+        case .incognitoSearch:
             return "incognito"
         case .copiedLink:
             return "copiedLinkIcon"
-        case .closePrivateTabs:
+        case .closeIncognitoTabs:
             return "delete"
         }
     }
@@ -29,11 +29,11 @@ enum QuickLink: Int {
         switch self {
         case .search:
             return String.SearchInNeevaV2
-        case .privateSearch:
+        case .incognitoSearch:
             return String.SearchInIncognitoTabLabelV2
         case .copiedLink:
             return String.GoToCopiedLinkLabelV2
-        case .closePrivateTabs:
+        case .closeIncognitoTabs:
             return String.CloseIncognitoTabsLabelV2
         }
     }
@@ -42,11 +42,11 @@ enum QuickLink: Int {
         switch self {
         case .search:
             return linkToContainingApp("?private=false", query: "open-url")
-        case .privateSearch:
+        case .incognitoSearch:
             return linkToContainingApp("?private=true", query: "open-url")
         case .copiedLink:
             return linkToContainingApp(query: "open-copied")
-        case .closePrivateTabs:
+        case .closeIncognitoTabs:
             return linkToContainingApp(query: "close-private-tabs")
         }
     }
@@ -55,14 +55,14 @@ enum QuickLink: Int {
         switch self {
         case .search:
             return [Color("searchButtonColorTwo"), Color("searchButtonColorOne")]
-        case .privateSearch:
+        case .incognitoSearch:
             return [
                 Color("privateGradientThree"), Color("privateGradientTwo"),
                 Color("privateGradientOne"),
             ]
         case .copiedLink:
             return [Color("goToCopiedLinkSolid")]
-        case .closePrivateTabs:
+        case .closeIncognitoTabs:
             return [
                 Color("privateGradientThree"), Color("privateGradientTwo"),
                 Color("privateGradientOne"),
@@ -74,10 +74,10 @@ enum QuickLink: Int {
         switch configuration.quickLink {
         case .search:
             return .search
-        case .privateSearch:
-            return .privateSearch
-        case .closePrivateTabs:
-            return .closePrivateTabs
+        case .incongitoSearch:
+            return .incognitoSearch
+        case .closeIncognitoTabs:
+            return .closeIncognitoTabs
         case .copiedLink:
             return .copiedLink
         default:

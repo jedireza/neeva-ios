@@ -176,13 +176,14 @@ class Tab: NSObject, ObservableObject {
 
     weak var browserViewController: BrowserViewController?
 
-    init(bvc: BrowserViewController, configuration: WKWebViewConfiguration, isPrivate: Bool = false)
-    {
+    init(
+        bvc: BrowserViewController, configuration: WKWebViewConfiguration, isIncognito: Bool = false
+    ) {
         self.configuration = configuration
         // TODO(darin): Need to untangle this dependency on BVC!
         self.browserViewController = bvc
         self.tabDelegate = bvc
-        self.isIncognito = isPrivate
+        self.isIncognito = isIncognito
         super.init()
 
         debugTabCount += 1

@@ -7,7 +7,7 @@ import Shared
 import SwiftUI
 
 struct PrivacySettingsSection: View {
-    @Default(.closePrivateTabs) var closePrivateTabs
+    @Default(.closeIncognitoTabs) var closeIncognitoTabs
     @Default(.contentBlockingEnabled) private var contentBlockingEnabled
     @Environment(\.onOpenURL) var openURL
 
@@ -20,7 +20,7 @@ struct PrivacySettingsSection: View {
                         .ViewDataManagement, attributes: EnvironmentHelper.shared.getAttributes())
                 }
         )
-        Toggle(isOn: $closePrivateTabs) {
+        Toggle(isOn: $closeIncognitoTabs) {
             DetailedSettingsLabel(
                 title: "Close Incognito Tabs",
                 description: "When Leaving Incognito Mode"

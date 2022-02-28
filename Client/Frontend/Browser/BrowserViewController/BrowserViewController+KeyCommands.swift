@@ -40,7 +40,7 @@ extension BrowserViewController {
         openLazyTab(openedFrom: browserModel.showContent ? .openTab(nil) : .tabTray)
     }
 
-    @objc func newPrivateTabKeyCommand() {
+    @objc func newIncognitoTabKeyCommand() {
         if !(incognitoModel.isIncognito) {
             tabManager.toggleIncognitoMode(openLazyTab: false)
         }
@@ -167,7 +167,7 @@ extension BrowserViewController {
                 title: Strings.NewTabTitle, action: #selector(newTabKeyCommand), input: "t",
                 modifierFlags: .command),
             UIKeyCommand(
-                title: Strings.NewIncognitoTabTitle, action: #selector(newPrivateTabKeyCommand),
+                title: Strings.NewIncognitoTabTitle, action: #selector(newIncognitoTabKeyCommand),
                 input: "p", modifierFlags: [.command]),
             UIKeyCommand(
                 title: Strings.CloseTabTitle, action: #selector(closeTabKeyCommand), input: "w",

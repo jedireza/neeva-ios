@@ -767,7 +767,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             hideZeroQuery()
             openURLInNewTab(
                 url,
-                isPrivate: zeroQueryModel.isIncognito,
+                isIncognito: zeroQueryModel.isIncognito,
                 query: searchQueryModel.value,
                 visitType: visitType
             )
@@ -825,26 +825,26 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     // MARK: Opening New Tabs
-    func switchToTabForURLOrOpen(_ url: URL, isPrivate: Bool = false) {
+    func switchToTabForURLOrOpen(_ url: URL, isIncognito: Bool = false) {
         popToBVC()
         if let tab = tabManager.getTabFor(url) {
             tabManager.selectTab(tab)
         } else {
-            openURLInNewTab(url, isPrivate: isPrivate)
+            openURLInNewTab(url, isIncognito: isIncognito)
         }
     }
 
-    func switchToTabForWidgetURLOrOpen(_ url: URL, uuid: String, isPrivate: Bool = false) {
+    func switchToTabForWidgetURLOrOpen(_ url: URL, uuid: String, isIncognito: Bool = false) {
         popToBVC()
         if let tab = tabManager.getTabForUUID(uuid: uuid) {
             tabManager.selectTab(tab)
         } else {
-            openURLInNewTab(url, isPrivate: isPrivate)
+            openURLInNewTab(url, isIncognito: isIncognito)
         }
     }
 
     func openURLInNewTab(
-        _ url: URL?, isPrivate: Bool = false, query: String? = nil, visitType: VisitType? = nil
+        _ url: URL?, isIncognito: Bool = false, query: String? = nil, visitType: VisitType? = nil
     ) {
         if let selectedTab = tabManager.selectedTab {
             screenshotHelper.takeScreenshot(selectedTab)
@@ -861,7 +861,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             self.tabManager.selectTab(
                 self.tabManager.addTab(
                     request,
-                    isPrivate: isPrivate,
+                    isIncognito: isIncognito,
                     query: query,
                     visitType: visitType
                 )
@@ -876,14 +876,14 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     func openURLInNewTabPreservingIncognitoState(_ url: URL) {
-        self.openURLInNewTab(url, isPrivate: incognitoModel.isIncognito)
+        self.openURLInNewTab(url, isIncognito: incognitoModel.isIncognito)
     }
 
-    func openURLInBackground(_ url: URL, isPrivate: Bool? = nil) {
-        let isIncognito = isPrivate == nil ? incognitoModel.isIncognito : isPrivate!
+    func openURLInBackground(_ url: URL, isIncognito: Bool? = nil) {
+        let isIncognito = isIncognito == nil ? incognitoModel.isIncognito : isIncognito!
 
         let tab = self.tabManager.addTab(
-            URLRequest(url: url), afterTab: tabManager.selectedTab, isPrivate: isIncognito
+            URLRequest(url: url), afterTab: tabManager.selectedTab, isIncognito: isIncognito
         )
 
         var toastLabelText: LocalizedStringKey
@@ -905,10 +905,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
         }
     }
 
-    func openBlankNewTab(isPrivate: Bool = false) {
+    func openBlankNewTab(isIncognito: Bool = false) {
         popToBVC()
 
-        let newTab = tabManager.addTab(isPrivate: isPrivate)
+        let newTab = tabManager.addTab(isIncognito: isIncognito)
         tabManager.select(newTab)
     }
 
@@ -924,10 +924,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
         showZeroQuery(openedFrom: openedFrom, isLazyTab: true)
     }
 
-    func openSearchNewTab(isPrivate: Bool = false, _ text: String) {
+    func openSearchNewTab(isIncognito: Bool = false, _ text: String) {
         popToBVC()
         if let searchURL = SearchEngine.current.searchURLForQuery(text) {
-            openURLInNewTab(searchURL, isPrivate: isPrivate)
+            openURLInNewTab(searchURL, isIncognito: isIncognito)
         } else {
             // We still don't have a valid URL, so something is broken. Give up.
             print("Error handling URL entry: \"\(text)\".")
@@ -1373,7 +1373,7 @@ extension BrowserViewController: TabDelegate {
     }
 
     func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String) {
-        openSearchNewTab(isPrivate: incognitoModel.isIncognito, selection)
+        openSearchNewTab(isIncognito: incognitoModel.isIncognito, selection)
     }
 }
 
@@ -1406,9 +1406,9 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
         finishEditingAndSubmit(url, visitType: visitType, forTab: tabManager.selectedTab)
     }
 
-    func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool) {
+    func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isIncognito: Bool) {
         hideZeroQuery()
-        openURLInBackground(url, isPrivate: isPrivate)
+        openURLInBackground(url, isIncognito: isIncognito)
     }
 
     func zeroQueryPanel(didEnterQuery query: String) {
@@ -1750,14 +1750,14 @@ extension BrowserViewController: ContextMenuHelperDelegate {
 
         if let url = elements.link, let currentTab = tabManager.selectedTab {
             dialogTitle = url.absoluteString
-            let isPrivate = incognitoModel.isIncognito
+            let isIncognito = incognitoModel.isIncognito
             screenshotHelper.takeDelayedScreenshot(currentTab)
 
-            let addTab = { (rURL: URL, isPrivate: Bool) in
-                self.openURLInBackground(rURL, isPrivate: isPrivate)
+            let addTab = { (rURL: URL, isIncognito: Bool) in
+                self.openURLInBackground(rURL, isIncognito: isIncognito)
             }
 
-            if !isPrivate {
+            if !isIncognito {
                 let openNewTabAction = UIAlertAction(
                     title: Strings.ContextMenuOpenInNewTab, style: .default
                 ) { _ in
@@ -1767,14 +1767,14 @@ extension BrowserViewController: ContextMenuHelperDelegate {
                     openNewTabAction, accessibilityIdentifier: "linkContextMenu.openInNewTab")
             }
 
-            let openNewPrivateTabAction = UIAlertAction(
+            let openNewIncognitoTabAction = UIAlertAction(
                 title: Strings.ContextMenuOpenInNewIncognitoTab, style: .default
             ) { _ in
                 addTab(url, true)
             }
             actionSheetController.addAction(
-                openNewPrivateTabAction,
-                accessibilityIdentifier: "linkContextMenu.openInNewPrivateTab")
+                openNewIncognitoTabAction,
+                accessibilityIdentifier: "linkContextMenu.openInNewIncognitoTab")
 
             let downloadAction = UIAlertAction(
                 title: Strings.ContextMenuDownloadLink, style: .default

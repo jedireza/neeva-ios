@@ -9,7 +9,7 @@ import Storage
 import SwiftUI
 
 protocol ZeroQueryPanelDelegate: AnyObject {
-    func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isPrivate: Bool)
+    func zeroQueryPanelDidRequestToOpenInNewTab(_ url: URL, isIncognito: Bool)
     func zeroQueryPanel(didSelectURL url: URL, visitType: VisitType)
     func zeroQueryPanel(didEnterQuery query: String)
     func zeroQueryPanelDidRequestToSaveToSpace(_ url: URL, title: String?, description: String?)
@@ -218,9 +218,11 @@ class ZeroQueryModel: ObservableObject {
 
     func satisfyDefaultBrowserPromoFreqRule() -> Bool {
         return Defaults[.numOfDailyZeroQueryImpression] != 0
-                && Defaults[.numOfDailyZeroQueryImpression]%DefaultBrowserPromoRules.nthZeroQueryImpression == 0
-                && Defaults[.numOfDailyZeroQueryImpression] <=
-                    DefaultBrowserPromoRules.nthZeroQueryImpression*DefaultBrowserPromoRules.maxDailyPromoImpression
+            && Defaults[.numOfDailyZeroQueryImpression]
+                % DefaultBrowserPromoRules.nthZeroQueryImpression == 0
+            && Defaults[.numOfDailyZeroQueryImpression]
+                <= DefaultBrowserPromoRules.nthZeroQueryImpression
+                * DefaultBrowserPromoRules.maxDailyPromoImpression
     }
 
     func updateSuggestedSites() {

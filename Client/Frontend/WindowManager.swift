@@ -36,8 +36,8 @@ class PopoverWindow: UIWindow {
         bvc.newTabKeyCommand()
     }
 
-    @objc func newPrivateTabKeyCommand() {
-        bvc.newPrivateTabKeyCommand()
+    @objc func newIncognitoTabKeyCommand() {
+        bvc.newIncognitoTabKeyCommand()
     }
 
     @objc func closeTabKeyCommand() {

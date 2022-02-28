@@ -17,8 +17,8 @@ extension Tab {
 
         private static var baseDomainList: Set<String> = {
             if let hosts = try? NSKeyedUnarchiver.unarchivedObject(
-                ofClasses: [NSSet.self, NSString.self], from: Data(contentsOf: ChangeUserAgent.file)) as? Set<String>
-            {
+                ofClasses: [NSSet.self, NSString.self], from: Data(contentsOf: ChangeUserAgent.file)
+            ) as? Set<String> {
                 return hosts
             }
             return Set<String>()
@@ -29,18 +29,18 @@ extension Tab {
             baseDomainList.removeAll()
         }
 
-        static func contains(url: URL, isPrivate: Bool) -> Bool {
+        static func contains(url: URL, isIncognito: Bool) -> Bool {
             guard let baseDomain = url.baseDomain else { return false }
             if baseDomainList.contains(baseDomain) {
                 return true
             }
-            return isPrivate ? privateModeHostList.contains(baseDomain) : false
+            return isIncognito ? privateModeHostList.contains(baseDomain) : false
         }
 
-        static func updateDomainList(forUrl url: URL, isChangedUA: Bool, isPrivate: Bool) {
+        static func updateDomainList(forUrl url: URL, isChangedUA: Bool, isIncognito: Bool) {
             guard let baseDomain = url.baseDomain, !baseDomain.isEmpty else { return }
 
-            if isPrivate {
+            if isIncognito {
                 if isChangedUA {
                     ChangeUserAgent.privateModeHostList.insert(baseDomain)
                     return

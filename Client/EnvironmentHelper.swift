@@ -55,10 +55,10 @@ public class EnvironmentHelper {
 
     public func getAttributes() -> [ClientLogCounterAttribute] {
         var numOfNormalTabs = 0
-        var numOfPrivateTabs = 0
+        var numOfIncognitoTabs = 0
         TabManager.all.forEach { tabManager in
             numOfNormalTabs += tabManager.normalTabs.count
-            numOfPrivateTabs += tabManager.incognitoTabs.count
+            numOfIncognitoTabs += tabManager.incognitoTabs.count
         }
 
         var numOfChildTabs = 0
@@ -73,10 +73,10 @@ public class EnvironmentHelper {
             key: LogConfig.Attribute.NormalTabsOpened,
             value: String(numOfNormalTabs))
 
-        // number of private tabs opened
-        let privateTabsOpened = ClientLogCounterAttribute(
-            key: LogConfig.Attribute.PrivateTabsOpened,
-            value: String(numOfPrivateTabs))
+        // number of incognito tabs opened
+        let incongitoTabsOpened = ClientLogCounterAttribute(
+            key: LogConfig.Attribute.IncognitoTabsOpened,
+            value: String(numOfIncognitoTabs))
 
         // number of tab groups
         let numTabGroupsTotal = ClientLogCounterAttribute(
@@ -108,10 +108,11 @@ public class EnvironmentHelper {
             value: String(NeevaUserInfo.shared.hasLoginCookie()))
 
         let attributes = [
-            normalTabsOpened, privateTabsOpened, numTabGroupsTotal, numChildTabsTotal, deviceTheme,
-            deviceOrientation,
-            deviceScreensSize, isUserSignedIn, getSessionUUID(),
+            normalTabsOpened, incongitoTabsOpened, numTabGroupsTotal, numChildTabsTotal,
+            deviceTheme, deviceOrientation, deviceScreensSize, 
+            isUserSignedIn, getSessionUUID(),
         ]
+      
         return attributes
     }
 

@@ -15,7 +15,6 @@ let differentWebsite = path(forTestPage: "test-example.html")
 
 /* #1237: Disabled as we don't have this UI.
 class TrackingProtectionTests: BaseTestCase {
-
     // Smoketest
     func testTrackingProtection() {
         navigator.goto(TrackingProtectionSettings)
@@ -36,7 +35,7 @@ class TrackingProtectionTests: BaseTestCase {
         navigator.goto(BrowserTab)
 
         // Switch to Private Browsing
-        navigator.toggleOn(userState.isPrivate, withAction: Action.TogglePrivateMode)
+        navigator.toggleOn(userState.isIncognito, withAction: Action.TogglePrivateMode)
         navigator.goto(BrowserTab)
         waitUntilPageLoad()
 

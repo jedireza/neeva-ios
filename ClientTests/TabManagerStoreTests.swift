@@ -38,10 +38,10 @@ class TabManagerStoreTests: XCTestCase {
     }
 
     // Without session data, a Tab can't become a SavedTab and get archived
-    func addTabWithSessionData(isPrivate: Bool = false) {
+    func addTabWithSessionData(isIncognito: Bool = false) {
         let tab = Tab(
             bvc: SceneDelegate.getBVC(for: nil), configuration: configuration,
-            isPrivate: isPrivate)
+            isIncognito: isIncognito)
         tab.setURL("http://yahoo.com")
         manager.configureTab(
             tab, request: URLRequest(url: tab.url!), flushToDisk: false, zombie: false, notify: true
@@ -59,9 +59,9 @@ class TabManagerStoreTests: XCTestCase {
         XCTAssertEqual(manager.testCountRestoredTabs(), 0)
     }
 
-    func testPrivateTabsAreArchived() {
+    func testIncognitoTabsAreArchived() {
         for _ in 0..<2 {
-            addTabWithSessionData(isPrivate: true)
+            addTabWithSessionData(isIncognito: true)
         }
         waitForCondition {
             self.manager.testTabCountOnDisk() == 2

@@ -82,7 +82,7 @@ class TabManager: NSObject {
 
     fileprivate let navDelegate: TabManagerNavDelegate
 
-    public static func makeWebViewConfig(isPrivate: Bool) -> WKWebViewConfiguration {
+    public static func makeWebViewConfig(isIncognito: Bool) -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
         configuration.dataDetectorTypes = [.phoneNumber]
         configuration.processPool = WKProcessPool()
@@ -90,7 +90,7 @@ class TabManager: NSObject {
         // We do this to go against the configuration of the <meta name="viewport">
         // tag to behave the same way as Safari :-(
         configuration.ignoresViewportScaleLimits = true
-        if isPrivate {
+        if isIncognito {
             configuration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
         }
         configuration.setURLSchemeHandler(InternalSchemeHandler(), forURLScheme: InternalURL.scheme)
@@ -100,12 +100,12 @@ class TabManager: NSObject {
 
     // A WKWebViewConfiguration used for normal tabs
     lazy var configuration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: false)
+        return TabManager.makeWebViewConfig(isIncognito: false)
     }()
 
     // A WKWebViewConfiguration used for private mode tabs
-    lazy fileprivate var privateConfiguration: WKWebViewConfiguration = {
-        return TabManager.makeWebViewConfig(isPrivate: true)
+    lazy fileprivate var incognitoConfiguration: WKWebViewConfiguration = {
+        return TabManager.makeWebViewConfig(isIncognito: true)
     }()
 
     // enables undo of recently closed tabs
@@ -218,9 +218,9 @@ class TabManager: NSObject {
     }
 
     func getTabCountForCurrentType() -> Int {
-        let isPrivate = isIncognito
+        let isIncognito = isIncognito
 
-        if isPrivate {
+        if isIncognito {
             return incognitoTabs.count
         } else {
             return normalTabs.count
@@ -234,7 +234,7 @@ class TabManager: NSObject {
         let previous = previous ?? selectedTab
 
         // Make sure to wipe the private tabs if the user has the pref turned on
-        if Defaults[.closePrivateTabs], !(tab?.isIncognito ?? false), incognitoTabs.count > 0 {
+        if Defaults[.closeIncognitoTabs], !(tab?.isIncognito ?? false), incognitoTabs.count > 0 {
             removeAllIncognitoTabs()
         }
 
@@ -305,7 +305,7 @@ class TabManager: NSObject {
         // Clear every time entering/exiting this mode.
         Tab.ChangeUserAgent.privateModeHostList = Set<String>()
 
-        if Defaults[.closePrivateTabs] && leavingPBM {
+        if Defaults[.closeIncognitoTabs] && leavingPBM {
             removeAllIncognitoTabs()
         }
     }
@@ -313,7 +313,7 @@ class TabManager: NSObject {
     func addPopupForParentTab(
         bvc: BrowserViewController, parentTab: Tab, configuration: WKWebViewConfiguration
     ) -> Tab {
-        let popup = Tab(bvc: bvc, configuration: configuration, isPrivate: parentTab.isIncognito)
+        let popup = Tab(bvc: bvc, configuration: configuration, isIncognito: parentTab.isIncognito)
         configureTab(
             popup, request: nil, afterTab: parentTab, flushToDisk: true, zombie: false,
             isPopup: true, notify: true)
@@ -330,13 +330,13 @@ class TabManager: NSObject {
 
     @discardableResult func addTab(
         _ request: URLRequest! = nil, configuration: WKWebViewConfiguration! = nil,
-        afterTab: Tab? = nil, isPrivate: Bool = false,
+        afterTab: Tab? = nil, isIncognito: Bool = false,
         query: String? = nil, suggestedQuery: String? = nil,
         visitType: VisitType? = nil, notify: Bool = true
     ) -> Tab {
         return self.addTab(
             request, configuration: configuration, afterTab: afterTab, flushToDisk: true,
-            zombie: false, isPrivate: isPrivate,
+            zombie: false, isIncognito: isIncognito,
             query: query, suggestedQuery: suggestedQuery,
             visitType: visitType, notify: notify
         )
@@ -368,7 +368,7 @@ class TabManager: NSObject {
     func addTab(
         _ request: URLRequest? = nil, webView: WKWebView? = nil,
         configuration: WKWebViewConfiguration? = nil, atIndex: Int? = nil, afterTab: Tab? = nil,
-        flushToDisk: Bool, zombie: Bool, isPrivate: Bool = false,
+        flushToDisk: Bool, zombie: Bool, isIncognito: Bool = false,
         query: String? = nil, suggestedQuery: String? = nil,
         visitType: VisitType? = nil, notify: Bool = true
     ) -> Tab {
@@ -376,10 +376,10 @@ class TabManager: NSObject {
 
         // Take the given configuration. Or if it was nil, take our default configuration for the current browsing mode.
         let configuration: WKWebViewConfiguration =
-            configuration ?? (isPrivate ? privateConfiguration : self.configuration)
+            configuration ?? (isIncognito ? incognitoConfiguration : self.configuration)
 
         let bvc = SceneDelegate.getBVC(with: scene)
-        let tab = Tab(bvc: bvc, configuration: configuration, isPrivate: isPrivate)
+        let tab = Tab(bvc: bvc, configuration: configuration, isIncognito: isIncognito)
         configureTab(
             tab, request: request, webView: webView, atIndex: atIndex, afterTab: afterTab,
             flushToDisk: flushToDisk, zombie: zombie,
@@ -413,7 +413,7 @@ class TabManager: NSObject {
                     URLRequest(url: url),
                     flushToDisk: true,
                     zombie: false,
-                    isPrivate: isIncognito,
+                    isIncognito: isIncognito,
                     query: query,
                     suggestedQuery: suggestedQuery,
                     visitType: visitType
@@ -437,7 +437,7 @@ class TabManager: NSObject {
             return .switchedToExistingTab
         } else {
             let newTab = addTab(
-                URLRequest(url: url), flushToDisk: true, zombie: false, isPrivate: isIncognito)
+                URLRequest(url: url), flushToDisk: true, zombie: false, isIncognito: isIncognito)
             newTab.parentSpaceID = spaceID
             newTab.rootUUID = spaceID
             select(newTab)
@@ -536,7 +536,8 @@ class TabManager: NSObject {
         } else if isIncognito && openLazyTab {  // no empty tab tray in incognito
             bvc.openLazyTab(openedFrom: fromTabTray ? .tabTray : .openTab(selectedTab))
         } else {
-            let placeholderTab = Tab(bvc: bvc, configuration: configuration, isPrivate: isIncognito)
+            let placeholderTab = Tab(
+                bvc: bvc, configuration: configuration, isIncognito: isIncognito)
 
             // Creates a placeholder Tab to make sure incognito is switched in the Top Bar
             select(placeholderTab)
@@ -564,11 +565,11 @@ class TabManager: NSObject {
 
     private func updateTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
         let closedLastNormalTab = !tab.isIncognito && normalTabs.isEmpty
-        let closedLastPrivateTab = tab.isIncognito && incognitoTabs.isEmpty
+        let closedLastIncognitoTab = tab.isIncognito && incognitoTabs.isEmpty
         let viableTabs: [Tab] = tab.isIncognito ? incognitoTabs : normalTabs
         let bvc = SceneDelegate.getBVC(with: scene)
 
-        if closedLastNormalTab || closedLastPrivateTab {
+        if closedLastNormalTab || closedLastIncognitoTab {
             DispatchQueue.main.async {
                 bvc.showTabTray()
             }
@@ -600,7 +601,7 @@ class TabManager: NSObject {
         assert(count == prevCount - 1, "Make sure the tab count was actually removed")
 
         if tab.isIncognito && incognitoTabs.count < 1 {
-            privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
+            incognitoConfiguration = TabManager.makeWebViewConfig(isIncognito: true)
         }
 
         tab.close()
@@ -637,7 +638,7 @@ class TabManager: NSObject {
 
     private func removeAllIncognitoTabs() {
         removeTabs(incognitoTabs, updatingSelectedTab: true)
-        privateConfiguration = TabManager.makeWebViewConfig(isPrivate: true)
+        incognitoConfiguration = TabManager.makeWebViewConfig(isIncognito: true)
     }
 
     func removeTabs(
@@ -694,7 +695,7 @@ class TabManager: NSObject {
     }
 
     func restoreSavedTabs(
-        _ savedTabs: [SavedTab], isPrivate: Bool = false, shouldSelectTab: Bool = true
+        _ savedTabs: [SavedTab], isIncognito: Bool = false, shouldSelectTab: Bool = true
     ) -> Tab? {
         // makes sure at least one tab is selected
         // if no tab selected, select the last one (most recently closed)
@@ -708,11 +709,11 @@ class TabManager: NSObject {
             if let tabIndex = savedTab.tabIndex {
                 tab = addTab(
                     urlRequest, atIndex: tabIndex, flushToDisk: false, zombie: false,
-                    isPrivate: isPrivate, notify: false)
+                    isIncognito: isIncognito, notify: false)
             } else {
                 tab = addTab(
                     urlRequest, afterTab: getTabForUUID(uuid: savedTab.parentUUID ?? ""),
-                    flushToDisk: false, zombie: false, isPrivate: isPrivate, notify: false)
+                    flushToDisk: false, zombie: false, isIncognito: isIncognito, notify: false)
             }
 
             tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
@@ -799,7 +800,7 @@ class TabManager: NSObject {
             }
             // The default tab configurations also need to change.
             self.configuration.preferences.javaScriptCanOpenWindowsAutomatically = allowPopups
-            self.privateConfiguration.preferences.javaScriptCanOpenWindowsAutomatically =
+            self.incognitoConfiguration.preferences.javaScriptCanOpenWindowsAutomatically =
                 allowPopups
         }
     }
@@ -846,9 +847,9 @@ extension TabManager {
         }
 
         var tabToSelect = store.restoreStartupTabs(
-            for: scene, clearPrivateTabs: Defaults[.closePrivateTabs], tabManager: self)
+            for: scene, clearIncognitoTabs: Defaults[.closeIncognitoTabs], tabManager: self)
         if Defaults[.lastSessionPrivate], !(tabToSelect?.isIncognito ?? false) {
-            tabToSelect = addTab(isPrivate: true, notify: false)
+            tabToSelect = addTab(isIncognito: true, notify: false)
         }
 
         selectTab(tabToSelect)
@@ -859,7 +860,6 @@ extension TabManager {
 }
 
 extension TabManager: WKNavigationDelegate {
-
     // Note the main frame JSContext (i.e. document, window) is not available yet.
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
         // Save stats for the page we are leaving.

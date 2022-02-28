@@ -18,13 +18,13 @@ extension URLComponents {
 
 // The root navigation for the Router. Look at the tests to see a complete URL
 enum NavigationPath {
-    case url(webURL: URL?, isPrivate: Bool)
+    case url(webURL: URL?, isIncognito: Bool)
     case widgetUrl(webURL: URL?, uuid: String)
-    case closePrivateTabs
+    case closeIncogntioTabs
     case space(String, [String]?, Bool)
     case spaceDigest
     case fastTap(String, Bool)
-    case configNewsProvider(isPrivate: Bool)
+    case configNewsProvider(isIncognito: Bool)
     case walletConnect(wcURL: WCURL)
 
     init?(bvc: BrowserViewController, url: URL) {
@@ -56,7 +56,7 @@ enum NavigationPath {
             self = .url(
                 webURL: NavigationPath.maybeRewriteURL(url, components) ?? url,
                 // Use the last browsing mode the user was in
-                isPrivate: Defaults[.lastSessionPrivate]
+                isIncognito: Defaults[.lastSessionPrivate]
             )
         } else if urlString.starts(with: "\(scheme)://space-digest") {
             self = .spaceDigest
@@ -74,7 +74,7 @@ enum NavigationPath {
         {
             self = .fastTap(query, components.valueForQuery("no-delay") != nil)
         } else if urlString.starts(with: "\(scheme)://configure-news-provider") {
-            self = .configNewsProvider(isPrivate: Defaults[.lastSessionPrivate])
+            self = .configNewsProvider(isIncognito: Defaults[.lastSessionPrivate])
         } else if urlString.starts(with: "\(scheme)://wc?uri="),
             let wcURL = WCURL(
                 urlString.dropFirst("\(scheme)://wc?uri=".count).removingPercentEncoding ?? "")
@@ -87,22 +87,23 @@ enum NavigationPath {
 
     static func handle(nav: NavigationPath, with bvc: BrowserViewController) {
         switch nav {
-        case .url(let url, let isPrivate):
-            NavigationPath.handleURL(url: url, isPrivate: isPrivate, with: bvc)
-        case .closePrivateTabs:
-            NavigationPath.handleClosePrivateTabs(with: bvc)
+        case .url(let url, let isIncognito):
+            NavigationPath.handleURL(url: url, isIncognito: isIncognito, with: bvc)
+        case .closeIncogntioTabs:
+            NavigationPath.handleCloseIncognitoTabs(with: bvc)
         case .widgetUrl(let webURL, let uuid):
             NavigationPath.handleWidgetURL(url: webURL, uuid: uuid, with: bvc)
         case .spaceDigest:
             NavigationPath.handleSpaceDigest(with: bvc)
-        case .space(let spaceId, let updatedItemIds, let isPrivate):
+        case .space(let spaceId, let updatedItemIds, let isIncognito):
             NavigationPath.handleSpace(
-                spaceId: spaceId, updatedItemIds: updatedItemIds, isPrivate: isPrivate, with: bvc)
+                spaceId: spaceId, updatedItemIds: updatedItemIds, isIncognito: isIncognito,
+                with: bvc)
         case .fastTap(let query, let noDelay):
             NavigationPath.handleFastTap(query: query, with: bvc, noDelay: noDelay)
-        case .configNewsProvider(let isPrivate):
+        case .configNewsProvider(let isIncognito):
             NavigationPath.handleURL(
-                url: NeevaConstants.configureNewsProviderURL, isPrivate: isPrivate, with: bvc)
+                url: NeevaConstants.configureNewsProviderURL, isIncognito: isIncognito, with: bvc)
         case .walletConnect(let wcURL):
             bvc.connectWallet(to: wcURL)
         }
@@ -143,7 +144,7 @@ enum NavigationPath {
             || urlString.starts(with: "\(scheme)://widget-medium-quicklink-close-private-tabs")
         {
             // Widget Quick links - medium - close private tabs
-            return .closePrivateTabs
+            return .closeIncogntioTabs
         }
 
         return nil
@@ -155,24 +156,24 @@ enum NavigationPath {
         let url = components.valueForQuery("url")?.asURL
         // Unless the `open-url` URL specifies a `private` parameter,
         // use the last browsing mode the user was in.
-        let isPrivate =
+        let isIncognito =
             Bool(components.valueForQuery("private") ?? "") ?? Defaults[.lastSessionPrivate]
-        return .url(webURL: url, isPrivate: isPrivate)
+        return .url(webURL: url, isIncognito: isIncognito)
     }
 
     private static func openCopiedUrl() -> NavigationPath? {
         guard let url = UIPasteboard.general.url else {
             if let string = UIPasteboard.general.string, let url = URL(string: string) {
-                return .url(webURL: url, isPrivate: Defaults[.lastSessionPrivate])
+                return .url(webURL: url, isIncognito: Defaults[.lastSessionPrivate])
             } else {
                 return nil
             }
         }
 
-        return .url(webURL: url, isPrivate: Defaults[.lastSessionPrivate])
+        return .url(webURL: url, isIncognito: Defaults[.lastSessionPrivate])
     }
 
-    private static func handleClosePrivateTabs(with bvc: BrowserViewController) {
+    private static func handleCloseIncognitoTabs(with bvc: BrowserViewController) {
         bvc.tabManager.removeTabs(bvc.tabManager.incognitoTabs)
         guard let tab = mostRecentTab(inTabs: bvc.tabManager.normalTabs) else {
             bvc.tabManager.selectTab(bvc.tabManager.addTab())
@@ -181,29 +182,30 @@ enum NavigationPath {
         bvc.tabManager.selectTab(tab)
     }
 
-    private static func handleURL(url: URL?, isPrivate: Bool, with bvc: BrowserViewController) {
+    private static func handleURL(url: URL?, isIncognito: Bool, with bvc: BrowserViewController) {
         if let newURL = url {
             if newURL.isNeevaURL() && newURL.path.hasPrefix("/spaces") {
                 let spaceId = newURL.lastPathComponent
                 if spaceId != "spaces" {
                     NavigationPath.handleSpace(
-                        spaceId: spaceId, updatedItemIds: [], isPrivate: isPrivate, with: bvc
+                        spaceId: spaceId, updatedItemIds: [], isIncognito: isIncognito, with: bvc
                     )
                 } else {
                     bvc.browserModel.showSpaces()
                 }
             } else {
-                bvc.switchToTabForURLOrOpen(newURL, isPrivate: isPrivate)
+                bvc.switchToTabForURLOrOpen(newURL, isIncognito: isIncognito)
             }
         } else {
             bvc.openLazyTab(
-                openedFrom: .openTab(bvc.tabManager.selectedTab), switchToIncognitoMode: isPrivate)
+                openedFrom: .openTab(bvc.tabManager.selectedTab), switchToIncognitoMode: isIncognito
+            )
         }
     }
 
     private static func handleWidgetURL(url: URL?, uuid: String, with bvc: BrowserViewController) {
         if let newURL = url {
-            bvc.switchToTabForWidgetURLOrOpen(newURL, uuid: uuid, isPrivate: false)
+            bvc.switchToTabForWidgetURLOrOpen(newURL, uuid: uuid, isIncognito: false)
         } else {
             bvc.openLazyTab(
                 openedFrom: .openTab(bvc.tabManager.selectedTab), switchToIncognitoMode: false)
@@ -216,7 +218,8 @@ enum NavigationPath {
     }
 
     private static func handleSpace(
-        spaceId: String, updatedItemIds: [String]?, isPrivate: Bool, with bvc: BrowserViewController
+        spaceId: String, updatedItemIds: [String]?, isIncognito: Bool,
+        with bvc: BrowserViewController
     ) {
         // navigate to SpaceId
         let gridModel = bvc.gridModel
@@ -224,7 +227,8 @@ enum NavigationPath {
             gridModel.spaceCardModel.updatedItemIDs = updatedItemIDs
         }
 
-        bvc.browserModel.openSpace(spaceId: spaceId, bvc: bvc, isPrivate: isPrivate, completion: {})
+        bvc.browserModel.openSpace(
+            spaceId: spaceId, bvc: bvc, isIncognito: isIncognito, completion: {})
     }
 
     private static func handleFastTap(query: String, with bvc: BrowserViewController, noDelay: Bool)

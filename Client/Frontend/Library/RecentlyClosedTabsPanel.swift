@@ -121,11 +121,11 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
         let index = indexPath.row
         let savedTab = recentlyClosedTabs[index]
 
-        return tabMenu.createOpenTabMenu(savedTab) { (tab, isPrivate) in
+        return tabMenu.createOpenTabMenu(savedTab) { (tab, isIncognito) in
             self.loadData()
 
             let toastLabelText: LocalizedStringKey =
-                isPrivate
+                isIncognito
                 ? "New Incognito Tab opened"
                 : "Incognito Tab opened"
 

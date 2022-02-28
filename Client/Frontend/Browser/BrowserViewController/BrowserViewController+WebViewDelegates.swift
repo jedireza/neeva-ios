@@ -17,7 +17,7 @@ private let log = Logger.browser
 /// List of schemes that are allowed to be opened in new tabs.
 private let schemesAllowedToBeOpenedAsPopups = ["http", "https", "javascript", "data", "about"]
 
-private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
+private func setCookiesForNeeva(webView: WKWebView, isIncognito: Bool) {
     let httpCookieStore = webView.configuration.websiteDataStore.httpCookieStore
 
     // DEPRECATED in favor of BrowserType and BrowserVersion cookies.
@@ -37,7 +37,7 @@ private func setCookiesForNeeva(webView: WKWebView, isPrivate: Bool) {
     // login cookie in the keychain is considered the source of truth for login
     // state. This may be an invalid login cookie, and in that case, we'll get
     // a new value for the cookie after going through a login flow.
-    if !isPrivate, let cookieValue = NeevaUserInfo.shared.getLoginCookie() {
+    if !isIncognito, let cookieValue = NeevaUserInfo.shared.getLoginCookie() {
         httpCookieStore.setCookie(NeevaConstants.loginCookie(for: cookieValue))
     }
 
@@ -226,9 +226,9 @@ extension BrowserViewController: WKUIDelegate {
                             name: ContextMenuHelper.name()) as? ContextMenuHelper,
                         let elements = contextHelper.elements
                     else { return nil }
-                    let isPrivate = currentTab.isIncognito
-                    let addTab = { (rURL: URL, isPrivate: Bool) in
-                        self.openURLInBackground(rURL, isPrivate: isPrivate)
+                    let isIncognito = currentTab.isIncognito
+                    let addTab = { (rURL: URL, isIncognito: Bool) in
+                        self.openURLInBackground(rURL, isIncognito: isIncognito)
                     }
 
                     let getImageData = { (_ url: URL, success: @escaping (Data) -> Void) in
@@ -246,7 +246,7 @@ extension BrowserViewController: WKUIDelegate {
 
                     var actions = [UIAction]()
 
-                    if !isPrivate {
+                    if !isIncognito {
                         actions.append(
                             UIAction(
                                 title: Strings.ContextMenuOpenInNewTab,
@@ -626,14 +626,14 @@ extension BrowserViewController: WKNavigationDelegate {
         if ["http", "https", "blob", "file"].contains(url.scheme) {
             if navigationAction.targetFrame?.isMainFrame ?? false {
                 tab.changedUserAgent = Tab.ChangeUserAgent.contains(
-                    url: url, isPrivate: tab.isIncognito)
+                    url: url, isIncognito: tab.isIncognito)
             }
 
             pendingRequests[url.absoluteString] = navigationAction.request
 
             if NeevaConstants.isAppHost(url.host) {
                 webView.customUserAgent = UserAgent.neevaAppUserAgent()
-                setCookiesForNeeva(webView: webView, isPrivate: tab.isIncognito)
+                setCookiesForNeeva(webView: webView, isIncognito: tab.isIncognito)
             } else if tab.changedUserAgent {
                 let platformSpecificUserAgent = UserAgent.oppositeUserAgent(
                     domain: url.baseDomain ?? "")

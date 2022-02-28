@@ -112,9 +112,9 @@ class TabManagerTests: XCTestCase {
         XCTAssertEqual(manager.normalTabs.count, 1, "There should be one normal tab")
     }
 
-    func testAddTabShouldAddOnePrivateTab() {
+    func testAddTabShouldAddOneIncognitoTab() {
         tabsUpdated = false
-        manager.addTab(isPrivate: true)
+        manager.addTab(isIncognito: true)
         XCTAssertTrue(tabsUpdated)
         XCTAssertEqual(manager.incognitoTabs.count, 1, "There should be one private tab")
     }
@@ -126,13 +126,13 @@ class TabManagerTests: XCTestCase {
         XCTAssertEqual(manager.selectedTab, tab, "There should be selected first tab")
     }
 
-    func testDeletePrivateTabsOnExit() {
-        Defaults[.closePrivateTabs] = true
+    func testDeleteIncognitoTabsOnExit() {
+        Defaults[.closeIncognitoTabs] = true
 
         // create one private and one normal tab
         let tab = manager.addTab()
         manager.selectTab(tab)
-        manager.selectTab(manager.addTab(isPrivate: true))
+        manager.selectTab(manager.addTab(isIncognito: true))
 
         XCTAssertEqual(
             manager.selectedTab?.isIncognito, true, "The selected tab should be the private tab")
@@ -144,15 +144,15 @@ class TabManagerTests: XCTestCase {
             "If the normal tab is selected the private tab should have been deleted")
         XCTAssertEqual(manager.normalTabs.count, 1, "The regular tab should stil be around")
 
-        manager.selectTab(manager.addTab(isPrivate: true))
+        manager.selectTab(manager.addTab(isIncognito: true))
         XCTAssertEqual(manager.incognitoTabs.count, 1, "There should be one new private tab")
         manager.willSwitchTabMode(leavingPBM: true)
         XCTAssertEqual(
             manager.incognitoTabs.count, 0,
             "After willSwitchTabMode there should be no more private tabs")
 
-        manager.selectTab(manager.addTab(isPrivate: true))
-        manager.selectTab(manager.addTab(isPrivate: true))
+        manager.selectTab(manager.addTab(isIncognito: true))
+        manager.selectTab(manager.addTab(isIncognito: true))
         XCTAssertEqual(
             manager.incognitoTabs.count, 2,
             "Private tabs should not be deleted when another one is added")
@@ -165,8 +165,8 @@ class TabManagerTests: XCTestCase {
             manager.normalTabs.count, 2,
             "The original normal tab and the new one should both still exist")
 
-        Defaults[.closePrivateTabs] = false
-        manager.selectTab(manager.addTab(isPrivate: true))
+        Defaults[.closeIncognitoTabs] = false
+        manager.selectTab(manager.addTab(isIncognito: true))
         manager.selectTab(tab)
         XCTAssertEqual(
             manager.selectedTab?.isIncognito, false, "The selected tab should not be private")
@@ -176,12 +176,12 @@ class TabManagerTests: XCTestCase {
     }
 
     func testTogglePBMDelete() {
-        Defaults[.closePrivateTabs] = true
+        Defaults[.closeIncognitoTabs] = true
 
         let tab = manager.addTab()
         manager.selectTab(tab)
         manager.selectTab(manager.addTab())
-        manager.selectTab(manager.addTab(isPrivate: true))
+        manager.selectTab(manager.addTab(isIncognito: true))
 
         manager.willSwitchTabMode(leavingPBM: false)
         XCTAssertEqual(manager.incognitoTabs.count, 1, "There should be 1 private tab")
@@ -192,7 +192,6 @@ class TabManagerTests: XCTestCase {
     }
 
     func testRemoveNonSelectedTab() {
-
         let tab = manager.addTab()
         manager.selectTab(tab)
         manager.addTab()
@@ -204,7 +203,6 @@ class TabManagerTests: XCTestCase {
     }
 
     func testDeleteSelectedTab() {
-
         func addTab(_ visit: Bool) -> Tab {
             let tab = manager.addTab()
             if visit {
@@ -264,15 +262,15 @@ class TabManagerTests: XCTestCase {
         XCTAssertTrue(tabsUpdated)
     }
 
-    func testDelegatesCalledWhenRemovingPrivateTabs() {
+    func testDelegatesCalledWhenRemovingIncognitoTabs() {
         //setup
-        Defaults[.closePrivateTabs] = true
+        Defaults[.closeIncognitoTabs] = true
 
         // create one private and one normal tab
         let tab = manager.addTab()
         let newTab = manager.addTab()
         manager.selectTab(tab)
-        manager.selectTab(manager.addTab(isPrivate: true))
+        manager.selectTab(manager.addTab(isIncognito: true))
         manager.addDelegate(delegate)
 
         // Double check a few things
@@ -342,7 +340,7 @@ class TabManagerTests: XCTestCase {
         // We add 2 tabs. Then a private one before adding another normal tab and selecting it.
         // Make sure that when the last one is deleted we dont switch to the private tab
         let (_, _, privateOne, last) = (
-            manager.addTab(), manager.addTab(), manager.addTab(isPrivate: true), manager.addTab()
+            manager.addTab(), manager.addTab(), manager.addTab(isIncognito: true), manager.addTab()
         )
         manager.selectTab(last)
         manager.addDelegate(delegate)
@@ -362,7 +360,6 @@ class TabManagerTests: XCTestCase {
     }
 
     func testRemoveTabAndUpdateSelectedIndexIsSelectedParentTabAfterRemoval() {
-
         func addTab(_ visit: Bool) -> Tab {
             let tab = manager.addTab()
             if visit {
@@ -384,12 +381,11 @@ class TabManagerTests: XCTestCase {
     }
 
     func testTabsIndexClosingFirst() {
-
         // We add 2 tabs. Then a private one before adding another normal tab and selecting the first.
         // Make sure that when the last one is deleted we dont switch to the private tab
         let deleted = manager.addTab()
         let newSelected = manager.addTab()
-        manager.addTab(isPrivate: true)
+        manager.addTab(isIncognito: true)
         manager.addTab()
         manager.selectTab(manager.tabs.first)
         manager.addDelegate(delegate)
@@ -408,7 +404,7 @@ class TabManagerTests: XCTestCase {
         XCTAssertTrue(tabsUpdated)
     }
 
-    func testUndoCloseTabsRemovesAutomaticallyCreatedNonPrivateTab() {
+    func testUndoCloseTabsRemovesAutomaticallyCreatedNonIncognitoTab() {
         let tab = manager.addTab()
         let tabToSave = Tab(
             bvc: SceneDelegate.getBVC(for: nil), configuration: WKWebViewConfiguration())

@@ -125,16 +125,19 @@ class TabManagerStore {
         backgroundFileWriter(for: path).writeData(data: data)
     }
 
-    func restoreStartupTabs(for scene: UIScene, clearPrivateTabs: Bool, tabManager: TabManager)
+    func restoreStartupTabs(for scene: UIScene, clearIncognitoTabs: Bool, tabManager: TabManager)
         -> Tab?
     {
         let selectedTab = restoreTabs(
-            savedTabs: getStartupTabs(for: scene), clearPrivateTabs: clearPrivateTabs,
+            savedTabs: getStartupTabs(for: scene), clearIncognitoTabs: clearIncognitoTabs,
             tabManager: tabManager)
         return selectedTab
     }
 
-    private func restoreTabs(savedTabs: [SavedTab], clearPrivateTabs: Bool, tabManager: TabManager) -> Tab?
+    private func restoreTabs(
+        savedTabs: [SavedTab], clearIncognitoTabs: Bool, tabManager: TabManager
+    )
+        -> Tab?
     {
         assertIsMainThread("Restoration is a main-only operation")
         guard !lockedForReading, savedTabs.count > 0 else { return nil }
@@ -147,8 +150,8 @@ class TabManagerStore {
         var savedTabs = savedTabs
 
         // Make sure to wipe the private tabs if the user has the pref turned on
-        if clearPrivateTabs {
-            savedTabs = savedTabs.filter { !$0.isPrivate }
+        if clearIncognitoTabs {
+            savedTabs = savedTabs.filter { !$0.isIncognito }
         }
 
         // TODO(darin): Ideally we'd pass `notify: false` to `addTab` here and instead
@@ -158,7 +161,7 @@ class TabManagerStore {
         for savedTab in savedTabs {
             // Provide an empty request to prevent a new tab from loading the home screen
             var tab = tabManager.addTab(
-                flushToDisk: false, zombie: true, isPrivate: savedTab.isPrivate, notify: false)
+                flushToDisk: false, zombie: true, isIncognito: savedTab.isIncognito, notify: false)
             tab = savedTab.configureSavedTabUsing(tab, imageStore: imageStore)
 
             if savedTab.isSelected {

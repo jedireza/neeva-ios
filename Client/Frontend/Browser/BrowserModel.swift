@@ -103,13 +103,13 @@ class BrowserModel: ObservableObject {
     private var followPublicSpaceSubscription: AnyCancellable?
 
     func openSpace(
-        spaceId: String, bvc: BrowserViewController, isPrivate: Bool = false,
+        spaceId: String, bvc: BrowserViewController, isIncognito: Bool = false,
         completion: @escaping () -> Void
     ) {
         guard NeevaUserInfo.shared.hasLoginCookie() else {
             var spaceURL = NeevaConstants.appSpacesURL
             spaceURL.appendPathComponent(spaceId)
-            bvc.switchToTabForURLOrOpen(spaceURL, isPrivate: isPrivate)
+            bvc.switchToTabForURLOrOpen(spaceURL, isIncognito: isIncognito)
             return
         }
 

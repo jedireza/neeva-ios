@@ -117,7 +117,7 @@ struct TabMenu {
                 image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
             ) { _ in
                 let tab = self.tabManager.restoreSavedTabs(
-                    [tab], isPrivate: true, shouldSelectTab: true)
+                    [tab], isIncognito: true, shouldSelectTab: true)
                 openedTab(tab, true)
             }
 

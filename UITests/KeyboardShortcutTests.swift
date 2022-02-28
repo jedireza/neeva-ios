@@ -66,8 +66,8 @@ class KeyboardShortcutTests: UITestBase {
         reset()
     }
 
-    func testNewPrivateTabKeyCommand() {
-        bvc.newPrivateTabKeyCommand()
+    func testNewIncognitoTabKeyCommand() {
+        bvc.newIncognitoTabKeyCommand()
 
         // Make sure Lazy Tab popped up
         tester().waitForView(withAccessibilityLabel: "Cancel")

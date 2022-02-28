@@ -211,7 +211,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             Button { [self] in
                 guard let url = url, let tab = tab else { return }
                 let newTab = manager.addTab(
-                    URLRequest(url: url), afterTab: tab, isPrivate: tab.isIncognito)
+                    URLRequest(url: url), afterTab: tab, isIncognito: tab.isIncognito)
                 newTab.rootUUID = UUID().uuidString
                 manager.selectTab(newTab, previous: tab)
             } label: {
@@ -220,7 +220,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
             Button { [self] in
                 guard let url = url, let tab = tab else { return }
-                let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isPrivate: true)
+                let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isIncognito: true)
                 newTab.rootUUID = UUID().uuidString
                 manager.selectTab(newTab, previous: tab)
             } label: {

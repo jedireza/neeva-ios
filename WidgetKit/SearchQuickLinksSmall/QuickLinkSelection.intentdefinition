@@ -47,23 +47,23 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Private Search</string>
+					<string>Incognito Search</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>Dt1192</string>
 					<key>INEnumValueIndex</key>
 					<integer>3</integer>
 					<key>INEnumValueName</key>
-					<string>privateSearch</string>
+					<string>incongitoSearch</string>
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Close Private Tabs</string>
+					<string>Close Incognito Tabs</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>JiZVv0</string>
 					<key>INEnumValueIndex</key>
 					<integer>4</integer>
 					<key>INEnumValueName</key>
-					<string>closePrivateTabs</string>
+					<string>closeIncognitoTabs</string>
 				</dict>
 			</array>
 		</dict>
@@ -73,11 +73,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>6vd2jx</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>20D64</string>
+	<string>21E5222a</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>12D4e</string>
+	<string>13C100</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>12.4</string>
+	<string>13.2.1</string>
 	<key>INIntents</key>
 	<array>
 		<dict>

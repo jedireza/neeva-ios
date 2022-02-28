@@ -42,7 +42,7 @@ extension Defaults.Keys {
     public static let showSearchSuggestions = Defaults.Key(
         "profile.search.suggestions.show", default: true)
     public static let blockPopups = Defaults.Key("profile.blockPopups", default: true)
-    public static let closePrivateTabs = Defaults.BoolKey("profile.settings.closePrivateTabs")
+    public static let closeIncognitoTabs = Defaults.BoolKey("profile.settings.closePrivateTabs")
     public static let recentlyClosedTabs = Defaults.Key<Data?>("profile.recentlyClosedTabs")
     public static let saveLogins = Defaults.BoolKey("profile.saveLogins")
     public static let upgradeAllToHttps = Defaults.BoolKey(
@@ -177,12 +177,16 @@ extension Defaults.Keys {
 
     // Spotlight Search
     public static let createUserActivities = Defaults.BoolKey("createUserActivities", default: true)
-    public static let makeActivityAvailForSearch = Defaults.BoolKey("makeActivityAvailForSearch", default: false)
-    public static let addThumbnailToActivities = Defaults.BoolKey("addThumbnailToActivities", default: false)
+    public static let makeActivityAvailForSearch = Defaults.BoolKey(
+        "makeActivityAvailForSearch", default: false)
+    public static let addThumbnailToActivities = Defaults.BoolKey(
+        "addThumbnailToActivities", default: false)
     public static let addSpacesToCS = Defaults.BoolKey("addSpacesToCS", default: false)
 
-    public static let numOfDailyZeroQueryImpression = Defaults.Key<Int>("numOfDailyZeroQueryImpression", default: 0)
-    public static let lastZeroQueryImpUpdatedTimestamp = Defaults.Key<Date?>("lastZeroQueryImpUpdatedTimestamp")
+    public static let numOfDailyZeroQueryImpression = Defaults.Key<Int>(
+        "numOfDailyZeroQueryImpression", default: 0)
+    public static let lastZeroQueryImpUpdatedTimestamp = Defaults.Key<Date?>(
+        "lastZeroQueryImpUpdatedTimestamp")
 }
 
 extension Defaults {

@@ -214,8 +214,8 @@ open class BrowserProfile: Profile {
 
     @objc
     func onPageMetadataFetched(notification: NSNotification) {
-        let isPrivate = notification.userInfo?["isPrivate"] as? Bool ?? true
-        guard !isPrivate else {
+        let isIncognito = notification.userInfo?["isPrivate"] as? Bool ?? true
+        guard !isIncognito else {
             log.debug("Private mode - Ignoring page metadata.")
             return
         }

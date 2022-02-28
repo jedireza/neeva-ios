@@ -10,7 +10,7 @@ class SavedTab: NSObject, NSCoding {
     var isSelected: Bool
     var title: String?
     var url: URL?
-    var isPrivate: Bool
+    var isIncognito: Bool
     var isPinned: Bool
     var sessionData: SessionData?
     var screenshotUUID: UUID?
@@ -28,7 +28,7 @@ class SavedTab: NSObject, NSCoding {
 
         var json: [String: AnyObject] = [
             "title": title as AnyObject,
-            "isPrivate": String(self.isPrivate) as AnyObject,
+            "isPrivate": String(self.isIncognito) as AnyObject,
             "isSelected": String(self.isSelected) as AnyObject,
             "faviconURL": faviconURL as AnyObject,
             "screenshotUUID": uuid as AnyObject,
@@ -48,14 +48,14 @@ class SavedTab: NSObject, NSCoding {
     }
 
     init(
-        screenshotUUID: UUID?, isSelected: Bool, title: String?, isPrivate: Bool, isPinned: Bool,
+        screenshotUUID: UUID?, isSelected: Bool, title: String?, isIncognito: Bool, isPinned: Bool,
         faviconURL: URL?, url: URL?, sessionData: SessionData?, uuid: String, rootUUID: String,
         parentUUID: String, tabIndex: Int?, parentSpaceID: String
     ) {
         self.screenshotUUID = screenshotUUID
         self.isSelected = isSelected
         self.title = title
-        self.isPrivate = isPrivate
+        self.isIncognito = isIncognito
         self.isPinned = isPinned
         self.faviconURL = faviconURL
         self.url = url
@@ -75,7 +75,7 @@ class SavedTab: NSObject, NSCoding {
         self.isSelected = coder.decodeBool(forKey: "isSelected")
         self.isPinned = coder.decodeBool(forKey: "isPinned")
         self.title = coder.decodeObject(forKey: "title") as? String
-        self.isPrivate = coder.decodeBool(forKey: "isPrivate")
+        self.isIncognito = coder.decodeBool(forKey: "isPrivate")
         self.faviconURL = (coder.decodeObject(forKey: "faviconURL") as? URL)
         self.url = coder.decodeObject(forKey: "url") as? URL
         self.UUID = coder.decodeObject(forKey: "UUID") as? String
@@ -91,7 +91,7 @@ class SavedTab: NSObject, NSCoding {
         coder.encode(isSelected, forKey: "isSelected")
         coder.encode(isPinned, forKey: "isPinned")
         coder.encode(title, forKey: "title")
-        coder.encode(isPrivate, forKey: "isPrivate")
+        coder.encode(isIncognito, forKey: "isPrivate")
         coder.encode(faviconURL, forKey: "faviconURL")
         coder.encode(url, forKey: "url")
         coder.encode(UUID, forKey: "UUID")

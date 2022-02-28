@@ -23,16 +23,16 @@ class NavigationRouterTests: XCTestCase {
         let navItem = NavigationPath(
             bvc: SceneDelegate.getBVC(for: nil), url: URL(string: appURL)!)!
         XCTAssertEqual(
-            navItem, NavigationPath.url(webURL: URL(string: url.unescape()!)!, isPrivate: false))
+            navItem, NavigationPath.url(webURL: URL(string: url.unescape()!)!, isIncognito: false))
 
         let emptyNav = NavigationPath(
             bvc: SceneDelegate.getBVC(for: nil),
             url: URL(string: "\(appScheme)://open-url?private=true")!)
-        XCTAssertEqual(emptyNav, NavigationPath.url(webURL: nil, isPrivate: true))
+        XCTAssertEqual(emptyNav, NavigationPath.url(webURL: nil, isIncognito: true))
 
         let badNav = NavigationPath(
             bvc: SceneDelegate.getBVC(for: nil),
             url: URL(string: "\(appScheme)://open-url?url=blah")!)
-        XCTAssertEqual(badNav, NavigationPath.url(webURL: URL(string: "blah"), isPrivate: false))
+        XCTAssertEqual(badNav, NavigationPath.url(webURL: URL(string: "blah"), isIncognito: false))
     }
 }

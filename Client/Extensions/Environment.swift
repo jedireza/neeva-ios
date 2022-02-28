@@ -6,9 +6,9 @@ import SwiftUI
 
 extension EnvironmentValues {
     private struct OpenInNewTabKey: EnvironmentKey {
-        static var defaultValue: ((URL, _ isPrivate: Bool) -> Void)? = nil
+        static var defaultValue: ((URL, _ isIncognito: Bool) -> Void)? = nil
     }
-    public var openInNewTab: (URL, _ isPrivate: Bool) -> Void {
+    public var openInNewTab: (URL, _ isIncognito: Bool) -> Void {
         get {
             self[OpenInNewTabKey.self] ?? { _, _ in
                 fatalError(".environment(\\.openInNewTab) must be specified")

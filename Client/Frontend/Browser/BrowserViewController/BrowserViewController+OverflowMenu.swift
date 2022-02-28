@@ -89,7 +89,7 @@ extension BrowserViewController {
                 tab.toggleChangeUserAgent()
                 Tab.ChangeUserAgent.updateDomainList(
                     forUrl: url, isChangedUA: tab.changedUserAgent,
-                    isPrivate: tab.isIncognito)
+                    isIncognito: tab.isIncognito)
             }
         case .share:
             ClientLogger.shared.logCounter(

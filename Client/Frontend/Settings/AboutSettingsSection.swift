@@ -50,7 +50,7 @@ struct AboutSettingsSection: View {
 
 struct LicensesView: UIViewRepresentable {
     func makeUIView(context: Context) -> some UIView {
-        let config = TabManager.makeWebViewConfig(isPrivate: true)
+        let config = TabManager.makeWebViewConfig(isIncognito: true)
         config.preferences.javaScriptCanOpenWindowsAutomatically = false
 
         let webView = WKWebView(

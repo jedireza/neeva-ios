@@ -90,9 +90,9 @@ class SettingsViewController: UIHostingController<AnyView> {
 
         self.rootView = AnyView(
             SettingsView(dismiss: { self.dismiss(animated: true, completion: nil) })
-                .environment(\.openInNewTab) { url, isPrivate in
+                .environment(\.openInNewTab) { url, isIncognito in
                     self.dismiss(animated: true, completion: nil)
-                    bvc.openURLInNewTab(url, isPrivate: isPrivate)
+                    bvc.openURLInNewTab(url, isIncognito: isIncognito)
                 }
                 .environment(\.onOpenURL) { url in
                     self.dismiss(animated: true, completion: nil)

@@ -496,12 +496,12 @@ class HistoryPanel: SiteTableViewController {
             removeHistoryForURLAtIndexPath: {
                 self.removeHistoryForURLAtIndexPath(indexPath: indexPath)
             }
-        ) { tab, isPrivate in
+        ) { tab, isIncognito in
             if let toastManager = SceneDelegate.getCurrentSceneDelegate(for: self.view)
                 .toastViewManager
             {
                 let toastLabelText: LocalizedStringKey =
-                    isPrivate
+                    isIncognito
                     ? "New Incognito Tab opened"
                     : "New Tab opened"
 
@@ -598,7 +598,7 @@ class HistoryPanel: SiteTableViewController {
                 image: UIImage(systemName: "plus.square")
             ) { _ in
                 let tab = self.tabManager.addTab(
-                    URLRequest(url: site.url), afterTab: currentTab, isPrivate: false)
+                    URLRequest(url: site.url), afterTab: currentTab, isIncognito: false)
                 openedTab(tab, false)
             }
 
@@ -607,7 +607,7 @@ class HistoryPanel: SiteTableViewController {
                 image: UIImage(named: "incognito")?.withRenderingMode(.alwaysTemplate)
             ) { _ in
                 let tab = self.tabManager.addTab(
-                    URLRequest(url: site.url), afterTab: currentTab, isPrivate: true)
+                    URLRequest(url: site.url), afterTab: currentTab, isIncognito: true)
                 openedTab(tab, true)
             }
 
