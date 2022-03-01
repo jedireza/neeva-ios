@@ -613,6 +613,10 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
                     manager: manager.tabManager,
                     isChild: true)
             }) ?? []
+        
+        if FeatureFlag[.reverseChronologicalOrdering] {
+            allDetails = allDetails.reversed()
+        }
     }
 
     var thumbnail: some View {

@@ -244,6 +244,10 @@ class TabCardModel: CardModel {
         groupManager.updateTabGroups()
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
+        
+        if FeatureFlag[.reverseChronologicalOrdering] {
+            allDetails = allDetails.reversed()
+        }
 
         allDetailsWithExclusionList = manager.getAll().filter {
             !groupManager.childTabs.contains($0)
