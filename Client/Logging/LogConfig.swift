@@ -103,6 +103,8 @@ public struct LogConfig {
         case ViewTerms
         /// Click link to navigate to App Settings in System Settings
         case GoToSysAppSettings
+        /// dismiss the educational screen
+        case DismissDefaultBrowserOnboardingScreen
 
         /// Click Clear Private Data in Data Management
         case ClearPrivateData
@@ -474,6 +476,7 @@ public struct LogConfig {
         case .CloseDefaultBrowserPromo: return .PromoCard
         case .GoToSysAppSettings: return .PromoCard
         case .DefaultBrowserPromoCardImp: return .PromoCard
+        case .DismissDefaultBrowserOnboardingScreen: return .PromoCard
 
         case .QuerySuggestion: return .Suggestions
         case .MemorizedSuggestion: return .Suggestions
