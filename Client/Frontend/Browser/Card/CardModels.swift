@@ -126,8 +126,13 @@ class TabCardModel: CardModel {
 
         var partialResult: [Row] = []
 
-        var allDetailsFiltered = allDetails.filter { tabCard in
-            let tab = tabCard.manager.get(for: tabCard.id)!
+        let allDetailsFiltered = allDetails.filter { tabCard in
+            // TODO(darin): Find a better fix. This is a bandaid solution. Unfortunately,
+            // `allDetails` and `TabManager.tabs` can be momentarily out of sync while
+            // `allDetails` is being assigned in `onDataUpdated`. Having `allDetails` be
+            // both `@Published` and a list that indirectly references `Tab` instances is
+            // not workable. We need to find an alternative design.
+            guard let tab = tabCard.manager.get(for: tabCard.id) else { return false }
             return
                 (tabGroupModel.representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
