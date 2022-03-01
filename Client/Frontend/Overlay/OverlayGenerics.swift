@@ -5,15 +5,6 @@
 import SwiftUI
 
 extension EnvironmentValues {
-    private struct HideOverlayKey: EnvironmentKey {
-        static let defaultValue: () -> Void = {}
-    }
-
-    public var hideOverlay: () -> Void {
-        get { self[HideOverlayKey.self] }
-        set { self[HideOverlayKey.self] = newValue }
-    }
-
     private struct OverlayModelKey: EnvironmentKey {
         static let defaultValue = OverlaySheetModel()
     }

@@ -7,6 +7,7 @@ import Foundation
 import Shared
 import SwiftUI
 import WalletConnectSwift
+import WalletCore
 import web3swift
 
 extension Defaults.Keys {

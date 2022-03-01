@@ -4,6 +4,7 @@
 
 import Defaults
 import Shared
+import WalletCore
 import WebKit
 
 extension TabContentBlocker {
