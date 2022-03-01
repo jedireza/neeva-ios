@@ -25,6 +25,9 @@ class IntroViewModel: NSObject, ObservableObject {
     @Published var onOtherOptionsPage: Bool = false
     @Published var onSignInMode: Bool = false
 
+    var signInErrorMessage: String = ""
+    @Published var showSignInError = false
+
     public var presentationController: UIViewController
     public var overlayManager: OverlayManager
     public var onDismiss: ((FirstRunButtonActions) -> Void)
@@ -159,19 +162,11 @@ class IntroViewModel: NSObject, ObservableObject {
     }
 
     func showErrorAlert(errMsg: String) {
-        let alert = UIAlertController(title: "Error", message: errMsg, preferredStyle: .alert)
-        alert.addAction(
-            UIAlertAction(
-                title: NSLocalizedString("OK", comment: "Default action"),
-                style: .default,
-                handler: { _ in
-                    Logger.browser.error(
-                        "Showed error alert message: \(String(describing: errMsg))")
-                }
-            )
+        signInErrorMessage = errMsg
+        showSignInError = true
+        Logger.browser.error(
+            "Showed error alert message: \(errMsg)"
         )
-
-        presentationController.present(alert, animated: true, completion: nil)
     }
 
     // MARK: - Init

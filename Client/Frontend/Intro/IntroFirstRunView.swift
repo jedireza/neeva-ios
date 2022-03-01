@@ -151,24 +151,37 @@ struct IntroFirstRunView: View {
     @EnvironmentObject var model: IntroViewModel
 
     var body: some View {
-        VStack {
-            FirstRunCloseButton {
-                model.buttonAction(.skipToBrowser)
+        ZStack {
+            VStack {
+                FirstRunCloseButton {
+                    model.buttonAction(.skipToBrowser)
+
+                    if model.onOtherOptionsPage {
+                        logOtherOptionsSkipToBrowser()
+                    } else {
+                        logFirstRunSkipToBrowser()
+                    }
+                }.padding(.top, 24)
+
+                Spacer()
 
                 if model.onOtherOptionsPage {
-                    logOtherOptionsSkipToBrowser()
+                    OtherOptionsPage()
                 } else {
-                    logFirstRunSkipToBrowser()
+                    FirstRunHomePage()
                 }
-            }.padding(.top, 24)
-
-            Spacer()
-
-            if model.onOtherOptionsPage {
-                OtherOptionsPage()
-            } else {
-                FirstRunHomePage()
             }
+
+            Color.clear
+                .alert(isPresented: $model.showSignInError) {
+                    Alert(
+                        title: Text("Error"),
+                        message: Text(model.signInErrorMessage),
+                        dismissButton: .default(
+                            Text("OK"), action: { model.signInErrorMessage = "" }
+                        )
+                    )
+                }
         }.background(
             Color.brand.offwhite
                 .ignoresSafeArea(.all)
