@@ -24,7 +24,7 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
                         .padding(.top)
                         .background(Color.clear)
                 }
-                DefaultBrowserOnboardingView(openSettings: openSettings, triggerFrom: triggerFrom)
+                DefaultBrowserOnboardingView(openSettings: openSettings)
             }
         }
     }
@@ -35,8 +35,7 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
             openSettings: { [weak self] in
                 self?.dismiss(animated: true) {
                     UIApplication.shared.openSettings(
-                        triggerFrom: triggerFrom,
-                        sourceView: String(describing: DefaultBrowserOnboardingView.self)
+                        triggerFrom: triggerFrom
                     )
                     didOpenSettings()
                 }
@@ -44,7 +43,18 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
                 Defaults[.didDismissDefaultBrowserCard] = true
             },
             onCancel: { [weak self] in
-                self?.dismiss(animated: true, completion: nil)
+                self?.dismiss(animated: true) {
+                    ClientLogger.shared.logCounter(
+                        .DismissDefaultBrowserOnboardingScreen,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.UIInteractionAttribute.openSysSettingTriggerFrom,
+                                value: triggerFrom.rawValue
+                            )
+                        ]
+                    )
+                }
+
             },
             triggerFrom: triggerFrom
         )
@@ -57,7 +67,6 @@ class DefaultBrowserOnboardingViewController: UIHostingController<
 
 struct DefaultBrowserOnboardingView: View {
     let openSettings: () -> Void
-    let triggerFrom: OpenSysSettingTrigger
 
     var body: some View {
         VStack {
@@ -117,7 +126,7 @@ struct DefaultBrowserOnboardingView: View {
 struct DefaultBrowserOnboardingView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            DefaultBrowserOnboardingView(openSettings: {}, triggerFrom: .defaultBrowserPrompt)
+            DefaultBrowserOnboardingView(openSettings: {})
                 .navigationBarTitleDisplayMode(.inline)
         }
 

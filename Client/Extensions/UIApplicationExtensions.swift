@@ -14,18 +14,14 @@ public enum OpenSysSettingTrigger: String {
 
 extension UIApplication {
 
-    func openSettings(triggerFrom: OpenSysSettingTrigger, sourceView: String? = nil) {
+    func openSettings(triggerFrom: OpenSysSettingTrigger) {
         ClientLogger.shared.logCounter(
             .GoToSysAppSettings,
-            attributes: EnvironmentHelper.shared.getAttributes() + [
-                ClientLogCounterAttribute(
-                    key: LogConfig.UIInteractionAttribute.openSysSettingSourceView,
-                    value: String(describing: sourceView)
-                ),
+            attributes: [
                 ClientLogCounterAttribute(
                     key: LogConfig.UIInteractionAttribute.openSysSettingTriggerFrom,
                     value: triggerFrom.rawValue
-                ),
+                )
             ]
         )
         self.open(
