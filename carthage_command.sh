@@ -8,3 +8,6 @@ echo 'GCC_TREAT_WARNINGS_AS_ERRORS=NO' >> /tmp/tmp.xcconfig
 export XCODE_XCCONFIG_FILE=/tmp/tmp.xcconfig
 
 carthage bootstrap --platform ios --color auto --cache-builds --use-xcframeworks
+
+# Remove these fonts as we don't need them and they make appstoreconnect unhappy.
+rm -fr `find Carthage/Build/GCDWebServers.xcframework -name fonts`
