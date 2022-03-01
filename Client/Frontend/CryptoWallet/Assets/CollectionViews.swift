@@ -21,6 +21,8 @@ struct CollectionStatView: View {
                 HStack(spacing: 0) {
                     Image("ethLogo")
                         .resizable()
+                        .renderingMode(.template)
+                        .foregroundColor(.label)
                         .scaledToFit()
                         .frame(width: 15, height: 15)
                     Text("\(statAmount)")

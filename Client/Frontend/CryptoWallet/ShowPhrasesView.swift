@@ -20,7 +20,7 @@ struct ShowPhrasesView: View {
                 .foregroundColor(.label)
                 .padding(.top, 60)
             Text(
-                "Your Secret Recovery Phrase is the key to your wallet. Please write it down or save it in a safe place."
+                "You will need your Secret Recovery Phrase to recover your wallet and funds. Please write it down and save it in a safe place."
             )
             .withFont(.bodyLarge)
             .foregroundColor(.secondaryLabel)
@@ -52,7 +52,7 @@ struct ShowPhrasesView: View {
                     .animation(.easeInOut)
                 VStack(spacing: 16) {
                     Text(
-                        "Anyone who has the Secret Recovery Phrase can access your wallet! Make sure your screen is safe to view"
+                        "Anyone who has this Secret Recovery Phrase can access your wallet and funds! Make sure no one else can see your screen."
                     )
                     .withFont(.bodyLarge)
                     .foregroundColor(labelColor)
@@ -75,7 +75,7 @@ struct ShowPhrasesView: View {
                 .animation(.easeInOut)
             }
             .roundedOuterBorder(cornerRadius: 12, color: .quaternarySystemFill, lineWidth: 1)
-            .background(showPhrases ? Color.clear : Color.black.opacity(0.6))
+            .background(showPhrases ? Color.clear : Color.label.opacity(0.6))
             .background(
                 showPhrases
                     ? Color.clear

@@ -55,15 +55,35 @@ struct WalletAccessor {
             url: URL(string: "https://neeva.com")!)
     }
 
+    var ethereumAddress: EthereumAddress? {
+        return EthereumAddress(publicAddress)
+    }
+
     var publicAddress: String {
         return keystore?.addresses?.first?.address ?? ""
     }
 
-    func sign(on chain: EthNode, message: String, using publicAddress: String) throws -> String {
+    func sign(on chain: EthNode, message: String) throws -> String {
+        guard let address = ethereumAddress else { return "" }
+
         return try "0x"
             + web3(on: chain).wallet.signPersonalMessage(
-                message, account: EthereumAddress(publicAddress)!, password: password
+                message, account: address, password: password
             ).toHexString()
+    }
+
+    func sign(on chain: EthNode, message: Data) throws -> String {
+        guard let address = ethereumAddress else { return "" }
+
+        if let signature = try?
+            (web3(on: chain).wallet.signPersonalMessage(
+                message, account: address, password: password)),
+            let unmarshalled = SECP256K1.unmarshalSignature(signatureData: signature)
+        {
+            return "0x" + unmarshalled.r.toHexString() + unmarshalled.s.toHexString()
+                + String(Data([unmarshalled.v]).toHexString().last ?? "0")
+        }
+        return ""
     }
 
     func ethBalance(completion: @escaping (String?) -> Void) {

@@ -16,6 +16,7 @@ enum SequenceType: String {
     case sessionRequest
     case personalSign
     case sendTransaction
+    case signTypedData
 }
 
 struct SequenceInfo {
@@ -42,13 +43,18 @@ class Web3Model: ObservableObject, ResponseRelay {
             on: chain, transactionData: transactionData) ?? ""
     }
 
-    func sign(on chain: EthNode, message: String, using publicAddress: String) throws -> String {
-        try wallet?.sign(on: chain, message: message, using: publicAddress) ?? ""
+    func sign(on chain: EthNode, message: String) throws -> String {
+        try wallet?.sign(on: chain, message: message) ?? ""
+    }
+
+    func sign(on chain: EthNode, message: Data) throws -> String {
+        try wallet?.sign(on: chain, message: message) ?? ""
     }
 
     @Published var currentSequence: SequenceInfo? = nil {
         didSet {
             guard currentSequence != nil, wallet != nil else { return }
+
             tryMatchCurrentPageToCollection()
             updateBalances()
         }
@@ -391,7 +397,9 @@ class Web3Model: ObservableObject, ResponseRelay {
         }
     }
 
-    func askToSign(request: Request, message: String, sign: @escaping (EthNode) -> String) {
+    func askToSign(
+        request: Request, message: String, typedData: Bool, sign: @escaping (EthNode) -> String
+    ) {
         guard
             let session = allSavedSessions.first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
@@ -405,7 +413,7 @@ class Web3Model: ObservableObject, ResponseRelay {
 
         DispatchQueue.main.async {
             self.currentSequence = SequenceInfo(
-                type: .personalSign,
+                type: typedData ? .signTypedData : .personalSign,
                 thumbnailURL: dappInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: dappInfo.peerMeta,
                 chain: EthNode.from(chainID: walletInfo.chainId),

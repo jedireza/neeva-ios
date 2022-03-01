@@ -65,7 +65,7 @@ struct SessionInfoView: View {
                             Symbol(decorative: .wifiSlash, style: .bodyMedium)
                             Text("Disconnect")
                         }
-                    }.buttonStyle(WalletDashBoardButtonStyle())
+                    }.buttonStyle(WalletDashboardButtonStyle())
                     let nodeToSwitchTo =
                         chain == .Ethereum ? EthNode.Polygon : EthNode.Ethereum
                     Button(action: {
@@ -81,7 +81,7 @@ struct SessionInfoView: View {
                             }
                             Text("Switch Chain")
                         }
-                    }.buttonStyle(WalletDashBoardButtonStyle())
+                    }.buttonStyle(WalletDashboardButtonStyle())
                 }
                 Button(action: {
                     web3Model.showWalletPanel()
@@ -91,7 +91,7 @@ struct SessionInfoView: View {
                         Symbol(decorative: .arrowUpRight, style: .bodyMedium)
                         Text("Open Neeva Wallet")
                     }
-                }.buttonStyle(WalletDashBoardButtonStyle())
+                }.buttonStyle(WalletDashboardButtonStyle())
             }
             Spacer()
         }

@@ -27,88 +27,116 @@ struct WalletDashboard: View {
     @Environment(\.hideOverlay) var hideOverlay
     @EnvironmentObject var model: Web3Model
 
+    @Binding var viewState: ViewState
+
     @State var showBalances: Bool = true
     @State var showSessions: Bool = true
     @State var showSendForm: Bool = false
+    @State var showOverflowSheet: Bool = false
     @State var showConfirmDisconnectAlert = false
     @State var showConfirmRemoveWalletAlert = false
     @State var sessionToDisconnect: Session? = nil
     @State var showQRScanner: Bool = false
     @State var qrCodeStr: String = ""
 
-    var overflowMenu: some View {
-        Menu(
-            content: {
-                Button(
-                    action: {
-                        let context = LAContext()
-                        let reason =
-                            "Exporting wallet secret phrase requires authentication"
-                        let onAuth: (Bool, Error?) -> Void = {
-                            success, authenticationError in
-                            if success {
-                                UIPasteboard.general.setValue(
-                                    Defaults[.cryptoPhrases],
-                                    forPasteboardType: kUTTypePlainText as String)
-                                if let toastManager = model.selectedTab?
-                                    .browserViewController?
-                                    .getSceneDelegate()?.toastViewManager
-                                {
-                                    hideOverlay()
-                                    toastManager.makeToast(
-                                        text: "Secret phrase copied to clipboard"
-                                    )
-                                    .enqueue(manager: toastManager)
-                                }
-                            }
-                        }
+    var addressText: String {
+        "\(String(Defaults[.cryptoPublicKey].prefix(3)))...\(String(Defaults[.cryptoPublicKey].suffix(3)))"
+    }
 
-                        var error: NSError?
-                        if context.canEvaluatePolicy(
-                            .deviceOwnerAuthenticationWithBiometrics, error: &error)
-                        {
-                            context.evaluatePolicy(
-                                .deviceOwnerAuthenticationWithBiometrics,
-                                localizedReason: reason,
-                                reply: onAuth)
-                        } else if context.canEvaluatePolicy(
-                            .deviceOwnerAuthentication, error: &error)
-                        {
-                            context.evaluatePolicy(
-                                .deviceOwnerAuthentication, localizedReason: reason,
-                                reply: onAuth)
-                        }
-                    },
-                    label: {
-                        Label(
-                            title: {
-                                Text("Export Wallet")
-                                    .withFont(.labelMedium)
-                                    .foregroundColor(Color.label)
-                            },
-                            icon: {
-                                Symbol(decorative: .arrowshapeTurnUpRightFill)
-                                    .foregroundColor(.label)
-                            }
-                        )
-                    })
-                if #available(iOS 15.0, *) {
-                    Button(
-                        role: .destructive,
-                        action: { showConfirmRemoveWalletAlert = true }
-                    ) {
-                        Label("Remove Wallet", systemSymbol: .trash)
-                    }
-                } else {
-                    Button(action: { showConfirmRemoveWalletAlert = true }) {
-                        Label("Remove Wallet", systemSymbol: .trash)
-                    }
+    @ViewBuilder func sheetHeader(_ title: String) -> some View {
+        HStack {
+            Text(title)
+                .withFont(.headingMedium)
+                .foregroundColor(.label)
+            Spacer()
+            Button(
+                action: {
+                    showOverflowSheet = false
+                    showSendForm = false
+                },
+                label: {
+                    Symbol(decorative: .xmark, style: .headingMedium)
+                        .foregroundColor(.label)
+                })
+        }.padding(.vertical, 8)
+        HStack(spacing: 10) {
+            Circle()
+                .fill(WalletTheme.gradient)
+                .frame(width: 34, height: 34)
+                .padding(4)
+            VStack(alignment: .leading, spacing: 0) {
+                Text(addressText)
+                    .withFont(.bodyMedium)
+                    .foregroundColor(.label)
+                    .lineLimit(1)
+                if let balance = model.balanceFor(.ether) {
+                    Text("\(balance) ETH")
+                        .withFont(.bodySmall)
+                        .foregroundColor(.secondaryLabel)
                 }
-            },
+            }
+            Spacer()
+        }.padding(.vertical, 16)
+    }
+
+    @ViewBuilder var overflowMenu: some View {
+        Button(
+            action: { showOverflowSheet = true },
             label: {
                 Symbol(decorative: .chevronDown, style: .headingXLarge)
                     .foregroundColor(.label)
+            }
+        ).sheet(
+            isPresented: $showOverflowSheet, onDismiss: {},
+            content: {
+                VStack {
+                    sheetHeader("Wallets")
+                    Button(
+                        action: onExportWallet,
+                        label: {
+                            Text("View Secret Recovery Phrase")
+                                .frame(maxWidth: .infinity)
+                        }
+                    ).buttonStyle(.wallet(.secondary))
+                    Button(
+                        action: { showConfirmRemoveWalletAlert = true }
+                    ) {
+                        Text("Remove Wallet")
+                            .frame(maxWidth: .infinity)
+                    }.buttonStyle(.wallet(.secondary))
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
             })
+    }
+
+    func onExportWallet() {
+        let context = LAContext()
+        let reason =
+            "Exporting wallet secret phrase requires authentication"
+        let onAuth: (Bool, Error?) -> Void = {
+            success, authenticationError in
+            if success {
+                showOverflowSheet = false
+                viewState = .showPhrases
+            }
+        }
+
+        var error: NSError?
+        if context.canEvaluatePolicy(
+            .deviceOwnerAuthenticationWithBiometrics, error: &error)
+        {
+            context.evaluatePolicy(
+                .deviceOwnerAuthenticationWithBiometrics,
+                localizedReason: reason,
+                reply: onAuth)
+        } else if context.canEvaluatePolicy(
+            .deviceOwnerAuthentication, error: &error)
+        {
+            context.evaluatePolicy(
+                .deviceOwnerAuthentication, localizedReason: reason,
+                reply: onAuth)
+        }
     }
 
     var accountInfo: some View {
@@ -118,11 +146,9 @@ struct WalletDashboard: View {
                 .frame(width: 48, height: 48)
                 .padding(8)
             HStack(spacing: 0) {
-                Text(
-                    "\(String(Defaults[.cryptoPublicKey].prefix(3)))...\(String(Defaults[.cryptoPublicKey].suffix(3)))"
-                )
-                .withFont(.headingXLarge)
-                .lineLimit(1)
+                Text(addressText)
+                    .withFont(.headingXLarge)
+                    .lineLimit(1)
                 overflowMenu
             }
 
@@ -143,7 +169,7 @@ struct WalletDashboard: View {
                         Symbol(decorative: .docOnDoc, style: .bodyMedium)
                         Text("Copy address")
                     }
-                }.buttonStyle(WalletDashBoardButtonStyle())
+                }.buttonStyle(WalletDashboardButtonStyle())
                 Button(action: { showQRScanner = true }) {
                     HStack(spacing: 4) {
                         Symbol(decorative: .qrcodeViewfinder, style: .bodyMedium)
@@ -153,13 +179,22 @@ struct WalletDashboard: View {
                     ScannerView(
                         showQRScanner: $showQRScanner, returnAddress: $qrCodeStr,
                         onComplete: onScanComplete)
-                }.buttonStyle(WalletDashBoardButtonStyle())
+                }.buttonStyle(WalletDashboardButtonStyle())
                 Button(action: { showSendForm = true }) {
                     HStack(spacing: 4) {
                         Symbol(decorative: .paperplane, style: .bodyMedium)
                         Text("Send")
                     }
-                }.buttonStyle(WalletDashBoardButtonStyle())
+                }
+                .buttonStyle(WalletDashboardButtonStyle())
+                .sheet(isPresented: $showSendForm, onDismiss: {}) {
+                    VStack {
+                        sheetHeader("Send")
+                        SendForm(showSendForm: $showSendForm)
+                        Spacer()
+                    }
+                    .padding(.horizontal, 16)
+                }
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
@@ -337,21 +372,15 @@ struct WalletDashboard: View {
     var body: some View {
         NavigationView {
             List {
-                if showSendForm {
-                    SendForm(showSendForm: $showSendForm)
-                        .modifier(WalletListSeparatorModifier())
-                        .padding(.vertical, 40)
-                } else {
-                    accountInfo
-                        .actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
-                            confirmRemoveWalletSheet
-                        }
-                    balancesSection
-                    openSessionsSection
-                        .actionSheet(isPresented: $showConfirmDisconnectAlert) {
-                            confirmDisconnectSheet
-                        }
-                }
+                accountInfo
+                    .actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
+                        confirmRemoveWalletSheet
+                    }
+                balancesSection
+                openSessionsSection
+                    .actionSheet(isPresented: $showConfirmDisconnectAlert) {
+                        confirmDisconnectSheet
+                    }
             }
             .modifier(WalletListStyleModifier())
             .padding(.horizontal, 16)
@@ -480,7 +509,7 @@ struct SessionActionsModifier: ViewModifier {
     }
 }
 
-public struct WalletDashBoardButtonStyle: ButtonStyle {
+public struct WalletDashboardButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var isEnabled
 
     public func makeBody(configuration: Configuration) -> some View {

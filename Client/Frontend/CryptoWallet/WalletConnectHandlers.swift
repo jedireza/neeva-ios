@@ -15,7 +15,8 @@ import web3swift
 protocol ResponseRelay {
     var publicAddress: String { get }
     func send(_ response: Response)
-    func askToSign(request: Request, message: String, sign: @escaping (EthNode) -> String)
+    func askToSign(
+        request: Request, message: String, typedData: Bool, sign: @escaping (EthNode) -> String)
     func askToTransact(
         request: Request,
         options: TransactionOptions,
@@ -26,7 +27,8 @@ protocol ResponseRelay {
         on chain: EthNode,
         transactionData: TransactionData
     ) throws -> String
-    func sign(on chain: EthNode, message: String, using publicAddress: String) throws -> String
+    func sign(on chain: EthNode, message: String) throws -> String
+    func sign(on chain: EthNode, message: Data) throws -> String
 }
 
 extension Response {
@@ -63,10 +65,10 @@ class PersonalSignHandler: RequestHandler {
 
             let message = String(data: Data.fromHex(messageBytes) ?? Data(), encoding: .utf8) ?? ""
 
-            relay.askToSign(request: request, message: message) { ethNode in
+            relay.askToSign(request: request, message: message, typedData: false) { ethNode in
                 return
                     (try? self.relay.sign(
-                        on: ethNode, message: messageBytes, using: self.relay.publicAddress))
+                        on: ethNode, message: messageBytes))
                     ?? ""
             }
         } catch {
@@ -109,6 +111,32 @@ class SendTransactionHandler: RequestHandler {
                     on: ethNode,
                     transactionData: transactionData
                 )) ?? ""
+        }
+    }
+}
+
+class SignTypedDataHandler: RequestHandler {
+    let relay: ResponseRelay
+
+    init(relay: ResponseRelay) {
+        self.relay = relay
+    }
+
+    func canHandle(request: Request) -> Bool {
+        return request.method == "eth_signTypedData"
+    }
+
+    func handle(request: Request) {
+        guard let eip712 = request.toEIP712(),
+            let typedData = eip712.hashedData
+        else {
+            relay.send(.invalid(request))
+            return
+        }
+
+        relay.askToSign(request: request, message: (eip712.message.description), typedData: true) {
+            chain in
+            (try? self.relay.sign(on: chain, message: typedData)) ?? ""
         }
     }
 }

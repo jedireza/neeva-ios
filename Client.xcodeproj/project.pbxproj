@@ -166,6 +166,7 @@
 		4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB0265C48EB00422839 /* TrackingPreventionRules.swift */; };
 		4A255AB6265C4A2A00422839 /* TrackingPreventionConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AB5265C4A2A00422839 /* TrackingPreventionConfig.swift */; };
 		4A3255A827B622A7000A700E /* TransactionFee.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3255A727B622A7000A700E /* TransactionFee.swift */; };
+		4A3255AA27B8D021000A700E /* EIP712.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3255A927B8D021000A700E /* EIP712.swift */; };
 		4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A360214268CF74500C56328 /* SuggestionBlocks.swift */; };
 		4A39C1DB26CB76D600C999CF /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A39C1DA26CB76D600C999CF /* DetailView.swift */; };
 		4A3D299126850CB60082F293 /* CardGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A3D299026850CB60082F293 /* CardGrid.swift */; };
@@ -1361,6 +1362,7 @@
 		4A255AB0265C48EB00422839 /* TrackingPreventionRules.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionRules.swift; sourceTree = "<group>"; };
 		4A255AB5265C4A2A00422839 /* TrackingPreventionConfig.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackingPreventionConfig.swift; sourceTree = "<group>"; };
 		4A3255A727B622A7000A700E /* TransactionFee.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TransactionFee.swift; sourceTree = "<group>"; };
+		4A3255A927B8D021000A700E /* EIP712.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EIP712.swift; sourceTree = "<group>"; };
 		4A360214268CF74500C56328 /* SuggestionBlocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionBlocks.swift; sourceTree = "<group>"; };
 		4A39C1DA26CB76D600C999CF /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
 		4A3D299026850CB60082F293 /* CardGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardGrid.swift; sourceTree = "<group>"; };
@@ -3167,6 +3169,7 @@
 				4A9EFAEA27AF9FC200F3ED7F /* Wallet.xcassets */,
 				4A93B54A277BC06C00CD5415 /* WalletAccessor.swift */,
 				4A93B53E2776709400CD5415 /* WalletConnectHandlers.swift */,
+				4A3255A927B8D021000A700E /* EIP712.swift */,
 				BCAAA0E1276D9C400013223E /* WalletDashboard.swift */,
 				4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */,
 				4A93B5592782981600CD5415 /* Web3Model.swift */,
@@ -5686,6 +5689,7 @@
 				4A9F654D27233F6F00B7C06E /* SpaceEntityDetail.swift in Sources */,
 				FA6B2AC21D41F02D00429414 /* Punycode.swift in Sources */,
 				BC5C442326600F23007E2F61 /* WithPopover.swift in Sources */,
+				4A3255AA27B8D021000A700E /* EIP712.swift in Sources */,
 				43446CEA2412066500F5C643 /* UIViewControllerExtension.swift in Sources */,
 				67C59950279B261D00660699 /* ExperimentSettingsView.swift in Sources */,
 				665A23D42755D8D5006AD997 /* QueryForNavigation.swift in Sources */,

@@ -49,7 +49,7 @@ struct CryptoWalletView: View {
                 case .starter:
                     WelcomeStarterView(viewState: $viewState)
                 case .dashboard:
-                    WalletDashboard()
+                    WalletDashboard(viewState: $viewState)
                 case .showPhrases:
                     ShowPhrasesView(viewState: $viewState)
                 case .importWallet:

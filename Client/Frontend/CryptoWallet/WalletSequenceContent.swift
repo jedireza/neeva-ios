@@ -128,11 +128,13 @@ struct DefaultHeader: View {
             trusted: trusted
         )
         switch sequence.type {
-        case .personalSign:
+        case .personalSign, .signTypedData:
             VStack {
                 Text("Message:")
                     .withFont(.bodyLarge)
                     .foregroundColor(.label)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity, alignment: .center)
                 ScrollView(.vertical, showsIndicators: true) {
                     Text(sequence.message)
@@ -282,10 +284,13 @@ struct MaliciousSiteView: View {
                     (Text("This site has a similar address to the verified site ")
                         + Text(trustedDomain).bold())
                     Text(
-                        "Using a popular domain and a different extension is a pattern commonly used by malicious websites."
+                        "A misleading address like this is commonly used by malicious sites to scam people."
+                    )
+                    Text(
+                        "Reason: Wrong extension"
                     )
                 } else if case .malicious = trustSignal {
-                    Text("This site is identified as a malicious website.")
+                    Text("This site has been identified as malicious.")
                 }
             }
             .withFont(unkerned: .bodyLarge)
@@ -494,15 +499,30 @@ struct WalletSequenceMessage: View {
             return " wants to connect to your wallet"
         case .personalSign:
             return
-                " wants to sign a message using your wallet. This does not involve any transactions."
+                " wants to confirm your ownership of this wallet."
+        case .signTypedData:
+            return " wants to facilitate a transaction on your behalf."
         case .sendTransaction:
             return " wants to send a transaction from your wallet"
         }
     }
 
+    var warning: String {
+        switch type {
+        case .personalSign:
+            return
+                " Signing this message does not give control over your assets."
+        case .signTypedData:
+            return " You will be granting this site control over your assets. Proceed with caution."
+        default:
+            return ""
+        }
+    }
+
     var body: some View {
-        (Text(dAppName).bold()
-            + Text(message))
+        (Text(dAppName).bold() + Text(message)
+            + Text(warning).foregroundColor(
+                type == .personalSign ? .label : Color(light: .brand.red, dark: .brand.variant.red)))
             .withFont(.headingLarge)
             .foregroundColor(.label)
             .multilineTextAlignment(.center)

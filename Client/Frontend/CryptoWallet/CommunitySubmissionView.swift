@@ -7,6 +7,7 @@ import SwiftUI
 
 struct CommunitySubmissionView: View {
     @Environment(\.hideOverlay) private var hideOverlaySheet
+    @EnvironmentObject var model: Web3Model
 
     let iconURL: URL
     let domain: String
@@ -28,16 +29,20 @@ struct CommunitySubmissionView: View {
             .padding(12)
             .background(Color.quaternarySystemFill)
             .cornerRadius(12)
-            Text("You can help the community by verifying sites you know about or reporting scams.")
-                .withFont(.bodyXLarge)
-                .foregroundColor(.label)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
+            Text(
+                "If you have knowledge of this site, please help the community and verify it as authentic or report as scam."
+            )
+            .withFont(.bodyXLarge)
+            .foregroundColor(.label)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
             VStack(spacing: 16) {
                 NeevaWalletLongPressButton(
                     action: {
                         trust = true
-                        request = TrustSignalRequest(url: url, trusted: true)
+                        if let balance = Double(model.balanceFor(.ether) ?? "0"), balance > 0 {
+                            request = TrustSignalRequest(url: url, trusted: true)
+                        }
                     },
                     label: {
                         Text("Hold to verify")
@@ -49,7 +54,9 @@ struct CommunitySubmissionView: View {
                     action: {
                         trust = false
                         hideOverlaySheet()
-                        request = TrustSignalRequest(url: url, trusted: false)
+                        if let balance = Double(model.balanceFor(.ether) ?? "0"), balance > 0 {
+                            request = TrustSignalRequest(url: url, trusted: false)
+                        }
                     },
                     label: {
                         Text("Report as scam")

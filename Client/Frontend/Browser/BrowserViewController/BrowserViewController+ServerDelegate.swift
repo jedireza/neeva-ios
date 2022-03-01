@@ -38,6 +38,7 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
         self.server = Server(delegate: self)
         server!.register(handler: PersonalSignHandler(relay: self.web3Model))
         server!.register(handler: SendTransactionHandler(relay: self.web3Model))
+        server!.register(handler: SignTypedDataHandler(relay: self.web3Model))
         web3Model.updateCurrentSession()
     }
 

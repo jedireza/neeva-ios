@@ -34,7 +34,7 @@ struct SendForm: View {
             .disableAutocorrection(true)
             .autocapitalization(.none)
             .fixedSize(horizontal: false, vertical: true)
-            .background(Color.brand.white.opacity(0.8))
+            .background(Color.DefaultBackground)
             .cornerRadius(12)
 
             HStack {
@@ -52,7 +52,9 @@ struct SendForm: View {
             .overlay(
                 RoundedRectangle(cornerRadius: 12.0)
                     .stroke(Color(UIColor.systemGray5), lineWidth: 1.0)
-            ).fixedSize(horizontal: false, vertical: true)
+            )
+            .fixedSize(horizontal: false, vertical: true)
+            .background(Color.DefaultBackground)
             .cornerRadius(12)
 
             VStack(spacing: 16) {
