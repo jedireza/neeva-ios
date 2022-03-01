@@ -10,6 +10,7 @@ struct CollapsedCardGroupView: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
     let containerGeometry: GeometryProxy
     let rowIndex: Int?
+    let nextToCells: Bool
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
@@ -25,11 +26,11 @@ struct CollapsedCardGroupView: View {
             // Don't make it a scroll view if the tab group can't be expanded
             ExpandedCardGroupRowView(
                 groupDetails: groupDetails, containerGeometry: containerGeometry,
-                range: 0..<groupDetails.allDetails.count, rowIndex: rowIndex
+                range: 0..<groupDetails.allDetails.count, rowIndex: rowIndex, nextToCells: nextToCells
             )
         } else {
             VStack(spacing: 0) {
-                TabGroupHeader(groupDetails: groupDetails, rowIndex: rowIndex)
+                TabGroupHeader(groupDetails: groupDetails, rowIndex: rowIndex, nextToCells: false)
                 scrollView
             }
             .animation(nil)
@@ -100,6 +101,7 @@ struct ExpandedCardGroupRowView: View {
     let containerGeometry: GeometryProxy
     var range: Range<Int>
     let rowIndex: Int?
+    let nextToCells: Bool
 
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
@@ -109,7 +111,7 @@ struct ExpandedCardGroupRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if isFirstRow(range) {
-                TabGroupHeader(groupDetails: groupDetails, rowIndex: rowIndex)
+                TabGroupHeader(groupDetails: groupDetails, rowIndex: rowIndex, nextToCells: nextToCells)
             } else {
                 HStack {
                     // Spacer to expand the width of the view
@@ -157,6 +159,7 @@ struct ExpandedCardGroupRowView: View {
                     isLastRow(range, groupDetails) ? 24 : 0,
                     corners: .bottom
                 )
+                .padding(.horizontal, nextToCells ? 6 : 0)
         )
     }
 
@@ -179,6 +182,7 @@ struct TabGroupHeader: View {
     @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @Environment(\.columns) private var columns
     let rowIndex: Int?
+    let nextToCells: Bool
 
     @State private var renaming = false
     @State private var deleting = false {

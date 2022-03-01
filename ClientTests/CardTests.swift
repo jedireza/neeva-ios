@@ -41,6 +41,7 @@ class CardTests: XCTestCase {
     var tabCardModel: TabCardModel!
     var tabGroupCardModel: TabGroupCardModel!
     var spaceCardModel: SpaceCardModel!
+    @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     fileprivate let spyDidSelectedTabChange =
         "tabManager(_:didSelectedTabChange:previous:isRestoring:)"
@@ -163,6 +164,145 @@ class CardTests: XCTestCase {
                 }
             }
         }
+    }
+
+    func testBuildRowsTwoColumns() throws {
+        /*
+         The following test constructs the tab in the follwing order:
+         [individual tab]
+         [child tab (hub site), child tab]
+         [individual tab]
+
+         But to save spaces, it should be converted to:
+         [individual tab. individual tab]
+         [child tab (hub site), child tab]
+        */
+
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab()
+        let tab3 = manager.addTab(afterTab: tab2)
+        let tab4 = manager.addTab()
+        // has to call tabGroupCardModel.onDataUpdated() to update representativeTabs
+        tabGroupCardModel.onDataUpdated()
+
+        let buildRowsPromotetab4 = tabCardModel.buildRows(
+            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+
+        // Two rows in total
+        XCTAssertEqual(buildRowsPromotetab4.count, 2)
+
+        // First row has 2 cells
+        XCTAssertEqual(buildRowsPromotetab4[0].cells.count, 2)
+
+        // Second row has 1 cell
+        XCTAssertEqual(buildRowsPromotetab4[1].cells.count, 1)
+
+        // Second cell of the first row should be tab 4
+        XCTAssertEqual(buildRowsPromotetab4[0].cells[1].id, tab4.id)
+
+        /*
+         All tabGroupGridRow should occupy a row by itself. The following test makes sure
+         no tab after the last row of an expanded group (which has only one tab) is promoted.
+
+         [individual tab, individual tab]
+         [child tab (hub site), child tab]
+         [child tab, empty space]
+         [individual tab]
+         */
+
+        let tab5 = manager.addTab(afterTab: tab3)
+        let tab6 = manager.addTab()
+        // has to call tabGroupCardModel.onDataUpdated to update representativeTabs
+        tabGroupCardModel.onDataUpdated()
+
+        // Make the tab group expanded
+        tabGroupExpanded.insert(tab2.rootUUID)
+
+        let buildRowsDontPromotetab6 = tabCardModel.buildRows(
+            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+
+        // There should be four rows in total
+        XCTAssertEqual(buildRowsDontPromotetab6.count, 4)
+
+        // Third row should only have 1 tab
+        XCTAssertEqual(buildRowsDontPromotetab6[2].numTabsInRow, 1)
+
+        // Fourth row should only have 1 tab, and it will be tab6
+        XCTAssertEqual(buildRowsDontPromotetab6[3].cells.count, 1)
+        XCTAssertEqual(buildRowsDontPromotetab6[3].cells[0].id, tab6.id)
+
+        tabGroupExpanded.remove(tab2.rootUUID)
+    }
+
+    func testBuildRowsThreeColumns() throws {
+        /*
+         The following test constructs the tab in the follwing order:
+         [individual tab]
+         [child tab (hub site), child tab, child tab]
+         [child tab (hub site), child tab]
+
+         But to save spaces, it should be converted to:
+         [individual tab, [child tab (hub site), child tab]]
+         [child tab (hub site), child tab, child tab]
+        */
+
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab()
+        let tab3 = manager.addTab(afterTab: tab2)
+        let tab4 = manager.addTab(afterTab: tab3)
+        let tab5 = manager.addTab()
+        let tab6 = manager.addTab(afterTab: tab5)
+        // has to call tabGroupCardModel.onDataUpdated to update representativeTabs
+        tabGroupCardModel.onDataUpdated()
+
+        let buildRowsAllSameRow = tabCardModel.buildRows(
+            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 3)
+
+        // There should be only two rows
+        XCTAssertEqual(buildRowsAllSameRow.count, 2)
+
+        // First row should only have two cells
+        XCTAssertEqual(buildRowsAllSameRow[0].cells.count, 2)
+
+        // First cell of the first row should have 1 tab
+        XCTAssertEqual(buildRowsAllSameRow[0].cells[0].numTabs, 1)
+
+        // Second cell of the first row should have two tabs
+        XCTAssertEqual(buildRowsAllSameRow[0].cells[1].numTabs, 2)
+
+        /*
+         All tabGroupGridRow should occupy a row by itself. The following test makes sure
+         no tab after the last row of an expanded group (which has only one tab) is promoted.
+
+         [individual tab, [child tab (hub site), child tab]]
+         [child tab (hub site), child tab, child tab]
+         [child tab, empty space]
+         [individual tab]
+         */
+
+        let tab7 = manager.addTab(afterTab: tab4)
+        let tab8 = manager.addTab()
+        // has to call tabGroupCardModel.onDataUpdated to update representativeTabs
+        tabGroupCardModel.onDataUpdated()
+
+        // Make the tab group expanded
+        tabGroupExpanded.insert(tab2.rootUUID)
+
+        let buildRowsDontPromotetab8 = tabCardModel.buildRows(
+            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 3)
+
+        // There should be four rows in total
+        XCTAssertEqual(buildRowsDontPromotetab8.count, 4)
+
+        // Third row should only have 1 tab
+        XCTAssertEqual(buildRowsDontPromotetab8[2].numTabsInRow, 1)
+
+        // Fourth row should only have 1 tab, and it will be tab8
+        XCTAssertEqual(buildRowsDontPromotetab8[3].cells.count, 1)
+        XCTAssertEqual(buildRowsDontPromotetab8[3].cells[0].id, tab8.id)
+
+        tabGroupExpanded.remove(tab2.rootUUID)
+
     }
 
     func testSpaceDetails() throws {

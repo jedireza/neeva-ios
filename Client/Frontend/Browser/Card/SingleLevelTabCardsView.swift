@@ -33,14 +33,16 @@ struct SingleLevelTabCardsView: View {
                     case .tabGroupInline(let groupDetails):
                         CollapsedCardGroupView(
                             groupDetails: groupDetails, containerGeometry: containerGeometry,
-                            rowIndex: row.index
+                            rowIndex: row.index,
+                            nextToCells: row.multipleCellTypes
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
                         .padding(.bottom, CardGridUX.GridSpacing)
+                        .zIndex(groupDetails.allDetails.contains(where: \.isSelected) ? 1 : 0)
                     case .tabGroupGridRow(let groupDetails, let range):
                         ExpandedCardGroupRowView(
                             groupDetails: groupDetails, containerGeometry: containerGeometry,
-                            range: range, rowIndex: row.index
+                            range: range, rowIndex: row.index, nextToCells: false
                         )
                         .padding(.horizontal, -CardGridUX.GridSpacing)
                         .padding(

@@ -121,6 +121,7 @@ struct DefaultBrowserOnboardingView_Previews: PreviewProvider {
                 .navigationBarTitleDisplayMode(.inline)
         }
 
-        DefaultBrowserOnboardingViewController.Content(openSettings: {}, onCancel: {}, triggerFrom: .defaultBrowserPrompt)
+        DefaultBrowserOnboardingViewController.Content(
+            openSettings: {}, onCancel: {}, triggerFrom: .defaultBrowserPrompt)
     }
 }

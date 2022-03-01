@@ -97,7 +97,8 @@ class UserActivityHandler {
             ) {
                 bvc.overlayManager.hideCurrentOverlay(ofPriority: .modal)
             }
-        } onDismiss: {}
+        } onDismiss: {
+        }
     }
 }
 
