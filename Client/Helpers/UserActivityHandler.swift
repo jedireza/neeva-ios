@@ -64,12 +64,26 @@ class UserActivityHandler {
                let faviconURL = URL(string: faviconURLString)
             {
                 // we get this data now in case it changes later
-                let isIncognito = tab.isIncognito
                 let favicon = tab.favicon
                 // Give FaviconHandler time to fetch so we can hopefully hit cache here
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
-                    UserActivityHandler.getFavicon(for: url, faviconURL: faviconURL, isIncognito: isIncognito) { image in
+                    // isIncognito must be false from the guard statement at the top
+                    UserActivityHandler.getFavicon(for: url, faviconURL: faviconURL, isIncognito: false) { image in
                         let resolvedImage = image ?? UserActivityHandler.getFallbackFavicon(for: url, favicon: favicon)
+                        let faviconSource: LogConfig.SpotlightAttribute.ThumbnailSource = (image != nil) ? .favicon : .fallback
+                        ClientLogger.shared.logCounter(
+                            .addThumbnailToUserActivity,
+                            attributes: EnvironmentHelper.shared.getAttributes() + [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.SpotlightAttribute.thumbnailSource,
+                                    value: faviconSource.rawValue
+                                ),
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.SpotlightAttribute.urlPayload,
+                                    value: url.absoluteString
+                                )
+                            ]
+                        )
                         attributes.thumbnailData = resolvedImage.pngData()
                         userActivity.contentAttributeSet = attributes
                         userActivity.needsSave = true
@@ -77,6 +91,19 @@ class UserActivityHandler {
                 }
             } else {
                 attributes.thumbnailData = UserActivityHandler.getFallbackFavicon(for: url, favicon: nil).pngData()
+                ClientLogger.shared.logCounter(
+                    .addThumbnailToUserActivity,
+                    attributes: EnvironmentHelper.shared.getAttributes() + [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.SpotlightAttribute.thumbnailSource,
+                            value: LogConfig.SpotlightAttribute.ThumbnailSource.fallback.rawValue
+                        ),
+                        ClientLogCounterAttribute(
+                            key: LogConfig.SpotlightAttribute.urlPayload,
+                            value: url.absoluteString
+                        )
+                    ]
+                )
             }
         }
 
@@ -85,6 +112,19 @@ class UserActivityHandler {
 
         // Set activity as active and makes it available for indexing (if isEligibleForSearch)
         userActivity.becomeCurrent()
+        ClientLogger.shared.logCounter(
+            .createUserActivity,
+            attributes: EnvironmentHelper.shared.getAttributes() + [
+                ClientLogCounterAttribute(
+                    key: LogConfig.SpotlightAttribute.addActivityToSpotlight,
+                    value: Defaults[.makeActivityAvailForSearch].description
+                ),
+                ClientLogCounterAttribute(
+                    key: LogConfig.SpotlightAttribute.urlPayload,
+                    value: url.absoluteString
+                )
+            ]
+        )
 
         tab.userActivity = userActivity
     }

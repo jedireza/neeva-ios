@@ -171,12 +171,35 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
         if userActivity.activityType == UserActivityHandler.browsingActivityType {
+            ClientLogger.shared.logCounter(
+                .openURLFromUserActivity,
+                attributes:
+                    EnvironmentHelper.shared.getAttributes()
+                    + [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.SpotlightAttribute.urlPayload,
+                            value: (userActivity.userInfo?["url"] as? String) ?? ""
+                        )
+                    ]
+            )
             if let urlString = userActivity.userInfo?["url"] as? String,
                let url = URL(string: urlString) {
                 self.bvc.switchToTabForURLOrOpen(url)
             }
         } else if userActivity.activityType == CSSearchableItemActionType,
-           let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String {
+                  let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String
+        {
+            ClientLogger.shared.logCounter(
+                .openCSSearchableItem,
+                attributes:
+                    EnvironmentHelper.shared.getAttributes()
+                    + [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.SpotlightAttribute.spaceIdPayload,
+                            value: itemIdentifier
+                        )
+                    ]
+            )
             // this itemIdentifier is the spaces id
             self.bvc.browserModel.openSpace(spaceId: itemIdentifier, bvc: self.bvc, completion: {})
         } else if !continueSiriIntent(continue: userActivity) {

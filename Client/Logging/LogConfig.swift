@@ -281,6 +281,16 @@ public struct LogConfig {
         /// Close enable notification promo card
         case CloseEnableNotificationPromo
 
+        // MARK: Spotlight
+        // when url is opened from a user activity
+        case openURLFromUserActivity
+        // when we create and index a user activity for a url browsing activity
+        case createUserActivity
+        // when we receive the callback after fetching a thumbnail to update the thumbnail
+        case addThumbnailToUserActivity
+        // when an indexed CSSearchablItem is opened
+        case openCSSearchableItem
+
         // MARK: recipe cheatsheet
         case RecipeCheatsheetImpression
         case RecipeCheatsheetClickBanner
@@ -334,6 +344,7 @@ public struct LogConfig {
         case Spaces = "Spaces"
         case RatingsCard = "RatingsCard"
         case Notification = "Notification"
+        case Spotlight = "Spotlight"
         case RecipeCheatsheet = "RecipeCheatsheet"
         case Cheatsheet = "Cheatsheet"
         case TabGroup = "TabGroup"
@@ -542,6 +553,11 @@ public struct LogConfig {
         case .PromoEnableNotification: return .Notification
         case .CloseEnableNotificationPromo: return .Notification
 
+        case .openURLFromUserActivity: return .Spotlight
+        case .createUserActivity: return .Spotlight
+        case .addThumbnailToUserActivity: return .Spotlight
+        case .openCSSearchableItem: return .Spotlight
+
         case .RecipeCheatsheetImpression: return .RecipeCheatsheet
         case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
@@ -682,6 +698,19 @@ public struct LogConfig {
         public static let localNotificationScheduleCallSite = "localNotificationScheduledCallSite"
         public static let localNotificationPromoId = "localNotificationPromoId"
         public static let notificationCampaignId = "NotificationCampaignId"
+    }
+
+    public struct SpotlightAttribute {
+        public static let urlPayload = "urlPayload"
+        public static let spaceIdPayload = "spaceIdPayload"
+        public static let addActivityToSpotlight = "addActivityToSpotlight"
+        public static let thumbnailSource = "thumbnailSource"
+
+        public enum ThumbnailSource: String {
+            case none
+            case fallback
+            case favicon
+        }
     }
 
     public struct PerformanceAttribute {
