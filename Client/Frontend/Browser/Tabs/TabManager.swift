@@ -457,9 +457,6 @@ class TabManager: NSObject {
             }
 
             tab.parent = parent
-            if FeatureFlag[.tabGroupsPinning] {
-                tab.parent?.isPinned = (tab.parent?.parentUUID == nil)
-            }
             tab.parentUUID = parent.tabUUID
             tab.rootUUID = parent.rootUUID
             tabs.insert(tab, at: insertIndex)

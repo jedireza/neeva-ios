@@ -28,6 +28,7 @@ class TabCardModel: CardModel {
     var manager: TabManager
     private var groupManager: TabGroupManager
     private var subscription: AnyCancellable? = nil
+    private var isPinnedSubscription: Set<AnyCancellable> = Set()
 
     @Published var allDetails: [TabCardDetails] = []
     @Published private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
@@ -126,7 +127,7 @@ class TabCardModel: CardModel {
 
         var partialResult: [Row] = []
 
-        let allDetailsFiltered = allDetails.filter { tabCard in
+        var allDetailsFiltered = allDetails.filter { tabCard in
             // TODO(darin): Find a better fix. This is a bandaid solution. Unfortunately,
             // `allDetails` and `TabManager.tabs` can be momentarily out of sync while
             // `allDetails` is being assigned in `onDataUpdated`. Having `allDetails` be
@@ -137,6 +138,10 @@ class TabCardModel: CardModel {
                 (tabGroupModel.representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
                 && tab.isIncognito == incognito
+        }
+
+        if FeatureFlag[.tabGroupsPinning] {
+            modifyAllDetailsFilteredPromotingPinnedTabs(&allDetailsFiltered, tabGroupModel)
         }
 
         // An array to keep track of whether a CardDetail has been processed. This allows us to skip
@@ -247,6 +252,7 @@ class TabCardModel: CardModel {
 
     func onDataUpdated() {
         groupManager.updateTabGroups()
+
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
         
@@ -261,6 +267,33 @@ class TabCardModel: CardModel {
 
         selectedTabID = manager.selectedTab?.tabUUID ?? ""
         onViewUpdate()
+    }
+
+    private func modifyAllDetailsFilteredPromotingPinnedTabs(
+        _ allDetailsFiltered: inout [TabCardDetails], _ tabGroupModel: TabGroupCardModel
+    ) {
+        allDetailsFiltered = allDetailsFiltered.sorted(by: { lhs, rhs in
+            let lhsPinnedTime = findDetailPinnedTime(lhs, tabGroupModel)
+            let rhsPinnedTime = findDetailPinnedTime(rhs, tabGroupModel)
+            if lhsPinnedTime == nil && rhsPinnedTime != nil {
+                return false
+            } else if lhsPinnedTime != nil && rhsPinnedTime == nil {
+                return true
+            } else if lhsPinnedTime != nil && rhsPinnedTime != nil {
+                return lhsPinnedTime! < rhsPinnedTime!
+            }
+            return false
+        })
+    }
+
+    private func findDetailPinnedTime(_ detail: TabCardDetails, _ tabGroupModel: TabGroupCardModel)
+        -> Double?
+    {
+        if let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == detail.rootID }) {
+            return tabGroup.pinnedTime
+        } else {
+            return detail.pinnedTime
+        }
     }
 
     func getAllDetails(matchingIncognitoState: Bool?) -> [TabCardDetails] {
