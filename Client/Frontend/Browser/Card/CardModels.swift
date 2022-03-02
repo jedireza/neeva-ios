@@ -32,6 +32,7 @@ class TabCardModel: CardModel {
     @Published var allDetails: [TabCardDetails] = []
     @Published private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
     @Published private(set) var selectedTabID: String? = nil
+    @Published var draggingDetail: TabCardDetails?
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     var normalDetails: [TabCardDetails] {
@@ -248,7 +249,7 @@ class TabCardModel: CardModel {
     func onDataUpdated() {
         groupManager.updateTabGroups()
         allDetails = manager.getAll()
-            .map { TabCardDetails(tab: $0, manager: manager) }
+            .map { TabCardDetails(tab: $0, manager: manager, tabCardModel: self) }
         
         if FeatureFlag[.reverseChronologicalOrdering] {
             allDetails = allDetails.reversed()

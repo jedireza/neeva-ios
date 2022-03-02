@@ -134,6 +134,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     private var isPinnedSubscription: AnyCancellable?
 
     var manager: TabManager
+    var tabCardModel: TabCardModel?
     var isChild: Bool
 
     private var tab: Tab? {
@@ -171,10 +172,11 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     // Avoiding keeping a reference to classes both to minimize surface area these Card classes have
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
-    init(tab: Tab, manager: TabManager, isChild: Bool = false) {
+    init(tab: Tab, manager: TabManager, isChild: Bool = false, tabCardModel: TabCardModel? = nil) {
         self.id = tab.id
         self.manager = manager
         self.isChild = isChild
+        self.tabCardModel = tabCardModel
 
         isPinnedSubscription = tab.$isPinned.sink { [weak self] _ in
             self?.objectWillChange.send()
@@ -198,6 +200,47 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         }
 
         return true
+    }
+
+    public func dropEntered(info: DropInfo) {
+
+        guard let tabCardModel = tabCardModel else {
+            return
+        }
+
+        let fromIndex = tabCardModel.allDetails.firstIndex {
+            $0.id == tabCardModel.draggingDetail?.id
+        } ?? 0
+
+        let toIndex = tabCardModel.allDetails.firstIndex {
+            $0.id == self.id
+        } ?? 0
+
+        if fromIndex != toIndex {
+            let fromDetail = tabCardModel.allDetails[fromIndex]
+            tabCardModel.allDetails[fromIndex] = tabCardModel.allDetails[toIndex]
+            tabCardModel.allDetails[toIndex] = fromDetail
+        }
+    }
+
+    public func dropUpdated(info: DropInfo) -> DropProposal? {
+        guard let tabCardModel = tabCardModel else {
+            return DropProposal(operation: .cancel)
+        }
+
+        let fromIndex = manager.tabs.firstIndex {
+            $0.tabUUID == tabCardModel.draggingDetail?.id
+        } ?? 0
+
+        let toIndex = manager.tabs.firstIndex {
+            $0.tabUUID == self.id
+        } ?? 0
+
+        if fromIndex != toIndex {
+            manager.swapTabs(fromIndex: fromIndex, toIndex: toIndex)
+        }
+
+        return DropProposal(operation: .move)
     }
 
     func onClose() {

@@ -777,6 +777,12 @@ class TabManager: NSObject {
         // don't we need to generate a .didClose TabEvent?
     }
 
+    func swapTabs(fromIndex: Int, toIndex: Int) {
+        let fromTab = tabs[fromIndex]
+        tabs[fromIndex] = tabs[toIndex]
+        tabs[toIndex] = fromTab
+    }
+
     func getRecentlyClosedTabForURL(_ url: URL) -> SavedTab? {
         assert(Thread.isMainThread)
         return recentlyClosedTabs.joined().filter({ $0.url == url }).first

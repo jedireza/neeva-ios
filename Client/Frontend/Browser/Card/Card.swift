@@ -161,6 +161,7 @@ struct FittedCard<Details>: View where Details: CardDetails {
 struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
     var dragToClose = false
+    var dragNDrop = FeatureFlag[.dragAndDropTabs]
     /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
     var animate = false
@@ -250,6 +251,12 @@ struct Card<Details>: View where Details: CardDetails {
         .accesibilityFocus(
             shouldFocus: details.isSelected, trigger: cardTransitionModel.state == .hidden
         )
+        .if(dragNDrop && tabCardDetail != nil && !tabCardDetail!.isChild) { view in
+            view.onDrag({
+                tabCardDetail?.tabCardModel?.draggingDetail = tabCardDetail
+                return NSItemProvider(contentsOf: URL(string: "\(details.id)")!)!
+            })
+        }
         .onDrop(of: ["public.url", "public.text"], delegate: details)
         .if(let: details.closeButtonImage) { buttonImage, view in
             view
