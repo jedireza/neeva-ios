@@ -1686,8 +1686,6 @@ extension BrowserViewController {
     private func presentDBPromptView() {
         self.shouldPresentDBPrompt = false
 
-        let arm = NeevaExperiment.startExperiment(for: .defaultBrowserSkipEducation)
-
         self.overlayManager.presentFullScreenModal(
             content: AnyView(
                 DefaultBrowserPromptView {
@@ -1695,15 +1693,11 @@ extension BrowserViewController {
                 } buttonAction: {
                     self.overlayManager.hideCurrentOverlay()
 
-                    if arm == .skipEducation {
-                        UIApplication.shared.openSettings(triggerFrom: .defaultBrowserPromptDirect)
-                    } else {
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                            self.presentDBOnboardingViewController(
-                                modalTransitionStyle: .crossDissolve,
-                                triggerFrom: .defaultBrowserPrompt
-                            )
-                        }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                        self.presentDBOnboardingViewController(
+                            modalTransitionStyle: .crossDissolve,
+                            triggerFrom: .defaultBrowserPrompt
+                        )
                     }
                 }
             )
