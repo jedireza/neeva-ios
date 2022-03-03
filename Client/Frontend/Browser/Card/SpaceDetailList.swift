@@ -95,7 +95,7 @@ struct SpaceDetailList: View {
                                 }
                         }
 
-                        ForEach(primitive.allDetails, id: \.id) { details in
+                        ForEach(primitive.allDetails.enumerated(), id: \.id) { (index, details) in
                             let editSpaceItem = {
                                 guard let space = space else {
                                     return
@@ -122,6 +122,14 @@ struct SpaceDetailList: View {
                                 }
 
                                 return nil
+                            }()
+
+                            let showSeperator: Bool = {
+                                guard index > 1 else {
+                                    return false
+                                }
+
+                                return primitive.allDetails[index - 1].data.url != nil
                             }()
 
                             if let url = details.data.url, spaceLink == nil {
@@ -154,6 +162,7 @@ struct SpaceDetailList: View {
                                     editSpaceItem: editSpaceItem,
                                     index: primitive.allDetails.firstIndex { $0.id == details.id }
                                         ?? 0,
+                                    showSeperator: showSeperator,
                                     canEdit: canEdit
                                 )
                                 .modifier(ListSeparatorModifier())

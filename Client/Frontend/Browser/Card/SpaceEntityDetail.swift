@@ -17,6 +17,7 @@ struct SpaceEntityDetailView: View {
     let addToAnotherSpace: (URL, String?, String?) -> Void
     let editSpaceItem: () -> Void
     let index: Int
+    var showSeperator: Bool = true
     var canEdit: Bool
 
     var shouldHighlightAsUpdated: Bool {
@@ -87,8 +88,11 @@ struct SpaceEntityDetailView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if index > 0 {
-                Color.secondaryBackground.frame(height: 2).edgesIgnoringSafeArea(.top)
+            if showSeperator {
+                Color.secondaryBackground
+                    .frame(height: 2)
+                    .edgesIgnoringSafeArea(.top)
+
                 Spacer(minLength: 0)
             }
 
