@@ -17,39 +17,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
     @Published private(set) var searchRichResultsError: Error?
 
     var cheatSheetIsEmpty: Bool {
-        if let cheatsheetInfo = cheatsheetInfo {
-            if let recipe = cheatsheetInfo.recipe {
-                // recipeView
-                if let ingredients = recipe.ingredients,
-                    let instructions = recipe.instructions,
-                    ingredients.count > 0,
-                    instructions.count > 0
-                {
-                    return false
-                }
-            }
-            // priceHistorySection
-            if let priceHistory = cheatsheetInfo.priceHistory,
-                priceHistory.Max.Price.isEmpty || !priceHistory.Min.Price.isEmpty
-            {
-                return false
-            }
-            // reviewURLSection
-            if cheatsheetInfo.reviewURL?.count ?? 0 > 0 {
-                return false
-            }
-            // memorizedQuerySection
-            if cheatsheetInfo.memorizedQuery?.count ?? 0 > 0 {
-                return false
-            }
-        }
-        // renderRichResult views
-        if let searchRichResults = searchRichResults,
-            !searchRichResults.isEmpty
-        {
-            return false
-        }
-        return true
+        Self.isCheatsheetEmpty(cheatsheetInfo: cheatsheetInfo, searchRichResults: searchRichResults)
     }
 
     var currentCheatsheetQueryAsURL: URL? {
@@ -111,5 +79,44 @@ public class CheatsheetMenuViewModel: ObservableObject {
         tabManager.selectedTab?.$searchRichResultsError
             .assign(to: \.searchRichResultsError, on: self)
             .store(in: &subscriptions)
+    }
+
+    class func isCheatsheetEmpty(
+        cheatsheetInfo: CheatsheetQueryController.CheatsheetInfo?,
+        searchRichResults: [SearchController.RichResult]?
+    ) -> Bool {
+        if let cheatsheetInfo = cheatsheetInfo {
+            if let recipe = cheatsheetInfo.recipe {
+                // recipeView
+                if let ingredients = recipe.ingredients,
+                    let instructions = recipe.instructions,
+                    ingredients.count > 0,
+                    instructions.count > 0
+                {
+                    return false
+                }
+            }
+            // priceHistorySection
+            if let priceHistory = cheatsheetInfo.priceHistory,
+                priceHistory.Max.Price.isEmpty || !priceHistory.Min.Price.isEmpty
+            {
+                return false
+            }
+            // reviewURLSection
+            if cheatsheetInfo.reviewURL?.count ?? 0 > 0 {
+                return false
+            }
+            // memorizedQuerySection
+            if cheatsheetInfo.memorizedQuery?.count ?? 0 > 0 {
+                return false
+            }
+        }
+        // renderRichResult views
+        if let searchRichResults = searchRichResults,
+            !searchRichResults.isEmpty
+        {
+            return false
+        }
+        return true
     }
 }

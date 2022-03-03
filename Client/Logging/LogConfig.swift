@@ -295,8 +295,12 @@ public struct LogConfig {
         case OpenCheatsheet
         case AckCheatsheetEducationOnSRP
         case AckCheatsheetEducationOnPage
+        case ShowCheatsheetEducationOnSRP
+        case ShowCheatsheetEducationOnPage
+        case ShowCheatsheetContent
         case CheatsheetEmpty
         case OpenLinkFromCheatsheet
+        case CheatsheetQueryFallback
 
         // MARK: tab group
         case tabGroupExpanded
@@ -554,8 +558,12 @@ public struct LogConfig {
         case .OpenCheatsheet: return .Cheatsheet
         case .AckCheatsheetEducationOnSRP: return .Cheatsheet
         case .AckCheatsheetEducationOnPage: return .Cheatsheet
+        case .ShowCheatsheetEducationOnSRP: return .Cheatsheet
+        case .ShowCheatsheetEducationOnPage: return .Cheatsheet
+        case .ShowCheatsheetContent: return .Cheatsheet
         case .CheatsheetEmpty: return .Cheatsheet
         case .OpenLinkFromCheatsheet: return .Cheatsheet
+        case .CheatsheetQueryFallback: return .Cheatsheet
 
         case .tabGroupExpanded: return .TabGroup
         case .tabGroupCollapsed: return .TabGroup
@@ -667,6 +675,14 @@ public struct LogConfig {
     public struct CheatsheetAttribute {
         public static let currentCheatsheetQuery = "currentCheatsheetQuery"
         public static let currentPageURL = "currentCheatsheetPageURL"
+        public static let cheatsheetQuerySource = "cheatsheetQuerySource"
+
+        public enum QuerySource: String {
+            case uToQ
+            case fastTapQuery
+            case typedQuery
+            case pageURL
+        }
     }
 
     public struct TabsAttribute {

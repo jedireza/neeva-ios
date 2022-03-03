@@ -257,6 +257,12 @@ public struct CheatsheetMenuView: View {
                     hideOverlay()
                     defaultShowTryCheatsheetPopover = !seenCheatsheetIntro
                 }
+                .onAppear {
+                    ClientLogger.shared.logCounter(
+                        .ShowCheatsheetEducationOnSRP,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                    )
+                }
             } else if !seenCheatsheetIntro {
                 CheatsheetInfoView(buttonText: "Let's try it!") {
                     ClientLogger.shared.logCounter(
@@ -264,6 +270,12 @@ public struct CheatsheetMenuView: View {
                         attributes: EnvironmentHelper.shared.getAttributes()
                     )
                     seenCheatsheetIntro = true
+                }
+                .onAppear {
+                    ClientLogger.shared.logCounter(
+                        .ShowCheatsheetEducationOnPage,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                    )
                 }
             } else if model.cheatsheetDataLoading {
                 CheatsheetLoadingView()
@@ -274,14 +286,6 @@ public struct CheatsheetMenuView: View {
             } else if model.cheatSheetIsEmpty {
                 VStack(alignment: .center) {
                     CheatsheetNoResultView()
-                        .onAppear {
-                            // there are some false positives
-                            ClientLogger.shared.logCounter(
-                                .CheatsheetEmpty,
-                                attributes: EnvironmentHelper.shared.getAttributes()
-                                    + model.loggerAttributes
-                            )
-                        }
                     if cheatsheetDebugQuery {
                         VStack(alignment: .leading) {
                             Button(action: {
@@ -317,31 +321,42 @@ public struct CheatsheetMenuView: View {
                     }
                 }
             } else {
-                VStack(alignment: .leading) {
-                    if isRecipeAllowed() {
-                        recipeView
-                            .padding()
+                cheatsheetContent
+                    .onHeightOfViewChanged { height in
+                        self.height = height
                     }
-
-                    if let richResults = model.searchRichResults {
-                        VStack(alignment: .leading) {
-                            ForEach(richResults) { richResult in
-                                renderRichResult(for: richResult)
-                            }
-                        }
-                        .padding()
-
+                    .onAppear {
+                        ClientLogger.shared.logCounter(
+                            .ShowCheatsheetContent,
+                            attributes: EnvironmentHelper.shared.getAttributes()
+                        )
                     }
-                    priceHistorySection
-                    reviewURLSection
-                    memorizedQuerySection
-                }
-                .onHeightOfViewChanged { height in
-                    self.height = height
-                }
             }
         }
         .frame(maxWidth: .infinity, minHeight: height < 200 ? 200 : height)
+    }
+
+    @ViewBuilder
+    var cheatsheetContent: some View {
+        VStack(alignment: .leading) {
+            if isRecipeAllowed() {
+                recipeView
+                    .padding()
+            }
+
+            if let richResults = model.searchRichResults {
+                VStack(alignment: .leading) {
+                    ForEach(richResults) { richResult in
+                        renderRichResult(for: richResult)
+                    }
+                }
+                .padding()
+
+            }
+            priceHistorySection
+            reviewURLSection
+            memorizedQuerySection
+        }
     }
 
     @ViewBuilder
