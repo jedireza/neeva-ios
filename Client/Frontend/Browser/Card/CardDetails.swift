@@ -208,6 +208,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             return
         }
 
+        
         let fromIndex = tabCardModel.allDetails.firstIndex {
             $0.id == tabCardModel.draggingDetail?.id
         } ?? 0
@@ -217,10 +218,16 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         } ?? 0
 
         if fromIndex != toIndex {
-            let fromDetail = tabCardModel.allDetails[fromIndex]
-            tabCardModel.allDetails[fromIndex] = tabCardModel.allDetails[toIndex]
-            tabCardModel.allDetails[toIndex] = fromDetail
+//            let fromDetail = tabCardModel.allDetails[fromIndex]
+//            tabCardModel.allDetails[fromIndex] = tabCardModel.allDetails[toIndex]
+//            tabCardModel.allDetails[toIndex] = fromDetail
+            
+            tabCardModel.allDetails.rearrange(from: fromIndex, to: toIndex)
         }
+        
+        
+        
+        
     }
 
     public func dropUpdated(info: DropInfo) -> DropProposal? {
@@ -237,7 +244,8 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         } ?? 0
 
         if fromIndex != toIndex {
-            manager.swapTabs(fromIndex: fromIndex, toIndex: toIndex)
+//            manager.swapTabs(fromIndex: fromIndex, toIndex: toIndex)
+            manager.rearrangeTabs(fromIndex: fromIndex, toIndex: toIndex)
         }
 
         return DropProposal(operation: .move)
@@ -674,5 +682,11 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
         if let item = manager.get(for: id) {
             manager.close(item, showToast: showToast)
         }
+    }
+}
+
+extension Array {
+    mutating func rearrange(from: Int, to: Int) {
+        insert(remove(at: from), at: to)
     }
 }

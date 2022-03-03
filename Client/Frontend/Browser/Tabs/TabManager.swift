@@ -782,6 +782,10 @@ class TabManager: NSObject {
         tabs[fromIndex] = tabs[toIndex]
         tabs[toIndex] = fromTab
     }
+    
+    func rearrangeTabs(fromIndex: Int, toIndex: Int) {
+        tabs.rearrange(from: fromIndex, to: toIndex)
+    }
 
     func getRecentlyClosedTabForURL(_ url: URL) -> SavedTab? {
         assert(Thread.isMainThread)
