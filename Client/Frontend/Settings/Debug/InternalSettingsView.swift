@@ -45,7 +45,6 @@ struct InternalSettingsView: View {
     @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
     @Default(.didSetDefaultBrowser) var didSetDefaultBrowser
     @Default(.didShowDefaultBrowserInterstitial) var didShowDefaultBrowserInterstitial
-    @Default(.loggedDefaultBrowserExperiment) var loggedDefaultBrowserExperiment
     @Default(.numOfDailyZeroQueryImpression) var numOfDailyZeroQueryImpression
     @Default(.lastZeroQueryImpUpdatedTimestamp) var lastZeroQueryImpUpdatedTimestamp
 
@@ -106,10 +105,6 @@ struct InternalSettingsView: View {
                 Toggle(
                     String("didShowDefaultBrowserInterstitial"),
                     isOn: $didShowDefaultBrowserInterstitial
-                )
-                Toggle(
-                    String("loggedDefaultBrowserExperiment"),
-                    isOn: $loggedDefaultBrowserExperiment
                 )
                 NumberField(
                     String("numOfDailyZeroQueryImpression"), number: $numOfDailyZeroQueryImpression)
