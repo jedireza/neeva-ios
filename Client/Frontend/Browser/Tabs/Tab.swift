@@ -103,6 +103,7 @@ class Tab: NSObject, ObservableObject {
     @Published private(set) var cheatsheetDataError: Error?
     @Published private(set) var searchRichResultsError: Error?
     @Published private(set) var currentCheatsheetQuery: String?
+    private var cheatsheetLoggerSubscription: AnyCancellable?
 
     func setURL(_ newValue: URL?) {
         if let internalUrl = InternalURL(newValue), internalUrl.isAuthorized {
@@ -287,6 +288,7 @@ class Tab: NSObject, ObservableObject {
 
     // fetch cheatsheet info for current url
     func fetchCheatsheetInfo() {
+        setupCheatsheetLoaderLogger()
         self.cheatsheetDataLoading = true
         guard let url = self.url,
             url.scheme == "https",
@@ -309,18 +311,43 @@ class Tab: NSObject, ObservableObject {
                 // when cheatsheet data fetched successfully
                 // fetch other rich result
                 let query: String
+
+                var querySource: LogConfig.CheatsheetAttribute.QuerySource
+
                 if let queries = cheatsheetInfo[0].memorizedQuery, queries.count > 0 {
+                    // U2Q
+                    querySource = .uToQ
                     query = queries[0]
                 } else if let recentQuery = self.getMostRecentQuery(
                     restrictToCurrentNavigation: true)
                 {
+                    // Fallback
                     // if we don't have memorized query from the url
                     // use last tab query
-                    query = recentQuery.suggested ?? recentQuery.typed
+                    if let suggested = recentQuery.suggested {
+                        querySource = .fastTapQuery
+                        query = suggested
+                    } else {
+                        querySource = .typedQuery
+                        query = recentQuery.typed
+                    }
                 } else {
+                    // Second Fallback
                     // use current url as query for fallback
+                    querySource = .pageURL
                     query = url.absoluteString
                 }
+
+                ClientLogger.shared.logCounter(
+                    .CheatsheetQueryFallback,
+                    attributes: EnvironmentHelper.shared.getAttributes() + [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.CheatsheetAttribute.cheatsheetQuerySource,
+                            value: querySource.rawValue
+                        )
+                    ]
+                )
+
                 self.currentCheatsheetQuery = query
                 self.getRichResultByQuery(query)
             case .failure(let error):
@@ -342,6 +369,42 @@ class Tab: NSObject, ObservableObject {
             }
             self.cheatsheetDataLoading = false
         }
+    }
+
+    private func setupCheatsheetLoaderLogger() {
+        guard cheatsheetLoggerSubscription == nil else { return }
+        cheatsheetLoggerSubscription = $cheatsheetDataLoading
+            .withPrevious()
+            .sink { [weak self] (prev, next) in
+                // only process cases where loading changed to false from a true
+                // which indicates that a loading activity has finished
+                guard prev, !next, let self = self else { return }
+                if CheatsheetMenuViewModel.isCheatsheetEmpty(
+                    cheatsheetInfo: self.cheatsheetData,
+                    searchRichResults: self.searchRichResults
+                ) {
+                    let errorString = self.cheatsheetDataError?.localizedDescription ?? self.searchRichResultsError?.localizedDescription
+                    ClientLogger.shared.logCounter(
+                        .CheatsheetEmpty,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                            +
+                        [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.CheatsheetAttribute.currentPageURL,
+                                value: self.url?.absoluteString
+                            ),
+                            ClientLogCounterAttribute(
+                                key: LogConfig.CheatsheetAttribute.currentCheatsheetQuery,
+                                value: self.currentCheatsheetQuery
+                            ),
+                            ClientLogCounterAttribute(
+                                key: "Error",
+                                value: errorString
+                            ),
+                        ]
+                    )
+                }
+            }
     }
 
     /// Helper function to observe changes to a given key path on the web view and assign
