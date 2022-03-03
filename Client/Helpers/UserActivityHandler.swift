@@ -57,6 +57,7 @@ class UserActivityHandler {
         let attributes = CSSearchableItemAttributeSet(contentType: .item)
         attributes.title = tab.pageMetadata?.title ?? tab.title
         attributes.contentDescription = tab.pageMetadata?.description
+        attributes.weakRelatedUniqueIdentifier = url.absoluteString
 
         // Fetch favicon
         if Defaults[.addThumbnailToActivities] {

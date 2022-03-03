@@ -12,12 +12,16 @@ struct SpotlightSettingsView: View {
     @Default(.makeActivityAvailForSearch) var makeActivityAvailForSearch
     @Default(.addThumbnailToActivities) var addThumbnailToActivities
     @Default(.addSpacesToCS) var addSpacesToCS
+    @Default(.addSpaceURLsToCS) var addSpaceURLsToCS
 
     @State private var deletingActivities = false
 
     @State private var deletingSpaces = false
+    @State private var deletingSpaceURLs = false
     @State private var deletingAllSpaceIndex = false
-    var spaceIndexBusy: Bool { deletingSpaces || deletingAllSpaceIndex }
+    var spaceIndexBusy: Bool {
+        deletingSpaces || deletingSpaceURLs || deletingAllSpaceIndex
+    }
 
     var body: some View {
         List {
@@ -43,7 +47,8 @@ struct SpotlightSettingsView: View {
             }
 
             Section(header: Text(verbatim: "Spaces")) {
-                Toggle(String("Add Spaces Data to Spotlight"), isOn: $addSpacesToCS)
+                Toggle(String("Add Spaces to Spotlight"), isOn: $addSpacesToCS)
+                Toggle(String("Add URLs in Spaces to Spotlight"), isOn: $addSpaceURLsToCS)
                 // Delete Buttons
                 Group {
                     Button(action: {
@@ -62,6 +67,25 @@ struct SpotlightSettingsView: View {
                         ProgressView()
                             .progressViewStyle(CircularProgressViewStyle())
                             .opacity(deletingSpaces ? 1 : 0)
+                        }
+                    })
+
+                    Button(action: {
+                        deletingSpaceURLs = true
+                        SpaceStore.removeAllSpaceURLsFromCoreSpotlight { error in
+                            if let error = error {
+                                print(error.localizedDescription)
+                            }
+                            deletingSpaceURLs = false
+                        }
+                    }, label: {
+                        HStack {
+                        Text("Remove All Spaces URLs from Index")
+                            .foregroundColor(.red)
+                        Spacer()
+                        ProgressView()
+                            .progressViewStyle(CircularProgressViewStyle())
+                            .opacity(deletingSpaceURLs ? 1 : 0)
                         }
                     })
 

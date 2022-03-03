@@ -124,6 +124,7 @@
 		323E460C27C6ED7400F325E2 /* SpaceStore+CoreSpotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 323E460B27C6ED7400F325E2 /* SpaceStore+CoreSpotlight.swift */; };
 		324948F227BDE84B00082FCF /* NavigationRouter+MaybeRewriteURL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324948F127BDE84B00082FCF /* NavigationRouter+MaybeRewriteURL.swift */; };
 		324948F827BE027B00082FCF /* NavigationRouterSearchRewriteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 324948F327BDEBE400082FCF /* NavigationRouterSearchRewriteTests.swift */; };
+		3290A26327D14DDA007C5DA4 /* SpotlightLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3290A26227D14DD9007C5DA4 /* SpotlightLogger.swift */; };
 		32D7F0EB2797025C000203C7 /* CheatsheetMenuViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */; };
 		32D95B0427A37C8100447507 /* CheatsheetTooltipPopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */; };
 		32FAB3DE27B62A5F00FEBDFE /* NeevaScopeLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32FAB3DB27B62A5E00FEBDFE /* NeevaScopeLoadingView.swift */; };
@@ -1371,6 +1372,7 @@
 		323E460B27C6ED7400F325E2 /* SpaceStore+CoreSpotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SpaceStore+CoreSpotlight.swift"; sourceTree = "<group>"; };
 		324948F127BDE84B00082FCF /* NavigationRouter+MaybeRewriteURL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NavigationRouter+MaybeRewriteURL.swift"; sourceTree = "<group>"; };
 		324948F327BDEBE400082FCF /* NavigationRouterSearchRewriteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRouterSearchRewriteTests.swift; sourceTree = "<group>"; };
+		3290A26227D14DD9007C5DA4 /* SpotlightLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightLogger.swift; sourceTree = "<group>"; };
 		32D7F0EA2797025C000203C7 /* CheatsheetMenuViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetMenuViewModel.swift; sourceTree = "<group>"; };
 		32D95B0327A37C8100447507 /* CheatsheetTooltipPopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetTooltipPopoverView.swift; sourceTree = "<group>"; };
 		32FAB3DB27B62A5E00FEBDFE /* NeevaScopeLoadingView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeevaScopeLoadingView.swift; sourceTree = "<group>"; };
@@ -3589,6 +3591,7 @@
 				C9C18E6426559B9C004710CD /* ClientLogger.swift */,
 				C9C18E6326559B9C004710CD /* LogConfig.swift */,
 				BC5740A126BB699A0047D29B /* PerformanceLogger.swift */,
+				3290A26227D14DD9007C5DA4 /* SpotlightLogger.swift */,
 			);
 			path = Logging;
 			sourceTree = "<group>";
@@ -6221,6 +6224,7 @@
 				66CA99E12775383200058241 /* BrowserBottomBarView.swift in Sources */,
 				BC24876A273382E5003A6867 /* RelatedSearchesView.swift in Sources */,
 				C9299E382694DF5800758795 /* BrowserViewController+TopBarDelegate.swift in Sources */,
+				3290A26327D14DDA007C5DA4 /* SpotlightLogger.swift in Sources */,
 				C8F457AA1F1FDD9B000CB895 /* BrowserViewController+KeyCommands.swift in Sources */,
 				1A840EC127889E8C005F6003 /* SearchEngineSettings.swift in Sources */,
 				8A2401CB26BB4D75006ABF7D /* RatingsCard.swift in Sources */,

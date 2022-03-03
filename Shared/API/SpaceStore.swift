@@ -188,6 +188,8 @@ public class SpaceStore: ObservableObject {
     private var queuedRefresh = false
     public private(set) var updatedSpacesFromLastRefresh = [Space]()
 
+    public weak var spotlightEventDelegate: SpaceStoreSpotlightEventDelegate?
+
     /// Use to query the set of spaces containing the given URL.
     func urlToSpaces(_ url: URL) -> [Space] {
         return urlToSpacesMap[url] ?? []
@@ -333,6 +335,14 @@ public class SpaceStore: ObservableObject {
 
         // Clear to avoid holding stale data. Will be rebuilt below.
         urlToSpacesMap = [:]
+        // Also clear indexed URLs
+        if Defaults[.addSpaceURLsToCS] {
+            Self.removeAllSpaceURLsFromCoreSpotlight { error in
+                if let error = error {
+                    Logger.storage.error("Error: \(error)")
+                }
+            }
+        }
 
         var spacesToFetch: [Space] = []
 
@@ -390,10 +400,10 @@ public class SpaceStore: ObservableObject {
             }
         }
 
-        // Schedule Spaces Operations
+        // Schedule Spotlight Operations
         if Defaults[.addSpacesToCS] {
             // add spaces to CS
-            Self.addSpacesToCoreSpotlight(allSpaces) { error in
+            self.addSpacesToCoreSpotlight(allSpaces) { error in
                 if let error = error {
                     Logger.storage.error("Error: \(error)")
                 }
@@ -478,6 +488,14 @@ public class SpaceStore: ObservableObject {
             var spaces = urlToSpacesMap[url] ?? []
             spaces.append(space)
             urlToSpacesMap[url] = spaces
+        }
+
+        if Defaults[.addSpaceURLsToCS] {
+            self.addSpaceURLsToCoreSpotlight(from: space) { error in
+                if let error = error {
+                    Logger.storage.error("Error: \(error)")
+                }
+            }
         }
     }
 

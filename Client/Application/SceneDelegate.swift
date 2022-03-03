@@ -189,19 +189,37 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         } else if userActivity.activityType == CSSearchableItemActionType,
                   let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String
         {
-            ClientLogger.shared.logCounter(
-                .openCSSearchableItem,
-                attributes:
-                    EnvironmentHelper.shared.getAttributes()
-                    + [
-                        ClientLogCounterAttribute(
-                            key: LogConfig.SpotlightAttribute.spaceIdPayload,
-                            value: itemIdentifier
-                        )
-                    ]
-            )
-            // this itemIdentifier is the spaces id
-            self.bvc.browserModel.openSpace(spaceId: itemIdentifier, bvc: self.bvc, completion: {})
+            if let url = URL(string: itemIdentifier),
+               url.isWebPage() {
+                // the identifier is a url link from a page in a space
+                // this itemIdentifier is the spaces id
+                ClientLogger.shared.logCounter(
+                    .openCSSearchableItem,
+                    attributes:
+                        EnvironmentHelper.shared.getAttributes()
+                        + [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.SpotlightAttribute.urlPayload,
+                                value: itemIdentifier
+                            )
+                        ]
+                )
+                self.bvc.switchToTabForURLOrOpen(url)
+            } else {
+                // this itemIdentifier is the spaces id
+                ClientLogger.shared.logCounter(
+                    .openCSSearchableItem,
+                    attributes:
+                        EnvironmentHelper.shared.getAttributes()
+                        + [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.SpotlightAttribute.spaceIdPayload,
+                                value: itemIdentifier
+                            )
+                        ]
+                )
+                self.bvc.browserModel.openSpace(spaceId: itemIdentifier, bvc: self.bvc, completion: {})
+            }
         } else if !continueSiriIntent(continue: userActivity) {
             _ = checkForUniversalURL(continue: userActivity)
         }

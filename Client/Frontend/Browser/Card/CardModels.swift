@@ -395,6 +395,8 @@ class SpaceCardModel: CardModel {
     init(manager: SpaceStore = SpaceStore.shared) {
         self.manager = manager
 
+        manager.spotlightEventDelegate = SpotlightLogger.shared
+
         NeevaUserInfo.shared.$isUserLoggedIn.sink { isLoggedIn in
             DispatchQueue.main.async {
                 // Refresh to get spaces for logged in users and to clear cache for logged out users

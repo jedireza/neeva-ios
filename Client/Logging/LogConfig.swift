@@ -290,6 +290,9 @@ public struct LogConfig {
         case addThumbnailToUserActivity
         // when an indexed CSSearchablItem is opened
         case openCSSearchableItem
+        // Indexing access
+        case willIndex
+        case didIndex
 
         // MARK: recipe cheatsheet
         case RecipeCheatsheetImpression
@@ -561,6 +564,8 @@ public struct LogConfig {
         case .createUserActivity: return .Spotlight
         case .addThumbnailToUserActivity: return .Spotlight
         case .openCSSearchableItem: return .Spotlight
+        case .willIndex: return .Spotlight
+        case .didIndex: return .Spotlight
 
         case .RecipeCheatsheetImpression: return .RecipeCheatsheet
         case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
@@ -722,10 +727,18 @@ public struct LogConfig {
         public static let addActivityToSpotlight = "addActivityToSpotlight"
         public static let thumbnailSource = "thumbnailSource"
 
+        public static let itemType = "itemType"
+        public static let indexCount = "indexCount"
+
         public enum ThumbnailSource: String {
             case none
             case fallback
             case favicon
+        }
+
+        public enum ItemType: String {
+            case space
+            case spaceEntity
         }
     }
 
