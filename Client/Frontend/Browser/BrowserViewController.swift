@@ -2091,7 +2091,7 @@ extension BrowserViewController {
         )
 
         self.showModal(
-            style: .withTitle,
+            style: .spaces,
             headerButton: OverlayHeaderButton(
                 text: "View Spaces",
                 icon: .bookmarkOnBookmark,

@@ -54,7 +54,7 @@ struct ShareAddedSpaceView: View {
                             if let id = entity?.id, let space = space {
                                 bvc
                                     .showModal(
-                                        style: .withTitle
+                                        style: .spaces
                                     ) {
                                         AddOrUpdateSpaceContent(
                                             space: space, config: .updateSpaceItem(id)

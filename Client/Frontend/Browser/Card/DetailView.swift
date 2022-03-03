@@ -102,7 +102,7 @@ where
                 action: {
                     DispatchQueue.main.async {
                         SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
-                            style: .withTitle
+                            style: .spaces
                         ) {
                             AddOrUpdateSpaceContent(space: space, config: .addSpaceItem) {
                                 helpURL in
@@ -139,7 +139,7 @@ where
                     if case .owner = space.userACL {
                         SceneDelegate.getBVC(with: tabModel.manager.scene)
                             .showModal(
-                                style: .withTitle
+                                style: .spaces
                             ) {
                                 ShareSpaceContent(
                                     space: space,
@@ -184,7 +184,7 @@ where
                 action: {
                     SceneDelegate.getBVC(with: tabModel.manager.scene)
                         .showModal(
-                            style: .withTitle
+                            style: .spaces
                         ) {
                             AddOrUpdateSpaceContent(space: space, config: .updateSpace)
                                 .environmentObject(spacesModel)

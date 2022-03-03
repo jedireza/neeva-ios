@@ -103,7 +103,7 @@ struct SpaceDetailList: View {
 
                                 SceneDelegate.getBVC(with: tabModel.manager.scene)
                                     .showModal(
-                                        style: .withTitle
+                                        style: .spaces
                                     ) {
                                         AddOrUpdateSpaceContent(
                                             space: space,

@@ -79,7 +79,7 @@ struct PopoverView<Content: View>: View {
                                         .tapTargetFrame()
                                         .padding(.trailing, 4.5)
                                 }
-                            }.padding(.top)
+                            }
                         }
 
                         ScrollView(.vertical, showsIndicators: false) {
@@ -89,14 +89,16 @@ struct PopoverView<Content: View>: View {
                                 }
                         }
                     }
+                    .padding(14)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .background(
                         Color(style.backgroundColor)
                             .cornerRadius(16)
                     )
+
                     // 60 is button height + VStack padding
-                    .frame(maxHeight: geo.size.height - verticalPadding - 60)
-                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(minWidth: 400, maxHeight: geo.size.height - verticalPadding - 60)
+                    .fixedSize(horizontal: !style.expandPopoverWidth, vertical: true)
                 }
                 .padding(.horizontal, horizontalPadding)
                 .padding(.vertical, verticalPadding)

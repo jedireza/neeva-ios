@@ -200,7 +200,7 @@ struct CardsContainer: View {
             }
 
             SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
-                style: .spaces,
+                style: .withTitle,
                 content: {
                     SpacesIntroOverlayContent()
                 },

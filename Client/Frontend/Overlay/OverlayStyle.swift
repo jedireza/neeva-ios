@@ -10,14 +10,18 @@ public struct OverlayStyle {
     let backgroundColor: UIColor
     let nonDismissible: Bool  // disable dismiss modal by clicking the gray black
     let embedScrollView: Bool
+    /// If true, will fill the entire width of the screen with the popover
+    let expandPopoverWidth: Bool
 
     init(
-        showTitle: Bool, backgroundColor: UIColor = .DefaultBackground, nonDismissible: Bool = false, embedScrollView: Bool = true
+        showTitle: Bool, backgroundColor: UIColor = .DefaultBackground, nonDismissible: Bool = false,
+        embedScrollView: Bool = true, expandPopoverWidth: Bool = false
     ) {
         self.showTitle = showTitle
         self.backgroundColor = backgroundColor
         self.nonDismissible = nonDismissible
         self.embedScrollView = embedScrollView
+        self.expandPopoverWidth = expandPopoverWidth
     }
 
     /// Use for sheets containing grouped sets of controls (e.g., like the Overflow menu).
@@ -26,8 +30,9 @@ public struct OverlayStyle {
         backgroundColor: .systemGroupedBackground.elevated)
 
     static let spaces = OverlayStyle(
-        showTitle: false,
-        backgroundColor: .DefaultBackground
+        showTitle: true,
+        backgroundColor: .DefaultBackground,
+        expandPopoverWidth: true
     )
 
     static let cheatsheet = OverlayStyle(
@@ -41,6 +46,5 @@ public struct OverlayStyle {
         embedScrollView: false
     )
 
-    /// Use for sheets with a title (e.g., like the AddToSpaces sheet).
     static let withTitle = OverlayStyle(showTitle: true)
 }
