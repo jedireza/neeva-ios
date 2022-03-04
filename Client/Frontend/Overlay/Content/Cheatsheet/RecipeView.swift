@@ -110,6 +110,7 @@ struct RecipeView: View {
                     ) {
                         Text(cleanupText(input: $0))
                             .withFont(.bodyMedium)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
                 }
                 if expanded {
@@ -124,6 +125,7 @@ struct RecipeView: View {
                                 Text("\(cleanupText(input: instructions[i]))")
                             }
                             .withFont(unkerned: .bodyMedium)
+                            .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                 }
