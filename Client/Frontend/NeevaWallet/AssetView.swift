@@ -31,6 +31,7 @@ struct AssetView: View {
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.onOpenURLForSpace) private var openURLForSpace
     @EnvironmentObject var web3Model: Web3Model
+    @EnvironmentObject var walletDetailsModel: WalletDetailsModel
     @EnvironmentObject var browserModel: BrowserModel
     let asset: Asset
 
@@ -65,7 +66,7 @@ struct AssetView: View {
                                 return
                             }
 
-                            web3Model.showingWalletDetails = false
+                            walletDetailsModel.showingWalletDetails = false
                             browserModel.hideWithNoAnimation()
                             DispatchQueue.main.async {
                                 openURLForSpace(url, web3Model.wallet?.publicAddress ?? "")
@@ -109,7 +110,7 @@ public class AssetGroup: ThumbnailModel, Identifiable {
 }
 
 struct AssetGroupView: View {
-    @EnvironmentObject var web3Model: Web3Model
+    @EnvironmentObject var walletDetailsModel: WalletDetailsModel
 
     let assetGroup: AssetGroup
     @State var isPressed = false
@@ -129,7 +130,7 @@ struct AssetGroupView: View {
         VStack(spacing: 0) {
             Button(
                 action: {
-                    web3Model.showingWalletDetails = true
+                    walletDetailsModel.showingWalletDetails = true
                 },
                 label: {
                     ThumbnailGroupView(model: assetGroup)

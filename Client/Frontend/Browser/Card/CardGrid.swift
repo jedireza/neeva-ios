@@ -66,7 +66,7 @@ struct CardGrid: View {
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
-    @EnvironmentObject var web3Model: Web3Model
+    @EnvironmentObject var walletDetailsModel: WalletDetailsModel
 
     @State private var cardSize: CGFloat = CardUX.DefaultCardSize
     @State private var columnCount = 2
@@ -137,7 +137,7 @@ struct CardGrid: View {
                 grid
                     .offset(
                         x: (spaceModel.detailedSpace == nil
-                            && !web3Model.showingWalletDetails)
+                            && !walletDetailsModel.showingWalletDetails)
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
                     .background(CardGridBackground())
@@ -165,7 +165,7 @@ struct CardGrid: View {
                         )
                         .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
                     }
-                    if web3Model.showingWalletDetails {
+                    if walletDetailsModel.showingWalletDetails {
                         WalletDetailView()
                             .frame(width: geom.size.width, height: geom.size.height)
                             .background(
@@ -204,7 +204,7 @@ private struct DraggableDetail: ViewModifier {
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var tabGroupModel: TabGroupCardModel
-    @EnvironmentObject var web3Model: Web3Model
+    @EnvironmentObject var walletDetailsModel: WalletDetailsModel
 
     func body(content: Content) -> some View {
         content
@@ -212,7 +212,7 @@ private struct DraggableDetail: ViewModifier {
             .onAnimationCompleted(for: detailDragOffset) {
                 if detailDragOffset == width {
                     spaceModel.detailedSpace = nil
-                    web3Model.showingWalletDetails = false
+                    walletDetailsModel.showingWalletDetails = false
                     detailDragOffset = 0
                     gridModel.showingDetailView = false
                 }

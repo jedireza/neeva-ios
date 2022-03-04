@@ -180,6 +180,7 @@ struct BrowserView: View {
         .environmentObject(gridModel.spaceCardModel)
         .environmentObject(gridModel.tabGroupCardModel)
         .environmentObject(bvc.web3Model)
+        .environmentObject(bvc.web3Model.walletDetailsModel)
     }
 
     // MARK: - Init

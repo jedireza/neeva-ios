@@ -54,6 +54,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     private(set) lazy var web3Model: Web3Model = {
         return Web3Model(server: self.server, presenter: self, tabManager: self.tabManager)
     }()
+    let walletDetailsModel = WalletDetailsModel()
 
     private(set) lazy var suggestionModel: SuggestionModel = {
         return SuggestionModel(bvc: self, profile: self.profile, queryModel: self.searchQueryModel)

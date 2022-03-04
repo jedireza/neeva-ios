@@ -355,14 +355,16 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
+        let web3Model = Web3Model(server: nil, presenter: MockPresenter(), tabManager: manager)
+
         let cardGrid = CardGrid()
             .environmentObject(browserModel)
             .environmentObject(browserModel.cardTransitionModel)
             .environmentObject(incognitoModel)
             .environmentObject(tabCardModel).environmentObject(spaceCardModel)
             .environmentObject(tabGroupCardModel).environmentObject(gridModel)
-            .environmentObject(
-                Web3Model(server: nil, presenter: MockPresenter(), tabManager: manager))
+            .environmentObject(web3Model)
+            .environmentObject(web3Model.walletDetailsModel)
 
         let cardContainer = try cardGrid.inspect().find(CardsContainer.self)
         XCTAssertNotNil(cardContainer)

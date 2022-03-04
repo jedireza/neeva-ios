@@ -48,7 +48,6 @@ class Web3Model: ObservableObject, ResponseRelay {
             tryMatchCurrentPageToCollection()
         }
     }
-    @Published var showingWalletDetails = false
     @Published var matchingCollection: Collection?
     @Published var showingMaliciousSiteWarning = false
 
@@ -57,6 +56,7 @@ class Web3Model: ObservableObject, ResponseRelay {
     var selectedTab: Tab?
     var wallet: WalletAccessor?
     var communityBasedTrustSignals = [String: TrustSignal]()
+    let walletDetailsModel: WalletDetailsModel
 
     var trustSignal: TrustSignal {
         if let matchingCollection = matchingCollection,
@@ -112,6 +112,7 @@ class Web3Model: ObservableObject, ResponseRelay {
         self.closeTab = { tab in
             tabManager.close(tab)
         }
+        self.walletDetailsModel = WalletDetailsModel()
         self.currentSession =
             allSavedSessions.first(where: {
                 $0.dAppInfo.peerMeta.url.baseDomain
@@ -415,4 +416,8 @@ class Web3Model: ObservableObject, ResponseRelay {
             self.startSequence()
         }
     }
+}
+
+class WalletDetailsModel: ObservableObject {
+    @Published var showingWalletDetails = false
 }
