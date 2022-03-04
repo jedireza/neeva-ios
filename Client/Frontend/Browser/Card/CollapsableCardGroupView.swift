@@ -77,6 +77,8 @@ struct CollapsedCardGroupView: View {
                 .padding(
                     .bottom, SingleLevelTabCardsViewUX.TabGroupCarouselBottomPadding
                 )
+                // fix a bug where the shadow at the top of cards getting clipped
+                .padding(.top, CardUX.ShadowRadius)
             }
             .useEffect(deps: gridModel.needsScrollToSelectedTab) { _ in
                 if groupDetails.allDetails.contains(where: \.isSelected) {
