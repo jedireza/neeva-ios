@@ -78,10 +78,6 @@ class UserActivityHandler {
                                 ClientLogCounterAttribute(
                                     key: LogConfig.SpotlightAttribute.thumbnailSource,
                                     value: faviconSource.rawValue
-                                ),
-                                ClientLogCounterAttribute(
-                                    key: LogConfig.SpotlightAttribute.urlPayload,
-                                    value: url.absoluteString
                                 )
                             ]
                         )
@@ -102,10 +98,6 @@ class UserActivityHandler {
                         ClientLogCounterAttribute(
                             key: LogConfig.SpotlightAttribute.thumbnailSource,
                             value: LogConfig.SpotlightAttribute.ThumbnailSource.fallback.rawValue
-                        ),
-                        ClientLogCounterAttribute(
-                            key: LogConfig.SpotlightAttribute.urlPayload,
-                            value: url.absoluteString
                         )
                     ]
                 )
@@ -123,10 +115,6 @@ class UserActivityHandler {
                 ClientLogCounterAttribute(
                     key: LogConfig.SpotlightAttribute.addActivityToSpotlight,
                     value: Defaults[.makeActivityAvailForSearch].description
-                ),
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.urlPayload,
-                    value: url.absoluteString
                 )
             ]
         )
