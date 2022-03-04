@@ -134,6 +134,7 @@ open class FlowTimeline {
     }
 
     private func playTimeline() {
+        // TODO: Find out why this may be true when view first appears
         if playing {
             return
         }

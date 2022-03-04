@@ -41,7 +41,9 @@ public class NeevaScopeLoadingViewController: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        timeline.play()
+        timeline.reset { timeline in
+            timeline.play()
+        }
     }
 }
 

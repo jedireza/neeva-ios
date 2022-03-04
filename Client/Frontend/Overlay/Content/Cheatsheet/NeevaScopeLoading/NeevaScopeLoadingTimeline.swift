@@ -160,11 +160,9 @@ public class NeevaScopeLoadingTimeline: FlowTimeline {
         animationsByLayer[view.glare.layer] = glareAnimations.map {
             loopAnimation($0)
         }
-        animationsByLayer[view.scope.layer] =
-            scopeAnimations
-            + scopeAnimations.map {
-                loopAnimation($0)
-            }
+        animationsByLayer[view.scope.layer] = scopeAnimations.map {
+            loopAnimation($0)
+        }
 
         return animationsByLayer
     }
