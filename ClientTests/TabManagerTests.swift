@@ -187,7 +187,7 @@ class TabManagerTests: XCTestCase {
         XCTAssertEqual(manager.incognitoTabs.count, 1, "There should be 1 private tab")
         manager.willSwitchTabMode(leavingPBM: true)
         XCTAssertEqual(manager.incognitoTabs.count, 0, "There should be 0 private tab")
-        manager.removeTabAndUpdateSelectedTab(tab)
+        manager.removeTab(tab)
         XCTAssertEqual(manager.normalTabs.count, 1, "There should be 1 normal tab")
     }
 
@@ -197,7 +197,7 @@ class TabManagerTests: XCTestCase {
         manager.addTab()
         let deleteTab = manager.addTab()
 
-        manager.removeTabAndUpdateSelectedTab(deleteTab)
+        manager.removeTab(deleteTab)
         XCTAssertEqual(tab, manager.selectedTab)
         XCTAssertFalse(manager.tabs.contains(deleteTab))
     }
@@ -222,19 +222,19 @@ class TabManagerTests: XCTestCase {
 
         manager.selectTab(tab1)
         tab1.parent = tab3
-        manager.removeTabAndUpdateSelectedTab(manager.selectedTab!)
+        manager.removeTab(manager.selectedTab!)
         // Rule: parent tab if it was the most recently visited
         XCTAssertEqual(manager.selectedTab, tab3)
 
-        manager.removeTabAndUpdateSelectedTab(manager.selectedTab!)
+        manager.removeTab(manager.selectedTab!)
         // Rule: next to the right.
         XCTAssertEqual(manager.selectedTab, tab4)
 
-        manager.removeTabAndUpdateSelectedTab(manager.selectedTab!)
+        manager.removeTab(manager.selectedTab!)
         // Rule: next to the left, when none to the right
         XCTAssertEqual(manager.selectedTab, tab2)
 
-        manager.removeTabAndUpdateSelectedTab(manager.selectedTab!)
+        manager.removeTab(manager.selectedTab!)
         // Rule: last one left.
         XCTAssertEqual(manager.selectedTab, tab0)
     }
@@ -256,7 +256,7 @@ class TabManagerTests: XCTestCase {
             XCTAssertEqual(next, newSelectedTab)
         }
         delegate.expect([didSelect])
-        manager.removeTabAndUpdateSelectedTab(manager.tabs.last!)
+        manager.removeTab(manager.tabs.last!)
 
         delegate.verify("Not all delegate methods were called")
         XCTAssertTrue(tabsUpdated)
@@ -318,7 +318,7 @@ class TabManagerTests: XCTestCase {
         }
         delegate.expect([didSelect])
 
-        manager.removeTabAndUpdateSelectedTab(manager.tabs.first!)
+        manager.removeTab(manager.tabs.first!)
 
         delegate.verify("Not all delegate methods were called")
         XCTAssertTrue(tabsUpdated)
@@ -353,7 +353,7 @@ class TabManagerTests: XCTestCase {
             XCTAssert(next != privateOne && !next.isIncognito)
         }
         delegate.expect([didSelect])
-        manager.removeTabAndUpdateSelectedTab(last)
+        manager.removeTab(last)
 
         delegate.verify("Not all delegate methods were called")
         XCTAssertTrue(tabsUpdated)
@@ -375,7 +375,7 @@ class TabManagerTests: XCTestCase {
 
         manager.selectTab(tab1)
         tab1.parent = tab3
-        manager.removeTabAndUpdateSelectedTab(tab1)
+        manager.removeTab(tab1)
 
         XCTAssertEqual(manager.selectedTab, tab3)
     }
@@ -398,7 +398,7 @@ class TabManagerTests: XCTestCase {
             XCTAssertEqual(next, newSelected)
         }
         delegate.expect([didSelect])
-        manager.removeTabAndUpdateSelectedTab(manager.tabs.first!)
+        manager.removeTab(manager.tabs.first!)
 
         delegate.verify("Not all delegate methods were called")
         XCTAssertTrue(tabsUpdated)
@@ -414,7 +414,7 @@ class TabManagerTests: XCTestCase {
             lastUsedTime: Date.nowMilliseconds()
         )
 
-        manager.removeTabs([tab], updatingSelectedTab: true)
+        manager.removeTabs([tab], updateSelectedTab: true)
         manager.restoreAllClosedTabs()
 
         XCTAssertNotEqual(manager.tabs.first, tab)
@@ -439,7 +439,7 @@ class TabManagerTests: XCTestCase {
         let tab2 = manager.addTab(afterTab: tab1)
         let initialRootUUID = tab1.rootUUID
 
-        manager.removeTabs([tab1, tab2], updatingSelectedTab: true)
+        manager.removeTabs([tab1, tab2], updateSelectedTab: true)
         manager.restoreAllClosedTabs()
 
         let _ = MethodSpy(functionName: spyRestoredTabs) { tabs in
@@ -473,7 +473,7 @@ class TabManagerTests: XCTestCase {
         let tab2 = manager.addTab(afterTab: tab1)
         let initialParentUUID = tab2.parentUUID
 
-        manager.removeTabs([tab1, tab2], updatingSelectedTab: true)
+        manager.removeTabs([tab1, tab2], updateSelectedTab: true)
         manager.restoreAllClosedTabs()
 
         let _ = MethodSpy(functionName: spyRestoredTabs) { tabs in

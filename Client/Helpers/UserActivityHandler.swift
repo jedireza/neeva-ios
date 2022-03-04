@@ -31,10 +31,10 @@ class UserActivityHandler {
 
     fileprivate func setUserActivityForTab(_ tab: Tab) {
         guard Defaults[.createUserActivities],
-              let url = tab.pageMetadata?.siteURL ?? tab.webView?.url,
-              !tab.isIncognito,
-              url.isWebPage(includeDataURIs: false),
-              !InternalURL.isValid(url: url)
+            let url = tab.pageMetadata?.siteURL ?? tab.webView?.url,
+            !tab.isIncognito,
+            url.isWebPage(includeDataURIs: false),
+            !InternalURL.isValid(url: url)
         else {
             tab.userActivity?.resignCurrent()
             tab.userActivity = nil
@@ -62,7 +62,7 @@ class UserActivityHandler {
         // Fetch favicon
         if Defaults[.addThumbnailToActivities] {
             if let faviconURLString = tab.pageMetadata?.faviconURL,
-               let faviconURL = URL(string: faviconURLString)
+                let faviconURL = URL(string: faviconURLString)
             {
                 // we get this data now in case it changes later
                 let favicon = tab.favicon
@@ -85,13 +85,17 @@ class UserActivityHandler {
                                 )
                             ]
                         )
+
                         attributes.thumbnailData = resolvedImage.pngData()
                         userActivity.contentAttributeSet = attributes
                         userActivity.needsSave = true
                     }
                 }
             } else {
-                attributes.thumbnailData = UserActivityHandler.getFallbackFavicon(for: url, favicon: nil).pngData()
+                attributes.thumbnailData = UserActivityHandler.getFallbackFavicon(
+                    for: url, favicon: nil
+                ).pngData()
+                  
                 ClientLogger.shared.logCounter(
                     .addThumbnailToUserActivity,
                     attributes: EnvironmentHelper.shared.getAttributes() + [
@@ -144,7 +148,10 @@ class UserActivityHandler {
 }
 
 extension UserActivityHandler {
-    class func getFavicon(for siteURL: URL, faviconURL: URL, isIncognito: Bool, completion: @escaping (UIImage?) -> Void) {
+    class func getFavicon(
+        for siteURL: URL, faviconURL: URL, isIncognito: Bool,
+        completion: @escaping (UIImage?) -> Void
+    ) {
         let manager = SDWebImageManager.shared
         let options: SDWebImageOptions =
             isIncognito

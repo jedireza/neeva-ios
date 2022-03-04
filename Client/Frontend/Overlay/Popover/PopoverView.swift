@@ -15,11 +15,11 @@ struct PopoverView<Content: View>: View {
     let onDismiss: () -> Void
     let headerButton: OverlayHeaderButton?
     let content: () -> Content
-    
+
     var horizontalPadding: CGFloat {
         paddingForSizeClass(horizontalSizeClass)
     }
-    
+
     var verticalPadding: CGFloat {
         paddingForSizeClass(verticalSizeClass)
     }

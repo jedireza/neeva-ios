@@ -33,7 +33,7 @@ class SimulatedSwipeModel: ObservableObject {
         }
 
         if let _ = tab.parent {
-            tabManager.removeTabAndUpdateSelectedTab(tab)
+            tabManager.removeTab(tab, showToast: false)
         } else if let id = tab.parentSpaceID {
             SceneDelegate.getBVC(with: tabManager.scene).browserModel.openSpace(spaceID: id)
         } else {
@@ -44,15 +44,15 @@ class SimulatedSwipeModel: ObservableObject {
     }
 
     @discardableResult func goForward() -> Bool {
-         guard canGoForward(), swipeDirection == .forward, let tab = tabManager.selectedTab,
-             let urls = forwardUrlMap[tab.tabUUID]!
-         else {
-             return false
-         }
+        guard canGoForward(), swipeDirection == .forward, let tab = tabManager.selectedTab,
+            let urls = forwardUrlMap[tab.tabUUID]!
+        else {
+            return false
+        }
 
-         let index = urls.firstIndex(of: tab.currentURL()!) ?? -1
-         tab.loadRequest(URLRequest(url: urls[index + 1]))
-         return true
+        let index = urls.firstIndex(of: tab.currentURL()!) ?? -1
+        tab.loadRequest(URLRequest(url: urls[index + 1]))
+        return true
     }
 
     init(tabManager: TabManager, chromeModel: TabChromeModel, swipeDirection: SwipeDirection) {

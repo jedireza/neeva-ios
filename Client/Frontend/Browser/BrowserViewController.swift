@@ -947,7 +947,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             // Resets the CardGrid to be showing tabs for when user reopens the CardGrid
             gridModel.switchToTabs(incognito: incognitoModel.isIncognito)
         }
-        
+
         if let introViewModel = introViewModel {
             introViewModel.dismiss {
                 self.introViewModel = nil

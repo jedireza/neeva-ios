@@ -188,7 +188,7 @@ extension BrowserViewController: ToolbarDelegate {
                 title: Strings.CloseTabTitle, image: UIImage(systemSymbol: .xmark)
             ) { _ in
                 if let tab = self.tabManager.selectedTab {
-                    self.tabManager.removeTabAndUpdateSelectedTab(tab)
+                    self.tabManager.removeTab(tab, showToast: false)
                 }
             }
             closeTabAction.accessibilityIdentifier = "Close Tab Action"

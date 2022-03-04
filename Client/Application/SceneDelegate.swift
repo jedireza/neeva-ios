@@ -183,11 +183,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                     ]
             )
             if let urlString = userActivity.userInfo?["url"] as? String,
-               let url = URL(string: urlString) {
+                let url = URL(string: urlString)
+            {
                 self.bvc.switchToTabForURLOrOpen(url)
             }
         } else if userActivity.activityType == CSSearchableItemActionType,
-                  let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier] as? String
+            let itemIdentifier = userActivity.userInfo?[CSSearchableItemActivityIdentifier]
+                as? String
         {
             if let url = URL(string: itemIdentifier),
                url.isWebPage() {
@@ -204,6 +206,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             )
                         ]
                 )
+                 
                 self.bvc.switchToTabForURLOrOpen(url)
             } else {
                 // this itemIdentifier is the spaces id
@@ -218,6 +221,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             )
                         ]
                 )
+                 
                 self.bvc.browserModel.openSpace(spaceId: itemIdentifier, bvc: self.bvc, completion: {})
             }
         } else if !continueSiriIntent(continue: userActivity) {
