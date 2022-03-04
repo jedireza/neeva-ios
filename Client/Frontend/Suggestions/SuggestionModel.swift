@@ -327,6 +327,8 @@ class SuggestionModel: ObservableObject {
 
             self.autocompleteSuggestion = nil
 
+            log.info("previous query: \(oldQuery), current query: \(query), completion: \(self.completion)")
+
             if query.isEmpty {
                 self.sites = []
                 self.completion = nil
@@ -346,11 +348,14 @@ class SuggestionModel: ObservableObject {
             self.currentDeferredHistoryQuery = deferredHistory
 
             deferredHistory.uponQueue(.main) { result in
+                log.info("current query: \(query)")
+
                 defer {
                     self.currentDeferredHistoryQuery = nil
                 }
 
                 guard !deferredHistory.cancelled else {
+                    log.info("canceled query: \(query)")
                     return
                 }
 
@@ -410,6 +415,7 @@ class SuggestionModel: ObservableObject {
                 }
 
                 if self.completion != nil {
+                    log.info("No autocomplete completion found, set to nil")
                     self.completion = nil
                 }
             }
@@ -432,6 +438,7 @@ class SuggestionModel: ObservableObject {
             precondition(
                 completion.lowercased().starts(with: query.lowercased()),
                 "Expected completion '\(completion)' to start with '\(query)'")
+            log.info("Set autocomplete suggestion '\(completion)' for query \(query)")
             self.completion = String(completion.dropFirst(query.count))
             return true
         }

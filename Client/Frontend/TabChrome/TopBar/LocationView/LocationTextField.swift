@@ -8,6 +8,8 @@ import Combine
 import Shared
 import SwiftUI
 
+private let log = Logger.browser
+
 /// The text field used to edit the location.
 struct LocationTextField: UIViewRepresentable {
     @Binding var text: String
@@ -217,6 +219,11 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         // Clear the current completion, then set the text.
         guard let completion = suggestionModel.completion else { return false }
         suggestionModel.queryModel.value += completion
+
+        log.info(
+            "Applying URL bar text: \(suggestionModel.queryModel.value) with autocomplete completion: \(completion)"
+        )
+
         // Move the cursor to the end of the completion.
         selectedTextRange = textRange(from: endOfDocument, to: endOfDocument)
         return true
@@ -253,6 +260,10 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
                 isFromSearchHistory: false
             )
         }
+
+        log.info(
+            "No Autocomplete suggestion taken, query: \(textField.text)"
+        )
 
         ClientLogger.shared.logCounter(
             interaction,
