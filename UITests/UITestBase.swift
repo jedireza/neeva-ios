@@ -4,8 +4,8 @@
 
 import Defaults
 import Foundation
-import Storage
 import Shared
+import Storage
 
 @testable import Client
 
@@ -75,10 +75,10 @@ class UITestBase: KIFTestCase {
             completion, autocompleteFieldlabel!.text, "Expected prefix matches actual prefix")
     }
 
-    override func setUp() {        
+    override func setUp() {
         if tester().viewExistsWithLabel("Done") && getNumberOfTabs() == 0 {
             tester().tapView(withAccessibilityLabel: "Add Tab")
-            openURL(openAddressBar: false)
+            openURL()
         }
 
         tester().waitForAnimationsToFinish()

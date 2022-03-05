@@ -192,7 +192,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 as? String
         {
             if let url = URL(string: itemIdentifier),
-               url.isWebPage() {
+                url.isWebPage()
+            {
                 // the identifier is a url link from a page in a space
                 // this itemIdentifier is the spaces id
                 ClientLogger.shared.logCounter(
@@ -221,8 +222,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             )
                         ]
                 )
-                 
-                self.bvc.browserModel.openSpace(spaceId: itemIdentifier, bvc: self.bvc, completion: {})
+
+                self.bvc.browserModel.openSpace(
+                    spaceId: itemIdentifier, bvc: self.bvc, completion: {})
             }
         } else if !continueSiriIntent(continue: userActivity) {
             _ = checkForUniversalURL(continue: userActivity)

@@ -39,17 +39,4 @@ class CreateOrSwitchToTabTests: BaseTestCase {
         let numTabs = getNumberOfTabs()
         XCTAssertEqual(numTabs, 3)
     }
-
-    func testCreatesNewTabFromOverflowMenu() {
-        openURL(path(forTestPage: "test-mozilla-org.html"))
-        openURL(path(forTestPage: "test-mozilla-book.html"))
-
-        goToOverflowMenuButton(label: "New Tab", shouldDismissOverlay: false) { element in
-            element.tap(force: true)
-        }
-        openURL(path(forTestPage: "test-mozilla-org.html"))
-
-        let numTabs = getNumberOfTabs()
-        XCTAssertEqual(numTabs, 3)
-    }
 }

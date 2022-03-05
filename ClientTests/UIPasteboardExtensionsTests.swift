@@ -7,7 +7,6 @@ import UIKit
 import XCTest
 
 class UIPasteboardExtensionsTests: XCTestCase {
-
     fileprivate var pasteboard: UIPasteboard!
 
     override func setUp() {
@@ -20,7 +19,9 @@ class UIPasteboardExtensionsTests: XCTestCase {
         UIPasteboard.remove(withName: pasteboard.name)
     }
 
-    func testAddPNGImage() {
+    func testAddPNGImage() throws {
+        try skipTest(issue: 2988, "Tests are flakey")
+        
         let path = Bundle(for: self.classForCoder).path(forResource: "image", ofType: "png")!
         let data = try! Data(contentsOf: URL(fileURLWithPath: path))
         let url = URL(string: "http://foo.bar")!
@@ -28,7 +29,9 @@ class UIPasteboardExtensionsTests: XCTestCase {
         verifyPasteboard(expectedURL: url, expectedImageTypeKey: kUTTypePNG)
     }
 
-    func testAddGIFImage() {
+    func testAddGIFImage() throws {
+        try skipTest(issue: 2988, "Tests are flakey")
+        
         let path = Bundle(for: self.classForCoder).path(forResource: "image", ofType: "gif")!
         let data = try! Data(contentsOf: URL(fileURLWithPath: path))
         let url = URL(string: "http://foo.bar")!
@@ -42,5 +45,4 @@ class UIPasteboardExtensionsTests: XCTestCase {
         XCTAssertEqual(pasteboard.items[0][kUTTypeURL as String] as? URL, expectedURL)
         XCTAssertNotNil(pasteboard.items[0][expectedImageTypeKey as String])
     }
-
 }

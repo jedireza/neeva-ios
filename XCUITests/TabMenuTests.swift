@@ -37,6 +37,9 @@ class TabMenuTests: BaseTestCase {
         closeAllTabs(createNewTab: false)
 
         waitForExistence(app.staticTexts["EmptyTabTray"])
+
+        // Check that the Toast does not appears
+        waitForNoExistence(app.buttons["restore"])
     }
 
     func testCloseIncognitoTabFromTab() {
@@ -64,6 +67,9 @@ class TabMenuTests: BaseTestCase {
         XCTAssertEqual(
             getNumberOfTabs(openTabTray: false), 0,
             "Expected number of tabs remaining is not correct")
+
+        // Check that the Toast does not appears
+        waitForNoExistence(app.buttons["restore"])
     }
 
     func testCloseAllNormalTabsFromSwitcher() {
@@ -73,6 +79,9 @@ class TabMenuTests: BaseTestCase {
 
         closeAllTabs(fromTabSwitcher: true, createNewTab: false)
         waitForExistence(app.staticTexts["EmptyTabTray"])
+
+        // Check that the Toast does not appears
+        waitForNoExistence(app.buttons["restore"])
     }
 
     func testCloseAllIncognitoTabsFromSwitcher() {
@@ -86,6 +95,9 @@ class TabMenuTests: BaseTestCase {
         XCTAssertEqual(
             getNumberOfTabs(openTabTray: false), 0,
             "Expected number of tabs remaining is not correct")
+
+        // Check that the Toast does not appears
+        waitForNoExistence(app.buttons["restore"])
     }
 
     func testCloseAllTabsWithoutConfirmation() {

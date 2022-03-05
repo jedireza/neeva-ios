@@ -69,9 +69,14 @@ class UserActivityHandler {
                 // Give FaviconHandler time to fetch so we can hopefully hit cache here
                 DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(1)) {
                     // isIncognito must be false from the guard statement at the top
-                    UserActivityHandler.getFavicon(for: url, faviconURL: faviconURL, isIncognito: false) { image in
-                        let resolvedImage = image ?? UserActivityHandler.getFallbackFavicon(for: url, favicon: favicon)
-                        let faviconSource: LogConfig.SpotlightAttribute.ThumbnailSource = (image != nil) ? .favicon : .fallback
+                    UserActivityHandler.getFavicon(
+                        for: url, faviconURL: faviconURL, isIncognito: false
+                    ) { image in
+                        let resolvedImage =
+                            image
+                            ?? UserActivityHandler.getFallbackFavicon(for: url, favicon: favicon)
+                        let faviconSource: LogConfig.SpotlightAttribute.ThumbnailSource =
+                            (image != nil) ? .favicon : .fallback
                         ClientLogger.shared.logCounter(
                             .addThumbnailToUserActivity,
                             attributes: EnvironmentHelper.shared.getAttributes() + [
@@ -91,7 +96,7 @@ class UserActivityHandler {
                 attributes.thumbnailData = UserActivityHandler.getFallbackFavicon(
                     for: url, favicon: nil
                 ).pngData()
-                  
+
                 ClientLogger.shared.logCounter(
                     .addThumbnailToUserActivity,
                     attributes: EnvironmentHelper.shared.getAttributes() + [

@@ -98,7 +98,7 @@ extension BrowserViewController {
                     tabManager.incognitoTabs, showToast: false)
             }
         } else {
-            tabManager.removeTabs(tabManager.normalTabs)
+            tabManager.removeTabs(tabManager.normalTabs, showToast: false)
         }
     }
 

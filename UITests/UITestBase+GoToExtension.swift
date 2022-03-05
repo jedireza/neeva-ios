@@ -5,6 +5,8 @@
 import Foundation
 
 extension UITestBase {
+    static var shouldUseNeevaMenu = false
+
     func goToAddressBar() {
         if !tester().viewExistsWithLabel("Cancel") {
             tester().waitForView(withAccessibilityLabel: "Address Bar")
@@ -14,6 +16,7 @@ extension UITestBase {
         tester().waitForView(withAccessibilityIdentifier: "address")
     }
 
+    // Backup for bots still using the Neeva Menu instead of Neeva Scope
     func goToNeevaMenu() {
         tester().waitForAnimationsToFinish()
         tester().waitForView(withAccessibilityLabel: "Neeva Menu")
@@ -25,8 +28,43 @@ extension UITestBase {
         tester().waitForView(withAccessibilityLabel: "Settings")
     }
 
+    func goToOverflowMenu() {
+        guard !UITestBase.shouldUseNeevaMenu else {
+            goToNeevaMenu()
+            return
+        }
+
+        tester().waitForAnimationsToFinish()
+        tester().waitForView(withAccessibilityLabel: "More")
+        tester().tapView(withAccessibilityLabel: "More")
+
+        tester().waitForAnimationsToFinish()
+
+        if tester().viewExistsWithLabel("Settings") {
+            // Expand the overflow menu
+            let reloadButton = tester().waitForView(withAccessibilityLabel: "Reload")
+
+            if !isiPad() {
+                reloadButton?.drag(from: CGPoint(x: 0, y: 500), to: CGPoint(x: 0, y: 0))
+            }
+
+            tester().waitForAnimationsToFinish()
+        } else {
+            UITestBase.shouldUseNeevaMenu = true
+
+            if !isiPad() {
+                // Close the view
+                tester().tapScreen(at: CGPoint(x: 100, y: 100))
+            }
+
+            // Bot is still using old version, open Neeva Menu instead
+            goToNeevaMenu()
+        }
+    }
+
     func goToClearData() {
-        goToNeevaMenu()
+        goToOverflowMenu()
+
         tester().tapView(withAccessibilityLabel: "Settings")
         tester().accessibilityScroll(.down)
         tester().waitForAnimationsToFinish()
@@ -36,13 +74,13 @@ extension UITestBase {
     }
 
     func goToHistory() {
-        goToNeevaMenu()
+        goToOverflowMenu()
         tester().tapView(withAccessibilityLabel: "History")
         tester().waitForAnimationsToFinish()
     }
 
     func goToSettings() {
-        goToNeevaMenu()
+        goToOverflowMenu()
         tester().tapView(withAccessibilityLabel: "Settings")
         tester().waitForAnimationsToFinish()
     }

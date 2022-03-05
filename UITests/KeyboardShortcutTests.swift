@@ -12,6 +12,7 @@ class KeyboardShortcutTests: UITestBase {
 
     override func setUp() {
         super.setUp()
+
         bvc = SceneDelegate.getBVC(for: nil)
         webRoot = SimplePageServer.start()
     }
@@ -23,42 +24,66 @@ class KeyboardShortcutTests: UITestBase {
     func openMultipleTabs(tester: KIFUITestActor) {
         for _ in 0...3 {
             openNewTab()
+            tester.waitForWebViewElementWithAccessibilityLabel("Example Domain")
         }
     }
 
     func previousTab(tester: KIFUITestActor) {
         openNewTab()
+        tester.waitForWebViewElementWithAccessibilityLabel("Example Domain")
+
         bvc.previousTabKeyCommand()
     }
 
     // MARK: Find in Page
-    func testFindInPageKeyCommand() {
+    func testFindInPageKeyCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
         openNewTab()
+        tester().waitForWebViewElementWithAccessibilityLabel("Example Domain")
+
         bvc.findInPageKeyCommand()
-        tester().tryFindingView(withAccessibilityIdentifier: "FindInPage_Done")
+        tester().waitForView(withAccessibilityIdentifier: "FindInPage_Done")
 
         reset()
     }
 
     // MARK: UI
-    func testSelectLocationBarKeyCommand() {
+    func testSelectLocationBarKeyCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
         openNewTab()
 
         bvc.selectLocationBarKeyCommand()
-        openURL(openAddressBar: false)
+        openURL()
 
         reset()
     }
 
-    func testShowTabTrayKeyCommand() {
+    func testShowTabTrayKeyCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
         openNewTab()
+        tester().waitForWebViewElementWithAccessibilityLabel("Example Domain")
+
         bvc.showTabTrayKeyCommand()
         tester().waitForView(withAccessibilityLabel: "Normal Tabs")
+
         reset()
     }
 
     // MARK: Tab Mangement
-    func testNewTabKeyCommand() {
+    func testNewTabKeyCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
         bvc.newTabKeyCommand()
 
         // Make sure Lazy Tab popped up
@@ -66,7 +91,14 @@ class KeyboardShortcutTests: UITestBase {
         reset()
     }
 
-    func testNewIncognitoTabKeyCommand() {
+    func testNewIncognitoTabKeyCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
+        openNewTab()
+        tester().waitForWebViewElementWithAccessibilityLabel("Example Domain")
+
         bvc.newIncognitoTabKeyCommand()
 
         // Make sure Lazy Tab popped up
@@ -76,27 +108,46 @@ class KeyboardShortcutTests: UITestBase {
         reset()
     }
 
-    func testNextTabKeyCommand() {
+    func testNextTabKeyCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
         previousTab(tester: tester())
         bvc.nextTabKeyCommand()
+
         XCTAssert(bvc.tabManager.selectedTab == bvc.tabManager.tabs[1])
         reset()
     }
 
-    func testPreviousTabCommand() {
+    func testPreviousTabCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
         previousTab(tester: tester())
+
         XCTAssert(bvc.tabManager.selectedTab == bvc.tabManager.tabs[0])
         reset()
     }
 
-    func testCloseAllTabsCommand() {
+    func testCloseAllTabsCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
         openMultipleTabs(tester: tester())
         bvc.closeAllTabsCommand()
-        XCTAssertTrue(bvc.tabManager.tabs.count == 0)
+
+        tester().waitForView(withAccessibilityIdentifier: "EmptyTabTray")
         reset()
     }
 
-    func testRestoreTabKeyCommand() {
+    func testRestoreTabKeyCommand() throws {
+        if !isiPad() {
+            try skipTest(issue: 0, "Keyboard shorcuts are only supported on iPad")
+        }
+
         openMultipleTabs(tester: tester())
         closeAllTabs()
         tester().waitForAnimationsToFinish()

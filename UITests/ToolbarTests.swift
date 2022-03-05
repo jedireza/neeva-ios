@@ -14,12 +14,11 @@ class ToolbarTests: UITestBase, UITextFieldDelegate {
         webRoot = SimplePageServer.start()
     }
 
-    func testURLEntry() {
-        if !tester().viewExistsWithLabel("Cancel") {
-            tester().tapView(withAccessibilityLabel: "Address Bar")
-        }
+    func testURLEntry() throws {
+        try skipTest(issue: 2989, "Test is flakey on CircleCI")
+        
+        goToAddressBar()
 
-        tester().waitForView(withAccessibilityIdentifier: "address")
         tester().enterText(intoCurrentFirstResponder: "foobar")
         tester().tapView(withAccessibilityLabel: "Cancel")
 

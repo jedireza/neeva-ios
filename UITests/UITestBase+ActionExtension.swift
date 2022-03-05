@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import Foundation
+import UIKit
 
 @testable import Client
 
@@ -26,22 +27,15 @@ extension UITestBase {
         openURL(url)
     }
 
-    func openURL(_ url: String = "example.com ", openAddressBar: Bool = true) {
-        if openAddressBar {
+    func openURL(_ url: String = "example.com ") {
+        if !tester().viewExistsWithLabel("Cancel") {
             goToAddressBar()
         }
 
-        UIPasteboard.general.string = url
-
-        if tester().viewExistsWithLabel("Cancel") {
-            tester().longPressView(withAccessibilityIdentifier: "address", duration: 1)
-        } else {
-            tester().longPressView(withAccessibilityLabel: "Address Bar", duration: 1)
-        }
-
-        tester().waitForView(withAccessibilityLabel: "Paste & Go")
-        tester().tapView(withAccessibilityLabel: "Paste & Go")
-        tester().waitForAbsenceOfView(withAccessibilityLabel: "Neeva pasted from XCUITests-Runner")
+        let textField = tester().waitForView(withAccessibilityIdentifier: "address") as! UITextField
+        textField.text = url
+        textField.resignFirstResponder()
+        _ = textField.delegate?.textFieldShouldReturn!(textField)
     }
 
     // MARK: - Data
