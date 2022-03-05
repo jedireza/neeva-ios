@@ -337,10 +337,12 @@ extension TabGroup: BrowserPrimitive, Closeable {
 
 class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
     typealias Item = TabGroup
-    let tabManager: TabManager
+
     @Default(.tabGroupNames) private var tabGroupDict: [String: String]
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
-    @Published private(set) var tabGroups: [String: TabGroup] = [:]
+
+    let tabManager: TabManager
+    private(set) var tabGroups: [String: TabGroup] = [:]
     var childTabs: [Tab] = []
     private var anyCancellable: AnyCancellable? = nil
     static var all = WeakList<TabGroupManager>()

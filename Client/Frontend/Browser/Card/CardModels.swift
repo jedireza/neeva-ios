@@ -17,22 +17,21 @@ protocol CardModel: ThumbnailModel {
     associatedtype Manager: AccessingManager
     associatedtype Details: CardDetails where Details.Item == Manager.Item
     var manager: Manager { get }
-    var allDetails: [Details] { get set }
+    var allDetails: [Details] { get }
     var allDetailsWithExclusionList: [Details] { get }
 
     func onDataUpdated()
 }
 
 class TabCardModel: CardModel {
-    private var onViewUpdate: () -> Void = {}
-    var manager: TabManager
     private var groupManager: TabGroupManager
     private var subscription: AnyCancellable? = nil
     private var isPinnedSubscription: Set<AnyCancellable> = Set()
 
-    @Published var allDetails: [TabCardDetails] = []
-    @Published private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
-    @Published private(set) var selectedTabID: String? = nil
+    private(set) var manager: TabManager
+    private(set) var allDetails: [TabCardDetails] = []
+    private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
+
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     var normalDetails: [TabCardDetails] {
@@ -50,8 +49,6 @@ class TabCardModel: CardModel {
     init(manager: TabManager, groupManager: TabGroupManager) {
         self.manager = manager
         self.groupManager = groupManager
-        // Process updates to the TabManager state asynchronously. This way we wait
-        // until after `tabs` has been updated before we do any work.
         self.subscription = manager.tabsUpdatedPublisher.filter({ [weak self] in
             self?.manager.didRestoreAllTabs ?? false
         }).sink { [weak self] in
@@ -128,12 +125,7 @@ class TabCardModel: CardModel {
         var partialResult: [Row] = []
 
         var allDetailsFiltered = allDetails.filter { tabCard in
-            // TODO(darin): Find a better fix. This is a bandaid solution. Unfortunately,
-            // `allDetails` and `TabManager.tabs` can be momentarily out of sync while
-            // `allDetails` is being assigned in `onDataUpdated`. Having `allDetails` be
-            // both `@Published` and a list that indirectly references `Tab` instances is
-            // not workable. We need to find an alternative design.
-            guard let tab = tabCard.manager.get(for: tabCard.id) else { return false }
+            let tab = tabCard.manager.get(for: tabCard.id)!
             return
                 (tabGroupModel.representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
@@ -242,11 +234,11 @@ class TabCardModel: CardModel {
         partialResult = partialResult.filter {
             !$0.cells.isEmpty
         }
-            
+
         for id in 0..<partialResult.count {
             partialResult[id].index = id + 1
         }
-        
+
         return partialResult
     }
 
@@ -255,7 +247,7 @@ class TabCardModel: CardModel {
 
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
-        
+
         if FeatureFlag[.reverseChronologicalOrdering] {
             allDetails = allDetails.reversed()
         }
@@ -265,8 +257,9 @@ class TabCardModel: CardModel {
         }
         .map { TabCardDetails(tab: $0, manager: manager) }
 
-        selectedTabID = manager.selectedTab?.tabUUID ?? ""
-        onViewUpdate()
+        // Defer signaling until after we have finished updating. This way our state is
+        // completely consistent with TabManager prior to accessing allDetails, etc.
+        objectWillChange.send()
     }
 
     private func modifyAllDetailsFilteredPromotingPinnedTabs(
@@ -384,7 +377,6 @@ class SpaceCardModel: CardModel {
         }
     }
 
-    private var onViewUpdate: () -> Void = {}
     var thumbnailURLCandidates = [URL: [URL]]()
     private var anyCancellable: AnyCancellable? = nil
     private var recommendationSubscription: AnyCancellable? = nil
@@ -446,7 +438,6 @@ class SpaceCardModel: CardModel {
                     }.store(in: &self.detailsSubscriptions)
                 }
 
-                self.onViewUpdate()
                 self.detailedSpace = self.allDetails.first { $0.isShowingDetails }
                 self.objectWillChange.send()
             }
@@ -706,68 +697,44 @@ class SiteCardModel: CardModel {
 }
 
 class TabGroupCardModel: CardModel {
-    var onViewUpdate: () -> Void = {}
-    var manager: TabGroupManager
-    var anyCancellable: AnyCancellable? = nil
-    private var detailsSubscriptions: Set<AnyCancellable> = Set()
     private var screenshotsSubscriptions: Set<AnyCancellable> = Set()
-
     private var stateNeedsRefresh = false
+    private var subscriptions: Set<AnyCancellable> = Set()
 
-    var allDetails: [TabGroupCardDetails] = [] {
+    private(set) var manager: TabGroupManager
+    private(set) var allDetails: [TabGroupCardDetails] = [] {
         didSet {
             allDetailsWithExclusionList = allDetails
         }
     }
-    @Published var allDetailsWithExclusionList: [TabGroupCardDetails] = []
-    @Published var representativeTabs: [Tab] = []
+    private(set) var allDetailsWithExclusionList: [TabGroupCardDetails] = []
+    private(set) var representativeTabs: [Tab] = []
+
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
-    private var tabGroupExpandedSubscriptions: Set<AnyCancellable> = Set()
 
     init(manager: TabGroupManager) {
         self.manager = manager
 
         onDataUpdated()
-        setupDetailsListener()
 
-        _tabGroupExpanded.publisher.sink {
-            [unowned self] _ in
-            self.objectWillChange.send()
-        }.store(in: &self.tabGroupExpandedSubscriptions)
+        _tabGroupExpanded.publisher.sink { [weak self] _ in
+            self?.objectWillChange.send()
+        }.store(in: &subscriptions)
 
-        self.anyCancellable = self.manager.objectWillChange.sink {
-            guard manager.tabManager.didRestoreAllTabs else {
-                return
+        manager.objectWillChange.receive(on: DispatchQueue.main).sink { [weak self] in
+            if manager.tabManager.didRestoreAllTabs {
+                self?.onDataUpdated()
             }
-
-            self.setupDetailsListener()
-        }
+        }.store(in: &subscriptions)
     }
 
     func onDataUpdated() {
-        onViewUpdate()
         representativeTabs = manager.getAll()
             .reduce(into: [Tab]()) { $0.append($1.children.first!) }
-        allDetails = manager.getAll()
-            .map {
-                TabGroupCardDetails(
-                    tabGroup: $0,
-                    tabGroupManager: manager)
-            }
-        objectWillChange.send()
-    }
-
-    func setupDetailsListener() {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
-            }
-            self.allDetails = self.manager.getAll().map {
-                TabGroupCardDetails(tabGroup: $0, tabGroupManager: self.manager)
-            }
-            self.manager.cleanUpTabGroupNames()
-            self.representativeTabs = self.manager.getAll()
-                .reduce(into: [Tab]()) { $0.append($1.children.first!) }
+        allDetails = manager.getAll().map {
+            TabGroupCardDetails(tabGroup: $0, tabGroupManager: manager)
         }
+        manager.cleanUpTabGroupNames()
+        objectWillChange.send()
     }
 }
