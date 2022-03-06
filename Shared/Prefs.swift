@@ -58,6 +58,7 @@ extension Defaults.Keys {
         "profile.confirmCloseAllTabs", default: true)
 
     // debug settings
+    public static let enableAuthLogging = Defaults.BoolKey("profile_enableAuthLogging")
     public static let enableBrowserLogging = Defaults.BoolKey("profile_enableBrowserLogging")
     public static let enableWebKitConsoleLogging = Defaults.BoolKey(
         "profile_enableWebKitConsoleLogging")

@@ -7,6 +7,7 @@ import Shared
 import SwiftUI
 
 struct LoggingSettingsView: View {
+    @Default(.enableAuthLogging) var enableAuthLogging
     @Default(.enableBrowserLogging) var enableBrowserLogging
     @Default(.enableWebKitConsoleLogging) var enableWebKitConsoleLogging
     @Default(.enableNetworkLogging) var enableNetworkLogging
@@ -18,6 +19,7 @@ struct LoggingSettingsView: View {
         List {
             Section(header: Text("Categories")) {
                 Group {
+                    Toggle("auth", isOn: $enableAuthLogging)
                     Toggle("browser", isOn: $enableBrowserLogging)
                     Toggle("network", isOn: $enableNetworkLogging)
                     Toggle("storage", isOn: $enableStorageLogging)

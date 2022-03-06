@@ -17,6 +17,11 @@ private let log = Logger.browser
 /// List of schemes that are allowed to be opened in new tabs.
 private let schemesAllowedToBeOpenedAsPopups = ["http", "https", "javascript", "data", "about"]
 
+private func logCookie(_ cookie: String) {
+    let sha1 = cookie.sha1.map { String(format: "%02hhx", $0) }.joined()
+    Logger.auth.info("\(sha1) [len=\(cookie.count) prefix=\(cookie.prefix(2))]")
+}
+
 private func setCookiesForNeeva(webView: WKWebView, isIncognito: Bool) {
     let httpCookieStore = webView.configuration.websiteDataStore.httpCookieStore
 
@@ -39,6 +44,7 @@ private func setCookiesForNeeva(webView: WKWebView, isIncognito: Bool) {
     // a new value for the cookie after going through a login flow.
     if !isIncognito, let cookieValue = NeevaUserInfo.shared.getLoginCookie() {
         httpCookieStore.setCookie(NeevaConstants.loginCookie(for: cookieValue))
+        logCookie(cookieValue)
     }
 
     // Some feature flags need to be echoed to neeva.com to ensure that both

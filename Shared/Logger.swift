@@ -12,6 +12,12 @@ public struct Logger {}
 extension Logger {
     public static let logPII = false
 
+    /// Logger used for recording authentication happenings
+    public static let auth = OptionalLogger(
+        key: .enableAuthLogging,
+        filenameRoot: "auth",
+        logDirectoryPath: Logger.logFileDirectoryPath(inDocuments: false))
+
     /// Logger used for recording frontend/browser happenings
     public static let browser = OptionalLogger(
         key: .enableBrowserLogging,
