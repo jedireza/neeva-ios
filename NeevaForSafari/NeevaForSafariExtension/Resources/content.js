@@ -7,7 +7,7 @@ browser.runtime.sendMessage({ "getPreference": "neevaRedirect"}).then((response)
     referrerURL = window.document.referrer;
 
     if (searchQuery != null && response["value"] && !possibleReferalURLs.includes(referrerURL)) {
-        const url = `https://neeva.com/search?q=${searchQuery}`;
+        const url = `https://neeva.com/search?q=${searchQuery}&src=nvobar`;
         window.location.replace(url);
     }
 });
