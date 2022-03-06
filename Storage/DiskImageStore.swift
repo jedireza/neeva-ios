@@ -6,7 +6,7 @@ import Shared
 import UIKit
 import XCGLogger
 
-private var log = XCGLogger.default
+private var log = Logger.storage
 
 private class DiskImageStoreErrorType: MaybeErrorType {
     let description: String
@@ -65,15 +65,20 @@ open class DiskImageStore {
                 return deferMaybe(DiskImageStoreErrorType(description: "Key already in store"))
             }
 
+            log.info("start [key: \(key)]")
+
             let imageURL = URL(fileURLWithPath: self.filesDir).appendingPathComponent(key)
             if let data = image.jpegData(compressionQuality: self.quality) {
                 do {
                     try data.write(to: imageURL, options: .noFileProtection)
                     self.keys.insert(key)
+                    log.info("success [key: \(key)]")
                     return succeed()
                 } catch {
-                    log.error("Unable to write image to disk: \(error)")
+                    log.error("Unable to write image to disk: \(error) [key: \(key)]")
                 }
+            } else {
+                log.error("Unable to generate jpeg data [key: \(key)]")
             }
 
             return deferMaybe(DiskImageStoreErrorType(description: "Could not write image to file"))

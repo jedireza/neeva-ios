@@ -162,7 +162,7 @@ class TabManagerStore {
             // Provide an empty request to prevent a new tab from loading the home screen
             var tab = tabManager.addTab(
                 flushToDisk: false, zombie: true, isIncognito: savedTab.isIncognito, notify: false)
-            tab = savedTab.configureSavedTabUsing(tab, imageStore: imageStore)
+            savedTab.configureTab(tab, imageStore: imageStore)
 
             if savedTab.isSelected {
                 tabToSelect = tab

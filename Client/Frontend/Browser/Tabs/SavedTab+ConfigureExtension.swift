@@ -43,7 +43,7 @@ extension SavedTab {
             tabIndex: tabIndex, parentSpaceID: tab.parentSpaceID ?? "")
     }
 
-    func configureSavedTabUsing(_ tab: Tab, imageStore: DiskImageStore? = nil) -> Tab {
+    func configureTab(_ tab: Tab, imageStore: DiskImageStore? = nil) {
         // Since this is a restored tab, reset the URL to be loaded as that will be handled by the SessionRestoreHandler
         tab.setURL(nil)
 
@@ -72,7 +72,5 @@ extension SavedTab {
         tab.tabUUID = UUID ?? ""
         tab.rootUUID = rootUUID ?? ""
         tab.parentSpaceID = parentSpaceID ?? ""
-
-        return tab
     }
 }

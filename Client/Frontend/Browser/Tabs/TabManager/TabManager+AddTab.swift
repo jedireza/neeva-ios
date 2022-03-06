@@ -156,7 +156,7 @@ extension TabManager {
                     flushToDisk: false, zombie: false, isIncognito: isIncognito, notify: false)
             }
 
-            tab = savedTab.configureSavedTabUsing(tab, imageStore: store.imageStore)
+            savedTab.configureTab(tab, imageStore: store.imageStore)
             tab.restore(tab.webView!)
 
             if savedTab.isSelected {
