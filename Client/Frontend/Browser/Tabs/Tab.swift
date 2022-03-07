@@ -97,13 +97,9 @@ class Tab: NSObject, ObservableObject {
 
     // MARK: - Cheatsheet Properties
     /// Cheatsheet info for current url
-    @Published private(set) var cheatsheetData: CheatsheetQueryController.CheatsheetInfo?
-    @Published private(set) var searchRichResults: [SearchController.RichResult]?
-    @Published private(set) var cheatsheetDataLoading: Bool = false
-    @Published private(set) var cheatsheetDataError: Error?
-    @Published private(set) var searchRichResultsError: Error?
-    @Published private(set) var currentCheatsheetQuery: String?
-    private var cheatsheetLoggerSubscription: AnyCancellable?
+    lazy private(set) var cheatsheetModel: CheatsheetMenuViewModel = {
+        CheatsheetMenuViewModel(tab: self)
+    }()
 
     func setURL(_ newValue: URL?) {
         if let internalUrl = InternalURL(newValue), internalUrl.isAuthorized {
@@ -284,127 +280,6 @@ class Tab: NSObject, ObservableObject {
             })
         webView.scrollView.refreshControl = rc
         webView.scrollView.bringSubviewToFront(rc)
-    }
-
-    // fetch cheatsheet info for current url
-    func fetchCheatsheetInfo() {
-        setupCheatsheetLoaderLogger()
-        self.cheatsheetDataLoading = true
-        guard let url = self.url,
-            url.scheme == "https",
-            !NeevaConstants.isInNeevaDomain(url)
-        else {
-            self.cheatsheetDataLoading = false
-            return
-        }
-
-        self.searchRichResults = nil
-        self.cheatsheetData = nil
-        self.currentCheatsheetQuery = ""
-        self.cheatsheetDataError = nil
-        self.searchRichResultsError = nil
-
-        CheatsheetQueryController.getCheatsheetInfo(url: url.absoluteString) { result in
-            switch result {
-            case .success(let cheatsheetInfo):
-                self.cheatsheetData = cheatsheetInfo[0]
-                // when cheatsheet data fetched successfully
-                // fetch other rich result
-                let query: String
-
-                var querySource: LogConfig.CheatsheetAttribute.QuerySource
-
-                if let queries = cheatsheetInfo[0].memorizedQuery, queries.count > 0 {
-                    // U2Q
-                    querySource = .uToQ
-                    query = queries[0]
-                } else if let recentQuery = self.getMostRecentQuery(
-                    restrictToCurrentNavigation: true)
-                {
-                    // Fallback
-                    // if we don't have memorized query from the url
-                    // use last tab query
-                    if let suggested = recentQuery.suggested {
-                        querySource = .fastTapQuery
-                        query = suggested
-                    } else {
-                        querySource = .typedQuery
-                        query = recentQuery.typed
-                    }
-                } else {
-                    // Second Fallback
-                    // use current url as query for fallback
-                    querySource = .pageURL
-                    query = url.absoluteString
-                }
-
-                ClientLogger.shared.logCounter(
-                    .CheatsheetQueryFallback,
-                    attributes: EnvironmentHelper.shared.getAttributes() + [
-                        ClientLogCounterAttribute(
-                            key: LogConfig.CheatsheetAttribute.cheatsheetQuerySource,
-                            value: querySource.rawValue
-                        )
-                    ]
-                )
-
-                self.currentCheatsheetQuery = query
-                self.getRichResultByQuery(query)
-            case .failure(let error):
-                Logger.browser.error("Error: \(error)")
-                self.cheatsheetDataLoading = false
-                self.cheatsheetDataError = error
-            }
-        }
-    }
-
-    private func getRichResultByQuery(_ query: String) {
-        SearchController.getRichResult(query: query) { searchResult in
-            switch searchResult {
-            case .success(let richResult):
-                self.searchRichResults = richResult
-            case .failure(let error):
-                Logger.browser.error("Error: \(error)")
-                self.searchRichResultsError = error
-            }
-            self.cheatsheetDataLoading = false
-        }
-    }
-
-    private func setupCheatsheetLoaderLogger() {
-        guard cheatsheetLoggerSubscription == nil else { return }
-        cheatsheetLoggerSubscription = $cheatsheetDataLoading
-            .withPrevious()
-            .sink { [weak self] (prev, next) in
-                // only process cases where loading changed to false from a true
-                // which indicates that a loading activity has finished
-                guard prev, !next, let self = self else { return }
-                if CheatsheetMenuViewModel.isCheatsheetEmpty(
-                    cheatsheetInfo: self.cheatsheetData,
-                    searchRichResults: self.searchRichResults
-                ) {
-                    let errorString = self.cheatsheetDataError?.localizedDescription ?? self.searchRichResultsError?.localizedDescription
-                    ClientLogger.shared.logCounter(
-                        .CheatsheetEmpty,
-                        attributes: EnvironmentHelper.shared.getAttributes()
-                            +
-                        [
-                            ClientLogCounterAttribute(
-                                key: LogConfig.CheatsheetAttribute.currentPageURL,
-                                value: self.url?.absoluteString
-                            ),
-                            ClientLogCounterAttribute(
-                                key: LogConfig.CheatsheetAttribute.currentCheatsheetQuery,
-                                value: self.currentCheatsheetQuery
-                            ),
-                            ClientLogCounterAttribute(
-                                key: "Error",
-                                value: errorString
-                            ),
-                        ]
-                    )
-                }
-            }
     }
 
     /// Helper function to observe changes to a given key path on the web view and assign

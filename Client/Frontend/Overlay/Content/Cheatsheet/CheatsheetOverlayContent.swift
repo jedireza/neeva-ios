@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import SwiftUI
 import Shared
+import SwiftUI
 
 struct CheatsheetOverlayContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
@@ -14,7 +14,7 @@ struct CheatsheetOverlayContent: View {
 
     init(menuAction: @escaping (NeevaMenuAction) -> Void, tabManager: TabManager) {
         self.menuAction = menuAction
-        self.model = CheatsheetMenuViewModel(tabManager: tabManager)
+        self.model = tabManager.selectedTab?.cheatsheetModel ?? CheatsheetMenuViewModel(tab: nil)
         self.isIncognito = tabManager.incognitoModel.isIncognito
         self.tabManager = tabManager
     }
@@ -33,10 +33,8 @@ struct CheatsheetOverlayContent: View {
                 .OpenLinkFromCheatsheet,
                 attributes:
                     EnvironmentHelper.shared.getAttributes()
-                        +
-                    model.loggerAttributes
-                        +
-                    [
+                    + model.loggerAttributes
+                    + [
                         ClientLogCounterAttribute(key: "url", value: url.absoluteString)
                     ]
             )

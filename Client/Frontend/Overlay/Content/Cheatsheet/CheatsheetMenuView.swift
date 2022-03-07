@@ -280,9 +280,9 @@ public struct CheatsheetMenuView: View {
             } else if model.cheatsheetDataLoading {
                 CheatsheetLoadingView()
             } else if let error = model.cheatsheetDataError {
-                ErrorView(error, in: self, tryAgain: model.reload)
+                ErrorView(error, in: self, tryAgain: { model.reload() })
             } else if let error = model.searchRichResultsError {
-                ErrorView(error, in: self, tryAgain: model.reload)
+                ErrorView(error, in: self, tryAgain: { model.reload() })
             } else if model.cheatSheetIsEmpty {
                 VStack(alignment: .center) {
                     CheatsheetNoResultView()
