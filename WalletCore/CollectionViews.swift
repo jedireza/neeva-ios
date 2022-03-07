@@ -225,7 +225,7 @@ public struct CollectionView: View {
                     }
                     Text(collection.name)
                         .withFont(.labelLarge)
-                        .foregroundColor(.label)
+                        .foregroundColor(collection.safelistRequestStatus >= .approved ? .ui.adaptive.blue : .label)
                 }
                 if let stats = collection.stats {
                     CollectionStatsView(stats: stats)

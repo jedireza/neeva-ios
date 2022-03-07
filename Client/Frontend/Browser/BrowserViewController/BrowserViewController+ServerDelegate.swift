@@ -22,8 +22,7 @@ protocol WalletConnectPresenter: ModalPresenter {
 
 extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
     @discardableResult func connectWallet(to wcURL: WCURL) -> Bool {
-        guard FeatureFlag[.enableCryptoWallet], let wallet = web3Model.wallet,
-            !wallet.publicAddress.isEmpty
+        guard FeatureFlag[.enableCryptoWallet], let _ = web3Model.wallet?.ethereumAddress
         else {
             return false
         }

@@ -89,7 +89,9 @@ struct WalletDashboard: View {
                         }
                     ).buttonStyle(.wallet(.secondary))
                     Button(
-                        action: { showConfirmRemoveWalletAlert = true }
+                        action: {
+                            showConfirmRemoveWalletAlert = true
+                        }
                     ) {
                         Text("Remove Wallet")
                             .frame(maxWidth: .infinity)
@@ -97,6 +99,9 @@ struct WalletDashboard: View {
                     Spacer()
                 }
                 .padding(.horizontal, 16)
+                .actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
+                    confirmRemoveWalletSheet
+                }
             })
     }
 
@@ -325,6 +330,9 @@ struct WalletDashboard: View {
                 .destructive(
                     Text("Remove Wallet from device"),
                     action: {
+                        showOverflowSheet = false
+                        showConfirmRemoveWalletAlert = false
+                        viewState = .starter
                         hideOverlay()
                         Defaults[.cryptoPhrases] = ""
                         Defaults[.cryptoPublicKey] = ""
@@ -363,9 +371,6 @@ struct WalletDashboard: View {
         NavigationView {
             List {
                 accountInfo
-                    .actionSheet(isPresented: $showConfirmRemoveWalletAlert) {
-                        confirmRemoveWalletSheet
-                    }
                 balancesSection
                 openSessionsSection
                     .actionSheet(isPresented: $showConfirmDisconnectAlert) {

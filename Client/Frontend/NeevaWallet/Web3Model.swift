@@ -48,6 +48,8 @@ class Web3Model: ObservableObject, ResponseRelay {
             tryMatchCurrentPageToCollection()
         }
     }
+    @Published var trustSignal: TrustSignal = .notTrusted
+    @Published var alternateTrustedDomain: String? = nil
     @Published var matchingCollection: Collection?
     @Published var showingMaliciousSiteWarning = false
 
@@ -58,14 +60,19 @@ class Web3Model: ObservableObject, ResponseRelay {
     var communityBasedTrustSignals = [String: TrustSignal]()
     let walletDetailsModel: WalletDetailsModel
 
-    var trustSignal: TrustSignal {
+    func updateTrustSignals(url: URL?) {
+        trustSignal = computeTrustSignal(url: url)
+        alternateTrustedDomain = computeTrustedDomain(url: url)
+    }
+
+    private func computeTrustSignal(url: URL?) -> TrustSignal {
         if let matchingCollection = matchingCollection,
             matchingCollection.safelistRequestStatus >= .approved
         {
             return .trusted
         }
 
-        guard let baseDomain = selectedTab?.url?.baseDomain else { return .notTrusted }
+        guard let baseDomain = url?.baseDomain else { return .notTrusted }
 
         if let signal = communityBasedTrustSignals[baseDomain] {
             return signal
@@ -74,11 +81,11 @@ class Web3Model: ObservableObject, ResponseRelay {
         return .notTrusted
     }
 
-    var alternateTrustedDomain: String? {
+    private func computeTrustedDomain(url: URL?) -> String? {
         guard
             let url =
-                InternalURL(selectedTab?.url)?.isSessionRestore == true
-                ? InternalURL(selectedTab?.url)?.extractedUrlParam : selectedTab?.url,
+                InternalURL(url)?.isSessionRestore == true
+                ? InternalURL(url)?.extractedUrlParam : url,
             let baseDomain = url.baseDomain,
             case .notTrusted = trustSignal,
             let index = baseDomain.lastIndex(of: ".")
@@ -126,8 +133,8 @@ class Web3Model: ObservableObject, ResponseRelay {
 
             self.selectedTab = tab
             self.updateCurrentSession()
-            self.urlSubscription = tab.$url.sink { _ in
-                self.updateCurrentSession()
+            self.urlSubscription = tab.$url.sink { url in
+                self.updateCurrentSession(with: url)
             }
         }
 
@@ -159,11 +166,23 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
 
     func updateCurrentSession() {
-        let url =
-            InternalURL(selectedTab?.url)?.isSessionRestore == true
-            ? InternalURL(selectedTab?.url)?.extractedUrlParam : selectedTab?.url
+        updateCurrentSession(with: selectedTab?.url)
+    }
 
-        if let domain = url?.baseDomain, wallet?.publicAddress.isEmpty == false {
+    private func updateCurrentSession(with url: URL?) {
+        guard wallet?.ethereumAddress != nil else {
+            // Avoid updating this published state.
+            // If there is no wallet, it will keep updating to nil.
+            return
+        }
+
+        let url =
+            InternalURL(url)?.isSessionRestore == true
+            ? InternalURL(url)?.extractedUrlParam : url
+
+        updateTrustSignals(url: url)
+
+        if let domain = url?.baseDomain {
             if self.communityBasedTrustSignals[domain] == nil {
                 TrustSignalController.getTrustSignals(domain: domain) { result in
                     switch result {
@@ -174,6 +193,8 @@ class Web3Model: ObservableObject, ResponseRelay {
                             guard let domain = $0.domain, let signal = $0.signal else { return }
                             self.communityBasedTrustSignals[domain] = signal
                         })
+
+                        self.updateTrustSignals(url: url)
 
                         self.checkForMaliciousContent(domain: domain)
                     }
@@ -217,7 +238,9 @@ class Web3Model: ObservableObject, ResponseRelay {
                                     url: URL(
                                         string: "https://\(self.alternateTrustedDomain ?? "")")!))
                         },
-                        closeTab: { self.closeTab(tab) }
+                        closeTab: {
+                            self.closeTab(tab)
+                        }
                     )
                     .overlayIsFixedHeight(isFixedHeight: true)
                 }, onDismiss: { self.reset() })
@@ -230,8 +253,11 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
 
     func tryWalletConnect() {
-        if let wallet = wallet, wallet.publicAddress.isEmpty, !Defaults[.cryptoPublicKey].isEmpty {
-            // This would only happen if we created/imported a wallet within this session
+        if let wallet = wallet, wallet.ethereumAddress == nil || !wallet.web3IsValid,
+            !Defaults[.cryptoPublicKey].isEmpty
+        {
+            // This would only happen if we created/imported a wallet within this session, or
+            // there was a network issue while creating web3 nodes.
             self.wallet = WalletAccessor()
         }
         selectedTab?.webView?

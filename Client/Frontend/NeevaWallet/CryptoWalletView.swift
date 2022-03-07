@@ -59,8 +59,10 @@ struct CryptoWalletView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
         ).onChange(of: viewState) { value in
             if case .dashboard = viewState, model.wallet?.publicAddress.isEmpty ?? true {
-                model.wallet = WalletAccessor()
-                model.updateBalances()
+                DispatchQueue.main.async {
+                    model.wallet = WalletAccessor()
+                    model.updateBalances()
+                }
             }
         }
     }
