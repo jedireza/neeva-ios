@@ -326,12 +326,12 @@ class SuggestionModel: ObservableObject {
             self.currentDeferredHistoryQuery?.cancel()
 
             self.autocompleteSuggestion = nil
+            self.completion = nil
 
             log.info("previous query: \(oldQuery), current query: \(query), completion: \(self.completion)")
 
             if query.isEmpty {
                 self.sites = []
-                self.completion = nil
                 self.shouldSkipNextAutocomplete = false
                 return
             }
@@ -412,11 +412,6 @@ class SuggestionModel: ObservableObject {
                             return
                         }
                     }
-                }
-
-                if self.completion != nil {
-                    log.info("No autocomplete completion found, set to nil")
-                    self.completion = nil
                 }
             }
         }
