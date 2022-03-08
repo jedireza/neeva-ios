@@ -133,7 +133,7 @@ enum TabToolbarButtons {
         }
     }
 
-    struct NeevaMenu: View {
+    struct Neeva: View {
         let iconWidth: CGFloat
         let action: () -> Void
 
@@ -146,7 +146,7 @@ enum TabToolbarButtons {
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: iconWidth)
-                    .accessibilityLabel("Neeva Menu"),
+                    .accessibilityLabel("Neeva"),
                 action: action
             )
         }

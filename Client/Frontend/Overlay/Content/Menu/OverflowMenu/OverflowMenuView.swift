@@ -91,12 +91,8 @@ public struct OverflowMenuView: View {
         self.changedUserAgent = changedUserAgent
     }
 
-    var showNewMenu: Bool {
-        FeatureFlag[.updatedTabOverflowMenu] || NeevaFeatureFlags[.cheatsheetQuery]
-    }
-
     var frameHeight: CGFloat {
-        height + (showNewMenu ? Self.heightPeekingOffset : GroupedCellUX.spacing * 2)
+        height + Self.heightPeekingOffset
     }
 
     public var body: some View {
@@ -113,9 +109,7 @@ public struct OverflowMenuView: View {
                 self.height = $0
             }
 
-            if showNewMenu {
-                appNavigationButtons
-            }
+            appNavigationButtons
 
             if FeatureFlag[.enableCryptoWallet] {
                 walletMenuItem
@@ -172,13 +166,6 @@ public struct OverflowMenuView: View {
                 menuAction(.reloadStop)
             }
             .accessibilityIdentifier("OverflowMenu.Reload")
-
-            if !showNewMenu {
-                OverflowMenuButtonView(label: "New Tab", symbol: .plus) {
-                    menuAction(.newTab)
-                }
-                .accessibilityIdentifier("OverflowMenu.NewTab")
-            }
         }
     }
 
@@ -186,20 +173,6 @@ public struct OverflowMenuView: View {
     var tabButtons: some View {
         GroupedCell.Decoration {
             VStack(spacing: 0) {
-                if chromeModel.inlineToolbar,
-                    !showNewMenu
-                {
-                    GroupedRowButtonView(
-                        label: "New Tab",
-                        symbol: .plus
-                    ) {
-                        menuAction(.newTab)
-                    }
-                    .accessibilityIdentifier("OverflowMenu.NewTab")
-
-                    Color.groupedBackground.frame(height: 1)
-                }
-
                 GroupedRowButtonView(
                     label: "Find on Page",
                     symbol: .docTextMagnifyingglass

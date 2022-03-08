@@ -84,7 +84,7 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
             case .top, .middle:
                 size =
                     viewHeight - contentHeight
-                    - (bottomSafeArea > 0 ? 0 : NeevaMenuUX.bottomPadding)
+                    - (bottomSafeArea > 0 ? 0 : OverlaySheetUX.bottomPadding)
             case .dismissed:
                 size = viewHeight
             }
@@ -117,7 +117,7 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
             size = size + model.deltaHeight
 
             if !style.embedScrollView {
-                size = max(size, viewHeight - contentHeight - NeevaMenuUX.bottomPadding)
+                size = max(size, viewHeight - contentHeight - OverlaySheetUX.bottomPadding)
             }
         }
 
@@ -229,10 +229,13 @@ struct OverlaySheetView<Content: View, HeaderContent: View>: View, KeyboardReada
                     sheetContent
                 } else {
                     GeometryReader { proxy in
-                        ScrollView(model.position == .top ? [.vertical] : [], showsIndicators: false) {
+                        ScrollView(
+                            model.position == .top ? [.vertical] : [], showsIndicators: false
+                        ) {
                             sheetContent
                                 .padding(.bottom, OverlaySheetUX.bottomPadding)
-                                .environment(\.overlayMinHeightToFillScrollView, minHeightToFillScrollView)
+                                .environment(
+                                    \.overlayMinHeightToFillScrollView, minHeightToFillScrollView)
                         }
                     }
                     .onHeightOfViewChanged {

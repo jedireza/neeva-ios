@@ -239,9 +239,9 @@ public struct CheatsheetMenuView: View {
 
     @State var height: CGFloat = 0
 
-    private let menuAction: (NeevaMenuAction) -> Void
+    private let menuAction: (OverflowMenuAction) -> Void
 
-    init(menuAction: @escaping (NeevaMenuAction) -> Void) {
+    init(menuAction: @escaping (OverflowMenuAction) -> Void) {
         self.menuAction = menuAction
     }
 

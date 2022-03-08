@@ -70,9 +70,7 @@ extension BrowserViewController: ToolbarDelegate {
                     .OpenOverflowMenu,
                     attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
-                if NeevaFeatureFlags[.cheatsheetQuery] || FeatureFlag[.updatedTabOverflowMenu] {
-                    self.updateFeedbackImage()
-                }
+                self.updateFeedbackImage()
                 self.showModal(style: .nonScrollableMenu) {
                     OverflowMenuOverlayContent(
                         menuAction: { action in

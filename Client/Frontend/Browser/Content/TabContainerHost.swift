@@ -208,29 +208,6 @@ struct TabContainerContent: View {
                             { bvc.tabManager.createOrSwitchToTabForSpace(for: $0, spaceID: $1) }
                         )
                     }
-
-                    if NeevaFeatureFlags[.recipeCheatsheet] && !NeevaFeatureFlags[.cheatsheetQuery]
-                        && !incognitoModel.isIncognito && NeevaUserInfo.shared.hasLoginCookie()
-                    {
-                        GeometryReader { geo in
-                            VStack {
-                                Spacer()
-
-                                RecipeCheatsheetStripView(
-                                    tabManager: bvc.tabManager,
-                                    recipeModel: model.recipeModel,
-                                    yOffset: yOffset,
-                                    height: geo.size.height,
-                                    chromeModel: bvc.chromeModel,
-                                    overlayManager: bvc.overlayManager
-                                )
-                                .environment(\.onOpenURL) { url in
-                                    let bvc = zeroQueryModel.bvc
-                                    bvc.tabManager.createOrSwitchToTab(for: url)
-                                }
-                            }
-                        }
-                    }
                 }
             case .previewHome:
                 PreviewHomeView(bvc: bvc)
