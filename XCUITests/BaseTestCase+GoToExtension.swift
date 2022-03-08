@@ -18,12 +18,21 @@ extension BaseTestCase {
 
     func showAppNavigationMenu(for button: String) {
         if app.buttons["SwitcherOverflowButton"].exists {
+            // overflow menu in tab switcher on iPhone
             waitForHittable(app.buttons["SwitcherOverflowButton"])
             app.buttons["SwitcherOverflowButton"].tap()
-        } else if app.buttons["Neeva Menu"].exists {
-            app.buttons["Neeva Menu"].tap(force: true)
-        } else if app.buttons["More"].exists {
-            app.buttons["More"].tap(force: true)
+        } else if app.buttons["TabOverflowButton"].exists {
+            // overflow menu in bottom tool bar on tab
+            app.buttons["TabOverflowButton"].tap(force: true)
+            // scroll up the view
+            if !app.buttons[button].isHittable {
+                let start = app.buttons["Support"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                let finish = app.buttons["Find on Page"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                start.press(forDuration: 1, thenDragTo: finish)
+            }
+        } else if app.buttons["TopBarOverflowButton"].exists {
+            // overflow menu in inlined tool bar
+            app.buttons["TopBarOverflowButton"].tap(force: true)
         } else {
             XCTFail("Cannot find tap target for menu to access \(button)")
         }
@@ -66,6 +75,8 @@ extension BaseTestCase {
     /// Launches from tab page
     func goToHistory() {
         showAppNavigationMenu(for: "History")
+
+        waitForExistence(app.buttons["History"])
         app.buttons["History"].tap(force: true)
     }
 

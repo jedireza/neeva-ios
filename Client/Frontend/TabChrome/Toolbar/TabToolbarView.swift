@@ -46,7 +46,9 @@ struct TabToolbarView: View {
                 weight: .medium,
                 action: {
                     performAction(.overflow)
-                })
+                },
+                identifier: "TabOverflowButton"
+            )
             neevaButton
             TabToolbarButtons.AddToSpace(
                 weight: .medium, action: { performAction(.addToSpace) })

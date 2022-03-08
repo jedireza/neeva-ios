@@ -277,16 +277,27 @@ class NavigationTest: BaseTestCase {
     }
 
     // Smoketest
-    func testVerifyNeevaMenu() {
-        app.buttons["Neeva Menu"].tap(force: true)
+    func testVerifyOverflowMenu() {
+        let oniPad = UIDevice.current.userInterfaceIdiom == .pad
+        if oniPad {
+            app.buttons["TopBarOverflowButton"].tap(force: true)
+        } else {
+            app.buttons["TabOverflowButton"].tap(force: true)
+        }
         waitForExistence(app.buttons["Support"])
 
-        XCTAssertTrue(app.buttons["Home"].exists)
-        XCTAssertTrue(app.buttons["Spaces"].exists)
-        XCTAssertTrue(app.buttons["Settings"].exists)
-        XCTAssertTrue(app.buttons["Support"].exists)
-        XCTAssertTrue(app.buttons["History"].exists)
-        XCTAssertTrue(app.buttons["Downloads"].exists)
+        if !oniPad {
+            XCTAssertTrue(app.buttons["OverflowMenu.Forward"].exists)
+            XCTAssertTrue(app.buttons["OverflowMenu.Reload"].exists)
+        }
+        XCTAssertTrue(app.buttons["OverflowMenu.FindOnPage"].exists)
+        XCTAssertTrue(app.buttons["OverflowMenu.TextSize"].exists)
+        XCTAssertTrue(app.buttons["OverflowMenu.RequestDesktopSite"].exists)
+        XCTAssertTrue(app.buttons["OverflowMenu.DownloadPage"].exists)
+        XCTAssertTrue(app.buttons["OverflowMenu.Support"].exists)
+        XCTAssertTrue(app.buttons["OverflowMenu.Settings"].exists)
+        XCTAssertTrue(app.buttons["OverflowMenu.History"].exists)
+        XCTAssertTrue(app.buttons["OverflowMenu.Downloads"].exists)
     }
 
     // Smoketest

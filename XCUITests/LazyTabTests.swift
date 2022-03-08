@@ -57,30 +57,6 @@ class LazyTabTests: BaseTestCase {
         XCTAssertEqual(getNumberOfTabs(), 2)
     }
 
-    // MARK: Overflow
-    func testNoTabAddedWhenCancelingNewTabFromOverflow() {
-        goToOverflowMenuButton(label: "New Tab", shouldDismissOverlay: false) { element in
-            element.tap(force: true)
-        }
-
-        waitForExistence(app.buttons["Cancel"])
-        app.buttons["Cancel"].tap()
-
-        // Confirms that no new tab was created
-        XCTAssertEqual(getNumberOfTabs(), 1)
-    }
-
-    func testLazyTabCreatedFromOverflow() {
-        goToOverflowMenu()
-
-        app.buttons["New Tab"].tap(force: true)
-
-        waitForExistence(app.buttons["Cancel"])
-        openURL()
-
-        XCTAssertEqual(getNumberOfTabs(), 2)
-    }
-
     // MARK: Incognito Mode
     func testNoTabAddedWhenCancelingNewTabFromIncognito() {
         goToTabTray()

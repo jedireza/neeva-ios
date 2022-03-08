@@ -5,8 +5,6 @@
 import Foundation
 
 extension UITestBase {
-    static var shouldUseNeevaMenu = false
-
     func goToAddressBar() {
         if !tester().viewExistsWithLabel("Cancel") {
             tester().waitForView(withAccessibilityLabel: "Address Bar")
@@ -16,24 +14,7 @@ extension UITestBase {
         tester().waitForView(withAccessibilityIdentifier: "address")
     }
 
-    // Backup for bots still using the Neeva Menu instead of Neeva Scope
-    func goToNeevaMenu() {
-        tester().waitForAnimationsToFinish()
-        tester().waitForView(withAccessibilityLabel: "Neeva Menu")
-        tester().tapView(withAccessibilityLabel: "Neeva Menu")
-
-        tester().waitForAnimationsToFinish()
-
-        // makes sure that the menu is fully open
-        tester().waitForView(withAccessibilityLabel: "Settings")
-    }
-
     func goToOverflowMenu() {
-        guard !UITestBase.shouldUseNeevaMenu else {
-            goToNeevaMenu()
-            return
-        }
-
         tester().waitForAnimationsToFinish()
         tester().waitForView(withAccessibilityLabel: "More")
         tester().tapView(withAccessibilityLabel: "More")
@@ -41,7 +22,7 @@ extension UITestBase {
         tester().waitForAnimationsToFinish()
 
         if tester().viewExistsWithLabel("Settings") {
-            // Expand the overflow menu
+            // Scroll down the overflow menu
             let reloadButton = tester().waitForView(withAccessibilityLabel: "Reload")
 
             if !isiPad() {
@@ -49,16 +30,6 @@ extension UITestBase {
             }
 
             tester().waitForAnimationsToFinish()
-        } else {
-            UITestBase.shouldUseNeevaMenu = true
-
-            if !isiPad() {
-                // Close the view
-                tester().tapScreen(at: CGPoint(x: 100, y: 100))
-            }
-
-            // Bot is still using old version, open Neeva Menu instead
-            goToNeevaMenu()
         }
     }
 
