@@ -24,8 +24,8 @@ class CopiedLinksTests: BaseTestCase {
 
         app.navigationBars["Settings"].buttons["Done"].tap()
 
-        app.buttons["TabToolbar.neevaMenuButton"].tap()
-        let settingsmenuitemCell = app.buttons["NeevaMenu.Settings"]
+        app.buttons["TabToolbar.OverflowButton"].tap()
+        let settingsmenuitemCell = app.buttons["OverflowMenu.Settings"]
         settingsmenuitemCell.tap()
 
         //Check Offer to open copied links, when opening neeva is on

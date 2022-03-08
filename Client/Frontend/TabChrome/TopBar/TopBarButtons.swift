@@ -96,7 +96,8 @@ struct TopBarOverflowMenuButton: View {
                 }
                 presenting = true
                 chromeModel.hideZeroQuery()
-            }
+            },
+            identifier: "TopBarOverflowButton"
         )
         .uiViewRef($targetButtonView)
         .tapTargetFrame()
