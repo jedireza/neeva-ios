@@ -81,7 +81,7 @@ struct TabToolbarView: View {
 
     @ViewBuilder
     private var neevaButton: some View {
-        TabToolbarButtons.NeevaMenu(iconWidth: 22) {
+        TabToolbarButtons.Neeva(iconWidth: 22) {
             onNeevaButtonPressed()
         }
         .presentAsPopover(

@@ -165,7 +165,7 @@ class TabChromeModel: ObservableObject {
                 )
                 .map { showPopover, recipe, url -> Bool in
                     // extra check in case the query flag changed between launches
-                    guard NeevaFeatureFlags[.cheatsheetQuery], let url = url else { return false }
+                    guard let url = url else { return false }
                     // if recipe cheatsheet would've been shown, show popover
                     if !recipe.title.isEmpty,
                         !Defaults[.seenTryCheatsheetPopoverOnRecipe],
@@ -194,7 +194,6 @@ class TabChromeModel: ObservableObject {
     }
 
     func clearCheatsheetPopoverFlags() {
-        guard NeevaFeatureFlags[.cheatsheetQuery] else { return }
         Defaults[.showTryCheatsheetPopover] = false
         if let recipeModel = topBarDelegate?.tabContainerModel.recipeModel,
             !recipeModel.recipe.title.isEmpty

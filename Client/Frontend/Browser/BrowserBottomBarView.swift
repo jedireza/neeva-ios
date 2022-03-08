@@ -15,20 +15,12 @@ struct BrowserBottomBarView: View {
         if !browserModel.showGrid && !chromeModel.inlineToolbar && !chromeModel.isEditingLocation {
             TabToolbarContent(
                 onNeevaButtonPressed: {
-                    if NeevaFeatureFlags[.cheatsheetQuery] {
-                        ClientLogger.shared.logCounter(
-                            .OpenCheatsheet,
-                            attributes: EnvironmentHelper.shared.getAttributes()
-                        )
-                        chromeModel.clearCheatsheetPopoverFlags()
-                        bvc.showCheatSheetOverlay()
-                    } else {
-                        ClientLogger.shared.logCounter(
-                            .OpenNeevaMenu,
-                            attributes: EnvironmentHelper.shared.getAttributes()
-                        )
-                        bvc.showNeevaMenuSheet()
-                    }
+                    ClientLogger.shared.logCounter(
+                        .OpenCheatsheet,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                    )
+                    chromeModel.clearCheatsheetPopoverFlags()
+                    bvc.showCheatSheetOverlay()
                 }
             )
         } else if browserModel.showGrid {

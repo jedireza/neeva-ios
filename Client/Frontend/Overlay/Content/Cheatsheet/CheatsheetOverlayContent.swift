@@ -7,12 +7,12 @@ import SwiftUI
 
 struct CheatsheetOverlayContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
-    private let menuAction: (NeevaMenuAction) -> Void
+    private let menuAction: (OverflowMenuAction) -> Void
     private let model: CheatsheetMenuViewModel
     private let isIncognito: Bool
     private let tabManager: TabManager
 
-    init(menuAction: @escaping (NeevaMenuAction) -> Void, tabManager: TabManager) {
+    init(menuAction: @escaping (OverflowMenuAction) -> Void, tabManager: TabManager) {
         self.menuAction = menuAction
         self.model = tabManager.selectedTab?.cheatsheetModel ?? CheatsheetMenuViewModel(tab: nil)
         self.isIncognito = tabManager.incognitoModel.isIncognito

@@ -16,7 +16,6 @@ struct InternalSettingsView: View {
     @Default(.showTryCheatsheetPopover) var showTryCheatsheetPopover
     @Default(.seenTryCheatsheetPopoverOnRecipe) var seenTryCheatsheetPopoverOnRecipe
     @Default(.cheatsheetDebugQuery) var cheatsheetDebugQuery
-    @Default(.showNeevaMenuWillMove) var showNeevaMenuWillMove
     @Default(.lastVersionNumber) var lastVersionNumber
     @Default(.didDismissReferralPromoCard) var didDismissReferralPromoCard
     @Default(.deletedSuggestedSites) var deletedSuggestedSites
@@ -85,7 +84,6 @@ struct InternalSettingsView: View {
                         String("seenTryCheatsheetPopoverOnRecipe"),
                         isOn: $seenTryCheatsheetPopoverOnRecipe)
                     Toggle(String("cheatsheetDebugQuery"), isOn: $cheatsheetDebugQuery)
-                    Toggle(String("showNeevaMenuWillMove"), isOn: $showNeevaMenuWillMove)
                 }
                 Section(header: Text(verbatim: "Promo Cards")) {
                     Toggle(

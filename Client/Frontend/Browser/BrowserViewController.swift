@@ -102,7 +102,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
                         .environmentObject(self.gridModel.spaceCardModel)
                 }
             },
-            onNeevaMenuAction: self.perform(neevaMenuAction:))
+            onMenuAction: { self.perform(overflowMenuAction: $0, targetButtonView: nil) }
+        )
     }()
 
     lazy var browserHost: BrowserHost = {
@@ -170,7 +171,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     static var createNewTabOnStartForTesting: Bool = false
 
-    /// Update the screenshot sent along with feedback. Called before opening the Neeva Menu.
+    /// Update the screenshot sent along with feedback. Called before opening overflow menu
     func updateFeedbackImage() {
         UIGraphicsBeginImageContextWithOptions(view.window!.bounds.size, true, 0)
         defer { UIGraphicsEndImageContext() }
@@ -2120,27 +2121,6 @@ extension BrowserViewController {
     }
 }
 
-// MARK: - Neeva Menu Sheet (Portrait Only)
-extension BrowserViewController {
-    func showNeevaMenuSheet() {
-        TourManager.shared.userReachedStep(tapTarget: .neevaMenu)
-
-        updateFeedbackImage()
-        showModal(
-            style: .grouped,
-            headerContent: {
-                NeevaMenuWillMoveView()
-            }
-        ) { [self] in
-            NeevaMenuOverlayContent(
-                menuAction: perform(neevaMenuAction:),
-                isIncognito: incognitoModel.isIncognito)
-        }
-
-        self.dismissVC()
-    }
-}
-
 // MARK: - Cheatsheet Sheet/Popover
 extension BrowserViewController {
     /// Fetch chearsheet info and present cheatsheet
@@ -2155,7 +2135,7 @@ extension BrowserViewController {
         // otherwise, present as popover
         showModal(style: .cheatsheet) { [self] in
             CheatsheetOverlayContent(
-                menuAction: perform(neevaMenuAction:),
+                menuAction: { perform(overflowMenuAction: $0, targetButtonView: nil) },
                 tabManager: tabManager
             )
             .environment(\.onSigninOrJoinNeeva) {

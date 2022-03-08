@@ -8,6 +8,10 @@ import Shared
 import Storage
 
 extension BrowserViewController: TopBarDelegate {
+    func perform(menuAction: OverflowMenuAction) {
+        self.perform(overflowMenuAction: menuAction, targetButtonView: nil)
+    }
+
     func urlBarDidPressReload() {
         // log tap reload
         ClientLogger.shared.logCounter(

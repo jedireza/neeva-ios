@@ -9,19 +9,19 @@ class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
     let openLazyTab: () -> Void
     let createNewSpace: () -> Void
-    private let onNeevaMenuAction: (NeevaMenuAction) -> Void
+    private let onMenuAction: (OverflowMenuAction) -> Void
     @Published var dragOffset: CGFloat? = nil
 
     init(
         tabManager: TabManager,
         openLazyTab: @escaping () -> Void,
         createNewSpace: @escaping () -> Void,
-        onNeevaMenuAction: @escaping (NeevaMenuAction) -> Void
+        onMenuAction: @escaping (OverflowMenuAction) -> Void
     ) {
         self.tabManager = tabManager
         self.openLazyTab = openLazyTab
         self.createNewSpace = createNewSpace
-        self.onNeevaMenuAction = onNeevaMenuAction
+        self.onMenuAction = onMenuAction
     }
 
     func onToggleIncognito() {
@@ -39,7 +39,7 @@ struct SwitcherToolbarView: View {
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
 
     @State var presentingMenu: Bool = false
-    @State private var action: NeevaMenuAction? = nil
+    @State private var action: OverflowMenuAction? = nil
 
     var bvc: BrowserViewController {
         SceneDelegate.getBVC(with: toolbarModel.tabManager.scene)

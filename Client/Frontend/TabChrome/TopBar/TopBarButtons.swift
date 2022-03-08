@@ -7,104 +7,26 @@ import Defaults
 import Shared
 import SwiftUI
 
-struct TopBarNeevaMenuButton: View {
-    @Default(.showNeevaMenuWillMove) var showNeevaMenuWillMove
-
+struct TopBarNeevaButton: View {
     @EnvironmentObject var incognitoModel: IncognitoModel
     @EnvironmentObject var chromeModel: TabChromeModel
 
     // TODO: sync this state variable with TabToolbarView somehow
     @State private var presenting = false
-    @State private var action: NeevaMenuAction?
+    @State private var action: OverflowMenuAction?
 
-    @State private var neevaMenuWidth: CGFloat = 0
-
-    let onNeevaMenuAction: (NeevaMenuAction) -> Void
+    let onMenuAction: (OverflowMenuAction) -> Void
 
     static private let neevaIconWidth: CGFloat = 24
 
     var body: some View {
-        if NeevaFeatureFlags[.cheatsheetQuery] {
-            // button to open cheatsheet
-            neevaButton
-        } else {
-            // button to open neeva menu
-            neevaMenuButton
-        }
-    }
-
-    @ViewBuilder
-    private var neevaMenuButton: some View {
-        WithPopover(
-            showPopover: $chromeModel.showNeevaMenuTourPrompt,
-            popoverSize: CGSize(width: 300, height: 190),
-            content: {
-                TabToolbarButtons.NeevaMenu(iconWidth: Self.neevaIconWidth) {
-                    chromeModel.hideZeroQuery()
-                    chromeModel.topBarDelegate?.updateFeedbackImage()
-                    presenting = true
-                }
-                .tapTargetFrame()
-                .presentAsPopover(
-                    isPresented: $presenting,
-                    backgroundColor: .systemGroupedBackground,
-                    arrowDirections: .up,
-                    dismissOnTransition: true,
-                    onDismiss: {
-                        if let action = action {
-                            onNeevaMenuAction(action)
-                            self.action = nil
-                        }
-                    }
-                ) {
-                    ScrollView {
-                        VStack {
-                            if showNeevaMenuWillMove {
-                                NeevaMenuWillMoveView()
-                                    .frame(maxWidth: neevaMenuWidth)
-                                    .padding(.top, 8)
-                            }
-
-                            NeevaMenuView(menuAction: {
-                                action = $0
-                                presenting = false
-                            })
-                            .environmentObject(incognitoModel)
-                            .modifier(ViewWidthKey())
-                            .onPreferenceChange(ViewWidthKey.self) {
-                                neevaMenuWidth = $0
-                            }
-                        }
-                    }
-                    .topBarPopoverPadding(removeBottomPadding: !showNeevaMenuWillMove)
-                    .frame(minWidth: 340, minHeight: 315)
-                }
-            },
-            popoverContent: {
-                TourPromptView(
-                    title: "Get the most out of Neeva!",
-                    description: "Access your Neeva Home, Spaces, Settings, and more",
-                    buttonMessage: "Let's take a Look!",
-                    onConfirm: {
-                        chromeModel.showNeevaMenuTourPrompt = false
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            presenting = true
-                        }
-                    },
-                    onClose: {
-                        chromeModel.showNeevaMenuTourPrompt = false
-                        TourManager.shared.responseMessage(
-                            for: TourManager.shared.getActiveStepName(), exit: true)
-                    }
-                )
-            },
-            staticColorMode: true
-        )
+        // button to open cheatsheet
+        neevaButton
     }
 
     @ViewBuilder
     private var neevaButton: some View {
-        TabToolbarButtons.NeevaMenu(iconWidth: Self.neevaIconWidth) {
+        TabToolbarButtons.Neeva(iconWidth: Self.neevaIconWidth) {
             ClientLogger.shared.logCounter(
                 .OpenCheatsheet,
                 attributes: EnvironmentHelper.shared.getAttributes()
@@ -255,7 +177,7 @@ struct TopBarShareButton_Previews: PreviewProvider {
         TopBarShareButton(url: "https://neeva.com", onTap: { _ in })
             .environmentObject(TabChromeModel(isPage: true))
 
-        TopBarNeevaMenuButton(onNeevaMenuAction: { _ in })
+        TopBarNeevaButton(onMenuAction: { _ in })
             .environmentObject(TabChromeModel())
     }
 }

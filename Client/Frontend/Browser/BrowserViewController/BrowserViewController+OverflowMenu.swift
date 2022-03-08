@@ -120,19 +120,34 @@ extension BrowserViewController {
         case .toggleIncognitoMode:
             self.toolbarModel.onToggleIncognito()
         case .goToSettings:
-            // This will log twice.
             ClientLogger.shared.logCounter(
                 .OpenSetting,
                 attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
             )
-            perform(neevaMenuAction: .settings)
+            let action = {
+                let controller = SettingsViewController(bvc: self)
+                self.present(controller, animated: true)
+            }
+            TourManager.shared.userReachedStep(tapTarget: .settingMenu)
+            // For the connected apps tour prompt
+            if let presentedViewController = presentedViewController {
+                presentedViewController.dismiss(animated: true, completion: action)
+            } else {
+                action()
+            }
         case .goToHistory:
-            // This will log twice.
             ClientLogger.shared.logCounter(
                 .OpenHistory,
                 attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
             )
-            perform(neevaMenuAction: .history)
+            let historyPanel = HistoryPanel(profile: profile)
+            historyPanel.delegate = self
+            historyPanel.accessibilityLabel = "History Panel"
+
+            let navigationController = UINavigationController(rootViewController: historyPanel)
+            navigationController.modalPresentationStyle = .formSheet
+
+            present(navigationController, animated: true, completion: nil)
         case .goToDownloads:
             ClientLogger.shared.logCounter(
                 .OpenDownloads,
@@ -151,7 +166,7 @@ extension BrowserViewController {
                 .OpenSendFeedback,
                 attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
             )
-            perform(neevaMenuAction: .support)
+            showFeedbackPanel(bvc: self, screenshot: self.feedbackImage)
         case .cryptoWallet:
             web3Model.showWalletPanel()
         }

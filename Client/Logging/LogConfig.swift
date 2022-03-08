@@ -9,8 +9,6 @@ import Shared
 
 public struct LogConfig {
     public enum Interaction: String {
-        /// Open neeva menu
-        case OpenNeevaMenu
         /// Open tracking shield
         case OpenShield
         /// Open Overflow Menu
@@ -52,20 +50,6 @@ public struct LogConfig {
         /// Turn off block tracking from settings
         case TurnOffGlobalBlockTracking
 
-        // MARK: neeva menu
-        /// Open home from neeva menu
-        case OpenHome
-        /// Open spaces from neeva menu
-        case OpenSpaces
-        /// Open downloads from neeva menu
-        case OpenDownloads
-        /// Open history from neeva menu
-        case OpenHistory
-        /// Open settings from neeva menu
-        case OpenSetting
-        /// Open send feedback from neeva menu
-        case OpenSendFeedback
-
         // MARK: overflow menu
         /// Click the plus new tab button
         case ClickNewTabButton
@@ -79,6 +63,14 @@ public struct LogConfig {
         case ClickDownloadPage
         /// Click the Close All Tabs button
         case ClickCloseAllTabs
+        /// Open downloads
+        case OpenDownloads
+        /// Open history
+        case OpenHistory
+        /// Open settings
+        case OpenSetting
+        /// Open send feedback
+        case OpenSendFeedback
 
         // MARK: settings
         /// Click search setting/account setting
@@ -340,7 +332,6 @@ public struct LogConfig {
     /// `ios_logging_categories.experiment.yaml`
     public enum InteractionCategory: String, CaseIterable {
         case UI = "UI"
-        case NeevaMenu = "NeevaMenu"
         case OverflowMenu = "OverflowMenu"
         case Settings = "Settings"
         case Suggestions = "Suggestions"
@@ -401,7 +392,6 @@ public struct LogConfig {
 
     public static func category(for interaction: Interaction) -> InteractionCategory {
         switch interaction {
-        case .OpenNeevaMenu: return .UI
         case .OpenShield: return .UI
         case .OpenOverflowMenu: return .UI
         case .TapReload: return .UI
@@ -421,12 +411,10 @@ public struct LogConfig {
         case .TurnOnGlobalBlockTracking: return .UI
         case .TurnOffGlobalBlockTracking: return .UI
 
-        case .OpenHome: return .NeevaMenu
-        case .OpenSpaces: return .NeevaMenu
-        case .OpenDownloads: return .NeevaMenu
-        case .OpenHistory: return .NeevaMenu
-        case .OpenSetting: return .NeevaMenu
-        case .OpenSendFeedback: return .NeevaMenu
+        case .OpenDownloads: return .OverflowMenu
+        case .OpenHistory: return .OverflowMenu
+        case .OpenSetting: return .OverflowMenu
+        case .OpenSendFeedback: return .OverflowMenu
 
         case .ClickNewTabButton: return .OverflowMenu
         case .ClickFindOnPage: return .OverflowMenu

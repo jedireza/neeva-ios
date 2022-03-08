@@ -16,7 +16,7 @@ protocol TopBarDelegate: ToolbarDelegate {
     func urlBarDidLeaveOverlayMode()
     func urlBar(didSubmitText text: String, isSearchQuerySuggestion: Bool)
 
-    func perform(neevaMenuAction: NeevaMenuAction)
+    func perform(menuAction: OverflowMenuAction)
     func updateFeedbackImage()
 
     var tabContainerModel: TabContainerModel { get }
@@ -70,7 +70,7 @@ struct TopBarContent: View {
                 }
             },
             buildReloadMenu: { chromeModel.topBarDelegate?.urlBarReloadMenu() },
-            onNeevaMenuAction: { chromeModel.topBarDelegate?.perform(neevaMenuAction: $0) },
+            onMenuAction: { chromeModel.topBarDelegate?.perform(menuAction: $0) },
             newTab: newTab,
             onCancel: onCancel,
             onOverflowMenuAction: {

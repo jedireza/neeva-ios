@@ -328,7 +328,9 @@ class SuggestionModel: ObservableObject {
             self.autocompleteSuggestion = nil
             self.completion = nil
 
-            log.info("previous query: \(oldQuery), current query: \(query), completion: \(self.completion)")
+            log.info(
+                "previous query: \(oldQuery), current query: \(query), completion: \(self.completion)"
+            )
 
             if query.isEmpty {
                 self.sites = []
