@@ -333,14 +333,6 @@ class SpaceCardModel: CardModel {
     }
     @Published private(set) var allDetailsWithExclusionList: [SpaceCardDetails] = []
     @Published var detailedSpace: SpaceCardDetails? {
-        willSet {
-            guard let space = detailedSpace, newValue == nil else {
-                return
-            }
-
-            space.isShowingDetails = false
-        }
-
         didSet {
             guard detailedSpace == nil else {
                 ClientLogger.shared.logCounter(
@@ -426,19 +418,9 @@ class SpaceCardModel: CardModel {
                 self.allDetails = manager.getAll().map {
                     SpaceCardDetails(space: $0, manager: manager)
                 }
-                self.allDetails.forEach { details in
-                    let detailID = details.id
-                    details.$isShowingDetails.sink { [weak self] showingDetails in
-                        if showingDetails {
-                            withAnimation {
-                                self?.detailedSpace =
-                                    self?.allDetails.first(where: { $0.id == detailID })
-                            }
-                        }
-                    }.store(in: &self.detailsSubscriptions)
-                }
 
-                self.detailedSpace = self.allDetails.first { $0.isShowingDetails }
+                self.listenForShowingDetails()
+
                 self.objectWillChange.send()
             }
         }
@@ -448,14 +430,22 @@ class SpaceCardModel: CardModel {
         allDetails = manager.getAll().map {
             SpaceCardDetails(space: $0, manager: manager)
         }
+
+        listenForShowingDetails()
+    }
+
+    func listenForShowingDetails() {
         allDetails.forEach { details in
             let detailID = details.id
-            details.$isShowingDetails.sink { [weak self] showingDetails in
+            details.$showingDetails.sink { [weak self] showingDetails in
+                guard let space = self?.allDetails.first(where: { $0.id == detailID }) else {
+                    return
+                }
+
                 if showingDetails {
-                    withAnimation {
-                        self?.detailedSpace =
-                            self?.allDetails.first(where: { $0.id == detailID })
-                    }
+                    self?.detailedSpace = space
+                } else if self?.detailedSpace == space {
+                    self?.detailedSpace = nil
                 }
             }.store(in: &detailsSubscriptions)
         }
@@ -591,14 +581,12 @@ class SpaceCardModel: CardModel {
     }
 
     func removeSpace(spaceID: String, isOwner: Bool) {
-
         if isOwner {
             let request = DeleteSpaceRequest(spaceID: spaceID)
             editingSubscription = request.$state.sink { state in
                 switch state {
                 case .success:
                     self.editingSubscription?.cancel()
-                    self.detailedSpace = nil
                     self.manager.refresh()
                 case .failure:
                     self.editingSubscription?.cancel()
@@ -612,7 +600,6 @@ class SpaceCardModel: CardModel {
                 switch state {
                 case .success:
                     self.editingSubscription?.cancel()
-                    self.detailedSpace = nil
                     self.manager.refresh()
                 case .failure:
                     self.editingSubscription?.cancel()
@@ -635,7 +622,7 @@ class SpaceCardModel: CardModel {
                 $0.id == spaceID
             })
             DispatchQueue.main.async {
-                newDetails?.isShowingDetails = true
+                self.detailedSpace = newDetails
                 self.spaceNeedsRefresh = spaceID
                 self.recommendationSubscription?.cancel()
             }

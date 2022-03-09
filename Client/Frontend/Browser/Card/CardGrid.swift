@@ -70,6 +70,9 @@ struct CardGrid: View {
 
     @State private var cardSize: CGFloat = CardUX.DefaultCardSize
     @State private var columnCount = 2
+
+    @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
+    @Environment(\.shareURL) var shareURL
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -92,7 +95,17 @@ struct CardGrid: View {
         Color.background.ignoresSafeArea()
     }
 
-    @ViewBuilder var cardContainer: some View {
+    @ViewBuilder
+    var detailedSpaceView: some View {
+        if let detailedSpace = spaceModel.detailedSpace {
+            DetailView(primitive: detailedSpace)
+                .environment(\.onOpenURLForSpace, onOpenURLForSpace)
+                .environment(\.shareURL, shareURL)
+        }
+    }
+
+    @ViewBuilder
+    var cardContainer: some View {
         VStack(spacing: 0) {
             CardsContainer(
                 columns: columns
@@ -101,10 +114,6 @@ struct CardGrid: View {
             Spacer(minLength: 0)
         }
         .background(cardContainerBackground)
-    }
-
-    @ViewBuilder var grid: some View {
-        cardContainer
     }
 
     @ViewBuilder
@@ -134,10 +143,9 @@ struct CardGrid: View {
     var body: some View {
         GeometryReader { geom in
             ZStack {
-                grid
+                cardContainer
                     .offset(
-                        x: (spaceModel.detailedSpace == nil
-                            && !walletDetailsModel.showingWalletDetails)
+                        x: (!walletDetailsModel.showingWalletDetails)
                             ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
                     )
                     .background(CardGridBackground())
@@ -148,97 +156,25 @@ struct CardGrid: View {
                         .ignoresSafeArea()
                 }
 
-                Group {
-                    if let spaceDetails = spaceModel.detailedSpace {
-                        DetailView(primitive: spaceDetails) {
-                            withAnimation(.easeInOut(duration: 0.4)) {
-                                gridModel.showingDetailView = false
-                                detailDragOffset = geom.size.width
-                                spaceModel.detailedSpace = nil
-                            }
-                        }
-                        .frame(width: geom.size.width, height: geom.size.height)
-                        .background(
-                            Color.groupedBackground.edgesIgnoringSafeArea([
-                                .bottom, .horizontal,
-                            ])
-                        )
-                        .transition(gridModel.animateDetailTransitions ? .flipFromRight : .identity)
-                    }
-                    if walletDetailsModel.showingWalletDetails {
-                        WalletDetailView()
-                            .frame(width: geom.size.width, height: geom.size.height)
-                            .background(
-                                Color.groupedBackground.edgesIgnoringSafeArea([
-                                    .bottom, .horizontal,
-                                ])
-                            )
-                            .transition(
-                                gridModel.animateDetailTransitions ? .flipFromRight : .identity
-                            )
-                            .environment(\.cardSize, cardSize)
-                            .environment(\.aspectRatio, CardUX.DefaultTabCardRatio)
-                    }
-                }.modifier(
-                    DraggableDetail(
-                        detailDragOffset: $detailDragOffset,
-                        width: geom.size.width))
+                NavigationLink(
+                    destination: detailedSpaceView,
+                    isActive: $gridModel.showingDetailView
+                ) {}.useEffect(deps: spaceModel.detailedSpace) { detailedSpace in
+                    gridModel.showingDetailView = detailedSpace != nil
+                }
+
+                NavigationLink(
+                    destination: WalletDetailView()
+                        .environment(\.cardSize, cardSize)
+                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio),
+                    isActive: $walletDetailsModel.showingWalletDetails
+                ) {}
             }
             .useEffect(
                 deps: geom.size.width, topToolbar, perform: updateCardSize
             )
-            .useEffect(deps: spaceModel.detailedSpace) { value in
-                gridModel.showingDetailView = value != nil
-            }
         }
         .ignoresSafeArea(.keyboard)
-    }
-}
-
-private struct DraggableDetail: ViewModifier {
-    static let Threshold: CGFloat = 100
-    static let DraggableWidth: CGFloat = 50
-    @Binding var detailDragOffset: CGFloat
-    let width: CGFloat
-
-    @EnvironmentObject var gridModel: GridModel
-    @EnvironmentObject var spaceModel: SpaceCardModel
-    @EnvironmentObject var tabGroupModel: TabGroupCardModel
-    @EnvironmentObject var walletDetailsModel: WalletDetailsModel
-
-    func body(content: Content) -> some View {
-        content
-            .offset(x: detailDragOffset, y: 0)
-            .onAnimationCompleted(for: detailDragOffset) {
-                if detailDragOffset == width {
-                    spaceModel.detailedSpace = nil
-                    walletDetailsModel.showingWalletDetails = false
-                    detailDragOffset = 0
-                    gridModel.showingDetailView = false
-                }
-            }
-            .simultaneousGesture(
-                DragGesture(minimumDistance: DraggableDetail.DraggableWidth)
-                    .onChanged { value in
-                        if detailDragOffset != 0
-                            || (value.startLocation.x < DraggableDetail.DraggableWidth
-                                && value.translation.width > 0
-                                && abs(value.translation.width)
-                                    > abs(value.translation.height))
-                        {
-                            detailDragOffset = value.translation.width
-                        }
-                    }
-                    .onEnded { value in
-                        withAnimation(.easeInOut(duration: 0.4)) {
-                            if abs(detailDragOffset) > DraggableDetail.Threshold {
-                                detailDragOffset = width
-                            } else {
-                                detailDragOffset = 0
-                            }
-                        }
-                    }
-            )
     }
 }
 

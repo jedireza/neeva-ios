@@ -24,7 +24,14 @@ class GridModel: ObservableObject {
         }
     }
 
-    @Published var showingDetailView = false
+    @Published var showingDetailView = false {
+        didSet {
+            // Reset when going from true to false
+            if oldValue && !showingDetailView {
+                spaceCardModel.detailedSpace?.showingDetails = false
+            }
+        }
+    }
     @Published var needsScrollToSelectedTab: Int = 0
 
     // Spaces
@@ -33,7 +40,6 @@ class GridModel: ObservableObject {
 
     private var subscriptions: Set<AnyCancellable> = []
     private let tabMenu: TabMenu
-    var animateDetailTransitions = true
 
     init(tabManager: TabManager, tabGroupManager: TabGroupManager) {
         self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)
@@ -100,5 +106,21 @@ class GridModel: ObservableObject {
 
     func buildRecentlyClosedTabsMenu() -> UIMenu {
         tabMenu.createRecentlyClosedTabsMenu()
+    }
+
+    func openSpaceInDetailView(_ space: SpaceCardDetails) {
+        DispatchQueue.main.async { [self] in
+            showingDetailView = true
+            spaceCardModel.detailedSpace = space
+        }
+    }
+
+    func closeDetailView() {
+        guard showingDetailView else {
+            return
+        }
+
+        spaceCardModel.detailedSpace?.showingDetails = false
+        showingDetailView = false
     }
 }

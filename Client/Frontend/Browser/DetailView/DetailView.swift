@@ -35,6 +35,7 @@ where
     @Environment(\.columns) var gridColumns
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
     @State private var editMode = EditMode.inactive
     @State private var shareMenuPresented = false
     @State private var newTitle: String = ""
@@ -43,7 +44,6 @@ where
     @State private var headerVisible = true
 
     @ObservedObject var primitive: Details
-    var dismissWithAnimation: () -> Void
     @State var selectedTabIDs: [String] = []
 
     var topToolbar: Bool {
@@ -69,10 +69,6 @@ where
         primitive.ACL >= .edit
     }
 
-    var showingAsList: Bool {
-        spacesModel.detailedSpace != nil ? true : false
-    }
-
     var ownerName: String? {
         space?.acls.first(where: { $0.acl == .owner })?.profile.displayName
     }
@@ -80,20 +76,15 @@ where
     var body: some View {
         VStack(spacing: 0) {
             topBar
-                .animation(nil)
 
-            if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty
-                && !(space?.isDigest ?? false)
-            {
+            if primitive.allDetails.isEmpty && !(space?.isDigest ?? false) {
                 EmptySpaceView()
-            } else if showingAsList {
+            } else {
                 spaceList
             }
         }
+        .navigationBarHidden(true)
         .accessibilityHidden(shareMenuPresented)
-        .onDisappear {
-            gridModel.animateDetailTransitions = true
-        }
     }
 
     @ViewBuilder var addButton: some View {
@@ -179,7 +170,7 @@ where
     }
 
     @ViewBuilder var editButton: some View {
-        if showingAsList && canEdit, let space = space {
+        if canEdit, let space = space {
             Button(
                 action: {
                     SceneDelegate.getBVC(with: tabModel.manager.scene)
@@ -277,6 +268,8 @@ where
                         Text(space?.ACL == .owner ? "Delete Space" : "Unfollow Space"),
                         action: {
                             if let space = space {
+                                gridModel.closeDetailView()
+
                                 guard
                                     let index = spacesModel.allDetails.firstIndex(where: {
                                         primitive.id == $0.id
@@ -298,12 +291,15 @@ where
     var topBar: some View {
         HStack {
             Button(
-                action: dismissWithAnimation,
+                action: {
+                    self.gridModel.closeDetailView()
+                },
                 label: {
                     Symbol(decorative: .arrowBackward)
                         .foregroundColor(Color.label)
                         .tapTargetFrame()
                 })
+
             if case .active = editMode, tabGroupDetail != nil {
                 VStack(spacing: 2) {
                     TextField(
@@ -433,6 +429,15 @@ struct DetailView_Previews: PreviewProvider {
             primitive: SpaceCardDetails(
                 space: .stackOverflow,
                 manager: SpaceStore.shared)
-        ) {}
+        )
+    }
+}
+
+// Allows the NavigationView to keep the swipe back interaction,
+// while also hiding the navigation bar.
+extension UINavigationController {
+    override open func viewDidLoad() {
+        super.viewDidLoad()
+        interactivePopGestureRecognizer?.delegate = nil
     }
 }

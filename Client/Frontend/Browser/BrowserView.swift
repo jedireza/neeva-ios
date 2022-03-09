@@ -35,13 +35,20 @@ struct BrowserContentView: View {
         ZStack {
             cardGrid
                 .environment(
-                    \.onOpenURL, { bvc.gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) }
+                    \.onOpenURL,
+                    { bvc.gridModel.tabCardModel.manager.createOrSwitchToTab(for: $0) }
                 )
                 .environment(
                     \.onOpenURLForSpace,
                     {
                         bvc.gridModel.tabCardModel.manager.createOrSwitchToTabForSpace(
                             for: $0, spaceID: $1)
+                    }
+                )
+                .environment(
+                    \.shareURL,
+                    {
+                        bvc.shareURL(url: $0, view: $1)
                     }
                 )
                 .opacity(browserModel.showContent ? 0 : 1)
@@ -71,20 +78,12 @@ struct BrowserView: View {
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
 
-    private var detailViewVisible: Bool {
-        gridModel.showingDetailView
-    }
-
     // MARK: - Views
     var topBar: some View {
         GeometryReader { geom in
             BrowserTopBarView(bvc: bvc)
                 .transition(.opacity)
                 .frame(height: chromeModel.topBarHeight)
-                .offset(
-                    x: detailViewVisible
-                        ? -geom.size.width - geom.safeAreaInsets.leading
-                            - geom.safeAreaInsets.trailing : 0)
         }
     }
 
@@ -105,7 +104,7 @@ struct BrowserView: View {
                         .environment(\.shareURL, shareURL)
                         .padding(
                             UIConstants.enableBottomURLBar ? .bottom : .top,
-                            detailViewVisible ? 0 : chromeModel.topBarHeight
+                            chromeModel.topBarHeight
                         )
                         .background(Color.background)
 
@@ -140,11 +139,9 @@ struct BrowserView: View {
                 // Bottom Bar
                 ZStack {
                     if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
-                        && !detailViewVisible && !chromeModel.keyboardShowing
-                        && !overlayManager.hideBottomBar
+                        && !chromeModel.keyboardShowing && !overlayManager.hideBottomBar
                     {
                         bottomBar
-                            .offset(x: detailViewVisible ? -geom.size.width : 0)
                             .onHeightOfViewChanged { height in
                                 self.chromeModel.bottomBarHeight = height
                             }
@@ -165,7 +162,11 @@ struct BrowserView: View {
 
     var body: some View {
         ZStack {
-            mainContent
+            NavigationView {
+                mainContent
+                    .navigationBarHidden(true)
+            }.modifier(iPadOnlyStackNavigation())
+
             OverlayView(overlayManager: overlayManager)
         }
         .environmentObject(browserModel)

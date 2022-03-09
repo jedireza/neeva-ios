@@ -26,7 +26,8 @@ struct CollapsedCardGroupView: View {
             // Don't make it a scroll view if the tab group can't be expanded
             ExpandedCardGroupRowView(
                 groupDetails: groupDetails, containerGeometry: containerGeometry,
-                range: 0..<groupDetails.allDetails.count, rowIndex: rowIndex, nextToCells: nextToCells
+                range: 0..<groupDetails.allDetails.count, rowIndex: rowIndex,
+                nextToCells: nextToCells
             )
         } else {
             VStack(spacing: 0) {
@@ -113,7 +114,8 @@ struct ExpandedCardGroupRowView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             if isFirstRow(range) {
-                TabGroupHeader(groupDetails: groupDetails, rowIndex: rowIndex, nextToCells: nextToCells)
+                TabGroupHeader(
+                    groupDetails: groupDetails, rowIndex: rowIndex, nextToCells: nextToCells)
             } else {
                 HStack {
                     // Spacer to expand the width of the view

@@ -279,7 +279,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                             : Label("Pin tab", systemSymbol: .pin)
                     }
                 )
-            }            
+            }
 
             Divider()
 
@@ -307,7 +307,6 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                     }
                 )
             }
-
         }
     }
 }
@@ -317,7 +316,7 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     typealias Manager = Space
 
     var manager: Space {
-        SpaceStore.shared.get(for: spaceID) ?? SpaceStore.suggested.get(for: spaceID)!
+        SpaceStore.shared.get(for: spaceID) ?? SpaceStore.suggested.get(for: spaceID) ?? .empty()
     }
 
     let spaceID: String
@@ -334,7 +333,6 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     private var imageThumbnailModel: ImageThumbnailModel?
 
     var isImage: Bool {
-
         guard let pathExtension = data.url?.pathExtension else {
             return false
         }
@@ -433,7 +431,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     typealias Thumbnail = SpaceEntityThumbnail
 
     @Published var manager: SpaceStore
-    @Published var isShowingDetails = false
+    @Published var showingDetails = false
 
     var id: String
     var closeButtonImage: UIImage? = nil
@@ -487,7 +485,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     }
 
     func onSelect() {
-        isShowingDetails = true
+        showingDetails = true
     }
 
     func onClose() {}
@@ -571,6 +569,7 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
 
     @Published var manager: TabGroupManager
     @Published var isShowingDetails = false
+
     var isExpanded: Bool {
         get {
             tabGroupExpanded.contains(id)
@@ -640,7 +639,7 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
         self.id = tabGroup.id
         self.manager = tabGroupManager
-        
+
         if FeatureFlag[.reverseChronologicalOrdering] {
             allDetails = allDetails.reversed()
         }

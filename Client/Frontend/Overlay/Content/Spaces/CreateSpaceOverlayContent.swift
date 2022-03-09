@@ -25,9 +25,11 @@ struct CreateSpaceOverlayContent: View {
                         case .success:
                             SpaceStore.shared.refresh()
                             subscription = spaceModel.objectWillChange.sink {
-                                if let details = spaceModel.allDetails.first(where: { $0.title == spaceName }) {
+                                if let details = spaceModel.allDetails.first(where: {
+                                    $0.title == spaceName
+                                }) {
                                     DispatchQueue.main.async {
-                                        details.isShowingDetails = true
+                                        spaceModel.detailedSpace = details
                                         subscription?.cancel()
                                     }
                                 }

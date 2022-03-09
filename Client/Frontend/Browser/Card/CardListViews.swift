@@ -13,6 +13,7 @@ struct SpaceCardsView: View {
         if FeatureFlag[.enableCryptoWallet] && !AssetStore.shared.assets.isEmpty {
             AssetGroupView(assetGroup: AssetGroup())
         }
+
         ForEach(spacesModel.detailsMatchingFilter, id: \.id) { details in
             FittedCard(details: details)
                 .id(details.id)

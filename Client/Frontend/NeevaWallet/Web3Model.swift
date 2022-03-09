@@ -48,6 +48,8 @@ class Web3Model: ObservableObject, ResponseRelay {
             tryMatchCurrentPageToCollection()
         }
     }
+
+    @Published var showingWalletDetails = false
     @Published var trustSignal: TrustSignal = .notTrusted
     @Published var alternateTrustedDomain: String? = nil
     @Published var matchingCollection: Collection?

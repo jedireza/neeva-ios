@@ -28,7 +28,7 @@ extension SpaceACLLevel {
 
 struct ShareSpaceContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
-    
+
     let space: Space
     let shareTargetView: UIView
     let fromAddToSpace: Bool
@@ -383,7 +383,8 @@ struct ShareSpaceView: View {
                                     onDismiss: {
                                         bvc.overlayManager.hideCurrentOverlay(ofPriority: .modal)
                                         seenSpacesShareIntro = true
-                                    }, onShare: {
+                                    },
+                                    onShare: {
                                         onShared()
                                         bvc.overlayManager.hideCurrentOverlay(ofPriority: .modal)
 

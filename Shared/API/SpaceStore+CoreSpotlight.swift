@@ -23,9 +23,9 @@ extension SpaceStore {
         public static let spacePageContentType: UTType = .urlBookmarkData
     }
 
-    static let searchableIndex = CSSearchableIndex(name: "co.neeva.app.ios.browser.spaces")
+    public static let searchableIndex = CSSearchableIndex(name: "co.neeva.app.ios.browser.spaces")
     // Serial queue to protect all indexing operations
-    static let CSIndexQueue = DispatchQueue(
+    public static let CSIndexQueue = DispatchQueue(
         label: "co.neeva.app.ios.browser.spaces.csqueue",
         qos: .utility,
         attributes: [],
@@ -50,9 +50,11 @@ extension SpaceStore {
             DispatchQueue.main.async { [weak self] in
                 self?.spotlightEventDelegate?.willIndex(spaces)
             }
+
             Self.searchableIndex.indexSearchableItems(
                 spaces.map { space in
-                    let attributes = CSSearchableItemAttributeSet(contentType: CSConst.spaceContentType)
+                    let attributes = CSSearchableItemAttributeSet(
+                        contentType: CSConst.spaceContentType)
                     attributes.title = space.name
                     attributes.contentDescription = space.description
                     let item = CSSearchableItem(
@@ -74,7 +76,7 @@ extension SpaceStore {
     }
 
     /// Remove spaces from corespoltight by id
-    class func removeSpacesFromCoreSpotlight(
+    public class func removeSpacesFromCoreSpotlight(
         _ ids: [SpaceID],
         completionHandler: ((Error?) -> Void)? = nil
     ) {
@@ -104,7 +106,8 @@ extension SpaceStore {
                 guard let url = entity.url else { continue }
                 group.enter()
                 Self.getThumbnailData(for: entity) { image in
-                    let attributes = CSSearchableItemAttributeSet(contentType: CSConst.spacePageContentType)
+                    let attributes = CSSearchableItemAttributeSet(
+                        contentType: CSConst.spacePageContentType)
                     attributes.title = entity.displayTitle
                     attributes.contentDescription = entity.displayDescription
                     attributes.thumbnailData = image?.pngData()
@@ -121,17 +124,17 @@ extension SpaceStore {
             // block the queue
             group.wait()
 
-            DispatchQueue.main.async {[weak self] in
+            DispatchQueue.main.async { [weak self] in
                 self?.spotlightEventDelegate?.willIndexEntities(
                     for: space,
-                    count: items.compactMap{$0}.count
+                    count: items.compactMap { $0 }.count
                 )
             }
 
             Self.searchableIndex.indexSearchableItems(
                 items.compactMap { $0 }
             ) { error in
-                DispatchQueue.main.async {[weak self] in
+                DispatchQueue.main.async { [weak self] in
                     self?.spotlightEventDelegate?.didIndexEntities(for: space, error: error)
                     completionHandler?(error)
                 }
@@ -141,7 +144,8 @@ extension SpaceStore {
 
     // MARK: - Clear Index
     // Remove all space items in the index
-    public class func removeAllSpacesFromCoreSpotlight(completionHandler: ((Error?) -> Void)? = nil) {
+    public class func removeAllSpacesFromCoreSpotlight(completionHandler: ((Error?) -> Void)? = nil)
+    {
         Self.CSIndexQueue.async {
             searchableIndex.deleteSearchableItems(
                 withDomainIdentifiers: [CSConst.spaceDomainIdentifier],
@@ -150,7 +154,9 @@ extension SpaceStore {
         }
     }
 
-    public class func removeAllSpaceURLsFromCoreSpotlight(completionHandler: ((Error?) -> Void)? = nil) {
+    public class func removeAllSpaceURLsFromCoreSpotlight(
+        completionHandler: ((Error?) -> Void)? = nil
+    ) {
         Self.CSIndexQueue.async {
             searchableIndex.deleteSearchableItems(
                 withDomainIdentifiers: [CSConst.spacePageDomainIdentifier],
@@ -179,7 +185,8 @@ extension SpaceStore {
                 if let image = image {
                     completionHandler(image)
                 } else {
-                    downloadDomainLevelFavicon(url: entity.url, completionHandler: completionHandler)
+                    downloadDomainLevelFavicon(
+                        url: entity.url, completionHandler: completionHandler)
                 }
             }
         } else {

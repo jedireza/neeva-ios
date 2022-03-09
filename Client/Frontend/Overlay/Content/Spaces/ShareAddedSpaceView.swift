@@ -133,12 +133,15 @@ struct ShareAddedSpaceView: View {
                     attributes: getLogCounterAttributesForSpaces(
                         details: space == nil
                             ? nil : SpaceCardDetails(space: space!, manager: SpaceStore.shared)))
+
                 if let space = space {
                     SpaceStore.shared.refreshSpace(spaceID: space.id.id)
                 } else {
                     SpaceStore.shared.refresh()
                 }
+
                 refreshing = true
+
                 subscription = SpaceStore.shared.$state.sink { state in
                     if case .ready = state {
                         refreshing = false

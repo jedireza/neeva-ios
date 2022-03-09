@@ -67,29 +67,29 @@ class BrowserModel: ObservableObject {
     func hideWithAnimation() {
         assert(!gridModel.tabCardModel.allDetails.isEmpty)
         cardTransitionModel.update(to: .visibleForTrayHidden)
+
+        gridModel.closeDetailView()
     }
 
     func hideWithNoAnimation() {
         cardTransitionModel.update(to: .hidden)
+
         if showGrid {
             showGrid = false
         }
+
         if !showContent {
             showContent = true
         }
-        gridModel.animateDetailTransitions = true
-        if gridModel.showingDetailView {
-            gridModel.showingDetailView = false
-        }
+
+        gridModel.closeDetailView()
     }
 
     func onCompletedCardTransition() {
         if showGrid {
             cardTransitionModel.update(to: .hidden)
-            gridModel.animateDetailTransitions = true
         } else {
             hideWithNoAnimation()
-            gridModel.animateDetailTransitions = false
         }
     }
 
@@ -172,15 +172,13 @@ class BrowserModel: ObservableObject {
             showSpaces(forceUpdate: false)
         }
 
-        gridModel.animateDetailTransitions = animate
-
         guard let spaceID = spaceID,
             let detail = gridModel.spaceCardModel.allDetails.first(where: { $0.id == spaceID })
         else {
             return
         }
 
-        detail.isShowingDetails = true
+        gridModel.openSpaceInDetailView(detail)
     }
 
     func openSpaceDigest(bvc: BrowserViewController) {

@@ -373,6 +373,7 @@
 		66ECB5DF26BB264700A1857E /* OverlayStepperModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66ECB5DE26BB264700A1857E /* OverlayStepperModifier.swift */; };
 		66EDCCCD2732286B00AB1EAD /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EDCCCC2732286B00AB1EAD /* NotificationService.swift */; };
 		66EE7D9526CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66EE7D9226CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift */; };
+		66F04FB627D7286900DE79ED /* SpaceCommentEntityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F04FB527D7286800DE79ED /* SpaceCommentEntityView.swift */; };
 		66F0E62026EC22C3008A4327 /* OverlaySheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F0E61F26EC22C3008A4327 /* OverlaySheetModel.swift */; };
 		66F0E62326EC23AD008A4327 /* OverlayStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F0E62226EC23AD008A4327 /* OverlayStyle.swift */; };
 		66F0E62526EC2CFD008A4327 /* OverlayModifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66F0E62426EC2CFD008A4327 /* OverlayModifiers.swift */; };
@@ -1614,6 +1615,7 @@
 		66EDCCCC2732286B00AB1EAD /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		66EDCCCE2732286B00AB1EAD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		66EE7D9226CD5F02004BD435 /* HTTPAuthPromptOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTTPAuthPromptOverlayView.swift; sourceTree = "<group>"; };
+		66F04FB527D7286800DE79ED /* SpaceCommentEntityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceCommentEntityView.swift; sourceTree = "<group>"; };
 		66F0E61F26EC22C3008A4327 /* OverlaySheetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlaySheetModel.swift; sourceTree = "<group>"; };
 		66F0E62226EC23AD008A4327 /* OverlayStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayStyle.swift; sourceTree = "<group>"; };
 		66F0E62426EC2CFD008A4327 /* OverlayModifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayModifiers.swift; sourceTree = "<group>"; };
@@ -2756,17 +2758,12 @@
 				66634E062735931D0047D336 /* CompactCard.swift */,
 				C9655DF026A09AC900925912 /* CompletionForAnimation.swift */,
 				4A9F65422710A49000B7C06E /* CustomThumbnails.swift */,
-				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
 				666CFD8926C735DC009ED9CF /* EmptyCardGrid.swift */,
 				4AD771B32734F06800B6769D /* EntityInfoView.swift */,
 				C9655DEA26A09A2800925912 /* GridModel.swift */,
 				4A9FCD4726F107BF00725E17 /* ProfileView.swift */,
-				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
 				4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */,
 				4A9FCD4526F1074600725E17 /* SocialShare.swift */,
-				4A227BE72758BE5B00A89322 /* SpaceComments.swift */,
-				4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */,
-				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
 				4AD771B727387B1F00B6769D /* SpaceGeneratorView.swift */,
 				4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */,
 				4ADF3F3C2692A73300CB1B98 /* SwitcherToolbarView.swift */,
@@ -3135,6 +3132,26 @@
 			path = HTTPAuthPrompt;
 			sourceTree = "<group>";
 		};
+		66F04FB327D7280300DE79ED /* DetailView */ = {
+			isa = PBXGroup;
+			children = (
+				4A39C1DA26CB76D600C999CF /* DetailView.swift */,
+				66F04FB427D7281500DE79ED /* Spaces */,
+			);
+			path = DetailView;
+			sourceTree = "<group>";
+		};
+		66F04FB427D7281500DE79ED /* Spaces */ = {
+			isa = PBXGroup;
+			children = (
+				4A227BE72758BE5B00A89322 /* SpaceComments.swift */,
+				66F04FB527D7286800DE79ED /* SpaceCommentEntityView.swift */,
+				4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */,
+				4A9F654C27233F6F00B7C06E /* SpaceEntityDetail.swift */,
+			);
+			path = Spaces;
+			sourceTree = "<group>";
+		};
 		66F0E61E26EC2290008A4327 /* Sheet */ = {
 			isa = PBXGroup;
 			children = (
@@ -3285,6 +3302,7 @@
 		C832BF5726DEE07B00B9A1F8 /* Spaces */ = {
 			isa = PBXGroup;
 			children = (
+				4A15C8B426E1815A006CD097 /* ShareSpaceView.swift */,
 				4AB50DA526FA8C3E00B75AFA /* ShareAddedSpaceView.swift */,
 				4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */,
 				4AB678B726EAA8160078F61B /* SpacesIntro.swift */,
@@ -3849,6 +3867,7 @@
 				4AF1948B266EC74C007E2C3B /* Carousel */,
 				C9DDC11E26B9E22800F293AB /* Content */,
 				C9835CDD26C480C600E81EB9 /* ContentScripts */,
+				66F04FB327D7280300DE79ED /* DetailView */,
 				D0625C97208E87F10081F3B2 /* DownloadQueue.swift */,
 				663322BF276D66220046EC1C /* KeyboardListener.swift */,
 				D0C95E35200FDC5400E4E51C /* MetadataParserHelper.swift */,
@@ -6057,6 +6076,7 @@
 				C8F457A81F1FD75A000CB895 /* BrowserViewController+WebViewDelegates.swift in Sources */,
 				C98E406326585F01003AC0E2 /* DebugSettingsSection.swift in Sources */,
 				4A1D05502669715B00D63333 /* CardViewControllers.swift in Sources */,
+				66F04FB627D7286900DE79ED /* SpaceCommentEntityView.swift in Sources */,
 				F84B22041A0910F600AAB793 /* AppDelegate.swift in Sources */,
 				66634E072735931D0047D336 /* CompactCard.swift in Sources */,
 				D8C75DF3207584C400BB8AD0 /* UIImageViewAligned.m in Sources */,
