@@ -145,13 +145,12 @@ struct RecipeView: View {
     var ratingStarsComp: some View {
         HStack(alignment: .center) {
             if let recipeRating = recipeRating {
-                if recipeRating.recipeStars > 0 {
-                    ForEach(
-                        (1...Int(
-                            floor(
-                                normalizeRating(
-                                    stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars
-                                )))), id: \.self
+                let normalizedRating = Int(floor(
+                    normalizeRating(
+                        stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars
+                )))
+                if recipeRating.recipeStars > 0, normalizedRating >= 1 {
+                    ForEach((1...normalizedRating), id: \.self
                     ) { _ in
                         Image(systemSymbol: .starFill)
                             .renderingMode(.template)
