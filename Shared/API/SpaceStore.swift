@@ -576,7 +576,8 @@ public class SpaceStore: ObservableObject {
             spaces: spacesWithNotifications, numberOfChanges: numberOfItemsUpdated) */
 
         if numberOfItemsUpdated == 0 {
-            spaceDailyDigest.description = "No spaces have been updated"
+            spaceDailyDigest.description =
+                "No updates from today. Items added to your Spaces in the last day will show here."
         }
 
         return spaceDailyDigest
@@ -586,7 +587,8 @@ public class SpaceStore: ObservableObject {
         var description = ""
 
         guard spaces.count > 0 else {
-            return "No spaces have been updated"
+            return
+                "No updates from today. Items added to your Spaces in the last day will show here."
         }
 
         let numberOfSpaces = spaces.count
