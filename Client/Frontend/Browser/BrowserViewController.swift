@@ -1688,22 +1688,39 @@ extension BrowserViewController {
     private func presentDBPromptView() {
         self.shouldPresentDBPrompt = false
 
-        self.overlayManager.presentFullScreenModal(
-            content: AnyView(
-                DefaultBrowserPromptView {
-                    self.overlayManager.hideCurrentOverlay()
-                } buttonAction: {
-                    self.overlayManager.hideCurrentOverlay()
+        let arm = NeevaExperiment.startExperiment(for: .defaultBrowserMergeEducation)
 
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                        self.presentDBOnboardingViewController(
-                            modalTransitionStyle: .crossDissolve,
-                            triggerFrom: .defaultBrowserPrompt
+        if arm == .mergeEducation {
+            self.overlayManager.presentFullScreenModal(
+                content: AnyView(
+                    DefaultBrowserInterstitialOnboardingView {
+                        self.overlayManager.hideCurrentOverlay()
+                    } buttonAction: {
+                        self.overlayManager.hideCurrentOverlay()
+                        UIApplication.shared.openSettings(
+                            triggerFrom: .defaultBrowserPromptMergeEduction
                         )
                     }
-                }
-            )
-        ) {}
+                )
+            ) {}
+        } else {
+            self.overlayManager.presentFullScreenModal(
+                content: AnyView(
+                    DefaultBrowserPromptView {
+                        self.overlayManager.hideCurrentOverlay()
+                    } buttonAction: {
+                        self.overlayManager.hideCurrentOverlay()
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                            self.presentDBOnboardingViewController(
+                                modalTransitionStyle: .crossDissolve,
+                                triggerFrom: .defaultBrowserPrompt
+                            )
+                        }
+                    }
+                )
+            ) {}
+        }
 
         Defaults[.didShowDefaultBrowserInterstitial] = true
     }

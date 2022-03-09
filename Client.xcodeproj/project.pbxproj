@@ -393,6 +393,7 @@
 		674186022799F26A0041D33F /* DefaultBrowserPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674186012799F26A0041D33F /* DefaultBrowserPromptView.swift */; };
 		674439C627BEDFE400749F75 /* UIApplicationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674439C527BEDFE400749F75 /* UIApplicationExtensions.swift */; };
 		674439C827BEEE9000749F75 /* NeevaExperimentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674439C727BEEE9000749F75 /* NeevaExperimentExtensions.swift */; };
+		67462B2C27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67462B2B27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift */; };
 		6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */; };
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
 		675EEDD326D9AF1700473332 /* LongPressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EEDD226D9AF1700473332 /* LongPressButton.swift */; };
@@ -1633,6 +1634,7 @@
 		674186012799F26A0041D33F /* DefaultBrowserPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserPromptView.swift; sourceTree = "<group>"; };
 		674439C527BEDFE400749F75 /* UIApplicationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensions.swift; sourceTree = "<group>"; };
 		674439C727BEEE9000749F75 /* NeevaExperimentExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaExperimentExtensions.swift; sourceTree = "<group>"; };
+		67462B2B27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserIntestitialOnboardingView.swift; sourceTree = "<group>"; };
 		6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestion.swift; sourceTree = "<group>"; };
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
 		675EEDD226D9AF1700473332 /* LongPressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressButton.swift; sourceTree = "<group>"; };
@@ -2449,6 +2451,7 @@
 				2328616725C9BD3D0015EA47 /* DefaultBrowserOnboarding.xcassets */,
 				C9299E33268F7BD700758795 /* DefaultBrowserOnboardingView.swift */,
 				674186012799F26A0041D33F /* DefaultBrowserPromptView.swift */,
+				67462B2B27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift */,
 			);
 			path = DefaultBrowserOnboarding;
 			sourceTree = "<group>";
@@ -6156,6 +6159,7 @@
 				D3A9949D1A3686BD008AD1AC /* Tab.swift in Sources */,
 				E65075571E37F714006961AC /* FaviconFetcher.swift in Sources */,
 				C9299E36268F9CF300758795 /* CloseButton.swift in Sources */,
+				67462B2C27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift in Sources */,
 				C832BF5F26E0A9E400B9A1F8 /* HTTPAuthPromptOverlayContent.swift in Sources */,
 				BC8EE029271A046C00D6BE2A /* SetPreferredProviderView.swift in Sources */,
 				D3C744CD1A687D6C004CE85D /* URIFixup.swift in Sources */,
