@@ -546,14 +546,12 @@ public class SpaceStore: ObservableObject {
                         continue
                     }
 
-                    if data.url != nil {
-                        numberOfItemsUpdated += 1
+                    numberOfItemsUpdated += 1
 
-                        if index < 2 {
-                            spaceDailyDigest.contentData?.append(data)
-                        } else {
-                            extraItemCount += 1
-                        }
+                    if index < 2 {
+                        spaceDailyDigest.contentData?.append(data)
+                    } else {
+                        extraItemCount += 1
                     }
                 }
 
@@ -576,6 +574,10 @@ public class SpaceStore: ObservableObject {
         // (Evan) Commenting this out as we're testing hiding the description.
         /* spaceDailyDigest.description = createDailyDigestDescription(
             spaces: spacesWithNotifications, numberOfChanges: numberOfItemsUpdated) */
+
+        if numberOfItemsUpdated == 0 {
+            spaceDailyDigest.description = "No spaces have been updated"
+        }
 
         return spaceDailyDigest
     }
