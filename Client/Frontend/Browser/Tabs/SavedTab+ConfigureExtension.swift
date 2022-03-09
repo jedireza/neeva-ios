@@ -57,7 +57,7 @@ extension SavedTab {
             let imageStore = imageStore
         {
             tab.screenshotUUID = screenshotUUID
-            imageStore.get(screenshotUUID.uuidString) >>== { screenshot in
+            imageStore.get(screenshotUUID.uuidString) { screenshot in
                 if tab.screenshotUUID == screenshotUUID {
                     tab.setScreenshot(screenshot, revUUID: false)
                 }

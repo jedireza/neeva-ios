@@ -58,22 +58,19 @@ class TabManagerStore {
 
     fileprivate func prepareSavedTabs(fromTabs tabs: [Tab], selectedTab: Tab?) -> [SavedTab]? {
         var savedTabs = [SavedTab]()
-        var savedUUIDs = Set<String>()
+        var screenshots: [DiskImageStore.Entry] = []
+
         for tab in tabs {
             tab.tabUUID = tab.tabUUID.isEmpty ? UUID().uuidString : tab.tabUUID
             let savedTab = SavedTab(tab: tab, isSelected: tab == selectedTab, tabIndex: nil)
             savedTabs.append(savedTab)
 
-            if let screenshot = tab.screenshot,
-                let screenshotUUID = tab.screenshotUUID
-            {
-                savedUUIDs.insert(screenshotUUID.uuidString)
-
-                imageStore?.put(screenshotUUID.uuidString, image: screenshot)
+            if let image = tab.screenshot, let uuid = tab.screenshotUUID {
+                screenshots.append(.init(key: uuid.uuidString, image: image))
             }
         }
-        // Clean up any screenshots that are no longer associated with a tab.
-        _ = imageStore?.clearExcluding(savedUUIDs)
+        imageStore?.updateAll(screenshots)
+
         return savedTabs.isEmpty ? nil : savedTabs
     }
 

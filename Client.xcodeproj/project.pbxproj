@@ -569,6 +569,7 @@
 		C8CF648D26F90A0A00C3816F /* FaviconFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075561E37F714006961AC /* FaviconFetcher.swift */; };
 		C8CF648F26FA7DE900C3816F /* FaviconResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648E26FA7DE900C3816F /* FaviconResolver.swift */; };
 		C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */; };
+		C8D0F5AE27D8055500E008D6 /* BackgroundTaskProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D0F5AD27D8055500E008D6 /* BackgroundTaskProcessor.swift */; };
 		C8DFFE492294AAB600296DB1 /* NetworkUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */; };
 		C8E18F1E222EDE4500E30E52 /* Accelerate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E18F1D222EDE4400E30E52 /* Accelerate.framework */; };
 		C8E18F20222EDED000E30E52 /* SafariServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C8E18F1F222EDED000E30E52 /* SafariServices.framework */; };
@@ -1780,6 +1781,7 @@
 		C8CF648726EFCEB600C3816F /* SessionDataTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDataTests.swift; sourceTree = "<group>"; };
 		C8CF648E26FA7DE900C3816F /* FaviconResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaviconResolver.swift; sourceTree = "<group>"; };
 		C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = effective_tld_names.swift; sourceTree = "<group>"; };
+		C8D0F5AD27D8055500E008D6 /* BackgroundTaskProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackgroundTaskProcessor.swift; sourceTree = "<group>"; };
 		C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkUtils.swift; sourceTree = "<group>"; };
 		C8E18F1D222EDE4400E30E52 /* Accelerate.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accelerate.framework; path = System/Library/Frameworks/Accelerate.framework; sourceTree = SDKROOT; };
 		C8E18F1F222EDED000E30E52 /* SafariServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SafariServices.framework; path = System/Library/Frameworks/SafariServices.framework; sourceTree = SDKROOT; };
@@ -2576,6 +2578,7 @@
 				7BF5A1E91B41640500EA9DD8 /* SyncQueue.swift */,
 				2FCAE25A1ABB531100877008 /* ThirdParty */,
 				2FCAE25C1ABB531100877008 /* Visit.swift */,
+				C8D0F5AD27D8055500E008D6 /* BackgroundTaskProcessor.swift */,
 			);
 			path = Storage;
 			sourceTree = "<group>";
@@ -5629,6 +5632,7 @@
 				D37DE2831CA2047500A5EC69 /* CertStore.swift in Sources */,
 				D018F93E1F44A71A0098F8CA /* Schema.swift in Sources */,
 				2FCAE2661ABB531100877008 /* Site.swift in Sources */,
+				C8D0F5AE27D8055500E008D6 /* BackgroundTaskProcessor.swift in Sources */,
 				0B54BD191B698B7C004C822C /* SuggestedSites.swift in Sources */,
 				318FB6EB1DB5600D0004E40F /* SQLiteHistoryFactories.swift in Sources */,
 				285D3B681B4380B70035FD22 /* Queue.swift in Sources */,

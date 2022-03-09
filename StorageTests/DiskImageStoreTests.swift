@@ -16,29 +16,34 @@ class DiskImageStoreTests: XCTestCase {
         files = MockFiles()
         store = DiskImageStore(files: files, namespace: "DiskImageStoreTests", quality: 1)
 
-        _ = store.clearExcluding(Set()).value
+        store.updateAll([])
     }
 
     func testStore() {
-        var success = false
-
         // Avoid image comparison and use size of the image for equality
         let redImage = makeImageWithColor(UIColor.red, size: CGSize(width: 100, height: 100))
         let blueImage = makeImageWithColor(UIColor.blue, size: CGSize(width: 17, height: 17))
 
-        [(key: "blue", image: blueImage), (key: "red", image: redImage)].forEach { (key, image) in
-            XCTAssertNil(getImage(key), "\(key) key is nil")
-            success = putImage(key, image: image)
-            XCTAssert(success, "\(key) image added to store")
-            XCTAssertEqual(getImage(key)!.size.width, image.size.width, "Images are equal")
+        var entries: [DiskImageStore.Entry] = [
+            .init(key: "blue", image: blueImage),
+            .init(key: "red", image: redImage),
+        ]
 
-            success = putImage(key, image: image)
-            XCTAssertFalse(success, "\(key) image not added again")
+        entries.forEach {
+            XCTAssertNil(getImage($0.key), "\($0.key) key is nil")
         }
 
-        _ = store.clearExcluding(Set(["red"])).value
-        XCTAssertNotNil(getImage("red"), "Red image still exists")
-        XCTAssertNil(getImage("blue"), "Blue image cleared")
+        store.updateAll(entries)
+
+        entries.forEach {
+            XCTAssertEqual(getImage($0.key)!.size.width, $0.image.size.width, "Images are equal")
+        }
+
+        // Confirm that entries no longer specified get removed.
+        entries.removeLast(1)
+        store.updateAll(entries)
+        XCTAssertNotNil(getImage("blue"), "Blue image still exists")
+        XCTAssertNil(getImage("red"), "Red image cleared")
     }
 
     private func makeImageWithColor(_ color: UIColor, size: CGSize) -> UIImage {
@@ -54,22 +59,11 @@ class DiskImageStoreTests: XCTestCase {
     private func getImage(_ key: String) -> UIImage? {
         let expectation = self.expectation(description: "Get succeeded")
         var image: UIImage?
-        store.get(key).upon {
-            image = $0.successValue
+        store.get(key) {
+            image = $0
             expectation.fulfill()
         }
         waitForExpectations(timeout: 10, handler: nil)
         return image
-    }
-
-    private func putImage(_ key: String, image: UIImage) -> Bool {
-        let expectation = self.expectation(description: "Put succeeded")
-        var success = false
-        store.put(key, image: image).upon {
-            success = $0.isSuccess
-            expectation.fulfill()
-        }
-        waitForExpectations(timeout: 10, handler: nil)
-        return success
     }
 }
