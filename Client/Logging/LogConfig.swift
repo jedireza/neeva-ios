@@ -190,6 +190,8 @@ public struct LogConfig {
         case CloseDefaultBrowserPromo
         case DefaultBrowserPromptSkip
         case DefaultBrowserPromptOpen
+        case DefaultBrowserOnboardingInterstitialSkip
+        case DefaultBrowserOnboardingInterstitialOpen
         /// Promo card impression (without 2 second)
         case DefaultBrowserPromoCardImp
 
@@ -474,6 +476,8 @@ public struct LogConfig {
         case .PreviewHomeSignin: return .FirstRun
         case .DefaultBrowserPromptSkip: return .FirstRun
         case .DefaultBrowserPromptOpen: return .FirstRun
+        case .DefaultBrowserOnboardingInterstitialSkip: return .FirstRun
+        case .DefaultBrowserOnboardingInterstitialOpen: return .FirstRun
         case .DefaultBrowserInterstitialImp: return .FirstRun
         case .StartExperiment: return .FirstRun
 

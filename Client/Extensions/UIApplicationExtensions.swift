@@ -10,6 +10,7 @@ public enum OpenSysSettingTrigger: String {
     case defaultBrowserPromoCard
     case defaultBrowserPromptDirect
     case settings
+    case defaultBrowserPromptMergeEduction
 }
 
 extension UIApplication {
