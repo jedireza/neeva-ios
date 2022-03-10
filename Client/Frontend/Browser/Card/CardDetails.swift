@@ -388,8 +388,8 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
             url: url,
             context: [
                 .imageThumbnailPixelSize: CGSize(
-                    width: DetailsViewUX.DetailThumbnailSize * 4,
-                    height: DetailsViewUX.DetailThumbnailSize * 4)
+                    width: SpaceViewUX.DetailThumbnailSize * 4,
+                    height: SpaceViewUX.DetailThumbnailSize * 4)
             ]
         )
         .resizable()

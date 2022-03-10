@@ -98,7 +98,7 @@ struct CardGrid: View {
     @ViewBuilder
     var detailedSpaceView: some View {
         if let detailedSpace = spaceModel.detailedSpace {
-            DetailView(primitive: detailedSpace)
+            SpaceContainerView(primitive: detailedSpace)
                 .environment(\.onOpenURLForSpace, onOpenURLForSpace)
                 .environment(\.shareURL, shareURL)
         }

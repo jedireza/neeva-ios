@@ -74,7 +74,7 @@ struct SpacePageSummary: View {
                                                     * (entity.id == details.id ? 1 : 0.8),
                                                 height: SpaceContentSheetUX.SpaceInfoThumbnailSize
                                                     * (entity.id == details.id ? 1 : 0.8)
-                                            ).cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                                            ).cornerRadius(SpaceViewUX.ThumbnailCornerRadius)
                                         })
                                 }
                             }
@@ -84,7 +84,7 @@ struct SpacePageSummary: View {
                     details.thumbnail.frame(
                         width: SpaceContentSheetUX.SpaceInfoThumbnailSize,
                         height: SpaceContentSheetUX.SpaceInfoThumbnailSize
-                    ).cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                    ).cornerRadius(SpaceViewUX.ThumbnailCornerRadius)
 
                 }
             }.padding(.bottom, 20)

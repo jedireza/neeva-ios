@@ -176,7 +176,7 @@ struct SpaceDetailList: View {
                             }()
 
                             NavigationLink(
-                                destination: DetailView(primitive: destinationDetails)
+                                destination: SpaceContainerView(primitive: destinationDetails)
                             ) {
                                 SpaceCommentsEntityView(
                                     details: details, showDescriptions: showDescriptions,

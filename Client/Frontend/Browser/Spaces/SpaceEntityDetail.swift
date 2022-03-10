@@ -105,7 +105,7 @@ struct SpaceEntityDetailView: View {
                             .background(Color.white)
                             .scaledToFit()
                             .frame(maxWidth: .infinity)
-                            .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                            .cornerRadius(SpaceViewUX.ThumbnailCornerRadius)
                             .padding(.bottom, 8)
                         if !details.title.isEmpty {
                             Text(details.title)
@@ -121,18 +121,18 @@ struct SpaceEntityDetailView: View {
                         }
                     }
                 } else {
-                    VStack(spacing: DetailsViewUX.ItemPadding) {
-                        HStack(alignment: .top, spacing: DetailsViewUX.ItemPadding) {
+                    VStack(spacing: SpaceViewUX.ItemPadding) {
+                        HStack(alignment: .top, spacing: SpaceViewUX.ItemPadding) {
                             if case .techDoc(_) = details.data.previewEntity {
                                 EmptyView()
                             } else {
                                 details.thumbnail.frame(
-                                    width: DetailsViewUX.DetailThumbnailSize,
-                                    height: DetailsViewUX.DetailThumbnailSize
+                                    width: SpaceViewUX.DetailThumbnailSize,
+                                    height: SpaceViewUX.DetailThumbnailSize
                                 )
-                                .cornerRadius(DetailsViewUX.ThumbnailCornerRadius)
+                                .cornerRadius(SpaceViewUX.ThumbnailCornerRadius)
                             }
-                            VStack(alignment: .leading, spacing: DetailsViewUX.Padding) {
+                            VStack(alignment: .leading, spacing: SpaceViewUX.Padding) {
                                 HStack(spacing: 6) {
                                     if let socialURL = socialURL {
                                         FaviconView(forSiteUrl: socialURL)
