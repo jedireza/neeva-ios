@@ -77,6 +77,7 @@ struct BrowserView: View {
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
+    @ObservedObject var tabContainerModel: TabContainerModel
 
     // MARK: - Views
     var topBar: some View {
@@ -109,30 +110,32 @@ struct BrowserView: View {
                         .background(Color.background)
 
                     // Top Bar
-                    VStack {
-                        if UIConstants.enableBottomURLBar { Spacer() }
+                    if tabContainerModel.currentContentUI != .previewHome {
+                        VStack {
+                            if UIConstants.enableBottomURLBar { Spacer() }
 
-                        if !UIConstants.enableBottomURLBar, chromeModel.inlineToolbar {
-                            topBar
-                                .background(
-                                    Group {
-                                        // invisible tap area to show the toolbars since modern iOS
-                                        // does not have a status bar in landscape.
-                                        Color.clear
-                                            .ignoresSafeArea()
-                                            .frame(height: BrowserViewUX.ShowHeaderTapAreaHeight)
-                                            // without this, the area isn’t tappable because it’s invisible
-                                            .contentShape(Rectangle())
-                                            .onTapGesture {
-                                                browserModel.scrollingControlModel.showToolbars(
-                                                    animated: true)
-                                            }
-                                    }, alignment: .top)
-                        } else {
-                            topBar
+                            if !UIConstants.enableBottomURLBar, chromeModel.inlineToolbar {
+                                topBar
+                                    .background(
+                                        Group {
+                                            // invisible tap area to show the toolbars since modern iOS
+                                            // does not have a status bar in landscape.
+                                            Color.clear
+                                                .ignoresSafeArea()
+                                                .frame(height: BrowserViewUX.ShowHeaderTapAreaHeight)
+                                                // without this, the area isn’t tappable because it’s invisible
+                                                .contentShape(Rectangle())
+                                                .onTapGesture {
+                                                    browserModel.scrollingControlModel.showToolbars(
+                                                        animated: true)
+                                                }
+                                        }, alignment: .top)
+                            } else {
+                                topBar
+                            }
+
+                            if !UIConstants.enableBottomURLBar { Spacer() }
                         }
-
-                        if !UIConstants.enableBottomURLBar { Spacer() }
                     }
                 }
 
@@ -190,9 +193,11 @@ struct BrowserView: View {
         self.shareURL = { url, view in
             bvc.shareURL(url: url, view: view)
         }
-        self.gridModel = bvc.gridModel
-        self.chromeModel = bvc.chromeModel
-        self.overlayManager = bvc.overlayManager
+
         self.browserModel = bvc.browserModel
+        self.chromeModel = bvc.chromeModel
+        self.gridModel = bvc.gridModel
+        self.overlayManager = bvc.overlayManager
+        self.tabContainerModel = bvc.tabContainerModel
     }
 }
