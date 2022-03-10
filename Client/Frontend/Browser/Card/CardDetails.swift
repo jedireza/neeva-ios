@@ -272,6 +272,8 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                             (isPinned ? nil : Date().timeIntervalSinceReferenceDate)
                         manager.get(for: id)?.isPinned.toggle()
                         manager.tabsUpdatedPublisher.send()
+                        ToastDefaults().showToastForPinningTab(
+                            pinning: isPinned, tabManager: manager)
                     },
                     label: {
                         isPinned

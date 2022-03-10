@@ -4,6 +4,7 @@
 
 import SwiftUI
 import UIKit
+import Shared
 
 public enum ToastViewUX {
     static let defaultDisplayTime = 4.5
@@ -63,6 +64,9 @@ struct ToastView: View {
     @ObservedObject var content: ToastViewContent
     var toastProgressViewModel: ToastProgressViewModel?
 
+    // checkmark included
+    var checkmark = false
+
     var body: some View {
         VStack {
             Spacer()
@@ -77,7 +81,16 @@ struct ToastView: View {
                     .frame(minHeight: ToastViewUX.height)
 
                 HStack(spacing: 16) {
-                    if let toastProgressViewModel = toastProgressViewModel {
+                    if checkmark {
+                        ZStack(alignment: .center) {
+                            Circle()
+                                .foregroundColor(.white)
+
+                            Symbol(decorative: .checkmark, size: 10)
+                                    .foregroundColor(Color(ToastViewUX.ToastDefaultColor))
+                        }
+                        .frame(width: 18, height: 18)
+                    } else if let toastProgressViewModel = toastProgressViewModel {
                         ToastProgressView { _ in
                             content.updateStatus(with: toastProgressViewModel.status)
 

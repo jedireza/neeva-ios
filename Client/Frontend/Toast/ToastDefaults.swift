@@ -13,8 +13,8 @@ class ToastDefaults: NSObject {
 
     private var requestListener: AnyCancellable?
 
-    func showToast(with text: String, toastViewManager: ToastViewManager) {
-        let toastView = toastViewManager.makeToast(text: LocalizedStringKey(text))
+    func showToast(with text: String, toastViewManager: ToastViewManager, checkmark: Bool = false) {
+        let toastView = toastViewManager.makeToast(text: LocalizedStringKey(text), checkmark: checkmark)
         toast = toastView
         toastViewManager.enqueue(view: toastView)
     }
@@ -50,6 +50,19 @@ class ToastDefaults: NSObject {
             toast = toastView
             toastViewManager.enqueue(view: toastView)
         }
+    }
+
+    func showToastForPinningTab(pinning: Bool, tabManager: TabManager) {
+        let toastText = pinning ? "Tab Pinned" : "Tab Unpinned"
+
+        guard
+            let toastViewManager = SceneDelegate.getCurrentSceneDelegate(
+                with: tabManager.scene)?.toastViewManager
+        else {
+            return
+        }
+
+        showToast(with: toastText, toastViewManager: toastViewManager, checkmark: true)
     }
 
     func showToastForDownload(download: Download, toastViewManager: ToastViewManager) {
