@@ -16,7 +16,7 @@ protocol Clearable {
     func clear() -> Success
 }
 
-// Clears our browsing history, including favicons and thumbnails.
+// Clears our browsing history, including favicons, thumbnails, and spotlight indexed items.
 class HistoryClearable: Clearable {
     let profile: Profile
     init(profile: Profile) {
@@ -33,7 +33,7 @@ class HistoryClearable: Clearable {
         return profile.history.clearHistory().bindQueue(.main) { success in
             SDImageCache.shared.clearDisk()
             SDImageCache.shared.clearMemory()
-            CSSearchableIndex.default().deleteAllSearchableItems()
+            UserActivityHandler.clearIndexedItems()
             NotificationCenter.default.post(name: .PrivateDataClearedHistory, object: nil)
             log.debug("HistoryClearable succeeded: \(success).")
             return Deferred(value: success)

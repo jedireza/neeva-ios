@@ -28,6 +28,10 @@ class UserActivityHandler {
     class func clearSearchIndex(completionHandler: ((Error?) -> Void)? = nil) {
         searchableIndex.deleteAllSearchableItems(completionHandler: completionHandler)
     }
+    
+    class func clearIndexedItems(completionHandler: @escaping (() -> Void) = {} ) {
+        NSUserActivity.deleteAllSavedUserActivities(completionHandler: completionHandler)
+    }
 
     fileprivate func setUserActivityForTab(_ tab: Tab) {
         guard Defaults[.createUserActivities],

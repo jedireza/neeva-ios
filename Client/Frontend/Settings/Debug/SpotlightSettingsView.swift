@@ -33,7 +33,7 @@ struct SpotlightSettingsView: View {
                 Button(
                     action: {
                         deletingActivities = true
-                        NSUserActivity.deleteAllSavedUserActivities {
+                        UserActivityHandler.clearIndexedItems {
                             deletingActivities = false
                         }
                     },

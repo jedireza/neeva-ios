@@ -266,6 +266,8 @@ class HistoryPanel: SiteTableViewController {
                     ofTypes: types, modifiedSince: date, completionHandler: {})
 
                 self.profile.history.removeHistoryFromDate(date).uponQueue(.main) { _ in
+                    // we don't keep persistent identifiers to the activities so we can only delete all
+                    UserActivityHandler.clearIndexedItems()
                     self.reloadData()
                 }
             }
@@ -301,6 +303,7 @@ class HistoryPanel: SiteTableViewController {
                     WKWebsiteDataStore.default().removeData(
                         ofTypes: types, modifiedSince: .distantPast, completionHandler: {})
                     self.profile.history.clearHistory().uponQueue(.main) { _ in
+                        UserActivityHandler.clearIndexedItems()
                         self.reloadData()
                     }
 
