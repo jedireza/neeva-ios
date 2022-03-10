@@ -85,4 +85,34 @@ extension UIImage {
         // return the image
         return newImage
     }
+
+    /// Fallback function for creating jpeg image data using CGImageDestination
+    ///
+    /// Sometimes UIImage object cannot export jpeg data via CMPhotoCompressionSession due to kCMPhotoError_UnsupportedPixelFormat
+    public func writeJpegDataViaCGImage(compressionQuality: CGFloat) -> Data? {
+        guard compressionQuality <= 1.0, compressionQuality >= 0.0 else {
+            return nil
+        }
+        guard let cgImage = self.cgImage,
+            let mutableData = CFDataCreateMutable(nil, 0),
+            let destination = CGImageDestinationCreateWithData(
+                mutableData, "public.jpeg" as CFString, 1, nil
+            )
+        else {
+            return nil
+        }
+
+        let properties =
+            [
+                kCGImageDestinationLossyCompressionQuality: compressionQuality
+            ] as CFDictionary
+
+        CGImageDestinationAddImage(destination, cgImage, properties)
+
+        guard CGImageDestinationFinalize(destination) else {
+            return nil
+        }
+
+        return mutableData as Data
+    }
 }

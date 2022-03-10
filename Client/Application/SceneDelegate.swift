@@ -213,7 +213,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                             )
                         ]
                 )
-                 
+
                 self.bvc.switchToTabForURLOrOpen(url)
             } else {
                 // this itemIdentifier is the spaces id
