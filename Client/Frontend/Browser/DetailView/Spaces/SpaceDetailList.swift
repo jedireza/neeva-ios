@@ -94,6 +94,12 @@ struct SpaceDetailList: View {
                             }
                     }
 
+                    if spacesModel.detailedSpace != nil && primitive.allDetails.isEmpty
+                        && !(space?.isDigest ?? false)
+                    {
+                        EmptySpaceView()
+                    }
+
                     ForEach(primitive.allDetails, id: \.id) { details in
                         let editSpaceItem = {
                             guard let space = space else {

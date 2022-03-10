@@ -129,7 +129,6 @@ struct EmptySpaceView: View {
     @EnvironmentObject var toolbarModel: SwitcherToolbarModel
 
     var body: some View {
-        Color.ui.adaptive.separator.frame(height: 1)
         VStack(spacing: 0) {
             Spacer()
             Image("empty-space", bundle: .main)

@@ -76,10 +76,7 @@ where
     var body: some View {
         VStack(spacing: 0) {
             topBar
-
-            if primitive.allDetails.isEmpty && !(space?.isDigest ?? false) {
-                EmptySpaceView()
-            } else {
+            if spacesModel.detailedSpace != nil {
                 spaceList
             }
         }
