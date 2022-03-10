@@ -15,26 +15,7 @@ public class ProviderList: ObservableObject {
     public init() {}
 
     public func fetchProviderList() {
-        isLoading = true
-        GetAllProvidersQuery(input: .init(providerCategory: .recipes)).fetch { result in
-            switch result {
-            case .success(let data):
-                if let providers = data.getAllProviders?.providers {
-                    for provider in providers {
-                        if let domain = provider.domain, let preference = provider.preference {
-                            self.allProviders[domain] = preference
-                            if let displayName = provider.name {
-                                self.providerDisplayName[domain] = displayName
-                            }
-                        }
-
-                    }
-                }
-            case .failure(let error):
-                logger.error(error)
-            }
-            self.isLoading = false
-        }
+        // Todo remove Provider Related code because API is deprecated.
     }
 
     public func isListEmpty() -> Bool {

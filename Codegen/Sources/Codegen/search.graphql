@@ -3,6 +3,32 @@ query Search($query: String!) {
     resultGroup {
       result {
         __typename
+        subResultsDisplayType
+        subResultsSemantics
+        subResults {
+          __typename
+          ... on News {
+            news {
+              title
+              snippet
+              url
+              thumbnailImage {
+                url
+                width
+                height
+              }
+              providerName
+              datePublished
+              favIconURL
+              preference
+              domain
+              provider {
+                name
+                site
+              }
+            }
+          }
+        }
         title
         appIcon {
           labels
@@ -11,6 +37,115 @@ query Search($query: String!) {
         snippet
         typeSpecific {
           __typename
+          ... on PlaceList {
+            placeList {
+              places {
+                place {
+                  id
+                  type
+                  name
+                  address {
+                    streetAddress
+                    fullAddress
+                  }
+                  telephone
+                  telephonePretty
+                  websiteURL
+                  yelpURL
+                  bingWebSearchURL
+                  position {
+                    lat
+                    lon
+                  }
+                  placeSubType
+                  isAddress
+                  rating
+                  price
+                  reviews {
+                    id
+                    text
+                    rating
+                    timeCreated
+                    url
+                  }
+                  specialHours {
+                    isOvernight
+                    start
+                    end
+                    date
+                    isClosed
+                  }
+                  hours {
+                    open {
+                      isOvernight
+                      start
+                      end
+                      day
+                    }
+                  }
+                  reviewCount
+                  imageURL
+                  imageURLs
+                  isClosed
+                  isOpenNow
+                  categories
+                  mapImage {
+                    url
+                    darkUrl
+                    width
+                    height
+                  }
+                  mapImageLarge {
+                    url
+                    darkUrl
+                    width
+                    height
+                  }
+                  googleMapsURL
+                  subTitle
+                  useHighVisuals
+                  articulatedOperatingStatus
+                  articulatedHour
+                  mapsURL
+                  neevaMapsQuery {
+                    query
+                    latitude
+                    longitude
+                    radius
+                    isLocationShift
+                    placeID
+                    zoom
+                  }
+                  placeSuggestions {
+                    address {
+                      country
+                      locality
+                      region
+                      neighborhood
+                      postalCode
+                      streetName
+                      streetNumber
+                      streetAddress
+                      fullAddress
+                    }
+                    mapImage {
+                      url
+                      darkUrl
+                      width
+                      height
+                    }
+                    mapImageLarge {
+                      url
+                      darkUrl
+                      width
+                      height
+                    }
+                    googleMapsURL
+                  }
+                }
+              }
+            }
+          }
           ... on Web {
             web {
               favIconURL
