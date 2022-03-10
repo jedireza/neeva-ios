@@ -11,9 +11,11 @@ public struct SendForm: View {
     @State var sendToAccountAddress = ""
     @State var amount: String = ""
     @Binding var showSendForm: Bool
+    let wallet: WalletAccessor?
     @State var showQRScanner: Bool = false
 
-    public init(showSendForm: Binding<Bool>) {
+    public init(wallet: WalletAccessor?, showSendForm: Binding<Bool>) {
+        self.wallet = wallet
         self._showSendForm = showSendForm
     }
 
@@ -80,7 +82,9 @@ public struct SendForm: View {
     }
 
     func sendEth() {
-        CryptoConfig.shared.sendEth(amount: amount, sendToAccountAddress: sendToAccountAddress) {
+        CryptoConfig.shared.sendEth(
+            with: wallet, amount: amount, sendToAccountAddress: sendToAccountAddress
+        ) {
             showSendForm = false
         }
     }

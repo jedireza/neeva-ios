@@ -62,15 +62,21 @@ public enum EthNode: String, CaseIterable, Identifiable {
         return allCases.first(where: { $0.id == chainID }) ?? .Ethereum
     }
 
-    public var url: URL {
+    private var configKey: String {
         switch self {
         case .Ethereum:
-            return "https://mainnet.infura.io/v3/25b0f8c5b9004da38236104927e630b5"
+            return "CRYPTO_ETH_URL"
         case .Ropsten:
-            return "https://ropsten.infura.io/v3/25b0f8c5b9004da38236104927e630b5"
+            return "CRYPTO_ROPSTEN_URL"
         case .Polygon:
-            return "https://polygon-mainnet.infura.io/v3/25b0f8c5b9004da38236104927e630b5"
+            return "CRYPTO_POLYGON_URL"
         }
+    }
+
+
+
+    public var url: URL? {
+        URL(string: Bundle.main.object(forInfoDictionaryKey: configKey) as? String ?? "")
     }
 
     public var currency: TokenType {
@@ -96,10 +102,6 @@ public class CryptoConfig {
         self.currentNode = .Ethereum
     }
 
-    public var nodeURL: URL {
-        self.currentNode.url
-    }
-
     public var isOnTestingNetwork: Bool {
         self.currentNode == .Ropsten
     }
@@ -112,58 +114,24 @@ public class CryptoConfig {
         return "My Neeva Crypto Wallet"
     }
 
-    public func sendEth(amount: String, sendToAccountAddress: String, completion: () -> Void) {
-        do {
-            let web3 = try Web3.new(nodeURL)
-            let password = CryptoConfig.shared.password
-            let key = Defaults[.cryptoPrivateKey]
-            let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
-            let dataKey = Data.fromHex(formattedKey)!
-            let keystore = try! EthereumKeystoreV3(privateKey: dataKey, password: password)!
-            let name = CryptoConfig.shared.walletName
-            let keyData = try! JSONEncoder().encode(keystore.keystoreParams)
-            let address = keystore.addresses!.first!.address
-            let wallet = Wallet(address: address, data: keyData, name: name, isHD: false)
-
-            let data = wallet.data
-            let keystoreManager: KeystoreManager
-            if wallet.isHD {
-                let keystore = BIP32Keystore(data)!
-                keystoreManager = KeystoreManager([keystore])
-            } else {
-                let keystore = EthereumKeystoreV3(data)!
-                keystoreManager = KeystoreManager([keystore])
-            }
-
-            web3.addKeystoreManager(keystoreManager)
-
-            let value: String = amount
-            let walletAddress = EthereumAddress(wallet.address)!
-
-            let toAddress = EthereumAddress(sendToAccountAddress)!
-            let contract = web3.contract(
-                Web3.Utils.coldWalletABI, at: toAddress, abiVersion: 2)!
-            let convertedAmount = Web3.Utils.parseToBigUInt(value, units: .eth)
-
-            var options = TransactionOptions.defaultOptions
-            options.value = convertedAmount
-            options.from = walletAddress
-            options.gasPrice = .automatic
-            options.gasLimit = .automatic
-            let tx = contract.write(
-                "fallback",
-                parameters: [AnyObject](),
-                extraData: Data(),
-                transactionOptions: options)!
-
-            let sendResult = try tx.send(password: password)
-            if let transactionHash = sendResult.transaction.txhash {
-                Defaults[.cryptoTransactionHashStore].insert(transactionHash)
-            }
+    public func sendEth(with wallet: WalletAccessor?, amount: String, sendToAccountAddress: String, completion: () -> Void) {
+        guard let wallet = wallet else {
             completion()
-        } catch {
-            log.error("Unexpected send eth error: \(error).")
+            return
         }
+
+
+        try? wallet.send(
+            on: .Ethereum,
+            transactionData: TransactionData(
+                from: wallet.publicAddress,
+                to: sendToAccountAddress,
+                value: amount,
+                data: nil,
+                gas: nil
+            )
+        )
+        completion()
     }
 
     public struct AccountInfo {
@@ -172,10 +140,13 @@ public class CryptoConfig {
     }
 
     public func getData() -> AccountInfo {
+        guard let web3 = try? Web3.new(EthNode.Ethereum.url ?? .aboutBlank) else {
+            return AccountInfo(balance: "", transactions: [])
+        }
+
         var transactionHistory: [TransactionDetail] = []
         var accountBalance = "0"
         do {
-            let web3 = try Web3.new(nodeURL)
             let myAccountAddress = EthereumAddress("\(Defaults[.cryptoPublicKey])")!
             let balance = try web3.eth.getBalancePromise(address: myAccountAddress).wait()
 

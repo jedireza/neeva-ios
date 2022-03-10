@@ -185,7 +185,7 @@ struct WalletDashboard: View {
                 .sheet(isPresented: $showSendForm, onDismiss: {}) {
                     VStack {
                         sheetHeader("Send")
-                        SendForm(showSendForm: $showSendForm)
+                        SendForm(wallet: model.wallet, showSendForm: $showSendForm)
                         Spacer()
                     }
                     .padding(.horizontal, 16)
