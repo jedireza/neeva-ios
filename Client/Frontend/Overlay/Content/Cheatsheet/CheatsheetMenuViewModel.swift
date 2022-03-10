@@ -20,6 +20,8 @@ public class CheatsheetMenuViewModel: ObservableObject {
     private(set) var searchRichResultsError: Error?
 
     private var cheatsheetLoggerSubscription: AnyCancellable?
+    // Workaround to indicate to SwiftUI view if it should log empty cheatsheet
+    var hasFetchedOnce = false
 
     var cheatSheetIsEmpty: Bool {
         if let cheatsheetInfo = cheatsheetInfo {
@@ -97,7 +99,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
     func fetchCheatsheetInfo() {
         guard !cheatsheetDataLoading else { return }
 
-        setupCheatsheetLoaderLogger()
+        hasFetchedOnce = true
 
         clearCheatsheetData()
 

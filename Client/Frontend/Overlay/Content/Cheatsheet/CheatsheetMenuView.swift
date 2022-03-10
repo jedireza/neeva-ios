@@ -286,6 +286,13 @@ public struct CheatsheetMenuView: View {
             } else if model.cheatSheetIsEmpty {
                 VStack(alignment: .center) {
                     CheatsheetNoResultView()
+                        .onAppear {
+                            guard model.hasFetchedOnce else { return }
+                            ClientLogger.shared.logCounter(
+                                .CheatsheetEmpty,
+                                attributes: EnvironmentHelper.shared.getAttributes() + model.loggerAttributes
+                            )
+                        }
                     if cheatsheetDebugQuery {
                         VStack(alignment: .leading) {
                             Button(action: {
