@@ -123,7 +123,6 @@ class TabCardModel: CardModel {
         }
 
         var partialResult: [Row] = []
-
         var allDetailsFiltered = allDetails.filter { tabCard in
             let tab = tabCard.manager.get(for: tabCard.id)!
             return
@@ -142,12 +141,23 @@ class TabCardModel: CardModel {
 
         // This functions performs lookahead and checks if there are tab/tab groups that can be inserted
         // in the current row before a new row gets inserted.
-        func PromoteCellsAfterIndex(_ row: inout Row, _ index: Int) {
+        func PromoteCellsAfterIndex(currDetail: TabCardDetails, row: inout Row, index: Int) {
             var didPromote = false
             var id = index
 
             while id < allDetailsFiltered.count && row.numTabsInRow < maxCols {
                 let details = allDetailsFiltered[id]
+
+                // don't promote non-pinned tabs if we're still in pinned section
+                if let tabGroup = tabGroupModel.allDetails.first(where: {
+                    $0.id == currDetail.rootID
+                }), tabGroup.isPinned && !details.isPinned {
+                    return
+                }
+                if currDetail.isPinned && !details.isPinned {
+                    return
+                }
+
                 if let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == details.rootID })
                 {
                     // Expanded tab group won't get promoted
@@ -187,7 +197,8 @@ class TabCardModel: CardModel {
                         // Perform lookahead before we insert a new row.
                         if !partialResult.isEmpty {
                             PromoteCellsAfterIndex(
-                                &partialResult[partialResult.endIndex - 1], index + 1)
+                                currDetail: allDetailsFiltered[index],
+                                row: &partialResult[partialResult.endIndex - 1], index: index + 1)
                         }
                         // tabGroupGridRow always occupies a row by itself.
                         for index in stride(from: 0, to: tabGroup.allDetails.count, by: maxCols) {
@@ -204,6 +215,7 @@ class TabCardModel: CardModel {
                         // Otherwise, build a horizontal scroll view in the next row.
                         if (tabGroup.allDetails.count + (partialResult.last?.numTabsInRow ?? 0))
                             <= maxCols && !partialResult.isEmpty
+                            && !(!details.isPinned && allDetailsFiltered[index - 1].isPinned)
                         {
                             partialResult[partialResult.endIndex - 1].cells.append(
                                 .tabGroupInline(tabGroup))
@@ -212,7 +224,9 @@ class TabCardModel: CardModel {
                             // Perform lookahead before we insert a new row.
                             if !partialResult.isEmpty {
                                 PromoteCellsAfterIndex(
-                                    &partialResult[partialResult.endIndex - 1], index + 1)
+                                    currDetail: allDetailsFiltered[index],
+                                    row: &partialResult[partialResult.endIndex - 1],
+                                    index: index + 1)
                             }
                             partialResult.append(
                                 Row(cells: [Row.Cell.tabGroupInline(tabGroup)]))
@@ -226,8 +240,16 @@ class TabCardModel: CardModel {
                     partialResult.append(Row(cells: []))
                 }
             } else {
-                partialResult[partialResult.endIndex - 1].cells.append(.tab(details))
-                partialResult[partialResult.endIndex - 1].multipleCellTypes = true
+                if let tabGroup = tabGroupModel.allDetails.first(where: {
+                    $0.id == allDetailsFiltered[index - 1].rootID
+                }), !details.isPinned && tabGroup.isPinned {
+                    partialResult.append(Row(cells: [.tab(details)]))
+                } else if !details.isPinned && allDetailsFiltered[index - 1].isPinned {
+                    partialResult.append(Row(cells: [.tab(details)]))
+                } else {
+                    partialResult[partialResult.endIndex - 1].cells.append(.tab(details))
+                    partialResult[partialResult.endIndex - 1].multipleCellTypes = true
+                }
             }
         }
 
