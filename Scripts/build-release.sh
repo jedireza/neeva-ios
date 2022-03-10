@@ -2,14 +2,14 @@
 
 export EXPORT_BUILD=false
 export CREATE_BRANCH=false
-export BUMP_VERSION=false
+export SKIP_PROMPT=true
 
 SCRIPTS_DIR=$(dirname $0)
 
 . $SCRIPTS_DIR/git-util.sh
 . $SCRIPTS_DIR/version-util.sh
 
-while getopts "ebv" option; do
+while getopts "ebp" option; do
   case $option in
     e) # export
        EXPORT_BUILD=true
@@ -17,11 +17,19 @@ while getopts "ebv" option; do
     b) # create branch
        CREATE_BRANCH=true
        ;;
+    p) # prompt on every build step
+       SKIP_PROMPT=false
+       ;;
   esac
 done
 
 # Script used to build a release. Use the Xcode Organizer to distribute
 # the resulting archive.
+
+if [ -z ${OPENSEA_API_KEY} ] || [ -z ${CRYPTO_ETH_URL} ] || [ -z ${CRYPTO_ROPSTEN_URL} ] || [ -z ${CRYPTO_POLYGON_URL} ]; then
+  echo "OPENSEA_API_KEY, CRYPTO_ETH_URL, CRYPTO_ROPSTEN_URL or CRYPTO_POLYGON_URL keys are not defined. Abort"
+  exit 1
+fi
 
 ./bootstrap.sh
 

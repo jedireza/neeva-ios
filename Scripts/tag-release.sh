@@ -16,12 +16,20 @@ echo "Proposing to create tag:"
 echo "  name = $TAG_NAME"
 echo "  message = $TAG_DESCRIPTION"
 echo "  commit = $COMMIT"
-echo "Create tag? Press ENTER to continue. Ctrl+C to cancel."
-read
+if [ "$SKIP_PROMPT" = true ] ; then
+  echo "Creating tag..."
+else
+  echo "Create tag? Press ENTER to continue. Ctrl+C to cancel."
+  read
+fi
 
 git tag -a "$TAG_NAME" -m "$TAG_DESCRIPTION" $COMMIT
 
-echo "Push tag? Press ENTER to continue. Ctrl+C to cancel."
-read
+if [ "$SKIP_PROMPT" = true ] ; then
+  echo "Pushing tag..."
+else
+  echo "Push tag? Press ENTER to continue. Ctrl+C to cancel."
+  read
+fi
 
 git push origin "$TAG_NAME"

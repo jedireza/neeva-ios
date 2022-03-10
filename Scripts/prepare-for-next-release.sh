@@ -30,7 +30,11 @@ REMOTE_ORIGIN_BRANCH_NAME="$(get_remote_origin_branch)"
 REMOTE_BRANCH_NAME="$(get_remote_branch)"
 
 if is_branch_of_release; then
-  read -r -p "You are on release branch, do you want to push changes directly onto branch? [Y/n] " response
+  if [ "$SKIP_PROMPT" = true ] ; then
+    echo "You are on release branch, changes will be pushed directly onto branch."
+  else
+    read -r -p "You are on release branch, do you want to push changes directly onto branch? [Y/n] " response
+  fi
   if [[ "$response" =~ ^([nN][oO]?)$ ]]
   then
     continue
@@ -47,8 +51,12 @@ fi
 echo "Proposing to create branch:"
 echo "  name = $BRANCH_NAME"
 echo "  from = $REMOTE_ORIGIN_BRANCH_NAME"
-echo "Create branch? Press ENTER to continue. Ctrl+C to cancel."
-read
+if [ "$SKIP_PROMPT" = true ] ; then
+  echo "Creating branch..."
+else
+  echo "Create branch? Press ENTER to continue. Ctrl+C to cancel."
+  read
+fi
 
 git checkout -b $BRANCH_NAME $REMOTE_ORIGIN_BRANCH_NAME
 git diff
@@ -56,7 +64,11 @@ git commit -a -m "Preparing for build $CURRENT_PROJECT_VERSION"
 
 # 4- Upload branch for review
 
-echo "Push branch? Press ENTER to continue. Ctrl+C to cancel."
-read
+if [ "$SKIP_PROMPT" = true ] ; then
+  echo "Pushing branch..."
+else
+  echo "Push branch? Press ENTER to continue. Ctrl+C to cancel."
+  read
+fi
 
 git push origin $BRANCH_NAME
