@@ -36,6 +36,7 @@ protocol TabDelegate {
     func tab(_ tab: Tab, didSelectAddToSpaceForSelection selection: String)
     func tab(_ tab: Tab, didSelectSearchWithNeevaForSelection selection: String)
     @objc optional func tab(_ tab: Tab, didCreateWebView webView: WKWebView)
+    @objc optional func tab(_ tab: Tab, willDeleteWebView webView: WKWebView)
 }
 
 class Tab: NSObject, ObservableObject {
@@ -363,11 +364,19 @@ class Tab: NSObject, ObservableObject {
         webViewSubscriptions = []
         /// This check causes crashes in ClientTests. It looks like there are no strong references to
         /// the web view, so I’m chalking it up to Swift being lazy.
-        //DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) { [weak webView] in
+        // DispatchQueue.main.asyncAfter(deadline: .now() + .seconds(10)) { [weak webView] in
         //    if let webView = webView {
         //        assertionFailure("web view with URL \(webView.url ?? "(nil)") \(webView) was not deallocated")
         //    }
-        //}
+        // }
+
+        // The code from here down properly cleans up tabs when they are removed (reference GitHub issue #3022)
+        if let webView = webView {
+            tabDelegate?.tab?(self, willDeleteWebView: webView)
+        }
+
+        webView?.navigationDelegate = nil
+        webView?.removeFromSuperview()
         webView = nil
     }
 

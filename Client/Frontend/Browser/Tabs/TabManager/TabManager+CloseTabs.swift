@@ -37,11 +37,13 @@ extension TabManager {
             updateSelectedTabAfterRemovalOf(lastTab, deletedIndex: lastTabIndex)
         }
 
-        storeChanges()
-        tabsUpdatedPublisher.send()
+        tabsToBeRemoved.forEach { tab in
+            tab.close()
+            TabEvent.post(.didClose, for: tab)
+        }
 
-        // TODO(darin): Don't we need to call Tab.close() on each of the removed tabs, and
-        // don't we need to generate a .didClose TabEvent?
+        tabsUpdatedPublisher.send()
+        storeChanges()
     }
 
     /// Removes the tab from TabManager, alerts delegates, and stores data.

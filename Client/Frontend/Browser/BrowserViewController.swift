@@ -1349,6 +1349,13 @@ extension BrowserViewController: TabDelegate {
         tab.addContentScript(webuiMessageHelper, name: WebUIMessageHelper.name())
     }
 
+    // Cleans up a tab when it is to be removed.
+    func tab(_ tab: Tab, willDeleteWebView webView: WKWebView) {
+        tab.cancelQueuedAlerts()
+        webView.uiDelegate = nil
+        webView.scrollView.delegate = nil
+    }
+
     func tab(_ tab: Tab, didSelectAddToSpaceForSelection selection: String) {
         showAddToSpacesSheet(
             url: tab.url!,
