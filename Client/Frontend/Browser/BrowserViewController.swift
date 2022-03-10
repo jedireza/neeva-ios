@@ -443,14 +443,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
         }
     }
 
-    func loadQueuedTabs(receivedURLs: [URL]? = nil) {
-        // Chain off of a trivial deferred in order to run on the background queue.
-        succeed().upon { res in
-            self.dequeueQueuedTabs(receivedURLs: receivedURLs ?? [])
-        }
-    }
-
-    fileprivate func dequeueQueuedTabs(receivedURLs: [URL]) {
+    func loadQueuedTabs() {
         assert(!Thread.current.isMainThread, "This must be called in the background.")
         self.profile.queue.getQueuedTabs() >>== { cursor in
 
@@ -458,8 +451,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             // It does in practice, so WFM.
             if cursor.count > 0 {
 
-                // Filter out any tabs received by a push notification to prevent dupes.
-                let urls = cursor.compactMap { $0?.url.asURL }.filter { !receivedURLs.contains($0) }
+                let urls = cursor.compactMap { $0?.url.asURL }
                 if !urls.isEmpty {
                     DispatchQueue.main.async {
                         self.tabManager.addTabsForURLs(urls, zombie: false)
@@ -470,13 +462,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 // it's better to run the risk of perhaps opening twice on a crash,
                 // rather than losing data.
                 self.profile.queue.clearQueuedTabs()
-            }
-
-            // Then, open any received URLs from push notifications.
-            if !receivedURLs.isEmpty {
-                DispatchQueue.main.async {
-                    self.tabManager.addTabsForURLs(receivedURLs, zombie: false)
-                }
             }
         }
     }

@@ -29,7 +29,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     var cleanlyBackgroundedLastTime = true
     weak var application: UIApplication?
     var launchOptions: [AnyHashable: Any]?
-    var receivedURLs = [URL]()
 
     // The profile is initialized during startup below and then remains valid for the
     // lifetime of the app. Expose a non-optional Profile accessor for convenience.

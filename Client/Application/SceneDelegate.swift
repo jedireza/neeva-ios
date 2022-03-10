@@ -83,6 +83,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         checkForSignInTokenOnDevice()
 
+        // This loads tabs queued up using the ShareTo "Load in Background" functionality.
+        // We execute a trivial deferred to put this on the background queue.
+        succeed().upon { _ in
+            self.bvc.loadQueuedTabs()
+        }
+        
         getAppDelegate().updateTopSitesWidget()
 
         // If server is already running this won't do anything.
