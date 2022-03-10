@@ -466,10 +466,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
         }
     }
 
-    // Because crashedLastLaunch is sticky, it does not get reset, we need to remember its
-    // value so that we do not keep asking the user to restore their tabs.
-    private var displayedRestoreTabsAlert = false
-
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // On iPhone, if we are about to show the On-Boarding, blank out the tab so that it does
