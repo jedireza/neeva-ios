@@ -74,6 +74,7 @@ struct BrowserView: View {
     // Explicitly not an observed object to avoid costly updates.
     let browserModel: BrowserModel
 
+    @State var safeArea = EdgeInsets()
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
@@ -171,7 +172,10 @@ struct BrowserView: View {
             }.modifier(iPadOnlyStackNavigation())
 
             OverlayView(overlayManager: overlayManager)
+        }.safeAreaChanged { safeArea in
+            self.safeArea = safeArea
         }
+        .environment(\.safeArea, safeArea)
         .environmentObject(browserModel)
         .environmentObject(browserModel.incognitoModel)
         .environmentObject(browserModel.cardTransitionModel)

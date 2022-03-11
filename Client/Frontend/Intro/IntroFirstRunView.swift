@@ -7,19 +7,24 @@ import SafariServices
 import Shared
 import SwiftUI
 
+struct FirstRunViewUX {
+    static let closeButtonPadding: CGFloat = 8
+    static let smallSizeScreen: CGFloat = 375.0
+    static let spacerLength: CGFloat = 17.5
+}
+
 struct FirstRunHomePage: View {
     @EnvironmentObject var model: IntroViewModel
-    let smallSizeScreen: CGFloat = 375.0
 
     var body: some View {
         GeometryReader { geom in
             VStack(spacing: 0) {
-                Spacer(minLength: 17.5)
+                Spacer(minLength: FirstRunViewUX.spacerLength)
 
                 VStack(alignment: .leading, spacing: 30) {
                     Image(decorative: "neeva-letter-only")
 
-                    let isSmallScreen = geom.size.width < 350
+                    let isSmallScreen = geom.size.width < FirstRunViewUX.smallSizeScreen
                     VStack(alignment: .leading) {
                         Text("Welcome To Neeva")
                             .font(.roobert(size: isSmallScreen ? 28 : 36))
@@ -63,7 +68,7 @@ struct FirstRunHomePage: View {
                     }
                 }
 
-                Spacer(minLength: 17.5)
+                Spacer(minLength: FirstRunViewUX.spacerLength)
 
                 SignInButton {
                     logFirstRunSignin()
@@ -149,6 +154,7 @@ struct FirstRunHomePage: View {
 
 struct IntroFirstRunView: View {
     @EnvironmentObject var model: IntroViewModel
+    @Environment(\.safeArea) var safeArea
 
     var body: some View {
         ZStack {
@@ -161,7 +167,9 @@ struct IntroFirstRunView: View {
                     } else {
                         logFirstRunSkipToBrowser()
                     }
-                }.padding(.top, 24)
+                }
+                .padding(.top, safeArea.top)
+                .padding(.trailing, FirstRunViewUX.closeButtonPadding)
 
                 Spacer()
 
@@ -184,7 +192,6 @@ struct IntroFirstRunView: View {
                 }
         }.background(
             Color.brand.offwhite
-                .ignoresSafeArea(.all)
         )
         .colorScheme(.light)
     }

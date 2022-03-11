@@ -84,4 +84,12 @@ extension EnvironmentValues {
         }
         set { self[showNotificationPromptKey.self] = newValue }
     }
+
+    private struct SafeAreaKey: EnvironmentKey {
+        static var defaultValue: EdgeInsets = EdgeInsets()
+    }
+    public var safeArea: EdgeInsets {
+        get { self[SafeAreaKey.self] }
+        set { self[SafeAreaKey.self] = newValue }
+    }
 }
