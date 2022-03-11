@@ -32,9 +32,8 @@ class DomainAutocompleteTest: BaseTestCase {
     func testAutocomplete() {
         openURL(websiteExample["url"]!)
         waitUntilPageLoad()
+        goToAddressBar()
 
-        app.buttons["Address Bar"].tap()
-        waitForExistence(app.buttons["Cancel"])
         app.textFields["address"].typeText("w")
 
         waitForValueContains(app.textFields["address"], value: websiteExample["value"]!)
