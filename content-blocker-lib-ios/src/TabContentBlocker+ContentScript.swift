@@ -34,8 +34,8 @@ extension TabContentBlocker {
             components.scheme = "http"
             guard let url = components.url else { return }
 
-            if FeatureFlag[.enableCryptoWallet], url.equals(WalletConnectDetector.WalletRegistryURL) {
-                WalletConnectDetector.shared.walletConnectURL = mainDocumentUrl
+            if FeatureFlag[.enableCryptoWallet] {
+                WalletConnectDetector.shared.detectWalletConnect(for: url, in: mainDocumentUrl)
             }
 
             TPStatsBlocklistChecker.shared.isBlocked(url: url, mainDocumentURL: mainDocumentUrl).uponQueue(.main) { blocked in
