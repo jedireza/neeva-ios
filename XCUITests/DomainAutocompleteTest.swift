@@ -44,7 +44,10 @@ class DomainAutocompleteTest: BaseTestCase {
         // Enter the complete website and check that there is not more text added, just what user typed
         app.textFields["address"].typeText("\u{0008}")
         app.textFields["address"].typeText("\u{0008}")
-        app.textFields["address"].typeText(websiteExample["value"]!)
+        for char in websiteExample["value"]! {
+            app.textFields["address"].typeText(String(char))
+        }
+
         waitForValueContains(app.textFields["address"], value: websiteExample["value"]!)
         let value2 = app.textFields["address"].value
         XCTAssertEqual(value2 as? String, websiteExample["value"]!, "Wrong autocompletion")
