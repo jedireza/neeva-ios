@@ -175,10 +175,9 @@ public class SearchController:
                                     for recipe in recipes {
                                         if let title = recipe.title,
                                             let imageURL = recipe.imageUrl,
-                                            let urlString = recipe.url
+                                            let urlString = recipe.url,
+                                            let url = URL(string: urlString)
                                         {
-                                            let url = URL(string: urlString)!
-
                                             var recipeRating: RecipeRating?
 
                                             if let maxStars = recipe.recipeRating?.maxStars,
@@ -238,7 +237,9 @@ public class SearchController:
                                     var webResultList: [WebResult] = []
 
                                     if let faviconURL = web.favIconUrl,
-                                        let actionURL = item?.actionUrl, let title = item?.title,
+                                        let actionURLString = item?.actionUrl,
+                                        let actionURL = URL(string: actionURLString),
+                                        let title = item?.title,
                                         let hostname = web.structuredUrl?.hostname,
                                         let paths = web.structuredUrl?.paths
                                     {
@@ -263,14 +264,15 @@ public class SearchController:
                                                 for item in ispList {
                                                     if let productName = item.productName,
                                                         let thumbnailURL = item.thumbnailUrl,
-                                                        let productActionURL = item.actionUrl
+                                                        let productActionURLString = item.actionUrl,
+                                                        let productActionURL = URL(
+                                                            string: productActionURLString)
                                                     {
                                                         inlineSearchProducts.append(
                                                             InlineSearchProduct(
                                                                 productName: productName,
                                                                 thumbnailURL: thumbnailURL,
-                                                                actionURL: URL(
-                                                                    string: productActionURL)!,
+                                                                actionURL: productActionURL,
                                                                 price: item.priceLow))
                                                     }
                                                 }
@@ -289,7 +291,7 @@ public class SearchController:
                                                                 reviewType: item.reviewType,
                                                                 thumbnailURL: thumbnailURL,
                                                                 productName: productName,
-                                                                actionURL: URL(string: actionURL)!,
+                                                                actionURL: actionURL,
                                                                 reviewSummary: item.reviewSummary,
                                                                 price: item.priceLow))
                                                     }
@@ -300,7 +302,7 @@ public class SearchController:
                                         let webResult = WebResult(
                                             faviconURL: faviconURL, displayURLHost: displayURLHost,
                                             displayURLPath: displayURLPath,
-                                            actionURL: URL(string: actionURL)!, title: title,
+                                            actionURL: actionURL, title: title,
                                             snippet: snippet, publicationDate: web.publicationDate,
                                             inlineSearchProducts: inlineSearchProducts,
                                             buyingGuides: buyingGuides
