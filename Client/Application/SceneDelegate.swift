@@ -53,6 +53,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let shortcutItem = connectionOptions.shortcutItem {
             handleShortcut(shortcutItem: shortcutItem)
         }
+
+        updateCurrentVersion()
     }
 
     private func setupRootViewController(_ scene: UIScene) {
@@ -88,7 +90,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         succeed().upon { _ in
             self.bvc.loadQueuedTabs()
         }
-        
+
         getAppDelegate().updateTopSitesWidget()
 
         // If server is already running this won't do anything.
@@ -472,5 +474,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             $0 > startOfLastWeek
         }
         Defaults[.loginLastWeekTimeStamp].append(Date())
+    }
+
+    // MARK: - App Version
+    private func updateCurrentVersion() {
+        if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            if let lastVersionActiveOn = Defaults[.lastVersionActiveOn],
+                lastVersionActiveOn != version
+            {
+                onAppUpdate(version: version, previousVersion: lastVersionActiveOn)
+            }
+
+            Defaults[.lastVersionActiveOn] = version
+        }
+    }
+
+    /// Called when the user updates the app, and then opens it.
+    /// Useful for updating flags, migrating data, etc.
+    private func onAppUpdate(version: String, previousVersion: String) {
+        // Nothing here yet!
     }
 }

@@ -17,6 +17,7 @@ extension Defaults.Keys {
     public static let introSeen = Defaults.BoolKey("profile.IntroViewControllerSeen")
     public static let didFirstNavigation = Defaults.BoolKey("profile_didFirstNavigation")
     public static let lastVersionNumber = Defaults.Key<String?>("profile.KeyLastVersionNumber")
+    public static let lastVersionActiveOn = Defaults.Key<String?>("profile.KeyLastVersionActiveOn")
     public static let didDismissReferralPromoCard =
         Defaults.BoolKey("profile.didDismissReferralPromoCard")
     public static let firstRunSeenAndNotSignedIn = Defaults.BoolKey(
