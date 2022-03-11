@@ -184,21 +184,6 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     public func performDrop(info: DropInfo) -> Bool {
-        guard info.hasItemsConforming(to: ["public.url"]) else {
-            return false
-        }
-
-        let items = info.itemProviders(for: ["public.url"])
-        for item in items {
-            _ = item.loadObject(ofClass: URL.self) { url, _ in
-                if let url = url {
-                    DispatchQueue.main.async {
-                        self.manager.get(for: self.id)?.loadRequest(URLRequest(url: url))
-                    }
-                }
-            }
-        }
-
         return true
     }
 
@@ -207,7 +192,6 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         guard let tabCardModel = tabCardModel else {
             return
         }
-
         
         let fromIndex = tabCardModel.allDetails.firstIndex {
             $0.id == tabCardModel.draggingDetail?.id
@@ -218,16 +202,8 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         } ?? 0
 
         if fromIndex != toIndex {
-//            let fromDetail = tabCardModel.allDetails[fromIndex]
-//            tabCardModel.allDetails[fromIndex] = tabCardModel.allDetails[toIndex]
-//            tabCardModel.allDetails[toIndex] = fromDetail
-            
             tabCardModel.allDetails.rearrange(from: fromIndex, to: toIndex)
         }
-        
-        
-        
-        
     }
 
     public func dropUpdated(info: DropInfo) -> DropProposal? {
@@ -244,10 +220,8 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         } ?? 0
 
         if fromIndex != toIndex {
-//            manager.swapTabs(fromIndex: fromIndex, toIndex: toIndex)
             manager.rearrangeTabs(fromIndex: fromIndex, toIndex: toIndex)
         }
-
         return DropProposal(operation: .move)
     }
 

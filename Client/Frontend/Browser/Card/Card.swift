@@ -207,6 +207,22 @@ struct Card<Details>: View where Details: CardDetails {
                             alignment: .top
                         )
                         .clipped()
+                        .if(dragNDrop && tabCardDetail != nil && !tabCardDetail!.isChild) { view in
+                            view
+                                .tabDetailOnDragModifier(with: tabCardDetail, preview: AnyView(
+                                    details.thumbnail
+                                        .frame(
+                                            width: max(0, geom.size.width),
+                                            height: max(
+                                                0,
+                                                geom.size.height
+                                                    - (details.thumbnailDrawsHeader ? 0 : CardUX.HeaderSize)),
+                                            alignment: .top
+                                        )
+                                        .clipped()
+                                ))
+                        }
+                        .onDrop(of: ["public.url", "public.text"], delegate: details)
                 }
                 .buttonStyle(.reportsPresses(to: $isPressed))
                 .cornerRadius(animate && !browserModel.showGrid ? 0 : CardUX.CornerRadius)
@@ -251,13 +267,6 @@ struct Card<Details>: View where Details: CardDetails {
         .accesibilityFocus(
             shouldFocus: details.isSelected, trigger: cardTransitionModel.state == .hidden
         )
-        .if(dragNDrop && tabCardDetail != nil && !tabCardDetail!.isChild) { view in
-            view.onDrag({
-                tabCardDetail?.tabCardModel?.draggingDetail = tabCardDetail
-                return NSItemProvider(contentsOf: URL(string: "\(details.id)")!)!
-            })
-        }
-        .onDrop(of: ["public.url", "public.text"], delegate: details)
         .if(let: details.closeButtonImage) { buttonImage, view in
             view
                 .overlay(
@@ -292,5 +301,33 @@ struct Card<Details>: View where Details: CardDetails {
                 content
             }
         }
+    }
+}
+
+struct TabDetailOnDragModifier: ViewModifier {
+    var tabCardDetail: TabCardDetails?
+    var preview: AnyView
+
+    func body(content: Content) -> some View {
+        if #available(iOS 15, *) {
+            content
+                .onDrag {
+                    tabCardDetail?.tabCardModel?.draggingDetail = tabCardDetail
+                    return NSItemProvider(contentsOf: URL(string: "\(tabCardDetail!.id)")!)!
+                } preview: {
+                    preview
+                }
+        } else {
+            content
+                .onDrag({
+                    tabCardDetail?.tabCardModel?.draggingDetail = tabCardDetail
+                    return NSItemProvider(contentsOf: URL(string: "\(tabCardDetail!.id)")!)!
+                })
+        }
+    }
+}
+extension View {
+    func tabDetailOnDragModifier(with detail: TabCardDetails?, preview: AnyView) -> some View {
+        modifier(TabDetailOnDragModifier(tabCardDetail: detail, preview: preview))
     }
 }
