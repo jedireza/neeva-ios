@@ -9,14 +9,17 @@ class SuggestionBackButtonTests: BaseTestCase {
         if testName == "testSuggestionBackButtonEnabledFromCardGrid" {
             launchArguments.append(LaunchArguments.DontAddTabOnLaunch)
         }
+
         super.setUp()
     }
 
     private func performSearch() {
-        app.typeText("example.com")
-        app.typeText("\r")
+        performSearch(text: "example.com")
+    }
 
-        waitForExistence(app.buttons["Back"])
+    private func testAddressBarContains(value: String) {
+        waitForExistence(app.textFields["address"])
+        XCTAssertEqual(value, app.textFields["address"].value as? String)
     }
 
     /// Make sure back button can be tapped after searching from Card Grid.
@@ -28,16 +31,14 @@ class SuggestionBackButtonTests: BaseTestCase {
 
         // Go back to Suggest UI
         app.buttons["Back"].tap()
-
-        waitForExistence(app.buttons["Cancel"])
-        XCTAssertTrue(app.staticTexts["example.com"].exists)
+        testAddressBarContains(value: "example.com")
     }
 
     func testSuggestionBackButtonEnabledFromURLBar() {
         goToAddressBar()
         performSearch()
 
-        XCTAssertTrue(app.buttons["Back"].exists)
+        XCTAssertTrue(app.buttons["Back"].isEnabled)
     }
 
     func testSuggestionBackButtonDisabled() {
@@ -45,5 +46,24 @@ class SuggestionBackButtonTests: BaseTestCase {
 
         waitForExistence(app.buttons["Back"])
         XCTAssertFalse(app.buttons["Back"].isEnabled)
+    }
+
+    func testMultipleQueryPaths() {
+        goToAddressBar()
+        performSearch()
+
+        waitForHittable(app.buttons["Back"])
+        app.buttons["Back"].tap()
+
+        performSearch(text: "/fake")
+
+        app.buttons["Back"].tap()
+        testAddressBarContains(value: "example.com/fake")
+
+        app.buttons["Cancel"].tap()
+        waitForExistence(app.buttons["Back"])
+
+        app.buttons["Back"].tap()
+        testAddressBarContains(value: "example.com")
     }
 }

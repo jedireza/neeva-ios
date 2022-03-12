@@ -5,9 +5,7 @@
 import Foundation
 import WebKit
 
-
 class QueryForNavigation {
-
     struct Query {
         let typed: String
         let suggested: String?
@@ -27,8 +25,7 @@ class QueryForNavigation {
     func attachCurrentSearchQueryToCurrentNavigation(webView: WKWebView) {
         // attach current suggested query?
         if let navigation = webView.backForwardList.currentItem,
-            let query = currentQuery,
-           !query.typed.isEmpty
+            let query = currentQuery, !query.typed.isEmpty
         {
             queryForNavigations[navigation] = query
             currentQuery = nil

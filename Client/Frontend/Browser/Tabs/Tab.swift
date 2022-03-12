@@ -406,8 +406,8 @@ class Tab: NSObject, ObservableObject {
     }
 
     func goBack() {
-        // Check if user launched the current URL from the suggestion UI.
-        // If true, show the suggest UI with that query loaded.
+        // Check if user launched the current URL from the Suggestion UI.
+        // If true, show the Suggest UI with that query loaded.
         // Else just perform a regular back navigation.
         if let navigation = webView?.backForwardList.currentItem,
             let query = queryForNavigation.findQueryFor(navigation: navigation),

@@ -93,4 +93,23 @@ extension BaseTestCase {
             app.buttons["Forward"].tap()
         }
     }
+
+    /// Types text into the address bar. Can work from a tab or if the address bar is already visible.
+    func performSearch(text: String = "example") {
+        if !app.textFields["address"].exists {
+            goToAddressBar()
+        }
+
+        waitForExistence(app.textFields["address"])
+        app.typeText(text)
+        app.typeText("\r")
+
+        // Sometimes the sign in menu pops up,
+        // this will close it.
+        if app.buttons["Close"].exists {
+            app.buttons["Close"].tap()
+        }
+
+        waitForExistence(app.buttons["Back"])
+    }
 }
