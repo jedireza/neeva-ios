@@ -65,7 +65,9 @@ extension SavedTab {
         }
 
         tab.sessionData = sessionData
-        tab.lastTitle = title
+        // Use current URL as lastTitle when the tab loads a PDF, for example.
+        tab.lastTitle =
+            (title?.trim() ?? "").count > 0 ? title : sessionData?.currentUrl?.absoluteString
         tab.isPinned = isPinned
         tab.pinnedTime = pinnedTime
         tab.parentUUID = parentUUID ?? ""
