@@ -34,7 +34,7 @@ extension SpotlightLogger: SpaceStoreSpotlightEventDelegate {
                 ClientLogCounterAttribute(
                     key: LogConfig.SpotlightAttribute.indexCount,
                     value: String(spaces.count)
-                )
+                ),
             ]
         )
     }
@@ -54,7 +54,7 @@ extension SpotlightLogger: SpaceStoreSpotlightEventDelegate {
                 ClientLogCounterAttribute(
                     key: LogConfig.SpotlightAttribute.spaceIdPayload,
                     value: space.id.id
-                )
+                ),
             ]
         )
     }
@@ -68,9 +68,9 @@ extension SpotlightLogger: SpaceStoreSpotlightEventDelegate {
                     value: LogConfig.SpotlightAttribute.ItemType.space.rawValue
                 ),
                 ClientLogCounterAttribute(
-                    key: "error",
+                    key: LogConfig.SpotlightAttribute.error,
                     value: error?.localizedDescription
-                )
+                ),
             ]
         )
     }
@@ -88,9 +88,36 @@ extension SpotlightLogger: SpaceStoreSpotlightEventDelegate {
                     value: space.id.id
                 ),
                 ClientLogCounterAttribute(
-                    key: "error",
+                    key: LogConfig.SpotlightAttribute.error,
                     value: error?.localizedDescription
-                )
+                ),
+            ]
+        )
+    }
+
+    func willClearIndex(for domainIdentifier: String) {
+        return
+    }
+
+    func didFailClearIndex(for domainIdentifier: String, error: Error) {
+        let itemType: LogConfig.SpotlightAttribute.ItemType
+        switch domainIdentifier {
+        case SpaceStore.CSConst.spaceDomainIdentifier:
+            itemType = .space
+        case SpaceStore.CSConst.spacePageDomainIdentifier:
+            itemType = .spaceEntity
+        default:
+            itemType = .all
+        }
+        ClientLogger.shared.logCounter(
+            .clearIndexError,
+            attributes: EnvironmentHelper.shared.getAttributes() + [
+                ClientLogCounterAttribute(
+                    key: LogConfig.SpotlightAttribute.error,
+                    value: error.localizedDescription),
+                ClientLogCounterAttribute(
+                    key: LogConfig.SpotlightAttribute.itemType,
+                    value: itemType.rawValue),
             ]
         )
     }

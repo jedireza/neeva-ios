@@ -12,10 +12,12 @@ public protocol SpaceStoreSpotlightEventDelegate: AnyObject {
     func willIndexEntities(for space: Space, count: Int)
     func didIndex(_ spaces: [Space], error: Error?)
     func didIndexEntities(for space: Space, error: Error?)
+    func willClearIndex(for domainIdentifier: String)
+    func didFailClearIndex(for domainIdentifier: String, error: Error)
 }
 
 extension SpaceStore {
-    enum CSConst {
+    public enum CSConst {
         public static let spaceDomainIdentifier: String = "co.neeva.app.ios.browser.space"
         public static let spaceContentType: UTType = .urlBookmarkData
 
@@ -23,9 +25,9 @@ extension SpaceStore {
         public static let spacePageContentType: UTType = .urlBookmarkData
     }
 
-    public static let searchableIndex = CSSearchableIndex(name: "co.neeva.app.ios.browser.spaces")
+    static let searchableIndex = CSSearchableIndex(name: "co.neeva.app.ios.browser.spaces")
     // Serial queue to protect all indexing operations
-    public static let CSIndexQueue = DispatchQueue(
+    static let CSIndexQueue = DispatchQueue(
         label: "co.neeva.app.ios.browser.spaces.csqueue",
         qos: .utility,
         attributes: [],
@@ -47,8 +49,8 @@ extension SpaceStore {
     ) {
         Self.CSIndexQueue.async {
             // add spaces to CS
-            DispatchQueue.main.async { [weak self] in
-                self?.spotlightEventDelegate?.willIndex(spaces)
+            DispatchQueue.main.async {
+                self.spotlightEventDelegate?.willIndex(spaces)
             }
 
             Self.searchableIndex.indexSearchableItems(
@@ -67,8 +69,8 @@ extension SpaceStore {
                     return item
                 }
             ) { error in
-                DispatchQueue.main.async { [weak self] in
-                    self?.spotlightEventDelegate?.didIndex(spaces, error: error)
+                DispatchQueue.main.async {
+                    self.spotlightEventDelegate?.didIndex(spaces, error: error)
                     completionHandler?(error)
                 }
             }
@@ -124,8 +126,8 @@ extension SpaceStore {
             // block the queue
             group.wait()
 
-            DispatchQueue.main.async { [weak self] in
-                self?.spotlightEventDelegate?.willIndexEntities(
+            DispatchQueue.main.async {
+                self.spotlightEventDelegate?.willIndexEntities(
                     for: space,
                     count: items.compactMap { $0 }.count
                 )
@@ -134,8 +136,8 @@ extension SpaceStore {
             Self.searchableIndex.indexSearchableItems(
                 items.compactMap { $0 }
             ) { error in
-                DispatchQueue.main.async { [weak self] in
-                    self?.spotlightEventDelegate?.didIndexEntities(for: space, error: error)
+                DispatchQueue.main.async {
+                    self.spotlightEventDelegate?.didIndexEntities(for: space, error: error)
                     completionHandler?(error)
                 }
             }
@@ -144,31 +146,60 @@ extension SpaceStore {
 
     // MARK: - Clear Index
     // Remove all space items in the index
-    public class func removeAllSpacesFromCoreSpotlight(completionHandler: ((Error?) -> Void)? = nil)
-    {
+    public func removeAllSpacesFromCoreSpotlight(completionHandler: ((Error?) -> Void)? = nil) {
         Self.CSIndexQueue.async {
-            searchableIndex.deleteSearchableItems(
-                withDomainIdentifiers: [CSConst.spaceDomainIdentifier],
-                completionHandler: completionHandler
-            )
+            DispatchQueue.main.async {
+                self.spotlightEventDelegate?.willClearIndex(for: CSConst.spaceDomainIdentifier)
+            }
+            Self.searchableIndex.deleteSearchableItems(
+                withDomainIdentifiers: [CSConst.spaceDomainIdentifier]
+            ) { error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        self.spotlightEventDelegate?.didFailClearIndex(
+                            for: CSConst.spaceDomainIdentifier, error: error)
+                    }
+                    completionHandler?(error)
+                }
+            }
         }
     }
 
-    public class func removeAllSpaceURLsFromCoreSpotlight(
+    public func removeAllSpaceURLsFromCoreSpotlight(
         completionHandler: ((Error?) -> Void)? = nil
     ) {
         Self.CSIndexQueue.async {
-            searchableIndex.deleteSearchableItems(
-                withDomainIdentifiers: [CSConst.spacePageDomainIdentifier],
-                completionHandler: completionHandler
-            )
+            DispatchQueue.main.async {
+                self.spotlightEventDelegate?.willClearIndex(for: CSConst.spacePageDomainIdentifier)
+            }
+            Self.searchableIndex.deleteSearchableItems(
+                withDomainIdentifiers: [CSConst.spacePageDomainIdentifier]
+            ) { error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        self.spotlightEventDelegate?.didFailClearIndex(
+                            for: CSConst.spacePageDomainIdentifier, error: error)
+                    }
+                    completionHandler?(error)
+                }
+            }
         }
     }
 
     // Clear all items in the index
-    public class func clearIndex(completionHandler: ((Error?) -> Void)? = nil) {
+    public func clearIndex(completionHandler: ((Error?) -> Void)? = nil) {
         Self.CSIndexQueue.async {
-            searchableIndex.deleteAllSearchableItems(completionHandler: completionHandler)
+            DispatchQueue.main.async {
+                self.spotlightEventDelegate?.willClearIndex(for: "")
+            }
+            Self.searchableIndex.deleteAllSearchableItems { error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        self.spotlightEventDelegate?.didFailClearIndex(for: "", error: error)
+                    }
+                    completionHandler?(error)
+                }
+            }
         }
     }
 

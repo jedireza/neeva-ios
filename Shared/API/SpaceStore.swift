@@ -337,7 +337,7 @@ public class SpaceStore: ObservableObject {
         urlToSpacesMap = [:]
         // Also clear indexed URLs
         if Defaults[.addSpaceURLsToCS] {
-            Self.removeAllSpaceURLsFromCoreSpotlight { error in
+            self.removeAllSpaceURLsFromCoreSpotlight { error in
                 if let error = error {
                     Logger.storage.error("Error: \(error)")
                 }

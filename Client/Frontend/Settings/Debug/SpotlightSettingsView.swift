@@ -58,10 +58,7 @@ struct SpotlightSettingsView: View {
                     Button(
                         action: {
                             deletingSpaces = true
-                            SpaceStore.removeAllSpacesFromCoreSpotlight { error in
-                                if let error = error {
-                                    print(error.localizedDescription)
-                                }
+                            SpaceStore.shared.removeAllSpacesFromCoreSpotlight { _ in
                                 deletingSpaces = false
                             }
                         },
@@ -78,11 +75,7 @@ struct SpotlightSettingsView: View {
 
                     Button {
                         deletingSpaceURLs = true
-                        SpaceStore.removeAllSpaceURLsFromCoreSpotlight { error in
-                            if let error = error {
-                                print(error.localizedDescription)
-                            }
-
+                        SpaceStore.shared.removeAllSpaceURLsFromCoreSpotlight { _ in
                             deletingSpaceURLs = false
                         }
                     } label: {
@@ -98,10 +91,8 @@ struct SpotlightSettingsView: View {
 
                     Button {
                         deletingAllSpaceIndex = true
-                        SpaceStore.clearIndex { error in
-                            if let error = error {
-                                print(error.localizedDescription)
-                            }
+                        SpaceStore.shared.clearIndex { _ in
+                            deletingAllSpaceIndex = false
                         }
                     } label: {
                         HStack {

@@ -287,6 +287,7 @@ public struct LogConfig {
         // Indexing access
         case willIndex
         case didIndex
+        case clearIndexError
 
         // MARK: recipe cheatsheet
         case RecipeCheatsheetImpression
@@ -558,6 +559,7 @@ public struct LogConfig {
         case .openCSSearchableItem: return .Spotlight
         case .willIndex: return .Spotlight
         case .didIndex: return .Spotlight
+        case .clearIndexError: return .Spotlight
 
         case .RecipeCheatsheetImpression: return .RecipeCheatsheet
         case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
@@ -722,6 +724,8 @@ public struct LogConfig {
         public static let itemType = "itemType"
         public static let indexCount = "indexCount"
 
+        public static let error = "error"
+
         public enum ThumbnailSource: String {
             case none
             case fallback
@@ -731,6 +735,7 @@ public struct LogConfig {
         public enum ItemType: String {
             case space
             case spaceEntity
+            case all
         }
     }
 
