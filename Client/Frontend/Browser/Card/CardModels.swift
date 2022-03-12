@@ -135,6 +135,8 @@ class TabCardModel: CardModel {
             modifyAllDetailsFilteredPromotingPinnedTabs(&allDetailsFiltered, tabGroupModel)
         }
 
+        let lastPinnedIndex = allDetailsFiltered.lastIndex(where: {$0.isPinned})
+
         // An array to keep track of whether a CardDetail has been processed. This allows us to skip
         // the CardDetail that are pre-processed due to lookahead.
         var processed = Array(repeating: false, count: allDetailsFiltered.count)
@@ -149,13 +151,15 @@ class TabCardModel: CardModel {
                 let details = allDetailsFiltered[id]
 
                 // don't promote non-pinned tabs if we're still in pinned section
-                if let tabGroup = tabGroupModel.allDetails.first(where: {
-                    $0.id == currDetail.rootID
-                }), tabGroup.isPinned && !details.isPinned {
-                    return
-                }
-                if currDetail.isPinned && !details.isPinned {
-                    return
+                if let lastPinnedIndex = lastPinnedIndex {
+                    if let tabGroup = tabGroupModel.allDetails.first(where: {
+                        $0.id == currDetail.rootID
+                    }), tabGroup.isPinned && index < lastPinnedIndex {
+                        return
+                    }
+                    if currDetail.isPinned && index < lastPinnedIndex {
+                        return
+                    }
                 }
 
                 if let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == details.rootID })
@@ -240,16 +244,8 @@ class TabCardModel: CardModel {
                     partialResult.append(Row(cells: []))
                 }
             } else {
-                if let tabGroup = tabGroupModel.allDetails.first(where: {
-                    $0.id == allDetailsFiltered[index - 1].rootID
-                }), !details.isPinned && tabGroup.isPinned {
-                    partialResult.append(Row(cells: [.tab(details)]))
-                } else if !details.isPinned && allDetailsFiltered[index - 1].isPinned {
-                    partialResult.append(Row(cells: [.tab(details)]))
-                } else {
-                    partialResult[partialResult.endIndex - 1].cells.append(.tab(details))
-                    partialResult[partialResult.endIndex - 1].multipleCellTypes = true
-                }
+                partialResult[partialResult.endIndex - 1].cells.append(.tab(details))
+                partialResult[partialResult.endIndex - 1].multipleCellTypes = true
             }
         }
 
