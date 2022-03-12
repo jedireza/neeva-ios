@@ -21,7 +21,7 @@ class UIImageViewExtensionsTests: XCTestCase {
         let url = URL(string: "http://mozilla.com")
         let imageView = UIImageView()
 
-        let (goodIcon, correctColor) = FaviconFetcher.letter(forUrl: url!)
+        let (goodIcon, correctColor) = FaviconSupport.letter(forUrl: url!)
         imageView.setImageAndBackground(forIcon: nil, website: url) {}
         XCTAssertEqual(imageView.image!, goodIcon, "The correct default favicon should be applied")
         XCTAssertEqual(
@@ -36,7 +36,7 @@ class UIImageViewExtensionsTests: XCTestCase {
 
         imageView.setImageAndBackground(forIcon: nil, website: URL(string: "b")) {}
         XCTAssertEqual(
-            imageView.image, FaviconFetcher.defaultFavicon,
+            imageView.image, FaviconSupport.defaultFavicon,
             "The default favicon should be applied when no information is given about the icon")
     }
 
@@ -73,7 +73,7 @@ class UIImageViewExtensionsTests: XCTestCase {
         // This will be fetched from tippy top sites
         let gFavURL: URL = "https://www.facebook.com/fav"
         let gURL: URL = "http://www.facebook.com"
-        let defaultItem = FaviconFetcher.bundledIcons[gURL.baseDomain!]!
+        let defaultItem = FaviconSupport.bundledIcons[gURL.baseDomain!]!
         let correctImage = UIImage(contentsOfFile: defaultItem.filePath)!
 
         favImageView.setImageAndBackground(forIcon: Favicon(url: gFavURL), website: gURL) {}

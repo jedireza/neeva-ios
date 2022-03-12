@@ -81,7 +81,7 @@ struct TopSitesHandler {
                     WidgetKitTopSiteModel(
                         title: site.title, faviconUrl: iconUrl, url: site.url, imageKey: imageKey))
                 // fetch favicons and cache them on disk
-                FaviconFetcher.downloadFaviconAndCache(
+                FaviconSupport.downloadFaviconAndCache(
                     imageURL: !iconUrl.isEmpty ? URL(string: iconUrl) : nil, imageKey: imageKey)
             }
             // save top sites for widgetkit use

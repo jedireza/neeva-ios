@@ -423,11 +423,8 @@
 		7BBFEE741BB405D900A305AA /* TabManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BBFEE731BB405D900A305AA /* TabManagerTests.swift */; };
 		7BEFC6801BFF68C30059C952 /* QuickActions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BEFC67F1BFF68C30059C952 /* QuickActions.swift */; };
 		7BF5A1EA1B41640500EA9DD8 /* SyncQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF5A1E91B41640500EA9DD8 /* SyncQueue.swift */; };
-		85EFC01D27C5158A009460DE /* Fuzi.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01C27C51589009460DE /* Fuzi.xcframework */; };
 		85EFC01F27C5158D009460DE /* GCDWebServers.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01E27C5158D009460DE /* GCDWebServers.xcframework */; };
-		85EFC02027C51597009460DE /* Fuzi.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01C27C51589009460DE /* Fuzi.xcframework */; };
 		85EFC02227C515A7009460DE /* KIF.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02127C515A7009460DE /* KIF.xcframework */; };
-		85EFC02327C515C2009460DE /* Fuzi.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01C27C51589009460DE /* Fuzi.xcframework */; };
 		85EFC02527C515EE009460DE /* OnePasswordExtension.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02427C515EE009460DE /* OnePasswordExtension.xcframework */; };
 		85EFC02827C516F9009460DE /* SDWebImageSwiftUI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02627C516F3009460DE /* SDWebImageSwiftUI.xcframework */; };
 		85EFC02A27C51714009460DE /* SnapKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02927C51714009460DE /* SnapKit.xcframework */; };
@@ -439,7 +436,6 @@
 		85EFC03427C51788009460DE /* XCGLogger.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03327C51788009460DE /* XCGLogger.xcframework */; };
 		85EFC03527C5179F009460DE /* XCGLogger.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03327C51788009460DE /* XCGLogger.xcframework */; };
 		85EFC03B27C51C46009460DE /* SwiftKeychainWrapper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02B27C5172A009460DE /* SwiftKeychainWrapper.xcframework */; };
-		85EFC03C27C51E8B009460DE /* Fuzi.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01C27C51589009460DE /* Fuzi.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03D27C51E8B009460DE /* GCDWebServers.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01E27C5158D009460DE /* GCDWebServers.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03E27C51E8B009460DE /* ObjcExceptionBridging.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02F27C51754009460DE /* ObjcExceptionBridging.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03F27C51E8B009460DE /* OnePasswordExtension.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02427C515EE009460DE /* OnePasswordExtension.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -567,7 +563,7 @@
 		C8CF648426ED20DF00C3816F /* BackgroundFileWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648326ED20DF00C3816F /* BackgroundFileWriter.swift */; };
 		C8CF648626EDB89500C3816F /* BackgroundFileWriterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648526EDB89500C3816F /* BackgroundFileWriterTests.swift */; };
 		C8CF648826EFCEB600C3816F /* SessionDataTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648726EFCEB600C3816F /* SessionDataTests.swift */; };
-		C8CF648D26F90A0A00C3816F /* FaviconFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075561E37F714006961AC /* FaviconFetcher.swift */; };
+		C8CF648D26F90A0A00C3816F /* FaviconSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075561E37F714006961AC /* FaviconSupport.swift */; };
 		C8CF648F26FA7DE900C3816F /* FaviconResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CF648E26FA7DE900C3816F /* FaviconResolver.swift */; };
 		C8CFF4E422F9FDB6002CC6BD /* effective_tld_names.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */; };
 		C8D0F5AE27D8055500E008D6 /* BackgroundTaskProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D0F5AD27D8055500E008D6 /* BackgroundTaskProcessor.swift */; };
@@ -853,7 +849,7 @@
 		E63F71881DB7FBE200A995C9 /* TestSQLiteMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */; };
 		E65075521E37F6D1006961AC /* UIViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075501E37F6D1006961AC /* UIViewExtensions.swift */; };
 		E65075541E37F6FC006961AC /* DynamicFontHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075531E37F6FC006961AC /* DynamicFontHelper.swift */; };
-		E65075571E37F714006961AC /* FaviconFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075561E37F714006961AC /* FaviconFetcher.swift */; };
+		E65075571E37F714006961AC /* FaviconSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075561E37F714006961AC /* FaviconSupport.swift */; };
 		E65075611E37F77D006961AC /* MenuHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075601E37F77D006961AC /* MenuHelper.swift */; };
 		E65075921E37F7AB006961AC /* Accessibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075621E37F7AB006961AC /* Accessibility.swift */; };
 		E65075931E37F7AB006961AC /* AppConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65075631E37F7AB006961AC /* AppConstants.swift */; };
@@ -1205,7 +1201,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				85EFC04527C51EEC009460DE /* SwiftKeychainWrapper.xcframework in Copy Frameworks */,
-				85EFC03C27C51E8B009460DE /* Fuzi.xcframework in Copy Frameworks */,
 				85EFC03D27C51E8B009460DE /* GCDWebServers.xcframework in Copy Frameworks */,
 				66A7639527C7505D0047F999 /* SDWebImageSwiftUI.xcframework in Copy Frameworks */,
 				85EFC03E27C51E8B009460DE /* ObjcExceptionBridging.xcframework in Copy Frameworks */,
@@ -1668,7 +1663,6 @@
 		7BEFC67F1BFF68C30059C952 /* QuickActions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickActions.swift; sourceTree = "<group>"; };
 		7BF5A1E91B41640500EA9DD8 /* SyncQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SyncQueue.swift; sourceTree = "<group>"; };
 		844E4D159B48569FD70D3C82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/PrivateBrowsing.strings; sourceTree = "<group>"; };
-		85EFC01C27C51589009460DE /* Fuzi.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Fuzi.xcframework; path = Carthage/Build/Fuzi.xcframework; sourceTree = "<group>"; };
 		85EFC01E27C5158D009460DE /* GCDWebServers.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = GCDWebServers.xcframework; path = Carthage/Build/GCDWebServers.xcframework; sourceTree = "<group>"; };
 		85EFC02127C515A7009460DE /* KIF.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = KIF.xcframework; path = Carthage/Build/KIF.xcframework; sourceTree = "<group>"; };
 		85EFC02427C515EE009460DE /* OnePasswordExtension.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = OnePasswordExtension.xcframework; path = Carthage/Build/OnePasswordExtension.xcframework; sourceTree = "<group>"; };
@@ -2073,7 +2067,7 @@
 		E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestSQLiteMetadata.swift; sourceTree = "<group>"; };
 		E65075501E37F6D1006961AC /* UIViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIViewExtensions.swift; sourceTree = "<group>"; };
 		E65075531E37F6FC006961AC /* DynamicFontHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DynamicFontHelper.swift; path = Helpers/DynamicFontHelper.swift; sourceTree = "<group>"; };
-		E65075561E37F714006961AC /* FaviconFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaviconFetcher.swift; sourceTree = "<group>"; };
+		E65075561E37F714006961AC /* FaviconSupport.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FaviconSupport.swift; sourceTree = "<group>"; };
 		E65075601E37F77D006961AC /* MenuHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MenuHelper.swift; path = Helpers/MenuHelper.swift; sourceTree = "<group>"; };
 		E65075621E37F7AB006961AC /* Accessibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Accessibility.swift; sourceTree = "<group>"; };
 		E65075631E37F7AB006961AC /* AppConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppConstants.swift; sourceTree = "<group>"; };
@@ -2217,7 +2211,6 @@
 				E6231C051B90A472005ABB0D /* libxml2.2.tbd in Frameworks */,
 				E6231C011B90A44F005ABB0D /* libz.tbd in Frameworks */,
 				E4B3348A1BBF23F9004E2BFF /* AdSupport.framework in Frameworks */,
-				85EFC01D27C5158A009460DE /* Fuzi.xcframework in Frameworks */,
 				85EFC01F27C5158D009460DE /* GCDWebServers.xcframework in Frameworks */,
 				0B8E0FF41A932BD500161DC3 /* ImageIO.framework in Frameworks */,
 				66A7639227C7505D0047F999 /* SDWebImage.xcframework in Frameworks */,
@@ -2345,7 +2338,6 @@
 				85EFC03127C5176D009460DE /* SwiftyJSON.xcframework in Frameworks */,
 				85EFC03227C51772009460DE /* ObjcExceptionBridging.xcframework in Frameworks */,
 				C9DF56C4266A89EA009A2E6C /* SDWebImageSwiftUI in Frameworks */,
-				85EFC02327C515C2009460DE /* Fuzi.xcframework in Frameworks */,
 				C9DF56AC266A852D009A2E6C /* libStorage.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2384,7 +2376,6 @@
 				F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */,
 				C877039625222FDC006E38EB /* Shared.framework in Frameworks */,
 				85EFC02827C516F9009460DE /* SDWebImageSwiftUI.xcframework in Frameworks */,
-				85EFC02027C51597009460DE /* Fuzi.xcframework in Frameworks */,
 				0B75AEA91AC20FB20015E5DC /* ImageIO.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3197,7 +3188,6 @@
 				C8E18F1D222EDE4400E30E52 /* Accelerate.framework */,
 				E4B334891BBF23F9004E2BFF /* AdSupport.framework */,
 				D39FA16B1A83E17800EE869C /* CoreGraphics.framework */,
-				85EFC01C27C51589009460DE /* Fuzi.xcframework */,
 				85EFC01E27C5158D009460DE /* GCDWebServers.xcframework */,
 				E4B334871BBF23F3004E2BFF /* iAd.framework */,
 				0B8E0FF31A932BD500161DC3 /* ImageIO.framework */,
@@ -3320,7 +3310,7 @@
 			isa = PBXGroup;
 			children = (
 				D03F8EB12004014E003C2224 /* FaviconHandler.swift */,
-				E65075561E37F714006961AC /* FaviconFetcher.swift */,
+				E65075561E37F714006961AC /* FaviconSupport.swift */,
 				4A5CCE8226524B7F0063783D /* FaviconView.swift */,
 				C8CF648E26FA7DE900C3816F /* FaviconResolver.swift */,
 			);
@@ -5434,7 +5424,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C8CF648D26F90A0A00C3816F /* FaviconFetcher.swift in Sources */,
+				C8CF648D26F90A0A00C3816F /* FaviconSupport.swift in Sources */,
 				047F9B3E24E1FF4000CD7DF7 /* SearchQuickLinks.swift in Sources */,
 				DA9FD88624E213CD00168D1E /* Helpers.swift in Sources */,
 				1DF426CF251BDF6A0086386A /* photon-colors.swift in Sources */,
@@ -6177,7 +6167,7 @@
 				EBB89508219398E500EB91A0 /* ContentBlocker+Safelist.swift in Sources */,
 				C94D40682684CC35003A6766 /* PublisherExtensions.swift in Sources */,
 				D3A9949D1A3686BD008AD1AC /* Tab.swift in Sources */,
-				E65075571E37F714006961AC /* FaviconFetcher.swift in Sources */,
+				E65075571E37F714006961AC /* FaviconSupport.swift in Sources */,
 				C9299E36268F9CF300758795 /* CloseButton.swift in Sources */,
 				67462B2C27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift in Sources */,
 				C832BF5F26E0A9E400B9A1F8 /* HTTPAuthPromptOverlayContent.swift in Sources */,

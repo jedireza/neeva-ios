@@ -18,9 +18,9 @@ struct TopSitesProvider: TimelineProvider {
         let widgetKitTopSites = WidgetKitTopSiteModel.get()
         for site in widgetKitTopSites {
             guard !site.imageKey.isEmpty else { continue }
-            let fetchedImage = FaviconFetcher.getFaviconFromDiskCache(imageKey: site.imageKey)
+            let fetchedImage = FaviconSupport.getFaviconFromDiskCache(imageKey: site.imageKey)
             let bundledFavicon = getBundledFaviconWithBackground(siteUrl: site.url)
-            let letterFavicon = FaviconFetcher.letter(forUrl: site.url).image
+            let letterFavicon = FaviconSupport.letter(forUrl: site.url).image
             let image = bundledFavicon ?? fetchedImage ?? letterFavicon
             tabFaviconDictionary[site.imageKey] = Image(uiImage: image)
         }
@@ -32,7 +32,7 @@ struct TopSitesProvider: TimelineProvider {
 
     func getBundledFaviconWithBackground(siteUrl: URL) -> UIImage? {
         // Get the bundled favicon if available
-        guard let bundled = FaviconFetcher.getBundledIcon(forUrl: siteUrl),
+        guard let bundled = FaviconSupport.getBundledIcon(forUrl: siteUrl),
             let image = UIImage(contentsOfFile: bundled.filePath)
         else { return nil }
         // Add background and padding

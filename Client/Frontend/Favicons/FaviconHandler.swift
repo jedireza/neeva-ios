@@ -7,6 +7,14 @@ import SDWebImage
 import Shared
 import Storage
 
+private let maximumFaviconSize = 1 * 1024 * 1024  // 1 MiB file size limit
+
+class FaviconError: MaybeErrorType {
+    internal var description: String {
+        return "No Image Loaded"
+    }
+}
+
 class FaviconHandler {
     init() {
         register(self, forTabEvents: .didLoadPageMetadata, .pageMetadataNotAvailable)
@@ -30,9 +38,7 @@ class FaviconHandler {
 
         let onProgress: SDWebImageDownloaderProgressBlock = {
             (receivedSize, expectedSize, _) -> Void in
-            if receivedSize > FaviconFetcher.MaximumFaviconSize
-                || expectedSize > FaviconFetcher.MaximumFaviconSize
-            {
+            if receivedSize > maximumFaviconSize || expectedSize > maximumFaviconSize {
                 fetch?.cancel()
             }
         }

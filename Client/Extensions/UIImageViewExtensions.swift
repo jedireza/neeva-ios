@@ -38,7 +38,7 @@ extension UIImageView {
         if let site = site {
             defaults = FaviconResolver(site: site).fallbackContent
         } else {
-            defaults = (FaviconFetcher.defaultFavicon, defaultBackground)
+            defaults = (FaviconSupport.defaultFavicon, defaultBackground)
         }
 
         // If the background color is clear, we may decide to set our own background based on the theme.

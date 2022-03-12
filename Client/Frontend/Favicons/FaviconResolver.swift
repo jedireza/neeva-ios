@@ -31,25 +31,25 @@ class FaviconResolver: ObservableObject {
     /// Provides fallback content for when we haven't fetched a favicon for this site yet.
     var fallbackContent: (image: UIImage, color: UIColor) {
         guard let site = site else {
-            return (FaviconFetcher.defaultFavicon, .clear)
+            return (FaviconSupport.defaultFavicon, .clear)
         }
 
         // Check to see if we have a bundled icon for this URL.
-        if let bundledIcon = FaviconFetcher.getBundledIcon(forUrl: site.url) {
+        if let bundledIcon = FaviconSupport.getBundledIcon(forUrl: site.url) {
             let image = UIImage(contentsOfFile: bundledIcon.filePath)!
             return (image, bundledIcon.bgcolor)
         }
 
         // Next, check to see if we have a bundled icon for the eTLD.
         if let baseDomainURL = site.url.baseDomainURL,
-            let bundledIcon = FaviconFetcher.getBundledIcon(forUrl: baseDomainURL)
+            let bundledIcon = FaviconSupport.getBundledIcon(forUrl: baseDomainURL)
         {
             let image = UIImage(contentsOfFile: bundledIcon.filePath)!
             return (image, bundledIcon.bgcolor)
         }
 
         // Finally, just render a generic favicon ourselves.
-        return FaviconFetcher.letter(forUrl: site.url)
+        return FaviconSupport.letter(forUrl: site.url)
     }
 
     private func trySite(site: Site) {

@@ -2,35 +2,12 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Fuzi
 import SDWebImage
 import Shared
 import SwiftyJSON
-import XCGLogger
 
-private let log = Logger.browser
-
-class FaviconFetcherErrorType: MaybeErrorType {
-    let description: String
-    init(description: String) {
-        self.description = description
-    }
-}
-
-/* A helper class to find the favicon associated with a URL.
- * This will load the page and parse any icons it finds out of it.
- * If that fails, it will attempt to find a favicon.ico in the root host domain.
- * This file focuses on fetching just bundled or letter-generated favicons, for fetching others,
- * look at the extension.
- */
-open class FaviconFetcher: NSObject, XMLParserDelegate {
-    internal let queue = DispatchQueue(
-        label: "FaviconFetcher", attributes: DispatchQueue.Attributes.concurrent)
-
-    static let MaximumFaviconSize = 1 * 1024 * 1024  // 1 MiB file size limit
-
-    public static var userAgent: String = ""
-
+/// A helper class with various favicon utilities.
+open class FaviconSupport: NSObject {
     private static var characterToFaviconCache = [String: (UIImage, UIColor)]()
     static var defaultFavicon: UIImage = {
         return UIImage(named: "defaultFavicon")!
@@ -38,7 +15,7 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
 
     typealias BundledIconType = (bgcolor: UIColor, filePath: String)
     // Sites can be accessed via their baseDomain.
-    static let bundledIcons: [String: BundledIconType] = FaviconFetcher.getBundledIcons()
+    static let bundledIcons: [String: BundledIconType] = FaviconSupport.getBundledIcons()
 
     static let multiRegionDomains = ["craigslist", "google", "amazon"]
 
@@ -56,10 +33,6 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
         }
         return nil
     }
-
-    lazy internal var urlSession: URLSession = makeURLSession(
-        userAgent: FaviconFetcher.userAgent, configuration: URLSessionConfiguration.default,
-        timeout: 5)
 
     private struct BundledIcon: Codable {
         var title: String
@@ -218,11 +191,5 @@ open class FaviconFetcher: NSObject, XMLParserDelegate {
             "Library/Caches/fxfavicon/\(imageKey)")
         guard let data = fileManager.contents(atPath: imageKeyDirectoryUrl.path) else { return nil }
         return UIImage(data: data)
-    }
-}
-
-class FaviconError: MaybeErrorType {
-    internal var description: String {
-        return "No Image Loaded"
     }
 }
