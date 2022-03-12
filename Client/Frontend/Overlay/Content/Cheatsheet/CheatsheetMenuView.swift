@@ -238,6 +238,7 @@ public struct CheatsheetMenuView: View {
     @EnvironmentObject private var model: CheatsheetMenuViewModel
 
     @State var height: CGFloat = 0
+    @State var openSupport: Bool = false
 
     private let menuAction: (OverflowMenuAction) -> Void
 
@@ -290,7 +291,8 @@ public struct CheatsheetMenuView: View {
                             guard model.hasFetchedOnce else { return }
                             ClientLogger.shared.logCounter(
                                 .CheatsheetEmpty,
-                                attributes: EnvironmentHelper.shared.getAttributes() + model.loggerAttributes
+                                attributes: EnvironmentHelper.shared.getAttributes()
+                                    + model.loggerAttributes
                             )
                         }
                     if cheatsheetDebugQuery {
@@ -329,6 +331,29 @@ public struct CheatsheetMenuView: View {
                 }
             } else {
                 cheatsheetContent
+                    .background(
+                        GeometryReader { proxy in
+                            Color.clear
+                                .onChange(of: openSupport) { newValue in
+                                    if newValue {
+                                        let image =
+                                            self
+                                            .environmentObject(model)
+                                            .takeScreenshot(
+                                                origin: proxy.frame(in: .global).origin,
+                                                size: proxy.size
+                                            )
+                                        openSupport = false
+                                        ClientLogger.shared.logCounter(
+                                            .OpenCheatsheetSupport,
+                                            attributes: EnvironmentHelper.shared.getAttributes()
+                                                + model.loggerAttributes
+                                        )
+                                        menuAction(.support(screenshot: image))
+                                    }
+                                }
+                        }
+                    )
                     .onHeightOfViewChanged { height in
                         self.height = height
                     }
@@ -345,7 +370,7 @@ public struct CheatsheetMenuView: View {
 
     @ViewBuilder
     var cheatsheetContent: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             if isRecipeAllowed() {
                 recipeView
                     .padding()
@@ -363,7 +388,37 @@ public struct CheatsheetMenuView: View {
             priceHistorySection
             reviewURLSection
             memorizedQuerySection
+
+            Divider()
+                .padding(.horizontal)
+
+            supportSection
         }
+    }
+
+    @ViewBuilder
+    var supportSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Support").withFont(.headingXLarge)
+                .padding(.bottom, 12)
+            Text("Have questions or feedback for NeevaScope?")
+                .withFont(.bodyMedium)
+                .fixedSize(horizontal: false, vertical: true)
+            Button(
+                action: {
+                    openSupport = true
+                },
+                label: {
+                    HStack {
+                        Text("Contact us via Support \(Image(systemName: "bubble.left"))")
+                            .foregroundColor(.blue)
+                            .underline()
+                            .withFont(.bodyMedium)
+                        Spacer()
+                    }
+                })
+        }
+        .padding()
     }
 
     @ViewBuilder

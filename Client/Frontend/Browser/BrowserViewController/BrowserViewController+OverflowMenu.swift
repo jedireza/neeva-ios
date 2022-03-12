@@ -19,7 +19,7 @@ public enum OverflowMenuAction {
     case goToHistory
     case goToDownloads
     case closeAllTabs
-    case support
+    case support(screenshot: UIImage? = nil)
     case cryptoWallet
 }
 
@@ -160,13 +160,13 @@ extension BrowserViewController {
                 attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
             )
             TabMenu(tabManager: tabManager).showConfirmCloseAllTabs(sourceView: targetButtonView)
-        case .support:
+        case .support(let image):
             // This will log twice.
             ClientLogger.shared.logCounter(
                 .OpenSendFeedback,
                 attributes: EnvironmentHelper.shared.getAttributes() + [overflowMenuAttribute]
             )
-            showFeedbackPanel(bvc: self, screenshot: self.feedbackImage)
+            showFeedbackPanel(bvc: self, screenshot: image ?? self.feedbackImage)
         case .cryptoWallet:
             web3Model.showWalletPanel()
         }

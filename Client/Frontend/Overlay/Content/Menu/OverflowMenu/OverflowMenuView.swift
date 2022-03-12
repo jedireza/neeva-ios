@@ -227,7 +227,7 @@ public struct OverflowMenuView: View {
                     label: "Support",
                     symbol: .bubbleLeft
                 ) {
-                    menuAction(.support)
+                    menuAction(.support())
                 }
                 .accessibilityIdentifier("OverflowMenu.Support")
                 Color.groupedBackground.frame(height: 1)

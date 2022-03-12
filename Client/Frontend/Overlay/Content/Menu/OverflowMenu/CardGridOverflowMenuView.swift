@@ -35,7 +35,7 @@ public struct CardGridOverflowMenuView: View {
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
                     GroupedRowButtonView(label: "Support", symbol: .bubbleLeft) {
-                        menuAction(.support)
+                        menuAction(.support())
                     }
                     .accessibilityIdentifier("CardGridOverflowMenu.Feedback")
 
