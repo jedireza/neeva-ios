@@ -2,11 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import Foundation
 import Shared
 
 class SpotlightLogger {
     public static let shared = SpotlightLogger()
+    
+    init() {
+        // This logger always gets initialized
+        // Force enable Spotlight integration
+        if Defaults[.overwriteSpotlightDefaults] {
+            Defaults[.makeActivityAvailForSearch] = true
+            Defaults[.addThumbnailToActivities] = true
+            Defaults[.addSpacesToCS] = true
+            Defaults[.addSpaceURLsToCS] = true
+            Defaults[.overwriteSpotlightDefaults] = false
+        }
+    }
 }
 
 extension SpotlightLogger: SpaceStoreSpotlightEventDelegate {

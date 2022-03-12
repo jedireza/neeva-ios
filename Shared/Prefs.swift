@@ -180,11 +180,12 @@ extension Defaults.Keys {
     // Spotlight Search
     public static let createUserActivities = Defaults.BoolKey("createUserActivities", default: true)
     public static let makeActivityAvailForSearch = Defaults.BoolKey(
-        "makeActivityAvailForSearch", default: false)
+        "makeActivityAvailForSearch", default: true)
     public static let addThumbnailToActivities = Defaults.BoolKey(
-        "addThumbnailToActivities", default: false)
-    public static let addSpacesToCS = Defaults.BoolKey("addSpacesToCS", default: false)
-    public static let addSpaceURLsToCS = Defaults.BoolKey("addSpaceURLsToCS", default: false)
+        "addThumbnailToActivities", default: true)
+    public static let addSpacesToCS = Defaults.BoolKey("addSpacesToCS", default: true)
+    public static let addSpaceURLsToCS = Defaults.BoolKey("addSpaceURLsToCS", default: true)
+    public static let overwriteSpotlightDefaults = Defaults.BoolKey("overwriteSpotlightDefaults", default: true)
 
     public static let numOfDailyZeroQueryImpression = Defaults.Key<Int>(
         "numOfDailyZeroQueryImpression", default: 0)

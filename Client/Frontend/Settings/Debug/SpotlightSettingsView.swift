@@ -13,6 +13,7 @@ struct SpotlightSettingsView: View {
     @Default(.addThumbnailToActivities) var addThumbnailToActivities
     @Default(.addSpacesToCS) var addSpacesToCS
     @Default(.addSpaceURLsToCS) var addSpaceURLsToCS
+    @Default(.overwriteSpotlightDefaults) var overwriteSpotlightDefaults
 
     @State private var deletingActivities = false
 
@@ -114,6 +115,13 @@ struct SpotlightSettingsView: View {
                     }
                 }
                 .disabled(spaceIndexBusy)
+            }
+            
+            Section {
+                Toggle(
+                    String("Force enable Spotlight integration on next launch"),
+                    isOn: $overwriteSpotlightDefaults
+                )
             }
 
         }
