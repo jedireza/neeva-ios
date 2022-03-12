@@ -2,6 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+import GCDWebServers
 import Shared
 import Storage
 import UIKit
@@ -14,9 +15,12 @@ class TabManagerStoreTests: XCTestCase {
     let profile = TabManagerMockProfile()
     var manager: TabManager!
     let configuration = WKWebViewConfiguration()
+    let webServer: GCDWebServer = GCDWebServer()
+    var webServerBase: String!
 
     override func setUp() {
         super.setUp()
+        setupWebServer()
 
         manager = TabManager(profile: profile, imageStore: nil)
         configuration.processPool = WKProcessPool()
@@ -37,12 +41,24 @@ class TabManagerStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    /// Setup a basic web server that binds to a random port and that has one default handler on /hello
+    fileprivate func setupWebServer() {
+        webServer.addHandler(forMethod: "GET", path: "/hello", request: GCDWebServerRequest.self) {
+            (request) -> GCDWebServerResponse in
+            return GCDWebServerDataResponse(html: "<html><body><p>Hello World</p></body></html>")!
+        }
+        if webServer.start(withPort: 0, bonjourName: nil) == false {
+            XCTFail("Can't start the GCDWebServer")
+        }
+        webServerBase = "http://localhost:\(webServer.port)"
+    }
+
     // Without session data, a Tab can't become a SavedTab and get archived
     func addTabWithSessionData(isIncognito: Bool = false) {
         let tab = Tab(
             bvc: SceneDelegate.getBVC(for: nil), configuration: configuration,
             isIncognito: isIncognito)
-        tab.setURL("http://yahoo.com")
+        tab.setURL(URL(string: "\(webServerBase!)/hello"))
         manager.configureTab(
             tab, request: URLRequest(url: tab.url!), flushToDisk: false, zombie: false, notify: true
         )
