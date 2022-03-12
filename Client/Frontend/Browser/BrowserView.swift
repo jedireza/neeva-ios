@@ -80,6 +80,10 @@ struct BrowserView: View {
     @ObservedObject var overlayManager: OverlayManager
     @ObservedObject var tabContainerModel: TabContainerModel
 
+    var isSearchPreviewVisible: Bool {
+        tabContainerModel.currentContentUI == .previewHome
+    }
+
     // MARK: - Views
     var topBar: some View {
         GeometryReader { geom in
@@ -104,14 +108,16 @@ struct BrowserView: View {
                     // Tab content or CardGrid
                     BrowserContentView(bvc: bvc, cardGrid: CardGrid())
                         .environment(\.shareURL, shareURL)
-                        .padding(
-                            UIConstants.enableBottomURLBar ? .bottom : .top,
-                            chromeModel.topBarHeight
-                        )
+                        .if(!isSearchPreviewVisible) {
+                            $0.padding(
+                                UIConstants.enableBottomURLBar ? .bottom : .top,
+                                chromeModel.topBarHeight
+                            )
+                        }
                         .background(Color.background)
 
                     // Top Bar
-                    if tabContainerModel.currentContentUI != .previewHome {
+                    if !isSearchPreviewVisible {
                         VStack {
                             if UIConstants.enableBottomURLBar { Spacer() }
 

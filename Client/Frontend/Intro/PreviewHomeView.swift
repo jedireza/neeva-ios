@@ -89,6 +89,8 @@ struct PreviewHomeView: View {
     var body: some View {
         ZStack {
             background
+                .ignoresSafeArea()
+
             VStack(alignment: .center, spacing: 0) {
                 signInButton
                     .opacity(opacity)
