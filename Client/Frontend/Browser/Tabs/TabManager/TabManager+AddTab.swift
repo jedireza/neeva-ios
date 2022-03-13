@@ -90,7 +90,7 @@ extension TabManager {
         }
 
         tab.navigationDelegate = self.navDelegate
-        
+
         if let query = query {
             tab.queryForNavigation.currentQuery = .init(typed: query, suggested: suggestedQuery)
         }
@@ -127,6 +127,8 @@ extension TabManager {
                     // Insert the tab where the child tab is so it appears
                     // before it in the Tab Group.
                     insertIndex = childTabIndex
+                    
+                    break
                 }
             }
 
@@ -158,8 +160,13 @@ extension TabManager {
     @discardableResult func addTabToTabGroupIfNeeded(
         newTab: Tab, possibleChildTab: Tab
     ) -> Bool {
-        let childTabOriginalURL = possibleChildTab.originalURL?.normalizedHostAndPathForDisplay
-        let newTabURL = newTab.url?.normalizedHostAndPathForDisplay
+        guard
+            let childTabOriginalURL = possibleChildTab.originalURL?.normalizedHostAndPathForDisplay,
+            let newTabURL = newTab.url?.normalizedHostAndPathForDisplay
+        else {
+            return false
+        }
+
         let shouldCreateTabGroup = childTabOriginalURL == newTabURL
 
         if shouldCreateTabGroup {
