@@ -325,7 +325,6 @@ class TabManagerTests: XCTestCase {
     }
 
     func testRemoveAllShouldRemoveAllTabs() {
-
         let tab0 = manager.addTab()
         let tab1 = manager.addTab()
 

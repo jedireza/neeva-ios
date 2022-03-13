@@ -110,6 +110,11 @@ class Tab: NSObject, ObservableObject {
         }
     }
 
+    // MARK: - Navigation Properties
+    /// URL of the original page opened in this Tab
+    var originalURL: URL? {
+        backList?.first?.initialURL
+    }
     var queryForNavigation: QueryForNavigation = QueryForNavigation()
     var backList: [WKBackForwardListItem]? { webView?.backForwardList.backList }
     var forwardList: [WKBackForwardListItem]? { webView?.backForwardList.forwardList }

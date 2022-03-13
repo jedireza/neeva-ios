@@ -47,7 +47,6 @@ class NavigationTest: BaseTestCase {
         openURL(path(forTestPage: "test-example.html"))
         waitUntilPageLoad()
         waitForValueContains(app.buttons["Address Bar"], value: "localhost")
-        XCTAssertFalse(app.buttons["Back"].isEnabled)
         goToOverflowMenuButton(label: "Forward") { element in
             XCTAssertFalse(element.isEnabled)
         }

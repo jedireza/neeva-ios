@@ -24,17 +24,18 @@ extension TabManager {
                 .postLocationChangeNotificationForTab(existingTab, visitType: visitType)
             return .switchedToExistingTab
         } else {
-            select(
-                addTab(
-                    URLRequest(url: url),
-                    flushToDisk: true,
-                    zombie: false,
-                    isIncognito: isIncognito,
-                    query: query,
-                    suggestedQuery: suggestedQuery,
-                    visitType: visitType
-                )
+            let newTab = addTab(
+                URLRequest(url: url),
+                flushToDisk: true,
+                zombie: false,
+                isIncognito: isIncognito,
+                query: query,
+                suggestedQuery: suggestedQuery,
+                visitType: visitType
             )
+
+            select(newTab)
+
             return .createdNewTab
         }
     }

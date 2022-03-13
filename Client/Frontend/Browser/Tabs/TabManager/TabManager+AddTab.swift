@@ -90,6 +90,7 @@ extension TabManager {
         }
 
         tab.navigationDelegate = self.navDelegate
+        
         if let query = query {
             tab.queryForNavigation.currentQuery = .init(typed: query, suggested: suggestedQuery)
         }
@@ -111,11 +112,29 @@ extension TabManager {
         }
     }
 
-    func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil, notify: Bool) {
+    private func insertTab(_ tab: Tab, atIndex: Int? = nil, parent: Tab? = nil, notify: Bool) {
         if let atIndex = atIndex, atIndex <= tabs.count {
             tabs.insert(tab, at: atIndex)
         } else if parent == nil || parent?.isIncognito != tab.isIncognito {
-            tabs.append(tab)
+            var insertIndex: Int? = nil
+
+            for incognitoStateTab in isIncognito ? incognitoTabs : normalTabs {
+                if addTabToTabGroupIfNeeded(newTab: tab, possibleChildTab: incognitoStateTab) {
+                    guard let childTabIndex = tabs.firstIndex(of: incognitoStateTab) else {
+                        continue
+                    }
+
+                    // Insert the tab where the child tab is so it appears
+                    // before it in the Tab Group.
+                    insertIndex = childTabIndex
+                }
+            }
+
+            if let insertIndex = insertIndex {
+                tabs.insert(tab, at: insertIndex)
+            } else {
+                tabs.append(tab)
+            }
         } else if let parent = parent, var insertIndex = tabs.firstIndex(of: parent) {
             insertIndex += 1
             while insertIndex < tabs.count && tabs[insertIndex].isDescendentOf(parent) {
@@ -131,6 +150,30 @@ extension TabManager {
         if notify {
             tabsUpdatedPublisher.send()
         }
+    }
+
+    // MARK: - Tab Groups
+    /// Checks if the new tab URL matches the origin URL for the tab and if so,
+    /// then the two tabs should be in a Tab Group together.
+    @discardableResult func addTabToTabGroupIfNeeded(
+        newTab: Tab, possibleChildTab: Tab
+    ) -> Bool {
+        let childTabOriginalURL = possibleChildTab.originalURL?.normalizedHostAndPathForDisplay
+        let newTabURL = newTab.url?.normalizedHostAndPathForDisplay
+        let shouldCreateTabGroup = childTabOriginalURL == newTabURL
+
+        if shouldCreateTabGroup {
+            if possibleChildTab.parent == nil {
+                // Create a Tab Group by setting the child tab's rootID.
+                possibleChildTab.rootUUID = newTab.rootUUID
+            } else {
+                // Set the new tab's root ID the same as the current tab,
+                // since they should both be in the same Tab Group.
+                newTab.rootUUID = possibleChildTab.rootUUID
+            }
+        }
+
+        return shouldCreateTabGroup
     }
 
     // MARK: - Restore Tabs

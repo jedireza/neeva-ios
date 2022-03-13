@@ -142,22 +142,11 @@ class BaseTestCase: XCTestCase {
             app.buttons["Add Tab"].tap()
         }
 
-        UIPasteboard.general.string = url
-
-        if app.buttons["Cancel"].exists {
-            app.textFields["address"].press(forDuration: 2)
-        } else {
-            waitForExistence(app.buttons["Address Bar"], timeout: 30)
-            app.buttons["Address Bar"].tap(force: true)
-
-            waitForExistence(app.textFields["address"], timeout: 30)
-            app.textFields["address"].press(forDuration: 2)
+        if !app.buttons["Cancel"].exists {
+            goToAddressBar()
         }
 
-        waitForExistence(app.menuItems["Paste & Go"], timeout: 30)
-        app.menuItems["Paste & Go"].tap()
-
-        waitForNoExistence(app.staticTexts["Neeva pasted from XCUITests-Runner"])
+        app.textFields["address"].typeText(url + " \n")
 
         if waitForPageLoad {
             waitUntilPageLoad()

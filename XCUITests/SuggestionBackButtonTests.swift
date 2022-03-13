@@ -41,13 +41,6 @@ class SuggestionBackButtonTests: BaseTestCase {
         XCTAssertTrue(app.buttons["Back"].isEnabled)
     }
 
-    func testSuggestionBackButtonDisabled() {
-        openURLInNewTab()
-
-        waitForExistence(app.buttons["Back"])
-        XCTAssertFalse(app.buttons["Back"].isEnabled)
-    }
-
     func testMultipleQueryPaths() {
         goToAddressBar()
         performSearch()
