@@ -4,6 +4,11 @@
 
 // Configuration settings file format documentation can be found at:
 // https://help.apple.com/xcode/#/dev745c5c974
+//
+// For full URL, you will want to set the value to "https:/$()/www.apikey.com"
+// Otherwise, double forward slashes will be treated as comment
+// See: https://stackoverflow.com/a/36297483
+//
 
 OPENSEA_API_KEY = $OPENSEA_API_KEY
 CRYPTO_ETH_URL = $CRYPTO_ETH_URL
