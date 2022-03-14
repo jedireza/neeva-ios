@@ -76,7 +76,8 @@ public enum EthNode: String, CaseIterable, Identifiable {
 
 
     public var url: URL? {
-        URL(string: Bundle.main.object(forInfoDictionaryKey: configKey) as? String ?? "")
+        URL(string: (Bundle.main.object(forInfoDictionaryKey: configKey)
+                     as? String)?.removingPercentEncoding ?? "")
     }
 
     public var currency: TokenType {
