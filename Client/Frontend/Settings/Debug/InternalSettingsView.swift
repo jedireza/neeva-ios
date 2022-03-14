@@ -46,6 +46,7 @@ struct InternalSettingsView: View {
     @Default(.didShowDefaultBrowserInterstitial) var didShowDefaultBrowserInterstitial
     @Default(.numOfDailyZeroQueryImpression) var numOfDailyZeroQueryImpression
     @Default(.lastZeroQueryImpUpdatedTimestamp) var lastZeroQueryImpUpdatedTimestamp
+    @Default(.didTriggerSystemReviewDialog) var didTriggerSystemReviewDialog
 
     var body: some View {
         List {
@@ -96,6 +97,7 @@ struct InternalSettingsView: View {
                         isOn: $seenNotificationPermissionPromo)
                     Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
                     Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
+                    Toggle(String("didTriggerSystemReviewDialog"), isOn: $didTriggerSystemReviewDialog)
                 }
             }
             Section(header: Text(verbatim: "Default Browser")) {
