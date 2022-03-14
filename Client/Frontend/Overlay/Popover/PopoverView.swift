@@ -95,9 +95,13 @@ struct PopoverView<Content: View>: View {
                         Color(style.backgroundColor)
                             .cornerRadius(16)
                     )
-
                     // 60 is button height + VStack padding
-                    .frame(minWidth: 400, maxHeight: geo.size.height - verticalPadding - 60)
+                    .frame(
+                        minWidth: 400,
+                        maxWidth: geo.size.width - horizontalPadding,
+                        maxHeight: geo.size.height - verticalPadding - 60,
+                        alignment: .center
+                    )
                     .fixedSize(horizontal: !style.expandPopoverWidth, vertical: true)
                 }
                 .padding(.horizontal, horizontalPadding)
