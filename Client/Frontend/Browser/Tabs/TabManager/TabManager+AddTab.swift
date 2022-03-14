@@ -127,7 +127,7 @@ extension TabManager {
                     // Insert the tab where the child tab is so it appears
                     // before it in the Tab Group.
                     insertIndex = childTabIndex
-                    
+
                     break
                 }
             }
@@ -168,9 +168,21 @@ extension TabManager {
         }
 
         let shouldCreateTabGroup = childTabOriginalURL == newTabURL
+        
+        /// TODO: To make this more effecient, we should refactor `TabGroupManager`
+        /// to be apart of `TabManager`. That we can quickly check if the ChildTab is in a Tab Group.
+        /// See #3088 + #3098 for more info.
+        let childTabIsInTabGroup: Bool = {
+            let tabs = tabs.filter { $0 != possibleChildTab }
+            for tab in tabs where tab.rootUUID == possibleChildTab.rootUUID {
+                return true
+            }
+
+            return false
+        }()
 
         if shouldCreateTabGroup {
-            if possibleChildTab.parent == nil {
+            if childTabIsInTabGroup {
                 // Create a Tab Group by setting the child tab's rootID.
                 possibleChildTab.rootUUID = newTab.rootUUID
             } else {

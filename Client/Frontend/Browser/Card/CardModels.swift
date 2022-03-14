@@ -133,7 +133,7 @@ class TabCardModel: CardModel {
 
         modifyAllDetailsFilteredPromotingPinnedTabs(&allDetailsFiltered, tabGroupModel)
 
-        let lastPinnedIndex = allDetailsFiltered.lastIndex(where: {$0.isPinned})
+        let lastPinnedIndex = allDetailsFiltered.lastIndex(where: { $0.isPinned })
 
         // An array to keep track of whether a CardDetail has been processed. This allows us to skip
         // the CardDetail that are pre-processed due to lookahead.

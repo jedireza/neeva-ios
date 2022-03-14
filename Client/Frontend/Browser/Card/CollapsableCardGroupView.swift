@@ -21,7 +21,8 @@ struct CollapsedCardGroupView: View {
 
     @State private var frame = CGRect.zero
 
-    var body: some View {
+    @ViewBuilder
+    var group: some View {
         if groupDetails.allDetails.count <= columns.count {
             // Don't make it a scroll view if the tab group can't be expanded
             ExpandedCardGroupRowView(
@@ -45,6 +46,10 @@ struct CollapsedCardGroupView: View {
                     )
             )
         }
+    }
+
+    var body: some View {
+        group.accessibilityIdentifier("TabGroup")
     }
 
     @ViewBuilder

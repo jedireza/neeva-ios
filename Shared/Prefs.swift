@@ -187,7 +187,8 @@ extension Defaults.Keys {
         "addThumbnailToActivities", default: true)
     public static let addSpacesToCS = Defaults.BoolKey("addSpacesToCS", default: true)
     public static let addSpaceURLsToCS = Defaults.BoolKey("addSpaceURLsToCS", default: true)
-    public static let overwriteSpotlightDefaults = Defaults.BoolKey("overwriteSpotlightDefaults", default: true)
+    public static let overwriteSpotlightDefaults = Defaults.BoolKey(
+        "overwriteSpotlightDefaults", default: true)
 
     public static let numOfDailyZeroQueryImpression = Defaults.Key<Int>(
         "numOfDailyZeroQueryImpression", default: 0)
