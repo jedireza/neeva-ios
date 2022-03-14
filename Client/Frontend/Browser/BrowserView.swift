@@ -117,7 +117,7 @@ struct BrowserView: View {
                         .background(Color.background)
 
                     // Top Bar
-                    if !isSearchPreviewVisible {
+                    if !isSearchPreviewVisible || browserModel.showGrid {
                         VStack {
                             if UIConstants.enableBottomURLBar { Spacer() }
 
