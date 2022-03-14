@@ -14,7 +14,7 @@ extension TabManager {
         removeTab(tab, flushToDisk: true, notify: true)
 
         if updateSelectedTab {
-            updateSelectedTabAfterRemovalOf(tab, deletedIndex: index)
+            updateSelectedTabAfterRemovalOf(tab, deletedIndex: index, notify: true)
         }
     }
 
@@ -28,13 +28,15 @@ extension TabManager {
 
         addTabsToRecentlyClosed(tabsToBeRemoved, showToast: showToast)
 
+        let previous = selectedTab
+
         let lastTab = tabsToBeRemoved[tabsToBeRemoved.count - 1]
         let lastTabIndex = tabs.firstIndex(of: lastTab)
         let tabsToKeep = self.tabs.filter { !tabsToBeRemoved.contains($0) }
         self.tabs = tabsToKeep
 
         if let lastTabIndex = lastTabIndex, updateSelectedTab {
-            updateSelectedTabAfterRemovalOf(lastTab, deletedIndex: lastTabIndex)
+            updateSelectedTabAfterRemovalOf(lastTab, deletedIndex: lastTabIndex, notify: false)
         }
 
         tabsToBeRemoved.forEach { tab in
@@ -43,6 +45,9 @@ extension TabManager {
         }
 
         tabsUpdatedPublisher.send()
+
+        sendSelectTabNotifications(previous: previous)
+
         storeChanges()
     }
 
@@ -72,7 +77,7 @@ extension TabManager {
         }
     }
 
-    private func updateSelectedTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int) {
+    private func updateSelectedTabAfterRemovalOf(_ tab: Tab, deletedIndex: Int, notify: Bool) {
         let closedLastNormalTab = !tab.isIncognito && normalTabs.isEmpty
         let closedLastIncognitoTab = tab.isIncognito && incognitoTabs.isEmpty
         let viableTabs: [Tab] = tab.isIncognito ? incognitoTabs : normalTabs
@@ -87,9 +92,9 @@ extension TabManager {
                 if let rightOrLeftTab = viableTabs[safe: deletedIndex]
                     ?? viableTabs[safe: deletedIndex - 1]
                 {
-                    selectTab(rightOrLeftTab, previous: tab)
+                    selectTab(rightOrLeftTab, previous: tab, notify: notify)
                 } else {
-                    selectTab(mostRecentTab(inTabs: viableTabs) ?? viableTabs.last, previous: tab)
+                    selectTab(mostRecentTab(inTabs: viableTabs) ?? viableTabs.last, previous: tab, notify: notify)
                 }
             }
         }

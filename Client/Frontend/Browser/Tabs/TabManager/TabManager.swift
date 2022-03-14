@@ -193,7 +193,7 @@ class TabManager: NSObject {
     // MARK: - Select Tab
     // This function updates the _selectedIndex.
     // Note: it is safe to call this with `tab` and `previous` as the same tab, for use in the case where the index of the tab has changed (such as after deletion).
-    func selectTab(_ tab: Tab?, previous: Tab? = nil, updateZeroQuery: Bool = true) {
+    func selectTab(_ tab: Tab?, previous: Tab? = nil, updateZeroQuery: Bool = true, notify: Bool = true) {
         assert(Thread.isMainThread)
         let previous = previous ?? selectedTab
 
@@ -212,23 +212,11 @@ class TabManager: NSObject {
         selectedTab?.createWebview()
         selectedTab?.lastExecutedTime = Date.nowMilliseconds()
 
-        delegates.forEach {
-            $0.get()?.tabManager(
-                self, didSelectedTabChange: tab, previous: previous,
-                isRestoring: store.isRestoringTabs,
-                updateZeroQuery: updateZeroQuery)
+        if notify {
+            sendSelectTabNotifications(previous: previous, updateZeroQuery: updateZeroQuery)
         }
 
         if let tab = selectedTab {
-            selectedTabPublisher.send(tab)
-        }
-
-        if let tab = previous {
-            TabEvent.post(.didLoseFocus, for: tab)
-        }
-
-        if let tab = selectedTab {
-            TabEvent.post(.didGainFocus, for: tab)
             tab.applyTheme()
         }
 
@@ -365,5 +353,26 @@ class TabManager: NSObject {
     func resetProcessPool() {
         assert(Thread.isMainThread)
         configuration.processPool = WKProcessPool()
+    }
+
+    func sendSelectTabNotifications(previous: Tab? = nil, updateZeroQuery: Bool = true) {
+        delegates.forEach {
+            $0.get()?.tabManager(
+                self, didSelectedTabChange: selectedTab, previous: previous,
+                isRestoring: store.isRestoringTabs,
+                updateZeroQuery: true)
+        }
+
+        if let tab = selectedTab {
+            selectedTabPublisher.send(tab)
+        }
+
+        if let tab = previous {
+            TabEvent.post(.didLoseFocus, for: tab)
+        }
+
+        if let tab = selectedTab {
+            TabEvent.post(.didGainFocus, for: tab)
+        }
     }
 }
