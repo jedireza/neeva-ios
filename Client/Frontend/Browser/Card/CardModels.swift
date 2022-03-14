@@ -154,10 +154,10 @@ class TabCardModel: CardModel {
                 if let lastPinnedIndex = lastPinnedIndex {
                     if let tabGroup = tabGroupModel.allDetails.first(where: {
                         $0.id == currDetail.rootID
-                    }), tabGroup.isPinned && index < lastPinnedIndex {
+                    }), tabGroup.isPinned && index > lastPinnedIndex {
                         return
                     }
-                    if currDetail.isPinned && index < lastPinnedIndex {
+                    if currDetail.isPinned && index > lastPinnedIndex {
                         return
                     }
                 }
