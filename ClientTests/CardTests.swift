@@ -305,6 +305,79 @@ class CardTests: XCTestCase {
 
     }
 
+    func testPinnedTab() throws {
+        FeatureFlag.enabledFlags = [FeatureFlag.tabGroupsPinning]
+
+        /*
+         Create two tabs. Pin the second tab and test if the
+         second tab gets promoted to the front.
+         */
+
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab()
+
+        tab2.isPinned = true
+        tab2.pinnedTime = Date().timeIntervalSinceReferenceDate
+        tabCardModel.onDataUpdated()
+
+        let buildRowsTwoTabs = tabCardModel.buildRows(
+            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+
+        XCTAssertEqual(buildRowsTwoTabs[0].cells.count, 2)
+        XCTAssertEqual(buildRowsTwoTabs[0].cells[0].id, tab2.id)
+    }
+
+    func testPinnedTabGroup() throws {
+        FeatureFlag.enabledFlags = [FeatureFlag.tabGroupsPinning]
+
+        /*
+         Create one tab and a tab group with two tabs. Pin the second
+         tab in the tab group and check if the tab group gets promoted
+         to the first row.
+         */
+
+        let tab3 = manager.addTab()
+        let tab4 = manager.addTab()
+        let tab5 = manager.addTab(afterTab: tab4)
+
+        tab5.isPinned = true
+        tab5.pinnedTime = Date().timeIntervalSinceReferenceDate
+        tabCardModel.onDataUpdated()
+        tabGroupCardModel.onDataUpdated()
+
+        let buildRowsThreeTabs = tabCardModel.buildRows(
+            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+
+        XCTAssertEqual(buildRowsThreeTabs[0].numTabsInRow, 2)
+        XCTAssertNotEqual(buildRowsThreeTabs[0].cells[0].id, tab5.id)
+    }
+
+    func testPinnedTabsBeforeNonPinnedTabs() throws {
+        FeatureFlag.enabledFlags = [FeatureFlag.tabGroupsPinning]
+
+        /*
+         Pin one tab and a tab group with two tabs. Make sure a following individual
+         tab doesn't get promoted to fill the hole.
+         */
+
+        let tab6 = manager.addTab()
+        let tab7 = manager.addTab()
+        let tab8 = manager.addTab(afterTab: tab7)
+        let tab9 = manager.addTab()
+        tab6.isPinned = true
+        tab6.pinnedTime = Date().timeIntervalSinceReferenceDate
+        tab7.isPinned = true
+        tab7.pinnedTime = Date().timeIntervalSinceReferenceDate
+        tabCardModel.onDataUpdated()
+        tabGroupCardModel.onDataUpdated()
+
+        let buildRowsFourTabs = tabCardModel.buildRows(
+            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+
+        XCTAssertEqual(buildRowsFourTabs.count, 3)
+        XCTAssertEqual(buildRowsFourTabs[2].cells[0].id, tab9.id)
+    }
+
     func testSpaceDetails() throws {
         XCTAssertEqual(SpaceStore.shared.getAll().count, 4)
         SpaceStore.shared.getAll().first!.contentData = [

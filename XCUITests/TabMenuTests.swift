@@ -15,6 +15,7 @@ private let secondWebsite = (
 class TabMenuTests: BaseTestCase {
     override func setUp() {
         launchArguments.append(LaunchArguments.DontAddTabOnLaunch)
+        launchArguments.append("\(LaunchArguments.EnableFeatureFlags)tabGroupsPinning")
         super.setUp()
     }
 
@@ -114,5 +115,21 @@ class TabMenuTests: BaseTestCase {
 
         // Check that the Toast appears
         waitForExistence(app.buttons["restore"])
+    }
+
+    func testPinTabFromSwitcher() {        
+        openURL(firstWebsite.url)
+        goToTabTray()
+
+        waitForExistence(app.buttons[firstWebsite.tabName], timeout: 3)
+        app.buttons[firstWebsite.tabName].press(forDuration: 1)
+
+        waitForExistence(app.buttons["Pin tab"], timeout: 3)
+        app.buttons["Pin tab"].tap()
+
+        app.buttons[firstWebsite.tabName].press(forDuration: 1)
+
+        // Check that unpin option exists
+        waitForExistence(app.buttons["Unpin tab"])
     }
 }
