@@ -306,7 +306,6 @@ class CardTests: XCTestCase {
     }
 
     func testPinnedTab() throws {
-        FeatureFlag.enabledFlags = [FeatureFlag.tabGroupsPinning]
 
         /*
          Create two tabs. Pin the second tab and test if the
@@ -328,7 +327,6 @@ class CardTests: XCTestCase {
     }
 
     func testPinnedTabGroup() throws {
-        FeatureFlag.enabledFlags = [FeatureFlag.tabGroupsPinning]
 
         /*
          Create one tab and a tab group with two tabs. Pin the second
@@ -353,7 +351,6 @@ class CardTests: XCTestCase {
     }
 
     func testPinnedTabsBeforeNonPinnedTabs() throws {
-        FeatureFlag.enabledFlags = [FeatureFlag.tabGroupsPinning]
 
         /*
          Pin one tab and a tab group with two tabs. Make sure a following individual

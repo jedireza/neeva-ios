@@ -153,8 +153,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     var closeButtonImage: UIImage? {
-        FeatureFlag[.tabGroupsPinning] && isPinned
-            ? UIImage(systemName: "pin.fill") : UIImage(systemName: "xmark")
+        isPinned ? UIImage(systemName: "pin.fill") : UIImage(systemName: "xmark")
     }
 
     var isSelected: Bool {
@@ -252,36 +251,34 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                 }.disabled(true)
             }
 
-            if FeatureFlag[.tabGroupsPinning] {
-                if isChild {
-                    Button(
-                        action: { [self] in
-                            ClientLogger.shared.logCounter(.tabRemovedFromGroup)
-                            manager.get(for: id)?.rootUUID = UUID().uuidString
-                            manager.tabsUpdatedPublisher.send()
-                        },
-                        label: {
-                            Label("Remove from group", systemSymbol: .arrowUpForwardSquare)
-                        }
-                    )
-                }
-
+            if isChild {
                 Button(
                     action: { [self] in
-                        manager.get(for: id)?.pinnedTime =
-                            (isPinned ? nil : Date().timeIntervalSinceReferenceDate)
-                        manager.get(for: id)?.isPinned.toggle()
+                        ClientLogger.shared.logCounter(.tabRemovedFromGroup)
+                        manager.get(for: id)?.rootUUID = UUID().uuidString
                         manager.tabsUpdatedPublisher.send()
                         ToastDefaults().showToastForPinningTab(
                             pinning: isPinned, tabManager: manager)
                     },
                     label: {
-                        isPinned
-                            ? Label("Unpin tab", systemSymbol: .pinSlash)
-                            : Label("Pin tab", systemSymbol: .pin)
+                        Label("Remove from group", systemSymbol: .arrowUpForwardSquare)
                     }
                 )
             }
+
+            Button(
+                action: { [self] in
+                    manager.get(for: id)?.pinnedTime =
+                        (isPinned ? nil : Date().timeIntervalSinceReferenceDate)
+                    manager.get(for: id)?.isPinned.toggle()
+                    manager.tabsUpdatedPublisher.send()
+                },
+                label: {
+                    isPinned
+                        ? Label("Unpin tab", systemSymbol: .pinSlash)
+                        : Label("Pin tab", systemSymbol: .pin)
+                }
+            )
 
             Divider()
 
@@ -646,36 +643,25 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             allDetails = allDetails.reversed()
         }
 
-        if FeatureFlag[.tabGroupsPinning] {
-            allDetails =
-                manager.get(for: id)?.children
-                .sorted(by: { lhs, rhs in
-                    if lhs.isPinned && rhs.isPinned {
-                        return lhs.pinnedTime! < rhs.pinnedTime!
-                    } else if lhs.isPinned && !rhs.isPinned {
-                        return true
-                    } else if !lhs.isPinned && rhs.isPinned {
-                        return false
-                    } else {
-                        return false
-                    }
-                })
-                .map({
-                    TabCardDetails(
-                        tab: $0,
-                        manager: manager.tabManager,
-                        isChild: true)
-                }) ?? []
-        } else {
-            allDetails =
-                manager.get(for: id)?.children
-                .map({
-                    TabCardDetails(
-                        tab: $0,
-                        manager: manager.tabManager,
-                        isChild: true)
-                }) ?? []
-        }
+        allDetails =
+            manager.get(for: id)?.children
+            .sorted(by: { lhs, rhs in
+                if lhs.isPinned && rhs.isPinned {
+                    return lhs.pinnedTime! < rhs.pinnedTime!
+                } else if lhs.isPinned && !rhs.isPinned {
+                    return true
+                } else if !lhs.isPinned && rhs.isPinned {
+                    return false
+                } else {
+                    return false
+                }
+            })
+            .map({
+                TabCardDetails(
+                    tab: $0,
+                    manager: manager.tabManager,
+                    isChild: true)
+            }) ?? []
     }
 
     var thumbnail: some View {

@@ -131,9 +131,7 @@ class TabCardModel: CardModel {
                 && tab.isIncognito == incognito
         }
 
-        if FeatureFlag[.tabGroupsPinning] {
-            modifyAllDetailsFilteredPromotingPinnedTabs(&allDetailsFiltered, tabGroupModel)
-        }
+        modifyAllDetailsFilteredPromotingPinnedTabs(&allDetailsFiltered, tabGroupModel)
 
         let lastPinnedIndex = allDetailsFiltered.lastIndex(where: {$0.isPinned})
 
