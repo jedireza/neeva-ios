@@ -10,6 +10,10 @@ enum DefaultBrowserPromoRules {
     static let maxDailyPromoImpression = 3
 }
 
+enum AppRatingPromoRule {
+    static let numOfAppForeground = 3
+}
+
 enum PromoCardType {
     case previewModeSignUp(action: () -> Void)
     case neevaSignIn(action: () -> Void)

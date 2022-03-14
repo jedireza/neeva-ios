@@ -93,7 +93,9 @@ extension Defaults.Keys {
     public static let loginLastWeekTimeStamp = Defaults.Key<[Date]>(
         "LoginLastWeekTimeStamp", default: [])
 
+    // app review
     public static let ratingsCardHidden = Defaults.BoolKey("RatingsCardHidden")
+    public static let didTriggerSystemReviewDialog = Defaults.BoolKey("didTriggerSystemReviewDialog")
 
     public static let notificationToken = Defaults.Key<String?>("notificationToken")
 

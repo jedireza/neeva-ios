@@ -116,8 +116,52 @@ struct ZeroQueryPlaceholder: View {
     }
 }
 
-struct ZeroQueryView: View {
+struct PromoCardImpressionModifier: ViewModifier {
     private let promoCardImpressionTimerInterval: TimeInterval = 2
+    @State var impressionTimer: Timer? = nil
+
+    let attributeValue: String
+
+    func startImpressionTimer(with attributeValue: String) {
+        impressionTimer?.invalidate()
+        impressionTimer = Timer.scheduledTimer(
+            withTimeInterval: promoCardImpressionTimerInterval,
+            repeats: false,
+            block: { _ in
+                ClientLogger.shared.logCounter(
+                    .PromoCardAppear,
+                    attributes: EnvironmentHelper.shared.getAttributes()
+                        + [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.PromoCardAttribute
+                                    .promoCardType,
+                                value: attributeValue
+                            )
+                        ]
+                )
+            }
+        )
+    }
+
+    func resetImpressionTimer() {
+        impressionTimer?.invalidate()
+        impressionTimer = nil
+    }
+
+    func body(content: Content) -> some View {
+        content
+            .onAppear {
+                startImpressionTimer(
+                    with: attributeValue
+                )
+            }
+            .onDisappear {
+                resetImpressionTimer()
+            }
+    }
+}
+
+struct ZeroQueryView: View {
 
     @EnvironmentObject var viewModel: ZeroQueryModel
 
@@ -128,7 +172,6 @@ struct ZeroQueryView: View {
     @Environment(\.verticalSizeClass) private var verticalSizeClass
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
-    @State var impressionTimer: Timer? = nil
     @State var url: URL?
     @State var tab: Tab?
 
@@ -144,7 +187,13 @@ struct ZeroQueryView: View {
             onFeedback: {
                 showFeedbackPanel(bvc: viewModel.bvc, shareURL: false)
             },
-            viewWidth: viewWidth)
+            viewWidth: viewWidth
+        )
+        .modifier(
+            PromoCardImpressionModifier(
+                attributeValue: "RatingCard"
+            )
+        )
     }
 
     func isLandScape() -> Bool {
@@ -226,31 +275,11 @@ struct ZeroQueryView: View {
                     } else {
                         if let promoCardType = viewModel.promoCard {
                             PromoCard(type: promoCardType, viewWidth: geom.size.width)
-                                .onAppear {
-                                    impressionTimer?.invalidate()
-                                    impressionTimer = Timer.scheduledTimer(
-                                        withTimeInterval: promoCardImpressionTimerInterval,
-                                        repeats: false,
-                                        block: { _ in
-                                            ClientLogger.shared.logCounter(
-                                                .PromoCardAppear,
-                                                attributes: EnvironmentHelper.shared.getAttributes()
-                                                    + [
-                                                        ClientLogCounterAttribute(
-                                                            key: LogConfig.PromoCardAttribute
-                                                                .promoCardType,
-                                                            value: viewModel.promoCard?.name
-                                                                ?? "None"
-                                                        )
-                                                    ]
-                                            )
-                                        }
+                                .modifier(
+                                    PromoCardImpressionModifier(
+                                        attributeValue: viewModel.promoCard?.name ?? "None"
                                     )
-                                }
-                                .onDisappear {
-                                    impressionTimer?.invalidate()
-                                    impressionTimer = nil
-                                }
+                                )
                         }
 
                         if isLandScape() && viewModel.showRatingsCard {

@@ -8,6 +8,7 @@ import Defaults
 import SDWebImage
 import Shared
 import Storage
+import StoreKit
 
 private let log = Logger.browser
 
@@ -468,6 +469,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         guard let startOfLastWeek = minusOneWeekToCurrentDate else {
             return
+        }
+
+        if let scene = (scene as? UIWindowScene),
+            Defaults[.loginLastWeekTimeStamp].count == AppRatingPromoRule.numOfAppForeground
+                && !Defaults[.didTriggerSystemReviewDialog]
+        {
+            // Note that Apple has full control over when to show the actual review dialog
+            // see here for more information:
+            // https://developer.apple.com/documentation/storekit/requesting_app_store_reviews
+            SKStoreReviewController.requestReview(in: scene)
+            Defaults[.didTriggerSystemReviewDialog] = true
         }
 
         Defaults[.loginLastWeekTimeStamp] = Defaults[.loginLastWeekTimeStamp].suffix(2).filter {
