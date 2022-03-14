@@ -59,18 +59,20 @@ struct WebResultItem: View {
                     .accessibilityLabel(Text(item.title))
 
                 InlineSearchProductList(inlineSearchProducts: item.inlineSearchProducts)
-            } else if let snippet = item.snippet {
+            } else {
                 VStack(alignment: .leading) {
                     WebResultHeader(item: item)
 
-                    Text(snippet)
-                        .font(.system(size: 13))
-                        .foregroundColor(
-                            Color(light: Color.ui.gray40, dark: Color(hex: 0xd0dada))
-                        )
-                        .fixedSize(horizontal: false, vertical: true)
-                        .lineLimit(3)
-                        .multilineTextAlignment(.leading)
+                    if let snippet = item.snippet {
+                        Text(snippet)
+                            .font(.system(size: 13))
+                            .foregroundColor(
+                                Color(light: Color.ui.gray40, dark: Color(hex: 0xd0dada))
+                            )
+                            .fixedSize(horizontal: false, vertical: true)
+                            .lineLimit(3)
+                            .multilineTextAlignment(.leading)
+                    }
                 }
                 .onTapGesture(perform: onClick)
                 .accessibilityAddTraits(.isButton)

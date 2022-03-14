@@ -472,7 +472,7 @@ public struct CheatsheetMenuView: View {
         case .RecipeBlock(let recipes):
             // filter out result already showing on the current page
             RelatedRecipeList(
-                recipes: recipes.filter { $0.url != model.currentPageURL },
+                recipes: recipes,
                 onDismiss: nil
             )
             .padding(.bottom, 20)
@@ -481,9 +481,13 @@ public struct CheatsheetMenuView: View {
         case .WebGroup(let result):
             // filter out result already showing on the current page
             WebResultList(
-                webResult: result.filter { $0.actionURL != model.currentPageURL },
+                webResult: result,
                 currentCheatsheetQueryAsURL: model.currentCheatsheetQueryAsURL,
                 showQueryString: cheatsheetDebugQuery
+            )
+        case .NewsGroup(let newsResults):
+            NewsResultsView(
+                newsResults: newsResults
             )
         }
     }

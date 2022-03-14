@@ -374,7 +374,8 @@ extension URL {
     }
 
     /// Checks if URLs are exactly the same
-    public func equals(_ url: URL, with options: [EqualsOption] = []) -> Bool {
+    public func equals(_ url: URL?, with options: [EqualsOption] = []) -> Bool {
+        guard let url = url else { return false }
         if options.isEmpty {
             return self == url
         }
