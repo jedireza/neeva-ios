@@ -19,6 +19,7 @@ private struct CloseButtonView: UIViewRepresentable {
     class View: UIView {
         var button: UIButton!
     }
+
     func makeUIView(context: Context) -> View {
         let button = UIButton(type: .close)
         button.setContentHuggingPriority(.required, for: .horizontal)
@@ -27,9 +28,8 @@ private struct CloseButtonView: UIViewRepresentable {
         let view = View()
         view.button = button
         view.addSubview(button)
-        button.snp.makeConstraints { make in
-            make.center.equalToSuperview()
-        }
+        button.makeCenter(equalTo: view)
+
         return view
     }
     func updateUIView(_ view: View, context: Context) {

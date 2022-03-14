@@ -562,11 +562,8 @@ class HistoryPanel: SiteTableViewController {
         let bgColor = UIView()
         bgColor.backgroundColor = .systemBackground
         overlayView.addSubview(bgColor)
-        bgColor.snp.makeConstraints { make in
-            // Height behaves oddly: equalToSuperview fails in this case, as does setting top.equalToSuperview(), simply setting this to ample height works.
-            make.height.equalTo(UIScreen.main.bounds.height)
-            make.width.equalToSuperview()
-        }
+        bgColor.makeHeight(equalToConstant: UIScreen.main.bounds.height)
+        bgColor.makeWidth(equalTo: self.view.superview)
 
         let welcomeLabel = UILabel()
         overlayView.addSubview(welcomeLabel)
@@ -577,14 +574,15 @@ class HistoryPanel: SiteTableViewController {
         welcomeLabel.numberOfLines = 0
         welcomeLabel.adjustsFontSizeToFitWidth = true
 
-        welcomeLabel.snp.makeConstraints { make in
-            make.centerX.equalTo(overlayView)
-            // Sets proper top constraint for iPhone 6 in portait and for iPad.
-            make.centerY.equalTo(overlayView).offset(-180).priority(100)
-            // Sets proper top constraint for iPhone 4, 5 in portrait.
-            make.top.greaterThanOrEqualTo(overlayView).offset(50)
-            make.width.equalTo(HistoryPanelUX.WelcomeScreenItemWidth)
-        }
+        welcomeLabel.makeEdges(.top, equalTo: overlayView, withOffset: 50)
+        welcomeLabel.makeWidth(equalToConstant: CGFloat(HistoryPanelUX.WelcomeScreenItemWidth))
+        welcomeLabel.centerXAnchor.constraint(equalTo: overlayView.centerXAnchor).isActive = true
+
+        let centerY = welcomeLabel.centerYAnchor.constraint(
+            equalTo: overlayView.centerYAnchor, constant: -180)
+        centerY.priority = .defaultLow
+        centerY.isActive = true
+
         return overlayView
     }
 

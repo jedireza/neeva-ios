@@ -6,9 +6,10 @@ import SwiftUI
 
 struct SimulatedSwipeViewRepresentable: UIViewControllerRepresentable {
     let model: SimulatedSwipeModel
+    let superview: UIView!
 
     func makeUIViewController(context: Context) -> SimulatedSwipeController {
-        let simulatedSwipeController = SimulatedSwipeController(model: model)
+        let simulatedSwipeController = SimulatedSwipeController(model: model, superview: superview)
         simulatedSwipeController.view.isHidden = true
 
         return simulatedSwipeController

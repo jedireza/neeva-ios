@@ -9,7 +9,6 @@ import MobileCoreServices
 import Photos
 import SDWebImage
 import Shared
-import SnapKit
 import Storage
 import SwiftUI
 import SwiftyJSON
@@ -119,7 +118,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             tabManager: tabManager, chromeModel: chromeModel, swipeDirection: .forward)
     }()
 
-    private(set) lazy var simulateBackModel: SimulatedSwipeModel = {
+    private(set) lazy var simulatedSwipeModel: SimulatedSwipeModel = {
         SimulatedSwipeModel(tabManager: tabManager, chromeModel: chromeModel, swipeDirection: .back)
     }()
 
@@ -434,12 +433,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     fileprivate func setupConstraints() {
-        browserHost.view.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
-
-        webViewContainerBackdrop.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+        DispatchQueue.main.async {
+            self.browserHost.view.makeAllEdges(equalTo: self.view.superview)
+            self.webViewContainerBackdrop.makeAllEdges(equalTo: self.view.superview)
         }
     }
 
@@ -1469,7 +1465,7 @@ extension BrowserViewController: TabManagerDelegate {
 
         updateFindInPageVisibility(visible: false, tab: previous)
         chromeModel.canGoBack =
-            (simulateBackModel.canGoBack()
+            (simulatedSwipeModel.canGoBack()
                 || selected?.canGoBack ?? false)
         chromeModel.canGoForward =
             (simulateForwardModel.canGoForward()

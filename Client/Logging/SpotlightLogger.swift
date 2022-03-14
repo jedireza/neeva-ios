@@ -8,7 +8,7 @@ import Shared
 
 class SpotlightLogger {
     public static let shared = SpotlightLogger()
-    
+
     init() {
         // This logger always gets initialized
         // Force enable Spotlight integration

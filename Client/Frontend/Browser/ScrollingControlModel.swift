@@ -4,7 +4,6 @@
 
 import Combine
 import Shared
-import SnapKit
 import SwiftUI
 
 private let ToolbarBaseAnimationDuration = 0.3

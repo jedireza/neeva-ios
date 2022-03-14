@@ -17,9 +17,7 @@ struct WebViewContainer: UIViewRepresentable {
         DispatchQueue.main.async {
             view.subviews.forEach { $0.removeFromSuperview() }
             view.addSubview(webView)
-            webView.snp.makeConstraints { make in
-                make.edges.equalToSuperview()
-            }
+            webView.makeAllEdges(equalTo: view.superview)
         }
     }
 }

@@ -20,12 +20,14 @@ class SimulatedSwipeController:
 {
     var model: SimulatedSwipeModel
     var animator: SimulatedSwipeAnimator!
+    var superview: UIView!
     var blankView: UIView!
     var progressView: UIHostingController<CarouselProgressView>!
     private var viewHiddenSubscription: AnyCancellable?
 
-    init(model: SimulatedSwipeModel) {
+    init(model: SimulatedSwipeModel, superview: UIView!) {
         self.model = model
+        self.superview = superview
         super.init(nibName: nil, bundle: nil)
 
         register(self, forTabEvents: .didChangeURL)
@@ -54,20 +56,22 @@ class SimulatedSwipeController:
         blankView.backgroundColor = .white
         self.view.addSubview(blankView)
 
-        blankView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
-            make.width.equalToSuperview().offset(-SwipeUX.EdgeWidth)
-
-            switch model.swipeDirection {
-            case .forward:
-                make.trailing.equalToSuperview()
-            case .back:
-                make.leading.equalToSuperview()
-            }
-        }
-
         viewHiddenSubscription = model.$hidden.sink { [unowned self] hidden in
             view.isHidden = hidden
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        blankView.makeEdges([.top, .bottom], equalTo: superview)
+        blankView.makeWidth(equalTo: superview, withOffset: -SwipeUX.EdgeWidth)
+
+        switch model.swipeDirection {
+        case .forward:
+            blankView.makeEdges(.trailing, equalTo: self.view)
+        case .back:
+            blankView.makeEdges(.leading, equalTo: self.view)
         }
     }
 
@@ -159,11 +163,10 @@ class SimulatedSwipeController:
         progressView.didMove(toParent: bvc)
         model.progressModel.urls = results
         model.progressModel.index = index
-        progressView.view.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalTo(bvc.view.snp.bottom)
-                .offset(-UIConstants.BottomToolbarHeight)
-        }
+
+        progressView.view.makeEdges([.leading, .trailing], equalTo: self.view.superview)
+        progressView.view.makeEdges(
+            .bottom, equalTo: self.view, withOffset: -UIConstants.BottomToolbarHeight)
     }
 
     func simulateForwardAnimatorStartedSwipe(_ animator: SimulatedSwipeAnimator) {

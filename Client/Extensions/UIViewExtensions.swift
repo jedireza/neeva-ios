@@ -2,10 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import Foundation
 import SwiftUI
+import UIKit
 
 extension UIView {
+    // MARK: - Screenshot
     /// Takes a screenshot of the view with the given size.
     func screenshot(_ size: CGSize, offset: CGPoint? = nil, quality: CGFloat = 1) -> UIImage? {
         assert(0...1 ~= quality)
@@ -59,6 +60,80 @@ extension UIView {
         let capturedImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return capturedImage
+    }
+
+    // MARK: - Constraints
+    func makeAllEdges(equalTo view: UIView?, withOffset offset: CGFloat = 0) {
+        makeEdges(.all, equalTo: view, withOffset: offset)
+    }
+
+    func makeEdges(_ edges: Edge.Set, equalTo view: UIView?, withOffset offset: CGFloat = 0) {
+        guard let view = view else {
+            return
+        }
+
+        self.translatesAutoresizingMaskIntoConstraints = false
+
+        if edges.contains(.top) {
+            self.topAnchor.constraint(equalTo: view.topAnchor, constant: offset)
+                .isActive = true
+        }
+
+        if edges.contains(.bottom) {
+            self.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: offset)
+                .isActive = true
+        }
+
+        if edges.contains(.leading) {
+            self.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: offset)
+                .isActive = true
+        }
+
+        if edges.contains(.trailing) {
+            self.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: offset)
+                .isActive = true
+        }
+    }
+
+    // Width
+    func makeWidth(equalTo view: UIView?, withOffset offset: CGFloat = 0) {
+        guard let view = view else {
+            return
+        }
+
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.widthAnchor.constraint(equalTo: view.widthAnchor, constant: offset).isActive = true
+    }
+
+    func makeWidth(equalToConstant value: CGFloat) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.widthAnchor.constraint(equalToConstant: value).isActive = true
+    }
+
+    // Height
+    func makeHeight(equalTo view: UIView?, withOffset offset: CGFloat = 0) {
+        guard let view = view else {
+            return
+        }
+
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.heightAnchor.constraint(equalTo: view.heightAnchor, constant: offset).isActive = true
+    }
+
+    func makeHeight(equalToConstant value: CGFloat) {
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.heightAnchor.constraint(equalToConstant: value).isActive = true
+    }
+
+    // Centering
+    func makeCenter(equalTo view: UIView?) {
+        guard let view = view else {
+            return
+        }
+
+        self.translatesAutoresizingMaskIntoConstraints = false
+        self.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        self.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
     }
 }
 

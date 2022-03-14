@@ -177,14 +177,16 @@ struct TabContainerContent: View {
                         .padding(.bottom, webViewBottomPadding)
 
                     GeometryReader { geom in
-                        SimulatedSwipeViewRepresentable(model: simulatedSwipeModel)
-                            .opacity(!simulatedSwipeModel.hidden ? 1 : 0)
-                            .offset(
-                                x: -geom.size.width + simulatedSwipeModel.overlayOffset,
-                                y: webViewOffsetY
-                            )
-                            .frame(width: geom.size.width + SwipeUX.EdgeWidth)
-                            .padding(.bottom, webViewBottomPadding)
+                        SimulatedSwipeViewRepresentable(
+                            model: simulatedSwipeModel, superview: bvc.view.superview
+                        )
+                        .opacity(!simulatedSwipeModel.hidden ? 1 : 0)
+                        .offset(
+                            x: -geom.size.width + simulatedSwipeModel.overlayOffset,
+                            y: webViewOffsetY
+                        )
+                        .frame(width: geom.size.width + SwipeUX.EdgeWidth)
+                        .padding(.bottom, webViewBottomPadding)
                     }
 
                     if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip]

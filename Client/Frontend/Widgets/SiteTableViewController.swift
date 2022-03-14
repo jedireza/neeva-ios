@@ -44,10 +44,7 @@ class SiteTableViewController: UIViewController, UITableViewDelegate, UITableVie
         super.viewDidLoad()
 
         view.addSubview(tableView)
-        tableView.snp.makeConstraints { make in
-            make.edges.equalTo(self.view)
-            return
-        }
+        tableView.makeAllEdges(equalTo: self.view)
 
         tableView.delegate = self
         tableView.dataSource = self

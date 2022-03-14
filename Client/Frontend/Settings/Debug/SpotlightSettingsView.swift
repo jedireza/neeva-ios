@@ -107,7 +107,7 @@ struct SpotlightSettingsView: View {
                 }
                 .disabled(spaceIndexBusy)
             }
-            
+
             Section {
                 Toggle(
                     String("Force enable Spotlight integration on next launch"),

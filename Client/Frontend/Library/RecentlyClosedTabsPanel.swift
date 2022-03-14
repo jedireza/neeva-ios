@@ -45,9 +45,7 @@ class RecentlyClosedTabsPanel: UIViewController {
         tableViewController.didMove(toParent: self)
 
         self.view.addSubview(tableViewController.view)
-        tableViewController.view.snp.makeConstraints { make in
-            make.edges.equalTo(self.view)
-        }
+        tableViewController.view.makeAllEdges(equalTo: self.view)
     }
 }
 

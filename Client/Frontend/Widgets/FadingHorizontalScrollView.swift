@@ -78,14 +78,11 @@ class FadingHorizontalScrollView_UIView<Content: View>: UIView, UIScrollViewDele
         hostingController.view.backgroundColor = .clear
         hostingController.view.isOpaque = false
 
-        scrollView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        scrollView.makeAllEdges(equalTo: self.superview)
+
         scrollView.addSubview(hostingController.view)
         scrollView.delegate = self
-        hostingController.view.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+        hostingController.view.makeAllEdges(equalTo: self.superview)
 
         applyColors()
 

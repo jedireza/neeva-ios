@@ -129,7 +129,9 @@ struct BrowserView: View {
                                             // does not have a status bar in landscape.
                                             Color.clear
                                                 .ignoresSafeArea()
-                                                .frame(height: BrowserViewUX.ShowHeaderTapAreaHeight)
+                                                .frame(
+                                                    height: BrowserViewUX.ShowHeaderTapAreaHeight
+                                                )
                                                 // without this, the area isn’t tappable because it’s invisible
                                                 .contentShape(Rectangle())
                                                 .onTapGesture {
@@ -186,7 +188,7 @@ struct BrowserView: View {
         .environmentObject(browserModel.incognitoModel)
         .environmentObject(browserModel.cardTransitionModel)
         .environmentObject(browserModel.scrollingControlModel)
-        .environmentObject(bvc.simulateBackModel)
+        .environmentObject(bvc.simulatedSwipeModel)
         .environmentObject(chromeModel)
         .environmentObject(gridModel)
         .environmentObject(bvc.toolbarModel)

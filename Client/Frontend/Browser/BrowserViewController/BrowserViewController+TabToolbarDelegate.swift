@@ -32,7 +32,7 @@ extension BrowserViewController: ToolbarDelegate {
                     .ClickBack,
                     attributes: EnvironmentHelper.shared.getAttributes() + [toolbarActionAttribute]
                 )
-                if self.simulateBackModel.goBack() {
+                if self.simulatedSwipeModel.goBack() {
                     return
                 }
 

@@ -428,7 +428,6 @@
 		85EFC02227C515A7009460DE /* KIF.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02127C515A7009460DE /* KIF.xcframework */; };
 		85EFC02527C515EE009460DE /* OnePasswordExtension.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02427C515EE009460DE /* OnePasswordExtension.xcframework */; };
 		85EFC02827C516F9009460DE /* SDWebImageSwiftUI.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02627C516F3009460DE /* SDWebImageSwiftUI.xcframework */; };
-		85EFC02A27C51714009460DE /* SnapKit.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02927C51714009460DE /* SnapKit.xcframework */; };
 		85EFC02C27C5172A009460DE /* SwiftKeychainWrapper.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02B27C5172A009460DE /* SwiftKeychainWrapper.xcframework */; };
 		85EFC02E27C5174B009460DE /* SwiftyJSON.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02D27C5174A009460DE /* SwiftyJSON.xcframework */; };
 		85EFC03027C51754009460DE /* ObjcExceptionBridging.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02F27C51754009460DE /* ObjcExceptionBridging.xcframework */; };
@@ -440,7 +439,6 @@
 		85EFC03D27C51E8B009460DE /* GCDWebServers.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC01E27C5158D009460DE /* GCDWebServers.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03E27C51E8B009460DE /* ObjcExceptionBridging.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02F27C51754009460DE /* ObjcExceptionBridging.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC03F27C51E8B009460DE /* OnePasswordExtension.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02427C515EE009460DE /* OnePasswordExtension.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		85EFC04127C51E8B009460DE /* SnapKit.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02927C51714009460DE /* SnapKit.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC04227C51E8B009460DE /* SwiftyJSON.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02D27C5174A009460DE /* SwiftyJSON.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC04327C51E8B009460DE /* XCGLogger.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC03327C51788009460DE /* XCGLogger.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		85EFC04527C51EEC009460DE /* SwiftKeychainWrapper.xcframework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 85EFC02B27C5172A009460DE /* SwiftKeychainWrapper.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -800,7 +798,6 @@
 		D59643F325C9B8E000EAB8B9 /* Storage.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9403451493EE3ADAAEFA2EB1 /* Storage.strings */; };
 		D5AF961B25D1FCAF006ACA6A /* WidgetIntents.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = D595529725D1F5590040B30B /* WidgetIntents.intentdefinition */; };
 		D8C75DF3207584C400BB8AD0 /* UIImageViewAligned.m in Sources */ = {isa = PBXBuildFile; fileRef = D8C75DF2207584C300BB8AD0 /* UIImageViewAligned.m */; };
-		D8D33A7D1FBD080300A20A28 /* SnapKitExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D33A7C1FBD080300A20A28 /* SnapKitExtensions.swift */; };
 		D8EFFA0C1FF5B1FA001D3A09 /* NavigationRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EFFA0B1FF5B1FA001D3A09 /* NavigationRouter.swift */; };
 		D8EFFA261FF702A8001D3A09 /* NavigationRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8EFFA251FF702A8001D3A09 /* NavigationRouterTests.swift */; };
 		D8FDEB57220CFE970069A582 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = D8FDEB55220CFE970069A582 /* UIImage+ImageEffects.m */; };
@@ -1207,7 +1204,6 @@
 				66A7639527C7505D0047F999 /* SDWebImageSwiftUI.xcframework in Copy Frameworks */,
 				85EFC03E27C51E8B009460DE /* ObjcExceptionBridging.xcframework in Copy Frameworks */,
 				85EFC03F27C51E8B009460DE /* OnePasswordExtension.xcframework in Copy Frameworks */,
-				85EFC04127C51E8B009460DE /* SnapKit.xcframework in Copy Frameworks */,
 				85EFC04227C51E8B009460DE /* SwiftyJSON.xcframework in Copy Frameworks */,
 				66A7639327C7505D0047F999 /* SDWebImage.xcframework in Copy Frameworks */,
 				85EFC04327C51E8B009460DE /* XCGLogger.xcframework in Copy Frameworks */,
@@ -2020,7 +2016,6 @@
 		D81E377D2242FF61006AC72D /* Client-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Client-Bridging-Header.h"; path = "Client/Client-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		D8C75DE9207584C300BB8AD0 /* UIImageViewAligned.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UIImageViewAligned.h; path = ThirdParty/UIImageViewAligned/UIImageViewAligned.h; sourceTree = SOURCE_ROOT; };
 		D8C75DF2207584C300BB8AD0 /* UIImageViewAligned.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UIImageViewAligned.m; path = ThirdParty/UIImageViewAligned/UIImageViewAligned.m; sourceTree = SOURCE_ROOT; };
-		D8D33A7C1FBD080300A20A28 /* SnapKitExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapKitExtensions.swift; sourceTree = "<group>"; };
 		D8EFFA0B1FF5B1FA001D3A09 /* NavigationRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRouter.swift; sourceTree = "<group>"; };
 		D8EFFA251FF702A8001D3A09 /* NavigationRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationRouterTests.swift; sourceTree = "<group>"; };
 		D8FDEB54220CFE970069A582 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIImage+ImageEffects.h"; path = "ThirdParty/Apple/UIImage+ImageEffects.h"; sourceTree = "<group>"; };
@@ -2220,7 +2215,6 @@
 				66A7639227C7505D0047F999 /* SDWebImage.xcframework in Frameworks */,
 				85EFC02527C515EE009460DE /* OnePasswordExtension.xcframework in Frameworks */,
 				85EFC03027C51754009460DE /* ObjcExceptionBridging.xcframework in Frameworks */,
-				85EFC02A27C51714009460DE /* SnapKit.xcframework in Frameworks */,
 				4A8CE5D027CCA07800735C75 /* WalletCore.framework in Frameworks */,
 				6786EA772759545A00B53127 /* CrashReporter in Frameworks */,
 				85EFC02E27C5174B009460DE /* SwiftyJSON.xcframework in Frameworks */,
@@ -2513,7 +2507,6 @@
 				C9E5F2B42673EF1D00025A7F /* Environment.swift */,
 				C9E5F2B72673F7F700025A7F /* GeometryExtensions.swift */,
 				C94D40672684CC35003A6766 /* PublisherExtensions.swift */,
-				D8D33A7C1FBD080300A20A28 /* SnapKitExtensions.swift */,
 				28EADE381AFC3898007FB2FB /* UIImageViewExtensions.swift */,
 				A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */,
 				43446CE92412066500F5C643 /* UIViewControllerExtension.swift */,
@@ -5991,7 +5984,6 @@
 				D31CF65C1CC1959A001D0BD0 /* PrivilegedRequest.swift in Sources */,
 				C832BF8726E3CA0900B9A1F8 /* SendFeedbackPanel.swift in Sources */,
 				C832BF5D26E0A8D500B9A1F8 /* DownloadOverlayContent.swift in Sources */,
-				D8D33A7D1FBD080300A20A28 /* SnapKitExtensions.swift in Sources */,
 				C99646652655AA9A005FFE83 /* (null) in Sources */,
 				1AC3F333278CDE7E000CCE09 /* TransitionExtensions.swift in Sources */,
 				66B7A0E926EAF5B000AB751A /* OverlayGenerics.swift in Sources */,

@@ -217,10 +217,7 @@ extension BrowserViewController: WKUIDelegate {
                     previewViewController.view.isUserInteractionEnabled = false
 
                     previewViewController.view.addSubview(clonedWebView)
-                    clonedWebView.snp.makeConstraints { make in
-                        make.edges.equalTo(previewViewController.view)
-                    }
-
+                    clonedWebView.makeAllEdges(equalTo: previewViewController.view)
                     clonedWebView.load(URLRequest(url: url))
 
                     return previewViewController
