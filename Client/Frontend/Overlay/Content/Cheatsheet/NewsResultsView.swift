@@ -33,7 +33,7 @@ struct NewsResultsView: View {
                 }
             }) {
                 HStack(alignment: .center) {
-                    Text(newsResults.snippet ?? "More News")
+                    Text("Related News")
                         .withFont(.headingXLarge)
                         .foregroundColor(.label)
                     Symbol(decorative: .arrowUpForward)
