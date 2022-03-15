@@ -1,3 +1,4 @@
+# Testing command line pr creation
 #!/bin/sh
 
 export EXPORT_BUILD=false
