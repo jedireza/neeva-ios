@@ -25,28 +25,9 @@ fi
 
 CURRENT_PROJECT_VERSION=$(get_current_project_version)
 
-BRANCH_NAME="$(git_user_name)/prepare-for-build-$CURRENT_PROJECT_VERSION"
+BRANCH_NAME="$(git_user_name)/prepare-for-build-$CURRENT_PROJECT_VERSION-test"
 REMOTE_ORIGIN_BRANCH_NAME="$(get_remote_origin_branch)"
 REMOTE_BRANCH_NAME="$(get_remote_branch)"
-
-if is_branch_of_release; then
-  if [ "$SKIP_PROMPT" = true ] ; then
-    echo "You are on release branch, changes will be pushed directly onto branch."
-  else
-    read -r -p "You are on release branch, do you want to push changes directly onto branch? [Y/n] " response
-  fi
-  if [[ "$response" =~ ^([nN][oO]?)$ ]]
-  then
-    continue
-  else
-    git diff
-    git commit -a -m "Preparing for build $CURRENT_PROJECT_VERSION"
-    echo "Push changes? Press ENTER to continue. Ctrl+C to cancel."
-    read
-    git push origin $REMOTE_BRANCH_NAME
-    exit 0
-  fi
-fi
 
 echo "Proposing to create branch:"
 echo "  name = $BRANCH_NAME"
@@ -72,3 +53,14 @@ else
 fi
 
 git push origin $BRANCH_NAME
+
+if command -v gh &> /dev/null; then
+  read -r -p "Looks like you have cli tool set up, do you want to create a PR? [Y/n] " response
+  if [[ "$response" =~ ^([nN][oO]?)$ ]]
+  then
+    continue
+  else
+    gh pr create -t "Preparing for build $CURRENT_PROJECT_VERSION" -r "neevaco/ios" -b "Bumping up version for next build"
+  fi
+fi
+
