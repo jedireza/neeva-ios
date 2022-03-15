@@ -332,6 +332,7 @@
 		66AC64B326E8324500D7BA83 /* SystemsHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66AC64B226E8324500D7BA83 /* SystemsHelper.swift */; };
 		66B379DB26DDAD1800087B04 /* FeedbackRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665CE64726DDA7E70069EFDD /* FeedbackRequest.swift */; };
 		66B379DD26DDAD4400087B04 /* FeedbackHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */; };
+		66B3BDFB27E003EF002015D5 /* OnAppUpdateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B3BDFA27E003EF002015D5 /* OnAppUpdateTests.swift */; };
 		66B54EB926EC414000744358 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B7A0EA26EAFCAB00AB751A /* Haptics.swift */; };
 		66B6567626C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */; };
 		66B7A0E726EAE10B00AB751A /* PopoverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B7A0E626EAE10B00AB751A /* PopoverView.swift */; };
@@ -1558,6 +1559,7 @@
 		66A6A72326840376005425D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		66AC64B226E8324500D7BA83 /* SystemsHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemsHelper.swift; sourceTree = "<group>"; };
 		66AF61B926D87E9900FB68DF /* ZeroQueryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryTests.swift; sourceTree = "<group>"; };
+		66B3BDFA27E003EF002015D5 /* OnAppUpdateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnAppUpdateTests.swift; sourceTree = "<group>"; };
 		66B6567526C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+SKStoreProductViewControllerDelegate.swift"; sourceTree = "<group>"; };
 		66B7A0E626EAE10B00AB751A /* PopoverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverView.swift; sourceTree = "<group>"; };
 		66B7A0E826EAF5B000AB751A /* OverlayGenerics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OverlayGenerics.swift; sourceTree = "<group>"; };
@@ -4239,6 +4241,7 @@
 				281B2BE91ADF4D90002917DC /* MockProfile.swift */,
 				D8EFFA251FF702A8001D3A09 /* NavigationRouterTests.swift */,
 				324948F327BDEBE400082FCF /* NavigationRouterSearchRewriteTests.swift */,
+				66B3BDFA27E003EF002015D5 /* OnAppUpdateTests.swift */,
 				C9C5CCC026B0982C00776929 /* PrivateZoomAPITests.swift */,
 				0BA896491A250E6500C1010C /* ProfileTest.swift */,
 				03CCC9171AF05E7300DBF30D /* RelativeDatesTests.swift */,
@@ -6247,6 +6250,7 @@
 				D3D488591ABB54CD00A93597 /* FileAccessorTests.swift in Sources */,
 				0BA8964B1A250E6500C1010C /* ProfileTest.swift in Sources */,
 				03CCC9181AF05E7300DBF30D /* RelativeDatesTests.swift in Sources */,
+				66B3BDFB27E003EF002015D5 /* OnAppUpdateTests.swift in Sources */,
 				F84B21DA1A090F8100AAB793 /* ClientTests.swift in Sources */,
 				281B2BEA1ADF4D90002917DC /* MockProfile.swift in Sources */,
 				2F44FA1B1A9D426A00FD20CC /* TestHashExtensions.swift in Sources */,

@@ -494,7 +494,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if let lastVersionActiveOn = Defaults[.lastVersionActiveOn],
                 lastVersionActiveOn != version
             {
-                onAppUpdate(version: version, previousVersion: lastVersionActiveOn)
+                onAppUpdate(previousVersion: lastVersionActiveOn, currentVersion: version)
             }
 
             Defaults[.lastVersionActiveOn] = version
@@ -503,7 +503,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     /// Called when the user updates the app, and then opens it.
     /// Useful for updating flags, migrating data, etc.
-    private func onAppUpdate(version: String, previousVersion: String) {
-        // Nothing here yet!
+    @discardableResult func onAppUpdate(previousVersion: String, currentVersion: String) -> Bool {
+        if currentVersion.compare(previousVersion, options: .numeric) == .orderedDescending {
+            // currentVersion is newer than the previousVersion
+
+            return true
+        }
+
+        return false
     }
 }
