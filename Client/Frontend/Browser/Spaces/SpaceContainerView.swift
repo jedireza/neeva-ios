@@ -38,16 +38,6 @@ struct SpaceContainerView: View {
 
 }
 
-struct DetailView_Previews: PreviewProvider {
-    static var previews: some View {
-        SpaceContainerView(
-            primitive: SpaceCardDetails(
-                space: .stackOverflow,
-                manager: SpaceStore.shared)
-        )
-    }
-}
-
 // Allows the NavigationView to keep the swipe back interaction,
 // while also hiding the navigation bar.
 
