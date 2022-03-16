@@ -162,15 +162,14 @@ struct PromoCardImpressionModifier: ViewModifier {
 }
 
 struct ZeroQueryView: View {
-
     @EnvironmentObject var viewModel: ZeroQueryModel
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @Default(.expandSuggestedSites) private var expandSuggestedSites
     @Default(.expandSearches) private var expandSearches
     @Default(.expandSpaces) private var expandSpaces
     @Default(.expandSuggestedSpace) private var expandSuggestedSpace
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State var url: URL?
     @State var tab: Tab?
