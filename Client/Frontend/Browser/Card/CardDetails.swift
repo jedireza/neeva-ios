@@ -465,11 +465,8 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
                     .lineLimit(1)
                     .foregroundColor(Color.label)
                     .frame(height: CardUX.HeaderSize)
-                if let space = space, space.isPublic {
-                    Symbol(decorative: .link, style: .labelMedium)
-                        .foregroundColor(.secondaryLabel)
-                } else if let space = space, space.isShared {
-                    Symbol(decorative: .person2Fill, style: .labelMedium)
+                if let space = space, !space.isPublic {
+                    Symbol(decorative: .lock, style: .labelMedium)
                         .foregroundColor(.secondaryLabel)
                 }
                 Spacer(minLength: 12)
