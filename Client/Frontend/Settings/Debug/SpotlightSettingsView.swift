@@ -15,6 +15,10 @@ struct SpotlightSettingsView: View {
     @Default(.addSpaceURLsToCS) var addSpaceURLsToCS
     @Default(.overwriteSpotlightDefaults) var overwriteSpotlightDefaults
 
+    @Default(.numOfIndexedUserActivities) var numOfIndexedUserActivities
+    @Default(.numOfWillIndexEvents) var numOfWillIndexEvents
+    @Default(.numOfDidIndexEvents) var numOfDidIndexEvents
+
     @State private var deletingActivities = false
 
     @State private var deletingSpaces = false
@@ -113,6 +117,12 @@ struct SpotlightSettingsView: View {
                     String("Force enable Spotlight integration on next launch"),
                     isOn: $overwriteSpotlightDefaults
                 )
+            }
+
+            Section {
+                NumberField("numOfIndexedUserActivities", number: $numOfIndexedUserActivities)
+                NumberField("numOfWillIndexEvents", number: $numOfWillIndexEvents)
+                NumberField("numOfDidIndexEvents", number: $numOfDidIndexEvents)
             }
 
         }
