@@ -36,7 +36,7 @@ class ToastDefaults: NSObject {
                     text: toastText, buttonText: "restore",
                     buttonAction: {
                         let bvc = SceneDelegate.getBVC(with: tabManager.scene)
-                        _ = bvc.tabManager.restoreSavedTabs(savedTabs)
+                        _ = bvc.tabManager.restoreSavedTabs(savedTabs, shouldSelectTab: false)
                     }))
 
             guard

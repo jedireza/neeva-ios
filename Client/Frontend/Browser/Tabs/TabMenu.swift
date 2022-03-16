@@ -84,7 +84,7 @@ struct TabMenu {
             let action = UIAction(
                 title: tab.title ?? "Untitled", discoverabilityTitle: tab.url?.absoluteString
             ) { _ in
-                _ = self.tabManager.restoreSavedTabs([tab])
+                _ = self.tabManager.restoreSavedTabs([tab], shouldSelectTab: false)
             }
             action.accessibilityLabel = tab.title ?? "Untitled"
             actions.append(action)

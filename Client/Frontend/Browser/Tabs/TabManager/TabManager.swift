@@ -25,7 +25,14 @@ class TabManager: NSObject {
 
     static var all = WeakList<TabManager>()
 
-    var tabs = [Tab]()
+    var tabs = [Tab]() {
+        didSet {
+            // Set the selected tab to nil if it was removed.
+            if let selectedTab = selectedTab, !tabs.contains(selectedTab) {
+                self.selectedTab = nil
+            }
+        }
+    }
     var tabsUpdatedPublisher = PassthroughSubject<Void, Never>()
 
     var didRestoreAllTabs: Bool = false
