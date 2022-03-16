@@ -394,7 +394,6 @@
 		670029C1272D1A5C00EBB968 /* ScheduleNotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 670029C0272D1A5C00EBB968 /* ScheduleNotificationView.swift */; };
 		67292D3326AD2CF200DB1BFA /* AnnotationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67292D3226AD2CF200DB1BFA /* AnnotationType.swift */; };
 		673C85D826E090DF006C21B0 /* SuggestionModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */; };
-		674186022799F26A0041D33F /* DefaultBrowserPromptView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674186012799F26A0041D33F /* DefaultBrowserPromptView.swift */; };
 		674439C627BEDFE400749F75 /* UIApplicationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674439C527BEDFE400749F75 /* UIApplicationExtensions.swift */; };
 		674439C827BEEE9000749F75 /* NeevaExperimentExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 674439C727BEEE9000749F75 /* NeevaExperimentExtensions.swift */; };
 		67462B2C27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67462B2B27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift */; };
@@ -1632,7 +1631,6 @@
 		670029C0272D1A5C00EBB968 /* ScheduleNotificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleNotificationView.swift; sourceTree = "<group>"; };
 		67292D3226AD2CF200DB1BFA /* AnnotationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnnotationType.swift; sourceTree = "<group>"; };
 		673C85D726E090DF006C21B0 /* SuggestionModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestionModelTests.swift; sourceTree = "<group>"; };
-		674186012799F26A0041D33F /* DefaultBrowserPromptView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserPromptView.swift; sourceTree = "<group>"; };
 		674439C527BEDFE400749F75 /* UIApplicationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtensions.swift; sourceTree = "<group>"; };
 		674439C727BEEE9000749F75 /* NeevaExperimentExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaExperimentExtensions.swift; sourceTree = "<group>"; };
 		67462B2B27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserIntestitialOnboardingView.swift; sourceTree = "<group>"; };
@@ -2447,7 +2445,6 @@
 			children = (
 				2328616725C9BD3D0015EA47 /* DefaultBrowserOnboarding.xcassets */,
 				C9299E33268F7BD700758795 /* DefaultBrowserOnboardingView.swift */,
-				674186012799F26A0041D33F /* DefaultBrowserPromptView.swift */,
 				67462B2B27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift */,
 			);
 			path = DefaultBrowserOnboarding;
@@ -5990,7 +5987,6 @@
 				C99646652655AA9A005FFE83 /* (null) in Sources */,
 				1AC3F333278CDE7E000CCE09 /* TransitionExtensions.swift in Sources */,
 				66B7A0E926EAF5B000AB751A /* OverlayGenerics.swift in Sources */,
-				674186022799F26A0041D33F /* DefaultBrowserPromptView.swift in Sources */,
 				66A187C627A1C4DC006B3295 /* GroupedRowButtonView.swift in Sources */,
 				C832BF8526E2DA2B00B9A1F8 /* ImageThumbnailView.swift in Sources */,
 				4A93B55C27829BE800CD5415 /* WalletDetailView.swift in Sources */,
