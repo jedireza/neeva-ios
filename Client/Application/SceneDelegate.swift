@@ -115,6 +115,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .AppEnterForeground,
             attributes: EnvironmentHelper.shared.getAttributes()
         )
+
+        // send number of spotlight index events from the last session
+        sendAggregatedSpotlightLogs()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -518,5 +521,32 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
 
         return false
+    }
+
+    func sendAggregatedSpotlightLogs() {
+        ClientLogger.shared.logCounter(
+            .createUserActivity,
+            attributes: EnvironmentHelper.shared.getAttributes() + [
+                ClientLogCounterAttribute(
+                    key: "count", value: String(Defaults[.numOfIndexedUserActivities]))
+            ]
+        )
+        ClientLogger.shared.logCounter(
+            .willIndex,
+            attributes: EnvironmentHelper.shared.getAttributes() + [
+                ClientLogCounterAttribute(
+                    key: "count", value: String(Defaults[.numOfWillIndexEvents]))
+            ]
+        )
+        ClientLogger.shared.logCounter(
+            .didIndex,
+            attributes: EnvironmentHelper.shared.getAttributes() + [
+                ClientLogCounterAttribute(
+                    key: "count", value: String(Defaults[.numOfDidIndexEvents]))
+            ]
+        )
+        Defaults[.numOfIndexedUserActivities] = 0
+        Defaults[.numOfWillIndexEvents] = 0
+        Defaults[.numOfDidIndexEvents] = 0
     }
 }

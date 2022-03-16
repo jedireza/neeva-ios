@@ -24,75 +24,19 @@ class SpotlightLogger {
 
 extension SpotlightLogger: SpaceStoreSpotlightEventDelegate {
     func willIndex(_ spaces: [Space]) {
-        ClientLogger.shared.logCounter(
-            .willIndex,
-            attributes: EnvironmentHelper.shared.getAttributes() + [
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.itemType,
-                    value: LogConfig.SpotlightAttribute.ItemType.space.rawValue
-                ),
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.indexCount,
-                    value: String(spaces.count)
-                ),
-            ]
-        )
+        Defaults[.numOfWillIndexEvents] += 1
     }
 
     func willIndexEntities(for space: Space, count: Int) {
-        ClientLogger.shared.logCounter(
-            .willIndex,
-            attributes: EnvironmentHelper.shared.getAttributes() + [
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.itemType,
-                    value: LogConfig.SpotlightAttribute.ItemType.spaceEntity.rawValue
-                ),
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.indexCount,
-                    value: String(count)
-                ),
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.spaceIdPayload,
-                    value: space.id.id
-                ),
-            ]
-        )
+        Defaults[.numOfWillIndexEvents] += 1
     }
 
     func didIndex(_ spaces: [Space], error: Error?) {
-        ClientLogger.shared.logCounter(
-            .didIndex,
-            attributes: EnvironmentHelper.shared.getAttributes() + [
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.itemType,
-                    value: LogConfig.SpotlightAttribute.ItemType.space.rawValue
-                ),
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.error,
-                    value: error?.localizedDescription
-                ),
-            ]
-        )
+        Defaults[.numOfDidIndexEvents] += 1
     }
 
     func didIndexEntities(for space: Space, error: Error?) {
-        ClientLogger.shared.logCounter(
-            .didIndex,
-            attributes: EnvironmentHelper.shared.getAttributes() + [
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.itemType,
-                    value: LogConfig.SpotlightAttribute.ItemType.spaceEntity.rawValue
-                ),
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.spaceIdPayload,
-                    value: space.id.id
-                ),
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.error,
-                    value: error?.localizedDescription
-                ),
-            ]
-        )
+        Defaults[.numOfDidIndexEvents] += 1
     }
 
     func willClearIndex(for domainIdentifier: String) {
