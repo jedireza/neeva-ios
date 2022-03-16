@@ -310,6 +310,7 @@ public struct LogConfig {
         case OpenLinkFromCheatsheet
         case CheatsheetQueryFallback
         case OpenCheatsheetSupport
+        case CheatsheetBadURLString
 
         // MARK: tab group
         case tabGroupExpanded
@@ -580,6 +581,7 @@ public struct LogConfig {
         case .OpenLinkFromCheatsheet: return .Cheatsheet
         case .CheatsheetQueryFallback: return .Cheatsheet
         case .OpenCheatsheetSupport: return .Cheatsheet
+        case .CheatsheetBadURLString: return .Cheatsheet
 
         case .tabGroupExpanded: return .TabGroup
         case .tabGroupCollapsed: return .TabGroup

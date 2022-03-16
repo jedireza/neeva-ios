@@ -6,6 +6,30 @@ import Apollo
 import Combine
 import CoreGraphics
 
+extension URL {
+    fileprivate init?(from apiResponse: String) {
+        if let url = URL(string: apiResponse) {
+            self = url
+            return
+        }
+
+        // Check for malformed fragment component
+        if let firstIndex = apiResponse.firstIndex(of: "#") {
+            // everything after the first # is the fragment
+            let fragment = apiResponse.suffix(from: apiResponse.index(after: firstIndex))
+            if let escapedFragment = fragment.addingPercentEncoding(
+                withAllowedCharacters: .urlFragmentAllowed),
+                let url = URL(string: apiResponse.prefix(through: firstIndex) + escapedFragment)
+            {
+                self = url
+                return
+            }
+        }
+
+        return nil
+    }
+}
+
 public struct Seller {
     public let url: String
     public let price: Double
@@ -86,6 +110,16 @@ public struct NewsResults {
     public let actionURL: URL
 }
 
+private struct PartialResult<T> {
+    let skippedItem: Bool
+    let result: T?
+
+    init(skippedItem: Bool = false, result: T? = nil) {
+        self.skippedItem = skippedItem
+        self.result = result
+    }
+}
+
 public enum RichResultType {
     case ProductCluster(result: ProductClusterResult)
     case RecipeBlock(result: RecipeBlockResult)
@@ -111,10 +145,12 @@ public class SearchController:
     public struct RichResult: Identifiable {
         public var id = UUID()
         public var resultType: RichResultType
+        public var dataComplete: Bool
 
-        public init(id: UUID = UUID(), resultType: RichResultType) {
+        public init(id: UUID = UUID(), resultType: RichResultType, dataComplete: Bool = true) {
             self.id = id
             self.resultType = resultType
+            self.dataComplete = true
         }
     }
 
@@ -129,8 +165,10 @@ public class SearchController:
         self.perform(query: SearchQuery(query: query))
     }
 
-    class func constructProductCluster(from result: SearchQuery.Data.Search.ResultGroup.Result)
-        -> ProductClusterResult?
+    private class func constructProductCluster(
+        from result: SearchQuery.Data.Search.ResultGroup.Result
+    )
+        -> PartialResult<ProductClusterResult>
     {
         guard
             let products = result.typeSpecific?
@@ -138,7 +176,7 @@ public class SearchController:
                 .productClusters?
                 .products
         else {
-            return nil
+            return PartialResult()
         }
 
         let productItems = products.compactMap { product -> Product? in
@@ -189,14 +227,14 @@ public class SearchController:
         }
 
         guard !productItems.isEmpty else {
-            return nil
+            return PartialResult()
         }
 
-        return ProductClusterResult(productItems)
+        return PartialResult(skippedItem: false, result: ProductClusterResult(productItems))
     }
 
-    class func constructRecipeBlock(from result: SearchQuery.Data.Search.ResultGroup.Result)
-        -> RecipeBlockResult?
+    private class func constructRecipeBlock(from result: SearchQuery.Data.Search.ResultGroup.Result)
+        -> PartialResult<RecipeBlockResult>
     {
         guard
             let recipes = result.typeSpecific?
@@ -204,17 +242,23 @@ public class SearchController:
                 .recipeBlock?
                 .recipes
         else {
-            return nil
+            return PartialResult()
         }
+
+        var skippedItem = false
 
         let relatedRecipes =
             recipes
             .compactMap { recipe -> RelatedRecipe? in
                 guard let title = recipe.title,
                     let imageURL = recipe.imageUrl,
-                    let urlString = recipe.url,
-                    let url = URL(string: urlString)
+                    let urlString = recipe.url
                 else {
+                    return nil
+                }
+
+                guard let url = URL(from: urlString) else {
+                    skippedItem = true
                     return nil
                 }
 
@@ -238,14 +282,16 @@ public class SearchController:
             }
 
         guard !relatedRecipes.isEmpty else {
-            return nil
+            return PartialResult(skippedItem: skippedItem, result: nil)
         }
 
-        return RecipeBlockResult(relatedRecipes)
+        return PartialResult(skippedItem: skippedItem, result: RecipeBlockResult(relatedRecipes))
     }
 
-    class func constructRelatedSearch(from result: SearchQuery.Data.Search.ResultGroup.Result)
-        -> RelatedSearchesResult?
+    private class func constructRelatedSearch(
+        from result: SearchQuery.Data.Search.ResultGroup.Result
+    )
+        -> PartialResult<RelatedSearchesResult>
     {
         guard
             let relatedSearches = result.typeSpecific?
@@ -253,7 +299,7 @@ public class SearchController:
                 .relatedSearches?
                 .entries
         else {
-            return nil
+            return PartialResult()
         }
 
         let searchTexts = relatedSearches.compactMap { item in
@@ -261,31 +307,36 @@ public class SearchController:
         }
 
         guard !searchTexts.isEmpty else {
-            return nil
+            return PartialResult()
         }
 
-        return RelatedSearchesResult(searchTexts)
+        return PartialResult(skippedItem: false, result: RelatedSearchesResult(searchTexts))
     }
 
-    class func constructWebResult(from result: SearchQuery.Data.Search.ResultGroup.Result)
-        -> WebResult?
+    private class func constructWebResult(from result: SearchQuery.Data.Search.ResultGroup.Result)
+        -> PartialResult<WebResult>
     {
         guard
             let web = result.typeSpecific?
                 .asWeb?
                 .web
         else {
-            return nil
+            return PartialResult()
         }
 
         guard let faviconURL = web.favIconUrl,
             let title = result.title,
-            let actionURL = URL(string: result.actionUrl),
             let hostname = web.structuredUrl?.hostname,
             let paths = web.structuredUrl?.paths
         else {
-            return nil
+            return PartialResult()
         }
+
+        guard let actionURL = URL(from: result.actionUrl) else {
+            return PartialResult(skippedItem: true, result: nil)
+        }
+
+        var skippedItem = false
 
         let displayURLHost = hostname
         let displayURLPath = paths.joined(separator: " > ")
@@ -298,9 +349,13 @@ public class SearchController:
             web.inlineSearchProducts?.compactMap { item -> InlineSearchProduct? in
                 guard let productName = item.productName,
                     let thumbnailURL = item.thumbnailUrl,
-                    let productActionURLString = item.actionUrl,
-                    let productActionURL = URL(string: productActionURLString)
+                    let productActionURLString = item.actionUrl
                 else {
+                    return nil
+                }
+
+                guard let productActionURL = URL(from: productActionURLString) else {
+                    skippedItem = true
                     return nil
                 }
 
@@ -329,7 +384,7 @@ public class SearchController:
                     price: item.priceLow)
             } ?? []
 
-        return WebResult(
+        let webResult = WebResult(
             faviconURL: faviconURL,
             displayURLHost: displayURLHost,
             displayURLPath: displayURLPath,
@@ -340,23 +395,28 @@ public class SearchController:
             inlineSearchProducts: inlineSearchProducts,
             buyingGuides: buyingGuides
         )
+        return PartialResult(skippedItem: skippedItem, result: webResult)
     }
 
-    class func constructNewsResult(from result: SearchQuery.Data.Search.ResultGroup.Result)
-        -> NewsResults?
+    private class func constructNewsResult(from result: SearchQuery.Data.Search.ResultGroup.Result)
+        -> PartialResult<NewsResults>
     {
         guard let subResults = result.subResults,
-            let actionURL = URL(string: result.actionUrl)
+            let actionURL = URL(from: result.actionUrl)
         else {
-            return nil
+            return PartialResult(skippedItem: true, result: nil)
         }
+
+        var skippedItem = false
 
         let newsResults =
             subResults
             .compactMap { subResult -> NewsResult? in
-                guard let news = subResult.asNews?.news,
-                    let url = URL(string: news.url)
-                else {
+                guard let news = subResult.asNews?.news else {
+                    return nil
+                }
+                guard let url = URL(from: news.url) else {
+                    skippedItem = true
                     return nil
                 }
                 return NewsResult(
@@ -376,14 +436,17 @@ public class SearchController:
             }
 
         guard !newsResults.isEmpty else {
-            return nil
+            return PartialResult(skippedItem: skippedItem, result: nil)
         }
 
-        return NewsResults(
-            news: newsResults,
-            title: result.title,
-            snippet: result.snippet,
-            actionURL: actionURL
+        return PartialResult(
+            skippedItem: skippedItem,
+            result: NewsResults(
+                news: newsResults,
+                title: result.title,
+                snippet: result.snippet,
+                actionURL: actionURL
+            )
         )
     }
 
@@ -393,6 +456,8 @@ public class SearchController:
         // recipeblocks are flipped and then concatenated
         var recipeBlocks: [RecipeBlockResult] = []
         var webResults: [WebResult] = []
+        var recipeDataComplete = true
+        var webResultsDataComplete = true
 
         data.search?.resultGroups?
             // [ResultGroup?]
@@ -410,9 +475,13 @@ public class SearchController:
                 if let subResultTypeName = result.subResults?.first?.__typename {
                     switch subResultTypeName {
                     case "News":
-                        if let newsResults = constructNewsResult(from: result) {
+                        let newsResults = constructNewsResult(from: result)
+                        if let parsedData = newsResults.result {
                             richResults.append(
-                                RichResult(resultType: .NewsGroup(result: newsResults))
+                                RichResult(
+                                    resultType: .NewsGroup(result: parsedData),
+                                    dataComplete: !newsResults.skippedItem
+                                )
                             )
                         }
                     default:
@@ -421,27 +490,37 @@ public class SearchController:
                 } else if let typename = result.typeSpecific?.__typename {
                     switch typename {
                     case "ProductClusters":
-                        if let productClusterResult = constructProductCluster(from: result) {
+                        let productClusterResult = constructProductCluster(from: result)
+                        if let parsedData = productClusterResult.result {
                             richResults.append(
                                 RichResult(
-                                    resultType: .ProductCluster(result: productClusterResult))
+                                    resultType: .ProductCluster(result: parsedData),
+                                    dataComplete: !productClusterResult.skippedItem
+                                )
                             )
                         }
                     case "RelatedSearches":
-                        if let relatedSearchesResult = constructRelatedSearch(from: result) {
+                        let relatedSearchesResult = constructRelatedSearch(from: result)
+                        if let parsedData = relatedSearchesResult.result {
                             richResults.append(
                                 RichResult(
-                                    resultType: .RelatedSearches(result: relatedSearchesResult))
+                                    resultType: .RelatedSearches(result: parsedData),
+                                    dataComplete: !relatedSearchesResult.skippedItem
+                                )
                             )
                         }
                     case "RecipeBlock":
-                        if let recipeBlockResult = constructRecipeBlock(from: result) {
-                            recipeBlocks.append(recipeBlockResult)
+                        let recipeBlockResult = constructRecipeBlock(from: result)
+                        if let parsedData = recipeBlockResult.result {
+                            recipeBlocks.append(parsedData)
                         }
+                        recipeDataComplete = !recipeBlockResult.skippedItem && recipeDataComplete
                     case "Web":
-                        if let webResult = constructWebResult(from: result) {
-                            webResults.append(webResult)
+                        let webResult = constructWebResult(from: result)
+                        if let parsedData = webResult.result {
+                            webResults.append(parsedData)
                         }
+                        webResultsDataComplete = !webResult.skippedItem && webResultsDataComplete
                     default:
                         return
                     }
@@ -456,20 +535,24 @@ public class SearchController:
                         RecipeBlockResult(
                             recipeBlocks.reversed().flatMap { $0 }
                         )
-                )
+                ),
+                dataComplete: recipeDataComplete
             )
             richResults.append(recipeRichResult)
         }
 
         if !webResults.isEmpty {
             // merge web result blocks
-            let webRichResult = RichResult(resultType: .WebGroup(result: WebResults(webResults)))
+            let webRichResult = RichResult(
+                resultType: .WebGroup(result: WebResults(webResults)),
+                dataComplete: webResultsDataComplete
+            )
             richResults.append(webRichResult)
+        }
 
-            // order the results
-            richResults.sort {
-                $0.resultType.order < $1.resultType.order
-            }
+        // order the results
+        richResults.sort {
+            $0.resultType.order < $1.resultType.order
         }
 
         return richResults
