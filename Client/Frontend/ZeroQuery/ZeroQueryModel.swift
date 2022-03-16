@@ -173,7 +173,8 @@ class ZeroQueryModel: ObservableObject {
                 })
         } else if !Defaults[.didDismissDefaultBrowserCard]
             && !Defaults[.didSetDefaultBrowser]
-            && (!Defaults[.didShowDefaultBrowserInterstitial]
+            && ((!Defaults[.didShowDefaultBrowserInterstitial]
+                 && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser])
                 || satisfyDefaultBrowserPromoFreqRule())
         {
             ClientLogger.shared.logCounter(.DefaultBrowserPromoCardImp)
