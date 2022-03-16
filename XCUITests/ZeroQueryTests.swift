@@ -31,6 +31,12 @@ class ZeroQueryTests: BaseTestCase {
     func testRemoveItemFromSuggestedSites() {
         newTab()
 
+        // Taps the expand suggested sites button
+        if app.buttons["􁀆"].exists {
+            app.buttons["􁀆"].tap()
+        }
+
+        waitForExistence(app.buttons["Facebook"], timeout: 30)
         app.buttons["Facebook"].press(forDuration: 1)
         waitForExistence(app.buttons["Remove"])
         app.buttons["Remove"].tap()
