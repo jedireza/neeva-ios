@@ -48,6 +48,7 @@ struct InternalSettingsView: View {
     @Default(.numOfDailyZeroQueryImpression) var numOfDailyZeroQueryImpression
     @Default(.lastZeroQueryImpUpdatedTimestamp) var lastZeroQueryImpUpdatedTimestamp
     @Default(.didTriggerSystemReviewDialog) var didTriggerSystemReviewDialog
+    @Default(.numberOfAppForeground) var numberOfAppForeground
 
     var body: some View {
         List {
@@ -99,6 +100,7 @@ struct InternalSettingsView: View {
                     Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
                     Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
                     Toggle(String("didTriggerSystemReviewDialog"), isOn: $didTriggerSystemReviewDialog)
+                    NumberField(String("numberOfAppForeground"), number: $numberOfAppForeground)
                 }
             }
             Section(header: Text(verbatim: "Default Browser")) {

@@ -103,6 +103,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         checkUserActivenessLastWeek()
+        checkUserForegroundActivity()
 
         LocalNotitifications.scheduleNeevaPromoCallbackIfAuthorized(
             callSite: LocalNotitifications.ScheduleCallSite.enterForeground
@@ -463,17 +464,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    func checkUserActivenessLastWeek() {
-        let minusOneWeekToCurrentDate = Calendar.current.date(
-            byAdding: .weekOfYear, value: -1, to: Date())
-
-        guard let startOfLastWeek = minusOneWeekToCurrentDate else {
-            return
-        }
-
+    func checkUserForegroundActivity() {
         #if !DEBUG
             if let scene = (scene as? UIWindowScene),
-                Defaults[.loginLastWeekTimeStamp].count == AppRatingPromoRule.numOfAppForeground
+                Defaults[.numberOfAppForeground] >= AppRatingSystemDialogRule.numOfAppForeground
                     && !Defaults[.didTriggerSystemReviewDialog]
             {
                 // Note that Apple has full control over when to show the actual review dialog
@@ -483,6 +477,17 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 Defaults[.didTriggerSystemReviewDialog] = true
             }
         #endif
+
+        Defaults[.numberOfAppForeground] += 1
+    }
+
+    func checkUserActivenessLastWeek() {
+        let minusOneWeekToCurrentDate = Calendar.current.date(
+            byAdding: .weekOfYear, value: -1, to: Date())
+
+        guard let startOfLastWeek = minusOneWeekToCurrentDate else {
+            return
+        }
 
         Defaults[.loginLastWeekTimeStamp] = Defaults[.loginLastWeekTimeStamp].suffix(2).filter {
             $0 > startOfLastWeek
