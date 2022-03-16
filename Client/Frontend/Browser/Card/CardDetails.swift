@@ -131,7 +131,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     typealias Manager = TabManager
 
     public let id: String
-    private var isPinnedSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     var manager: TabManager
     var isChild: Bool
@@ -179,9 +179,21 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
         self.manager = manager
         self.isChild = isChild
 
-        isPinnedSubscription = tab.$isPinned.sink { [weak self] _ in
+        tab.$isPinned.sink { [weak self] _ in
             self?.objectWillChange.send()
-        }
+        }.store(in: &subscriptions)
+
+        manager.selectedTabPublisher
+            .prepend(nil)
+            .withPrevious()
+            .sink { (prev, current) in
+                if current?.id == self.id && prev?.tabUUID != self.id {
+                    self.objectWillChange.send()
+                } else if prev?.tabUUID == self.id && current?.id != self.id {
+                    self.objectWillChange.send()
+                }
+            }
+            .store(in: &subscriptions)
     }
 
     public func performDrop(info: DropInfo) -> Bool {
