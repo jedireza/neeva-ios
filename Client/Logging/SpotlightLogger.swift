@@ -13,6 +13,7 @@ class SpotlightLogger {
         // This logger always gets initialized
         // Force enable Spotlight integration
         if Defaults[.overwriteSpotlightDefaults] {
+            Defaults[.createUserActivities] = true
             Defaults[.makeActivityAvailForSearch] = true
             Defaults[.addThumbnailToActivities] = true
             Defaults[.addSpacesToCS] = true
