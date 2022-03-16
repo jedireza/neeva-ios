@@ -13,13 +13,14 @@ struct SpaceImageEntityView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
-            WebImage(url: url).resizable()
-                .transition(.fade(duration: 0.5))
-                .background(Color.white)
+            //To-Do: Fix resize issue
+            AnimatedImage(url: url)
+                .resizable()
                 .scaledToFit()
-                .frame(maxWidth: .infinity)
+                .background(Color.white)
                 .cornerRadius(SpaceViewUX.ThumbnailCornerRadius)
                 .padding(.bottom, 8)
+            
             if let title = title {
                 Text(title)
                     .withFont(.bodyLarge)
