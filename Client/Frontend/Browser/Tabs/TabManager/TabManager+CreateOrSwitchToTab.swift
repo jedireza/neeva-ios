@@ -18,8 +18,12 @@ extension TabManager {
     )
         -> CreateOrSwitchToTabResult
     {
+        if let tab = selectedTab {
+            ScreenshotHelper(controller: SceneDelegate.getBVC(with: scene)).takeScreenshot(tab)
+        }
+
         if let existingTab = getTabFor(url) {
-            select(existingTab)
+            selectTab(existingTab)
             existingTab.browserViewController?
                 .postLocationChangeNotificationForTab(existingTab, visitType: visitType)
             return .switchedToExistingTab
@@ -34,7 +38,7 @@ extension TabManager {
                 visitType: visitType
             )
 
-            select(newTab)
+            selectTab(newTab)
 
             return .createdNewTab
         }
@@ -50,14 +54,14 @@ extension TabManager {
         if let existingTab = getTabFor(url) {
             existingTab.parentSpaceID = spaceID
             existingTab.rootUUID = spaceID
-            select(existingTab)
+            selectTab(existingTab)
             return .switchedToExistingTab
         } else {
             let newTab = addTab(
                 URLRequest(url: url), flushToDisk: true, zombie: false, isIncognito: isIncognito)
             newTab.parentSpaceID = spaceID
             newTab.rootUUID = spaceID
-            select(newTab)
+            selectTab(newTab)
             return .createdNewTab
         }
     }
