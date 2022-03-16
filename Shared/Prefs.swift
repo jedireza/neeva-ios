@@ -171,6 +171,10 @@ extension Defaults.Keys {
         "profile.didDismissDefaultBrowserCard")
     public static let didShowDefaultBrowserInterstitial = Defaults.BoolKey(
         "didShowDefaultBrowserInterstitial")
+    // keeping interstitial shown state separately for skip to browser case so we can
+    // show the default browser interstitial in the future for user who sign in later
+    public static let didShowDefaultBrowserInterstitialFromSkipToBrowser = Defaults.BoolKey(
+        "didShowDefaultBrowserInterstitialFromSkipToBrowser")
     public static let didSetDefaultBrowser = Defaults.BoolKey(
         "didSetDefaultBrowser")
 

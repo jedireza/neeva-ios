@@ -1039,7 +1039,14 @@ extension BrowserViewController: WKNavigationDelegate {
                     let interaction = LogConfig.Interaction(rawValue: interactionStr),
                     userInfo.hasLoginCookie()
                 {
-                    ClientLogger.shared.logCounter(interaction)
+                    ClientLogger.shared.logCounter(
+                        interaction,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.PromoCardAttribute.fromSkipToBrowser,
+                                value: "false")
+                        ]
+                    )
                     Defaults[.lastDefaultBrowserPromptInteraction] = nil
                 }
 

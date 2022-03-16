@@ -33,6 +33,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
 
+    // Default Browser intersititual
     private var shouldPresentDBPrompt = false
     var shouldLogDBPrompt = false
 
@@ -1592,6 +1593,9 @@ extension BrowserViewController {
             }
         }
 
+        // Only show to new users
+        let introSeen = Defaults[.introSeen]
+
         introViewModel = IntroViewModel(
             presentationController: self, overlayManager: overlayManager,
             onDismiss: { action in
@@ -1636,11 +1640,15 @@ extension BrowserViewController {
                         }
                     }
 
-                    if case .skipToBrowser = action {
-                    } else {
-                        if !Defaults[.didSetDefaultBrowser]
-                            && !Defaults[.didShowDefaultBrowserInterstitial]
-                        {
+                    if !Defaults[.didSetDefaultBrowser]
+                        && !Defaults[.didShowDefaultBrowserInterstitial]
+                        && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
+                    {
+                        if case .skipToBrowser = action {
+                            if !introSeen {
+                                self.presentDBPromptView(fromSkipToBrowser: true)
+                            }
+                        } else {
                             self.shouldPresentDBPrompt = true
                             self.shouldLogDBPrompt = true
                         }
@@ -1670,12 +1678,18 @@ extension BrowserViewController {
         }
     }
 
-    private func presentDBPromptView() {
+    private func presentDBPromptView(fromSkipToBrowser: Bool = false) {
         self.shouldPresentDBPrompt = false
+
+        if fromSkipToBrowser {
+            ClientLogger.shared.logCounter(
+                .DefaultBrowserInterstitialImpSkipToBrowser
+            )
+        }
 
         self.overlayManager.presentFullScreenModal(
             content: AnyView(
-                DefaultBrowserInterstitialOnboardingView {
+                DefaultBrowserInterstitialOnboardingView(fromSkipToBrowser: fromSkipToBrowser) {
                     self.overlayManager.hideCurrentOverlay()
                 } buttonAction: {
                     self.overlayManager.hideCurrentOverlay()
@@ -1686,7 +1700,11 @@ extension BrowserViewController {
             )
         ) {}
 
-        Defaults[.didShowDefaultBrowserInterstitial] = true
+        if fromSkipToBrowser {
+            Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
+        } else {
+            Defaults[.didShowDefaultBrowserInterstitial] = true
+        }
     }
 
     private func introVCPresentHelper(
