@@ -10,8 +10,12 @@ enum DefaultBrowserPromoRules {
     static let maxDailyPromoImpression = 3
 }
 
-enum AppRatingPromoRule {
-    static let numOfAppForeground = 3
+enum AppRatingPromoCardRule {
+    static let numOfAppForegroundLastWeek = 3
+}
+
+enum AppRatingSystemDialogRule {
+    static let numOfAppForeground = 6
 }
 
 enum PromoCardType {

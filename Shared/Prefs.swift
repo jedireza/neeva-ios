@@ -92,6 +92,7 @@ extension Defaults.Keys {
 
     public static let loginLastWeekTimeStamp = Defaults.Key<[Date]>(
         "LoginLastWeekTimeStamp", default: [])
+    public static let numberOfAppForeground = Defaults.Key<Int32>("NumberOfAppForeground", default: 0)
 
     // app review
     public static let ratingsCardHidden = Defaults.BoolKey("RatingsCardHidden")
