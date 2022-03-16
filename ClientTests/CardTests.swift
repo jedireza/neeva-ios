@@ -36,7 +36,6 @@ class CardTests: XCTestCase {
     var incognitoModel: IncognitoModel!
     var browserModel: BrowserModel!
     var gridModel: GridModel!
-    var delegate: MockTabManagerDelegate!
     var groupManager: TabGroupManager!
     var tabCardModel: TabCardModel!
     var tabGroupCardModel: TabGroupCardModel!
@@ -81,7 +80,6 @@ class CardTests: XCTestCase {
             gridModel: gridModel, tabManager: manager, chromeModel: .init(),
             incognitoModel: incognitoModel)
         manager.didRestoreAllTabs = true
-        delegate = MockTabManagerDelegate()
         groupManager = TabGroupManager(tabManager: manager)
         tabCardModel = TabCardModel(manager: manager, groupManager: groupManager)
         tabGroupCardModel = TabGroupCardModel(manager: groupManager)
@@ -92,7 +90,6 @@ class CardTests: XCTestCase {
 
     override func tearDown() {
         profile._shutdown()
-        manager.removeDelegate(delegate)
         manager.removeAllTabs()
 
         super.tearDown()

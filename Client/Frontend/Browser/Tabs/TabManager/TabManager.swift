@@ -14,7 +14,6 @@ private let log = Logger.browser
 
 // TabManager must extend NSObjectProtocol in order to implement WKNavigationDelegate
 class TabManager: NSObject {
-    var delegates = [WeakTabManagerDelegate]()
     let tabEventHandlers: [TabEventHandler]
     let store: TabManagerStore
     var scene: UIScene
@@ -193,7 +192,7 @@ class TabManager: NSObject {
     // MARK: - Select Tab
     // This function updates the _selectedIndex.
     // Note: it is safe to call this with `tab` and `previous` as the same tab, for use in the case where the index of the tab has changed (such as after deletion).
-    func selectTab(_ tab: Tab?, previous: Tab? = nil, updateZeroQuery: Bool = true, notify: Bool = true) {
+    func selectTab(_ tab: Tab?, previous: Tab? = nil, notify: Bool = true) {
         assert(Thread.isMainThread)
         let previous = previous ?? selectedTab
 
@@ -213,7 +212,7 @@ class TabManager: NSObject {
         selectedTab?.lastExecutedTime = Date.nowMilliseconds()
 
         if notify {
-            sendSelectTabNotifications(previous: previous, updateZeroQuery: updateZeroQuery)
+            sendSelectTabNotifications(previous: previous)
         }
 
         if let tab = selectedTab {
@@ -355,14 +354,7 @@ class TabManager: NSObject {
         configuration.processPool = WKProcessPool()
     }
 
-    func sendSelectTabNotifications(previous: Tab? = nil, updateZeroQuery: Bool = true) {
-        delegates.forEach {
-            $0.get()?.tabManager(
-                self, didSelectedTabChange: selectedTab, previous: previous,
-                isRestoring: store.isRestoringTabs,
-                updateZeroQuery: true)
-        }
-
+    func sendSelectTabNotifications(previous: Tab? = nil) {
         if let tab = selectedTab {
             selectedTabPublisher.send(tab)
         }

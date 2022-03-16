@@ -251,7 +251,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     fileprivate func didInit() {
         screenshotHelper = ScreenshotHelper(controller: self)
-        tabManager.addDelegate(self)
+
+        tabManager.selectedTabPublisher.prepend(nil).withPrevious().sink { [weak self] in
+            self?.selectedTabChanged(selected: $0.1, previous: $0.0)
+        }.store(in: &subscriptions)
+
         tabManager.addNavigationDelegate(self)
         downloadQueue.delegate = self
     }
@@ -1404,11 +1408,8 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 }
 
-extension BrowserViewController: TabManagerDelegate {
-    func tabManager(
-        _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
-        isRestoring: Bool, updateZeroQuery: Bool
-    ) {
+extension BrowserViewController {
+    func selectedTabChanged(selected: Tab?, previous: Tab?) {
         presentedViewController?.dismiss(animated: false, completion: nil)
 
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it
@@ -1485,9 +1486,7 @@ extension BrowserViewController: TabManagerDelegate {
             readerModeModel.setReadingModeState(state: .unavailable)
         }
 
-        if updateZeroQuery {
-            updateInZeroQuery(selected?.url as URL?)
-        }
+        updateInZeroQuery(selected?.url as URL?)
     }
 
     func getSceneDelegate() -> SceneDelegate? {

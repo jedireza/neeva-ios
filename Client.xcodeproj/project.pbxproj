@@ -302,7 +302,7 @@
 		6658712027D00890003B4987 /* TabManager+CloseTabs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6658711F27D00890003B4987 /* TabManager+CloseTabs.swift */; };
 		6658712227D00940003B4987 /* TabManager+TestSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6658712127D00940003B4987 /* TabManager+TestSupport.swift */; };
 		6658712427D00957003B4987 /* TabManager+TabStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6658712327D00957003B4987 /* TabManager+TabStorage.swift */; };
-		6658712627D00971003B4987 /* TabManagerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6658712527D00971003B4987 /* TabManagerDelegate.swift */; };
+		6658712627D00971003B4987 /* TabManager+TabEventHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6658712527D00971003B4987 /* TabManager+TabEventHandler.swift */; };
 		6658712827D00DFF003B4987 /* TabManager+AddTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6658712727D00DFF003B4987 /* TabManager+AddTab.swift */; };
 		665879CE26C3408700B53EB7 /* WindowManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665879CD26C3408700B53EB7 /* WindowManager.swift */; };
 		665A23D42755D8D5006AD997 /* QueryForNavigation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 665A23D32755D8D5006AD997 /* QueryForNavigation.swift */; };
@@ -1536,7 +1536,7 @@
 		6658711F27D00890003B4987 /* TabManager+CloseTabs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TabManager+CloseTabs.swift"; sourceTree = "<group>"; };
 		6658712127D00940003B4987 /* TabManager+TestSupport.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TabManager+TestSupport.swift"; sourceTree = "<group>"; };
 		6658712327D00957003B4987 /* TabManager+TabStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TabManager+TabStorage.swift"; sourceTree = "<group>"; };
-		6658712527D00971003B4987 /* TabManagerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabManagerDelegate.swift; sourceTree = "<group>"; };
+		6658712527D00971003B4987 /* TabManager+TabEventHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TabManager+TabEventHandler.swift"; sourceTree = "<group>"; };
 		6658712727D00DFF003B4987 /* TabManager+AddTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TabManager+AddTab.swift"; sourceTree = "<group>"; };
 		665879CD26C3408700B53EB7 /* WindowManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowManager.swift; sourceTree = "<group>"; };
 		665A23D32755D8D5006AD997 /* QueryForNavigation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryForNavigation.swift; sourceTree = "<group>"; };
@@ -2906,12 +2906,12 @@
 			isa = PBXGroup;
 			children = (
 				D3968F241A38FE8500CEFD3B /* TabManager.swift */,
-				6658712527D00971003B4987 /* TabManagerDelegate.swift */,
 				6658712727D00DFF003B4987 /* TabManager+AddTab.swift */,
 				6658711F27D00890003B4987 /* TabManager+CloseTabs.swift */,
 				6658711D27D00878003B4987 /* TabManager+CreateOrSwitchToTab.swift */,
-				6658712127D00940003B4987 /* TabManager+TestSupport.swift */,
+				6658712527D00971003B4987 /* TabManager+TabEventHandler.swift */,
 				6658712327D00957003B4987 /* TabManager+TabStorage.swift */,
+				6658712127D00940003B4987 /* TabManager+TestSupport.swift */,
 				6658711B27D0086B003B4987 /* TabManager+WKNavigationDelegate.swift */,
 			);
 			path = TabManager;
@@ -6047,7 +6047,7 @@
 				BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */,
 				C9DDC12026B9E24900F293AB /* WebViewContainer.swift in Sources */,
 				F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */,
-				6658712627D00971003B4987 /* TabManagerDelegate.swift in Sources */,
+				6658712627D00971003B4987 /* TabManager+TabEventHandler.swift in Sources */,
 				C832BF8326E15B5B00B9A1F8 /* OverflowMenuOverlayContent.swift in Sources */,
 				668DC29926E9B1310072799E /* AppDelegate+UNUserNotificationCenterDelegate.swift in Sources */,
 				C9B55A0F26A87C9B00C71F31 /* DebugSettingsRestartPromptView.swift in Sources */,
