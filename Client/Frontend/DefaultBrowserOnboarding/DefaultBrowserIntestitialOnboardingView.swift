@@ -93,7 +93,7 @@ struct DefaultBrowserInterstitialOnboardingView: View {
                         ClientLogger.shared.logCounter(.DefaultBrowserOnboardingInterstitialOpen)
                     } else {
                         Defaults[.lastDefaultBrowserPromptInteraction] =
-                            LogConfig.Interaction.DefaultBrowserPromptOpen.rawValue
+                            LogConfig.Interaction.DefaultBrowserOnboardingInterstitialOpen.rawValue
                     }
                 },
                 label: {
@@ -113,7 +113,7 @@ struct DefaultBrowserInterstitialOnboardingView: View {
                         ClientLogger.shared.logCounter(.DefaultBrowserOnboardingInterstitialSkip)
                     } else {
                         Defaults[.lastDefaultBrowserPromptInteraction] =
-                            LogConfig.Interaction.DefaultBrowserPromptSkip.rawValue
+                            LogConfig.Interaction.DefaultBrowserOnboardingInterstitialSkip.rawValue
                     }
                 },
                 label: {

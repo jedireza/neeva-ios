@@ -72,17 +72,9 @@ extension NeevaExperiment {
     //        case showDBPrompt
     //    }
 
-    public enum DefaultBrowserMergeEducation: String, ExperimentArms {
-        case control
-        case mergeEducation
-    }
 }
 
 // Experiment Example */
 //extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserV2 {
 //public static let defaultBrowserPromptV2 = Self()
 //}
-
-extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserMergeEducation {
-    public static let defaultBrowserMergeEducation = Self()
-}
