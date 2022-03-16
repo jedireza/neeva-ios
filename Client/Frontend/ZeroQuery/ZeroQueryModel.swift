@@ -240,15 +240,16 @@ class ZeroQueryModel: ObservableObject {
         guard let host = site.tileURL.normalizedHost else {
             return
         }
+        
         let url = site.tileURL
-        // if the default top sites contains the siteurl. also wipe it from default suggested sites.
+        // If the default top sites contains the site URL, also wipe it from default suggested sites.
         if TopSitesHandler.defaultTopSites().filter({ $0.url == url }).isEmpty == false {
             Defaults[.deletedSuggestedSites].append(url.absoluteString)
         }
+        
         profile.history.removeHostFromTopSites(host).uponQueue(.main) { result in
             guard result.isSuccess else { return }
             self.profile.panelDataObservers.activityStream.refreshIfNeeded(forceTopSites: true)
-            self.updateSuggestedSites()
         }
 
         self.suggestedSitesViewModel.sites.removeAll(where: { $0 == site })
