@@ -23,7 +23,7 @@ class TabGroupTests: BaseTestCase {
         }
     }
 
-    private func confirmOneTabGroupExisits() {
+    private func confirmOneTabGroupExists() {
         // Confirms only one Tab Group exists,
         // will fail with multiple options error if more than one exists.
         XCTAssertTrue(app.buttons["TabGroup"].exists)
@@ -33,7 +33,7 @@ class TabGroupTests: BaseTestCase {
     /// is not currently in a Tab Group.
     func testNYTimesCaseCreatesTabGroup() {
         openTestURLInNewTab()
-        openTestURLInNewTab(andNavigateAway: false)
+        openTestURLInNewTab(andNavigateAway: true)
 
         goToTabTray()
         waitForExistence(app.buttons["Tab Group, https://example.com/"])
@@ -46,18 +46,18 @@ class TabGroupTests: BaseTestCase {
         openTestURLInNewTab()
         openTestURLInNewTab()
         openTestURLInNewTab()
-        openTestURLInNewTab(andNavigateAway: false)
+        openTestURLInNewTab(andNavigateAway: true)
 
         goToTabTray()
         waitForExistence(app.buttons["Tab Group, https://example.com/"])
-        confirmOneTabGroupExisits()
+        confirmOneTabGroupExists()
     }
 
     func testNYTimesCaseCreatesTabGroupWithOtherTabs() {
         let url = "http://localhost:\(serverPort)/test-fixture/find-in-page-test.html"
         openURL(url)
         openTestURLInNewTab()
-        openTestURLInNewTab(andNavigateAway: false)
+        openTestURLInNewTab(andNavigateAway: true)
 
         goToTabTray()
 
@@ -66,6 +66,18 @@ class TabGroupTests: BaseTestCase {
 
         // Confirm that that there is one Tab Group for the example URL
         waitForExistence(app.buttons["Tab Group, https://example.com/"])
-        confirmOneTabGroupExisits()
+        confirmOneTabGroupExists()
+    }
+
+    func testNYTimesCaseIssue3088() {
+        closeAllTabs(createNewTab: false)
+
+        openTestURLInNewTab(andNavigateAway: true)
+        openTestURLInNewTab(andNavigateAway: true)
+        openTestURLInNewTab()
+
+        goToTabTray()
+        waitForExistence(app.buttons["Tab Group, https://example.com/"])
+        confirmOneTabGroupExists()
     }
 }
