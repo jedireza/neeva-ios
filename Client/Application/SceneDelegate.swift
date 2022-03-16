@@ -471,16 +471,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             return
         }
 
-        if let scene = (scene as? UIWindowScene),
-            Defaults[.loginLastWeekTimeStamp].count == AppRatingPromoRule.numOfAppForeground
-                && !Defaults[.didTriggerSystemReviewDialog]
-        {
-            // Note that Apple has full control over when to show the actual review dialog
-            // see here for more information:
-            // https://developer.apple.com/documentation/storekit/requesting_app_store_reviews
-            SKStoreReviewController.requestReview(in: scene)
-            Defaults[.didTriggerSystemReviewDialog] = true
-        }
+        #if !DEBUG
+            if let scene = (scene as? UIWindowScene),
+                Defaults[.loginLastWeekTimeStamp].count == AppRatingPromoRule.numOfAppForeground
+                    && !Defaults[.didTriggerSystemReviewDialog]
+            {
+                // Note that Apple has full control over when to show the actual review dialog
+                // see here for more information:
+                // https://developer.apple.com/documentation/storekit/requesting_app_store_reviews
+                SKStoreReviewController.requestReview(in: scene)
+                Defaults[.didTriggerSystemReviewDialog] = true
+            }
+        #endif
 
         Defaults[.loginLastWeekTimeStamp] = Defaults[.loginLastWeekTimeStamp].suffix(2).filter {
             $0 > startOfLastWeek
