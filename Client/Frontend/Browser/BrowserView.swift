@@ -177,7 +177,7 @@ struct BrowserView: View {
             NavigationView {
                 mainContent
                     .navigationBarHidden(true)
-            }.modifier(iPadOnlyStackNavigation())
+            }.navigationViewStyle(.stack)
 
             OverlayView(overlayManager: overlayManager)
         }.safeAreaChanged { safeArea in
