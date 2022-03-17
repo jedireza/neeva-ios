@@ -173,6 +173,20 @@ class NSURLExtensionsTests: XCTestCase {
         XCTAssertEqual(nsURL!.fragment!, "h=dupes%7CData%20%26%20BI%20Services%20Team%7C")
     }
 
+    func testWikipediaMobileURLDomain() {
+        let mobileURL = "https://en.m.wikipedia.org/wiki/Wikipedia".asURL
+        let desktopURL = "https://en.wikipedia.org/wiki/Wikipedia".asURL
+
+        XCTAssertNotNil(mobileURL, "Mobile URL does not parse.")
+        XCTAssertNotNil(desktopURL, "Desktop URL does not parse.")
+
+        let mobileURLHost = mobileURL!.normalizedHost
+        let desktopURLHost = desktopURL!.normalizedHost
+
+        XCTAssertNotNil(mobileURLHost, "Mobile URL has normalized host.")
+        XCTAssertEqual(mobileURLHost, desktopURLHost, "Normalized hosts do not match.")
+    }
+
     func testIPv6Domain() {
         let url = "http://[::1]/foo/bar".asURL!
         XCTAssertTrue(url.isIPv6)

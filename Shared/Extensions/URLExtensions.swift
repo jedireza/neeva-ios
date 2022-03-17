@@ -327,6 +327,13 @@ extension URL {
             host.replaceSubrange(range, with: "")
         }
 
+        // Special case for wikipedia which uses en.m.wikipedia.org
+        if host.hasSuffix("wikipedia.org"),
+            let range = host.range(of: ".m.")
+        {
+            host.replaceSubrange(range, with: ".")
+        }
+
         return host
     }
 
