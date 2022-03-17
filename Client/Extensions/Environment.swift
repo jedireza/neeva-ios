@@ -92,12 +92,4 @@ extension EnvironmentValues {
         get { self[SafeAreaKey.self] }
         set { self[SafeAreaKey.self] = newValue }
     }
-    
-    private struct ViewSizeKey: EnvironmentKey {
-        static var defaultValue: CGSize = CGSize()
-    }
-    public var viewSize: CGSize {
-        get { self[ViewSizeKey.self] }
-        set { self[ViewSizeKey.self] = newValue }
-    }
 }

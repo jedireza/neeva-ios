@@ -426,7 +426,8 @@ class CardTests: XCTestCase {
         waitForCondition(condition: { manager.tabs.count == 3 })
 
         let web3Model = Web3Model(server: nil, presenter: MockPresenter(), tabManager: manager)
-        let cardGrid = CardGrid(geom: nil)
+
+        let cardGrid = CardGrid()
             .environmentObject(browserModel)
             .environmentObject(browserModel.cardTransitionModel)
             .environmentObject(incognitoModel)
@@ -445,7 +446,6 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 5 })
         XCTAssertEqual(manager.tabs.count, 5)
-        
         waitForCondition {
             try cardGrid.inspect().findAll(FaviconView.self).count == 5
         }
@@ -461,20 +461,19 @@ class CardTests: XCTestCase {
         spaceCardModel.onDataUpdated()
         waitForCondition(condition: { spaceCardModel.allDetails.count == 4 })
 
-        let web3Model = Web3Model(server: nil, presenter: MockPresenter(), tabManager: manager)
-        let cardGrid = CardGrid(geom: nil)
-            .environmentObject(browserModel)
-            .environmentObject(browserModel.cardTransitionModel)
-            .environmentObject(incognitoModel)
-            .environmentObject(tabCardModel).environmentObject(spaceCardModel)
-            .environmentObject(tabGroupCardModel).environmentObject(gridModel)
-            .environmentObject(web3Model)
-            .environmentObject(web3Model.walletDetailsModel)
+        let cardContainer = CardsContainer(
+            columns: Array(repeating: GridItem(.fixed(100), spacing: 20), count: 2)
+        )
+        .environmentObject(browserModel)
+        .environmentObject(browserModel.cardTransitionModel)
+        .environmentObject(incognitoModel)
+        .environmentObject(tabCardModel)
+        .environmentObject(spaceCardModel)
+        .environmentObject(tabGroupCardModel)
+        .environmentObject(gridModel)
+        .environmentObject(tabGroupCardModel)
 
-        let cardContainer = try cardGrid.inspect().find(CardsContainer.self)
-        XCTAssertNotNil(cardContainer)
-        
-        let spaceCardsView = try cardContainer.find(SpaceCardsView.self)
+        let spaceCardsView = try cardContainer.inspect().find(SpaceCardsView.self)
         XCTAssertNotNil(spaceCardsView)
 
         let spaceCards = spaceCardsView.findAll(FittedCard<SpaceCardDetails>.self)

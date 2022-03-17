@@ -68,17 +68,15 @@ struct CardGrid: View {
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var walletDetailsModel: WalletDetailsModel
 
+    @State private var cardSize: CGFloat = CardUX.DefaultCardSize
+    @State private var columnCount = 2
+
     @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
     @Environment(\.shareURL) var shareURL
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    @Environment(\.viewSize) private var viewSize
 
-    @State private var cardSize: CGFloat = CardUX.DefaultCardSize
-    @State private var columnCount = 2
     @State var detailDragOffset: CGFloat = 0
-    
-    let geom: GeometryProxy?
 
     var topToolbar: Bool {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
@@ -108,20 +106,14 @@ struct CardGrid: View {
 
     @ViewBuilder
     var cardContainer: some View {
-        GeometryReader { geom in
-            // Use a fallback geom if the one passed is nil.
-            let geom = self.geom ?? geom
-            
-            VStack(spacing: 0) {
-                CardsContainer(
-                    columns: columns, geom: geom
-                )
-                .environment(\.cardSize, cardSize)
-                Spacer(minLength: 0)
-            }
-            .background(cardContainerBackground)
+        VStack(spacing: 0) {
+            CardsContainer(
+                columns: columns
+            )
+            .environment(\.cardSize, cardSize)
+            Spacer(minLength: 0)
         }
-
+        .background(cardContainerBackground)
     }
 
     @ViewBuilder
@@ -149,37 +141,39 @@ struct CardGrid: View {
     }
 
     var body: some View {
-        ZStack {
-            cardContainer
-                .offset(
-                    x: (!walletDetailsModel.showingWalletDetails)
-                        ? 0 : -(viewSize.width - detailDragOffset) / 5, y: 0
-                )
-                .background(CardGridBackground())
-                .modifier(SwipeToSwitchToSpacesGesture())
+        GeometryReader { geom in
+            ZStack {
+                cardContainer
+                    .offset(
+                        x: (!walletDetailsModel.showingWalletDetails)
+                            ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
+                    )
+                    .background(CardGridBackground())
+                    .modifier(SwipeToSwitchToSpacesGesture())
 
-            if gridModel.isLoading {
-                loadingIndicator
-                    .ignoresSafeArea()
+                if gridModel.isLoading {
+                    loadingIndicator
+                        .ignoresSafeArea()
+                }
+
+                NavigationLink(
+                    destination: detailedSpaceView,
+                    isActive: $gridModel.showingDetailView
+                ) {}.useEffect(deps: spaceModel.detailedSpace) { detailedSpace in
+                    gridModel.showingDetailView = detailedSpace != nil
+                }
+
+                NavigationLink(
+                    destination: WalletDetailView()
+                        .environment(\.cardSize, cardSize)
+                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio),
+                    isActive: $walletDetailsModel.showingWalletDetails
+                ) {}
             }
-
-            NavigationLink(
-                destination: detailedSpaceView,
-                isActive: $gridModel.showingDetailView
-            ) {}.useEffect(deps: spaceModel.detailedSpace) { detailedSpace in
-                gridModel.showingDetailView = detailedSpace != nil
-            }
-
-            NavigationLink(
-                destination: WalletDetailView()
-                    .environment(\.cardSize, cardSize)
-                    .environment(\.aspectRatio, CardUX.DefaultTabCardRatio),
-                isActive: $walletDetailsModel.showingWalletDetails
-            ) {}
+            .useEffect(
+                deps: geom.size.width, topToolbar, perform: updateCardSize
+            )
         }
-        .useEffect(
-            deps: viewSize.width, topToolbar, perform: updateCardSize
-        )
         .ignoresSafeArea(.keyboard)
     }
 }

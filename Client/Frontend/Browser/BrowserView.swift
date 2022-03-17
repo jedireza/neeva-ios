@@ -74,7 +74,7 @@ struct BrowserView: View {
     // Explicitly not an observed object to avoid costly updates.
     let browserModel: BrowserModel
 
-    @State var geom: GeometryProxy?
+    @State var safeArea = EdgeInsets()
     @ObservedObject var gridModel: GridModel
     @ObservedObject var chromeModel: TabChromeModel
     @ObservedObject var overlayManager: OverlayManager
@@ -101,105 +101,102 @@ struct BrowserView: View {
             )
     }
 
-    @ViewBuilder
     var mainContent: some View {
-        VStack(spacing: 0) {
-            ZStack {
-                // Tab content or CardGrid
-                BrowserContentView(bvc: bvc, cardGrid: CardGrid(geom: geom))
-                    .environment(\.shareURL, shareURL)
-                    .if(!isSearchPreviewVisible) {
-                        $0.padding(
-                            UIConstants.enableBottomURLBar ? .bottom : .top,
-                            chromeModel.topBarHeight
-                        )
-                    }
-                    .background(Color.background)
-
-                // Top Bar
-                if !isSearchPreviewVisible || browserModel.showGrid {
-                    VStack {
-                        if UIConstants.enableBottomURLBar { Spacer() }
-
-                        if !UIConstants.enableBottomURLBar, chromeModel.inlineToolbar {
-                            topBar
-                                .background(
-                                    Group {
-                                        // invisible tap area to show the toolbars since modern iOS
-                                        // does not have a status bar in landscape.
-                                        Color.clear
-                                            .ignoresSafeArea()
-                                            .frame(
-                                                height: BrowserViewUX.ShowHeaderTapAreaHeight
-                                            )
-                                            // without this, the area isn’t tappable because it’s invisible
-                                            .contentShape(Rectangle())
-                                            .onTapGesture {
-                                                browserModel.scrollingControlModel.showToolbars(
-                                                    animated: true)
-                                            }
-                                    }, alignment: .top)
-                        } else {
-                            topBar
+        GeometryReader { geom in
+            VStack(spacing: 0) {
+                ZStack {
+                    // Tab content or CardGrid
+                    BrowserContentView(bvc: bvc, cardGrid: CardGrid())
+                        .environment(\.shareURL, shareURL)
+                        .if(!isSearchPreviewVisible) {
+                            $0.padding(
+                                UIConstants.enableBottomURLBar ? .bottom : .top,
+                                chromeModel.topBarHeight
+                            )
                         }
+                        .background(Color.background)
 
-                        if !UIConstants.enableBottomURLBar { Spacer() }
+                    // Top Bar
+                    if !isSearchPreviewVisible || browserModel.showGrid {
+                        VStack {
+                            if UIConstants.enableBottomURLBar { Spacer() }
+
+                            if !UIConstants.enableBottomURLBar, chromeModel.inlineToolbar {
+                                topBar
+                                    .background(
+                                        Group {
+                                            // invisible tap area to show the toolbars since modern iOS
+                                            // does not have a status bar in landscape.
+                                            Color.clear
+                                                .ignoresSafeArea()
+                                                .frame(
+                                                    height: BrowserViewUX.ShowHeaderTapAreaHeight
+                                                )
+                                                // without this, the area isn’t tappable because it’s invisible
+                                                .contentShape(Rectangle())
+                                                .onTapGesture {
+                                                    browserModel.scrollingControlModel.showToolbars(
+                                                        animated: true)
+                                                }
+                                        }, alignment: .top)
+                            } else {
+                                topBar
+                            }
+
+                            if !UIConstants.enableBottomURLBar { Spacer() }
+                        }
                     }
                 }
-            }
 
-            // Bottom Bar
-            ZStack {
-                if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
-                    && !chromeModel.keyboardShowing && !overlayManager.hideBottomBar
-                {
-                    bottomBar
-                        .onHeightOfViewChanged { height in
-                            self.chromeModel.bottomBarHeight = height
-                        }
+                // Bottom Bar
+                ZStack {
+                    if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
+                        && !chromeModel.keyboardShowing && !overlayManager.hideBottomBar
+                    {
+                        bottomBar
+                            .onHeightOfViewChanged { height in
+                                self.chromeModel.bottomBarHeight = height
+                            }
+                    }
+                }.ignoresSafeArea(.keyboard)
+            }.useEffect(deps: chromeModel.topBarHeight) { _ in
+                browserModel.scrollingControlModel.setHeaderFooterHeight(
+                    header: chromeModel.topBarHeight,
+                    footer: UIConstants.TopToolbarHeightWithToolbarButtonsShowing
+                        + geom.safeAreaInsets.bottom)
+            }.keyboardListener(adapt: false) { height in
+                DispatchQueue.main.async {
+                    chromeModel.keyboardShowing = height > 0
                 }
-            }.ignoresSafeArea(.keyboard)
-        }.useEffect(deps: chromeModel.topBarHeight) { _ in
-            browserModel.scrollingControlModel.setHeaderFooterHeight(
-                header: chromeModel.topBarHeight,
-                footer: UIConstants.TopToolbarHeightWithToolbarButtonsShowing
-                    + (geom?.safeAreaInsets.bottom ?? 0))
-        }.keyboardListener(adapt: false) { height in
-            DispatchQueue.main.async {
-                chromeModel.keyboardShowing = height > 0
             }
         }
     }
 
     var body: some View {
-        GeometryReader { geom in
-            ZStack {
-                NavigationView {
-                    mainContent
-                        .navigationBarHidden(true)
-                }.navigationViewStyle(.stack)
+        ZStack {
+            NavigationView {
+                mainContent
+                    .navigationBarHidden(true)
+            }.navigationViewStyle(.stack)
 
-                OverlayView(overlayManager: overlayManager)
-            }
-            .useEffect(deps: geom.size) { _ in
-                self.geom = geom
-            }
-            .environment(\.safeArea, geom.safeAreaInsets)
-            .environment(\.viewSize, geom.size)
-            .environmentObject(browserModel)
-            .environmentObject(browserModel.incognitoModel)
-            .environmentObject(browserModel.cardTransitionModel)
-            .environmentObject(browserModel.scrollingControlModel)
-            .environmentObject(bvc.simulatedSwipeModel)
-            .environmentObject(chromeModel)
-            .environmentObject(gridModel)
-            .environmentObject(bvc.toolbarModel)
-            .environmentObject(gridModel.tabCardModel)
-            .environmentObject(gridModel.spaceCardModel)
-            .environmentObject(gridModel.tabGroupCardModel)
-            .environmentObject(bvc.web3Model)
-            .environmentObject(bvc.web3Model.walletDetailsModel)
+            OverlayView(overlayManager: overlayManager)
+        }.safeAreaChanged { safeArea in
+            self.safeArea = safeArea
         }
+        .environment(\.safeArea, safeArea)
+        .environmentObject(browserModel)
+        .environmentObject(browserModel.incognitoModel)
+        .environmentObject(browserModel.cardTransitionModel)
+        .environmentObject(browserModel.scrollingControlModel)
+        .environmentObject(bvc.simulatedSwipeModel)
+        .environmentObject(chromeModel)
+        .environmentObject(gridModel)
+        .environmentObject(bvc.toolbarModel)
+        .environmentObject(gridModel.tabCardModel)
+        .environmentObject(gridModel.spaceCardModel)
+        .environmentObject(gridModel.tabGroupCardModel)
+        .environmentObject(bvc.web3Model)
+        .environmentObject(bvc.web3Model.walletDetailsModel)
     }
 
     // MARK: - Init
