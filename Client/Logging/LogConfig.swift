@@ -293,8 +293,6 @@ public struct LogConfig {
         case RecipeCheatsheetImpression
         case RecipeCheatsheetClickBanner
         case RecipeCheatsheetShowMoreRecipe
-        case RecipeCheatsheetClickPreferredProvider
-        case RecipeCheatsheetUpdatePreferredProvider
         case RelatedRecipeClick
         case RelatedSearchClick
 
@@ -565,8 +563,6 @@ public struct LogConfig {
         case .RecipeCheatsheetImpression: return .RecipeCheatsheet
         case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
-        case .RecipeCheatsheetClickPreferredProvider: return .RecipeCheatsheet
-        case .RecipeCheatsheetUpdatePreferredProvider: return .RecipeCheatsheet
         case .RelatedRecipeClick: return .RecipeCheatsheet
         case .RelatedSearchClick: return .RecipeCheatsheet
 

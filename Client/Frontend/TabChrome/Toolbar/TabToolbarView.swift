@@ -70,8 +70,6 @@ struct TabToolbarView: View {
         HStack(spacing: 0) {
             TabToolbarButtons.ShareButton(
                 weight: .medium, action: { performAction(.share) })
-            TabToolbarButtons.ShowPreferenceButton(
-                weight: .medium, action: { performAction(.showPreference) })
             TabToolbarButtons.AddToSpace(
                 weight: .medium, action: { performAction(.addToSpace) })
         }

@@ -65,7 +65,7 @@ struct RelatedRecipeItem: View {
                         FaviconView(forSiteUrl: recipe.url)
                             .frame(width: 16, height: 16)
                             .clipShape(Circle())
-                        Text(ProviderList.shared.getDisplayName(for: baseDomain))
+                        Text(baseDomain)
                             .withFont(.bodySmall)
                             .lineLimit(1)
                             .foregroundColor(Color.label)

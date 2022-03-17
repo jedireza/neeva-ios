@@ -8,8 +8,6 @@ public enum RecipeCheatsheetLogType: String {
     case impression
     case clickRecipeBanner
     case clickShowMoreRecipe
-    case clickPreferredProvider
-    case updatePreferredProvider
 }
 
 public class RecipeCheatsheetLogManager {
@@ -42,20 +40,6 @@ public class RecipeCheatsheetLogManager {
                 clickShowMoreRecipeUUIDAndURL.insert(tabUUIDAndURL)
                 ClientLogger.shared.logCounter(
                     .RecipeCheatsheetShowMoreRecipe,
-                    attributes: EnvironmentHelper.shared.getAttributes())
-            }
-        case .clickPreferredProvider:
-            if !clickPreferredProviderUUIDAndURL.contains(tabUUIDAndURL) {
-                clickPreferredProviderUUIDAndURL.insert(tabUUIDAndURL)
-                ClientLogger.shared.logCounter(
-                    .RecipeCheatsheetClickPreferredProvider,
-                    attributes: EnvironmentHelper.shared.getAttributes())
-            }
-        case .updatePreferredProvider:
-            if !updatePreferredProviderUUIDAndURL.contains(tabUUIDAndURL) {
-                updatePreferredProviderUUIDAndURL.insert(tabUUIDAndURL)
-                ClientLogger.shared.logCounter(
-                    .RecipeCheatsheetUpdatePreferredProvider,
                     attributes: EnvironmentHelper.shared.getAttributes())
             }
         }
