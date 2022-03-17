@@ -44,10 +44,9 @@ class NavigationTest: BaseTestCase {
         }
 
         // The URL is opened in a new tab, so the back / forward buttons are disabled
-        openURL()
+        openURL(path(forTestPage: "test-example.html"))
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["Address Bar"], value: "example.com")
-        
+        waitForValueContains(app.buttons["Address Bar"], value: "localhost")
         goToOverflowMenuButton(label: "Forward") { element in
             XCTAssertFalse(element.isEnabled)
         }
@@ -64,7 +63,7 @@ class NavigationTest: BaseTestCase {
         app.buttons["Back"].tap()
 
         waitUntilPageLoad()
-        waitForValueContains(app.buttons["Address Bar"], value: "example.com")
+        waitForValueContains(app.buttons["Address Bar"], value: "localhost")
 
         goForward()
         waitUntilPageLoad()
