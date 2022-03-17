@@ -4833,8 +4833,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F84B21DD1A090F8100AAB793 /* Build configuration list for PBXNativeTarget "Client" */;
 			buildPhases = (
-				C9098F5F26B04DCE00D2B5F4 /* SwiftFormat */,
 				F84B21BA1A090F8100AAB793 /* Sources */,
+				C9098F5F26B04DCE00D2B5F4 /* SwiftFormat */,
 				F84B21BC1A090F8100AAB793 /* Resources */,
 				28CE83DE1A1D1E7C00576538 /* Frameworks */,
 				F84B22531A0920C600AAB793 /* Embed App Extensions */,
