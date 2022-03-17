@@ -26,7 +26,7 @@ extension UITestBase {
             let reloadButton = tester().waitForView(withAccessibilityLabel: "Reload")
 
             if !isiPad() {
-                reloadButton?.drag(from: CGPoint(x: 0, y: 500), to: CGPoint(x: 0, y: 0))
+                reloadButton?.drag(from: CGPoint(x: 0, y: 600), to: CGPoint(x: 0, y: 0))
             }
 
             tester().waitForAnimationsToFinish()
