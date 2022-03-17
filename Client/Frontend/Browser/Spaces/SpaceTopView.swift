@@ -43,24 +43,9 @@ struct SpaceTopView: View {
                         .foregroundColor(Color.label)
                         .tapTargetFrame()
                 })
-            if let ownerName = ownerName {
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(primitive.title)
-                        .withFont(.headingSmall)
-                        .foregroundColor(Color.label)
-                    Text(ownerName)
-                        .withFont(.bodyXSmall)
-                        .foregroundColor(Color.secondaryLabel)
-                }
+            titleView
                 .opacity(headerVisible ? 0 : 1)
                 .animation(.easeInOut, value: headerVisible)
-            } else {
-                Text(primitive.title)
-                    .withFont(.headingMedium)
-                    .foregroundColor(Color.label)
-                    .opacity(headerVisible ? 0 : 1)
-                    .animation(.easeInOut, value: headerVisible)
-            }
             Spacer()
             if headerVisible {
                 if canEdit {
@@ -77,6 +62,23 @@ struct SpaceTopView: View {
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
             .background(Color.DefaultBackground.ignoresSafeArea())
+    }
+    
+    @ViewBuilder var titleView: some View {
+        if let ownerName = ownerName {
+            VStack(alignment: .leading, spacing: 0) {
+                Text(primitive.title)
+                    .withFont(.headingSmall)
+                    .foregroundColor(Color.label)
+                Text(ownerName)
+                    .withFont(.bodyXSmall)
+                    .foregroundColor(Color.secondaryLabel)
+            }
+        } else {
+            Text(primitive.title)
+                .withFont(.headingMedium)
+                .foregroundColor(Color.label)
+        }
     }
 
     @ViewBuilder var addButton: some View {
