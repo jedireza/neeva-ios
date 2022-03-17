@@ -124,10 +124,7 @@ class TabCardModel: CardModel {
 
         var partialResult: [Row] = []
         var allDetailsFiltered = allDetails.filter { tabCard in
-            guard let tab = tabCard.manager.get(for: tabCard.id) else {
-                return false
-            }
-
+            let tab = tabCard.manager.get(for: tabCard.id)!
             return
                 (tabGroupModel.representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })

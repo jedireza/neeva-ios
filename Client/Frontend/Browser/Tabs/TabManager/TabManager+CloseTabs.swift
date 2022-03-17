@@ -85,7 +85,7 @@ extension TabManager {
 
         // Set the selected tab to nil if it was removed.
         if let selectedTab = selectedTab, !tabs.contains(selectedTab) {
-            self.selectTab(nil)
+            self.selectTab(nil, notify: false)
         }
 
         if closedLastNormalTab || closedLastIncognitoTab {
