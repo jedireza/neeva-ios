@@ -17,7 +17,7 @@ struct SpaceImageEntityView: View {
             AnimatedImage(url: url)
                 .resizable()
                 .scaledToFit()
-                .background(Color.white)
+                .background(Color.groupedBackground)
                 .cornerRadius(SpaceViewUX.ThumbnailCornerRadius)
                 .padding(.bottom, 8)
             
