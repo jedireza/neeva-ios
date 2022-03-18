@@ -133,7 +133,7 @@ commands:
     steps:
       - run:
           name: Check Formatting
-          command: ./Scripts/swift-format.sh --check-all
+          command: ./Scripts/swift-format.sh --check-all --strict
   save-artifacts:
      steps:
        - store_artifacts:
@@ -154,17 +154,23 @@ jobs:
           key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/Library/Developer/Xcode/DerivedData
-  test-client:
+  swift-format:
     macos:
       xcode: "13.2.1"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - build-swift-format
+      - swift-format-check
+  test-client:
+    macos:
+      xcode: "13.2.1"
+    resource_class: macos.x86.medium.gen2
+    steps:
+      - restore-build-cache
       - test-client
       - build-app-clip
       - app-clip-tests
-      - swift-format-check
   ui-tests:
     macos:
       xcode: "13.2.1"
@@ -192,6 +198,8 @@ workflows:
   build:
     jobs:
       - build
+      - swift-format:
+          requires: [build]
       - test-client:
           requires: [build]
       - ui-tests:
