@@ -290,8 +290,6 @@ public struct LogConfig {
         case clearIndexError
 
         // MARK: recipe cheatsheet
-        case RecipeCheatsheetImpression
-        case RecipeCheatsheetClickBanner
         case RecipeCheatsheetShowMoreRecipe
         case RelatedRecipeClick
         case RelatedSearchClick
@@ -560,8 +558,6 @@ public struct LogConfig {
         case .didIndex: return .Spotlight
         case .clearIndexError: return .Spotlight
 
-        case .RecipeCheatsheetImpression: return .RecipeCheatsheet
-        case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
         case .RelatedRecipeClick: return .RecipeCheatsheet
         case .RelatedSearchClick: return .RecipeCheatsheet

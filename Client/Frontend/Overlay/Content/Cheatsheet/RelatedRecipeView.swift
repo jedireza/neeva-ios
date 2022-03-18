@@ -7,9 +7,9 @@ import Shared
 import SwiftUI
 
 struct RelatedRecipeItem: View {
-    let recipe: RelatedRecipe
-    let onDismiss: (() -> Void)?
     @Environment(\.onOpenURL) var onOpenURL
+
+    let recipe: RelatedRecipe
 
     var body: some View {
         Button(action: onClick) {
@@ -83,9 +83,6 @@ struct RelatedRecipeItem: View {
     }
 
     func onClick() {
-        if let onDismiss = onDismiss {
-            onDismiss()
-        }
         ClientLogger.shared.logCounter(
             .RelatedRecipeClick, attributes: EnvironmentHelper.shared.getAttributes())
         onOpenURL(recipe.url)
@@ -94,7 +91,6 @@ struct RelatedRecipeItem: View {
 
 struct RelatedRecipeList: View {
     let recipes: [RelatedRecipe]
-    let onDismiss: (() -> Void)?
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -105,7 +101,7 @@ struct RelatedRecipeList: View {
             ScrollView(.horizontal) {
                 HStack {
                     ForEach(recipes, id: \.url) { recipe in
-                        RelatedRecipeItem(recipe: recipe, onDismiss: onDismiss)
+                        RelatedRecipeItem(recipe: recipe)
                     }
                 }
             }

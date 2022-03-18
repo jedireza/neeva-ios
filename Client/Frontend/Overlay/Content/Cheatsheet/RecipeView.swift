@@ -145,12 +145,14 @@ struct RecipeView: View {
     var ratingStarsComp: some View {
         HStack(alignment: .center) {
             if let recipeRating = recipeRating {
-                let normalizedRating = Int(floor(
-                    normalizeRating(
-                        stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars
-                )))
+                let normalizedRating = Int(
+                    floor(
+                        normalizeRating(
+                            stars: recipeRating.recipeStars, maxStars: recipeRating.maxStars
+                        )))
                 if recipeRating.recipeStars > 0, normalizedRating >= 1 {
-                    ForEach((1...normalizedRating), id: \.self
+                    ForEach(
+                        (1...normalizedRating), id: \.self
                     ) { _ in
                         Image(systemSymbol: .starFill)
                             .renderingMode(.template)
@@ -211,10 +213,10 @@ struct RecipeView: View {
 
     func toggleShowMoreRecipeButton() {
         if !expanded {
-            if let tabUUID = tabUUID, let url = currentURL?.absoluteString {
-                RecipeCheatsheetLogManager.shared.logInteraction(
-                    logType: .clickShowMoreRecipe, tabUUIDAndURL: tabUUID + url)
-            }
+            ClientLogger.shared.logCounter(
+                .RecipeCheatsheetShowMoreRecipe,
+                attributes: EnvironmentHelper.shared.getAttributes()
+            )
         }
         expanded.toggle()
     }

@@ -2,12 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Shared
 import SwiftUI
 
 struct RelatedSearchesView: View {
-    let relatedSearches: [String]
-    let onDismiss: (() -> Void)?
     @Environment(\.onOpenURL) var onOpenURL
+
+    let relatedSearches: [String]
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -16,7 +17,7 @@ struct RelatedSearchesView: View {
                 .padding(.bottom, 6)
 
             ForEach(relatedSearches, id: \.self) { search in
-                QueryButton(query: search, onDismiss: onDismiss)
+                QueryButtonView(query: search)
             }
         }
     }
