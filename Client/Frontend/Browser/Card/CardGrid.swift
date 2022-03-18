@@ -68,15 +68,16 @@ struct CardGrid: View {
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var walletDetailsModel: WalletDetailsModel
 
-    @State private var cardSize: CGFloat = CardUX.DefaultCardSize
-    @State private var columnCount = 2
-
     @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
     @Environment(\.shareURL) var shareURL
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
-    @State var detailDragOffset: CGFloat = 0
+    @State private var detailDragOffset: CGFloat = 0
+    @State private var cardSize: CGFloat = CardUX.DefaultCardSize
+    @State private var columnCount = 2
+    
+    var geom: GeometryProxy
 
     var topToolbar: Bool {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
@@ -141,40 +142,36 @@ struct CardGrid: View {
     }
 
     var body: some View {
-        GeometryReader { geom in
-            ZStack {
-                cardContainer
-                    .offset(
-                        x: (!walletDetailsModel.showingWalletDetails)
-                            ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
-                    )
-                    .background(CardGridBackground())
-                    .modifier(SwipeToSwitchToSpacesGesture())
+        ZStack {
+            cardContainer
+                .offset(
+                    x: (!walletDetailsModel.showingWalletDetails)
+                        ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
+                )
+                .background(CardGridBackground())
+                .modifier(SwipeToSwitchToSpacesGesture())
 
-                if gridModel.isLoading {
-                    loadingIndicator
-                        .ignoresSafeArea()
-                }
-
-                NavigationLink(
-                    destination: detailedSpaceView,
-                    isActive: $gridModel.showingDetailView
-                ) {}.useEffect(deps: spaceModel.detailedSpace) { detailedSpace in
-                    gridModel.showingDetailView = detailedSpace != nil
-                }
-
-                NavigationLink(
-                    destination: WalletDetailView()
-                        .environment(\.cardSize, cardSize)
-                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio),
-                    isActive: $walletDetailsModel.showingWalletDetails
-                ) {}
+            if gridModel.isLoading {
+                loadingIndicator
+                    .ignoresSafeArea()
             }
-            .useEffect(
-                deps: geom.size.width, topToolbar, perform: updateCardSize
-            )
-        }
-        .ignoresSafeArea(.keyboard)
+
+            NavigationLink(
+                destination: detailedSpaceView,
+                isActive: $gridModel.showingDetailView
+            ) {}.useEffect(deps: spaceModel.detailedSpace) { detailedSpace in
+                gridModel.showingDetailView = detailedSpace != nil
+            }
+
+            NavigationLink(
+                destination: WalletDetailView()
+                    .environment(\.cardSize, cardSize)
+                    .environment(\.aspectRatio, CardUX.DefaultTabCardRatio),
+                isActive: $walletDetailsModel.showingWalletDetails
+            ) {}
+        }.useEffect(
+            deps: geom.size.width, topToolbar, perform: updateCardSize
+        ).ignoresSafeArea(.keyboard)
     }
 }
 
