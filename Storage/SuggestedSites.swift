@@ -10,12 +10,16 @@ open class SuggestedSite: Site {
         url
     }
 
+
     let trackingId: Int
     init(data: SuggestedSiteData) {
         self.trackingId = data.trackingId
         super.init(url: data.url, title: data.title)
         // A guid is required in the case the site might become a pinned site
         self.guid = "default" + data.title
+        if let faviconURL = URL(string: data.faviconUrl) {
+            self.icon = Favicon(url: faviconURL)
+        }
     }
 }
 
@@ -26,7 +30,7 @@ open class SuggestedSitesCursor: ArrayCursor<SuggestedSite> {
         let locale = Locale.current
         let sites =
             DefaultSuggestedSites.sites[locale.identifier] ?? DefaultSuggestedSites.sites[
-                "default"]! as [SuggestedSiteData]
+                FeatureFlag[.web3Mode] ? "web3" : "default"]! as [SuggestedSiteData]
         let tiles = sites.map({ data -> SuggestedSite in
             var site = data
             if let domainMap = DefaultSuggestedSites.urlMap[data.url],

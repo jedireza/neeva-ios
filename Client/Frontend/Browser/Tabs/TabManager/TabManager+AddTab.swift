@@ -168,7 +168,7 @@ extension TabManager {
         }
 
         let shouldCreateTabGroup = childTabOriginalURL == newTabURL
-        
+
         /// TODO: To make this more effecient, we should refactor `TabGroupManager`
         /// to be apart of `TabManager`. That we can quickly check if the ChildTab is in a Tab Group.
         /// See #3088 + #3098 for more info.
@@ -182,7 +182,7 @@ extension TabManager {
         }()
 
         if shouldCreateTabGroup {
-            if childTabIsInTabGroup {
+            if !childTabIsInTabGroup {
                 // Create a Tab Group by setting the child tab's rootID.
                 possibleChildTab.rootUUID = newTab.rootUUID
             } else {

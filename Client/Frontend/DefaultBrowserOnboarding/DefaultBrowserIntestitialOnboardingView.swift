@@ -7,6 +7,8 @@ import Shared
 import SwiftUI
 
 struct DefaultBrowserInterstitialOnboardingView: View {
+    var fromSkipToBrowser: Bool = false
+
     var skipAction: () -> Void
     var buttonAction: () -> Void
 
@@ -89,11 +91,18 @@ struct DefaultBrowserInterstitialOnboardingView: View {
             Button(
                 action: {
                     buttonAction()
-                    if NeevaUserInfo.shared.hasLoginCookie() {
-                        ClientLogger.shared.logCounter(.DefaultBrowserOnboardingInterstitialOpen)
+                    if NeevaUserInfo.shared.hasLoginCookie() || fromSkipToBrowser {
+                        ClientLogger.shared.logCounter(
+                            .DefaultBrowserOnboardingInterstitialOpen,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.PromoCardAttribute.fromSkipToBrowser,
+                                    value: String(fromSkipToBrowser))
+                            ]
+                        )
                     } else {
                         Defaults[.lastDefaultBrowserPromptInteraction] =
-                            LogConfig.Interaction.DefaultBrowserPromptOpen.rawValue
+                            LogConfig.Interaction.DefaultBrowserOnboardingInterstitialOpen.rawValue
                     }
                 },
                 label: {
@@ -109,11 +118,18 @@ struct DefaultBrowserInterstitialOnboardingView: View {
             Button(
                 action: {
                     skipAction()
-                    if NeevaUserInfo.shared.hasLoginCookie() {
-                        ClientLogger.shared.logCounter(.DefaultBrowserOnboardingInterstitialSkip)
+                    if NeevaUserInfo.shared.hasLoginCookie() || fromSkipToBrowser {
+                        ClientLogger.shared.logCounter(
+                            .DefaultBrowserOnboardingInterstitialSkip,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.PromoCardAttribute.fromSkipToBrowser,
+                                    value: String(fromSkipToBrowser))
+                            ]
+                        )
                     } else {
                         Defaults[.lastDefaultBrowserPromptInteraction] =
-                            LogConfig.Interaction.DefaultBrowserPromptSkip.rawValue
+                            LogConfig.Interaction.DefaultBrowserOnboardingInterstitialSkip.rawValue
                     }
                 },
                 label: {

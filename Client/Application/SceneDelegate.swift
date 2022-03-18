@@ -103,6 +103,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sceneWillEnterForeground(_ scene: UIScene) {
         checkUserActivenessLastWeek()
+        checkUserForegroundActivity()
 
         LocalNotitifications.scheduleNeevaPromoCallbackIfAuthorized(
             callSite: LocalNotitifications.ScheduleCallSite.enterForeground
@@ -114,6 +115,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             .AppEnterForeground,
             attributes: EnvironmentHelper.shared.getAttributes()
         )
+
+        // send number of spotlight index events from the last session
+        sendAggregatedSpotlightLogs()
     }
 
     func sceneDidEnterBackground(_ scene: UIScene) {
@@ -463,23 +467,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
+    func checkUserForegroundActivity() {
+        #if !DEBUG
+            if let scene = (scene as? UIWindowScene),
+                Defaults[.numberOfAppForeground] >= AppRatingSystemDialogRule.numOfAppForeground
+                    && !Defaults[.didTriggerSystemReviewDialog]
+            {
+                // Note that Apple has full control over when to show the actual review dialog
+                // see here for more information:
+                // https://developer.apple.com/documentation/storekit/requesting_app_store_reviews
+                SKStoreReviewController.requestReview(in: scene)
+                Defaults[.didTriggerSystemReviewDialog] = true
+            }
+        #endif
+
+        Defaults[.numberOfAppForeground] += 1
+    }
+
     func checkUserActivenessLastWeek() {
         let minusOneWeekToCurrentDate = Calendar.current.date(
             byAdding: .weekOfYear, value: -1, to: Date())
 
         guard let startOfLastWeek = minusOneWeekToCurrentDate else {
             return
-        }
-
-        if let scene = (scene as? UIWindowScene),
-            Defaults[.loginLastWeekTimeStamp].count == AppRatingPromoRule.numOfAppForeground
-                && !Defaults[.didTriggerSystemReviewDialog]
-        {
-            // Note that Apple has full control over when to show the actual review dialog
-            // see here for more information:
-            // https://developer.apple.com/documentation/storekit/requesting_app_store_reviews
-            SKStoreReviewController.requestReview(in: scene)
-            Defaults[.didTriggerSystemReviewDialog] = true
         }
 
         Defaults[.loginLastWeekTimeStamp] = Defaults[.loginLastWeekTimeStamp].suffix(2).filter {
@@ -494,7 +504,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             if let lastVersionActiveOn = Defaults[.lastVersionActiveOn],
                 lastVersionActiveOn != version
             {
-                onAppUpdate(version: version, previousVersion: lastVersionActiveOn)
+                onAppUpdate(previousVersion: lastVersionActiveOn, currentVersion: version)
             }
 
             Defaults[.lastVersionActiveOn] = version
@@ -503,7 +513,40 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     /// Called when the user updates the app, and then opens it.
     /// Useful for updating flags, migrating data, etc.
-    private func onAppUpdate(version: String, previousVersion: String) {
-        // Nothing here yet!
+    @discardableResult func onAppUpdate(previousVersion: String, currentVersion: String) -> Bool {
+        if currentVersion.compare(previousVersion, options: .numeric) == .orderedDescending {
+            // currentVersion is newer than the previousVersion
+
+            return true
+        }
+
+        return false
+    }
+
+    func sendAggregatedSpotlightLogs() {
+        ClientLogger.shared.logCounter(
+            .createUserActivity,
+            attributes: EnvironmentHelper.shared.getAttributes() + [
+                ClientLogCounterAttribute(
+                    key: "count", value: String(Defaults[.numOfIndexedUserActivities]))
+            ]
+        )
+        ClientLogger.shared.logCounter(
+            .willIndex,
+            attributes: EnvironmentHelper.shared.getAttributes() + [
+                ClientLogCounterAttribute(
+                    key: "count", value: String(Defaults[.numOfWillIndexEvents]))
+            ]
+        )
+        ClientLogger.shared.logCounter(
+            .didIndex,
+            attributes: EnvironmentHelper.shared.getAttributes() + [
+                ClientLogCounterAttribute(
+                    key: "count", value: String(Defaults[.numOfDidIndexEvents]))
+            ]
+        )
+        Defaults[.numOfIndexedUserActivities] = 0
+        Defaults[.numOfWillIndexEvents] = 0
+        Defaults[.numOfDidIndexEvents] = 0
     }
 }

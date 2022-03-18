@@ -68,15 +68,16 @@ struct CardGrid: View {
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var walletDetailsModel: WalletDetailsModel
 
-    @State private var cardSize: CGFloat = CardUX.DefaultCardSize
-    @State private var columnCount = 2
-
     @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
     @Environment(\.shareURL) var shareURL
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
-    @State var detailDragOffset: CGFloat = 0
+    @State private var detailDragOffset: CGFloat = 0
+    @State private var cardSize: CGFloat = CardUX.DefaultCardSize
+    @State private var columnCount = 2
+    
+    var geom: GeometryProxy
 
     var topToolbar: Bool {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
@@ -141,40 +142,36 @@ struct CardGrid: View {
     }
 
     var body: some View {
-        GeometryReader { geom in
-            ZStack {
-                cardContainer
-                    .offset(
-                        x: (!walletDetailsModel.showingWalletDetails)
-                            ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
-                    )
-                    .background(CardGridBackground())
-                    .modifier(SwipeToSwitchToSpacesGesture())
+        ZStack {
+            cardContainer
+                .offset(
+                    x: (!walletDetailsModel.showingWalletDetails)
+                        ? 0 : -(geom.size.width - detailDragOffset) / 5, y: 0
+                )
+                .background(CardGridBackground())
+                .modifier(SwipeToSwitchToSpacesGesture())
 
-                if gridModel.isLoading {
-                    loadingIndicator
-                        .ignoresSafeArea()
-                }
-
-                NavigationLink(
-                    destination: detailedSpaceView,
-                    isActive: $gridModel.showingDetailView
-                ) {}.useEffect(deps: spaceModel.detailedSpace) { detailedSpace in
-                    gridModel.showingDetailView = detailedSpace != nil
-                }
-
-                NavigationLink(
-                    destination: WalletDetailView()
-                        .environment(\.cardSize, cardSize)
-                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio),
-                    isActive: $walletDetailsModel.showingWalletDetails
-                ) {}
+            if gridModel.isLoading {
+                loadingIndicator
+                    .ignoresSafeArea()
             }
-            .useEffect(
-                deps: geom.size.width, topToolbar, perform: updateCardSize
-            )
-        }
-        .ignoresSafeArea(.keyboard)
+
+            NavigationLink(
+                destination: detailedSpaceView,
+                isActive: $gridModel.showingDetailView
+            ) {}.useEffect(deps: spaceModel.detailedSpace) { detailedSpace in
+                gridModel.showingDetailView = detailedSpace != nil
+            }
+
+            NavigationLink(
+                destination: WalletDetailView()
+                    .environment(\.cardSize, cardSize)
+                    .environment(\.aspectRatio, CardUX.DefaultTabCardRatio),
+                isActive: $walletDetailsModel.showingWalletDetails
+            ) {}
+        }.useEffect(
+            deps: geom.size.width, topToolbar, perform: updateCardSize
+        ).ignoresSafeArea(.keyboard)
     }
 }
 
@@ -188,28 +185,37 @@ struct GridPicker: View {
 
     @State var selectedIndex: Int = 1
 
+    var segments: [Segment]  {
+        var segments = [
+            Segment(
+                symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
+                selectedIconColor: .background,
+                selectedColor: .label,
+                selectedAction: { gridModel.switchToTabs(incognito: true) }),
+            Segment(
+                symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
+                selectedIconColor: .white,
+                selectedColor: Color.ui.adaptive.blue,
+                selectedAction: { gridModel.switchToTabs(incognito: false) })
+            ]
+        if !FeatureFlag[.web3Mode] {
+            segments.append(Segment(
+                symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
+                selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
+                selectedAction: gridModel.switchToSpaces
+            ))
+        }
+        return segments
+    }
+
     @ViewBuilder
     var picker: some View {
         HStack {
             Spacer()
 
             SegmentedPicker(
-                segments: [
-                    Segment(
-                        symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
-                        selectedIconColor: .background,
-                        selectedColor: .label,
-                        selectedAction: { gridModel.switchToTabs(incognito: true) }),
-                    Segment(
-                        symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
-                        selectedIconColor: .white,
-                        selectedColor: Color.ui.adaptive.blue,
-                        selectedAction: { gridModel.switchToTabs(incognito: false) }),
-                    Segment(
-                        symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
-                        selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
-                        selectedAction: gridModel.switchToSpaces),
-                ], selectedSegmentIndex: $selectedIndex, dragOffset: switcherToolbarModel.dragOffset
+                segments: segments,
+                selectedSegmentIndex: $selectedIndex, dragOffset: switcherToolbarModel.dragOffset
             )
             .useEffect(deps: gridModel.switcherState) { _ in
                 switch gridModel.switcherState {

@@ -107,20 +107,22 @@ extension SpaceStore {
             for (idx, entity) in data.enumerated() {
                 guard let url = entity.url else { continue }
                 group.enter()
-                Self.getThumbnailData(for: entity) { image in
-                    let attributes = CSSearchableItemAttributeSet(
-                        contentType: CSConst.spacePageContentType)
-                    attributes.title = entity.displayTitle
-                    attributes.contentDescription = entity.displayDescription
-                    attributes.thumbnailData = image?.pngData()
-                    attributes.url = url
-                    let item = CSSearchableItem(
-                        uniqueIdentifier: url.absoluteString,
-                        domainIdentifier: CSConst.spacePageDomainIdentifier,
-                        attributeSet: attributes)
-                    items[idx] = item
-                    group.leave()
-                }
+                // TODO: - Investigate why repeated calls grow memory unbounded
+//                Self.getThumbnailData(for: entity) { image in
+//                    attributes.thumbnailData = image?.pngData()
+//                }
+                let attributes = CSSearchableItemAttributeSet(
+                    contentType: CSConst.spacePageContentType
+                )
+                attributes.title = entity.displayTitle
+                attributes.contentDescription = entity.displayDescription
+                attributes.url = url
+                let item = CSSearchableItem(
+                    uniqueIdentifier: url.absoluteString,
+                    domainIdentifier: CSConst.spacePageDomainIdentifier,
+                    attributeSet: attributes)
+                items[idx] = item
+                group.leave()
             }
 
             // block the queue

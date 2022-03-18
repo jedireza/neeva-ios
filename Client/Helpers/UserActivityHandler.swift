@@ -28,8 +28,8 @@ class UserActivityHandler {
     class func clearSearchIndex(completionHandler: ((Error?) -> Void)? = nil) {
         searchableIndex.deleteAllSearchableItems(completionHandler: completionHandler)
     }
-    
-    class func clearIndexedItems(completionHandler: @escaping (() -> Void) = {} ) {
+
+    class func clearIndexedItems(completionHandler: @escaping (() -> Void) = {}) {
         NSUserActivity.deleteAllSavedUserActivities(completionHandler: completionHandler)
     }
 
@@ -118,15 +118,9 @@ class UserActivityHandler {
 
         // Set activity as active and makes it available for indexing (if isEligibleForSearch)
         userActivity.becomeCurrent()
-        ClientLogger.shared.logCounter(
-            .createUserActivity,
-            attributes: EnvironmentHelper.shared.getAttributes() + [
-                ClientLogCounterAttribute(
-                    key: LogConfig.SpotlightAttribute.addActivityToSpotlight,
-                    value: Defaults[.makeActivityAvailForSearch].description
-                )
-            ]
-        )
+        if Defaults[.makeActivityAvailForSearch] {
+            Defaults[.numOfIndexedUserActivities] += 1
+        }
 
         tab.userActivity = userActivity
     }

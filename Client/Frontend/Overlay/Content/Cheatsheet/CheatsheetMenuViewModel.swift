@@ -176,8 +176,15 @@ public class CheatsheetMenuViewModel: ObservableObject {
     private func getRichResultByQuery(_ query: String) {
         SearchController.getRichResult(query: query) { searchResult in
             switch searchResult {
-            case .success(let richResult):
-                self.searchRichResults = self.removeCurrentPageURLs(from: richResult)
+            case .success(let richResults):
+                // log if a bad URL was received
+                if richResults.lazy.map({ $0.dataComplete }).contains(false) {
+                    ClientLogger.shared.logCounter(
+                        .CheatsheetBadURLString,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                    )
+                }
+                self.searchRichResults = self.removeCurrentPageURLs(from: richResults)
             case .failure(let error):
                 Logger.browser.error("Error: \(error)")
                 self.searchRichResultsError = error
@@ -187,12 +194,14 @@ public class CheatsheetMenuViewModel: ObservableObject {
     }
 
     private func removeCurrentPageURLs(from richResults: [RichResult]) -> [RichResult] {
-        let urlCompareOptions: [URL.EqualsOption] = [.ignoreFragment, .ignoreLastSlash, .normalizeHost]
+        let urlCompareOptions: [URL.EqualsOption] = [
+            .ignoreFragment, .ignoreLastSlash, .normalizeHost,
+        ]
         return richResults.compactMap { richResult -> RichResult? in
             switch richResult.resultType {
             case .ProductCluster:
                 return richResult
-            case .RecipeBlock(result: let result):
+            case .RecipeBlock(let result):
                 let filteredRecipes = result.filter {
                     !$0.url.equals(currentPageURL, with: urlCompareOptions)
                 }
@@ -205,18 +214,18 @@ public class CheatsheetMenuViewModel: ObservableObject {
                 )
             case .RelatedSearches:
                 return richResult
-            case .WebGroup(result: let result):
+            case .WebGroup(let result):
                 let filteredResults = result.filter {
                     !$0.actionURL.equals(currentPageURL, with: urlCompareOptions)
                 }
                 guard !filteredResults.isEmpty else {
-                     return nil
+                    return nil
                 }
                 return RichResult(
                     id: richResult.id,
                     resultType: .WebGroup(result: filteredResults)
                 )
-            case .NewsGroup(result: let result):
+            case .NewsGroup(let result):
                 let filteredNews = result.news.filter {
                     !$0.url.equals(currentPageURL, with: urlCompareOptions)
                 }

@@ -10,8 +10,12 @@ enum DefaultBrowserPromoRules {
     static let maxDailyPromoImpression = 3
 }
 
-enum AppRatingPromoRule {
-    static let numOfAppForeground = 3
+enum AppRatingPromoCardRule {
+    static let numOfAppForegroundLastWeek = 3
+}
+
+enum AppRatingSystemDialogRule {
+    static let numOfAppForeground = 6
 }
 
 enum PromoCardType {
@@ -22,6 +26,7 @@ enum PromoCardType {
     case notificationPermission(action: () -> Void, onClose: () -> Void)
     case blackFridayFollowPromo(action: () -> Void, onClose: () -> Void)
     case blackFridayNotifyPromo(action: () -> Void, onClose: () -> Void)
+    case walletPromo(action: () -> Void)
 
     var action: () -> Void {
         switch self {
@@ -36,6 +41,8 @@ enum PromoCardType {
         case .blackFridayFollowPromo(let action, _):
             return action
         case .blackFridayNotifyPromo(let action, _):
+            return action
+        case .walletPromo(let action):
             return action
         }
     }
@@ -60,6 +67,8 @@ enum PromoCardType {
         case .blackFridayNotifyPromo(_, _):
             Text("Get notified about new\nitems added to this Space!")
                 .fixedSize(horizontal: false, vertical: true)
+        case .walletPromo:
+            Text("Experience Web3,\n with clarity and safety")
         }
     }
 
@@ -87,6 +96,8 @@ enum PromoCardType {
             Text("Follow Space")
         case .blackFridayNotifyPromo(_, _):
             Text("Enable Notifications")
+        case .walletPromo:
+            Text("Create / Import Wallet")
         }
     }
 
@@ -101,6 +112,8 @@ enum PromoCardType {
         case .notificationPermission,
             .blackFridayFollowPromo,
             .blackFridayNotifyPromo:
+            return .brand.adaptive.polar
+        case .walletPromo:
             return .brand.adaptive.polar
         }
     }
@@ -130,6 +143,8 @@ enum PromoCardType {
             return "blackFridayFollowPromo"
         case .blackFridayNotifyPromo:
             return "blackFridayNotifyPromo"
+        case .walletPromo:
+            return "walletPromo"
         }
     }
 }

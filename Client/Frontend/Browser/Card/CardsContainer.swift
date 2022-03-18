@@ -228,38 +228,3 @@ func getLogCounterAttributesForTabs(selectedTabRow: Int?) -> [ClientLogCounterAt
             value: String(selectedTabRow ?? 0)))
     return attributes
 }
-
-struct RecommendedSpacesView: View {
-    static let ID = "Recommended"
-    @StateObject private var recommendedSpacesModel = SpaceCardModel(manager: SpaceStore.suggested)
-    @EnvironmentObject var spaceModel: SpaceCardModel
-
-    @State private var subscription: AnyCancellable? = nil
-
-    var body: some View {
-        Text("Suggested Public Spaces")
-            .withFont(.headingMedium)
-            .foregroundColor(.secondaryLabel)
-            .minimumScaleFactor(0.6)
-            .lineLimit(1)
-            .padding()
-        ScrollView(.horizontal, showsIndicators: false) {
-            LazyHStack(spacing: 10) {
-                ForEach(
-                    recommendedSpacesModel.allDetails.filter { recommended in
-                        !spaceModel.allDetails.contains(where: { $0.id == recommended.id })
-                    }, id: \.id
-                ) { details in
-                    FittedCard(details: details)
-                        .id(details.id + "suggested")
-                        .environment(\.selectionCompletion) {
-                            spaceModel.recommendedSpaceSelected(details: details)
-                            ClientLogger.shared.logCounter(
-                                .RecommendedSpaceVisited,
-                                attributes: getLogCounterAttributesForSpaces(details: details))
-                        }
-                }
-            }.padding(.bottom, 20).padding(.horizontal, 10)
-        }
-    }
-}

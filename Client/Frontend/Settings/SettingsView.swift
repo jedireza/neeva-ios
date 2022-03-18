@@ -31,8 +31,10 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Neeva")) {
-                    NeevaSettingsSection(dismissVC: dismiss, userInfo: .shared)
+                if !FeatureFlag[.web3Mode] {
+                    Section(header: Text("Neeva")) {
+                        NeevaSettingsSection(dismissVC: dismiss, userInfo: .shared)
+                    }
                 }
                 Section(header: Text("General")) {
                     GeneralSettingsSection()

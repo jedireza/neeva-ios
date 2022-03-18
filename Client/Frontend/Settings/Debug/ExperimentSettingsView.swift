@@ -28,11 +28,6 @@ struct ExperimentSettingsView: View {
                 //    value: $valueText,
                 //    experiment: .defaultBrowserPromptV2
                 //)
-                OptionalPrefilledStringField<NeevaExperiment.DefaultBrowserMergeEducation>(
-                    "DefaultBrowserMergeEducation",
-                    value: $valueText,
-                    experiment: .defaultBrowserMergeEducation
-                )
             }
         }
         .listStyle(.insetGrouped)

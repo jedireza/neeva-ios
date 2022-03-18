@@ -76,6 +76,64 @@ open class DefaultSuggestedSites {
                 title: .DefaultSuggestedTwitter
             ),
         ],
+        "web3": [
+            SuggestedSiteData(
+                url: "https://app.uniswap.org/",
+                bgColor: "0x000000",
+                imageUrl: "https://app.uniswap.org/images/192x192_App_Icon.png",
+                faviconUrl: "https://app.uniswap.org/images/192x192_App_Icon.png",
+                trackingId: 800,
+                title: "Uniswap"
+            ),
+            SuggestedSiteData(
+                url: "https://opensea.io/",
+                bgColor: "0x000000",
+                imageUrl: "https://opensea.io/static/images/favicon/180x180.png",
+                faviconUrl: "https://opensea.io/static/images/favicon/180x180.png",
+                trackingId: 801,
+                title: "OpenSea"
+            ),
+            SuggestedSiteData(
+                url: "https://foundation.app/",
+                bgColor: "0x000000",
+                imageUrl: "https://foundation.app/apple-touch-icon.png",
+                faviconUrl: "https://foundation.app/apple-touch-icon.png",
+                trackingId: 802,
+                title: "Foundation"
+            ),
+            SuggestedSiteData(
+                url: "https://superrare.com/",
+                bgColor: "0x000000",
+                imageUrl: "https://superrare.com/favicon.png",
+                faviconUrl: "https://superrare.com/favicon.png",
+                trackingId: 803,
+                title: "Super Rare"
+            ),
+            SuggestedSiteData(
+                url: "https://etherscan.io/",
+                bgColor: "0x000000",
+                imageUrl: "https://etherscan.io/images/brandassets/etherscan-logo-r.jpg",
+                faviconUrl: "https://etherscan.io/images/brandassets/etherscan-logo-r.jpg",
+                trackingId: 804,
+                title: "Etherscan"
+            ),
+            SuggestedSiteData(
+                url: "https://wallet.polygon.technology/",
+                bgColor: "0x000000",
+                imageUrl: "https://polygon.technology/android-icon-192x192.png",
+                faviconUrl: "https://polygon.technology/android-icon-192x192.png",
+                trackingId: 805,
+                title: "Polygon Wallet"
+            ),
+            SuggestedSiteData(
+                url: "https://mobile.twitter.com/home",
+                bgColor: "0x55acee",
+                imageUrl: "asset://suggestedsites_twitter",
+                faviconUrl: "asset://defaultFavicon",
+                trackingId: 628,
+                title: .DefaultSuggestedTwitter
+            ),
+        ],
         "zh_CN": [
             SuggestedSiteData(
                 url: "http://mozilla.com.cn",

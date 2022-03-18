@@ -4,7 +4,7 @@
 
 import SwiftUI
 
-struct SpaceCommentsEntityView: View {
+struct SpaceNoteEntityView: View {
     let details: SpaceEntityThumbnail
     var showDescriptions: Bool
     var isDigestSeeMore: Bool = false
@@ -20,8 +20,9 @@ struct SpaceCommentsEntityView: View {
                 !snippet.isEmptyOrWhitespace()
             {
                 SpaceMarkdownSnippet(
-                    showDescriptions: showDescriptions, details: details,
-                    snippet: snippet)
+                    showDescriptions: showDescriptions,
+                    snippet: snippet
+                )
             }
         }
         .padding(.horizontal, 16)

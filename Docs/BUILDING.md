@@ -55,3 +55,10 @@ Run on the Simulator
 
 * Open `Client.xcodeproj` and make sure you have the *Client* scheme and a simulated device selected. The app should run on any simulator.
 * Select *Product -> Run* and the application should build and run on the selected simulator.
+
+Run on a Physical Device (requires an active Apple Developer subscription)
+-----------------
+
+* Open `Client.xcodeproj` and make sure you have the *Client* scheme and your registered device selected. You might need to give your device's UDID to a Neeva employee.
+* Execute our `Scripts/prep-for-physical.sh` script.
+* Select *Product -> Run* and the application should build and run on your device.

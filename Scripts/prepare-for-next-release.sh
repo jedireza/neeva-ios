@@ -72,3 +72,14 @@ else
 fi
 
 git push origin $BRANCH_NAME
+
+if command -v gh &> /dev/null && is_branch_of_main; then
+  read -r -p "Looks like you have cli tool set up, do you want to create a PR? [Y/n] " response
+  if [[ "$response" =~ ^([nN][oO]?)$ ]]
+  then
+    continue
+  else
+    gh pr create -t "Preparing for build $CURRENT_PROJECT_VERSION" -r "neevaco/ios" -b "Bumping up version for next build"
+  fi
+fi
+

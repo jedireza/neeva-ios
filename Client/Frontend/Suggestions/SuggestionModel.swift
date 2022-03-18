@@ -49,6 +49,7 @@ class SuggestionModel: ObservableObject {
     @Published var urlSuggestions: [Suggestion] = []
     @Published var navSuggestions: [Suggestion] = []
     @Published private(set) var findInPageSuggestion: Suggestion?
+    @Published private(set) var xyzQuerySuggestions: [Suggestion] = []
     @Published private(set) var activeLensBang: ActiveLensBangInfo?
     @Published private(set) var error: Error?
     @Published private(set) var keyboardFocusedSuggestion: Suggestion?
@@ -169,6 +170,10 @@ class SuggestionModel: ObservableObject {
             ? fetchNeevaSuggestions(for: searchQuery)
             : fetchGenericSuggestions(for: searchQuery)
 
+        if FeatureFlag[.web3Mode] {
+            fetchNFTSuggestions(for: searchQuery)
+        }
+
         // always insert the most recent query to the beginning of the array
         suggestionQueryQueue.insert((searchQuery, suggestionQuery), at: 0)
     }
@@ -177,6 +182,7 @@ class SuggestionModel: ObservableObject {
         rowQuerySuggestions = []
         urlSuggestions = []
         navSuggestions = []
+        xyzQuerySuggestions = []
         findInPageSuggestion = nil
         activeLensBang = nil
         error = nil
@@ -316,6 +322,27 @@ class SuggestionModel: ObservableObject {
                         ))
                 }
             }
+    }
+
+    private func fetchNFTSuggestions(for searchQuery: String) {
+        guard let suggestURL = SearchEngine.nft.suggestURLForQuery(searchQuery) else {
+            return
+        }
+        var request = URLRequest(url: suggestURL)
+        request.httpMethod = "GET"
+
+        URLSession.shared.dataTask(with: request) { [self] (data, response, error) in
+            guard error == nil, let data = data else { return }
+            DispatchQueue.main.async { [self] in
+                xyzQuerySuggestions = []
+                guard let suggestionResult = try? JSONDecoder().decode(
+                    NFTSuggestionResult.self, from: data), let groups = suggestionResult.groups, !groups.isEmpty
+                else { return }
+                xyzQuerySuggestions = groups[0].suggestions.prefix(3).map { suggestedQuery in
+                        .xyzQuery(suggestedQuery.displayText)
+                    }
+            }
+        }.resume()
     }
 
     private func subscribe() {
@@ -635,6 +662,9 @@ class SuggestionModel: ObservableObject {
         case .findInPage(let query):
             interaction = .FindOnPageSuggestion
             bvc.updateFindInPageVisibility(visible: true, query: query)
+        case .xyzQuery(let query):
+            interaction = .XYZSearchSuggestion
+            bvc.urlBar(didSubmitText: query, isSearchQuerySuggestion: false)
         case .editCurrentQuery(let query, let url):
             hideZeroQuery = false
 

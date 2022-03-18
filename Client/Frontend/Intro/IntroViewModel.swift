@@ -76,8 +76,6 @@ class IntroViewModel: NSObject, ObservableObject {
     public func dismiss(completion: @escaping () -> Void) {
         Defaults[.introSeen] = true
 
-        presentationController.view.alpha = 1
-
         overlayManager.hideCurrentOverlay(ofPriority: .fullScreen) {
             completion()
         }

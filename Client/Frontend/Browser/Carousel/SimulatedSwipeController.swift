@@ -16,14 +16,14 @@ public enum SwipeUX {
 }
 
 class SimulatedSwipeController:
-    UIViewController, TabEventHandler, TabManagerDelegate, SimulateForwardAnimatorDelegate
+    UIViewController, TabEventHandler, SimulateForwardAnimatorDelegate
 {
     var model: SimulatedSwipeModel
     var animator: SimulatedSwipeAnimator!
     var superview: UIView!
     var blankView: UIView!
     var progressView: UIHostingController<CarouselProgressView>!
-    private var viewHiddenSubscription: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
 
     init(model: SimulatedSwipeModel, superview: UIView!) {
         self.model = model
@@ -31,7 +31,10 @@ class SimulatedSwipeController:
         super.init(nibName: nil, bundle: nil)
 
         register(self, forTabEvents: .didChangeURL)
-        model.tabManager.addDelegate(self)
+
+        model.tabManager.selectedTabPublisher.sink { [weak self] in
+            self?.selectedTabChanged(selected: $0)
+        }.store(in: &subscriptions)
 
         self.animator = SimulatedSwipeAnimator(
             model: model,
@@ -56,9 +59,9 @@ class SimulatedSwipeController:
         blankView.backgroundColor = .white
         self.view.addSubview(blankView)
 
-        viewHiddenSubscription = model.$hidden.sink { [unowned self] hidden in
-            view.isHidden = hidden
-        }
+        model.$hidden.sink { [weak self] hidden in
+            self?.view.isHidden = hidden
+        }.store(in: &subscriptions)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -111,10 +114,7 @@ class SimulatedSwipeController:
 
     }
 
-    func tabManager(
-        _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
-        isRestoring: Bool, updateZeroQuery: Bool
-    ) {
+    func selectedTabChanged(selected: Tab?) {
         guard let tabUUID = selected?.tabUUID else {
             return
         }

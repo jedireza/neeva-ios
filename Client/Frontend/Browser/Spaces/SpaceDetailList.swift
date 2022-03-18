@@ -121,84 +121,43 @@ struct SpaceDetailList: View {
                                 }
                         }
 
-                        let spaceLink: SpaceID? = {
-                            if case .spaceLink(let id) = details.data.previewEntity {
-                                return id
-                            }
+                        SpaceEntityDetailView(
+                            details: details,
+                            onSelected: {
+                                guard let url = details.data.url else { return }
+                                gridModel.closeDetailView()
+                                browserModel.hideWithNoAnimation()
 
-                            return nil
-                        }()
+                                let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                if let navPath = NavigationPath.navigationPath(
+                                    from: url, with: bvc)
+                                {
+                                    NavigationPath.handle(nav: navPath, with: bvc)
+                                    return
+                                }
 
-                        if let url = details.data.url, spaceLink == nil {
-                            SpaceEntityDetailView(
-                                details: details,
-                                onSelected: {
-                                    gridModel.closeDetailView()
-                                    browserModel.hideWithNoAnimation()
-
-                                    let bvc = SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                    if let navPath = NavigationPath.navigationPath(
-                                        from: url, with: bvc)
-                                    {
-                                        NavigationPath.handle(nav: navPath, with: bvc)
-                                        return
-                                    }
-
-                                    onOpenURLForSpace(url, primitive.id)
-                                },
-                                onDelete: { index in
-                                    onDelete(offsets: IndexSet([index]))
-                                },
-                                addToAnotherSpace: { url, title, description in
-                                    spacesModel.detailedSpace = nil
-                                    SceneDelegate.getBVC(with: tabModel.manager.scene)
-                                        .showAddToSpacesSheet(
-                                            url: url, title: title, description: description)
-                                },
-                                editSpaceItem: editSpaceItem,
-                                index: primitive.allDetails.firstIndex { $0.id == details.id }
-                                    ?? 0,
-                                canEdit: canEdit
-                            )
-                            .modifier(ListSeparatorModifier())
-                            .listRowBackground(Color.DefaultBackground)
-                            .onDrag {
-                                NSItemProvider(id: details.id)
-                            }
-                            .iPadOnlyID()
-                        } else if let spaceLink = spaceLink,
-                            let destinationDetails = spacesModel.allDetails.first(where: {
-                                $0.id == spaceLink.id
-                            })
-                        {
-                            let isDigestSeeMore: Bool = {
-                                return details.id == .init(SpaceStore.dailyDigestSeeMoreID)
-                            }()
-
-                            NavigationLink(
-                                destination: SpaceContainerView(primitive: destinationDetails)
-                            ) {
-                                SpaceCommentsEntityView(
-                                    details: details, showDescriptions: showDescriptions,
-                                    isDigestSeeMore: isDigestSeeMore)
-                            }
-                        } else {
-                            SpaceCommentsEntityView(
-                                details: details, showDescriptions: showDescriptions
-                            ).if(canEdit) {
-                                $0.modifier(
-                                    EditSpaceActionModifier(
-                                        details: details,
-                                        onDelete: { index in
-                                            onDelete(offsets: IndexSet([index]))
-                                        }, editSpaceItem: editSpaceItem,
-                                        index: primitive.allDetails.firstIndex {
-                                            $0.id == details.id
-                                        } ?? 0
-                                    )
-                                )
-                            }
+                                onOpenURLForSpace(url, primitive.id)
+                            },
+                            onDelete: { index in
+                                onDelete(offsets: IndexSet([index]))
+                            },
+                            addToAnotherSpace: { url, title, description in
+                                spacesModel.detailedSpace = nil
+                                SceneDelegate.getBVC(with: tabModel.manager.scene)
+                                    .showAddToSpacesSheet(
+                                        url: url, title: title, description: description)
+                            },
+                            editSpaceItem: editSpaceItem,
+                            index: primitive.allDetails.firstIndex { $0.id == details.id }
+                                ?? 0,
+                            canEdit: canEdit
+                        )
+                        .modifier(ListSeparatorModifier())
+                        .listRowBackground(Color.DefaultBackground)
+                        .onDrag {
+                            NSItemProvider(id: details.id)
                         }
+                        .iPadOnlyID()
                     }
                     .onDelete(perform: canEdit ? onDelete : nil)
                     .onMove(perform: canEdit ? onMove : nil)

@@ -180,6 +180,8 @@ public struct LogConfig {
         case DefaultBrowserInterstitialImp
         /// Start an experiment
         case StartExperiment
+        /// Default browser interstitial impression (skip to browser)
+        case DefaultBrowserInterstitialImpSkipToBrowser
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -188,8 +190,6 @@ public struct LogConfig {
         case PromoDefaultBrowser
         /// Close default browser promo card
         case CloseDefaultBrowserPromo
-        case DefaultBrowserPromptSkip
-        case DefaultBrowserPromptOpen
         case DefaultBrowserOnboardingInterstitialSkip
         case DefaultBrowserOnboardingInterstitialOpen
         /// Promo card impression (without 2 second)
@@ -206,6 +206,7 @@ public struct LogConfig {
         case NoSuggestionQuery
         case NoSuggestionURL
         case FindOnPageSuggestion
+        case XYZSearchSuggestion
         case openSuggestedSearch
         case openSuggestedSite
         case tabSuggestion
@@ -290,11 +291,7 @@ public struct LogConfig {
         case clearIndexError
 
         // MARK: recipe cheatsheet
-        case RecipeCheatsheetImpression
-        case RecipeCheatsheetClickBanner
         case RecipeCheatsheetShowMoreRecipe
-        case RecipeCheatsheetClickPreferredProvider
-        case RecipeCheatsheetUpdatePreferredProvider
         case RelatedRecipeClick
         case RelatedSearchClick
 
@@ -310,6 +307,7 @@ public struct LogConfig {
         case OpenLinkFromCheatsheet
         case CheatsheetQueryFallback
         case OpenCheatsheetSupport
+        case CheatsheetBadURLString
 
         // MARK: tab group
         case tabGroupExpanded
@@ -476,11 +474,10 @@ public struct LogConfig {
         case .PreviewSampleQueryClicked: return .FirstRun
         case .PreviewTapFakeSearchInput: return .FirstRun
         case .PreviewHomeSignin: return .FirstRun
-        case .DefaultBrowserPromptSkip: return .FirstRun
-        case .DefaultBrowserPromptOpen: return .FirstRun
         case .DefaultBrowserOnboardingInterstitialSkip: return .FirstRun
         case .DefaultBrowserOnboardingInterstitialOpen: return .FirstRun
         case .DefaultBrowserInterstitialImp: return .FirstRun
+        case .DefaultBrowserInterstitialImpSkipToBrowser: return .FirstRun
         case .StartExperiment: return .FirstRun
 
         case .PromoCardAppear: return .PromoCard
@@ -500,6 +497,7 @@ public struct LogConfig {
         case .NoSuggestionQuery: return .Suggestions
         case .LensSuggestion: return .Suggestions
         case .FindOnPageSuggestion: return .Suggestions
+        case .XYZSearchSuggestion: return .Suggestions
         case .openSuggestedSearch: return .Suggestions
         case .openSuggestedSite: return .Suggestions
         case .tabSuggestion: return .Suggestions
@@ -562,11 +560,7 @@ public struct LogConfig {
         case .didIndex: return .Spotlight
         case .clearIndexError: return .Spotlight
 
-        case .RecipeCheatsheetImpression: return .RecipeCheatsheet
-        case .RecipeCheatsheetClickBanner: return .RecipeCheatsheet
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
-        case .RecipeCheatsheetClickPreferredProvider: return .RecipeCheatsheet
-        case .RecipeCheatsheetUpdatePreferredProvider: return .RecipeCheatsheet
         case .RelatedRecipeClick: return .RecipeCheatsheet
         case .RelatedSearchClick: return .RecipeCheatsheet
 
@@ -581,6 +575,7 @@ public struct LogConfig {
         case .OpenLinkFromCheatsheet: return .Cheatsheet
         case .CheatsheetQueryFallback: return .Cheatsheet
         case .OpenCheatsheetSupport: return .Cheatsheet
+        case .CheatsheetBadURLString: return .Cheatsheet
 
         case .tabGroupExpanded: return .TabGroup
         case .tabGroupCollapsed: return .TabGroup
@@ -682,6 +677,7 @@ public struct LogConfig {
 
     public struct PromoCardAttribute {
         public static let promoCardType = "promoCardType"
+        public static let fromSkipToBrowser = "fromSkipToBrowser"
     }
 
     public struct ExperimentAttribute {

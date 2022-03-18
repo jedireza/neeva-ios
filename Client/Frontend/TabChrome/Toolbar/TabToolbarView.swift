@@ -49,9 +49,13 @@ struct TabToolbarView: View {
                 },
                 identifier: "TabOverflowButton"
             )
-            neevaButton
-            TabToolbarButtons.AddToSpace(
-                weight: .medium, action: { performAction(.addToSpace) })
+            if FeatureFlag[.web3Mode] {
+                TabToolbarButtons.NeevaWallet()
+            } else {
+                neevaButton
+                TabToolbarButtons.AddToSpace(
+                    weight: .medium, action: { performAction(.addToSpace) })
+            }
             TabToolbarButtons.ShowTabs(
                 weight: .medium,
                 action: { performAction(.showTabs) },
@@ -70,8 +74,6 @@ struct TabToolbarView: View {
         HStack(spacing: 0) {
             TabToolbarButtons.ShareButton(
                 weight: .medium, action: { performAction(.share) })
-            TabToolbarButtons.ShowPreferenceButton(
-                weight: .medium, action: { performAction(.showPreference) })
             TabToolbarButtons.AddToSpace(
                 weight: .medium, action: { performAction(.addToSpace) })
         }

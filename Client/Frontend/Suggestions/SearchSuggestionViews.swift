@@ -60,6 +60,8 @@ public struct SearchSuggestionView: View {
             TabSuggestionView(suggestion: tab)
         case .findInPage(let query):
             FindInPageSuggestionView(query: query)
+        case .xyzQuery(let query):
+            XYZQueryView(query: query)
         case .editCurrentQuery(let query, let url):
             EditCurrentQuerySuggestionView(suggestion: (query, url))
         }
@@ -706,6 +708,31 @@ private struct FindInPageSuggestionView: View {
             secondaryLabel: secondaryLabel,
             detail: EmptyView(),
             suggestion: Suggestion.findInPage(query)
+        )
+        .environmentObject(model)
+    }
+}
+
+private struct XYZQueryView: View {
+    let query: String
+
+    @State var focused: Bool = false
+    @EnvironmentObject public var model: SuggestionModel
+
+    var label: some View {
+        Text(query)
+            .withFont(.bodyLarge)
+            .lineLimit(1)
+    }
+
+    var body: some View {
+        SuggestionView(
+            action: nil,
+            icon: Symbol(decorative: .magnifyingglass),
+            label: label,
+            secondaryLabel: EmptyView(),
+            detail: EmptyView(),
+            suggestion: Suggestion.xyzQuery(query)
         )
         .environmentObject(model)
     }

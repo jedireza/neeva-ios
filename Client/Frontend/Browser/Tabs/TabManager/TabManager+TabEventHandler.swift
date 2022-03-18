@@ -1,0 +1,16 @@
+// Copyright 2022 Neeva Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+import Storage
+
+extension TabManager: TabEventHandler {
+    func tab(_ tab: Tab, didLoadFavicon favicon: Favicon?, with: Data?) {
+        // Write the tabs out again to make sure we preserve the favicon update.
+        store.preserveTabs(tabs, selectedTab: selectedTab, for: scene)
+    }
+
+    func tabDidChangeContentBlocking(_ tab: Tab) {
+        tab.reload()
+    }
+}

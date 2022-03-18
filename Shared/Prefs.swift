@@ -92,10 +92,13 @@ extension Defaults.Keys {
 
     public static let loginLastWeekTimeStamp = Defaults.Key<[Date]>(
         "LoginLastWeekTimeStamp", default: [])
+    public static let numberOfAppForeground = Defaults.Key<Int32>(
+        "NumberOfAppForeground", default: 0)
 
     // app review
     public static let ratingsCardHidden = Defaults.BoolKey("RatingsCardHidden")
-    public static let didTriggerSystemReviewDialog = Defaults.BoolKey("didTriggerSystemReviewDialog")
+    public static let didTriggerSystemReviewDialog = Defaults.BoolKey(
+        "didTriggerSystemReviewDialog")
 
     public static let notificationToken = Defaults.Key<String?>("notificationToken")
 
@@ -171,6 +174,10 @@ extension Defaults.Keys {
         "profile.didDismissDefaultBrowserCard")
     public static let didShowDefaultBrowserInterstitial = Defaults.BoolKey(
         "didShowDefaultBrowserInterstitial")
+    // keeping interstitial shown state separately for skip to browser case so we can
+    // show the default browser interstitial in the future for user who sign in later
+    public static let didShowDefaultBrowserInterstitialFromSkipToBrowser = Defaults.BoolKey(
+        "didShowDefaultBrowserInterstitialFromSkipToBrowser")
     public static let didSetDefaultBrowser = Defaults.BoolKey(
         "didSetDefaultBrowser")
 
@@ -189,6 +196,10 @@ extension Defaults.Keys {
     public static let addSpaceURLsToCS = Defaults.BoolKey("addSpaceURLsToCS", default: true)
     public static let overwriteSpotlightDefaults = Defaults.BoolKey(
         "overwriteSpotlightDefaults", default: true)
+    public static let numOfIndexedUserActivities = Defaults.Key<Int>(
+        "numOfIndexedUserActivities", default: 0)
+    public static let numOfWillIndexEvents = Defaults.Key<Int>("numOfWillIndexEvents", default: 0)
+    public static let numOfDidIndexEvents = Defaults.Key<Int>("numOfDidIndexEvents", default: 0)
 
     public static let numOfDailyZeroQueryImpression = Defaults.Key<Int>(
         "numOfDailyZeroQueryImpression", default: 0)

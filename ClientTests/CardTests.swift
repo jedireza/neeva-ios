@@ -36,7 +36,6 @@ class CardTests: XCTestCase {
     var incognitoModel: IncognitoModel!
     var browserModel: BrowserModel!
     var gridModel: GridModel!
-    var delegate: MockTabManagerDelegate!
     var groupManager: TabGroupManager!
     var tabCardModel: TabCardModel!
     var tabGroupCardModel: TabGroupCardModel!
@@ -81,7 +80,6 @@ class CardTests: XCTestCase {
             gridModel: gridModel, tabManager: manager, chromeModel: .init(),
             incognitoModel: incognitoModel)
         manager.didRestoreAllTabs = true
-        delegate = MockTabManagerDelegate()
         groupManager = TabGroupManager(tabManager: manager)
         tabCardModel = TabCardModel(manager: manager, groupManager: groupManager)
         tabGroupCardModel = TabGroupCardModel(manager: groupManager)
@@ -92,7 +90,6 @@ class CardTests: XCTestCase {
 
     override func tearDown() {
         profile._shutdown()
-        manager.removeDelegate(delegate)
         manager.removeAllTabs()
 
         super.tearDown()
@@ -425,29 +422,29 @@ class CardTests: XCTestCase {
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 3 })
 
-        let web3Model = Web3Model(server: nil, presenter: MockPresenter(), tabManager: manager)
+        let cardContainer = CardsContainer(
+            columns: Array(repeating: GridItem(.fixed(100), spacing: 20), count: 2)
+        )
+        .environmentObject(browserModel)
+        .environmentObject(browserModel.cardTransitionModel)
+        .environmentObject(incognitoModel)
+        .environmentObject(tabCardModel)
+        .environmentObject(spaceCardModel)
+        .environmentObject(tabGroupCardModel)
+        .environmentObject(gridModel)
+        .environmentObject(tabGroupCardModel)
 
-        let cardGrid = CardGrid()
-            .environmentObject(browserModel)
-            .environmentObject(browserModel.cardTransitionModel)
-            .environmentObject(incognitoModel)
-            .environmentObject(tabCardModel).environmentObject(spaceCardModel)
-            .environmentObject(tabGroupCardModel).environmentObject(gridModel)
-            .environmentObject(web3Model)
-            .environmentObject(web3Model.walletDetailsModel)
-
-        let cardContainer = try cardGrid.inspect().find(CardsContainer.self)
-        XCTAssertNotNil(cardContainer)
         waitForCondition {
-            try cardGrid.inspect().findAll(FaviconView.self).count == 3
+            try cardContainer.inspect().findAll(FaviconView.self).count == 3
         }
 
         manager.addTab()
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 5 })
+        
         XCTAssertEqual(manager.tabs.count, 5)
         waitForCondition {
-            try cardGrid.inspect().findAll(FaviconView.self).count == 5
+            try cardContainer.inspect().findAll(FaviconView.self).count == 5
         }
     }
 

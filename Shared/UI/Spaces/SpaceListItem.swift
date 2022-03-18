@@ -35,12 +35,8 @@ struct SpaceListItem: View {
                         .compactMap { $0 }
                         .joined(separator: ", ")
                 )
-            if space.isPublic {
-                Symbol(decorative: .link, style: .labelMedium)
-                    .foregroundColor(.secondaryLabel)
-            }
-            if space.isShared {
-                Symbol(decorative: .person2Fill, style: .labelMedium)
+            if !space.isPublic {
+                Symbol(decorative: .lock, style: .labelMedium)
                     .foregroundColor(.secondaryLabel)
             }
             Spacer(minLength: 0)

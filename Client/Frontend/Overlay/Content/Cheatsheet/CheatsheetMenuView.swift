@@ -43,47 +43,6 @@ struct ReviewURLButton: View {
     }
 }
 
-struct QueryButton: View {
-    let query: String
-    let onDismiss: (() -> Void)?
-
-    @Environment(\.onOpenURL) var onOpenURL
-
-    var body: some View {
-        Button(action: onClick) {
-            ScrollView(.horizontal) {
-                HStack(alignment: .center) {
-                    Label {
-                        Text(query)
-                            .foregroundColor(.label)
-                    } icon: {
-                        Symbol(decorative: .magnifyingglass)
-                            .foregroundColor(.tertiaryLabel)
-                    }
-                }
-                .padding(.vertical, 10)
-            }
-        }
-        .withFont(unkerned: .bodyLarge)
-        .lineLimit(1)
-    }
-
-    func onClick() {
-        if let onDismiss = onDismiss {
-            onDismiss()
-        }
-
-        if let encodedQuery = query.addingPercentEncoding(
-            withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
-        {
-            ClientLogger.shared.logCounter(
-                .RelatedSearchClick, attributes: EnvironmentHelper.shared.getAttributes())
-            let target = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")!
-            onOpenURL(target)
-        }
-    }
-}
-
 struct CheatsheetInfoView: View {
     @Environment(\.verticalSizeClass) var verticalSizeClass
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
@@ -471,13 +430,10 @@ public struct CheatsheetMenuView: View {
             )
         case .RecipeBlock(let recipes):
             // filter out result already showing on the current page
-            RelatedRecipeList(
-                recipes: recipes,
-                onDismiss: nil
-            )
-            .padding(.bottom, 20)
+            RelatedRecipeList(recipes: recipes)
+                .padding(.bottom, 20)
         case .RelatedSearches(let relatedSearches):
-            RelatedSearchesView(relatedSearches: relatedSearches, onDismiss: nil)
+            RelatedSearchesView(relatedSearches: relatedSearches)
         case .WebGroup(let result):
             // filter out result already showing on the current page
             WebResultList(
@@ -514,7 +470,7 @@ public struct CheatsheetMenuView: View {
                 Text("Keep Looking").withFont(.headingXLarge)
                 ForEach(model.cheatsheetInfo?.memorizedQuery?.prefix(5) ?? [], id: \.self) {
                     query in
-                    QueryButton(query: query, onDismiss: nil)
+                    QueryButtonView(query: query)
                 }
             }
             .padding()

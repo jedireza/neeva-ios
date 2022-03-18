@@ -14,7 +14,6 @@ enum ToolbarAction {
     case longPressBackForward
     case addToSpace
     case showTabs
-    case showPreference
     case share
 }
 
@@ -101,30 +100,6 @@ extension BrowserViewController: ToolbarDelegate {
 
             case .showTabs:
                 self.showTabTray()
-            case .showPreference:
-                if let tabUUID = self.tabManager.selectedTab?.tabUUID,
-                    let url = self.tabManager.selectedTab?.url?.absoluteString
-                {
-                    RecipeCheatsheetLogManager.shared.logInteraction(
-                        logType: .clickPreferredProvider, tabUUIDAndURL: tabUUID + url)
-                }
-                // Set up preferred provider list
-                let providerList = ProviderList.shared
-                if !providerList.isLoading {
-                    providerList.fetchProviderList()
-                }
-
-                guard let toastViewManager = self.getSceneDelegate()?.toastViewManager else {
-                    return
-                }
-                self.showModal(style: .spaces) {
-                    SetPreferredProviderContent(
-                        chromeModel: self.chromeModel,
-                        toastViewManager: toastViewManager,
-                        tabUUID: self.tabManager.selectedTab?.tabUUID
-                    )
-                }
-                break
             case .share:
                 self.showShareSheet(buttonView: self.view)
             }

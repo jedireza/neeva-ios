@@ -466,10 +466,16 @@ extension BrowserViewController: WKNavigationDelegate {
         return false
     }
 
-    /// Checks if a file is a special format for Apple Devices (ex. .ics, .mobileconfig).
+    /// Checks if a file is a special format for Apple Devices (ex. .ics, .mobileconfig, wallet passes).
     /// These URLs should be opened in a SafariViewController
-    fileprivate func isAppleFormatFile(_ url: URL) -> Bool {
-        return url.pathExtension == "ics" || url.pathExtension == "mobileconfig"
+    fileprivate func isSpecialAppleURL(_ url: URL) -> Bool {
+        return url.pathExtension == "ics" ||
+            url.pathExtension == "mobileconfig" ||
+            (url.host?.contains("storepass.apple.com") ?? false)
+    }
+    
+    fileprivate func isGooglePolicyURL(_ url: URL) -> Bool {
+        return (url.host?.contains("mdm.googleusercontent") ?? false)
     }
 
     fileprivate func getAppStoreID(_ url: URL) -> String? {
@@ -495,6 +501,13 @@ extension BrowserViewController: WKNavigationDelegate {
         showModal(style: .grouped) {
             OpenInAppOverlayContent(url: url)
         }
+    }
+    
+    /// Used for URLs that WebView cannot handle, but work when used in Safari.
+    fileprivate func openURLInSafariViewController(_ url: URL) {
+        let safariVC = SFSafariViewController(url: url)
+        safariVC.modalPresentationStyle = .formSheet
+        present(safariVC, animated: true, completion: nil)
     }
 
     // This is the place where we decide what to do with a new navigation action. There are a number of special schemes
@@ -571,23 +584,21 @@ extension BrowserViewController: WKNavigationDelegate {
             return
         }
 
-        if isAppleFormatFile(url) {
-            // Open URL in SafariViewController as only Safari can properly handle URL
-            var safariVC: SFSafariViewController!
-
+        if isSpecialAppleURL(url) || isGooglePolicyURL(url) {
             if url.pathExtension == "mobileconfig"
                 && url.host?.hasSuffix("developer.apple.com") ?? false
             {
                 // .mobileconfig files from Apple Developer have to be redirected to root page to be downloaded
                 // If we try to open the specific download URL, the user will see an auth error
-                safariVC = SFSafariViewController(
-                    url: URL(string: "https://developer.apple.com/download/")!)
+                openURLInSafariViewController(URL(string: "https://developer.apple.com/download/")!)
             } else {
-                safariVC = SFSafariViewController(url: url)
+                openURLInSafariViewController(url)
             }
 
-            safariVC.modalPresentationStyle = .formSheet
-            present(safariVC, animated: true, completion: nil)
+            if !tab.canGoBack && !tab.canGoForward {
+                // Close Tab since it will be blank.
+                tabManager.removeTab(tab, showToast: false)
+            }
 
             decisionHandler(.cancel)
             return
@@ -1032,7 +1043,6 @@ extension BrowserViewController: WKNavigationDelegate {
                     ClientLogger.shared.logCounter(
                         .DefaultBrowserInterstitialImp
                     )
-                    NeevaExperiment.logStartExperiment(for: .defaultBrowserMergeEducation)
                     shouldLogDBPrompt = false
                 }
 
@@ -1040,7 +1050,14 @@ extension BrowserViewController: WKNavigationDelegate {
                     let interaction = LogConfig.Interaction(rawValue: interactionStr),
                     userInfo.hasLoginCookie()
                 {
-                    ClientLogger.shared.logCounter(interaction)
+                    ClientLogger.shared.logCounter(
+                        interaction,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.PromoCardAttribute.fromSkipToBrowser,
+                                value: "false")
+                        ]
+                    )
                     Defaults[.lastDefaultBrowserPromptInteraction] = nil
                 }
 

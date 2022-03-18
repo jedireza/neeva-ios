@@ -32,6 +32,10 @@ public class SearchEngine: Identifiable, Hashable {
         return autoEngine ?? neeva
     }
 
+    public static var nft: SearchEngine {
+        return neevaxyz
+    }
+
     // MARK: Public properties & conformances
     public let id: String
     public let label: String
@@ -131,6 +135,16 @@ public class SearchEngine: Identifiable, Hashable {
             suggestTemplate: nil,
             searchTemplate: "",
             isNeeva: true
+        )
+    }
+
+    private static var neevaxyz: SearchEngine {
+        SearchEngine(
+            id: "_neevaxyz",
+            label: "Neevaxyz",
+            icon: URL(string: "https://neeva.xyz/apple-touch-icon.png"),
+            suggestTemplate: "https://neeva.xyz/_suggest?q={searchTerms}",
+            searchTemplate: "https://neeva.xyz?q={searchTerms}"
         )
     }
 

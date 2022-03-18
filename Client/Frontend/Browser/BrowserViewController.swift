@@ -33,6 +33,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
 
+    // Default Browser intersititual
     private var shouldPresentDBPrompt = false
     var shouldLogDBPrompt = false
 
@@ -251,7 +252,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     fileprivate func didInit() {
         screenshotHelper = ScreenshotHelper(controller: self)
-        tabManager.addDelegate(self)
+
+        tabManager.selectedTabPublisher.prepend(nil).withPrevious().sink { [weak self] in
+            self?.selectedTabChanged(selected: $0.1, previous: $0.0)
+        }.store(in: &subscriptions)
+
         tabManager.addNavigationDelegate(self)
         downloadQueue.delegate = self
     }
@@ -464,12 +469,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // On iPhone, if we are about to show the On-Boarding, blank out the tab so that it does
-        // not flash before we present. This change of alpha also participates in the animation when
-        // the intro view is dismissed.
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            self.view.alpha = Defaults[.introSeen] ? 1.0 : 0.0
-        }
 
         // config log environment variable
         ClientLogger.shared.env = EnvironmentHelper.shared.env
@@ -487,16 +486,22 @@ class BrowserViewController: UIViewController, ModalPresenter {
         DispatchQueue.main.async {
             if Self.createNewTabOnStartForTesting {
                 self.tabManager.select(self.tabManager.addTab())
-            } else if !Defaults[.didFirstNavigation] {
-                self.showPreviewHome()
             } else if self.tabManager.normalTabs.isEmpty {
-                self.showTabTray()
+                if FeatureFlag[.web3Mode] {
+                    self.showZeroQuery()
+                } else if !Defaults[.didFirstNavigation] {
+                    self.showPreviewHome()
+                } else {
+                    self.showTabTray()
+                }
             }
         }
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        presentIntroViewController()
+        if !FeatureFlag[.web3Mode] {
+            presentIntroViewController()
+        }
 
         screenshotHelper.viewIsVisible = true
         screenshotHelper.takePendingScreenshots(tabManager.tabs)
@@ -1404,11 +1409,8 @@ extension BrowserViewController: ZeroQueryPanelDelegate {
     }
 }
 
-extension BrowserViewController: TabManagerDelegate {
-    func tabManager(
-        _ tabManager: TabManager, didSelectedTabChange selected: Tab?, previous: Tab?,
-        isRestoring: Bool, updateZeroQuery: Bool
-    ) {
+extension BrowserViewController {
+    func selectedTabChanged(selected: Tab?, previous: Tab?) {
         presentedViewController?.dismiss(animated: false, completion: nil)
 
         // Remove the old accessibilityLabel. Since this webview shouldn't be visible, it doesn't need it
@@ -1485,9 +1487,7 @@ extension BrowserViewController: TabManagerDelegate {
             readerModeModel.setReadingModeState(state: .unavailable)
         }
 
-        if updateZeroQuery {
-            updateInZeroQuery(selected?.url as URL?)
-        }
+        updateInZeroQuery(selected?.url as URL?)
     }
 
     func getSceneDelegate() -> SceneDelegate? {
@@ -1592,6 +1592,9 @@ extension BrowserViewController {
             }
         }
 
+        // Only show to new users
+        let introSeen = Defaults[.introSeen]
+
         introViewModel = IntroViewModel(
             presentationController: self, overlayManager: overlayManager,
             onDismiss: { action in
@@ -1636,11 +1639,15 @@ extension BrowserViewController {
                         }
                     }
 
-                    if case .skipToBrowser = action {
-                    } else {
-                        if !Defaults[.didSetDefaultBrowser]
-                            && !Defaults[.didShowDefaultBrowserInterstitial]
-                        {
+                    if !Defaults[.didSetDefaultBrowser]
+                        && !Defaults[.didShowDefaultBrowserInterstitial]
+                        && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
+                    {
+                        if case .skipToBrowser = action {
+                            if !introSeen {
+                                self.presentDBPromptView(fromSkipToBrowser: true)
+                            }
+                        } else {
                             self.shouldPresentDBPrompt = true
                             self.shouldLogDBPrompt = true
                         }
@@ -1670,44 +1677,33 @@ extension BrowserViewController {
         }
     }
 
-    private func presentDBPromptView() {
+    private func presentDBPromptView(fromSkipToBrowser: Bool = false) {
         self.shouldPresentDBPrompt = false
 
-        let arm = NeevaExperiment.startExperiment(for: .defaultBrowserMergeEducation)
-
-        if arm == .mergeEducation {
-            self.overlayManager.presentFullScreenModal(
-                content: AnyView(
-                    DefaultBrowserInterstitialOnboardingView {
-                        self.overlayManager.hideCurrentOverlay()
-                    } buttonAction: {
-                        self.overlayManager.hideCurrentOverlay()
-                        UIApplication.shared.openSettings(
-                            triggerFrom: .defaultBrowserPromptMergeEduction
-                        )
-                    }
-                )
-            ) {}
-        } else {
-            self.overlayManager.presentFullScreenModal(
-                content: AnyView(
-                    DefaultBrowserPromptView {
-                        self.overlayManager.hideCurrentOverlay()
-                    } buttonAction: {
-                        self.overlayManager.hideCurrentOverlay()
-
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                            self.presentDBOnboardingViewController(
-                                modalTransitionStyle: .crossDissolve,
-                                triggerFrom: .defaultBrowserPrompt
-                            )
-                        }
-                    }
-                )
-            ) {}
+        if fromSkipToBrowser {
+            ClientLogger.shared.logCounter(
+                .DefaultBrowserInterstitialImpSkipToBrowser
+            )
         }
 
-        Defaults[.didShowDefaultBrowserInterstitial] = true
+        self.overlayManager.presentFullScreenModal(
+            content: AnyView(
+                DefaultBrowserInterstitialOnboardingView(fromSkipToBrowser: fromSkipToBrowser) {
+                    self.overlayManager.hideCurrentOverlay()
+                } buttonAction: {
+                    self.overlayManager.hideCurrentOverlay()
+                    UIApplication.shared.openSettings(
+                        triggerFrom: .defaultBrowserPromptMergeEduction
+                    )
+                }
+            )
+        ) {}
+
+        if fromSkipToBrowser {
+            Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
+        } else {
+            Defaults[.didShowDefaultBrowserInterstitial] = true
+        }
     }
 
     private func introVCPresentHelper(
