@@ -24,6 +24,7 @@ public enum Suggestion {
     case editCurrentURL(TabCardDetails)
     case editCurrentQuery(String, URL)
     case findInPage(String)
+    case xyzQuery(String)
 
     public struct Bang {
         public let shortcut: String
@@ -87,6 +88,8 @@ extension Suggestion: Identifiable, Equatable {
             return "tab-\(tab.id)"
         case .findInPage(let query):
             return "findInPage-\(query)"
+        case .xyzQuery(let query):
+            return "xyz-query-\(query)"
         case .editCurrentQuery(let query, _):
             return "editCurrentQuery-\(query)"
         }

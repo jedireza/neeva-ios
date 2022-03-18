@@ -469,12 +469,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // On iPhone, if we are about to show the On-Boarding, blank out the tab so that it does
-        // not flash before we present. This change of alpha also participates in the animation when
-        // the intro view is dismissed.
-        if UIDevice.current.userInterfaceIdiom == .phone {
-            self.view.alpha = Defaults[.introSeen] ? 1.0 : 0.0
-        }
 
         // config log environment variable
         ClientLogger.shared.env = EnvironmentHelper.shared.env
@@ -492,16 +486,22 @@ class BrowserViewController: UIViewController, ModalPresenter {
         DispatchQueue.main.async {
             if Self.createNewTabOnStartForTesting {
                 self.tabManager.select(self.tabManager.addTab())
-            } else if !Defaults[.didFirstNavigation] {
-                self.showPreviewHome()
             } else if self.tabManager.normalTabs.isEmpty {
-                self.showTabTray()
+                if FeatureFlag[.web3Mode] {
+                    self.showZeroQuery()
+                } else if !Defaults[.didFirstNavigation] {
+                    self.showPreviewHome()
+                } else {
+                    self.showTabTray()
+                }
             }
         }
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        presentIntroViewController()
+        if !FeatureFlag[.web3Mode] {
+            presentIntroViewController()
+        }
 
         screenshotHelper.viewIsVisible = true
         screenshotHelper.takePendingScreenshots(tabManager.tabs)

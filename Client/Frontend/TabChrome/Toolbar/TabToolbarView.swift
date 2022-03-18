@@ -49,9 +49,13 @@ struct TabToolbarView: View {
                 },
                 identifier: "TabOverflowButton"
             )
-            neevaButton
-            TabToolbarButtons.AddToSpace(
-                weight: .medium, action: { performAction(.addToSpace) })
+            if FeatureFlag[.web3Mode] {
+                TabToolbarButtons.NeevaWallet()
+            } else {
+                neevaButton
+                TabToolbarButtons.AddToSpace(
+                    weight: .medium, action: { performAction(.addToSpace) })
+            }
             TabToolbarButtons.ShowTabs(
                 weight: .medium,
                 action: { performAction(.showTabs) },

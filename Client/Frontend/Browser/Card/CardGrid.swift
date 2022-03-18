@@ -185,28 +185,37 @@ struct GridPicker: View {
 
     @State var selectedIndex: Int = 1
 
+    var segments: [Segment]  {
+        var segments = [
+            Segment(
+                symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
+                selectedIconColor: .background,
+                selectedColor: .label,
+                selectedAction: { gridModel.switchToTabs(incognito: true) }),
+            Segment(
+                symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
+                selectedIconColor: .white,
+                selectedColor: Color.ui.adaptive.blue,
+                selectedAction: { gridModel.switchToTabs(incognito: false) })
+            ]
+        if !FeatureFlag[.web3Mode] {
+            segments.append(Segment(
+                symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
+                selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
+                selectedAction: gridModel.switchToSpaces
+            ))
+        }
+        return segments
+    }
+
     @ViewBuilder
     var picker: some View {
         HStack {
             Spacer()
 
             SegmentedPicker(
-                segments: [
-                    Segment(
-                        symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
-                        selectedIconColor: .background,
-                        selectedColor: .label,
-                        selectedAction: { gridModel.switchToTabs(incognito: true) }),
-                    Segment(
-                        symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
-                        selectedIconColor: .white,
-                        selectedColor: Color.ui.adaptive.blue,
-                        selectedAction: { gridModel.switchToTabs(incognito: false) }),
-                    Segment(
-                        symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
-                        selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
-                        selectedAction: gridModel.switchToSpaces),
-                ], selectedSegmentIndex: $selectedIndex, dragOffset: switcherToolbarModel.dragOffset
+                segments: segments,
+                selectedSegmentIndex: $selectedIndex, dragOffset: switcherToolbarModel.dragOffset
             )
             .useEffect(deps: gridModel.switcherState) { _ in
                 switch gridModel.switcherState {

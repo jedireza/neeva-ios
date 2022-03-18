@@ -118,7 +118,11 @@ class ZeroQueryModel: ObservableObject {
         }
 
         if !Defaults[.signedInOnce] {
-            if Defaults[.didFirstNavigation] {
+            if FeatureFlag[.web3Mode] && Defaults[.cryptoPublicKey].isEmpty {
+                promoCard = .walletPromo {
+                    self.bvc.web3Model.showWalletPanel()
+                }
+            } else if Defaults[.didFirstNavigation] && !FeatureFlag[.web3Mode] {
                 promoCard = .previewModeSignUp {
                     ClientLogger.shared.logCounter(
                         .PreviewModePromoSignup,

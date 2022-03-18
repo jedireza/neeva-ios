@@ -152,6 +152,21 @@ enum TabToolbarButtons {
         }
     }
 
+    struct NeevaWallet: View {
+        @EnvironmentObject var model: Web3Model
+
+        var body: some View {
+            TabToolbarButton(
+                label: Image("wallet-illustration")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 32)
+                    .accessibilityLabel("Neeva Wallet"),
+                action: model.showWalletPanel
+            )
+        }
+    }
+
     struct AddToSpace: View {
         let weight: NiconFont
         let action: () -> Void

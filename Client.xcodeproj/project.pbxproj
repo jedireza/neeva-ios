@@ -236,6 +236,7 @@
 		4A93B54F277EA7E100CD5415 /* SessionInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */; };
 		4A93B55A2782981600CD5415 /* Web3Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B5592782981600CD5415 /* Web3Model.swift */; };
 		4A93B55C27829BE800CD5415 /* WalletDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B55B27829BE800CD5415 /* WalletDetailView.swift */; };
+		4A9E28FD27E270DF00A70CA9 /* NFTSuggestionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9E28FC27E270DF00A70CA9 /* NFTSuggestionResult.swift */; };
 		4A9EFAF027B0BFD100F3ED7F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4A9EFAEF27B0BFD100F3ED7F /* README.md */; };
 		4A9F653F2702D2CE00B7C06E /* SpaceContentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F653E2702D2CE00B7C06E /* SpaceContentSheet.swift */; };
 		4A9F65412703CA2B00B7C06E /* SpaceContentSheetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F65402703CA2B00B7C06E /* SpaceContentSheetModel.swift */; };
@@ -1459,6 +1460,7 @@
 		4A93B5572781318900CD5415 /* CollectionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViews.swift; sourceTree = "<group>"; };
 		4A93B5592782981600CD5415 /* Web3Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Web3Model.swift; sourceTree = "<group>"; };
 		4A93B55B27829BE800CD5415 /* WalletDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailView.swift; sourceTree = "<group>"; };
+		4A9E28FC27E270DF00A70CA9 /* NFTSuggestionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTSuggestionResult.swift; sourceTree = "<group>"; };
 		4A9EFAE627ADB8BB00F3ED7F /* CurrencyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyStore.swift; sourceTree = "<group>"; };
 		4A9EFAE827AF9F6E00F3ED7F /* NeevaWalletStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaWalletStyle.swift; sourceTree = "<group>"; };
 		4A9EFAEA27AF9FC200F3ED7F /* Wallet.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Wallet.xcassets; sourceTree = "<group>"; };
@@ -3528,6 +3530,7 @@
 				C9C18DFE26559007004710CD /* Suggestion.swift */,
 				6670187026BB678700960CF3 /* SuggestionModel.swift */,
 				1A840EC62788E840005F6003 /* GenericSuggestion.swift */,
+				4A9E28FC27E270DF00A70CA9 /* NFTSuggestionResult.swift */,
 				C94D40692684D442003A6766 /* SuggestionPositionInfo.swift */,
 				59A68CCB63E2A565CB03F832 /* SuggestionsContent.swift */,
 				C9ACC463267A45AC009AE182 /* SuggestionsList.swift */,
@@ -6120,6 +6123,7 @@
 				C98E406126585C43003AC0E2 /* AboutSettingsSection.swift in Sources */,
 				66C423E22758652900C7E6EE /* DraggableBannerModifier.swift in Sources */,
 				4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */,
+				4A9E28FD27E270DF00A70CA9 /* NFTSuggestionResult.swift in Sources */,
 				4A9F65412703CA2B00B7C06E /* SpaceContentSheetModel.swift in Sources */,
 				4A9FCD4826F107BF00725E17 /* ProfileView.swift in Sources */,
 				3FE1BC2F27DFFB59004122F8 /* SpaceEntityDescriptionView.swift in Sources */,

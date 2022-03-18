@@ -12,6 +12,15 @@ struct SuggestionsList: View {
 
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
+    var searchSuggestionLabel: String {
+        if FeatureFlag[.web3Mode] {
+            return "Web Search from \(SearchEngine.current.label)"
+        } else {
+            return SearchEngine.current.isNeeva
+                ? "Neeva Search" : "\(SearchEngine.current.label) Suggestions"
+        }
+    }
+
     private var content: some View {
         LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
             if let lensOrBang = suggestionModel.activeLensBang,
@@ -34,12 +43,22 @@ struct SuggestionsList: View {
                 }
             } else {
                 TabSuggestionsList()
-                AutocompleteSuggestionView()
+                if !FeatureFlag[.web3Mode] {
+                    AutocompleteSuggestionView()
+                }
+
+                if !suggestionModel.xyzQuerySuggestions.isEmpty {
+                    SuggestionsSection(header: "NFT Search from Neevaxyz") {
+                        ForEach(Array(suggestionModel.xyzQuerySuggestions.enumerated()), id: \.0) {
+                            index, suggestion in
+                            SearchSuggestionView(suggestion)
+                        }
+                    }
+                }
 
                 if suggestionModel.shouldShowSearchSuggestions {
                     SuggestionsSection(
-                        header: SearchEngine.current.isNeeva
-                            ? "Neeva Search" : "\(SearchEngine.current.label) Suggestions"
+                        header: LocalizedStringKey(searchSuggestionLabel)
                     ) {
                         if suggestionModel.shouldShowPlaceholderSuggestions {
                             PlaceholderSuggestions()

@@ -626,25 +626,6 @@ class SpaceCardModel: CardModel {
         }
     }
 
-    func recommendedSpaceSelected(details: SpaceCardDetails) {
-        let spaceID = details.id
-        let space = SpaceStore.suggested.allSpaces.first(where: {
-            $0.id.id == spaceID
-        })
-        SpaceStore.onRecommendedSpaceSelected(space: space!)
-        SpaceStore.shared.objectWillChange.send()
-        recommendationSubscription = objectWillChange.sink {
-            let newDetails = self.allDetails.first(where: {
-                $0.id == spaceID
-            })
-            DispatchQueue.main.async {
-                self.detailedSpace = newDetails
-                self.spaceNeedsRefresh = spaceID
-                self.recommendationSubscription?.cancel()
-            }
-        }
-    }
-
     func promoCard() -> PromoCardType {
         return .blackFridayNotifyPromo(
             action: {

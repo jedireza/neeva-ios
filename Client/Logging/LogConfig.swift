@@ -206,6 +206,7 @@ public struct LogConfig {
         case NoSuggestionQuery
         case NoSuggestionURL
         case FindOnPageSuggestion
+        case XYZSearchSuggestion
         case openSuggestedSearch
         case openSuggestedSite
         case tabSuggestion
@@ -496,6 +497,7 @@ public struct LogConfig {
         case .NoSuggestionQuery: return .Suggestions
         case .LensSuggestion: return .Suggestions
         case .FindOnPageSuggestion: return .Suggestions
+        case .XYZSearchSuggestion: return .Suggestions
         case .openSuggestedSearch: return .Suggestions
         case .openSuggestedSite: return .Suggestions
         case .tabSuggestion: return .Suggestions

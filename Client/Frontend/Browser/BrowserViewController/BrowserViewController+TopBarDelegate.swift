@@ -87,18 +87,23 @@ extension BrowserViewController: TopBarDelegate {
             return
         }
 
+        let searchEngine =
+            FeatureFlag[.web3Mode] && !isSearchQuerySuggestion
+            ? SearchEngine.nft : SearchEngine.current
         // We couldn't build a URL, so check for a matching search keyword.
         let trimmedText = text.trimmingCharacters(in: .whitespaces)
         guard trimmedText.firstIndex(of: " ") != nil else {
-            submitSearchText(text, forTab: currentTab)
+            submitSearchText(text, forTab: currentTab, using: searchEngine)
             return
         }
 
-        self.submitSearchText(text, forTab: currentTab)
+        self.submitSearchText(text, forTab: currentTab, using: searchEngine)
     }
 
-    fileprivate func submitSearchText(_ text: String, forTab tab: Tab?) {
-        if let searchURL = SearchEngine.current.searchURLForQuery(text) {
+    fileprivate func submitSearchText(
+        _ text: String, forTab tab: Tab?, using searchEngine: SearchEngine = SearchEngine.current
+    ) {
+        if let searchURL = searchEngine.searchURLForQuery(text) {
             // We couldn't find a matching search keyword, so do a search query.
             finishEditingAndSubmit(searchURL, visitType: VisitType.typed, forTab: tab)
         } else {
