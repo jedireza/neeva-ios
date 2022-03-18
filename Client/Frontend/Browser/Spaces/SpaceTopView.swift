@@ -20,8 +20,8 @@ struct SpaceTopView: View {
     @ObservedObject var primitive: SpaceCardDetails
     @Binding var headerVisible: Bool
 
-    var space: Space {
-        primitive.manager.get(for: primitive.id)!
+    var space: Space? {
+        primitive.manager.get(for: primitive.id)
     }
 
     var canEdit: Bool {
@@ -29,7 +29,7 @@ struct SpaceTopView: View {
     }
 
     var ownerName: String? {
-        space.acls.first(where: { $0.acl == .owner })?.profile.displayName
+        space?.acls.first(where: { $0.acl == .owner })?.profile.displayName
     }
 
     var body: some View {
@@ -56,7 +56,8 @@ struct SpaceTopView: View {
             }
             shareButton
 
-            if !space.isDigest {
+            if let space = space,
+                !space.isDigest {
                 menuButton
             }
         }.frame(height: gridModel.pickerHeight)
@@ -82,42 +83,45 @@ struct SpaceTopView: View {
     }
 
     @ViewBuilder var addButton: some View {
-        Button(
-            action: {
-                DispatchQueue.main.async {
-                    SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
-                        style: .spaces
-                    ) {
-                        AddOrUpdateSpaceContent(space: space, config: .addSpaceItem) {
-                            helpURL in
-                            SceneDelegate.getBVC(with: tabModel.manager.scene).openURLInNewTab(
-                                helpURL)
-                        }.environmentObject(spacesModel)
+        if let space = space {
+            Button(
+                action: {
+                    DispatchQueue.main.async {
+                        SceneDelegate.getBVC(with: tabModel.manager.scene).showModal(
+                            style: .spaces
+                        ) {
+                            AddOrUpdateSpaceContent(space: space, config: .addSpaceItem) {
+                                helpURL in
+                                SceneDelegate.getBVC(with: tabModel.manager.scene).openURLInNewTab(
+                                    helpURL)
+                            }.environmentObject(spacesModel)
+                        }
+                    }
+                },
+                label: {
+                    if !headerVisible {
+                        Label(
+                            title: {
+                                Text("Add Item")
+                                    .withFont(.labelMedium)
+                                    .foregroundColor(Color.label)
+                            },
+                            icon: { Image(systemName: "plus.square") }
+                        )
+                    } else {
+                        Image(systemName: "plus")
+                            .foregroundColor(.label)
+                            .tapTargetFrame()
                     }
                 }
-            },
-            label: {
-                if !headerVisible {
-                    Label(
-                        title: {
-                            Text("Add Item")
-                                .withFont(.labelMedium)
-                                .foregroundColor(Color.label)
-                        },
-                        icon: { Image(systemName: "plus.square") }
-                    )
-                } else {
-                    Image(systemName: "plus")
-                        .foregroundColor(.label)
-                        .tapTargetFrame()
-                }
-            }
-        )
-
+            )
+        }
     }
 
     @ViewBuilder var shareButton: some View {
-        if !space.isDefaultSpace && !space.isDigest {
+        if let space = space,
+            !space.isDefaultSpace &&
+            !space.isDigest {
             Button(
                 action: {
                     if case .owner = space.userACL {
@@ -159,50 +163,54 @@ struct SpaceTopView: View {
     }
 
     @ViewBuilder var editButton: some View {
-        Button(
-            action: {
-                SceneDelegate.getBVC(with: tabModel.manager.scene)
-                    .showModal(
-                        style: .spaces
-                    ) {
-                        AddOrUpdateSpaceContent(space: space, config: .updateSpace)
-                            .environmentObject(spacesModel)
+        if let space = space {
+            Button(
+                action: {
+                    SceneDelegate.getBVC(with: tabModel.manager.scene)
+                        .showModal(
+                            style: .spaces
+                        ) {
+                            AddOrUpdateSpaceContent(space: space, config: .updateSpace)
+                                .environmentObject(spacesModel)
+                        }
+                    ClientLogger.shared.logCounter(
+                        .SpacesDetailEditButtonClicked,
+                        attributes: EnvironmentHelper.shared.getAttributes())
+                },
+                label: {
+                    if !headerVisible {
+                        Label(
+                            title: {
+                                Text("Edit Space")
+                                    .withFont(.labelMedium)
+                                    .foregroundColor(Color.label)
+                            },
+                            icon: { Image(systemName: "square.and.pencil") }
+                        )
+                    } else {
+                        Image(systemName: "square.and.pencil")
+                            .foregroundColor(.label)
+                            .tapTargetFrame()
                     }
-                ClientLogger.shared.logCounter(
-                    .SpacesDetailEditButtonClicked,
-                    attributes: EnvironmentHelper.shared.getAttributes())
-            },
-            label: {
-                if !headerVisible {
-                    Label(
-                        title: {
-                            Text("Edit Space")
-                                .withFont(.labelMedium)
-                                .foregroundColor(Color.label)
-                        },
-                        icon: { Image(systemName: "square.and.pencil") }
-                    )
-                } else {
-                    Image(systemName: "square.and.pencil")
-                        .foregroundColor(.label)
-                        .tapTargetFrame()
-                }
-            })
+                })
+        }
     }
 
     @ViewBuilder var deleteButton: some View {
-        Button {
-            showConfirmDeleteAlert = true
-        } label: {
-            Label(
-                title: {
-                    Text(space.ACL == .owner ? "Delete Space" : "Unfollow")
-                        .withFont(.labelMedium)
-                        .lineLimit(1)
-                        .foregroundColor(Color.secondaryLabel)
-                },
-                icon: { Image(systemName: "trash") }
-            )
+        if let space = space {
+            Button {
+                showConfirmDeleteAlert = true
+            } label: {
+                Label(
+                    title: {
+                        Text(space.ACL == .owner ? "Delete Space" : "Unfollow")
+                            .withFont(.labelMedium)
+                            .lineLimit(1)
+                            .foregroundColor(Color.secondaryLabel)
+                    },
+                    icon: { Image(systemName: "trash") }
+                )
+            }
         }
     }
 
@@ -250,11 +258,11 @@ struct SpaceTopView: View {
         ).actionSheet(isPresented: $showConfirmDeleteAlert) {
             ActionSheet(
                 title: Text(
-                    "Are you sure you want to " + (space.ACL == .owner ? "delete" : "unfollow")
+                    "Are you sure you want to " + (space?.ACL == .owner ? "delete" : "unfollow")
                         + " this space?"),
                 buttons: [
                     .destructive(
-                        Text(space.ACL == .owner ? "Delete Space" : "Unfollow Space"),
+                        Text(space?.ACL == .owner ? "Delete Space" : "Unfollow Space"),
                         action: {
                             gridModel.closeDetailView()
 
@@ -265,10 +273,12 @@ struct SpaceTopView: View {
                             else {
                                 return
                             }
-
                             spacesModel.allDetails.remove(at: index)
-                            spacesModel.removeSpace(
-                                spaceID: space.id.id, isOwner: space.ACL == .owner)
+                            if let space = space {
+                                spacesModel.removeSpace(
+                                    spaceID: space.id.id, isOwner: space.ACL == .owner
+                                )
+                            }
                         }),
                     .cancel(),
                 ])
