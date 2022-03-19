@@ -11,8 +11,8 @@ extension Tab {
 
         private static let file: URL = {
             return FileManager.default.containerURL(
-                forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)!
-                .appendingPathComponent("changed-ua-set-of-hosts.xcarchive")
+                forSecurityApplicationGroupIdentifier: AppInfo.sharedContainerIdentifier)?
+                .appendingPathComponent("changed-ua-set-of-hosts.xcarchive") ?? .aboutBlank
         }()
 
         private static var baseDomainList: Set<String> = {

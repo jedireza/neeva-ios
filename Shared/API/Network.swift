@@ -10,6 +10,8 @@ import Combine
 private let approvedBundleIDs = [
     "co.neeva.app.ios.browser",
     "co.neeva.app.ios.browser-dev",
+    "xyz.neeva.app.ios.browser",
+    "xyz.neeva.app.ios.browser-dev",
 ]
 
 /// This singleton class manages access to the Neeva GraphQL API

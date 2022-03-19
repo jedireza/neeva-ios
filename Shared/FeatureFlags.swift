@@ -44,8 +44,10 @@ extension FeatureFlag {
 
     public static var enabledFlags: Set<FeatureFlag> = {
         let names = Defaults[Self.defaultsKey]
-        let flags = names.compactMap(FeatureFlag.init(rawValue:))
+        var flags = names.compactMap(FeatureFlag.init(rawValue:))
         Defaults[Self.defaultsKey] = Set(flags.map(\.rawValue))
+        flags.append(.web3Mode)
+        flags.append(.enableCryptoWallet)
         return Set(flags)
     }()
 
