@@ -195,7 +195,7 @@ struct RecipeCheatsheetStripView: View {
 
     func onAllowedDomain() -> Bool {
         if let url = self.tabManager.selectedTab?.url {
-           return RecipeViewModel.isRecipeAllowed(url: url)
+            return RecipeViewModel.isRecipeAllowed(url: url)
         } else {
             return false
         }

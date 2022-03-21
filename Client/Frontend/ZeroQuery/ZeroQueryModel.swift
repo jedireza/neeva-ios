@@ -174,7 +174,7 @@ class ZeroQueryModel: ObservableObject {
         } else if !Defaults[.didDismissDefaultBrowserCard]
             && !Defaults[.didSetDefaultBrowser]
             && ((!Defaults[.didShowDefaultBrowserInterstitial]
-                 && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser])
+                && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser])
                 || satisfyDefaultBrowserPromoFreqRule())
         {
             ClientLogger.shared.logCounter(.DefaultBrowserPromoCardImp)
@@ -207,7 +207,8 @@ class ZeroQueryModel: ObservableObject {
         showRatingsCard =
             NeevaFeatureFlags[.appStoreRatingPromo]
             && promoCard == nil
-            && Defaults[.loginLastWeekTimeStamp].count == AppRatingPromoCardRule.numOfAppForegroundLastWeek
+            && Defaults[.loginLastWeekTimeStamp].count
+                == AppRatingPromoCardRule.numOfAppForegroundLastWeek
             && (!Defaults[.ratingsCardHidden]
                 || (UserFlagStore.shared.state == .ready
                     && !UserFlagStore.shared.hasFlag(.dismissedRatingPromo)))
@@ -240,13 +241,13 @@ class ZeroQueryModel: ObservableObject {
         guard let host = site.tileURL.normalizedHost else {
             return
         }
-        
+
         let url = site.tileURL
         // If the default top sites contains the site URL, also wipe it from default suggested sites.
         if TopSitesHandler.defaultTopSites().filter({ $0.url == url }).isEmpty == false {
             Defaults[.deletedSuggestedSites].append(url.absoluteString)
         }
-        
+
         profile.history.removeHostFromTopSites(host).uponQueue(.main) { result in
             guard result.isSuccess else { return }
             self.profile.panelDataObservers.activityStream.refreshIfNeeded(forceTopSites: true)

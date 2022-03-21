@@ -63,7 +63,7 @@ struct SpaceTopView: View {
             .frame(maxWidth: .infinity)
             .background(Color.DefaultBackground.ignoresSafeArea())
     }
-    
+
     @ViewBuilder var titleView: some View {
         if let ownerName = ownerName {
             VStack(alignment: .leading, spacing: 0) {

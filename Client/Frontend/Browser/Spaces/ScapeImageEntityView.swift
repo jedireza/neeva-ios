@@ -20,7 +20,7 @@ struct SpaceImageEntityView: View {
                 .background(Color.white)
                 .cornerRadius(SpaceViewUX.ThumbnailCornerRadius)
                 .padding(.bottom, 8)
-            
+
             if let title = title {
                 Text(title)
                     .withFont(.bodyLarge)
