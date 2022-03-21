@@ -14,27 +14,66 @@ enum SpaceContentSheetUX {
 struct SpaceContentSheet: View {
     @ObservedObject var model: SpaceContentSheetModel
     var yOffset: CGFloat
-
-    init(model: SpaceContentSheetModel, yOffset: CGFloat) {
+    var footerHeight: CGFloat
+    
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+    
+    private var useTopToolbar: Bool {
+        verticalSizeClass == .compact || horizontalSizeClass == .regular
+    }
+    
+    private var isToolbarVisible: Bool {
+        footerHeight - yOffset > 0
+    }
+    
+    init(model: SpaceContentSheetModel, yOffset: CGFloat, footerHeight: CGFloat) {
         self.model = model
         self.yOffset = yOffset
+        self.footerHeight = footerHeight
     }
 
     var body: some View {
         if let _ = model.currentSpaceEntityDetail {
             GeometryReader { geom in
-                BottomSheetView(
-                    peekContentHeight: SpaceContentSheetUX.SpaceInfoThumbnailSize, onDismiss: {}
-                ) {
-                    SpacePageContent(model: model)
-                }
+                contentView
                 .offset(
                     x: 0,
-                    y: -geom.size.height * yOffset
+                    y: calculateYPosition(with: geom)
                 )
-                .animation(.easeInOut)
             }
         }
+    }
+    
+    private var contentView: some View {
+        HStack(alignment: .center, spacing: 4) {
+            SpacePageContent(model: model)
+            closeButton
+        }
+        .padding(.leading, 16)
+        .background(Color.DefaultBackground)
+        .cornerRadius(16, corners: useTopToolbar ? .all : .top)
+        .shadow(radius: 2)
+    }
+    
+    private var closeButton: some View {
+        Button(
+            action: {
+                model.didUserDismiss = true
+            },
+            label: {
+                Image(systemName: "xmark")
+                    .foregroundColor(.label)
+                    .tapTargetFrame()
+            })
+    }
+    
+    private func calculateYPosition(with geometry: GeometryProxy) -> CGFloat {
+        guard isToolbarVisible, !model.didUserDismiss else {
+            return geometry.size.height + footerHeight
+        }
+        // there is a 1 px space between two views '+ 1' is fixing that
+        return geometry.size.height - footerHeight + yOffset + 1
     }
 }
 
@@ -42,12 +81,9 @@ struct SpacePageContent: View {
     @ObservedObject var model: SpaceContentSheetModel
 
     var body: some View {
-        VStack {
-            SpacePageSummary(
-                details: model.currentSpaceEntityDetail,
-                spaceDetails: model.currentSpaceDetail)
-            Spacer()
-        }.padding(.horizontal, 16)
+        SpacePageSummary(
+            details: model.currentSpaceEntityDetail,
+            spaceDetails: model.currentSpaceDetail)
     }
 }
 
@@ -55,7 +91,7 @@ struct SpacePageSummary: View {
     @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
     let details: SpaceEntityThumbnail?
     let spaceDetails: SpaceCardDetails?
-
+    
     var body: some View {
         if let details = details {
             VStack(spacing: 7) {
@@ -87,7 +123,9 @@ struct SpacePageSummary: View {
                     ).cornerRadius(SpaceViewUX.ThumbnailCornerRadius)
 
                 }
-            }.padding(.bottom, 20)
+            }
+            .padding(.vertical, 20)
         }
     }
+
 }

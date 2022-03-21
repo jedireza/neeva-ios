@@ -140,7 +140,7 @@ struct TabContainerContent: View {
     @EnvironmentObject private var simulatedSwipeModel: SimulatedSwipeModel
 
     var yOffset: CGFloat {
-        return 0.02
+        return scrollingControlModel.footerBottomOffset
     }
 
     var webViewOffsetY: CGFloat {
@@ -203,7 +203,8 @@ struct TabContainerContent: View {
                     if FeatureFlag[.spaceComments] {
                         SpaceContentSheet(
                             model: spaceContentSheetModel!,
-                            yOffset: yOffset
+                            yOffset: yOffset,
+                            footerHeight: scrollingControlModel.footerHeight
                         )
                         .environment(
                             \.onOpenURLForSpace,
