@@ -57,14 +57,15 @@ struct SpaceTopView: View {
             shareButton
 
             if let space = space,
-                !space.isDigest {
+                !space.isDigest
+            {
                 menuButton
             }
         }.frame(height: gridModel.pickerHeight)
             .frame(maxWidth: .infinity)
             .background(Color.DefaultBackground.ignoresSafeArea())
     }
-    
+
     @ViewBuilder var titleView: some View {
         if let ownerName = ownerName {
             VStack(alignment: .leading, spacing: 0) {
@@ -120,8 +121,8 @@ struct SpaceTopView: View {
 
     @ViewBuilder var shareButton: some View {
         if let space = space,
-            !space.isDefaultSpace &&
-            !space.isDigest {
+            !space.isDefaultSpace && !space.isDigest
+        {
             Button(
                 action: {
                     if case .owner = space.userACL {

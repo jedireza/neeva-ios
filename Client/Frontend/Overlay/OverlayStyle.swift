@@ -14,7 +14,8 @@ public struct OverlayStyle {
     let expandPopoverWidth: Bool
 
     init(
-        showTitle: Bool, backgroundColor: UIColor = .DefaultBackground, nonDismissible: Bool = false,
+        showTitle: Bool, backgroundColor: UIColor = .DefaultBackground,
+        nonDismissible: Bool = false,
         embedScrollView: Bool = true, expandPopoverWidth: Bool = false
     ) {
         self.showTitle = showTitle

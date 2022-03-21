@@ -18,7 +18,8 @@ enum WithPopoverColorMode {
     case dyanmicBackground(UIColor, UIColor)
 
     static let defaultStatic: Self = .staticBackground(.Tour.Background.lightVariant)
-    static let defaultDynamic: Self = .dyanmicBackground(.Tour.Background.lightVariant, .Tour.Background.darkVariant)
+    static let defaultDynamic: Self = .dyanmicBackground(
+        .Tour.Background.lightVariant, .Tour.Background.darkVariant)
 }
 
 struct WithPopover<Content: View, PopoverContent: View>: View {

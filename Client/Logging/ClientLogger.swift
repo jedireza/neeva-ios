@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import Apollo
+import Defaults
 import Foundation
 import Shared
 
@@ -11,11 +12,17 @@ enum ClientLoggerStatus {
     case disabled
 }
 
+public struct DebugLog: Hashable {
+    let pathStr: String
+    let attributeStr: String
+}
+
 public class ClientLogger {
     public var env: ClientLogEnvironment
     private let status: ClientLoggerStatus
 
     public static let shared = ClientLogger()
+    public var debugLoggerHistory = [DebugLog]()
 
     public init() {
         self.env = ClientLogEnvironment.init(rawValue: "Prod")!
@@ -48,6 +55,22 @@ public class ClientLogger {
                 as! String, environment: self.env)
         let clientLogCounter = ClientLogCounter(path: path.rawValue, attributes: attributes)
         let clientLog = ClientLog(counter: clientLogCounter)
+
+        #if DEBUG
+            if !Defaults[.forceProdGraphQLLogger] {
+                let attributes = attributes.map { "\($0.key! ?? "" ): \($0.value! ?? "")" }
+                let path = path.rawValue
+                debugLoggerHistory.insert(
+                    DebugLog(
+                        pathStr: path,
+                        attributeStr: attributes.joined(separator: ",")
+                    ),
+                    at: 0
+                )
+                return
+            }
+        #endif
+
         LogMutation(
             input: ClientLogInput(
                 base: clientLogBase,

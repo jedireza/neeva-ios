@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Shared
 import SwiftUI
 import UIKit
-import Shared
 
 public enum ToastViewUX {
     static let defaultDisplayTime = 4.5
@@ -87,7 +87,7 @@ struct ToastView: View {
                                 .foregroundColor(.white)
 
                             Symbol(decorative: .checkmark, size: 10)
-                                    .foregroundColor(Color(ToastViewUX.ToastDefaultColor))
+                                .foregroundColor(Color(ToastViewUX.ToastDefaultColor))
                         }
                         .frame(width: 18, height: 18)
                     } else if let toastProgressViewModel = toastProgressViewModel {

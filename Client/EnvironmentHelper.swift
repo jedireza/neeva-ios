@@ -109,10 +109,10 @@ public class EnvironmentHelper {
 
         let attributes = [
             normalTabsOpened, incongitoTabsOpened, numTabGroupsTotal, numChildTabsTotal,
-            deviceTheme, deviceOrientation, deviceScreensSize, 
+            deviceTheme, deviceOrientation, deviceScreensSize,
             isUserSignedIn, getSessionUUID(),
         ]
-      
+
         return attributes
     }
 

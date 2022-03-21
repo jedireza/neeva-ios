@@ -469,11 +469,10 @@ extension BrowserViewController: WKNavigationDelegate {
     /// Checks if a file is a special format for Apple Devices (ex. .ics, .mobileconfig, wallet passes).
     /// These URLs should be opened in a SafariViewController
     fileprivate func isSpecialAppleURL(_ url: URL) -> Bool {
-        return url.pathExtension == "ics" ||
-            url.pathExtension == "mobileconfig" ||
-            (url.host?.contains("storepass.apple.com") ?? false)
+        return url.pathExtension == "ics" || url.pathExtension == "mobileconfig"
+            || (url.host?.contains("storepass.apple.com") ?? false)
     }
-    
+
     fileprivate func isGooglePolicyURL(_ url: URL) -> Bool {
         return (url.host?.contains("mdm.googleusercontent") ?? false)
     }
@@ -502,7 +501,7 @@ extension BrowserViewController: WKNavigationDelegate {
             OpenInAppOverlayContent(url: url)
         }
     }
-    
+
     /// Used for URLs that WebView cannot handle, but work when used in Safari.
     fileprivate func openURLInSafariViewController(_ url: URL) {
         let safariVC = SFSafariViewController(url: url)

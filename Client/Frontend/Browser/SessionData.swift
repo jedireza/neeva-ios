@@ -77,7 +77,10 @@ class SessionData: NSObject, NSCoding {
     ///                  where 1-N is the first page in history, and 0 is the last.
     ///   - urls: The sequence of URLs in this tab's session history.
     ///   - lastUsedTime: The last time this tab was modified.
-    init(currentPage: Int, urls: [URL], queries: [String?], suggestedQueries: [String?], lastUsedTime: Timestamp) {
+    init(
+        currentPage: Int, urls: [URL], queries: [String?], suggestedQueries: [String?],
+        lastUsedTime: Timestamp
+    ) {
         self.currentPage = currentPage
         self.urls = migrate(urls: urls)
         self.typedQueries = queries
@@ -94,7 +97,9 @@ class SessionData: NSObject, NSCoding {
         self.urls = migrate(urls: coder.decodeObject(forKey: "urls") as? [URL] ?? [URL]())
         let queries = coder.decodeObject(forKey: "queries") as? [String?] ?? [String]()
         self.typedQueries = queries
-        self.suggestedQueries = coder.decodeObject(forKey: "suggestedQueries") as? [String?] ?? Array(repeating: nil, count: queries.count)
+        self.suggestedQueries =
+            coder.decodeObject(forKey: "suggestedQueries") as? [String?]
+            ?? Array(repeating: nil, count: queries.count)
         self.lastUsedTime = Timestamp(coder.decodeInt64(forKey: "lastUsedTime"))
     }
 

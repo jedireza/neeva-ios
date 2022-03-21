@@ -41,7 +41,8 @@ class SessionRestoreHelper: TabContentScript {
                             if sessionData.suggestedQueries.indices.contains(index) {
                                 suggestedQuery = sessionData.suggestedQueries[index]
                             }
-                            tab.queryForNavigation.queryForNavigations[item] = .init(typed: query, suggested: suggestedQuery)
+                            tab.queryForNavigation.queryForNavigations[item] = .init(
+                                typed: query, suggested: suggestedQuery)
                         }
                     }
 

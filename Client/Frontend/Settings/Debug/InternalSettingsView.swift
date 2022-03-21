@@ -44,11 +44,13 @@ struct InternalSettingsView: View {
     @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
     @Default(.didSetDefaultBrowser) var didSetDefaultBrowser
     @Default(.didShowDefaultBrowserInterstitial) var didShowDefaultBrowserInterstitial
-    @Default(.didShowDefaultBrowserInterstitialFromSkipToBrowser) var didShowDefaultBrowserInterstitialFromSkipToBrowser
+    @Default(.didShowDefaultBrowserInterstitialFromSkipToBrowser)
+    var didShowDefaultBrowserInterstitialFromSkipToBrowser
     @Default(.numOfDailyZeroQueryImpression) var numOfDailyZeroQueryImpression
     @Default(.lastZeroQueryImpUpdatedTimestamp) var lastZeroQueryImpUpdatedTimestamp
     @Default(.didTriggerSystemReviewDialog) var didTriggerSystemReviewDialog
     @Default(.numberOfAppForeground) var numberOfAppForeground
+    @Default(.forceProdGraphQLLogger) var forceProdGraphQLLogger
 
     var body: some View {
         List {
@@ -99,7 +101,8 @@ struct InternalSettingsView: View {
                         isOn: $seenNotificationPermissionPromo)
                     Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
                     Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
-                    Toggle(String("didTriggerSystemReviewDialog"), isOn: $didTriggerSystemReviewDialog)
+                    Toggle(
+                        String("didTriggerSystemReviewDialog"), isOn: $didTriggerSystemReviewDialog)
                     NumberField(String("numberOfAppForeground"), number: $numberOfAppForeground)
                 }
             }
@@ -154,6 +157,7 @@ struct InternalSettingsView: View {
             }
 
             Section(header: Text(verbatim: "Miscellaneous")) {
+                Toggle(String("forceProdGraphQLLogger"), isOn: $forceProdGraphQLLogger)
                 Toggle(String("saveLogins"), isOn: $saveLogins)
                     // comment this line out if you’re working on logins and need access
                     .disabled(!saveLogins)

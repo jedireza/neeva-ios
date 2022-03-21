@@ -441,7 +441,7 @@ class CardTests: XCTestCase {
         manager.addTab()
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 5 })
-        
+
         XCTAssertEqual(manager.tabs.count, 5)
         waitForCondition {
             try cardContainer.inspect().findAll(FaviconView.self).count == 5

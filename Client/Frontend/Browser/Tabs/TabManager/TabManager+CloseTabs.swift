@@ -94,7 +94,9 @@ extension TabManager {
                 {
                     selectTab(rightOrLeftTab, previous: tab, notify: notify)
                 } else {
-                    selectTab(mostRecentTab(inTabs: viableTabs) ?? viableTabs.last, previous: tab, notify: notify)
+                    selectTab(
+                        mostRecentTab(inTabs: viableTabs) ?? viableTabs.last, previous: tab,
+                        notify: notify)
                 }
             }
         }

@@ -45,6 +45,9 @@ struct DebugSettingsSection: View {
                 makeNavigationLink(title: String("Logging")) {
                     LoggingSettingsView()
                 }
+                makeNavigationLink(title: String("GraphQL Logging")) {
+                    ServerLoggingSettingsView()
+                }
                 Toggle(String("Enable Geiger Counter"), isOn: $enableGeigerCounter)
                     .onChange(of: enableGeigerCounter) {
                         guard let delegate = SceneDelegate.getCurrentSceneDelegateOrNil() else {

@@ -16,7 +16,7 @@ class ToolbarTests: UITestBase, UITextFieldDelegate {
 
     func testURLEntry() throws {
         try skipTest(issue: 2989, "Test is flakey on CircleCI")
-        
+
         goToAddressBar()
 
         tester().enterText(intoCurrentFirstResponder: "foobar")
