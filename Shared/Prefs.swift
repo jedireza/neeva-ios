@@ -205,6 +205,8 @@ extension Defaults.Keys {
         "numOfDailyZeroQueryImpression", default: 0)
     public static let lastZeroQueryImpUpdatedTimestamp = Defaults.Key<Date?>(
         "lastZeroQueryImpUpdatedTimestamp")
+
+    public static let forceProdGraphQLLogger = Defaults.BoolKey("forceProdGraphQLLogger", default: false)
 }
 
 extension Defaults {
