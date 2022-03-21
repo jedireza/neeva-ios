@@ -20,71 +20,54 @@ public class AssetStore: ObservableObject {
     public var availableThemes = Set<Web3Theme>()
 
     public func refresh() {
-        guard
-            let url = URL(
-                string:
-                    "https://api.opensea.io/api/v1/assets?order_direction=desc&offset=0&owner=\(Defaults[.cryptoPublicKey])"
-            )
-        else {
+        guard !Defaults[.cryptoPublicKey].isEmpty else {
             return
         }
-        DispatchQueue.main.async {
-            self.state = .syncing
-        }
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        if let apiKey = Bundle.main.object(forInfoDictionaryKey: "OPENSEA_API_KEY") as? String {
-            request.addValue(apiKey, forHTTPHeaderField: "X-API-KEY")
-        }
-        request.addValue("application/json", forHTTPHeaderField: "Accept")
-
-        URLSession.shared.dataTask(with: request) { (data, response, error) in
-            guard error == nil, let data = data else { return }
-
-            guard let result = try? JSONDecoder().decode(AssetsResult.self, from: data) else {
-                DispatchQueue.main.async {
+        state = .syncing
+        Web3NetworkProvider.default.request(
+            target: OpenSeaAPI.assets(owner: Defaults[.cryptoPublicKey]),
+            model: AssetsResult.self,
+            completion: { [weak self] response in
+                guard let self = self else {
+                    return
+                }
+                switch response {
+                case .success(let result):
+                    self.assets = result.assets
+                    self.assets.forEach({
+                        guard let collection = $0.collection else { return }
+                        self.collections.insert(collection)
+                    })
+                    self.state = .ready
+                case .failure(let error):
+                    print(error)
                     self.state = .error
                 }
-                return
-            }
-            DispatchQueue.main.async {
-                self.assets = result.assets
-                self.assets.forEach({
-                    guard let collection = $0.collection else { return }
-                    if let theme = Web3Theme.allCases.first(
-                        where: { $0.rawValue == collection.openSeaSlug }) {
-                        self.availableThemes.insert(theme)
-                    }
-                    self.collections.insert(collection)
-                })
-                self.state = .ready
-            }
-        }.resume()
+                
+            })
     }
 
     public func fetch(collection slug: String, onFetch: @escaping (Collection) -> Void) {
-        guard let url = URL(string: "https://api.opensea.io/api/v1/collection/\(slug)") else {
-            return
-        }
-        self.state = .syncing
-        if let data = try? Data(contentsOf: url) {
-            guard let result = try? JSONDecoder().decode(CollectionResult.self, from: data) else {
-                DispatchQueue.main.async {
+        Web3NetworkProvider.default.request(
+            target: OpenSeaAPI.collection(slug: slug),
+            model: CollectionResult.self,
+            completion: { [weak self] response in
+                guard let self = self else { return }
+                switch response {
+                case .success(let result):
+                    if let current = self.collections.first(where: {
+                        $0.openSeaSlug == result.collection.openSeaSlug
+                    }) {
+                        self.collections.remove(current)
+                    }
+                    self.collections.insert(result.collection)
+                    onFetch(result.collection)
+                    self.state = .ready
+                case .failure(let error):
+                    print(error)
                     self.state = .error
                 }
-                return
-            }
-            if let current = collections.first(where: {
-                $0.openSeaSlug == result.collection.openSeaSlug
-            }) {
-                collections.remove(current)
-            }
-            collections.insert(result.collection)
-            onFetch(result.collection)
-            DispatchQueue.main.async {
-                self.state = .ready
-            }
-        }
+            })
     }
 
     public func fetchCollections() {
