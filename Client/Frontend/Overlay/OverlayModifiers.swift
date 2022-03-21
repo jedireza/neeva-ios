@@ -61,7 +61,6 @@ extension View {
     }
 }
 
-
 /// This PreferenceKey may be used by a child View of the OverlaySheetView
 /// to specify a preferred height in the middle position
 struct OverlaySheetMiddleHeightPreferenceKey: PreferenceKey {
@@ -84,7 +83,6 @@ extension View {
         self.modifier(OverlaySheetMiddleHeightViewModifier(middleHeight: height))
     }
 }
-
 
 /// This PreferenceKey may be used by a child View of the OverlaySheetView
 /// to be layed out as if safe can be ignored

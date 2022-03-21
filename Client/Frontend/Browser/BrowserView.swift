@@ -131,13 +131,15 @@ struct BrowserView: View {
                                                 Color.clear
                                                     .ignoresSafeArea()
                                                     .frame(
-                                                        height: BrowserViewUX.ShowHeaderTapAreaHeight
+                                                        height: BrowserViewUX
+                                                            .ShowHeaderTapAreaHeight
                                                     )
                                                     // without this, the area isn’t tappable because it’s invisible
                                                     .contentShape(Rectangle())
                                                     .onTapGesture {
-                                                        browserModel.scrollingControlModel.showToolbars(
-                                                            animated: true)
+                                                        browserModel.scrollingControlModel
+                                                            .showToolbars(
+                                                                animated: true)
                                                     }
                                             }, alignment: .top)
                                 } else {

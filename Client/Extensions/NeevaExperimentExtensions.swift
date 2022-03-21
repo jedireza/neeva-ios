@@ -6,22 +6,23 @@ import Foundation
 import Shared
 
 extension NeevaExperiment {
-    public static func logStartExperiment<Arm: ExperimentArms>(for experiment: Experiment<Arm>)
-    {
+    public static func logStartExperiment<Arm: ExperimentArms>(for experiment: Experiment<Arm>) {
         guard let arm = arm(for: experiment) else {
             return
         }
 
-        ClientLogger.shared.logCounter(.StartExperiment, attributes: [
-            ClientLogCounterAttribute(
-                key: LogConfig.ExperimentAttribute.experiment,
-                value: experiment.key
-            ),
-            ClientLogCounterAttribute(
-                key: LogConfig.ExperimentAttribute.experimentArm,
-                value: arm.rawValue
-            ),
-        ])
+        ClientLogger.shared.logCounter(
+            .StartExperiment,
+            attributes: [
+                ClientLogCounterAttribute(
+                    key: LogConfig.ExperimentAttribute.experiment,
+                    value: experiment.key
+                ),
+                ClientLogCounterAttribute(
+                    key: LogConfig.ExperimentAttribute.experimentArm,
+                    value: arm.rawValue
+                ),
+            ])
 
     }
 }

@@ -44,7 +44,8 @@ struct InternalSettingsView: View {
     @Default(.didDismissDefaultBrowserCard) var didDismissDefaultBrowserCard
     @Default(.didSetDefaultBrowser) var didSetDefaultBrowser
     @Default(.didShowDefaultBrowserInterstitial) var didShowDefaultBrowserInterstitial
-    @Default(.didShowDefaultBrowserInterstitialFromSkipToBrowser) var didShowDefaultBrowserInterstitialFromSkipToBrowser
+    @Default(.didShowDefaultBrowserInterstitialFromSkipToBrowser)
+    var didShowDefaultBrowserInterstitialFromSkipToBrowser
     @Default(.numOfDailyZeroQueryImpression) var numOfDailyZeroQueryImpression
     @Default(.lastZeroQueryImpUpdatedTimestamp) var lastZeroQueryImpUpdatedTimestamp
     @Default(.didTriggerSystemReviewDialog) var didTriggerSystemReviewDialog
@@ -100,7 +101,8 @@ struct InternalSettingsView: View {
                         isOn: $seenNotificationPermissionPromo)
                     Toggle(String("seenBlackFridayFollowPromo"), isOn: $seenBlackFridayFollowPromo)
                     Toggle(String("seenBlackFridayNotifyPromo"), isOn: $seenBlackFridayNotifyPromo)
-                    Toggle(String("didTriggerSystemReviewDialog"), isOn: $didTriggerSystemReviewDialog)
+                    Toggle(
+                        String("didTriggerSystemReviewDialog"), isOn: $didTriggerSystemReviewDialog)
                     NumberField(String("numberOfAppForeground"), number: $numberOfAppForeground)
                 }
             }

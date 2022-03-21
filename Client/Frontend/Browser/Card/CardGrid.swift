@@ -76,7 +76,7 @@ struct CardGrid: View {
     @State private var detailDragOffset: CGFloat = 0
     @State private var cardSize: CGFloat = CardUX.DefaultCardSize
     @State private var columnCount = 2
-    
+
     var geom: GeometryProxy
 
     var topToolbar: Bool {
@@ -185,7 +185,7 @@ struct GridPicker: View {
 
     @State var selectedIndex: Int = 1
 
-    var segments: [Segment]  {
+    var segments: [Segment] {
         var segments = [
             Segment(
                 symbol: Symbol(.incognito, weight: .medium, label: "Incognito Tabs"),
@@ -196,14 +196,15 @@ struct GridPicker: View {
                 symbol: Symbol(.squareOnSquare, weight: .medium, label: "Normal Tabs"),
                 selectedIconColor: .white,
                 selectedColor: Color.ui.adaptive.blue,
-                selectedAction: { gridModel.switchToTabs(incognito: false) })
-            ]
+                selectedAction: { gridModel.switchToTabs(incognito: false) }),
+        ]
         if !FeatureFlag[.web3Mode] {
-            segments.append(Segment(
-                symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
-                selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
-                selectedAction: gridModel.switchToSpaces
-            ))
+            segments.append(
+                Segment(
+                    symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
+                    selectedIconColor: .white, selectedColor: Color.ui.adaptive.blue,
+                    selectedAction: gridModel.switchToSpaces
+                ))
         }
         return segments
     }

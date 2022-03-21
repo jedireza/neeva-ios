@@ -63,7 +63,7 @@ public class ClientLogger {
                 debugLoggerHistory.insert(
                     DebugLog(
                         pathStr: path,
-                        attributeStr: attributes.joined(separator:",")
+                        attributeStr: attributes.joined(separator: ",")
                     ),
                     at: 0
                 )

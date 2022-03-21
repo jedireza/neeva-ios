@@ -108,9 +108,9 @@ extension SpaceStore {
                 guard let url = entity.url else { continue }
                 group.enter()
                 // TODO: - Investigate why repeated calls grow memory unbounded
-//                Self.getThumbnailData(for: entity) { image in
-//                    attributes.thumbnailData = image?.pngData()
-//                }
+                //                Self.getThumbnailData(for: entity) { image in
+                //                    attributes.thumbnailData = image?.pngData()
+                //                }
                 let attributes = CSSearchableItemAttributeSet(
                     contentType: CSConst.spacePageContentType
                 )

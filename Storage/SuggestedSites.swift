@@ -10,7 +10,6 @@ open class SuggestedSite: Site {
         url
     }
 
-
     let trackingId: Int
     init(data: SuggestedSiteData) {
         self.trackingId = data.trackingId

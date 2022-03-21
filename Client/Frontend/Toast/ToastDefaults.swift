@@ -14,7 +14,8 @@ class ToastDefaults: NSObject {
     private var requestListener: AnyCancellable?
 
     func showToast(with text: String, toastViewManager: ToastViewManager, checkmark: Bool = false) {
-        let toastView = toastViewManager.makeToast(text: LocalizedStringKey(text), checkmark: checkmark)
+        let toastView = toastViewManager.makeToast(
+            text: LocalizedStringKey(text), checkmark: checkmark)
         toast = toastView
         toastViewManager.enqueue(view: toastView)
     }
