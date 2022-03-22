@@ -170,6 +170,7 @@ extension Defaults.Keys {
     public static let sessionsPeerIDs = Defaults.Key<Set<String>>(
         "web3SessionsPeerIDs", default: [])
     public static let tickerResponse = Defaults.Key<Data?>("tickerResponse", default: nil)
+    public static let walletIntroSeen = Defaults.BoolKey("seenWalletIntro")
 
     // default browser
     public static let didDismissDefaultBrowserCard = Defaults.BoolKey(

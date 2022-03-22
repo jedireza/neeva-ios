@@ -35,7 +35,7 @@ public struct NeevaConstants {
 
     /// The URL form of `appHost` and various routes:
     public static var appURL: URL { buildAppURL("") }
-    public static var appHomeURL: URL { appURL }
+    public static var appHomeURL: URL { FeatureFlag[.web3Mode] ? xyzURL : appURL }
     public static var appSearchURL: URL { buildAppURL("search") }
     public static var appSpacesURL: URL { buildAppURL("spaces") }
     public static var appSettingsURL: URL { buildAppURL("settings") }
@@ -58,6 +58,8 @@ public struct NeevaConstants {
     public static let appHelpCenterURL: URL = "https://help.neeva.com/"
     public static let appPrivacyURL = appMarketingURL / "privacy"
     public static let appTermsURL = appMarketingURL / "terms"
+
+    public static var xyzURL: URL { "https://neeva.xyz" }
 
     /// The keychain key to store the Neeva login cookie into
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }

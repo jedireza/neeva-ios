@@ -164,7 +164,7 @@ struct WalletDashboard: View {
                         Symbol(decorative: .docOnDoc, style: .bodyMedium)
                         Text("Copy address")
                     }
-                }.buttonStyle(WalletDashboardButtonStyle())
+                }.buttonStyle(DashboardButtonStyle())
                 Button(action: { showQRScanner = true }) {
                     HStack(spacing: 4) {
                         Symbol(decorative: .qrcodeViewfinder, style: .bodyMedium)
@@ -174,14 +174,14 @@ struct WalletDashboard: View {
                     ScannerView(
                         showQRScanner: $showQRScanner, returnAddress: $qrCodeStr,
                         onComplete: onScanComplete)
-                }.buttonStyle(WalletDashboardButtonStyle())
+                }.buttonStyle(DashboardButtonStyle())
                 Button(action: { showSendForm = true }) {
                     HStack(spacing: 4) {
                         Symbol(decorative: .paperplane, style: .bodyMedium)
                         Text("Send")
                     }
                 }
-                .buttonStyle(WalletDashboardButtonStyle())
+                .buttonStyle(DashboardButtonStyle())
                 .sheet(isPresented: $showSendForm, onDismiss: {}) {
                     VStack {
                         sheetHeader("Send")
@@ -501,20 +501,5 @@ struct SessionActionsModifier: ViewModifier {
                     })
                 )
         }
-    }
-}
-
-public struct WalletDashboardButtonStyle: ButtonStyle {
-    @Environment(\.isEnabled) private var isEnabled
-
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .withFont(unkerned: .bodyMedium)
-            .foregroundColor(.label)
-            .padding(12)
-            .frame(height: 40)
-            .background(configuration.isPressed ? Color.tertiarySystemFill : Color.clear)
-            .roundedOuterBorder(cornerRadius: 20, color: .secondarySystemFill, lineWidth: 1)
-            .clipShape(Capsule())
     }
 }

@@ -211,6 +211,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 self.allSavedSessions.first(where: {
                     $0.dAppInfo.peerMeta.url.baseDomain == url?.baseDomain
                 })
+            self.matchingCollection = nil
             if let session = self.currentSession, let server = self.server,
                 !(server.openSessions().contains(where: {
                     session.dAppInfo.peerId == $0.dAppInfo.peerId

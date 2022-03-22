@@ -489,6 +489,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
             } else if self.tabManager.normalTabs.isEmpty {
                 if FeatureFlag[.web3Mode] {
                     self.showZeroQuery()
+                    if !Defaults[.walletIntroSeen] {
+                        self.web3Model.showWalletPanel()
+                        Defaults[.walletIntroSeen] = true
+                    }
                 } else if !Defaults[.didFirstNavigation] {
                     self.showPreviewHome()
                 } else {

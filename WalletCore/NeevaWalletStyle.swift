@@ -127,6 +127,23 @@ public struct NeevaWalletLongPressButton<Content: View>: View {
     }
 }
 
+public struct DashboardButtonStyle: ButtonStyle {
+    @Environment(\.isEnabled) private var isEnabled
+
+    public init() {}
+
+    public func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .withFont(unkerned: .bodyMedium)
+            .foregroundColor(.label)
+            .padding(12)
+            .frame(height: 40)
+            .background(configuration.isPressed ? Color.tertiarySystemFill : Color.clear)
+            .roundedOuterBorder(cornerRadius: 20, color: .secondarySystemFill, lineWidth: 1)
+            .clipShape(Capsule())
+    }
+}
+
 extension ButtonStyle where Self == NeevaWalletButtonStyle {
     public static func wallet(_ visualSpec: NeevaWalletButtonStyle.VisualSpec) -> Self {
         .init(visualSpec: visualSpec)

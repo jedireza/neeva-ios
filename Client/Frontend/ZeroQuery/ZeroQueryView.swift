@@ -6,6 +6,7 @@ import Defaults
 import Shared
 import Storage
 import SwiftUI
+import WalletCore
 
 public struct ZeroQueryUX {
     fileprivate static let ToggleButtonSize: CGFloat = 32
@@ -172,6 +173,7 @@ struct ZeroQueryView: View {
     @Default(.expandSearches) private var expandSearches
     @Default(.expandSpaces) private var expandSpaces
     @Default(.expandSuggestedSpace) private var expandSuggestedSpace
+    @Default(.cryptoPublicKey) private var cryptoPublicKey
 
     @State var url: URL?
     @State var tab: Tab?
@@ -285,7 +287,11 @@ struct ZeroQueryView: View {
 
                         if expandSearches {
                             if !Defaults[.signedInOnce] {
-                                SuggestedPreviewSearchesView()
+                                if FeatureFlag[.web3Mode] {
+                                    SuggestedXYZSearchesView()
+                                } else {
+                                    SuggestedPreviewSearchesView()
+                                }
                             } else {
                                 SuggestedSearchesView()
                             }

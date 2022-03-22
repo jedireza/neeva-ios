@@ -190,6 +190,7 @@
 		4A72AFC2278E42F60057E58B /* MutationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC1278E42F60057E58B /* MutationRequest.swift */; };
 		4A72D21F27A0969900F5D14B /* EmailVerificationPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72D21E27A0969900F5D14B /* EmailVerificationPrompt.swift */; };
 		4A72D22127A0AD1300F5D14B /* EmailVerificationContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */; };
+		4A87E8C927E90F3500CD47BA /* SuggestedXYZSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A87E8C827E90F3500CD47BA /* SuggestedXYZSearchesView.swift */; };
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
 		4A88F97526630EFC007C203D /* CardDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97426630EFC007C203D /* CardDetails.swift */; };
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
@@ -1438,6 +1439,7 @@
 		4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySubmissionView.swift; sourceTree = "<group>"; };
 		4A72D21E27A0969900F5D14B /* EmailVerificationPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationPrompt.swift; sourceTree = "<group>"; };
 		4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationContent.swift; sourceTree = "<group>"; };
+		4A87E8C827E90F3500CD47BA /* SuggestedXYZSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedXYZSearchesView.swift; sourceTree = "<group>"; };
 		4A88F9722662AEAB007C203D /* CardStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStrip.swift; sourceTree = "<group>"; };
 		4A88F97426630EFC007C203D /* CardDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetails.swift; sourceTree = "<group>"; };
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -2806,6 +2808,7 @@
 				4A8CE60627CD44AD00735C75 /* OnboardingModel.swift */,
 				BC532EF0278C05230027CA11 /* ScannerView.swift */,
 				BCAAA0DB276D9BCD0013223E /* SendForm.swift */,
+				4A87E8C827E90F3500CD47BA /* SuggestedXYZSearchesView.swift */,
 				BCAAA0DD276D9BF00013223E /* ShowPhrasesView.swift */,
 				4A8CE61027CD8AEF00735C75 /* Third Party */,
 				4A8CE60427CD43AB00735C75 /* TransactionData.swift */,
@@ -5735,6 +5738,7 @@
 				4A8CE5E927CCA22100735C75 /* CommunitySubmissionRequest.swift in Sources */,
 				4A8CE60F27CD8ACC00735C75 /* WelcomeStarterView.swift in Sources */,
 				4A8CE5EE27CCA66600735C75 /* ViewExtension.swift in Sources */,
+				4A87E8C927E90F3500CD47BA /* SuggestedXYZSearchesView.swift in Sources */,
 				4A8CE5F427CD3F2D00735C75 /* TransactionViews.swift in Sources */,
 				4A8CE5E427CCA1DD00735C75 /* Collection.swift in Sources */,
 				4A8CE61127CD8B0F00735C75 /* Confetti.swift in Sources */,

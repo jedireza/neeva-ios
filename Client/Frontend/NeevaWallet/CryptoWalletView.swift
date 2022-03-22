@@ -49,7 +49,7 @@ struct CryptoWalletView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .overlay(
             Button(action: dismiss) {
-                Text("Done")
+                Text(viewState == .starter ? "Skip" : "Done")
                     .withFont(.labelLarge)
                     .foregroundColor(.ui.adaptive.blue)
                     .frame(height: 48)
