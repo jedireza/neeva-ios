@@ -18,6 +18,11 @@ public struct LogConfig {
         /// Tap stop reload page
         case TapStopReload
 
+        // MARK: Screen Capture
+        case didTakeScreenshot
+        case screenCaptureStarted
+        case screenCaptureFinished
+
         // MARK: bottom nav
         /// Click tab button to see all available tabs
         case ShowTabTray
@@ -422,6 +427,10 @@ public struct LogConfig {
         case .TurnOffBlockTracking: return .UI
         case .TurnOnGlobalBlockTracking: return .UI
         case .TurnOffGlobalBlockTracking: return .UI
+
+        case .didTakeScreenshot: return .UI
+        case .screenCaptureStarted: return .UI
+        case .screenCaptureFinished: return .UI
 
         case .OpenDownloads: return .OverflowMenu
         case .OpenHistory: return .OverflowMenu

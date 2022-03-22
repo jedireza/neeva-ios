@@ -99,6 +99,8 @@ class TabManager: NSObject {
         NotificationCenter.default.addObserver(
             self, selector: #selector(prefsDidChange), name: UserDefaults.didChangeNotification,
             object: nil)
+
+        ScreenCaptureHelper.defaultHelper.subscribeToTabUpdates(from: selectedTabPublisher.eraseToAnyPublisher())
     }
 
     func addNavigationDelegate(_ delegate: WKNavigationDelegate) {
