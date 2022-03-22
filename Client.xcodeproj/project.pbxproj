@@ -655,7 +655,7 @@
 		4A72AFC2278E42F60057E58B /* MutationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC1278E42F60057E58B /* MutationRequest.swift */; };
 		4A72D21F27A0969900F5D14B /* EmailVerificationPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72D21E27A0969900F5D14B /* EmailVerificationPrompt.swift */; };
 		4A72D22127A0AD1300F5D14B /* EmailVerificationContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */; };
-		4A87E8C927E90F3500CD47BA /* SuggestedXYZSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A87E8C827E90F3500CD47BA /* SuggestedXYZSearchesView.swift */; };
+		4A87E8C927E90F3500CD47BA /* (null) in Sources */ = {isa = PBXBuildFile; };
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
 		4A88F97526630EFC007C203D /* CardDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97426630EFC007C203D /* CardDetails.swift */; };
 		4A88F97726630F39007C203D /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
@@ -720,6 +720,9 @@
 		4AB50DA726FA8CC300B75AFA /* ShareAddedSpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB50DA526FA8C3E00B75AFA /* ShareAddedSpaceView.swift */; };
 		4AB678B626E874E40078F61B /* CreateSpaceOverlayContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */; };
 		4AB678B826EAA8160078F61B /* SpacesIntro.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB678B726EAA8160078F61B /* SpacesIntro.swift */; };
+		4AB8160527EA64ED0017203D /* SuggestedXYZSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB8160427EA64ED0017203D /* SuggestedXYZSearchesView.swift */; };
+		4AB8160627EA662E0017203D /* ScreenCaptureHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328585B127E8FE7D00717DD5 /* ScreenCaptureHelper.swift */; };
+		4AB8160727EA663A0017203D /* ServerLoggingSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676685C427E50EAF003CEA6D /* ServerLoggingSettingsView.swift */; };
 		4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */; };
 		4AC8827027CDC4600022CF94 /* CommunitySubmissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */; };
 		4AD771AE2729C4C000B6769D /* PreviewEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AD2729C4C000B6769D /* PreviewEntities.swift */; };
@@ -1994,6 +1997,7 @@
 		4AB50DA526FA8C3E00B75AFA /* ShareAddedSpaceView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareAddedSpaceView.swift; sourceTree = "<group>"; };
 		4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSpaceOverlayContent.swift; sourceTree = "<group>"; };
 		4AB678B726EAA8160078F61B /* SpacesIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesIntro.swift; sourceTree = "<group>"; };
+		4AB8160427EA64ED0017203D /* SuggestedXYZSearchesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuggestedXYZSearchesView.swift; sourceTree = "<group>"; };
 		4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModel.swift; sourceTree = "<group>"; };
 		4AD771AD2729C4C000B6769D /* PreviewEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEntities.swift; sourceTree = "<group>"; };
 		4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceHeaderView.swift; sourceTree = "<group>"; };
@@ -3328,6 +3332,7 @@
 		4A8CE5BC27CCA07700735C75 /* WalletCore */ = {
 			isa = PBXGroup;
 			children = (
+				4AB8160427EA64ED0017203D /* SuggestedXYZSearchesView.swift */,
 				4A93B553277F8AA100CD5415 /* Asset.swift */,
 				4A93B555277F8AE200CD5415 /* AssetStore.swift */,
 				4A93B551277F80C700CD5415 /* Collection.swift */,
@@ -3342,7 +3347,6 @@
 				4A8CE60627CD44AD00735C75 /* OnboardingModel.swift */,
 				BC532EF0278C05230027CA11 /* ScannerView.swift */,
 				BCAAA0DB276D9BCD0013223E /* SendForm.swift */,
-				4A87E8C827E90F3500CD47BA /* SuggestedXYZSearchesView.swift */,
 				BCAAA0DD276D9BF00013223E /* ShowPhrasesView.swift */,
 				4A8CE61027CD8AEF00735C75 /* Third Party */,
 				4A8CE60427CD43AB00735C75 /* TransactionData.swift */,
@@ -6509,6 +6513,7 @@
 				4A42C48C27E58487003B9826 /* DownloadOverlayContent.swift in Sources */,
 				4A42C48D27E58487003B9826 /* (null) in Sources */,
 				4A42C48E27E58487003B9826 /* TransitionExtensions.swift in Sources */,
+				4AB8160627EA662E0017203D /* ScreenCaptureHelper.swift in Sources */,
 				4A42C48F27E58487003B9826 /* OverlayGenerics.swift in Sources */,
 				4A42C49027E58487003B9826 /* GroupedRowButtonView.swift in Sources */,
 				4A42C49127E58487003B9826 /* ImageThumbnailView.swift in Sources */,
@@ -6620,6 +6625,7 @@
 				4A42C4FB27E58487003B9826 /* MenuHelper.swift in Sources */,
 				4A42C4FC27E58487003B9826 /* CardModels.swift in Sources */,
 				4A42C4FD27E58487003B9826 /* NavigationLinkButton.swift in Sources */,
+				4AB8160727EA663A0017203D /* ServerLoggingSettingsView.swift in Sources */,
 				4A42C4FE27E58487003B9826 /* ToastViewManager.swift in Sources */,
 				4A42C4FF27E58487003B9826 /* BrowserModel.swift in Sources */,
 				4A42C50027E58487003B9826 /* ZeroQueryContent.swift in Sources */,
@@ -6787,7 +6793,8 @@
 				4A8CE5E927CCA22100735C75 /* CommunitySubmissionRequest.swift in Sources */,
 				4A8CE60F27CD8ACC00735C75 /* WelcomeStarterView.swift in Sources */,
 				4A8CE5EE27CCA66600735C75 /* ViewExtension.swift in Sources */,
-				4A87E8C927E90F3500CD47BA /* SuggestedXYZSearchesView.swift in Sources */,
+				4AB8160527EA64ED0017203D /* SuggestedXYZSearchesView.swift in Sources */,
+				4A87E8C927E90F3500CD47BA /* (null) in Sources */,
 				4A8CE5F427CD3F2D00735C75 /* TransactionViews.swift in Sources */,
 				4A8CE5E427CCA1DD00735C75 /* Collection.swift in Sources */,
 				4A8CE61127CD8B0F00735C75 /* Confetti.swift in Sources */,
