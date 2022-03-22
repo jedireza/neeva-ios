@@ -29,11 +29,13 @@ struct GeneralSettingsSection: View {
         NavigationLink(
             "Default Browser",
             destination:
-                DefaultBrowserOnboardingView(
-                    openSettings: {
-                        UIApplication.shared.openSettings(triggerFrom: .settings)
-                    }
-                )
+                DefaultBrowserInterstitialOnboardingView(showSkipButton: false) {
+                }
+                buttonAction: {
+                    UIApplication.shared.openSettings(
+                        triggerFrom: .settings
+                    )
+                }
                 .onAppear {
                     ClientLogger.shared.logCounter(
                         .SettingDefaultBrowser, attributes: EnvironmentHelper.shared.getAttributes()

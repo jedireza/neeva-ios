@@ -6,8 +6,74 @@ import Defaults
 import Shared
 import SwiftUI
 
+class DefaultBrowserInterstitialOnboardingViewController: UIHostingController<
+    DefaultBrowserInterstitialOnboardingViewController.Content
+>
+{
+    struct Content: View {
+        let openSettings: () -> Void
+        let onCancel: () -> Void
+        let triggerFrom: OpenSysSettingTrigger
+
+        var body: some View {
+            VStack {
+                HStack {
+                    Spacer()
+                    CloseButton(action: onCancel)
+                        .padding(.trailing, 20)
+                        .padding(.top)
+                        .background(Color.clear)
+                }
+                DefaultBrowserInterstitialOnboardingView(
+                    showSkipButton: false,
+                    skipAction: {},
+                    buttonAction: {
+                        openSettings()
+                    }
+                )
+            }
+        }
+    }
+
+    init(didOpenSettings: @escaping () -> Void, triggerFrom: OpenSysSettingTrigger) {
+        super.init(rootView: Content(openSettings: {}, onCancel: {}, triggerFrom: triggerFrom))
+        self.rootView = Content(
+            openSettings: { [weak self] in
+                self?.dismiss(animated: true) {
+                    UIApplication.shared.openSettings(
+                        triggerFrom: triggerFrom
+                    )
+                    didOpenSettings()
+                }
+                // Don't show default browser card if this button is tapped
+                Defaults[.didDismissDefaultBrowserCard] = true
+            },
+            onCancel: { [weak self] in
+                self?.dismiss(animated: true) {
+                    ClientLogger.shared.logCounter(
+                        .DismissDefaultBrowserOnboardingScreen,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.UIInteractionAttribute.openSysSettingTriggerFrom,
+                                value: triggerFrom.rawValue
+                            )
+                        ]
+                    )
+                }
+
+            },
+            triggerFrom: triggerFrom
+        )
+    }
+
+    @objc required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 struct DefaultBrowserInterstitialOnboardingView: View {
     var fromSkipToBrowser: Bool = false
+    var showSkipButton: Bool = true
 
     var skipAction: () -> Void
     var buttonAction: () -> Void
@@ -115,34 +181,38 @@ struct DefaultBrowserInterstitialOnboardingView: View {
             )
             .buttonStyle(.neeva(.primary))
             .padding(.horizontal, 16)
-            Button(
-                action: {
-                    skipAction()
-                    if NeevaUserInfo.shared.hasLoginCookie() || fromSkipToBrowser {
-                        ClientLogger.shared.logCounter(
-                            .DefaultBrowserOnboardingInterstitialSkip,
-                            attributes: [
-                                ClientLogCounterAttribute(
-                                    key: LogConfig.PromoCardAttribute.fromSkipToBrowser,
-                                    value: String(fromSkipToBrowser))
-                            ]
-                        )
-                    } else {
-                        Defaults[.lastDefaultBrowserPromptInteraction] =
-                            LogConfig.Interaction.DefaultBrowserOnboardingInterstitialSkip.rawValue
+            if showSkipButton {
+                Button(
+                    action: {
+                        skipAction()
+                        if NeevaUserInfo.shared.hasLoginCookie() || fromSkipToBrowser {
+                            ClientLogger.shared.logCounter(
+                                .DefaultBrowserOnboardingInterstitialSkip,
+                                attributes: [
+                                    ClientLogCounterAttribute(
+                                        key: LogConfig.PromoCardAttribute.fromSkipToBrowser,
+                                        value: String(fromSkipToBrowser))
+                                ]
+                            )
+                        } else {
+                            Defaults[.lastDefaultBrowserPromptInteraction] =
+                                LogConfig.Interaction.DefaultBrowserOnboardingInterstitialSkip.rawValue
+                        }
+                    },
+                    label: {
+                        Text("Skip for now")
+                            .withFont(.labelLarge)
+                            .foregroundColor(.ui.adaptive.blue)
+                            .padding(13)
+                            .frame(maxWidth: .infinity)
+                            .padding(.horizontal, 16)
                     }
-                },
-                label: {
-                    Text("Skip for now")
-                        .withFont(.labelLarge)
-                        .foregroundColor(.ui.adaptive.blue)
-                        .padding(13)
-                        .frame(maxWidth: .infinity)
-                        .padding(.horizontal, 16)
-                }
-            )
-            .padding(.top, 10)
-            .padding(.bottom, 30)
+                )
+                .padding(.top, 10)
+                .padding(.bottom, 30)
+            } else {
+                Spacer()
+            }
         }
         .padding(.bottom, 20)
     }

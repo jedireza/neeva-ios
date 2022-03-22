@@ -1546,7 +1546,7 @@ extension BrowserViewController {
         modalTransitionStyle: UIModalTransitionStyle? = nil,
         triggerFrom: OpenSysSettingTrigger
     ) {
-        let onboardingVC = DefaultBrowserOnboardingViewController(
+        let onboardingVC = DefaultBrowserInterstitialOnboardingViewController(
             didOpenSettings: { [weak self] in
                 guard let self = self else { return }
                 self.zeroQueryModel.updateState()
@@ -1697,7 +1697,9 @@ extension BrowserViewController {
                 } buttonAction: {
                     self.overlayManager.hideCurrentOverlay()
                     UIApplication.shared.openSettings(
-                        triggerFrom: .defaultBrowserPromptMergeEduction
+                        triggerFrom: fromSkipToBrowser
+                            ? .defaultBrowserPromptSkipToBrowser
+                            : .defaultBrowserPromptMergeEduction
                     )
                 }
             )

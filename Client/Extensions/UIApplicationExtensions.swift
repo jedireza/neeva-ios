@@ -11,6 +11,7 @@ public enum OpenSysSettingTrigger: String {
     case defaultBrowserPromptDirect
     case settings
     case defaultBrowserPromptMergeEduction
+    case defaultBrowserPromptSkipToBrowser
 }
 
 extension UIApplication {
