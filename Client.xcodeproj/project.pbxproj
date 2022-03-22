@@ -7690,7 +7690,7 @@
 				CODE_SIGN_STYLE = Manual;
 				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = A9735M6NPH;
-				INFOPLIST_FILE = XYZClient.plist;
+				INFOPLIST_FILE = Client/XYZClient.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -7726,7 +7726,7 @@
 				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INCLUDE_SETTINGS_BUNDLE = NO;
-				INFOPLIST_FILE = XYZClient.plist;
+				INFOPLIST_FILE = Client/XYZClient.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
