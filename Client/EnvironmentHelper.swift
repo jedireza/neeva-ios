@@ -158,4 +158,10 @@ public class EnvironmentHelper {
         return ClientLogCounterAttribute(
             key: LogConfig.Attribute.SessionUUID, value: Defaults[.sessionUUID])
     }
+
+    public func getSessionUUIDv2() -> ClientLogCounterAttribute {
+        // session UUID that will rotate every 30 mins
+        return ClientLogCounterAttribute(
+            key: LogConfig.Attribute.SessionUUIDv2, value: Defaults[.sessionUUIDv2])
+    }
 }

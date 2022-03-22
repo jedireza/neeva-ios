@@ -31,6 +31,8 @@ extension Defaults.Keys {
         "sessionUUID", default: "")
     public static let firstSessionUUID = Defaults.Key<String>(
         "firstSessionUUID", default: "")
+    public static let sessionUUIDv2 = Defaults.Key<String>(
+        "sessionUUIDv2", default: "")
     public static let sessionUUIDExpirationTime = Defaults.Key<Date>(
         "sessionUUIDExpirationTime", default: Date(timeIntervalSince1970: 0))
     public static let lastSessionPrivate = Defaults.BoolKey("wasLastSessionPrivate")

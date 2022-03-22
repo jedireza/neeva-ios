@@ -218,7 +218,7 @@ public struct LogConfig {
         /// Close referral promo card
         case CloseReferralPromo
 
-        // MARK: performance
+        // MARK: stability
         /// App Crash # With Page load #
         case AppCrashWithPageLoad
         /// App Crash # With Crash Reporter
@@ -338,7 +338,7 @@ public struct LogConfig {
         case Settings = "Settings"
         case Suggestions = "Suggestions"
         case ReferralPromo = "ReferralPromo"
-        case Performance = "Performance"
+        case Stability = "Stability"
         case FirstRun = "FirstRun"
         case PromoCard = "PromoCard"
         case Spaces = "Spaces"
@@ -360,7 +360,7 @@ public struct LogConfig {
         if category == .FirstRun
             || category == .Notification
             || category == .Suggestions
-            || category == .Performance
+            || category == .Stability
             || category == .DebugMode
             || category == .PromoCard
         {
@@ -390,6 +390,16 @@ public struct LogConfig {
                     enabledLoggingCategories?.insert(category)
                 }
             }
+    }
+
+    public static func shouldAddSessionID(
+        for path: LogConfig.Interaction
+    ) -> Bool {
+        let category = LogConfig.category(for: path)
+        return !NeevaUserInfo.shared.hasLoginCookie()
+            && (category == .FirstRun
+                || category == .Stability
+                || category == .PromoCard)
     }
 
     public static func category(for interaction: Interaction) -> InteractionCategory {
@@ -506,10 +516,10 @@ public struct LogConfig {
         case .OpenReferralPromo: return .ReferralPromo
         case .CloseReferralPromo: return .ReferralPromo
 
-        case .AppCrashWithPageLoad: return .Performance
-        case .AppCrashWithCrashReporter: return .Performance
-        case .LowMemoryWarning: return .Performance
-        case .AppEnterForeground: return .Performance
+        case .AppCrashWithPageLoad: return .Stability
+        case .AppCrashWithCrashReporter: return .Stability
+        case .LowMemoryWarning: return .Stability
+        case .AppEnterForeground: return .Stability
 
         case .SpacesUIVisited: return .Spaces
         case .SpacesDetailUIVisited: return .Spaces
@@ -626,6 +636,8 @@ public struct LogConfig {
         public static let FirstSessionUUID = "FirstSessionUUID"
         /// Preview mode query count
         public static let PreviewModeQueryCount = "PreviewModeQueryCount"
+        /// Session UUID v2
+        public static let SessionUUIDv2 = "SessionUUIDv2"
     }
 
     public struct UIInteractionAttribute {

@@ -22,7 +22,7 @@ public class ClientLogger {
     private let status: ClientLoggerStatus
 
     public static let shared = ClientLogger()
-    public var debugLoggerHistory = [DebugLog]()
+    @Published public var debugLoggerHistory = [DebugLog]()
 
     public init() {
         self.env = ClientLogEnvironment.init(rawValue: "Prod")!
@@ -39,7 +39,7 @@ public class ClientLogger {
 
         // If it is performance logging, it is okay because no identity info is logged
         // If there is no tabs, assume that logging is OK for allowed actions
-        if LogConfig.category(for: path) != .Performance
+        if LogConfig.category(for: path) != .Stability
             && SceneDelegate.getBVCOrNil()?.incognitoModel.isIncognito ?? true
         {
             return
@@ -49,16 +49,26 @@ public class ClientLogger {
             return
         }
 
+        var loggingAttributes = attributes
+        if LogConfig.shouldAddSessionID(for: path) {
+            loggingAttributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.Attribute.SessionUUIDv2,
+                    value: Defaults[.sessionUUIDv2]
+                )
+            )
+        }
+
         let clientLogBase = ClientLogBase(
             id: "co.neeva.app.ios.browser",
             version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
                 as! String, environment: self.env)
-        let clientLogCounter = ClientLogCounter(path: path.rawValue, attributes: attributes)
+        let clientLogCounter = ClientLogCounter(path: path.rawValue, attributes: loggingAttributes)
         let clientLog = ClientLog(counter: clientLogCounter)
 
         #if DEBUG
             if !Defaults[.forceProdGraphQLLogger] {
-                let attributes = attributes.map { "\($0.key! ?? "" ): \($0.value! ?? "")" }
+                let attributes = loggingAttributes.map { "\($0.key! ?? "" ): \($0.value! ?? "")" }
                 let path = path.rawValue
                 debugLoggerHistory.insert(
                     DebugLog(

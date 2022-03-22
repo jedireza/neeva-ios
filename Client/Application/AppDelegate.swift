@@ -92,6 +92,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UIViewControllerRestorati
     ) -> Bool {
         log.info("startApplication begin")
 
+        // set session UUID v2 before any logging event
+        if Defaults[.sessionUUIDv2].isEmpty {
+            Defaults[.sessionUUIDv2] = UUID().uuidString
+        }
+
         // log last crashed status and page load number
         // we use applicationCleanlyBackgrounded in Default to keep track
         // if sceneDidEnterBackground or sceneDidEnterBackground triggered

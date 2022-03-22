@@ -9,25 +9,30 @@ import SwiftUI
 
 struct ServerLoggingSettingsView: View {
     @State private var showingAlert = false
+    @State private var item = DebugLog(pathStr: "", attributeStr: "")
 
     let debugLoggerHistory = ClientLogger.shared.debugLoggerHistory
 
     var body: some View {
         List {
-            ForEach(0..<debugLoggerHistory.count) { i in
-                VStack(alignment: .leading) {
-                    if #available(iOS 15.0, *) {
+            if #available(iOS 15.0, *) {
+                ForEach(0..<debugLoggerHistory.count) { i in
+                    VStack(alignment: .leading) {
                         Button(debugLoggerHistory[i].pathStr) {
+                            self.item = debugLoggerHistory[i]
                             showingAlert = true
                         }
-                        .alert(
-                            "\(debugLoggerHistory[i].attributeStr)", isPresented: $showingAlert
-                        ) {
-                            Button("OK", role: .cancel) {}
-                        }
-                    } else {
-                        Text(debugLoggerHistory[i].pathStr)
+
                     }
+                }
+                .alert(
+                    "\(item.attributeStr)", isPresented: $showingAlert
+                ) {
+                    Button("OK", role: .cancel) {}
+                }
+            } else {
+                ForEach(0..<debugLoggerHistory.count) { i in
+                    Text(debugLoggerHistory[i].pathStr)
                 }
             }
         }
