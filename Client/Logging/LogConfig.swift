@@ -500,7 +500,7 @@ public struct LogConfig {
         case .DefaultBrowserInterstitialImp: return .FirstRun
         case .DefaultBrowserInterstitialImpSkipToBrowser: return .FirstRun
         case .StartExperiment: return .FirstRun
-        case .GetStartedInWelcome:  return .FirstRun
+        case .GetStartedInWelcome: return .FirstRun
 
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard

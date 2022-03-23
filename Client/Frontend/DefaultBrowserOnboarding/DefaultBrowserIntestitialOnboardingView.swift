@@ -241,7 +241,8 @@ struct DefaultBrowserInterstitialOnboardingView: View {
                             attributes: [
                                 ClientLogCounterAttribute(
                                     key:
-                                        LogConfig.PromoCardAttribute.defaultBrowserInterstitialTrigger,
+                                        LogConfig.PromoCardAttribute
+                                        .defaultBrowserInterstitialTrigger,
                                     value: trigger.rawValue
                                 )
                             ]
