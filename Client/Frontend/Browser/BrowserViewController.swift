@@ -14,6 +14,7 @@ import SwiftUI
 import SwiftyJSON
 import UIKit
 import WalletConnectSwift
+import WalletCore
 import WebKit
 import XCGLogger
 
@@ -384,6 +385,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
         if FeatureFlag[.enableSuggestedSpaces] {
             DispatchQueue.main.async {
                 SpaceStore.suggested.refresh()
+            }
+        }
+
+        if FeatureFlag[.web3Mode] {
+            DispatchQueue.main.async {
+                AssetStore.shared.refresh()
             }
         }
     }

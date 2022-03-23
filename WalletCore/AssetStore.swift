@@ -17,6 +17,7 @@ public class AssetStore: ObservableObject {
     @Published public private(set) var state: AssetStoreState = .ready
     public var assets: [Asset] = []
     public var collections = Set<Collection>()
+    public var availableThemes = Set<Web3Theme>()
 
     public func refresh() {
         guard
@@ -27,10 +28,14 @@ public class AssetStore: ObservableObject {
         else {
             return
         }
-        self.state = .syncing
-
+        DispatchQueue.main.async {
+            self.state = .syncing
+        }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        if let apiKey = Bundle.main.object(forInfoDictionaryKey: "OPENSEA_API_KEY") as? String {
+            request.addValue(apiKey, forHTTPHeaderField: "X-API-KEY")
+        }
         request.addValue("application/json", forHTTPHeaderField: "Accept")
 
         URLSession.shared.dataTask(with: request) { (data, response, error) in
@@ -46,6 +51,10 @@ public class AssetStore: ObservableObject {
                 self.assets = result.assets
                 self.assets.forEach({
                     guard let collection = $0.collection else { return }
+                    if let theme = Web3Theme.allCases.first(
+                        where: { $0.rawValue == collection.openSeaSlug }) {
+                        self.availableThemes.insert(theme)
+                    }
                     self.collections.insert(collection)
                 })
                 self.state = .ready

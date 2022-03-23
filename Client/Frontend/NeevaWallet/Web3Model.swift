@@ -157,6 +157,10 @@ class Web3Model: ObservableObject, ResponseRelay {
         }.compactMap { $0 }
     }
 
+    var unlockedThemes: [Web3Theme] {
+        return Array(AssetStore.shared.availableThemes)
+    }
+
     func updateBalances() {
         CurrencyStore.shared.refresh()
         balances.keys.forEach { token in

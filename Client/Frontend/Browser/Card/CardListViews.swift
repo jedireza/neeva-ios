@@ -10,10 +10,6 @@ struct SpaceCardsView: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
 
     var body: some View {
-        if FeatureFlag[.enableCryptoWallet] && !AssetStore.shared.assets.isEmpty {
-            AssetGroupView(assetGroup: AssetGroup())
-        }
-
         ForEach(spacesModel.detailsMatchingFilter, id: \.id) { details in
             FittedCard(details: details)
                 .id(details.id)

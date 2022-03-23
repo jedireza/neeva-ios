@@ -37,7 +37,7 @@ struct CryptoWalletView: View {
                 case .starter:
                     WelcomeStarterView(viewState: $viewState)
                 case .dashboard:
-                    WalletDashboard(viewState: $viewState)
+                    WalletDashboard(viewState: $viewState, assetStore: AssetStore.shared)
                 case .showPhrases:
                     ShowPhrasesView(viewState: $viewState)
                 case .importWallet:
@@ -63,6 +63,7 @@ struct CryptoWalletView: View {
                     model.wallet = WalletAccessor()
                     model.updateBalances()
                 }
+                AssetStore.shared.refresh()
             }
         }
     }

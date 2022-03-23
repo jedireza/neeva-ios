@@ -15,6 +15,7 @@ enum ToolbarAction {
     case addToSpace
     case showTabs
     case share
+    case openLazyTab
 }
 
 extension BrowserViewController: ToolbarDelegate {
@@ -102,10 +103,13 @@ extension BrowserViewController: ToolbarDelegate {
                 self.showTabTray()
             case .share:
                 self.showShareSheet(buttonView: self.view)
+            case .openLazyTab:
+                self.openLazyTab()
             }
 
-            if self.tabContainerModel.currentContentUI == .zeroQuery
-                || self.tabContainerModel.currentContentUI == .suggestions
+            if action != .openLazyTab,
+                self.tabContainerModel.currentContentUI == .zeroQuery
+                    || self.tabContainerModel.currentContentUI == .suggestions
             {
                 self.hideZeroQuery()
             }

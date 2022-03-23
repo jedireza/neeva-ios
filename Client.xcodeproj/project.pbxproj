@@ -148,6 +148,8 @@
 		3BC659591E5BA505006D560F /* top_sites.json in Resources */ = {isa = PBXBuildFile; fileRef = 3BC659581E5BA505006D560F /* top_sites.json */; };
 		3BF4B8E91D38497A00493393 /* BaseTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BF4B8E81D38497A00493393 /* BaseTestCase.swift */; };
 		3BFCBF201E04B1C50070C042 /* UIImageViewExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BFCBF1F1E04B1C50070C042 /* UIImageViewExtensionsTests.swift */; };
+		3FC15D7627E924A8005F71CE /* Web3Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC15D7527E924A8005F71CE /* Web3Toolbar.swift */; };
+		3FCCFF9827E943390058A055 /* Web3Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FCCFF9727E943390058A055 /* Web3Theme.swift */; };
 		3FE1BC2327D91DC9004122F8 /* SpaceTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE1BC2227D91DC9004122F8 /* SpaceTopView.swift */; };
 		3FE1BC2527DB922D004122F8 /* ScapeImageEntityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE1BC2427DB922D004122F8 /* ScapeImageEntityView.swift */; };
 		3FE1BC2727DBB43E004122F8 /* SpaceListContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FE1BC2627DBB43E004122F8 /* SpaceListContentView.swift */; };
@@ -1399,6 +1401,8 @@
 		3D71C89D1F5703A1008D8646 /* CopiedLinksTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CopiedLinksTests.swift; sourceTree = "<group>"; };
 		3D9CAA1B1EFCD655002434DD /* ClipBoardTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClipBoardTests.swift; sourceTree = "<group>"; };
 		3DEFED071F55EBE300F8620C /* TrackingProtectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingProtectionTests.swift; sourceTree = "<group>"; };
+		3FC15D7527E924A8005F71CE /* Web3Toolbar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Web3Toolbar.swift; sourceTree = "<group>"; };
+		3FCCFF9727E943390058A055 /* Web3Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Web3Theme.swift; sourceTree = "<group>"; };
 		3FE1BC2227D91DC9004122F8 /* SpaceTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceTopView.swift; sourceTree = "<group>"; };
 		3FE1BC2427DB922D004122F8 /* ScapeImageEntityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScapeImageEntityView.swift; sourceTree = "<group>"; };
 		3FE1BC2627DBB43E004122F8 /* SpaceListContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceListContentView.swift; sourceTree = "<group>"; };
@@ -2824,6 +2828,7 @@
 				4A8CE5BD27CCA07700735C75 /* WalletCore.h */,
 				4A8CE5F127CCC74100735C75 /* WalletSequenceHeader.swift */,
 				BCAAA0E5276D9D3D0013223E /* WelcomeStarterView.swift */,
+				3FCCFF9727E943390058A055 /* Web3Theme.swift */,
 			);
 			path = WalletCore;
 			sourceTree = "<group>";
@@ -3303,6 +3308,7 @@
 				4A93B55B27829BE800CD5415 /* WalletDetailView.swift */,
 				4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */,
 				4A93B5592782981600CD5415 /* Web3Model.swift */,
+				3FC15D7527E924A8005F71CE /* Web3Toolbar.swift */,
 			);
 			path = NeevaWallet;
 			sourceTree = "<group>";
@@ -5735,6 +5741,7 @@
 				4A8CE5EA27CCA36900735C75 /* NeevaWalletStyle.swift in Sources */,
 				4A8CE60927CD802C00735C75 /* WalletConnectHandlers.swift in Sources */,
 				4A8CE60727CD44AD00735C75 /* OnboardingModel.swift in Sources */,
+				3FCCFF9827E943390058A055 /* Web3Theme.swift in Sources */,
 				4A8CE60827CD7AC600735C75 /* TransactionHistoryView.swift in Sources */,
 				4A8CE5E627CCA1DD00735C75 /* AssetStore.swift in Sources */,
 				4A8CE5E827CCA22100735C75 /* ConnectWallet.swift in Sources */,
@@ -5987,6 +5994,7 @@
 				39F4C10A2045DB2E00746155 /* FocusHelper.swift in Sources */,
 				4AB203A0267D4EEC00920F39 /* BrowserPrimitive.swift in Sources */,
 				C9C18DDF26558FF3004710CD /* MutationController.swift in Sources */,
+				3FC15D7627E924A8005F71CE /* Web3Toolbar.swift in Sources */,
 				C93EFEE7267163C7000396B5 /* TabLocationAligner.swift in Sources */,
 				EBC4869F2195F58300CDA48D /* SessionRestoreHandler.swift in Sources */,
 				F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */,

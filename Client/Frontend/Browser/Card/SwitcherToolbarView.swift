@@ -2,8 +2,10 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import Shared
 import SwiftUI
+import WalletCore
 
 class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
@@ -40,6 +42,8 @@ struct SwitcherToolbarView: View {
 
     @State var presentingMenu: Bool = false
     @State private var action: OverflowMenuAction? = nil
+
+    @Default(.currentTheme) var currentTheme
 
     var bvc: BrowserViewController {
         SceneDelegate.getBVC(with: toolbarModel.tabManager.scene)
@@ -175,7 +179,11 @@ struct SwitcherToolbarView: View {
                 Spacer()
             }
         }
-        .background(Color.DefaultBackground.ignoresSafeArea())
+        .background(
+            FeatureFlag[.web3Mode]
+                ? Web3Theme(with: currentTheme).backgroundColor.ignoresSafeArea()
+                : Color.DefaultBackground.ignoresSafeArea()
+        )
         .animation(.easeOut)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Toolbar")

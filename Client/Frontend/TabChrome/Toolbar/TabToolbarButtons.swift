@@ -2,10 +2,12 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import SDWebImageSwiftUI
 import SFSafeSymbols
 import Shared
 import SwiftUI
+import WalletCore
 
 struct TabToolbarButton<Content: View>: View {
     let label: Content
@@ -41,16 +43,28 @@ enum TabToolbarButtons {
         let onLongPress: () -> Void
 
         @EnvironmentObject private var model: TabChromeModel
+        @Default(.currentTheme) var currentTheme
+
         var body: some View {
             TabToolbarButton(
-                label: Symbol(
-                    .arrowBackward, size: 20, weight: weight,
-                    label: .TabToolbarBackAccessibilityLabel),
+                label: label,
                 action: onBack,
                 longPressAction: onLongPress
             )
             .disabled(!model.canGoBack && !model.canReturnToSuggestions)
             .accessibilityAction(named: "Show Recent Pages", onLongPress)
+        }
+
+        @ViewBuilder private var label: some View {
+            if FeatureFlag[.web3Mode] {
+                Web3Theme(with: currentTheme).backButton
+            } else {
+                Symbol(
+                    .arrowBackward,
+                    size: 20,
+                    weight: weight,
+                    label: .TabToolbarBackAccessibilityLabel)
+            }
         }
     }
 
@@ -114,6 +128,7 @@ enum TabToolbarButtons {
         let weight: Font.Weight
         let action: () -> Void
         let identifier: String
+        @Default(.currentTheme) var currentTheme
 
         init(weight: Font.Weight, action: @escaping () -> Void, identifier: String = "") {
             self.weight = weight
@@ -123,13 +138,22 @@ enum TabToolbarButtons {
 
         var body: some View {
             TabToolbarButton(
-                label: Symbol(
-                    .ellipsisCircle,
-                    size: 20, weight: weight,
-                    label: .TabToolbarMoreAccessibilityLabel),
+                label: label,
                 action: action
             )
             .accessibilityIdentifier(identifier)
+        }
+
+        @ViewBuilder private var label: some View {
+            if FeatureFlag[.web3Mode] {
+                Web3Theme(with: currentTheme).overflowButton
+            } else {
+                Symbol(
+                    .ellipsisCircle,
+                    size: 20,
+                    weight: weight,
+                    label: .TabToolbarMoreAccessibilityLabel)
+            }
         }
     }
 
@@ -154,15 +178,24 @@ enum TabToolbarButtons {
 
     struct NeevaWallet: View {
         @EnvironmentObject var model: Web3Model
+        @Default(.currentTheme) var currentTheme
 
         var body: some View {
             TabToolbarButton(
-                label: Image("wallet-illustration")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 32)
-                    .accessibilityLabel("Neeva Wallet"),
+                label: Web3Theme(with: currentTheme).walletButton,
                 action: model.showWalletPanel
+            )
+        }
+    }
+
+    struct LazyTabButton: View {
+        let action: () -> Void
+        @Default(.currentTheme) var currentTheme
+
+        var body: some View {
+            TabToolbarButton(
+                label: Web3Theme(with: currentTheme).lazyTabButton,
+                action: action
             )
         }
     }
@@ -190,15 +223,29 @@ enum TabToolbarButtons {
         let weight: UIImage.SymbolWeight
         let action: () -> Void
         let buildMenu: (_ sourceView: UIView) -> UIMenu?
+        @Default(.currentTheme) var currentTheme
 
+        @ViewBuilder
         var body: some View {
-            SecondaryMenuButton(action: action) { button in
-                button.setImage(
-                    Symbol.uiImage(.squareOnSquare, size: 20, weight: weight), for: .normal)
-                button.setDynamicMenu {
-                    buildMenu(button)
+            if FeatureFlag[.web3Mode] {
+                SecondaryMenuButton(action: action) { button in
+                    button.setImage(
+                        Web3Theme(with: currentTheme).tabsImage, for: .normal)
+                    button.tintColor = .label
+                    button.setDynamicMenu {
+                        buildMenu(button)
+                    }
+                    button.accessibilityLabel = "Show Tabs"
                 }
-                button.accessibilityLabel = "Show Tabs"
+            } else {
+                SecondaryMenuButton(action: action) { button in
+                    button.setImage(
+                        Symbol.uiImage(.squareOnSquare, size: 20, weight: weight), for: .normal)
+                    button.setDynamicMenu {
+                        buildMenu(button)
+                    }
+                    button.accessibilityLabel = "Show Tabs"
+                }
             }
         }
     }
