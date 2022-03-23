@@ -500,7 +500,15 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     override func viewDidAppear(_ animated: Bool) {
         if !FeatureFlag[.web3Mode] {
-            presentIntroViewController()
+            if !Defaults[.introSeen] {
+                if NeevaExperiment.startExperiment(
+                    for: .defaultBrowserInterstitialFirst
+                ) == .showInterstitialFirst {
+                    presentDefaultBrowserFirstRun()
+                } else {
+                    presentIntroViewController()
+                }
+            }
         }
 
         screenshotHelper.viewIsVisible = true
@@ -1540,6 +1548,35 @@ extension BrowserViewController {
         }
     }
 
+    fileprivate func presentDefaultBrowserFirstRun() {
+        // TODO: refactor the logic into view model
+        overlayManager.presentFullScreenModal(
+            content: AnyView(
+                DefaultBrowserInterstitialWelcomeScreen {
+                    self.overlayManager.hideCurrentOverlay()
+                } buttonAction: {
+                    self.overlayManager.hideCurrentOverlay()
+                    UIApplication.shared.openSettings(
+                        triggerFrom: .defaultBrowserPromptMergeEduction
+                    )
+                }
+                .onAppear {
+                    AppDelegate.setRotationLock(to: .portrait)
+                }
+                .onDisappear {
+                    AppDelegate.setRotationLock(to: .all)
+                }
+            )
+        ) {
+            Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
+            Defaults[.introSeen] = true
+            ClientLogger.shared.logCounter(
+                .DefaultBrowserInterstitialImp
+            )
+            NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
+        }
+    }
+
     // Default browser onboarding
     func presentDBOnboardingViewController(
         _ force: Bool = false,
@@ -1643,9 +1680,11 @@ extension BrowserViewController {
                         }
                     }
 
-                    if !Defaults[.didSetDefaultBrowser]
-                        && !Defaults[.didShowDefaultBrowserInterstitial]
-                        && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
+                    if let arm = NeevaExperiment.arm(for: .defaultBrowserInterstitialFirst),
+                        arm == .control
+                            && !Defaults[.didSetDefaultBrowser]
+                            && !Defaults[.didShowDefaultBrowserInterstitial]
+                            && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
                     {
                         if case .skipToBrowser = action {
                             if !introSeen {
@@ -1682,17 +1721,26 @@ extension BrowserViewController {
     }
 
     private func presentDBPromptView(fromSkipToBrowser: Bool = false) {
+        if let arm = NeevaExperiment.arm(for: .defaultBrowserInterstitialFirst),
+            arm == .showInterstitialFirst
+        {
+            return
+        }
+
         self.shouldPresentDBPrompt = false
 
         if fromSkipToBrowser {
             ClientLogger.shared.logCounter(
                 .DefaultBrowserInterstitialImpSkipToBrowser
             )
+            NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
         }
 
         self.overlayManager.presentFullScreenModal(
             content: AnyView(
-                DefaultBrowserInterstitialOnboardingView(fromSkipToBrowser: fromSkipToBrowser) {
+                DefaultBrowserInterstitialOnboardingView(
+                    trigger: fromSkipToBrowser ? .skipToBrowser : .afterSignup
+                ) {
                     self.overlayManager.hideCurrentOverlay()
                 } buttonAction: {
                     self.overlayManager.hideCurrentOverlay()
