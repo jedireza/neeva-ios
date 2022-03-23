@@ -13,7 +13,7 @@ class SpaceContentSheetModel: ObservableObject {
             didUserDismiss = false
         }
     }
-    
+
     @Published private(set) var selectedTab: Tab?
     @Published private(set) var currentSpaceEntityDetail: SpaceEntityThumbnail?
     @Published var didUserDismiss: Bool = false
@@ -31,12 +31,14 @@ class SpaceContentSheetModel: ObservableObject {
             self.currentSpaceDetail = self.spaceModel.allDetails.first(where: {
                 $0.id == tabManager.selectedTab?.parentSpaceID
             })
-            if let data = space.contentData?.first(where: { $0.url == tabManager.selectedTab?.url }) {
+            if let data = space.contentData?.first(
+                where: { $0.url == tabManager.selectedTab?.url })
+            {
                 self.currentSpaceEntityDetail = SpaceEntityThumbnail(
                     data: data,
                     spaceID: spaceID)
             }
-           
+
         } else {
             self.currentSpaceDetail = nil
             self.currentSpaceEntityDetail = nil

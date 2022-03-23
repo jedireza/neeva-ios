@@ -15,18 +15,18 @@ struct SpaceContentSheet: View {
     @ObservedObject var model: SpaceContentSheetModel
     var yOffset: CGFloat
     var footerHeight: CGFloat
-    
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
-    
+
     private var useTopToolbar: Bool {
         verticalSizeClass == .compact || horizontalSizeClass == .regular
     }
-    
+
     private var isToolbarVisible: Bool {
         footerHeight - yOffset > 0
     }
-    
+
     init(model: SpaceContentSheetModel, yOffset: CGFloat, footerHeight: CGFloat) {
         self.model = model
         self.yOffset = yOffset
@@ -37,14 +37,14 @@ struct SpaceContentSheet: View {
         if let _ = model.currentSpaceEntityDetail {
             GeometryReader { geom in
                 contentView
-                .offset(
-                    x: 0,
-                    y: calculateYPosition(with: geom)
-                )
+                    .offset(
+                        x: 0,
+                        y: calculateYPosition(with: geom)
+                    )
             }
         }
     }
-    
+
     private var contentView: some View {
         HStack(alignment: .center, spacing: 4) {
             SpacePageContent(model: model)
@@ -55,7 +55,7 @@ struct SpaceContentSheet: View {
         .cornerRadius(16, corners: useTopToolbar ? .all : .top)
         .shadow(radius: 2)
     }
-    
+
     private var closeButton: some View {
         Button(
             action: {
@@ -67,7 +67,7 @@ struct SpaceContentSheet: View {
                     .tapTargetFrame()
             })
     }
-    
+
     private func calculateYPosition(with geometry: GeometryProxy) -> CGFloat {
         guard isToolbarVisible, !model.didUserDismiss else {
             return geometry.size.height + footerHeight
@@ -91,7 +91,7 @@ struct SpacePageSummary: View {
     @Environment(\.onOpenURLForSpace) var onOpenURLForSpace
     let details: SpaceEntityThumbnail?
     let spaceDetails: SpaceCardDetails?
-    
+
     var body: some View {
         if let details = details {
             VStack(spacing: 7) {
