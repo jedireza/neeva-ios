@@ -9,9 +9,13 @@ public enum OpenSysSettingTrigger: String {
     case defaultBrowserPrompt
     case defaultBrowserPromoCard
     case defaultBrowserPromptDirect
-    case settings
+    case defaultBrowserSettings
     case defaultBrowserPromptMergeEduction
     case defaultBrowserPromptSkipToBrowser
+
+    var defaultBrowserIntent: Bool {
+        true  // Update if we ever have other reasons to guide users to system settings.
+    }
 }
 
 extension UIApplication {
@@ -26,6 +30,9 @@ extension UIApplication {
                 )
             ]
         )
+        if triggerFrom.defaultBrowserIntent {
+            ConversionLogger.log(event: .visitedDefaultBrowserSettings)
+        }
         self.open(
             URL(string: UIApplication.openSettingsURLString)!, options: [:])
     }

@@ -166,6 +166,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 )
             }
             ClientLogger.shared.logCounter(.OpenDefaultBrowserURL, attributes: attributes)
+            ConversionLogger.log(event: .handledNavigationAsDefaultBrowser)
 
             Defaults[.didSetDefaultBrowser] = true
         }

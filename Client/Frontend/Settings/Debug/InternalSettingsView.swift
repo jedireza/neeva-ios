@@ -52,6 +52,7 @@ struct InternalSettingsView: View {
     @Default(.numberOfAppForeground) var numberOfAppForeground
     @Default(.forceProdGraphQLLogger) var forceProdGraphQLLogger
     @Default(.firstRunImpressionLogged) var firstRunImpressionLogged
+    @Default(.lastReportedConversionEvent) var lastReportedConversionEvent
 
     var body: some View {
         List {
@@ -106,6 +107,9 @@ struct InternalSettingsView: View {
                     Toggle(
                         String("didTriggerSystemReviewDialog"), isOn: $didTriggerSystemReviewDialog)
                     NumberField(String("numberOfAppForeground"), number: $numberOfAppForeground)
+                }
+                Section(header: Text(verbatim: "Conversion Logging")) {
+                    NumberField("lastReportedConversionEvent", number: $lastReportedConversionEvent)
                 }
             }
             Section(header: Text(verbatim: "Default Browser")) {

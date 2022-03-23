@@ -93,6 +93,7 @@ struct FirstRunHomePage: View {
                 ClientLogger.shared.logCounter(
                     .FirstRunImpression,
                     attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                ConversionLogger.log(event: .launchedApp)
                 Defaults[.firstRunImpressionLogged] = true
             }
             Defaults[.firstRunSeenAndNotSignedIn] = true
