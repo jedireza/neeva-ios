@@ -187,6 +187,8 @@ public struct LogConfig {
         case StartExperiment
         /// Default browser interstitial impression (skip to browser)
         case DefaultBrowserInterstitialImpSkipToBrowser
+        /// Tap on Get started in welcome screen
+        case GetStartedInWelcome
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -498,6 +500,7 @@ public struct LogConfig {
         case .DefaultBrowserInterstitialImp: return .FirstRun
         case .DefaultBrowserInterstitialImpSkipToBrowser: return .FirstRun
         case .StartExperiment: return .FirstRun
+        case .GetStartedInWelcome:  return .FirstRun
 
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
@@ -698,7 +701,7 @@ public struct LogConfig {
 
     public struct PromoCardAttribute {
         public static let promoCardType = "promoCardType"
-        public static let fromSkipToBrowser = "fromSkipToBrowser"
+        public static let defaultBrowserInterstitialTrigger = "defaultBrowserInterstitialTrigger"
     }
 
     public struct ExperimentAttribute {

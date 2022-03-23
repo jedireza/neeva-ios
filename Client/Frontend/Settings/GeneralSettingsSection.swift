@@ -29,7 +29,7 @@ struct GeneralSettingsSection: View {
         NavigationLink(
             "Default Browser",
             destination:
-                DefaultBrowserInterstitialOnboardingView(showSkipButton: false) {
+                DefaultBrowserInterstitialOnboardingView(trigger: .settings, showSkipButton: false) {
                 }
                 buttonAction: {
                     UIApplication.shared.openSettings(

@@ -1042,6 +1042,7 @@ extension BrowserViewController: WKNavigationDelegate {
                     ClientLogger.shared.logCounter(
                         .DefaultBrowserInterstitialImp
                     )
+                    NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
                     shouldLogDBPrompt = false
                 }
 
@@ -1053,8 +1054,8 @@ extension BrowserViewController: WKNavigationDelegate {
                         interaction,
                         attributes: [
                             ClientLogCounterAttribute(
-                                key: LogConfig.PromoCardAttribute.fromSkipToBrowser,
-                                value: "false")
+                                key: LogConfig.PromoCardAttribute.defaultBrowserInterstitialTrigger,
+                                value: OpenDefaultBrowserOnboardingTrigger.afterSignup.rawValue)
                         ]
                     )
                     Defaults[.lastDefaultBrowserPromptInteraction] = nil

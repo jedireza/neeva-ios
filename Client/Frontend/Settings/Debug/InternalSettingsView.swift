@@ -51,6 +51,7 @@ struct InternalSettingsView: View {
     @Default(.didTriggerSystemReviewDialog) var didTriggerSystemReviewDialog
     @Default(.numberOfAppForeground) var numberOfAppForeground
     @Default(.forceProdGraphQLLogger) var forceProdGraphQLLogger
+    @Default(.firstRunImpressionLogged) var firstRunImpressionLogged
 
     var body: some View {
         List {
@@ -59,6 +60,7 @@ struct InternalSettingsView: View {
                 Toggle(String("introSeen"), isOn: $introSeen)
                 Toggle(String("didFirstNavigation"), isOn: $didFirstNavigation)
                 Toggle(String("signedInOnce"), isOn: $signedInOnce)
+                Toggle(String("firstRunImpressionLogged"), isOn: $firstRunImpressionLogged)
                 HStack {
                     VStack(alignment: .leading) {
                         Text(verbatim: "previewModeQueries")
