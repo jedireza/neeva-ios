@@ -459,6 +459,7 @@
 		A83E5B1B1C1DA8BF0026D912 /* image.png in Resources */ = {isa = PBXBuildFile; fileRef = A83E5B191C1DA8BF0026D912 /* image.png */; };
 		A83E5B1D1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5B1C1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift */; };
 		A83E5B1E1C1DAAAA0026D912 /* UIPasteboardExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */; };
+		B62FC4AB27E9162600848461 /* ConversionLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62FC4AA27E9162600848461 /* ConversionLogger.swift */; };
 		BC07524626C324A3008B607A /* CheatsheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524426C324A3008B607A /* CheatsheetController.swift */; };
 		BC07524C26C3B98F008B607A /* CheatsheetMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */; };
 		BC15D22B26FA575A00FDF6A7 /* AuthButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC15D22A26FA575A00FDF6A7 /* AuthButton.swift */; };
@@ -1694,6 +1695,7 @@
 		A83E5B181C1DA8BF0026D912 /* image.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = image.gif; sourceTree = "<group>"; };
 		A83E5B191C1DA8BF0026D912 /* image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image.png; sourceTree = "<group>"; };
 		A83E5B1C1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPasteboardExtensionsTests.swift; sourceTree = "<group>"; };
+		B62FC4AA27E9162600848461 /* ConversionLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionLogger.swift; sourceTree = "<group>"; };
 		BC07524426C324A3008B607A /* CheatsheetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetController.swift; sourceTree = "<group>"; };
 		BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetMenuView.swift; sourceTree = "<group>"; };
 		BC0E275C26805A2600EAAE00 /* FeedbackHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackHelper.swift; sourceTree = "<group>"; };
@@ -3599,6 +3601,7 @@
 				C9C18E6326559B9C004710CD /* LogConfig.swift */,
 				BC5740A126BB699A0047D29B /* PerformanceLogger.swift */,
 				3290A26227D14DD9007C5DA4 /* SpotlightLogger.swift */,
+				B62FC4AA27E9162600848461 /* ConversionLogger.swift */,
 			);
 			path = Logging;
 			sourceTree = "<group>";
@@ -6203,6 +6206,7 @@
 				32FAB3E027B62A5F00FEBDFE /* NeevaScopeLoadingTimeline.swift in Sources */,
 				4A255AB6265C4A2A00422839 /* TrackingPreventionConfig.swift in Sources */,
 				66B6567626C4667B00D25767 /* BrowserViewController+SKStoreProductViewControllerDelegate.swift in Sources */,
+				B62FC4AB27E9162600848461 /* ConversionLogger.swift in Sources */,
 				4A360215268CF74500C56328 /* SuggestionBlocks.swift in Sources */,
 				4A092AFB267EEA02006BE5B6 /* CardGroupView.swift in Sources */,
 				67B0AAF626BA08A4000731E0 /* OverflowMenuView.swift in Sources */,

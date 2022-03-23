@@ -33,7 +33,7 @@ struct GeneralSettingsSection: View {
                 }
                 buttonAction: {
                     UIApplication.shared.openSettings(
-                        triggerFrom: .settings
+                        triggerFrom: .defaultBrowserSettings
                     )
                 }
                 .onAppear {

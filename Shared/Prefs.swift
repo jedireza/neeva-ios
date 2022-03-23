@@ -210,6 +210,9 @@ extension Defaults.Keys {
 
     public static let forceProdGraphQLLogger = Defaults.BoolKey(
         "forceProdGraphQLLogger", default: false)
+
+    public static let lastReportedConversionEvent = Defaults.Key<Int>(
+        "lastReportedConversionEvent", default: -1)
 }
 
 extension Defaults {
