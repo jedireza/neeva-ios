@@ -152,7 +152,7 @@ class BrowserModel: ObservableObject {
                     completion()
                 } else {
                     followPublicSpaceSubscription = spaceCardModel.objectWillChange.sink {
-                        [unowned self] in
+                        [self] in  // OK to hold a strong ref as this should terminate.
                         if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
                             openSpace(
                                 spaceID: spaceId, animate: false)

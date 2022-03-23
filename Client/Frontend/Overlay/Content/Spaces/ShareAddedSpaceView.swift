@@ -110,7 +110,8 @@ struct ShareAddedSpaceView: View {
         .animation(.easeInOut)
         .environment(
             \.shareURL,
-            { [unowned bvc] url, view in
+            { [weak bvc] url, view in
+                guard let bvc = bvc else { return }
                 let helper = ShareExtensionHelper(url: url, tab: nil)
                 let controller = helper.createActivityViewController({ (_, _) in })
                 if UIDevice.current.userInterfaceIdiom != .pad {
