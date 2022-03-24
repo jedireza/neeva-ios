@@ -4,6 +4,7 @@
 
 import Defaults
 import Foundation
+import StoreKit
 import UIKit
 
 private let replacements = [
@@ -29,7 +30,17 @@ public class SearchEngine: Identifiable, Hashable {
     // MARK: Statics
     public static var current: SearchEngine {
         let autoEngine = Defaults[.customSearchEngine].flatMap { all[$0] }
-        return autoEngine ?? neeva
+
+        if FeatureFlag[.web3Mode] {
+            let countryCode = SKPaymentQueue.default().storefront?.countryCode
+            let defaultEngine: SearchEngine =
+                countryCode == "USA"
+                ? .neeva
+                : .google
+            return autoEngine ?? defaultEngine
+        }
+
+        return autoEngine ?? .neeva
     }
 
     public static var nft: SearchEngine {
@@ -146,6 +157,17 @@ public class SearchEngine: Identifiable, Hashable {
             suggestTemplate: "https://neeva.xyz/_suggest?q={searchTerms}",
             searchTemplate: "https://neeva.xyz?q={searchTerms}"
         )
+    }
+
+    private static var google: SearchEngine {
+        SearchEngine(
+            id: "google",
+            label: "Google",
+            icon: URL(
+                "https://google.com/images/branding/googleg/1x/googleg_standard_color_128dp.png"
+            ),
+            suggestTemplate: "",
+            searchTemplate: "https://google.com/search?q={searchTerms}")
     }
 
     // MARK: Private helpers
