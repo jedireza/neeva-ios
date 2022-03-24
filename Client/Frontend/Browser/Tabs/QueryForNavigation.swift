@@ -3,15 +3,24 @@
 // found in the LICENSE file.
 
 import Foundation
+import Shared
 import WebKit
 
 class QueryForNavigation {
     struct Query {
+        /// Location from which a navigation was created for opening a result for this query
+        enum Location: Int, Codable {
+            /// Result was opened from the suggestion UI for this query
+            case suggestion
+            /// Result was opened from the SRP for this query
+            case SRP
+        }
         let typed: String
         let suggested: String?
+        var location: Location
     }
 
-    @Published var queryForNavigations = [WKBackForwardListItem: Query]()
+    var queryForNavigations = [WKBackForwardListItem: Query]()
     var currentQuery: Query?
 
     func findQueryIndexFor(navigation: WKBackForwardListItem) -> Int? {
@@ -22,11 +31,27 @@ class QueryForNavigation {
         return queryForNavigations[navigation]
     }
 
+    func findQueryForNavigation(with url: URL) -> Query? {
+        return queryForNavigations.first { key, value in
+            key.url == url
+        }?.value
+    }
+
     func attachCurrentSearchQueryToCurrentNavigation(webView: WKWebView) {
         // attach current suggested query?
-        if let navigation = webView.backForwardList.currentItem,
-            let query = currentQuery, !query.typed.isEmpty
+        guard let navigation = webView.backForwardList.currentItem else { return }
+
+        // If opening in current tab from SRP
+        if currentQuery == nil,
+            let backItem = webView.backForwardList.backItem,
+            NeevaConstants.isNeevaSearchResultPage(backItem.url),
+            let query = self.findQueryFor(navigation: backItem)
         {
+            currentQuery = query
+            currentQuery?.location = .SRP
+        }
+
+        if let query = currentQuery, !query.typed.isEmpty {
             queryForNavigations[navigation] = query
             currentQuery = nil
 

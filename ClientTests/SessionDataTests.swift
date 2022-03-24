@@ -19,6 +19,7 @@ class SessionDataTests: XCTestCase {
             currentPage: -1, urls: testUrls,
             queries: testUrls.map { _ in return nil },
             suggestedQueries: Array.init(repeating: nil, count: testUrls.count),
+            queryLocations: Array(repeating: nil, count: testUrls.count),
             lastUsedTime: Date.nowMilliseconds())
 
         let data = try! NSKeyedArchiver.archivedData(

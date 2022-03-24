@@ -776,7 +776,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
             )
         } else if let tab = tab {
             tab.queryForNavigation.currentQuery = .init(
-                typed: searchQueryModel.value, suggested: suggestedQuery)
+                typed: searchQueryModel.value,
+                suggested: suggestedQuery,
+                location: .suggestion
+            )
 
             if zeroQueryModel.openedFrom == .backButton {
                 // Once user changes current URL from the back button, the forward history list needs

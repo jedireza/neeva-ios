@@ -349,6 +349,16 @@ class TabManager: NSObject {
             self.selectTab(popup)
         }
 
+        // if we open from SRP, carry over the query
+        if let parentURL = parentTab.url,
+            NeevaConstants.isNeevaSearchResultPage(parentURL),
+            let parentQuery = parentTab.queryForNavigation.findQueryForNavigation(with: parentURL)
+        {
+            var copiedQuery = parentQuery
+            copiedQuery.location = .SRP
+            popup.queryForNavigation.currentQuery = copiedQuery
+        }
+
         return popup
     }
 

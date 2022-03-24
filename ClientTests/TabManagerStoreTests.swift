@@ -64,7 +64,7 @@ class TabManagerStoreTests: XCTestCase {
         )
         tab.sessionData = SessionData(
             currentPage: 0, urls: [tab.url!],
-            queries: [nil], suggestedQueries: [nil],
+            queries: [nil], suggestedQueries: [nil], queryLocations: [nil],
             lastUsedTime: Date.nowMilliseconds()
         )
     }

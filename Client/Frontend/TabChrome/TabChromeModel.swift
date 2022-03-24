@@ -22,7 +22,11 @@ class TabChromeModel: ObservableObject {
             return false
         }
 
-        return selectedTab.queryForNavigation.findQueryFor(navigation: currentItem) != nil
+        guard let query = selectedTab.queryForNavigation.findQueryFor(navigation: currentItem)
+        else {
+            return false
+        }
+        return query.location == .suggestion
     }
 
     @Published var canGoForward: Bool

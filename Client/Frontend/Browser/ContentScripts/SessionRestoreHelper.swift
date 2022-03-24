@@ -38,11 +38,20 @@ class SessionRestoreHelper: TabContentScript {
                             else { break }
 
                             var suggestedQuery: String? = nil
+                            var queryLocation: QueryForNavigation.Query.Location? = nil
                             if sessionData.suggestedQueries.indices.contains(index) {
                                 suggestedQuery = sessionData.suggestedQueries[index]
                             }
+                            if sessionData.queryLocations.indices.contains(index),
+                                let rawValue = sessionData.queryLocations[index]
+                            {
+                                queryLocation = .init(rawValue: rawValue)
+                            }
                             tab.queryForNavigation.queryForNavigations[item] = .init(
-                                typed: query, suggested: suggestedQuery)
+                                typed: query,
+                                suggested: suggestedQuery,
+                                location: queryLocation ?? .suggestion
+                            )
                         }
                     }
 
