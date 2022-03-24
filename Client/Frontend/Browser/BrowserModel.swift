@@ -9,10 +9,14 @@ import SwiftUI
 class BrowserModel: ObservableObject {
     @Published var showGrid = false {
         didSet {
-            // Ensures toolbars are visible when user closes from the CardGrid.
-            // Expand when set to true, so ready when user returns.
             if showGrid {
+                // Ensures toolbars are visible when user closes from the CardGrid.
+                // Expand when set to true, so ready when user returns.
                 scrollingControlModel.showToolbars(animated: true, completion: nil)
+
+                // Ensure that the switcher is reset in case a previous drag was not
+                // properly completed.
+                switcherToolbarModel.dragOffset = nil
             }
         }
     }
@@ -26,6 +30,7 @@ class BrowserModel: ObservableObject {
 
     var cardTransitionModel: CardTransitionModel
     var scrollingControlModel: ScrollingControlModel
+    let switcherToolbarModel: SwitcherToolbarModel
 
     func show() {
         if gridModel.switcherState != .tabs {
@@ -190,7 +195,7 @@ class BrowserModel: ObservableObject {
 
     init(
         gridModel: GridModel, tabManager: TabManager, chromeModel: TabChromeModel,
-        incognitoModel: IncognitoModel
+        incognitoModel: IncognitoModel, switcherToolbarModel: SwitcherToolbarModel
     ) {
         self.gridModel = gridModel
         self.tabManager = tabManager
@@ -198,5 +203,6 @@ class BrowserModel: ObservableObject {
         self.cardTransitionModel = CardTransitionModel()
         self.scrollingControlModel = ScrollingControlModel(
             tabManager: tabManager, chromeModel: chromeModel)
+        self.switcherToolbarModel = switcherToolbarModel
     }
 }

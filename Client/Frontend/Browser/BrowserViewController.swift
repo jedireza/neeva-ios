@@ -90,10 +90,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
     lazy var browserModel: BrowserModel = {
         BrowserModel(
             gridModel: gridModel, tabManager: tabManager, chromeModel: chromeModel,
-            incognitoModel: incognitoModel)
+            incognitoModel: incognitoModel, switcherToolbarModel: switcherToolbarModel)
     }()
 
-    lazy var toolbarModel: SwitcherToolbarModel = {
+    private lazy var switcherToolbarModel: SwitcherToolbarModel = {
         SwitcherToolbarModel(
             tabManager: tabManager,
             openLazyTab: { self.openLazyTab(openedFrom: .tabTray) },

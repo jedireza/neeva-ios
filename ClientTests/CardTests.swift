@@ -40,6 +40,7 @@ class CardTests: XCTestCase {
     var tabCardModel: TabCardModel!
     var tabGroupCardModel: TabGroupCardModel!
     var spaceCardModel: SpaceCardModel!
+    var switcherToolbarModel: SwitcherToolbarModel!
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     fileprivate let spyDidSelectedTabChange =
@@ -76,9 +77,11 @@ class CardTests: XCTestCase {
         groupManager = TabGroupManager(tabManager: manager)
         gridModel = GridModel(tabManager: manager, tabGroupManager: groupManager)
         incognitoModel = IncognitoModel(isIncognito: false)
+        switcherToolbarModel = SwitcherToolbarModel(
+            tabManager: manager, openLazyTab: {}, createNewSpace: {}, onMenuAction: { _ in })
         browserModel = BrowserModel(
             gridModel: gridModel, tabManager: manager, chromeModel: .init(),
-            incognitoModel: incognitoModel)
+            incognitoModel: incognitoModel, switcherToolbarModel: switcherToolbarModel)
         manager.didRestoreAllTabs = true
         groupManager = TabGroupManager(tabManager: manager)
         tabCardModel = TabCardModel(manager: manager, groupManager: groupManager)

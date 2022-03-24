@@ -265,7 +265,7 @@ class ZeroQueryModel: ObservableObject {
             isLazyTab && !createdLazyTab
                 && (openedFrom != .tabTray)
         {
-            bvc.toolbarModel.onToggleIncognito()
+            bvc.browserModel.switcherToolbarModel.onToggleIncognito()
         }
 
         // This can occur if a taps back and the Suggestion UI is shown.

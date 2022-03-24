@@ -206,7 +206,10 @@ class TabManager: NSObject {
 
         selectedTab = tab
 
-        incognitoModel.update(isIncognito: tab?.isIncognito ?? false)
+        // TODO(darin): This writes to a published variable generating a notification.
+        // Are we okay with that happening here?
+        incognitoModel.update(isIncognito: tab?.isIncognito ?? isIncognito)
+
         store.preserveTabs(tabs, selectedTab: selectedTab, for: scene)
 
         assert(tab === selectedTab, "Expected tab is selected")
