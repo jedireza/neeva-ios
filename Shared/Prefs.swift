@@ -11,7 +11,7 @@ import Defaults
 // support Defaults.publisher.
 //
 extension Defaults.Keys {
-    // automatically recorded
+    // MARK: - automatically recorded
     public static let searchInputPromptDismissed = Defaults.BoolKey(
         "profile.SearchInputPromptDismissed")
     public static let introSeen = Defaults.BoolKey("profile.IntroViewControllerSeen")
@@ -37,7 +37,7 @@ extension Defaults.Keys {
         "sessionUUIDExpirationTime", default: Date(timeIntervalSince1970: 0))
     public static let lastSessionPrivate = Defaults.BoolKey("wasLastSessionPrivate")
 
-    // explicit/implicit settings
+    // MARK: - explicit/implicit settings
     public static let contextMenuShowLinkPreviews = Defaults.Key(
         "profile.ContextMenuShowLinkPreviews", default: true)
     public static let deletedSuggestedSites = Defaults.Key<[String]>(
@@ -60,7 +60,7 @@ extension Defaults.Keys {
     public static let confirmCloseAllTabs = Defaults.Key(
         "profile.confirmCloseAllTabs", default: true)
 
-    // debug settings
+    // MARK: - debug settings
     public static let enableAuthLogging = Defaults.BoolKey("profile_enableAuthLogging")
     public static let enableBrowserLogging = Defaults.BoolKey("profile_enableBrowserLogging")
     public static let enableWebKitConsoleLogging = Defaults.BoolKey(
@@ -71,23 +71,23 @@ extension Defaults.Keys {
     public static let enableLogToFile = Defaults.BoolKey("profile_enableLogToFile")
     public static let enableGeigerCounter = Defaults.BoolKey("profile.enableGeigerCounter")
 
-    // caches
+    // MARK: - caches
     public static let topSitesCacheIsValid = Defaults.BoolKey("profile.topSitesCacheIsValid")
     public static let topSitesCacheSize = Defaults.Key<Int32?>("profile.topSitesCacheSize")
     public static let neevaUserInfo = Defaults.Key<[String: String]>("UserInfo", default: [:])
 
-    // telemetry
+    // MARK: - telemetry
     public static let appExtensionTelemetryOpenUrl = Defaults.Key<Bool?>(
         "profile.AppExtensionTelemetryOpenUrl",
         suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
 
-    // widgets
+    // MARK: - widgets
     public static let widgetKitSimpleTabKey = Defaults.Key<Data?>(
         "WidgetKitSimpleTabKey", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
     public static let widgetKitSimpleTopTab = Defaults.Key<Data?>(
         "WidgetKitSimpleTopTab", suite: UserDefaults(suiteName: AppInfo.sharedContainerIdentifier)!)
 
-    // performance
+    // MARK: - performance
     public static let applicationCleanlyBackgrounded = Defaults.Key<Bool>(
         "ApplicationCrashedLastTime", default: true)
     public static let pageLoadedCounter = Defaults.Key<Int32>("PageLoadedCounter", default: 0)
@@ -97,19 +97,19 @@ extension Defaults.Keys {
     public static let numberOfAppForeground = Defaults.Key<Int32>(
         "NumberOfAppForeground", default: 0)
 
-    // app review
+    // MARK: - app review
     public static let ratingsCardHidden = Defaults.BoolKey("RatingsCardHidden")
     public static let didTriggerSystemReviewDialog = Defaults.BoolKey(
         "didTriggerSystemReviewDialog")
 
     public static let notificationToken = Defaults.Key<String?>("notificationToken")
 
-    // spaces
+    // MARK: - spaces
     public static let seenSpacesIntro = Defaults.BoolKey("spacesIntroSeen")
     public static let seenSpacesShareIntro = Defaults.BoolKey("spacesShareIntroSeen")
     public static let showDescriptions = Defaults.BoolKey("showSpaceEntityDescription")
 
-    // cheatsheet
+    // MARK: - cheatsheet
     public static let seenCheatsheetIntro = Defaults.BoolKey("cheatsheetIntroSeen")
     public static let showTryCheatsheetPopover = Defaults.BoolKey("showTryCheatsheetPopover")
     public static let seenTryCheatsheetPopoverOnRecipe = Defaults.BoolKey(
@@ -118,7 +118,7 @@ extension Defaults.Keys {
     public static let showNeevaMenuWillMove = Defaults.BoolKey(
         "showNeevaMenuWillMove", default: true)
 
-    // notification
+    // MARK: - notification
     public static let lastScheduledNeevaPromoID = Defaults.Key<String?>("lastScheduledNeevaPromoID")
     public static let lastNeevaPromoScheduledTimeInterval = Defaults.Key<Int?>(
         "lastNeevaPromoScheduledTimeInterval")
@@ -145,23 +145,23 @@ extension Defaults.Keys {
     public static let debugNotificationTimeInterval = Defaults.Key<Int>(
         "debugNotificationTimeInterval", default: 10)
 
-    // tab groups
+    // MARK: - tab groups
     public static let tabGroupNames = Defaults.Key<[String: String]>("tabGroupNames", default: [:])
     public static let tabGroupExpanded = Defaults.Key<Set<String>>("tabGroupExpanded", default: [])
 
     public static let seenBlackFridayFollowPromo = Defaults.BoolKey("seenBlackFridayFollowPromo")
     public static let seenBlackFridayNotifyPromo = Defaults.BoolKey("seenBlackFridayNotifyPromo")
 
-    // Feedback
+    // MARK: - Feedback
     public static let feedbackBeingSent = Defaults.BoolKey("feedbackBeingSent")
 
-    // preview mode
+    // MARK: - preview mode
     public static let previewModeQueries = Defaults.Key<Set<String>>(
         "previewModeQueries", default: [])
     public static let signupPromptInterval = Defaults.Key<Int>("signupPromptInterval", default: 5)
     public static let maxQueryLimit = Defaults.Key<Int>("maxQueryLimit", default: 25)
 
-    // crypto wallet
+    // MARK: - crypto wallet
     public static let cryptoPhrases = Defaults.Key<String>("cryptoPhrases", default: "")
     public static let cryptoPublicKey = Defaults.Key<String>("cryptoPublicKey", default: "")
     public static let cryptoPrivateKey = Defaults.Key<String>("cryptoPrivateKey", default: "")
@@ -173,7 +173,7 @@ extension Defaults.Keys {
     public static let walletIntroSeen = Defaults.BoolKey("seenWalletIntro")
     public static let currentTheme = Defaults.Key<String>("currentTheme", default: "")
 
-    // default browser
+    // MARK: - default browser
     public static let didDismissDefaultBrowserCard = Defaults.BoolKey(
         "profile.didDismissDefaultBrowserCard")
     public static let didShowDefaultBrowserInterstitial = Defaults.BoolKey(
@@ -190,7 +190,7 @@ extension Defaults.Keys {
     public static let lastDefaultBrowserPromptInteraction = Defaults.Key<String?>(
         "lastDefaultBrowserPromptInteraction")
 
-    // Spotlight Search
+    // MARK: - Spotlight Search
     public static let createUserActivities = Defaults.BoolKey("createUserActivities", default: true)
     public static let makeActivityAvailForSearch = Defaults.BoolKey(
         "makeActivityAvailForSearch", default: true)
@@ -217,6 +217,7 @@ extension Defaults.Keys {
         "lastReportedConversionEvent", default: -1)
 }
 
+// MARK: - Defaults Extension
 extension Defaults {
     static func BoolKey(
         _ key: String,
@@ -227,6 +228,7 @@ extension Defaults {
     }
 }
 
+// MARK: - UserDefaults Extension
 extension UserDefaults {
     public func clearProfilePrefs() {
         for key in dictionaryRepresentation().keys {

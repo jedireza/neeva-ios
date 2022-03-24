@@ -119,51 +119,6 @@ struct ZeroQueryPlaceholder: View {
     }
 }
 
-struct PromoCardImpressionModifier: ViewModifier {
-    private let promoCardImpressionTimerInterval: TimeInterval = 2
-    @State var impressionTimer: Timer? = nil
-
-    let attributeValue: String
-
-    func startImpressionTimer(with attributeValue: String) {
-        impressionTimer?.invalidate()
-        impressionTimer = Timer.scheduledTimer(
-            withTimeInterval: promoCardImpressionTimerInterval,
-            repeats: false,
-            block: { _ in
-                ClientLogger.shared.logCounter(
-                    .PromoCardAppear,
-                    attributes: EnvironmentHelper.shared.getAttributes()
-                        + [
-                            ClientLogCounterAttribute(
-                                key: LogConfig.PromoCardAttribute
-                                    .promoCardType,
-                                value: attributeValue
-                            )
-                        ]
-                )
-            }
-        )
-    }
-
-    func resetImpressionTimer() {
-        impressionTimer?.invalidate()
-        impressionTimer = nil
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .onAppear {
-                startImpressionTimer(
-                    with: attributeValue
-                )
-            }
-            .onDisappear {
-                resetImpressionTimer()
-            }
-    }
-}
-
 struct ZeroQueryView: View {
     @EnvironmentObject var viewModel: ZeroQueryModel
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -193,8 +148,16 @@ struct ZeroQueryView: View {
             viewWidth: viewWidth
         )
         .modifier(
-            PromoCardImpressionModifier(
-                attributeValue: "RatingCard"
+            ImpressionLoggerModifier(
+                path: .PromoCardAppear,
+                attributes: EnvironmentHelper.shared.getAttributes()
+                    + [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.PromoCardAttribute
+                                .promoCardType,
+                            value: "RatingCard"
+                        )
+                    ]
             )
         )
     }
@@ -243,8 +206,16 @@ struct ZeroQueryView: View {
                         if let promoCardType = viewModel.promoCard {
                             PromoCard(type: promoCardType, viewWidth: geom.size.width)
                                 .modifier(
-                                    PromoCardImpressionModifier(
-                                        attributeValue: viewModel.promoCard?.name ?? "None"
+                                    ImpressionLoggerModifier(
+                                        path: .PromoCardAppear,
+                                        attributes: EnvironmentHelper.shared.getAttributes()
+                                            + [
+                                                ClientLogCounterAttribute(
+                                                    key: LogConfig.PromoCardAttribute
+                                                        .promoCardType,
+                                                    value: viewModel.promoCard?.name ?? "None"
+                                                )
+                                            ]
                                     )
                                 )
                         }

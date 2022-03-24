@@ -8,6 +8,7 @@ import Foundation
 import Shared
 
 public struct LogConfig {
+    // MARK: - Interactions
     public enum Interaction: String {
         /// Open tracking shield
         case OpenShield
@@ -305,6 +306,8 @@ public struct LogConfig {
         // MARK: Cheatsheet(NeevaScope)
         case CheatsheetPopoverImpression
         case OpenCheatsheet
+        case CheatsheetEducationImpressionOnSRP
+        case CheatsheetEducationImpressionOnPage
         case AckCheatsheetEducationOnSRP
         case AckCheatsheetEducationOnPage
         case ShowCheatsheetEducationOnSRP
@@ -404,12 +407,14 @@ public struct LogConfig {
     ) -> Bool {
         let category = LogConfig.category(for: path)
         return category == .FirstRun
-                || category == .Stability
-                || category == .PromoCard
+            || category == .Stability
+            || category == .PromoCard
     }
 
+    // MARK: - Category
     public static func category(for interaction: Interaction) -> InteractionCategory {
         switch interaction {
+        // MARK: - UI
         case .OpenShield: return .UI
         case .OpenOverflowMenu: return .UI
         case .TapReload: return .UI
@@ -433,6 +438,7 @@ public struct LogConfig {
         case .screenCaptureStarted: return .UI
         case .screenCaptureFinished: return .UI
 
+        // MARK: - OverflowMenu
         case .OpenDownloads: return .OverflowMenu
         case .OpenHistory: return .OverflowMenu
         case .OpenSetting: return .OverflowMenu
@@ -445,6 +451,7 @@ public struct LogConfig {
         case .ClickDownloadPage: return .OverflowMenu
         case .ClickCloseAllTabs: return .OverflowMenu
 
+        // MARK: - Settings
         case .SettingAccountSettings: return .Settings
         case .SettingDefaultBrowser: return .Settings
         case .SettingSignout: return .Settings
@@ -458,6 +465,7 @@ public struct LogConfig {
         case .ClearPrivateData: return .Settings
         case .ClearAllWebsiteData: return .Settings
 
+        // MARK: - FirstRun
         case .FirstRunSignupWithApple: return .FirstRun
         case .FirstRunOtherSignUpOptions: return .FirstRun
         case .FirstRunSignin: return .FirstRun
@@ -501,6 +509,7 @@ public struct LogConfig {
         case .StartExperiment: return .FirstRun
         case .GetStartedInWelcome: return .FirstRun
 
+        // MARK: - PromoCard
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
@@ -508,6 +517,7 @@ public struct LogConfig {
         case .DefaultBrowserPromoCardImp: return .PromoCard
         case .DismissDefaultBrowserOnboardingScreen: return .PromoCard
 
+        // MARK: - Suggestions
         case .QuerySuggestion: return .Suggestions
         case .MemorizedSuggestion: return .Suggestions
         case .HistorySuggestion: return .Suggestions
@@ -524,14 +534,17 @@ public struct LogConfig {
         case .tabSuggestion: return .Suggestions
         case .editCurrentURL: return .Suggestions
 
+        // MARK: - ReferralPromo
         case .OpenReferralPromo: return .ReferralPromo
         case .CloseReferralPromo: return .ReferralPromo
 
+        // MARK: - Stability
         case .AppCrashWithPageLoad: return .Stability
         case .AppCrashWithCrashReporter: return .Stability
         case .LowMemoryWarning: return .Stability
         case .AppEnterForeground: return .Stability
 
+        // MARK: - Spaces
         case .SpacesUIVisited: return .Spaces
         case .SpacesDetailUIVisited: return .Spaces
         case .SpacesDetailEntityClicked: return .Spaces
@@ -550,6 +563,7 @@ public struct LogConfig {
         case .SpaceFilterClicked: return .Spaces
         case .OpenSuggestedSpace: return .Spaces
 
+        // MARK: - RatingsCard
         case .RatingsRateExperience: return .RatingsCard
         case .RatingsPromptFeedback: return .RatingsCard
         case .RatingsPromptAppStore: return .RatingsCard
@@ -560,6 +574,7 @@ public struct LogConfig {
         case .RatingsSendFeedback: return .RatingsCard
         case .RatingsSendAppReview: return .RatingsCard
 
+        // MARK: - Notification
         case .ShowNotificationPrompt: return .Notification
         case .NotificationPromptEnable: return .Notification
         case .NotificationPromptSkip: return .Notification
@@ -573,6 +588,7 @@ public struct LogConfig {
         case .PromoEnableNotification: return .Notification
         case .CloseEnableNotificationPromo: return .Notification
 
+        // MARK: - Spotlight
         case .openURLFromUserActivity: return .Spotlight
         case .createUserActivity: return .Spotlight
         case .addThumbnailToUserActivity: return .Spotlight
@@ -581,12 +597,15 @@ public struct LogConfig {
         case .didIndex: return .Spotlight
         case .clearIndexError: return .Spotlight
 
+        // MARK: - Cheatsheet
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
         case .RelatedRecipeClick: return .RecipeCheatsheet
         case .RelatedSearchClick: return .RecipeCheatsheet
 
         case .CheatsheetPopoverImpression: return .Cheatsheet
         case .OpenCheatsheet: return .Cheatsheet
+        case .CheatsheetEducationImpressionOnSRP: return .Cheatsheet
+        case .CheatsheetEducationImpressionOnPage: return .Cheatsheet
         case .AckCheatsheetEducationOnSRP: return .Cheatsheet
         case .AckCheatsheetEducationOnPage: return .Cheatsheet
         case .ShowCheatsheetEducationOnSRP: return .Cheatsheet
@@ -598,6 +617,7 @@ public struct LogConfig {
         case .OpenCheatsheetSupport: return .Cheatsheet
         case .CheatsheetBadURLString: return .Cheatsheet
 
+        // MARK: - TabGroup
         case .tabGroupExpanded: return .TabGroup
         case .tabGroupCollapsed: return .TabGroup
         case .tabGroupRenameThroughThreeDotMenu: return .TabGroup
@@ -608,8 +628,10 @@ public struct LogConfig {
         case .tabInTabGroupClicked: return .TabGroup
         case .tabRemovedFromGroup: return .TabGroup
 
+        // MARK: - Feedback
         case .FeedbackFailedToSend: return .Feedback
 
+        // MARK: - DebugMode
         case .SignInWithAppleSuccess: return .DebugMode
         case .SignInWithAppleFailed: return .DebugMode
         case .ImplicitDeleteCookie: return .DebugMode
