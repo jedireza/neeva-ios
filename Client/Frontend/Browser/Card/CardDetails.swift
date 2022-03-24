@@ -133,6 +133,13 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     public let id: String
     private var subscriptions: Set<AnyCancellable> = []
 
+    struct DragState {
+        var tabCardModel: TabCardModel?
+        var draggingDetail: TabCardDetails?
+    }
+
+    static var dragState: DragState?
+
     var manager: TabManager
     var isChild: Bool
 
@@ -196,23 +203,66 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             .store(in: &subscriptions)
     }
 
+    // This function is called when the user drop their item
     public func performDrop(info: DropInfo) -> Bool {
-        guard info.hasItemsConforming(to: ["public.url"]) else {
-            return false
+        guard let tabCardModel = Self.dragState?.tabCardModel,
+            let draggingDetail = Self.dragState?.draggingDetail
+        else {
+            return true
         }
 
-        let items = info.itemProviders(for: ["public.url"])
-        for item in items {
-            _ = item.loadObject(ofClass: URL.self) { url, _ in
-                if let url = url {
-                    DispatchQueue.main.async {
-                        self.manager.get(for: self.id)?.loadRequest(URLRequest(url: url))
-                    }
-                }
-            }
+        let fromIndex =
+            manager.tabs.firstIndex {
+                $0.tabUUID == draggingDetail.id
+            } ?? 0
+
+        let toIndex =
+            manager.tabs.firstIndex {
+                $0.tabUUID == self.id
+            } ?? 0
+
+        if fromIndex != toIndex {
+            manager.rearrangeTabs(fromIndex: fromIndex, toIndex: toIndex, notify: false)
         }
+
+        Self.dragState = nil
 
         return true
+    }
+
+    // This function is called right when an item is dragged onto another item
+    public func dropEntered(info: DropInfo) {
+        guard let tabCardModel = Self.dragState?.tabCardModel,
+            let draggingDetail = Self.dragState?.draggingDetail
+        else {
+            return
+        }
+
+        let fromIndex =
+            tabCardModel.allDetails.firstIndex {
+                $0.id == draggingDetail.id
+            } ?? 0
+
+        let toIndex =
+            tabCardModel.allDetails.firstIndex {
+                $0.id == self.id
+            } ?? 0
+
+        if fromIndex != toIndex {
+            // disable interaction to and from pinned tabs
+            if tabCardModel.allDetails[fromIndex].isPinned
+                || tabCardModel.allDetails[toIndex].isPinned
+            {
+                return
+            }
+            tabCardModel.rearrangeAllDetails(fromIndex: fromIndex, toIndex: toIndex)
+        }
+    }
+
+    // this function will be called when the dragging state of an item has changed, including
+    // the location that it is getting dragged.
+    public func dropUpdated(info: DropInfo) -> DropProposal? {
+        return DropProposal(operation: .move)
     }
 
     func onClose() {

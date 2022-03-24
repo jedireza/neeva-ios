@@ -312,6 +312,11 @@ class TabCardModel: CardModel {
             return allDetails
         }
     }
+
+    func rearrangeAllDetails(fromIndex: Int, toIndex: Int) {
+        allDetails.rearrange(from: fromIndex, to: toIndex)
+        self.objectWillChange.send()
+    }
 }
 
 func getLogCounterAttributesForSpaces(details: SpaceCardDetails?) -> [ClientLogCounterAttribute] {

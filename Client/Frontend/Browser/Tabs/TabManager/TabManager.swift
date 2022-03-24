@@ -383,4 +383,11 @@ class TabManager: NSObject {
             TabEvent.post(.didGainFocus, for: tab)
         }
     }
+
+    func rearrangeTabs(fromIndex: Int, toIndex: Int, notify: Bool) {
+        tabs.rearrange(from: fromIndex, to: toIndex)
+        if notify {
+            tabsUpdatedPublisher.send()
+        }
+    }
 }

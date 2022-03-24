@@ -161,6 +161,7 @@ struct FittedCard<Details>: View where Details: CardDetails {
 struct Card<Details>: View where Details: CardDetails {
     @ObservedObject var details: Details
     var dragToClose = false
+    var dragNDrop = FeatureFlag[.dragAndDropTabs]
     /// Whether — if this card is selected — the blue border should be drawn
     var showsSelection = true
     var animate = false
@@ -206,6 +207,11 @@ struct Card<Details>: View where Details: CardDetails {
                             alignment: .top
                         )
                         .clipped()
+                        .if(dragNDrop && tabCardDetail != nil && !tabCardDetail!.isChild) { view in
+                            view
+                                .modifier(DragModifier(tabCardDetail: tabCardDetail!))
+                        }
+                        .onDrop(of: ["public.url", "public.text"], delegate: details)
                 }
                 .buttonStyle(.reportsPresses(to: $isPressed))
                 .cornerRadius(animate && !browserModel.showGrid ? 0 : CardUX.CornerRadius)
@@ -250,7 +256,6 @@ struct Card<Details>: View where Details: CardDetails {
         .accesibilityFocus(
             shouldFocus: details.isSelected, trigger: cardTransitionModel.state == .hidden
         )
-        .onDrop(of: ["public.url", "public.text"], delegate: details)
         .if(let: details.closeButtonImage) { buttonImage, view in
             view
                 .overlay(
@@ -284,6 +289,21 @@ struct Card<Details>: View where Details: CardDetails {
             } else {
                 content
             }
+        }
+    }
+
+    private struct DragModifier: ViewModifier {
+        @EnvironmentObject var tabModel: TabCardModel
+        var tabCardDetail: TabCardDetails
+
+        @ViewBuilder
+        func body(content: Content) -> some View {
+            content
+                .onDrag({
+                    TabCardDetails.dragState = TabCardDetails.DragState(
+                        tabCardModel: tabModel, draggingDetail: tabCardDetail)
+                    return NSItemProvider(object: tabCardDetail.id as NSString)
+                })
         }
     }
 }

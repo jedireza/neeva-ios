@@ -31,3 +31,9 @@ extension ArraySlice {
         Array(self)
     }
 }
+
+extension Array {
+    public mutating func rearrange(from: Int, to: Int) {
+        insert(remove(at: from), at: to)
+    }
+}
