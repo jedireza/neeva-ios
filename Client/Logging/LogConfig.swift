@@ -403,10 +403,9 @@ public struct LogConfig {
         for path: LogConfig.Interaction
     ) -> Bool {
         let category = LogConfig.category(for: path)
-        return !NeevaUserInfo.shared.hasLoginCookie()
-            && (category == .FirstRun
+        return category == .FirstRun
                 || category == .Stability
-                || category == .PromoCard)
+                || category == .PromoCard
     }
 
     public static func category(for interaction: Interaction) -> InteractionCategory {

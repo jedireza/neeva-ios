@@ -1013,8 +1013,6 @@ extension SuggestionModel {
             )
         }
 
-        queryAttributes.append(EnvironmentHelper.shared.getSessionUUID())
-
         if let suggestStartTime = suggestStartTime {
             if let timeToFirstScreen = timeToFirstScreen {
                 queryAttributes.append(
