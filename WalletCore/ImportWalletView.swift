@@ -52,23 +52,26 @@ public struct ImportWalletView: View {
             )
             .frame(maxHeight: 120)
 
-            if (UIPasteboard.general.string?.split(separator: " ").count == 12 && isFocused) {
-                Button(action: {
-                    guard !isImporting else { return }
+            if UIPasteboard.general.string?.split(separator: " ").count == 12 && isFocused {
+                Button(
+                    action: {
+                        guard !isImporting else { return }
 
-                    inputPhrase = UIPasteboard.general.string!
-                    isImporting = true
-                    model.importWallet(inputPhrase: inputPhrase) {
-                        isImporting = false
-                        viewState = .dashboard
-                    }
-                }, label: {
-                    HStack(spacing: 4) {
-                        Symbol(decorative: .docOnClipboardFill, style: .bodyMedium)
-                        Text("Paste & Import")
+                        inputPhrase = UIPasteboard.general.string!
+                        isImporting = true
+                        model.importWallet(inputPhrase: inputPhrase) {
+                            isImporting = false
+                            viewState = .dashboard
+                        }
+                    },
+                    label: {
+                        HStack(spacing: 4) {
+                            Symbol(decorative: .docOnClipboardFill, style: .bodyMedium)
+                            Text("Paste & Import")
 
+                        }
                     }
-                })
+                )
                 .buttonStyle(DashboardButtonStyle())
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -122,5 +125,3 @@ struct FocusableTextEditor: View {
             }
     }
 }
-
-

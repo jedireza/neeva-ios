@@ -10,6 +10,7 @@ StoragePerfTests
 StorageTests
 AppClip
 WidgetKit
+WalletCore
 UITests
 XCUITests
 Codegen

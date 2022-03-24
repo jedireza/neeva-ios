@@ -8,6 +8,7 @@ public struct Collection: Codable, Hashable {
     public static let scrapeForOpenSeaLink = """
         Array.prototype.map.call(document.querySelectorAll('div a'), function links(element) {var link=element['href']; return link}).filter(function(el) {return el.startsWith('https://opensea.io')}).map(function(el) { return el.split('opensea.io/collection/')[1]})
         """
+
     public let bannerImageURL: URL?
     public let description: String
     public let externalURL: URL?

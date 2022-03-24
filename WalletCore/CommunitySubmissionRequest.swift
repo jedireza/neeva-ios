@@ -19,9 +19,11 @@ public let web3Extensions = [".io", ".xyz", ".com", ".art"]
 
 public typealias DomainTrustSignal = GetDomainTrustSignalsQuery.Data.DomainTrustSignal
 
-public class TrustSignalController: QueryController<GetDomainTrustSignalsQuery, [DomainTrustSignal]> {
+public class TrustSignalController: QueryController<GetDomainTrustSignalsQuery, [DomainTrustSignal]>
+{
 
-    public override class func processData(_ data: GetDomainTrustSignalsQuery.Data) -> [DomainTrustSignal]
+    public override class func processData(_ data: GetDomainTrustSignalsQuery.Data)
+        -> [DomainTrustSignal]
     {
         data.domainTrustSignals ?? []
     }

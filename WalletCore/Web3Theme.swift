@@ -6,11 +6,11 @@
 //  Copyright © 2022 Neeva. All rights reserved.
 //
 
+import Defaults
+import SDWebImageSwiftUI
 import SFSafeSymbols
 import Shared
 import SwiftUI
-import Defaults
-import SDWebImageSwiftUI
 import UIKit
 
 public enum Web3Theme: String {
@@ -37,10 +37,10 @@ public enum Web3Theme: String {
     case `default` = ""
 }
 
-public extension Web3Theme {
+extension Web3Theme {
 
     @ViewBuilder
-    var backButton: some View {
+    public var backButton: some View {
         switch self {
         case .default:
             Symbol(
@@ -57,7 +57,8 @@ public extension Web3Theme {
         case .cryptoCoven:
             Image(
                 uiImage: UIImage(named: "cryptocoven_back")!
-                            .withRenderingMode(.alwaysTemplate))
+                    .withRenderingMode(.alwaysTemplate)
+            )
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: 22)
@@ -71,7 +72,7 @@ public extension Web3Theme {
     }
 
     @ViewBuilder
-    var overflowButton: some View {
+    public var overflowButton: some View {
         switch self {
         case .default:
             Symbol(
@@ -84,13 +85,15 @@ public extension Web3Theme {
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 24)
         case .cryptoCoven:
-            Image(uiImage:
+            Image(
+                uiImage:
                     UIImage(named: "cryptocoven_overflow")!
-                            .withRenderingMode(.alwaysTemplate))
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(width: 22)
-                .foregroundColor(.label)
+                    .withRenderingMode(.alwaysTemplate)
+            )
+            .resizable()
+            .aspectRatio(contentMode: .fit)
+            .frame(width: 22)
+            .foregroundColor(.label)
         case .coolCats:
             Image("coolcats_overflow")
                 .resizable()
@@ -100,7 +103,7 @@ public extension Web3Theme {
     }
 
     @ViewBuilder
-    var walletButton: some View {
+    public var walletButton: some View {
         switch self {
         case .default:
             Image("wallet-illustration")
@@ -119,7 +122,7 @@ public extension Web3Theme {
     }
 
     @ViewBuilder
-    var lazyTabButton: some View {
+    public var lazyTabButton: some View {
         switch self {
         case .default:
             Symbol(
@@ -136,7 +139,8 @@ public extension Web3Theme {
         case .cryptoCoven:
             Image(
                 uiImage: UIImage(named: "cryptocoven_magnifier")!
-                    .withRenderingMode(.alwaysTemplate))
+                    .withRenderingMode(.alwaysTemplate)
+            )
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(width: 22)
@@ -149,7 +153,7 @@ public extension Web3Theme {
         }
     }
 
-    var tabsImage: UIImage? {
+    public var tabsImage: UIImage? {
         switch self {
         case .default:
             return Symbol.uiImage(
@@ -178,7 +182,7 @@ public extension Web3Theme {
         }
     }
 
-    var backgroundColor: Color {
+    public var backgroundColor: Color {
         switch self {
         case .default:
             return Color.DefaultBackground
@@ -191,39 +195,42 @@ public extension Web3Theme {
         }
     }
 
-    var asset: Asset? {
-        guard let asset = AssetStore.shared.assets.first(where: {
-            $0.collection?.openSeaSlug == rawValue
-        }) else {
+    public var asset: Asset? {
+        guard
+            let asset = AssetStore.shared.assets.first(where: {
+                $0.collection?.openSeaSlug == rawValue
+            })
+        else {
             return nil
         }
         return asset
     }
 }
 
-private extension UIImage {
-    func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
+extension UIImage {
+    fileprivate func scalePreservingAspectRatio(targetSize: CGSize) -> UIImage {
         let widthRatio = targetSize.width / size.width
         let heightRatio = targetSize.height / size.height
-        
+
         let scaleFactor = min(widthRatio, heightRatio)
-        
+
         let scaledImageSize = CGSize(
             width: size.width * scaleFactor,
             height: size.height * scaleFactor
         )
-        
+
         let renderer = UIGraphicsImageRenderer(
             size: scaledImageSize
         )
-        
+
         let scaledImage = renderer.image { _ in
-            self.draw(in: CGRect(
-                origin: .zero,
-                size: scaledImageSize
-            ))
+            self.draw(
+                in: CGRect(
+                    origin: .zero,
+                    size: scaledImageSize
+                ))
         }
-        
+
         return scaledImage
     }
 }

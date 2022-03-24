@@ -73,11 +73,10 @@ public enum EthNode: String, CaseIterable, Identifiable {
         }
     }
 
-
-
     public var url: URL? {
-        URL(string: Bundle.main.object(forInfoDictionaryKey: configKey)
-                     as? String ?? "")
+        URL(
+            string: Bundle.main.object(forInfoDictionaryKey: configKey)
+                as? String ?? "")
     }
 
     public var currency: TokenType {
@@ -115,12 +114,14 @@ public class CryptoConfig {
         return "My Neeva Crypto Wallet"
     }
 
-    public func sendEth(with wallet: WalletAccessor?, amount: String, sendToAccountAddress: String, completion: () -> Void) {
+    public func sendEth(
+        with wallet: WalletAccessor?, amount: String, sendToAccountAddress: String,
+        completion: () -> Void
+    ) {
         guard let wallet = wallet else {
             completion()
             return
         }
-
 
         try? wallet.send(
             on: .Ethereum,

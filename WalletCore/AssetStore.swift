@@ -52,7 +52,8 @@ public class AssetStore: ObservableObject {
                 self.assets.forEach({
                     guard let collection = $0.collection else { return }
                     if let theme = Web3Theme.allCases.first(
-                        where: { $0.rawValue == collection.openSeaSlug }) {
+                        where: { $0.rawValue == collection.openSeaSlug })
+                    {
                         self.availableThemes.insert(theme)
                     }
                     self.collections.insert(collection)

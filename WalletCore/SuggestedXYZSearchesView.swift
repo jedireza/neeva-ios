@@ -23,7 +23,7 @@ enum ZeroQuerySuggestion: Hashable {
 public struct SuggestedXYZSearchesView: View {
     @Environment(\.onOpenURL) private var openURL
     let suggestionList: [ZeroQuerySuggestion] = [
-        .xyz("Crypto Coven"), .com("Best NFT Sites"), .com("NFT rarity sniffer")
+        .xyz("Crypto Coven"), .com("Best NFT Sites"), .com("NFT rarity sniffer"),
     ]
 
     public init() {}

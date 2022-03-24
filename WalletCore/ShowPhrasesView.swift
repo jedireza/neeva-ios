@@ -16,7 +16,7 @@ public struct ShowPhrasesView: View {
     public init(viewState: Binding<ViewState>) {
         self._viewState = viewState
     }
-    
+
     public var body: some View {
         VStack(spacing: 16) {
             Text("Secret Recovery Phrase")
