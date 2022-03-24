@@ -23,7 +23,9 @@ public class AssetStore: ObservableObject {
         guard !Defaults[.cryptoPublicKey].isEmpty else {
             return
         }
-        state = .syncing
+        DispatchQueue.main.async {
+            self.state = .syncing
+        }
         Web3NetworkProvider.default.request(
             target: OpenSeaAPI.assets(owner: Defaults[.cryptoPublicKey]),
             model: AssetsResult.self,
@@ -36,14 +38,18 @@ public class AssetStore: ObservableObject {
                     self.assets = result.assets
                     self.assets.forEach({
                         guard let collection = $0.collection else { return }
+                        if let theme = Web3Theme.allCases.first(
+                            where: { $0.rawValue == collection.openSeaSlug })
+                        {
+                            self.availableThemes.insert(theme)
+                        }
                         self.collections.insert(collection)
                     })
                     self.state = .ready
                 case .failure(let error):
-                    print(error)
+                    print(error.localizedDescription)
                     self.state = .error
                 }
-                
             })
     }
 

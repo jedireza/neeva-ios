@@ -8,27 +8,36 @@ public enum CurrencyStoreAPI: URLRequestBuilder {
 
 extension CurrencyStoreAPI {
     public var baseURL: URL {
-        return URL(string: "https://api.coingecko.com/api/v3//")!
+        return URL(string: "https://api.coingecko.com")!
     }
-    
+
     public var path: String {
         switch self {
         case .currencies:
-            return "simple/price?ids=ethereum%2Cmatic-network%2Cusd-coin%2Ctether%2Cshiba-inu&vs_currencies=usd&include_24hr_change=true&include_last_updated_at=true"
+            return
+                "/api/v3/simple/price"
         }
     }
-    
+
     public var headers: HTTPHeaders {
         switch self {
         case .currencies:
             return ["Accept": "application/json"]
         }
     }
-    
+
     public var parameters: Parameters? {
-        return nil
+        switch self {
+        case .currencies:
+            return [
+                "ids": "ethereum,matic-network,usd-coin,tether,shiba-inu",
+                "vs_currencies": "usd",
+                "include_24hr_change": "true",
+                "include_last_updated_at": "true",
+            ]
+        }
     }
-    
+
     public var method: HTTPMethod {
         return .get
     }

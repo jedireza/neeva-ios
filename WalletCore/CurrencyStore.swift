@@ -77,7 +77,7 @@ struct TickerResponse: Codable {
 
 public struct CurrencyStore {
     public static let shared = CurrencyStore()
-    
+
     public func refresh() {
         Web3NetworkProvider.default.request(
             target: CurrencyStoreAPI.currencies,
@@ -91,7 +91,7 @@ public struct CurrencyStore {
                 }
             })
     }
-    
+
 }
 
 public enum TokenType: String, CaseIterable {
