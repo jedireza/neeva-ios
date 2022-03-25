@@ -30,8 +30,9 @@ npm run build
 
 # swift-format
 git submodule update --init --recursive
-cd swift-format
+pushd swift-format
 swift build -c release
+popd
 
 # Link githooks
 ./Scripts/link-git-hooks.sh
