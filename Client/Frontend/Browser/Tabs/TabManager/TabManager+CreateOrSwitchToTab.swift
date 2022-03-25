@@ -23,7 +23,7 @@ extension TabManager {
         }
 
         if let existingTab = getTabFor(url) {
-            selectTab(existingTab)
+            selectTab(existingTab, notify: true)
             existingTab.browserViewController?
                 .postLocationChangeNotificationForTab(existingTab, visitType: visitType)
             return .switchedToExistingTab
@@ -38,7 +38,7 @@ extension TabManager {
                 visitType: visitType
             )
 
-            selectTab(newTab)
+            selectTab(newTab, notify: true)
 
             return .createdNewTab
         }
@@ -54,14 +54,14 @@ extension TabManager {
         if let existingTab = getTabFor(url) {
             existingTab.parentSpaceID = spaceID
             existingTab.rootUUID = spaceID
-            selectTab(existingTab)
+            selectTab(existingTab, notify: true)
             return .switchedToExistingTab
         } else {
             let newTab = addTab(
                 URLRequest(url: url), flushToDisk: true, zombie: false, isIncognito: isIncognito)
             newTab.parentSpaceID = spaceID
             newTab.rootUUID = spaceID
-            selectTab(newTab)
+            selectTab(newTab, notify: true)
             return .createdNewTab
         }
     }

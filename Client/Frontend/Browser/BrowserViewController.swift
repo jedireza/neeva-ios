@@ -835,7 +835,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     func switchToTabForURLOrOpen(_ url: URL, isIncognito: Bool = false) {
         popToBVC()
         if let tab = tabManager.getTabFor(url) {
-            tabManager.selectTab(tab)
+            tabManager.selectTab(tab, notify: true)
         } else {
             openURLInNewTab(url, isIncognito: isIncognito)
         }
@@ -844,7 +844,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     func switchToTabForWidgetURLOrOpen(_ url: URL, uuid: String, isIncognito: Bool = false) {
         popToBVC()
         if let tab = tabManager.getTabForUUID(uuid: uuid) {
-            tabManager.selectTab(tab)
+            tabManager.selectTab(tab, notify: true)
         } else {
             openURLInNewTab(url, isIncognito: isIncognito)
         }
@@ -871,7 +871,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     isIncognito: isIncognito,
                     query: query,
                     visitType: visitType
-                )
+                ),
+                notify: true
             )
 
             if self.shouldPresentDBPrompt {
@@ -906,7 +907,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 text: toastLabelText,
                 buttonText: "Switch",
                 buttonAction: {
-                    self.tabManager.selectTab(tab)
+                    self.tabManager.selectTab(tab, notify: true)
                 }
             ).enqueue(manager: toastManager)
         }

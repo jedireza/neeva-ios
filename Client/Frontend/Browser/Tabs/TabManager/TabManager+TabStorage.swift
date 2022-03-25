@@ -54,7 +54,7 @@ extension TabManager {
             tabToSelect = addTab(isIncognito: true, notify: false)
         }
 
-        selectTab(tabToSelect)
+        selectTab(tabToSelect, notify: true)
 
         tabsUpdatedPublisher.send()
         return true

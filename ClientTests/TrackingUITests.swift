@@ -161,7 +161,7 @@ class TrackingUITests: XCTestCase {
         let profile = TabManagerMockProfile()
         let manager = TabManager(profile: profile, imageStore: nil)
         let tab = manager.addTab()
-        manager.selectTab(tab)
+        manager.selectTab(tab, notify: true)
         tab.setURL("https://neeva.com")
         model = TrackingStatsViewModel(tabManager: manager)
         model.preventTrackersForCurrentPage = false
@@ -174,7 +174,7 @@ class TrackingUITests: XCTestCase {
         let profile = TabManagerMockProfile()
         let manager = TabManager(profile: profile, imageStore: nil)
         let tab = manager.addTab()
-        manager.selectTab(tab)
+        manager.selectTab(tab, notify: true)
         tab.setURL("https://neeva.com")
         model = TrackingStatsViewModel(tabManager: manager)
         let ui = TrackingMenuView().environmentObject(model)

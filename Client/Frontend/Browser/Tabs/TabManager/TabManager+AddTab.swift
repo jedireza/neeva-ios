@@ -21,7 +21,7 @@ extension TabManager {
         }
 
         // Select the most recent.
-        selectTab(tab)
+        selectTab(tab, notify: true)
 
         // Okay now notify that we bulk-loaded so we can adjust counts and animate changes.
         tabsUpdatedPublisher.send()
@@ -239,7 +239,7 @@ extension TabManager {
         SceneDelegate.getBVC(with: scene).browserModel.cardTransitionModel.update(to: .hidden)
 
         if let selectedSavedTab = selectedSavedTab, shouldSelectTab {
-            self.selectTab(selectedSavedTab)
+            self.selectTab(selectedSavedTab, notify: true)
         }
 
         // remove restored tabs from recently closed

@@ -105,7 +105,7 @@ class CardTests: XCTestCase {
             XCTAssertEqual(self.tabCardModel.allDetails.count, 1)
             XCTAssertEqual(self.tabCardModel.allDetails.first?.id, tab1.tabUUID)
             XCTAssertFalse(self.tabCardModel.allDetails.first?.isSelected ?? true)
-            self.manager.selectTab(tab1)
+            self.manager.selectTab(tab1, notify: true)
             XCTAssertTrue(self.tabCardModel.allDetails.first?.isSelected ?? false)
 
             let tab2 = self.manager.addTab()
@@ -127,7 +127,7 @@ class CardTests: XCTestCase {
             XCTAssertEqual(self.tabCardModel.allDetails.count, 1)
             XCTAssertEqual(self.tabCardModel.allDetails.first?.id, tab1.tabUUID)
             XCTAssertFalse(self.tabCardModel.allDetails.first?.isSelected ?? true)
-            self.manager.selectTab(tab1)
+            self.manager.selectTab(tab1, notify: true)
             XCTAssertTrue(self.tabCardModel.allDetails.first?.isSelected ?? false)
 
             let tab2 = self.manager.addTab(afterTab: tab1)

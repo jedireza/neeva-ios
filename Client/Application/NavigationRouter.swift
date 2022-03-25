@@ -177,10 +177,10 @@ enum NavigationPath {
     private static func handleCloseIncognitoTabs(with bvc: BrowserViewController) {
         bvc.tabManager.removeTabs(bvc.tabManager.incognitoTabs)
         guard let tab = mostRecentTab(inTabs: bvc.tabManager.normalTabs) else {
-            bvc.tabManager.selectTab(bvc.tabManager.addTab())
+            bvc.tabManager.selectTab(bvc.tabManager.addTab(), notify: true)
             return
         }
-        bvc.tabManager.selectTab(tab)
+        bvc.tabManager.selectTab(tab, notify: true)
     }
 
     private static func handleURL(url: URL?, isIncognito: Bool, with bvc: BrowserViewController) {

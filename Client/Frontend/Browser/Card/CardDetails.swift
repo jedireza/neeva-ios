@@ -278,7 +278,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                 let newTab = manager.addTab(
                     URLRequest(url: url), afterTab: tab, isIncognito: tab.isIncognito)
                 newTab.rootUUID = UUID().uuidString
-                manager.selectTab(newTab, previous: tab)
+                manager.selectTab(newTab, previous: tab, notify: true)
             } label: {
                 Label("Duplicate Tab", systemSymbol: .plusSquareOnSquare)
             }.disabled(url == nil)
@@ -287,7 +287,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                 guard let url = url, let tab = tab else { return }
                 let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isIncognito: true)
                 newTab.rootUUID = UUID().uuidString
-                manager.selectTab(newTab, previous: tab)
+                manager.selectTab(newTab, previous: tab, notify: true)
             } label: {
                 Label("Open in Incognito", image: "incognito")
             }.disabled(url == nil)
