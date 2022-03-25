@@ -109,7 +109,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
         self.cheatsheetDataLoading = true
 
         guard let url = currentPageURL,
-            url.scheme == "https",
+            ["https", "http"].contains(url.scheme),
             !NeevaConstants.isInNeevaDomain(url)
         else {
             self.cheatsheetDataLoading = false
