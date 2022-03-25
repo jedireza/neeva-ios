@@ -1658,10 +1658,10 @@ extension BrowserViewController {
 
                     switch action {
                     case .signupWithApple(let marketingEmailOptOut, let identityToken, let authorizationCode):
-                        if identityToken != nil && authorizationCode != nil {
+                        if let identityToken = identityToken, let authorizationCode = authorizationCode {
                             let authURL = NeevaConstants.appleAuthURL(
-                                identityToken: identityToken!,
-                                authorizationCode: authorizationCode!,
+                                identityToken: identityToken,
+                                authorizationCode: authorizationCode,
                                 marketingEmailOptOut: marketingEmailOptOut ?? false,
                                 signup: true)
                             self.openURLInNewTab(authURL)

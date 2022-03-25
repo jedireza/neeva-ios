@@ -9,6 +9,8 @@ import Defaults
 import Shared
 import UIKit
 
+private let log = Logger.auth
+
 enum FirstRunButtonActions {
     case signin
     case signupWithApple(Bool?, String?, String?)
@@ -200,19 +202,19 @@ extension IntroViewModel: ASAuthorizationControllerDelegate {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             // redirect and create account
             guard let identityToken = appleIDCredential.identityToken else {
-                print("Unable to fetch identity token")
+                log.error("Unable to fetch identity token")
                 return
             }
             guard let authorizationCode = appleIDCredential.authorizationCode else {
-                print("Unable to fetch authorization code")
+                log.error("Unable to fetch authorization code")
                 return
             }
             guard let identityTokenStr = String(data: identityToken, encoding: .utf8) else {
-                print("Unable to convert identity token to utf8")
+                log.error("Unable to convert identity token to utf8")
                 return
             }
             guard let authorizationCodeStr = String(data: authorizationCode, encoding: .utf8) else {
-                print("Unable to convert authorization code to utf8")
+                log.error("Unable to convert authorization code to utf8")
                 return
             }
 

@@ -6,6 +6,8 @@ import AuthenticationServices
 import Shared
 import SwiftUI
 
+private let log = Logger.auth
+
 struct SignUpTwoButtonsPromptViewOverlayContent: View {
     var query: String
     var skippable: Bool
@@ -132,19 +134,19 @@ struct SignUpTwoButtonsPromptView: View {
                         // redirect and create account
                         // TODO(Seth): ideally reduce the code duplication here with IntroViewModel lines 200-217
                         guard let identityToken = appleIDCredential.identityToken else {
-                            print("Unable to fetch identity token")
+                            log.error("Unable to fetch identity token")
                             return
                         }
                         guard let authorizationCode = appleIDCredential.authorizationCode else {
-                            print("Unable to fetch authorization code")
+                            log.error("Unable to fetch authorization code")
                             return
                         }
                         guard let identityTokenStr = String(data: identityToken, encoding: .utf8) else {
-                            print("Unable to convert identity token to utf8")
+                            log.error("Unable to convert identity token to utf8")
                             return
                         }
                         guard let authorizationCodeStr = String(data: authorizationCode, encoding: .utf8) else {
-                            print("Unable to convert authorization code to utf8")
+                            log.error("Unable to convert authorization code to utf8")
                             return
                         }
 
