@@ -236,7 +236,7 @@ struct OtherOptionsPage: View {
                     SignUpWithAppleButton(
                         action: {
                             logOtherOptionsSignUpWithAppleClick()
-                            model.buttonAction(.signupWithApple(model.marketingEmailOptOut, nil))
+                            model.buttonAction(.signupWithApple(model.marketingEmailOptOut, nil, nil))
                         }, onSignInMode: $model.onSignInMode
                     )
 
