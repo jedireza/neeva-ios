@@ -706,7 +706,9 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             manager.get(for: id)?.children
             .sorted(by: { lhs, rhs in
                 if lhs.isPinned && rhs.isPinned {
-                    return lhs.pinnedTime! < rhs.pinnedTime!
+                    // Note: We should make it impossible for `pinnedTime` to be nil when
+                    // the tab is pinned. Consider changing how this is stored.
+                    return (lhs.pinnedTime ?? 0) < (rhs.pinnedTime ?? 0)
                 } else if lhs.isPinned && !rhs.isPinned {
                     return true
                 } else if !lhs.isPinned && rhs.isPinned {
