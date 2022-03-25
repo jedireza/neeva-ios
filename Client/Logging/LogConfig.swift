@@ -506,6 +506,7 @@ public struct LogConfig {
         case .DefaultBrowserOnboardingInterstitialOpen: return .FirstRun
         case .DefaultBrowserInterstitialImp: return .FirstRun
         case .DefaultBrowserInterstitialImpSkipToBrowser: return .FirstRun
+        case .OpenDefaultBrowserURL: return .FirstRun
         case .StartExperiment: return .FirstRun
         case .GetStartedInWelcome: return .FirstRun
 
@@ -584,7 +585,6 @@ public struct LogConfig {
         case .ScheduleLocalNotification: return .Notification
         case .OpenLocalNotification: return .Notification
         case .OpenNotification: return .Notification
-        case .OpenDefaultBrowserURL: return .Notification
         case .PromoEnableNotification: return .Notification
         case .CloseEnableNotificationPromo: return .Notification
 
