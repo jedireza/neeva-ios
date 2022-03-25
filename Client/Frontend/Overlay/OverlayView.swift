@@ -9,9 +9,9 @@ struct OverlayView: View {
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
     @EnvironmentObject private var chromeModel: TabChromeModel
+    @EnvironmentObject private var overlayManager: OverlayManager
     @EnvironmentObject private var scrollingControlModel: ScrollingControlModel
 
-    @ObservedObject var overlayManager: OverlayManager
     @State var safeArea: CGFloat = 0
     @State var keyboardHidden = true
     @State var presentSheet = false

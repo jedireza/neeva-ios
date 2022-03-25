@@ -21,14 +21,12 @@ class BrowserModel: ObservableObject {
         }
     }
 
-    /// Like `!showGrid`, but not animated and only set when the web view should be visible
-    @Published private(set) var showContent = true
-
     let gridModel: GridModel
     let incognitoModel: IncognitoModel
     let tabManager: TabManager
 
     var cardTransitionModel: CardTransitionModel
+    var contentVisibilityModel: ContentVisibilityModel
     var scrollingControlModel: ScrollingControlModel
     let switcherToolbarModel: SwitcherToolbarModel
 
@@ -40,18 +38,14 @@ class BrowserModel: ObservableObject {
             showWithNoAnimation()
         } else {
             cardTransitionModel.update(to: .visibleForTrayShow)
-            if showContent {
-                showContent = false
-            }
+            contentVisibilityModel.update(showContent: false)
             updateSpaces()
         }
     }
 
     func showWithNoAnimation() {
         cardTransitionModel.update(to: .hidden)
-        if showContent {
-            showContent = false
-        }
+        contentVisibilityModel.update(showContent: false)
         if !showGrid {
             showGrid = true
         }
@@ -60,7 +54,7 @@ class BrowserModel: ObservableObject {
 
     func showSpaces(forceUpdate: Bool = true) {
         cardTransitionModel.update(to: .hidden)
-        showContent = false
+        contentVisibilityModel.update(showContent: false)
         showGrid = true
         gridModel.switcherState = .spaces
 
@@ -83,9 +77,7 @@ class BrowserModel: ObservableObject {
             showGrid = false
         }
 
-        if !showContent {
-            showContent = true
-        }
+        contentVisibilityModel.update(showContent: true)
 
         gridModel.closeDetailView()
     }
@@ -201,6 +193,7 @@ class BrowserModel: ObservableObject {
         self.tabManager = tabManager
         self.incognitoModel = incognitoModel
         self.cardTransitionModel = CardTransitionModel()
+        self.contentVisibilityModel = ContentVisibilityModel()
         self.scrollingControlModel = ScrollingControlModel(
             tabManager: tabManager, chromeModel: chromeModel)
         self.switcherToolbarModel = switcherToolbarModel

@@ -6,19 +6,15 @@ import Foundation
 import Shared
 import SwiftUI
 
-private enum BrowserViewUX {
-    static let ShowHeaderTapAreaHeight = 32.0
-}
-
 // CardGrid is a parameter to this View so that we isolate it from updates
 // to this View (specifically updates to BrowserModel.showContent).
 struct BrowserContentView: View {
     let bvc: BrowserViewController
     let cardGrid: CardGrid
 
-    @EnvironmentObject var browserModel: BrowserModel
+    @EnvironmentObject private var contentVisibilityModel: ContentVisibilityModel
 
-    var tabContainerContent: some View {
+    private var tabContainerContent: some View {
         TabContainerContent(
             model: bvc.tabContainerModel,
             bvc: bvc,
@@ -51,16 +47,16 @@ struct BrowserContentView: View {
                         bvc.shareURL(url: $0, view: $1)
                     }
                 )
-                .opacity(browserModel.showContent ? 0 : 1)
+                .opacity(contentVisibilityModel.showContent ? 0 : 1)
                 .onAppear {
                     bvc.gridModel.scrollToSelectedTab()
                 }
-                .accessibilityHidden(browserModel.showContent)
+                .accessibilityHidden(contentVisibilityModel.showContent)
                 .ignoresSafeArea(edges: [.bottom])
 
             tabContainerContent
-                .opacity(browserModel.showContent ? 1 : 0)
-                .accessibilityHidden(!browserModel.showContent)
+                .opacity(contentVisibilityModel.showContent ? 1 : 0)
+                .accessibilityHidden(!contentVisibilityModel.showContent)
         }
     }
 }
@@ -69,38 +65,22 @@ struct BrowserView: View {
     // MARK: - Parameters
     // TODO: Eliminate this dependency
     let bvc: BrowserViewController
-    let shareURL: (URL, UIView) -> Void
 
-    // Explicitly not an observed object to avoid costly updates.
+    // Explicitly not observed objects to avoid costly updates. WARNING: Do not
+    // conditionalize SwiftUI View generation on these.
     let browserModel: BrowserModel
+    let chromeModel: TabChromeModel
 
-    @State var safeArea = EdgeInsets()
-    @ObservedObject var gridModel: GridModel
-    @ObservedObject var chromeModel: TabChromeModel
-    @ObservedObject var overlayManager: OverlayManager
     @ObservedObject var tabContainerModel: TabContainerModel
 
-    var isSearchPreviewVisible: Bool {
+    @State var safeArea = EdgeInsets()
+    @State var topBarHeight: CGFloat = .zero
+
+    private var isShowingPreviewHome: Bool {
         tabContainerModel.currentContentUI == .previewHome
     }
 
     // MARK: - Views
-    var topBar: some View {
-        GeometryReader { geom in
-            BrowserTopBarView(bvc: bvc)
-                .transition(.opacity)
-                .frame(height: chromeModel.topBarHeight)
-        }
-    }
-
-    var bottomBar: some View {
-        BrowserBottomBarView(bvc: bvc)
-            .transition(.opacity)
-            .frame(
-                height: UIConstants.TopToolbarHeightWithToolbarButtonsShowing
-            )
-    }
-
     var mainContent: some View {
         GeometryReader { geom in
             NavigationView {
@@ -108,61 +88,23 @@ struct BrowserView: View {
                     ZStack {
                         // Tab content or CardGrid
                         BrowserContentView(bvc: bvc, cardGrid: CardGrid(geom: geom))
-                            .environment(\.shareURL, shareURL)
-                            .if(!isSearchPreviewVisible) {
+                            .environment(\.shareURL, bvc.shareURL(url:view:))
+                            .if(!isShowingPreviewHome) {
                                 $0.padding(
                                     UIConstants.enableBottomURLBar ? .bottom : .top,
-                                    chromeModel.topBarHeight
+                                    topBarHeight
                                 )
                             }
                             .background(Color.background)
 
                         // Top Bar
-                        if !isSearchPreviewVisible || browserModel.showGrid {
-                            VStack {
-                                if UIConstants.enableBottomURLBar { Spacer() }
-
-                                if !UIConstants.enableBottomURLBar, chromeModel.inlineToolbar {
-                                    topBar
-                                        .background(
-                                            Group {
-                                                // invisible tap area to show the toolbars since modern iOS
-                                                // does not have a status bar in landscape.
-                                                Color.clear
-                                                    .ignoresSafeArea()
-                                                    .frame(
-                                                        height: BrowserViewUX
-                                                            .ShowHeaderTapAreaHeight
-                                                    )
-                                                    // without this, the area isn’t tappable because it’s invisible
-                                                    .contentShape(Rectangle())
-                                                    .onTapGesture {
-                                                        browserModel.scrollingControlModel
-                                                            .showToolbars(
-                                                                animated: true)
-                                                    }
-                                            }, alignment: .top)
-                                } else {
-                                    topBar
-                                }
-
-                                if !UIConstants.enableBottomURLBar { Spacer() }
-                            }
-                        }
+                        BrowserTopBarView(bvc: bvc)
                     }
 
                     // Bottom Bar
-                    ZStack {
-                        if !chromeModel.inlineToolbar && !chromeModel.isEditingLocation
-                            && !chromeModel.keyboardShowing && !overlayManager.hideBottomBar
-                        {
-                            bottomBar
-                                .onHeightOfViewChanged { height in
-                                    self.chromeModel.bottomBarHeight = height
-                                }
-                        }
-                    }.ignoresSafeArea(.keyboard)
+                    BrowserBottomBarView(bvc: bvc)
                 }.useEffect(deps: chromeModel.topBarHeight) { _ in
+                    topBarHeight = chromeModel.topBarHeight
                     browserModel.scrollingControlModel.setHeaderFooterHeight(
                         header: chromeModel.topBarHeight,
                         footer: UIConstants.TopToolbarHeightWithToolbarButtonsShowing
@@ -179,7 +121,7 @@ struct BrowserView: View {
     var body: some View {
         ZStack {
             mainContent
-            OverlayView(overlayManager: overlayManager)
+            OverlayView()
         }.safeAreaChanged { safeArea in
             self.safeArea = safeArea
         }
@@ -187,14 +129,17 @@ struct BrowserView: View {
         .environmentObject(browserModel)
         .environmentObject(browserModel.incognitoModel)
         .environmentObject(browserModel.cardTransitionModel)
+        .environmentObject(browserModel.contentVisibilityModel)
         .environmentObject(browserModel.scrollingControlModel)
         .environmentObject(browserModel.switcherToolbarModel)
-        .environmentObject(bvc.simulatedSwipeModel)
         .environmentObject(chromeModel)
-        .environmentObject(gridModel)
-        .environmentObject(gridModel.tabCardModel)
-        .environmentObject(gridModel.spaceCardModel)
-        .environmentObject(gridModel.tabGroupCardModel)
+        .environmentObject(bvc.gridModel)
+        .environmentObject(bvc.gridModel.spaceCardModel)
+        .environmentObject(bvc.gridModel.tabCardModel)
+        .environmentObject(bvc.gridModel.tabGroupCardModel)
+        .environmentObject(bvc.overlayManager)
+        .environmentObject(bvc.simulatedSwipeModel)
+        .environmentObject(bvc.tabContainerModel)
         .environmentObject(bvc.web3Model)
         .environmentObject(bvc.web3Model.walletDetailsModel)
     }
@@ -202,14 +147,8 @@ struct BrowserView: View {
     // MARK: - Init
     init(bvc: BrowserViewController) {
         self.bvc = bvc
-        self.shareURL = { url, view in
-            bvc.shareURL(url: url, view: view)
-        }
-
         self.browserModel = bvc.browserModel
         self.chromeModel = bvc.chromeModel
-        self.gridModel = bvc.gridModel
-        self.overlayManager = bvc.overlayManager
         self.tabContainerModel = bvc.tabContainerModel
     }
 }

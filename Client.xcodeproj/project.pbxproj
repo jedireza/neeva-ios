@@ -465,6 +465,8 @@
 		A83E5B1B1C1DA8BF0026D912 /* image.png in Resources */ = {isa = PBXBuildFile; fileRef = A83E5B191C1DA8BF0026D912 /* image.png */; };
 		A83E5B1D1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5B1C1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift */; };
 		A83E5B1E1C1DAAAA0026D912 /* UIPasteboardExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5AB61C1D993D0026D912 /* UIPasteboardExtensions.swift */; };
+		B61D068E27ED22FB0075F65E /* DebugCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61D068D27ED22FB0075F65E /* DebugCounter.swift */; };
+		B61D069027ED27E10075F65E /* ContentVisibilityModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B61D068F27ED27E10075F65E /* ContentVisibilityModel.swift */; };
 		B62FC4AB27E9162600848461 /* ConversionLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62FC4AA27E9162600848461 /* ConversionLogger.swift */; };
 		BC07524626C324A3008B607A /* CheatsheetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524426C324A3008B607A /* CheatsheetController.swift */; };
 		BC07524C26C3B98F008B607A /* CheatsheetMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */; };
@@ -1707,6 +1709,8 @@
 		A83E5B181C1DA8BF0026D912 /* image.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = image.gif; sourceTree = "<group>"; };
 		A83E5B191C1DA8BF0026D912 /* image.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = image.png; sourceTree = "<group>"; };
 		A83E5B1C1C1DA8D80026D912 /* UIPasteboardExtensionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIPasteboardExtensionsTests.swift; sourceTree = "<group>"; };
+		B61D068D27ED22FB0075F65E /* DebugCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugCounter.swift; sourceTree = "<group>"; };
+		B61D068F27ED27E10075F65E /* ContentVisibilityModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentVisibilityModel.swift; sourceTree = "<group>"; };
 		B62FC4AA27E9162600848461 /* ConversionLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversionLogger.swift; sourceTree = "<group>"; };
 		BC07524426C324A3008B607A /* CheatsheetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetController.swift; sourceTree = "<group>"; };
 		BC07524B26C3B98F008B607A /* CheatsheetMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheatsheetMenuView.swift; sourceTree = "<group>"; };
@@ -3889,7 +3893,7 @@
 				4AF1948B266EC74C007E2C3B /* Carousel */,
 				C9DDC11E26B9E22800F293AB /* Content */,
 				C9835CDD26C480C600E81EB9 /* ContentScripts */,
-				66F04FB427D7281500DE79ED /* Spaces */,
+				B61D068F27ED27E10075F65E /* ContentVisibilityModel.swift */,
 				D0625C97208E87F10081F3B2 /* DownloadQueue.swift */,
 				663322BF276D66220046EC1C /* KeyboardListener.swift */,
 				D0C95E35200FDC5400E4E51C /* MetadataParserHelper.swift */,
@@ -3901,6 +3905,7 @@
 				66CA99DE2774E74500058241 /* ScrollingControlModel.swift */,
 				74C027441B2A348C001B1E88 /* SessionData.swift */,
 				1DA3CE5E24EEE7C600422BB2 /* SiteArchiver.swift */,
+				66F04FB427D7281500DE79ED /* Spaces */,
 				23F2C365244E44FA00FA4496 /* Tabs */,
 				D029A04820A62DB0001DB72F /* TemporaryDocument.swift */,
 				1D0BA05B24F46A0400D731B5 /* TopSitesManager.swift */,
@@ -3945,7 +3950,6 @@
 		E4E0BB141AFBC9E4008D6260 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				4A8CE5ED27CCA66600735C75 /* ViewExtension.swift */,
 				514A4C83AE17612AF3025498 /* 3DTouchActions.strings */,
 				E65075621E37F7AB006961AC /* Accessibility.swift */,
 				EB7FFFBF20A9D38C003E1E34 /* AlertController.swift */,
@@ -3956,13 +3960,14 @@
 				32484895B328A342AED539C8 /* AuthenticationManager.strings */,
 				E65075681E37F7AB006961AC /* Bytes.swift */,
 				E65075691E37F7AB006961AC /* Cancellable.swift */,
-				E650756A1E37F7AB006961AC /* CrashSimulator.h */,
 				4822451299E114F04F3EFAB0 /* ClearHistoryConfirm.strings */,
 				58E14A8F991610DB13A9F1E1 /* ClearPrivateData.strings */,
 				F0D8481DAC1E6378ABF1565A /* ClearPrivateDataConfirm.strings */,
+				E650756A1E37F7AB006961AC /* CrashSimulator.h */,
 				E650756B1E37F7AB006961AC /* CrashSimulator.m */,
 				C9C18DD726558FF3004710CD /* DataURIBody.swift */,
 				D03DCD94211B63D000151ACA /* DateGroupedTableData.swift */,
+				B61D068D27ED22FB0075F65E /* DebugCounter.swift */,
 				E650756C1E37F7AB006961AC /* DeferredUtils.swift */,
 				E650756D1E37F7AB006961AC /* DeviceInfo.swift */,
 				C8CFF4E322F9FDB5002CC6BD /* effective_tld_names.swift */,
@@ -3975,8 +3980,8 @@
 				E65075821E37F7AB006961AC /* FSUtils.m */,
 				E65075831E37F7AB006961AC /* Functions.swift */,
 				E65075651E37F7AB006961AC /* GeneralUtils.swift */,
-				67AF4B8392ADBAA41F1B3AD0 /* HistoryPanel.strings */,
 				66B7A0EA26EAFCAB00AB751A /* Haptics.swift */,
+				67AF4B8392ADBAA41F1B3AD0 /* HistoryPanel.strings */,
 				99C54F4F8354A39A0F06511F /* Intro.strings */,
 				E65075841E37F7AB006961AC /* KeyboardHelper.swift */,
 				E65075861E37F7AB006961AC /* LaunchArguments.swift */,
@@ -3987,18 +3992,19 @@
 				C9C18E0F2655910C004710CD /* NeevaColors.swift */,
 				C9C18E1326559118004710CD /* NeevaColors.xcassets */,
 				C8B45FC3265EDFB9008E5231 /* NeevaConstants.swift */,
+				67B0FAB5279A82B00023A1C5 /* NeevaExperiment.swift */,
 				C8AB20C72669696600461C4E /* NeevaFeatureFlags.swift */,
 				C94D4095268A617F003A6766 /* NeevaFonts.swift */,
 				C8DFFE482294AAB600296DB1 /* NetworkUtils.swift */,
 				E65075891E37F7AB006961AC /* NotificationConstants.swift */,
 				C80E03E726B88FF000A7800A /* OptionalLogger.swift */,
 				E650758B1E37F7AB006961AC /* Prefs.swift */,
-				1A840EB827888681005F6003 /* SearchEngines */,
 				8DFA42FBB7C25AC38ACEEA0D /* PrivateBrowsing.strings */,
 				C9C18DD426558FF3004710CD /* Reachability.swift */,
 				CE7F115E1F3CCEF900ABFC0B /* RemoteDevices.swift */,
 				E650758C1E37F7AB006961AC /* RollingFileLogger.swift */,
 				AA3047F884B6BA22989FD627 /* Search.strings */,
+				1A840EB827888681005F6003 /* SearchEngines */,
 				064741F8AE308A64808E6265 /* Shared.strings */,
 				9403451493EE3ADAAEFA2EB1 /* Storage.strings */,
 				D35210E01CB2F16600FC5DCB /* Strings.swift */,
@@ -4008,8 +4014,8 @@
 				E650758F1E37F7AB006961AC /* TimeConstants.swift */,
 				C9C18E2426559457004710CD /* UI */,
 				E65075901E37F7AB006961AC /* UserAgent.swift */,
+				4A8CE5ED27CCA66600735C75 /* ViewExtension.swift */,
 				E65075911E37F7AB006961AC /* WeakList.swift */,
-				67B0FAB5279A82B00023A1C5 /* NeevaExperiment.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -5552,6 +5558,7 @@
 				E65075AA1E37F7AB006961AC /* URLProtectionSpaceExtensions.swift in Sources */,
 				EB7FFFC820A9D38D003E1E34 /* AlertController.swift in Sources */,
 				C9BED4BF2667F83E001D9C77 /* SSOProvider.swift in Sources */,
+				B61D068E27ED22FB0075F65E /* DebugCounter.swift in Sources */,
 				C9C18E4E26559766004710CD /* AddToSpaceView.swift in Sources */,
 				C9C18E5426559827004710CD /* Space.swift in Sources */,
 				3215C67127B6191B00D593BF /* UIImage+Extension.swift in Sources */,
@@ -5919,6 +5926,7 @@
 				C94D406C2684E677003A6766 /* SearchQueryModel.swift in Sources */,
 				6617174B27573C80005E05F4 /* NotificationViewManager.swift in Sources */,
 				663322C0276D66220046EC1C /* KeyboardListener.swift in Sources */,
+				B61D069027ED27E10075F65E /* ContentVisibilityModel.swift in Sources */,
 				BCA4D73127226E8000AE5A15 /* RelatedRecipeView.swift in Sources */,
 				C8CF648F26FA7DE900C3816F /* FaviconResolver.swift in Sources */,
 				E4B423DD1ABA0318007E66C8 /* ReaderModeHandlers.swift in Sources */,
