@@ -1903,7 +1903,7 @@ extension String {
     // Quick Action - Medium Size - Gallery View
     public static let NeevaShortcutGalleryDescription = MZLocalizedString(
         "TodayWidget.ShortcutGalleryDescription", tableName: "Today",
-        value: "Add Neevare shortcuts to your Home screen.",
+        value: "Add Neeva shortcuts to your Home screen.",
         comment: "Description for medium size widget to add Neeva Shortcut to home screen")
 
     // Quick Action - Small Size Widget
