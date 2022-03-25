@@ -4,6 +4,7 @@
 
 import Defaults
 import Foundation
+import Shared
 import web3swift
 
 public struct OnboardingModel {
@@ -16,8 +17,8 @@ public struct OnboardingModel {
                 let password = CryptoConfig.shared.password
                 let bitsOfEntropy: Int = 128
                 let mnemonics = try! BIP39.generateMnemonics(bitsOfEntropy: bitsOfEntropy)!
-
-                Defaults[.cryptoPhrases] = mnemonics
+                try? NeevaConstants.cryptoKeychain.set(
+                    mnemonics, key: NeevaConstants.cryptoSecretPhrase)
 
                 let keystore = try! BIP32Keystore(
                     mnemonics: mnemonics,
@@ -33,8 +34,8 @@ public struct OnboardingModel {
                 let privateKey = try keystore.UNSAFE_getPrivateKeyData(
                     password: password, account: EthereumAddress(address)!
                 ).toHexString()
-                Defaults[.cryptoPrivateKey] = privateKey
-
+                try? NeevaConstants.cryptoKeychain.set(
+                    privateKey, key: NeevaConstants.cryptoPrivateKey)
                 Defaults[.cryptoPublicKey] = wallet.address
                 completion()
             } catch {
@@ -54,12 +55,14 @@ public struct OnboardingModel {
                     mnemonicsPassword: "",
                     language: .english)!
                 let address = keystore.addresses!.first!.address
-                Defaults[.cryptoPhrases] = mnemonics
+                try? NeevaConstants.cryptoKeychain.set(
+                    mnemonics, key: NeevaConstants.cryptoSecretPhrase)
                 Defaults[.cryptoPublicKey] = address
                 let privateKey = try keystore.UNSAFE_getPrivateKeyData(
                     password: password, account: EthereumAddress(address)!
                 ).toHexString()
-                Defaults[.cryptoPrivateKey] = privateKey
+                try? NeevaConstants.cryptoKeychain.set(
+                    privateKey, key: NeevaConstants.cryptoPrivateKey)
                 completion()
             } catch {
                 print("🔥 Unexpected error: \(error).")

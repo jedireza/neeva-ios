@@ -64,8 +64,14 @@ public struct NeevaConstants {
     /// The keychain key to store the Neeva login cookie into
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }
 
+    /// The keychain key to store the Neeva-Wallet properties
+    public static var cryptoPrivateKey: String { "neevaCryptoPrivateKey-\(appHost)" }
+    public static var cryptoSecretPhrase: String { "neevaCryptoSecretPhrase-\(appHost)" }
+
     /// The shared keychain accessible to the Neeva app and its extensions
     public static let keychain = Keychain(service: "Neeva", accessGroup: appGroup)
+    public static let cryptoKeychain = Keychain(service: "Neeva-Wallet", accessGroup: appGroup)
+        .accessibility(.whenUnlockedThisDeviceOnly)
 
     public static var deviceTypeValue: String {
         switch UIDevice.current.userInterfaceIdiom {

@@ -7,6 +7,7 @@ import CryptoSwift
 import Defaults
 import Foundation
 import PromiseKit
+import Shared
 import SwiftUI
 import WalletConnectSwift
 import secp256k1
@@ -35,7 +36,7 @@ public struct WalletAccessor {
         self.web3 = try? Web3.new(EthNode.Ethereum.url ?? .aboutBlank)
         self.polygonWeb3 = try? Web3.new(EthNode.Polygon.url ?? .aboutBlank)
         self.password = CryptoConfig.shared.password
-        let key = Defaults[.cryptoPrivateKey]
+        let key = NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoPrivateKey] ?? ""
         let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
         let dataKey = Data.fromHex(formattedKey)!
         self.keystore = try? EthereumKeystoreV3(privateKey: dataKey, password: password)
@@ -46,9 +47,9 @@ public struct WalletAccessor {
     }
 
     var privateKey: [UInt8] {
-        let key = Defaults[.cryptoPrivateKey]
-        let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
-        return formattedKey.bytes
+        let key = NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoPrivateKey]
+        let formattedKey = key?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return formattedKey!.bytes
     }
 
     public var walletMeta: Session.ClientMeta {

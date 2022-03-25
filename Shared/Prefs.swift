@@ -161,10 +161,8 @@ extension Defaults.Keys {
     public static let signupPromptInterval = Defaults.Key<Int>("signupPromptInterval", default: 5)
     public static let maxQueryLimit = Defaults.Key<Int>("maxQueryLimit", default: 25)
 
-    // MARK: - crypto wallet
-    public static let cryptoPhrases = Defaults.Key<String>("cryptoPhrases", default: "")
+    // crypto wallet
     public static let cryptoPublicKey = Defaults.Key<String>("cryptoPublicKey", default: "")
-    public static let cryptoPrivateKey = Defaults.Key<String>("cryptoPrivateKey", default: "")
     public static let cryptoTransactionHashStore = Defaults.Key<Set<String>>(
         "cryptoTransactionHashStore", default: [])
     public static let sessionsPeerIDs = Defaults.Key<Set<String>>(

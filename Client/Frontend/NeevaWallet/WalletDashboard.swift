@@ -406,9 +406,9 @@ struct WalletDashboard: View {
                         showConfirmRemoveWalletAlert = false
                         viewState = .starter
                         hideOverlay()
-                        Defaults[.cryptoPhrases] = ""
                         Defaults[.cryptoPublicKey] = ""
-                        Defaults[.cryptoPrivateKey] = ""
+                        try? NeevaConstants.cryptoKeychain.remove(NeevaConstants.cryptoSecretPhrase)
+                        try? NeevaConstants.cryptoKeychain.remove(NeevaConstants.cryptoPrivateKey)
                         Defaults[.sessionsPeerIDs].forEach {
                             Defaults[.dAppsSession($0)] = nil
                         }

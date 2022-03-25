@@ -10,8 +10,12 @@ import web3swift
 
 struct CryptoWalletView: View {
     @EnvironmentObject var model: Web3Model
-    @State var viewState: ViewState = Defaults[.cryptoPhrases].isEmpty ? .starter : .dashboard
+    @State var viewState: ViewState = CryptoWalletView.cryptoPhrases.isEmpty ? .starter : .dashboard
     let dismiss: () -> Void
+
+    private static var cryptoPhrases: String {
+        NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoSecretPhrase] ?? ""
+    }
 
     var body: some View {
         VStack(spacing: 0) {
