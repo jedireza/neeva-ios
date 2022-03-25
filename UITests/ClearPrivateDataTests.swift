@@ -47,7 +47,9 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
         return urls
     }
 
-    func testRemembersToggles() {
+    func testRemembersToggles() throws {
+        try skipTest(issue: 3216, "KIF cannot recognize SwiftUI Toggles as UISwitches")
+
         clearPrivateData([Clearable.history])
 
         goToClearData()
@@ -67,7 +69,8 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
         closeClearPrivateData()
     }
 
-    func testClearsHistoryPanel() {
+    func testClearsHistoryPanel() throws {
+        try skipTest(issue: 3216, "KIF cannot recognize SwiftUI Toggles as UISwitches")
         tester().waitForAnimationsToFinish(withTimeout: 3)
         let urls = visitSites(noOfSites: 2)
 
@@ -87,7 +90,8 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
         closeHistory()
     }
 
-    func testDisabledHistoryDoesNotClearHistoryPanel() {
+    func testDisabledHistoryDoesNotClearHistoryPanel() throws {
+        try skipTest(issue: 3216, "KIF cannot recognize SwiftUI Toggles as UISwitches")
         tester().waitForAnimationsToFinish(withTimeout: 3)
         let urls = visitSites(noOfSites: 2)
 
@@ -138,6 +142,7 @@ class ClearPrivateDataTests: UITestBase, UITextFieldDelegate {
     }
 
     func testClearsCache() throws {
+        try skipTest(issue: 3216, "KIF cannot recognize SwiftUI Toggles as UISwitches")
         if isiPad() {
             try skipTest(issue: 1343, "Fails on iPad on CI only")
         }
