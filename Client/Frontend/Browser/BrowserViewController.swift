@@ -43,9 +43,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
             setReadingMode: { [self] enabled in
                 DispatchQueue.main.async {
                     if enabled {
-                        enableReaderMode()
+                        self.enableReaderMode()
                     } else {
-                        disableReaderMode()
+                        self.disableReaderMode()
                     }
                 }
             }, tabManager: tabManager)
