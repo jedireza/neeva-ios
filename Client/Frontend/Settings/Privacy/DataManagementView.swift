@@ -12,7 +12,6 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
     case cache = "Cache"
     case cookies = "Cookies"
     case trackingProtection = "Tracking Protection"
-    case downloads = "Downloaded Files"
     case dapps = "Connected dApps"
 
     var id: String { rawValue }
@@ -24,7 +23,6 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
         case .cache: return "Cache"
         case .cookies: return "Cookies"
         case .trackingProtection: return "Tracking Protection"
-        case .downloads: return "Downloaded Files"
         case .dapps: return "Connected dApps"
         }
     }
@@ -48,8 +46,6 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
             return CookiesClearable()
         case .trackingProtection:
             return TrackingProtectionClearable()
-        case .downloads:
-            return DownloadedFilesClearable()
         case .dapps:
             return ConnectedDAppsClearable()
         }
@@ -59,7 +55,7 @@ enum ClearableDataType: String, Identifiable, Codable, CaseIterable {
 extension Defaults.Keys {
     fileprivate static let clearDataTypes = Defaults.Key<Set<ClearableDataType>>(
         "profile.dataManagement.clearTypes",
-        default: Set(ClearableDataType.allCases).filter { $0 != .downloads })
+        default: Set(ClearableDataType.allCases))
 }
 
 struct DataManagementView: View {

@@ -87,28 +87,6 @@ class TrackingProtectionClearable: Clearable {
     }
 }
 
-// Clears our downloaded files in the `~/Documents/Downloads` folder.
-class DownloadedFilesClearable: Clearable {
-    func clear() -> Success {
-        if let downloadsPath = try? FileManager.default.url(
-            for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: false),
-            let files = try? FileManager.default.contentsOfDirectory(
-                at: downloadsPath, includingPropertiesForKeys: nil,
-                options: [
-                    .skipsHiddenFiles, .skipsPackageDescendants, .skipsSubdirectoryDescendants,
-                ])
-        {
-            for file in files {
-                try? FileManager.default.removeItem(at: file)
-            }
-        }
-
-        NotificationCenter.default.post(name: .PrivateDataClearedDownloadedFiles, object: nil)
-
-        return succeed()
-    }
-}
-
 class ConnectedDAppsClearable: Clearable {
     func clear() -> Success {
         for session in Defaults[.sessionsPeerIDs] {

@@ -7,9 +7,6 @@
 /* Settings item for clearing cookies */
 "Cookies" = "Cookies";
 
-/* Settings item for deleting downloaded files */
-"Downloaded Files" = "Downloaded Files";
-
 /* Settings item for clearing website data */
 "Offline Website Data" = "Offline Website Data";
 
