@@ -199,8 +199,6 @@ public struct NeevaConstants {
             URLQueryItem(name: "signup", value: String(signup)),
             URLQueryItem(name: "ignoreCountryCode", value: "true"),
         ]
-        // DO NOT SUBMIT
-        print("Apple AUTH URL: \(authURL.withQueryParams(queryItems))")
         return authURL.withQueryParams(queryItems)
     }
 
