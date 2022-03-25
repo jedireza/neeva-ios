@@ -84,9 +84,7 @@ class TabManagerStoreTests: XCTestCase {
         }
     }
 
-    func testAddedTabsAreStored() throws {
-        try skipTest(issue: 3035, "Flaky only on CI")
-
+    func testAddedTabsAreStored() {
         // Add 2 tabs
         for _ in 0..<2 {
             addTabWithSessionData()
