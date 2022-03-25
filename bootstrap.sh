@@ -32,3 +32,6 @@ npm run build
 git submodule update --init --recursive
 cd swift-format
 swift build -c release
+
+# Link githooks
+./Scripts/link-git-hooks.sh

@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Called by "git push" after it has checked the remote status, but before
+# anything has been pushed.
+# If the test suite (and so the script) exits with a non-zero status, nothing
+# will be pushed.
+#
+# In any case, we revert to the pre `$ git push` state.
+
+# git push --no-verify will skip this check
+
+# Retrieve arguments
+remote="$1"
+url="$2"
+
+z40=0000000000000000000000000000000000000000 # SHA of a non existing commit
+
+# Save current "git state"
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+STASH_NAME="pre-push-$(date +%s)"
+git stash save -q --keep-index $STASH_NAME
+
+# Do wonders
+while read local_ref local_sha remote_ref remote_sha
+do
+        if [ "$local_sha" = $z40 ]
+        then
+                # Handle delete
+                continue # to the next branch
+        elif [ "$remote_sha" = $z40 ]
+        then
+                # New branch, examine all commits
+                range="$local_sha"
+        else
+                # Update to existing branch, examine new commits
+                range="$remote_sha..$local_sha"
+        fi
+
+        # Retrieve list of commit in "chronological" order
+        commits=$(git rev-list --reverse $range)
+
+        last_commit=${commits[0]}
+        git checkout $last_commit
+
+        ./Scripts/swift-format.sh --check --strict
+
+        is_test_passed=$?
+        if [ $is_test_passed -ne 0 ]
+        then
+        echo -e "Aborting push: Swift-format failed for commit $commit.\n"\
+                "Please run Scripts/swift-format.sh and commit fixes linter errors before pushing\n"
+        break 2
+        fi
+
+        # Loop over each commit
+        # for commit in $commits
+        # do
+        # done
+done
+
+# Revert to pre-push state
+git checkout $current_branch
+
+STASH_NUM=$(git stash list | grep $STASH_NAME | sed -re 's/stash@\{(.*)\}.*/\1/')
+if [ -n "$STASH_NUM" ]
+then
+    git stash pop -q stash@{$STASH_NUM}
+fi
+
+# Return exit code
+exit $is_test_passed
