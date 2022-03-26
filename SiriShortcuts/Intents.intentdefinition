@@ -9,11 +9,11 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>JGazXK</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>20F71</string>
+	<string>21E230</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
-	<string>12E507</string>
+	<string>13E113</string>
 	<key>INIntentDefinitionToolsVersion</key>
-	<string>12.5.1</string>
+	<string>13.3</string>
 	<key>INIntents</key>
 	<array>
 		<dict>
@@ -117,10 +117,16 @@
 			<string>generic</string>
 			<key>INIntentConfigurable</key>
 			<true/>
+			<key>INIntentDefaultImageName</key>
+			<string>neeva-logo</string>
 			<key>INIntentDescription</key>
-			<string>Open a Search in the Neeva app</string>
+			<string>Start a Search in the Neeva app</string>
 			<key>INIntentDescriptionID</key>
 			<string>gJTK8U</string>
+			<key>INIntentInput</key>
+			<string>text</string>
+			<key>INIntentKeyParameter</key>
+			<string>text</string>
 			<key>INIntentLastParameterTag</key>
 			<integer>1</integer>
 			<key>INIntentManagedParameterCombinations</key>
@@ -133,24 +139,22 @@
 					<string>Search Neeva for ${text}</string>
 					<key>INIntentParameterCombinationTitleID</key>
 					<string>antZ8U</string>
-					<key>INIntentParameterCombinationUpdatesLinked</key>
-					<true/>
 				</dict>
 			</dict>
 			<key>INIntentName</key>
 			<string>SearchNeeva</string>
 			<key>INIntentParameterCombinations</key>
 			<dict>
-				<key>text</key>
+				<key></key>
 				<dict>
-					<key>INIntentParameterCombinationIsLinked</key>
+					<key>INIntentParameterCombinationIsPrimary</key>
 					<true/>
 					<key>INIntentParameterCombinationSupportsBackgroundExecution</key>
-					<true/>
+					<false/>
 					<key>INIntentParameterCombinationTitle</key>
-					<string>Search Neeva for ${text}</string>
+					<string>Search in Neeva</string>
 					<key>INIntentParameterCombinationTitleID</key>
-					<string>BX8pHw</string>
+					<string>q5ZTZU</string>
 				</dict>
 			</dict>
 			<key>INIntentParameters</key>
@@ -159,7 +163,7 @@
 					<key>INIntentParameterConfigurable</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
-					<string>Text</string>
+					<string>Search Text</string>
 					<key>INIntentParameterDisplayNameID</key>
 					<string>iqpbOU</string>
 					<key>INIntentParameterDisplayPriority</key>

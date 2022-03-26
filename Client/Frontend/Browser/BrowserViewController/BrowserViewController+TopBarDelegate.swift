@@ -104,6 +104,10 @@ extension BrowserViewController: TopBarDelegate {
         _ text: String, forTab tab: Tab?, using searchEngine: SearchEngine = SearchEngine.current
     ) {
         if let searchURL = searchEngine.searchURLForQuery(text) {
+            // we don't associate the query string so that the action will open a new search
+            IntentHelper.suggestSearchIntent()
+            IntentHelper.donateSearchIntent()
+
             // We couldn't find a matching search keyword, so do a search query.
             finishEditingAndSubmit(searchURL, visitType: VisitType.typed, forTab: tab)
         } else {

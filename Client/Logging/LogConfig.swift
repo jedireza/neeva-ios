@@ -298,6 +298,10 @@ public struct LogConfig {
         case didIndex
         case clearIndexError
 
+        // MARK: Shortcuts
+        case openURLShortcut
+        case searchShortcut
+
         // MARK: recipe cheatsheet
         case RecipeCheatsheetShowMoreRecipe
         case RelatedRecipeClick
@@ -355,6 +359,7 @@ public struct LogConfig {
         case RatingsCard = "RatingsCard"
         case Notification = "Notification"
         case Spotlight = "Spotlight"
+        case Shortcuts = "Shortcuts"
         case RecipeCheatsheet = "RecipeCheatsheet"
         case Cheatsheet = "Cheatsheet"
         case TabGroup = "TabGroup"
@@ -596,6 +601,10 @@ public struct LogConfig {
         case .willIndex: return .Spotlight
         case .didIndex: return .Spotlight
         case .clearIndexError: return .Spotlight
+
+        // MARK: - Shortcuts
+        case .openURLShortcut: return .Shortcuts
+        case .searchShortcut: return .Shortcuts
 
         // MARK: - Cheatsheet
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
