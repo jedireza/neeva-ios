@@ -41,7 +41,7 @@ struct WebResultHeader: View {
 
 struct WebResultItem: View {
     let item: WebResult
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     var body: some View {
         VStack(alignment: .leading) {
@@ -82,12 +82,12 @@ struct WebResultItem: View {
     }
 
     func onClick() {
-        onOpenURL(item.actionURL)
+        onOpenURLForCheatsheet(item.actionURL, String(describing: Self.self))
     }
 }
 
 struct WebResultList: View {
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     let webResult: [WebResult]
     let currentCheatsheetQueryAsURL: URL?
@@ -139,7 +139,7 @@ struct WebResultList: View {
 
     func onClick() {
         if let url = currentCheatsheetQueryAsURL {
-            onOpenURL(url)
+            onOpenURLForCheatsheet(url, String(describing: Self.self))
         }
     }
 }

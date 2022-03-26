@@ -7,7 +7,7 @@ import Shared
 import SwiftUI
 
 struct RelatedRecipeItem: View {
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     let recipe: RelatedRecipe
 
@@ -83,9 +83,7 @@ struct RelatedRecipeItem: View {
     }
 
     func onClick() {
-        ClientLogger.shared.logCounter(
-            .RelatedRecipeClick, attributes: EnvironmentHelper.shared.getAttributes())
-        onOpenURL(recipe.url)
+        onOpenURLForCheatsheet(recipe.url, String(describing: Self.self))
     }
 }
 

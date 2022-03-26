@@ -25,6 +25,15 @@ extension EnvironmentValues {
         set { self[OnOpenURLForSpaceKey.self] = newValue }
     }
 
+    private struct OnOpenURLForCheatsheetKey: EnvironmentKey {
+        static var defaultValue: ((URL, String) -> Void)? = nil
+    }
+
+    public var onOpenURLForCheatsheet: (URL, String) -> Void {
+        get { self[OnOpenURLForCheatsheetKey.self] ?? { url, _ in openURL(url) } }
+        set { self[OnOpenURLForCheatsheetKey.self] = newValue }
+    }
+
     private struct onSigninOrJoinNeevaKey: EnvironmentKey {
         static var defaultValue: (() -> Void)? = nil
     }

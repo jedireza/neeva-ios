@@ -10,7 +10,7 @@ struct ProductClusterItem: View {
     let product: Product
     let currentURL: String
 
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     var body: some View {
         Button(action: onClick) {
@@ -54,7 +54,7 @@ struct ProductClusterItem: View {
         if sellers.count > 0 {
             for s in sellers {
                 if !s.url.isEmpty && s.url != currentURL {
-                    onOpenURL(URL(string: s.url)!)
+                    onOpenURLForCheatsheet(URL(string: s.url)!, String(describing: Self.self))
                     return
                 }
             }
@@ -64,7 +64,7 @@ struct ProductClusterItem: View {
         if reviews.count > 0 {
             for r in reviews {
                 if !r.reviewURL.isEmpty && r.reviewURL != currentURL {
-                    onOpenURL(URL(string: r.reviewURL)!)
+                    onOpenURLForCheatsheet(URL(string: r.reviewURL)!, String(describing: Self.self))
                 }
             }
         }

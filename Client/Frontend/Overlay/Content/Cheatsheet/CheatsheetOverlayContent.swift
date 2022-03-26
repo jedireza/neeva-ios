@@ -27,7 +27,7 @@ struct CheatsheetOverlayContent: View {
         .background(Color.DefaultBackground)
         .overlayIsFixedHeight(isFixedHeight: false)
         .environmentObject(model)
-        .environment(\.onOpenURL) { url in
+        .environment(\.onOpenURLForCheatsheet) { url, source in
             hideOverlay()
             ClientLogger.shared.logCounter(
                 .OpenLinkFromCheatsheet,
@@ -35,7 +35,11 @@ struct CheatsheetOverlayContent: View {
                     EnvironmentHelper.shared.getAttributes()
                     + model.loggerAttributes
                     + [
-                        ClientLogCounterAttribute(key: "url", value: url.absoluteString)
+                        ClientLogCounterAttribute(
+                            key: LogConfig.CheatsheetAttribute.openLinkSource,
+                            value: source
+                        ),
+                        ClientLogCounterAttribute(key: "url", value: url.absoluteString),
                     ]
             )
             self.tabManager.createOrSwitchToTab(for: url)

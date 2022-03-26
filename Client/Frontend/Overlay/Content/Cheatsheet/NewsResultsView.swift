@@ -11,7 +11,7 @@ import Shared
 import SwiftUI
 
 struct NewsResultsView: View {
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     let newsResults: NewsResults
 
@@ -29,7 +29,7 @@ struct NewsResultsView: View {
         VStack(alignment: .leading) {
             Button(action: {
                 if let newsQueryURL = newsQueryURL {
-                    onOpenURL(newsQueryURL)
+                    onOpenURLForCheatsheet(newsQueryURL, String(describing: Self.self))
                 }
             }) {
                 HStack(alignment: .center) {
@@ -53,7 +53,7 @@ struct NewsResultsView: View {
 }
 
 struct NewsResultItemView: View {
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     let newsItem: NewsResult
 
@@ -132,6 +132,6 @@ struct NewsResultItemView: View {
     }
 
     func openNews() {
-        onOpenURL(newsItem.url)
+        onOpenURLForCheatsheet(newsItem.url, String(describing: Self.self))
     }
 }

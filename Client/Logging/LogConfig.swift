@@ -304,8 +304,6 @@ public struct LogConfig {
 
         // MARK: recipe cheatsheet
         case RecipeCheatsheetShowMoreRecipe
-        case RelatedRecipeClick
-        case RelatedSearchClick
 
         // MARK: Cheatsheet(NeevaScope)
         case CheatsheetPopoverImpression
@@ -608,8 +606,6 @@ public struct LogConfig {
 
         // MARK: - Cheatsheet
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
-        case .RelatedRecipeClick: return .RecipeCheatsheet
-        case .RelatedSearchClick: return .RecipeCheatsheet
 
         case .CheatsheetPopoverImpression: return .Cheatsheet
         case .OpenCheatsheet: return .Cheatsheet
@@ -743,6 +739,7 @@ public struct LogConfig {
         public static let currentCheatsheetQuery = "currentCheatsheetQuery"
         public static let currentPageURL = "currentCheatsheetPageURL"
         public static let cheatsheetQuerySource = "cheatsheetQuerySource"
+        public static let openLinkSource = "openLinkSource"
 
         public enum QuerySource: String {
             case uToQ

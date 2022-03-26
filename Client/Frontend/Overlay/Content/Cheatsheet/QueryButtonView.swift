@@ -10,7 +10,7 @@ import Shared
 import SwiftUI
 
 struct QueryButtonView: View {
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     let query: String
 
@@ -37,10 +37,8 @@ struct QueryButtonView: View {
         if let encodedQuery = query.addingPercentEncoding(
             withAllowedCharacters: .urlQueryAllowed), !encodedQuery.isEmpty
         {
-            ClientLogger.shared.logCounter(
-                .RelatedSearchClick, attributes: EnvironmentHelper.shared.getAttributes())
             let target = URL(string: "\(NeevaConstants.appSearchURL)?q=\(encodedQuery)")!
-            onOpenURL(target)
+            onOpenURLForCheatsheet(target, String(describing: Self.self))
         }
     }
 }

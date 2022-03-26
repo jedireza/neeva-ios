@@ -8,7 +8,7 @@ import SwiftUI
 
 struct InlineSearchProductItem: View {
     let product: InlineSearchProduct
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     var body: some View {
         Button(action: onClick) {
@@ -55,7 +55,7 @@ struct InlineSearchProductItem: View {
     }
 
     func onClick() {
-        onOpenURL(product.actionURL)
+        onOpenURLForCheatsheet(product.actionURL, String(describing: Self.self))
     }
 
 }

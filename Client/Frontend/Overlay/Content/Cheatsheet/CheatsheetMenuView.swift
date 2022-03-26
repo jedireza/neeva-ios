@@ -9,10 +9,12 @@ import SwiftUI
 
 struct ReviewURLButton: View {
     let url: URL
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     var body: some View {
-        Button(action: { onOpenURL(url) }) {
+        Button(action: {
+            onOpenURLForCheatsheet(url, String(describing: Self.self))
+        }) {
             getHostName()
         }
     }
@@ -92,7 +94,7 @@ public struct CheatsheetMenuView: View {
     @Default(.cheatsheetDebugQuery) var cheatsheetDebugQuery: Bool
 
     @Environment(\.hideOverlay) private var hideOverlay
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
     @EnvironmentObject private var model: CheatsheetMenuViewModel
 
     @State var height: CGFloat = 0
@@ -137,7 +139,7 @@ public struct CheatsheetMenuView: View {
                         VStack(alignment: .leading) {
                             Button(action: {
                                 if let url = model.currentCheatsheetQueryAsURL {
-                                    onOpenURL(url)
+                                    onOpenURLForCheatsheet(url, "debug")
                                 }
                             }) {
                                 HStack {
