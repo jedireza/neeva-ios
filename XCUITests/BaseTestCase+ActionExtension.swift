@@ -79,8 +79,8 @@ extension BaseTestCase {
         waitForExistence(app.buttons["Address Bar"])
         app.buttons["Address Bar"].tap()
 
-        waitForExistence(app.buttons["Edit Current Address"])
-        app.buttons["Edit Current Address"].tap()
+        waitForExistence(app.buttons["Edit current address"])
+        app.buttons["Edit current address"].tap()
     }
 
     /// Go forward to next visited web site

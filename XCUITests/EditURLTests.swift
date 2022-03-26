@@ -8,13 +8,13 @@ class EditURLTests: BaseTestCase {
     func testEditURLShows() {
         openURL()
         goToAddressBar()
-        assert(app.buttons["Edit Current Address"].exists == true)
+        assert(app.buttons["Edit current address"].exists == true)
     }
 
     func testTapEditURLShowsInAddressBar() {
         openURL()
         goToAddressBar()
-        app.buttons["Edit Current Address"].tap()
+        app.buttons["Edit current address"].tap()
         XCTAssertEqual(
             app.textFields["address"].value as! String, "https://example.com/")
     }
@@ -23,7 +23,7 @@ class EditURLTests: BaseTestCase {
         openURL()
         openURL("fakeurl.madeup")
         goToAddressBar()
-        app.buttons["Edit Current Address"].tap()
+        app.buttons["Edit current address"].tap()
         sleep(1)
         XCTAssertEqual(app.textFields["address"].value as! String, "https://fakeurl.madeup/")
     }
