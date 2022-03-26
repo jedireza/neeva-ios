@@ -225,7 +225,8 @@ extension IntroViewModel: ASAuthorizationControllerDelegate {
                     attributes: EnvironmentHelper.shared.getFirstRunAttributes()
                 )
             }
-            self.onDismiss(.signupWithApple(self.marketingEmailOptOut, identityTokenStr, authorizationCodeStr))
+            self.onDismiss(
+                .signupWithApple(self.marketingEmailOptOut, identityTokenStr, authorizationCodeStr))
             break
         default:
             break

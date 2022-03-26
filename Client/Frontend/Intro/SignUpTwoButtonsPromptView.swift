@@ -141,11 +141,15 @@ struct SignUpTwoButtonsPromptView: View {
                             log.error("Unable to fetch authorization code")
                             return
                         }
-                        guard let identityTokenStr = String(data: identityToken, encoding: .utf8) else {
+                        guard let identityTokenStr = String(data: identityToken, encoding: .utf8)
+                        else {
                             log.error("Unable to convert identity token to utf8")
                             return
                         }
-                        guard let authorizationCodeStr = String(data: authorizationCode, encoding: .utf8) else {
+                        guard
+                            let authorizationCodeStr = String(
+                                data: authorizationCode, encoding: .utf8)
+                        else {
                             log.error("Unable to convert authorization code to utf8")
                             return
                         }

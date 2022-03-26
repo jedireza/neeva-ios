@@ -1657,8 +1657,11 @@ extension BrowserViewController {
                     self.introViewModel = nil
 
                     switch action {
-                    case .signupWithApple(let marketingEmailOptOut, let identityToken, let authorizationCode):
-                        if let identityToken = identityToken, let authorizationCode = authorizationCode {
+                    case .signupWithApple(
+                        let marketingEmailOptOut, let identityToken, let authorizationCode):
+                        if let identityToken = identityToken,
+                            let authorizationCode = authorizationCode
+                        {
                             let authURL = NeevaConstants.appleAuthURL(
                                 identityToken: identityToken,
                                 authorizationCode: authorizationCode,
