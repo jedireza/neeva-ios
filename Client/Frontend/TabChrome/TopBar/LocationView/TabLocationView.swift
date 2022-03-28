@@ -34,7 +34,7 @@ struct TabLocationView: View {
     @EnvironmentObject private var readerModeModel: ReaderModeModel
     @EnvironmentObject private var web3Model: Web3Model
     @EnvironmentObject private var queryModel: SearchQueryModel
-    @EnvironmentObject private var trackingStatsModel: TrackingStatsViewModel
+    @EnvironmentObject private var trackingStatsModel: TrackingMenuModel
 
     @State private var isPressed = false
 
