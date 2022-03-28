@@ -331,7 +331,7 @@ public struct CheatsheetMenuView: View {
         case .PlaceList(result: let placeListResult):
             VStack {
                 ForEach(placeListResult, id: \.address.full) { place in
-                    PlaceView(place: place)
+                    PlaceInlineView(place: place)
                 }
             }
         }

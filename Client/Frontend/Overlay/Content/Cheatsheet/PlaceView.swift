@@ -2,10 +2,73 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import MapKit
 import SwiftUI
 import Shared
 
+private struct PlaceAnnotation: Identifiable {
+    typealias ID = String
+
+    let lat: Double
+    let lon: Double
+    let address: String
+    let onTap: () -> Void
+
+    var id: String {
+        address
+    }
+
+    init(from place: Place, onTap: @escaping () -> Void ) {
+        self.lat = place.position.lat
+        self.lon = place.position.lon
+        self.address = place.address.full
+        self.onTap = onTap
+    }
+}
+
 struct PlaceView: View {
+    let place: Place
+
+    @State private var mapRegion: MKCoordinateRegion
+    private let annotatedMapItems: [PlaceAnnotation]
+
+    init(place: Place) {
+        _mapRegion = State(
+            wrappedValue: MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: place.position.lat, longitude: place.position.lon),
+                latitudinalMeters: 200,
+                longitudinalMeters: 200
+            )
+        )
+        annotatedMapItems = [PlaceAnnotation(from: place, onTap: { print("tap!") })]
+        self.place = place
+    }
+
+    var body: some View {
+        Map(
+            coordinateRegion: $mapRegion,
+            interactionModes: .all,
+            showsUserLocation: true,
+            userTrackingMode: nil,
+            annotationItems: annotatedMapItems
+        ) { place in
+            MapAnnotation(
+                coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
+                anchorPoint: .zero
+            ) {
+                Circle()
+                    .stroke(.red, lineWidth: 3)
+                    .frame(width: 44, height: 44)
+                    .onTapGesture {
+                        place.onTap()
+                    }
+            }
+        }
+        .frame(width: 400, height: 400, alignment: .center)
+        Text("im here!")
+    }
+}
+struct PlaceInlineView: View {
     let place: Place
 
     var body: some View {
