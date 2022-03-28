@@ -742,6 +742,26 @@ public class SearchController:
                                 )
                             )
                         }
+                    case "Place":
+                        let placeResult = constructPlaceResult(from: result)
+                        if let parsedData = placeResult.result {
+                            richResults.append(
+                                RichResult(
+                                    resultType: .Place(result: parsedData),
+                                    dataComplete: !placeResult.skippedItem
+                                )
+                            )
+                        }
+                    case "PlaceList":
+                        let placeListResult = constructPlaceListResult(from: result)
+                        if let parsedData = placeListResult.result {
+                            richResults.append(
+                                RichResult(
+                                    resultType: .PlaceList(result: parsedData),
+                                    dataComplete: !placeListResult.skippedItem
+                                )
+                            )
+                        }
                     case "RecipeBlock":
                         let recipeBlockResult = constructRecipeBlock(from: result)
                         if let parsedData = recipeBlockResult.result {
@@ -754,8 +774,6 @@ public class SearchController:
                             webResults.append(parsedData)
                         }
                         webResultsDataComplete = !webResult.skippedItem && webResultsDataComplete
-                    case "Place":
-                        break
                     default:
                         return
                     }
