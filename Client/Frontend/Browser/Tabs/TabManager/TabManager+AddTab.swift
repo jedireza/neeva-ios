@@ -238,7 +238,7 @@ extension TabManager {
         // Prevents a sticky tab tray
         SceneDelegate.getBVC(with: scene).browserModel.cardTransitionModel.update(to: .hidden)
 
-        if let selectedSavedTab = selectedSavedTab, (shouldSelectTab || selectedTab == nil) {
+        if let selectedSavedTab = selectedSavedTab, shouldSelectTab || selectedTab == nil {
             self.selectTab(selectedSavedTab, notify: true)
         }
 
