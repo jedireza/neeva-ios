@@ -155,7 +155,7 @@ extension TabManager {
         }
 
         if notify {
-            tabsUpdatedPublisher.send()
+            updateTabGroupsAndSendNotifications(notify: notify)
         }
     }
 
@@ -233,7 +233,7 @@ extension TabManager {
             }
         }
 
-        tabsUpdatedPublisher.send()
+        updateTabGroupsAndSendNotifications(notify: true)
 
         // Prevents a sticky tab tray
         SceneDelegate.getBVC(with: scene).browserModel.cardTransitionModel.update(to: .hidden)

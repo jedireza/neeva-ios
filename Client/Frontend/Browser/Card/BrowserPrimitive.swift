@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 
 import Combine
-import Defaults
 import Foundation
 import SDWebImageSwiftUI
 import Shared
@@ -288,117 +287,5 @@ extension Tab: SelectingManager {
 
     func select(_ item: Site) {
         loadRequest(URLRequest(url: item.url))
-    }
-}
-
-struct TabGroup {
-    var children: [Tab]
-    var id: String
-}
-
-extension TabGroup: BrowserPrimitive, Closeable {
-    typealias Manager = TabGroupManager
-
-    var primitiveUrl: URL? {
-        children.first!.url
-    }
-
-    var inferredTitle: String? {
-        if let spaceID = children.first?.parentSpaceID, spaceID == children.first?.rootUUID {
-            if let spaceTitle = SpaceStore.shared.get(for: spaceID)?.displayTitle {
-                return spaceTitle
-            } else if FeatureFlag[.enableCryptoWallet] && spaceID == Defaults[.cryptoPublicKey] {
-                return "Your NFTs"
-            }
-        }
-        return children.first?.displayTitle
-    }
-
-    var displayTitle: String {
-        inferredTitle ?? "\(children.count) Tabs"
-    }
-
-    var displayFavicon: Favicon? {
-        nil
-    }
-
-    var image: UIImage? {
-        nil
-    }
-
-    var pageMetadata: PageMetadata? {
-        nil
-    }
-
-    func close(with manager: TabGroupManager) {
-        manager.close(self)
-    }
-}
-
-class TabGroupManager: AccessingManager, ClosingManager, ObservableObject {
-    typealias Item = TabGroup
-
-    @Default(.tabGroupNames) private var tabGroupDict: [String: String]
-    @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
-
-    let tabManager: TabManager
-    private(set) var tabGroups: [String: TabGroup] = [:]
-    var childTabs: [Tab] = []
-    private var anyCancellable: AnyCancellable? = nil
-    static var all = WeakList<TabGroupManager>()
-
-    init(tabManager: TabManager) {
-        self.tabManager = tabManager
-        updateTabGroups()
-        self.anyCancellable = tabManager.tabsUpdatedPublisher.sink { [weak self] (_) in
-            self?.updateTabGroups()
-        }
-        Self.all.insert(self)
-    }
-
-    func updateTabGroups() {
-        tabGroups = tabManager.getAll()
-            .reduce(into: [String: [Tab]]()) { dict, tab in
-                dict[tab.rootUUID, default: []].append(tab)
-            }.filter { $0.value.count > 1 }.reduce(into: [String: TabGroup]()) { dict, element in
-                dict[element.key] = TabGroup(children: element.value, id: element.key)
-            }
-        childTabs = getAll().flatMap(\.children)
-        objectWillChange.send()
-    }
-
-    func get(for id: String) -> TabGroup? {
-        return tabGroups[id]
-    }
-
-    func getAll() -> [TabGroup] {
-        Array(tabGroups.values)
-    }
-
-    func close(_ item: TabGroup) {
-        tabManager.removeTabs(item.children)
-    }
-
-    func close(_ item: TabGroup, showToast: Bool) {
-        tabManager.removeTabs(item.children, showToast: showToast)
-    }
-
-    func cleanUpTabGroupNames() {
-        // Write tab group name into dictionary
-        tabGroups.forEach { group in
-            let id = group.key
-            if tabGroupDict[id] == nil {
-                tabGroupDict[id] = group.value.displayTitle
-            }
-        }
-
-        // Filter out deleted tab group names
-        var temp = [String: String]()
-        tabGroups.filter {
-            group in tabGroups[group.key] != nil
-        }.forEach { group in
-            temp[group.key] = tabGroupDict[group.key]
-        }
-        tabGroupDict = temp
     }
 }

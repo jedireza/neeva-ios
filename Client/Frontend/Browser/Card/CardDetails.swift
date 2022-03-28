@@ -317,8 +317,9 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                 Button(
                     action: { [self] in
                         ClientLogger.shared.logCounter(.tabRemovedFromGroup)
-                        manager.get(for: id)?.rootUUID = UUID().uuidString
-                        manager.tabsUpdatedPublisher.send()
+                        if let tab = manager.get(for: id) {
+                            manager.removeTabFromTabGroup(tab)
+                        }
                         ToastDefaults().showToastForPinningTab(
                             pinning: isPinned, tabManager: manager)
                     },
@@ -330,10 +331,9 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
             Button(
                 action: { [self] in
-                    manager.get(for: id)?.pinnedTime =
-                        (isPinned ? nil : Date().timeIntervalSinceReferenceDate)
-                    manager.get(for: id)?.isPinned.toggle()
-                    manager.tabsUpdatedPublisher.send()
+                    if let tab = manager.get(for: id) {
+                        manager.toggleTabPinnedState(tab)
+                    }
                 },
                 label: {
                     isPinned
@@ -617,16 +617,16 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
 }
 
 // TabGroupCardDetails are not to be used for storing data because they can be recreated.
-class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManagerProvider,
-    ThumbnailModel
-{
-    typealias Item = TabGroup
-    typealias Manager = TabGroupManager
+class TabGroupCardDetails: ObservableObject {
 
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
-    @Published var manager: TabGroupManager
+    @Published var manager: TabManager
     @Published var isShowingDetails = false
+
+    var isSelected: Bool {
+        manager.selectedTab?.rootUUID == id
+    }
 
     var isExpanded: Bool {
         get {
@@ -641,9 +641,6 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
         }
     }
     var id: String
-    var isSelected: Bool {
-        manager.tabManager.selectedTab?.rootUUID == id
-    }
 
     var isPinned: Bool {
         return allDetails.contains {
@@ -663,7 +660,7 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
 
     var customTitle: String? {
         get {
-            Defaults[.tabGroupNames][id] ?? manager.get(for: id)?.inferredTitle
+            Defaults[.tabGroupNames][id] ?? manager.getTabGroup(for: id)?.inferredTitle
         }
         set {
             Defaults[.tabGroupNames][id] = newValue
@@ -690,20 +687,20 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     }
 
     var defaultIcon: String? {
-        id == manager.get(for: id)?.children.first?.parentSpaceID
+        id == manager.getTabGroup(for: id)?.children.first?.parentSpaceID
             ? "bookmark.fill" : "square.grid.2x2.fill"
     }
 
-    init(tabGroup: TabGroup, tabGroupManager: TabGroupManager) {
+    init(tabGroup: TabGroup, tabManager: TabManager) {
         self.id = tabGroup.id
-        self.manager = tabGroupManager
+        self.manager = tabManager
 
         if FeatureFlag[.reverseChronologicalOrdering] {
             allDetails = allDetails.reversed()
         }
 
         allDetails =
-            manager.get(for: id)?.children
+            manager.getTabGroup(for: id)?.children
             .sorted(by: { lhs, rhs in
                 if lhs.isPinned && rhs.isPinned {
                     // Note: We should make it impossible for `pinnedTime` to be nil when
@@ -720,13 +717,9 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
             .map({
                 TabCardDetails(
                     tab: $0,
-                    manager: manager.tabManager,
+                    manager: manager,
                     isChild: true)
             }) ?? []
-    }
-
-    var thumbnail: some View {
-        return ThumbnailGroupView(model: self)
     }
 
     func onSelect() {
@@ -734,8 +727,8 @@ class TabGroupCardDetails: CardDetails, AccessingManagerProvider, ClosingManager
     }
 
     func onClose(showToast: Bool) {
-        if let item = manager.get(for: id) {
-            manager.close(item, showToast: showToast)
+        if let item = manager.getTabGroup(for: id) {
+            manager.closeTabGroup(item, showToast: showToast)
         }
     }
 }

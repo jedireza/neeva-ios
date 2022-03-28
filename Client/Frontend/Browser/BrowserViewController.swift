@@ -85,7 +85,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     let incognitoModel = IncognitoModel(isIncognito: false)
 
     lazy var gridModel: GridModel = {
-        GridModel(tabManager: tabManager, tabGroupManager: tabGroupManager)
+        GridModel(tabManager: tabManager)
     }()
     lazy var browserModel: BrowserModel = {
         BrowserModel(
@@ -145,7 +145,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     let profile: Profile
     let tabManager: TabManager
-    let tabGroupManager: TabGroupManager
     var server: Server? = nil
 
     // Backdrop used for displaying greyed background for private tabs
@@ -189,7 +188,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
     init(profile: Profile, scene: UIScene) {
         self.profile = profile
         self.tabManager = TabManager(profile: profile, scene: scene, incognitoModel: incognitoModel)
-        self.tabGroupManager = TabGroupManager(tabManager: tabManager)
         self.readerModeCache = DiskReaderModeCache.sharedInstance
         super.init(nibName: nil, bundle: nil)
 

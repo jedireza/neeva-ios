@@ -63,7 +63,7 @@ struct CardGridBackground: View {
 }
 
 struct CardGrid: View {
-    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    @EnvironmentObject var tabCardModel: TabCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var walletDetailsModel: WalletDetailsModel

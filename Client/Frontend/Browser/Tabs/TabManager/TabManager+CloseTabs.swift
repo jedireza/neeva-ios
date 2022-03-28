@@ -44,7 +44,7 @@ extension TabManager {
             TabEvent.post(.didClose, for: tab)
         }
 
-        tabsUpdatedPublisher.send()
+        updateTabGroupsAndSendNotifications(notify: true)
 
         sendSelectTabNotifications(previous: previous)
 
@@ -69,7 +69,7 @@ extension TabManager {
 
         if notify {
             TabEvent.post(.didClose, for: tab)
-            tabsUpdatedPublisher.send()
+            updateTabGroupsAndSendNotifications(notify: notify)
         }
 
         if flushToDisk {

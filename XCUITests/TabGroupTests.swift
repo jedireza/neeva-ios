@@ -36,7 +36,7 @@ class TabGroupTests: BaseTestCase {
         openTestURLInNewTab(andNavigateAway: true)
 
         goToTabTray()
-        waitForExistence(app.buttons["Tab Group, https://example.com/"])
+        confirmOneTabGroupExists()
     }
 
     /// Tests the case above, with multiple tabs.
@@ -49,7 +49,6 @@ class TabGroupTests: BaseTestCase {
         openTestURLInNewTab(andNavigateAway: true)
 
         goToTabTray()
-        waitForExistence(app.buttons["Tab Group, https://example.com/"])
         confirmOneTabGroupExists()
     }
 
@@ -65,7 +64,6 @@ class TabGroupTests: BaseTestCase {
         waitForExistence(app.staticTexts[url])
 
         // Confirm that that there is one Tab Group for the example URL
-        waitForExistence(app.buttons["Tab Group, https://example.com/"])
         confirmOneTabGroupExists()
     }
 
@@ -77,7 +75,6 @@ class TabGroupTests: BaseTestCase {
         openTestURLInNewTab()
 
         goToTabTray()
-        waitForExistence(app.buttons["Tab Group, https://example.com/"])
         confirmOneTabGroupExists()
     }
 }

@@ -56,7 +56,7 @@ extension TabManager {
 
         selectTab(tabToSelect, notify: true)
 
-        tabsUpdatedPublisher.send()
+        updateTabGroupsAndSendNotifications(notify: true)
         return true
     }
 }
