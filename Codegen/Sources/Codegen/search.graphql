@@ -132,6 +132,7 @@ query Search($query: String!) {
                     }
                   }
                   reviewCount
+                  imageURL
                   imageURLs
                   isClosed
                   isOpenNow
