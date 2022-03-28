@@ -78,6 +78,19 @@ struct DebugSettingsSection: View {
                     tabManager.addTabsForURLs(urls, zombie: true)
                 }
 
+                Button(String("Create 500 tabs")) {
+                    guard let tabManager = SceneDelegate.getTabManagerOrNil() else {
+                        return
+                    }
+
+                    var urls = [URL]()
+                    for _ in 0...499 {
+                        urls.append(URL(string: "https://example.com")!)
+                    }
+
+                    tabManager.addTabsForURLs(urls, zombie: true)
+                }
+
                 Button(String("Force Crash App")) {
                     crash()
                 }
