@@ -164,6 +164,8 @@ public typealias PlaceResult = (Place)
 public typealias PlaceListResult = ([Place])
 
 private struct PartialResult<T> {
+    // TODO: - Expand this to use enum and support aggregating over many results
+    /// Used to indicate if a result was omitted because a string cannot be parsed into a URL object
     let skippedItem: Bool
     let result: T?
 
