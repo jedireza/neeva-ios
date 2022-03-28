@@ -10,13 +10,15 @@ import SwiftUI
 public struct ShowPhrasesView: View {
     @State var copyButtonText = "Copy"
     @State var showPhrases = false
-    @Default(.cryptoPhrases) var secretPhrases: String
     @Binding public var viewState: ViewState
+    var secretPhrases: String {
+        NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoSecretPhrase] ?? ""
+    }
 
     public init(viewState: Binding<ViewState>) {
         self._viewState = viewState
     }
-    
+
     public var body: some View {
         VStack(spacing: 16) {
             Text("Secret Recovery Phrase")
@@ -93,7 +95,7 @@ public struct ShowPhrasesView: View {
             Button(action: {
                 copyButtonText = "Copied!"
                 UIPasteboard.general.setValue(
-                    Defaults[.cryptoPhrases],
+                    secretPhrases,
                     forPasteboardType: kUTTypePlainText as String)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
                     copyButtonText = "Copy"

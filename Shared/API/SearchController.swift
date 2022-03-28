@@ -459,7 +459,7 @@ public class SearchController:
         var recipeDataComplete = true
         var webResultsDataComplete = true
 
-        data.search?.resultGroups?
+        data.search?.resultGroup?
             // [ResultGroup?]
             .compactMap { group in
                 return group?.result

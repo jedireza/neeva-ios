@@ -129,7 +129,7 @@ extension TabManager: ClosingManager, SelectingManager, AccessingManager {
     }
 
     func select(_ tab: Tab) {
-        selectTab(tab)
+        selectTab(tab, notify: true)
     }
 
     func get(for id: String) -> Tab? {

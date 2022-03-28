@@ -10,8 +10,12 @@ import web3swift
 
 struct CryptoWalletView: View {
     @EnvironmentObject var model: Web3Model
-    @State var viewState: ViewState = Defaults[.cryptoPhrases].isEmpty ? .starter : .dashboard
+    @State var viewState: ViewState = CryptoWalletView.cryptoPhrases.isEmpty ? .starter : .dashboard
     let dismiss: () -> Void
+
+    private static var cryptoPhrases: String {
+        NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoSecretPhrase] ?? ""
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -37,7 +41,7 @@ struct CryptoWalletView: View {
                 case .starter:
                     WelcomeStarterView(viewState: $viewState)
                 case .dashboard:
-                    WalletDashboard(viewState: $viewState)
+                    WalletDashboard(viewState: $viewState, assetStore: AssetStore.shared)
                 case .showPhrases:
                     ShowPhrasesView(viewState: $viewState)
                 case .importWallet:
@@ -49,7 +53,7 @@ struct CryptoWalletView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .overlay(
             Button(action: dismiss) {
-                Text("Done")
+                Text(viewState == .starter ? "Skip" : "Done")
                     .withFont(.labelLarge)
                     .foregroundColor(.ui.adaptive.blue)
                     .frame(height: 48)
@@ -63,6 +67,7 @@ struct CryptoWalletView: View {
                     model.wallet = WalletAccessor()
                     model.updateBalances()
                 }
+                AssetStore.shared.refresh()
             }
         }
     }

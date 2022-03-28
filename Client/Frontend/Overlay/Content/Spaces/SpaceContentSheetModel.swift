@@ -7,9 +7,16 @@ import Shared
 import SwiftUI
 
 class SpaceContentSheetModel: ObservableObject {
+    @Published private(set) var currentSpaceDetail: SpaceCardDetails? {
+        willSet {
+            guard newValue != currentSpaceDetail else { return }
+            didUserDismiss = false
+        }
+    }
+
     @Published private(set) var selectedTab: Tab?
-    @Published private(set) var currentSpaceDetail: SpaceCardDetails?
     @Published private(set) var currentSpaceEntityDetail: SpaceEntityThumbnail?
+    @Published var didUserDismiss: Bool = false
     private var subscriptions = Set<AnyCancellable>()
     private var urlSubscription: AnyCancellable? = nil
     private var spaceModel: SpaceCardModel
@@ -24,9 +31,14 @@ class SpaceContentSheetModel: ObservableObject {
             self.currentSpaceDetail = self.spaceModel.allDetails.first(where: {
                 $0.id == tabManager.selectedTab?.parentSpaceID
             })
-            self.currentSpaceEntityDetail = SpaceEntityThumbnail(
-                data: (space.contentData?.first(where: { $0.url == tabManager.selectedTab?.url }))!,
-                spaceID: spaceID)
+            if let data = space.contentData?.first(
+                where: { $0.url == tabManager.selectedTab?.url })
+            {
+                self.currentSpaceEntityDetail = SpaceEntityThumbnail(
+                    data: data,
+                    spaceID: spaceID)
+            }
+
         } else {
             self.currentSpaceDetail = nil
             self.currentSpaceEntityDetail = nil

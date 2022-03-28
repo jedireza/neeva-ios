@@ -27,7 +27,11 @@ public struct SequenceInfo {
     public var transaction: EthereumTransaction? = nil
     public var options: TransactionOptions? = nil
 
-    public init(type: SequenceType, thumbnailURL: URL, dAppMeta: Session.ClientMeta, chain: EthNode, message: String, onAccept: @escaping (Int) -> Void, onReject: @escaping () -> Void, transaction: EthereumTransaction? = nil ,options: TransactionOptions? = nil) {
+    public init(
+        type: SequenceType, thumbnailURL: URL, dAppMeta: Session.ClientMeta, chain: EthNode,
+        message: String, onAccept: @escaping (Int) -> Void, onReject: @escaping () -> Void,
+        transaction: EthereumTransaction? = nil, options: TransactionOptions? = nil
+    ) {
         self.type = type
         self.thumbnailURL = thumbnailURL
         self.dAppMeta = dAppMeta
@@ -212,7 +216,10 @@ public struct MaliciousSiteView: View {
     let navigateToAlternateDomain: () -> Void
     let closeTab: () -> Void
 
-    public init(domain: String, trustSignal: TrustSignal, alternativeDomain: String?, navigateToAlternateDomain: @escaping () -> Void, closeTab: @escaping () -> Void) {
+    public init(
+        domain: String, trustSignal: TrustSignal, alternativeDomain: String?,
+        navigateToAlternateDomain: @escaping () -> Void, closeTab: @escaping () -> Void
+    ) {
         self.domain = domain
         self.trustSignal = trustSignal
         self.alternativeDomain = alternativeDomain
@@ -297,7 +304,10 @@ public struct WalletSequenceBottomInfoPanel: View {
 
     @Binding var userSelectedChain: EthNode?
 
-    public init(sequence: SequenceInfo, wallet: WalletAccessor, balance: String?, userSelectedChain: Binding<EthNode?>) {
+    public init(
+        sequence: SequenceInfo, wallet: WalletAccessor, balance: String?,
+        userSelectedChain: Binding<EthNode?>
+    ) {
         self.sequence = sequence
         self.wallet = wallet
         self.balance = balance

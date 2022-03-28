@@ -37,6 +37,60 @@ query Search($query: String!) {
         snippet
         typeSpecific {
           __typename
+          ... on Place {
+            place {
+              id
+              placeSubType
+              name
+              address {
+                streetAddress
+                fullAddress
+              }
+              position {
+                lat
+                lon
+              }
+              telephone
+              telephonePretty
+              websiteURL
+              yelpURL
+              mapsURL
+              googleMapsURL
+              price
+              rating
+              reviewCount
+              reviews {
+                id
+              }
+              articulatedOperatingStatus
+                        articulatedHour
+              specialHours {
+                  isOvernight
+                  start
+                  end
+                  date
+                  isClosed
+              }
+              hours {
+                open {
+                  isOvernight
+                  start
+                  end
+                  day
+                }
+              }
+              isClosed
+              isOpenNow
+              categories
+              imageURL
+              mapImage {
+                url
+                darkUrl
+                height
+                width
+              }
+            }
+          }
           ... on PlaceList {
             placeList {
               places {

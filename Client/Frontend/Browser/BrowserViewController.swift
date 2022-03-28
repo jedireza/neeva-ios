@@ -14,6 +14,7 @@ import SwiftUI
 import SwiftyJSON
 import UIKit
 import WalletConnectSwift
+import WalletCore
 import WebKit
 import XCGLogger
 
@@ -42,9 +43,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
             setReadingMode: { [self] enabled in
                 DispatchQueue.main.async {
                     if enabled {
-                        enableReaderMode()
+                        self.enableReaderMode()
                     } else {
-                        disableReaderMode()
+                        self.disableReaderMode()
                     }
                 }
             }, tabManager: tabManager)
@@ -89,10 +90,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
     lazy var browserModel: BrowserModel = {
         BrowserModel(
             gridModel: gridModel, tabManager: tabManager, chromeModel: chromeModel,
-            incognitoModel: incognitoModel)
+            incognitoModel: incognitoModel, switcherToolbarModel: switcherToolbarModel)
     }()
 
-    lazy var toolbarModel: SwitcherToolbarModel = {
+    private lazy var switcherToolbarModel: SwitcherToolbarModel = {
         SwitcherToolbarModel(
             tabManager: tabManager,
             openLazyTab: { self.openLazyTab(openedFrom: .tabTray) },
@@ -386,6 +387,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 SpaceStore.suggested.refresh()
             }
         }
+
+        if FeatureFlag[.web3Mode] {
+            DispatchQueue.main.async {
+                AssetStore.shared.refresh()
+            }
+        }
     }
 
     override func viewDidLoad() {
@@ -489,6 +496,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
             } else if self.tabManager.normalTabs.isEmpty {
                 if FeatureFlag[.web3Mode] {
                     self.showZeroQuery()
+                    if !Defaults[.walletIntroSeen] {
+                        self.web3Model.showWalletPanel()
+                        Defaults[.walletIntroSeen] = true
+                    }
                 } else if !Defaults[.didFirstNavigation] {
                     self.showPreviewHome()
                 } else {
@@ -500,7 +511,15 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     override func viewDidAppear(_ animated: Bool) {
         if !FeatureFlag[.web3Mode] {
-            presentIntroViewController()
+            if !Defaults[.introSeen] {
+                if NeevaExperiment.startExperiment(
+                    for: .defaultBrowserInterstitialFirst
+                ) == .showInterstitialFirst {
+                    presentDefaultBrowserFirstRun()
+                } else {
+                    presentIntroViewController()
+                }
+            }
         }
 
         screenshotHelper.viewIsVisible = true
@@ -757,7 +776,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
             )
         } else if let tab = tab {
             tab.queryForNavigation.currentQuery = .init(
-                typed: searchQueryModel.value, suggested: suggestedQuery)
+                typed: searchQueryModel.value,
+                suggested: suggestedQuery,
+                location: .suggestion
+            )
 
             if zeroQueryModel.openedFrom == .backButton {
                 // Once user changes current URL from the back button, the forward history list needs
@@ -813,7 +835,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     func switchToTabForURLOrOpen(_ url: URL, isIncognito: Bool = false) {
         popToBVC()
         if let tab = tabManager.getTabFor(url) {
-            tabManager.selectTab(tab)
+            tabManager.selectTab(tab, notify: true)
         } else {
             openURLInNewTab(url, isIncognito: isIncognito)
         }
@@ -822,7 +844,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     func switchToTabForWidgetURLOrOpen(_ url: URL, uuid: String, isIncognito: Bool = false) {
         popToBVC()
         if let tab = tabManager.getTabForUUID(uuid: uuid) {
-            tabManager.selectTab(tab)
+            tabManager.selectTab(tab, notify: true)
         } else {
             openURLInNewTab(url, isIncognito: isIncognito)
         }
@@ -849,7 +871,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     isIncognito: isIncognito,
                     query: query,
                     visitType: visitType
-                )
+                ),
+                notify: true
             )
 
             if self.shouldPresentDBPrompt {
@@ -884,7 +907,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 text: toastLabelText,
                 buttonText: "Switch",
                 buttonAction: {
-                    self.tabManager.selectTab(tab)
+                    self.tabManager.selectTab(tab, notify: true)
                 }
             ).enqueue(manager: toastManager)
         }
@@ -1102,6 +1125,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     // nothing when the screenshot is being taken, depending on internet connection
                     // Issue created: https://github.com/mozilla-mobile/firefox-ios/issues/7003
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        // The screenshot's frame seems to be equal to webView's frame. The
+                        // frame is manually set here to make sure the screenshot is not blank
+                        // when generated via the long presss menu.
+                        webView.frame = self.tabManager.selectedTab?.webView?.frame ?? CGRect.zero
                         self.screenshotHelper.takeScreenshot(tab)
                         if webView.superview == self.view {
                             webView.removeFromSuperview()
@@ -1536,13 +1563,42 @@ extension BrowserViewController {
         }
     }
 
+    fileprivate func presentDefaultBrowserFirstRun() {
+        // TODO: refactor the logic into view model
+        overlayManager.presentFullScreenModal(
+            content: AnyView(
+                DefaultBrowserInterstitialWelcomeScreen {
+                    self.overlayManager.hideCurrentOverlay()
+                } buttonAction: {
+                    self.overlayManager.hideCurrentOverlay()
+                    UIApplication.shared.openSettings(
+                        triggerFrom: .defaultBrowserPromptMergeEduction
+                    )
+                }
+                .onAppear {
+                    AppDelegate.setRotationLock(to: .portrait)
+                }
+                .onDisappear {
+                    AppDelegate.setRotationLock(to: .all)
+                }
+            )
+        ) {
+            Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
+            Defaults[.introSeen] = true
+            ClientLogger.shared.logCounter(
+                .DefaultBrowserInterstitialImp
+            )
+            NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
+        }
+    }
+
     // Default browser onboarding
     func presentDBOnboardingViewController(
         _ force: Bool = false,
         modalTransitionStyle: UIModalTransitionStyle? = nil,
         triggerFrom: OpenSysSettingTrigger
     ) {
-        let onboardingVC = DefaultBrowserOnboardingViewController(
+        let onboardingVC = DefaultBrowserInterstitialOnboardingViewController(
             didOpenSettings: { [weak self] in
                 guard let self = self else { return }
                 self.zeroQueryModel.updateState()
@@ -1602,19 +1658,17 @@ extension BrowserViewController {
                     self.introViewModel = nil
 
                     switch action {
-                    case .signupWithApple(let marketingEmailOptOut, let serverAuthCode):
-                        if let serverAuthCode = serverAuthCode {
+                    case .signupWithApple(
+                        let marketingEmailOptOut, let identityToken, let authorizationCode):
+                        if let identityToken = identityToken,
+                            let authorizationCode = authorizationCode
+                        {
                             let authURL = NeevaConstants.appleAuthURL(
-                                serverAuthCode: serverAuthCode,
+                                identityToken: identityToken,
+                                authorizationCode: authorizationCode,
                                 marketingEmailOptOut: marketingEmailOptOut ?? false,
                                 signup: true)
-                            let httpCookieStore = self.tabManager.configuration.websiteDataStore
-                                .httpCookieStore
-                            httpCookieStore.setCookie(
-                                NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)
-                            ) {
-                                self.openURLInNewTab(authURL)
-                            }
+                            self.openURLInNewTab(authURL)
                         }
                     case .skipToBrowser:
                         if let onDismiss = onDismiss {
@@ -1639,9 +1693,11 @@ extension BrowserViewController {
                         }
                     }
 
-                    if !Defaults[.didSetDefaultBrowser]
-                        && !Defaults[.didShowDefaultBrowserInterstitial]
-                        && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
+                    if let arm = NeevaExperiment.arm(for: .defaultBrowserInterstitialFirst),
+                        arm == .control
+                            && !Defaults[.didSetDefaultBrowser]
+                            && !Defaults[.didShowDefaultBrowserInterstitial]
+                            && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
                     {
                         if case .skipToBrowser = action {
                             if !introSeen {
@@ -1678,22 +1734,33 @@ extension BrowserViewController {
     }
 
     private func presentDBPromptView(fromSkipToBrowser: Bool = false) {
+        if let arm = NeevaExperiment.arm(for: .defaultBrowserInterstitialFirst),
+            arm == .showInterstitialFirst
+        {
+            return
+        }
+
         self.shouldPresentDBPrompt = false
 
         if fromSkipToBrowser {
             ClientLogger.shared.logCounter(
                 .DefaultBrowserInterstitialImpSkipToBrowser
             )
+            NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
         }
 
         self.overlayManager.presentFullScreenModal(
             content: AnyView(
-                DefaultBrowserInterstitialOnboardingView(fromSkipToBrowser: fromSkipToBrowser) {
+                DefaultBrowserInterstitialOnboardingView(
+                    trigger: fromSkipToBrowser ? .skipToBrowser : .afterSignup
+                ) {
                     self.overlayManager.hideCurrentOverlay()
                 } buttonAction: {
                     self.overlayManager.hideCurrentOverlay()
                     UIApplication.shared.openSettings(
-                        triggerFrom: .defaultBrowserPromptMergeEduction
+                        triggerFrom: fromSkipToBrowser
+                            ? .defaultBrowserPromptSkipToBrowser
+                            : .defaultBrowserPromptMergeEduction
                     )
                 }
             )

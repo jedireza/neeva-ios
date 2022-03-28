@@ -299,19 +299,6 @@ extension Strings {
         comment: "Button to not update the user's password")
 }
 
-// Downloads Panel
-extension Strings {
-    public static let DownloadsPanelEmptyStateTitle = MZLocalizedString(
-        "DownloadsPanel.EmptyState.Title", value: "Downloaded files will show up here.",
-        comment: "Title for the Downloads Panel empty state.")
-    public static let DownloadsPanelDeleteTitle = MZLocalizedString(
-        "DownloadsPanel.Delete.Title", value: "Delete",
-        comment: "Action button for deleting downloaded files in the Downloads panel.")
-    public static let DownloadsPanelShareTitle = MZLocalizedString(
-        "DownloadsPanel.Share.Title", value: "Share",
-        comment: "Action button for sharing downloaded files in the Downloads panel.")
-}
-
 // History Panel
 extension Strings {
     public static let SyncedTabsTableViewCellTitle = MZLocalizedString(
@@ -1903,7 +1890,7 @@ extension String {
     // Quick Action - Medium Size - Gallery View
     public static let NeevaShortcutGalleryDescription = MZLocalizedString(
         "TodayWidget.ShortcutGalleryDescription", tableName: "Today",
-        value: "Add Neevare shortcuts to your Home screen.",
+        value: "Add Neeva shortcuts to your Home screen.",
         comment: "Description for medium size widget to add Neeva Shortcut to home screen")
 
     // Quick Action - Small Size Widget
@@ -2708,9 +2695,6 @@ extension String {
         comment: "Settings item for clearing website data")
     public static let ClearableCookies = MZLocalizedString(
         "Cookies", tableName: "ClearPrivateData", comment: "Settings item for clearing cookies")
-    public static let ClearableDownloads = MZLocalizedString(
-        "Downloaded Files", tableName: "ClearPrivateData",
-        comment: "Settings item for deleting downloaded files")
 }
 
 // SearchEngine Picker

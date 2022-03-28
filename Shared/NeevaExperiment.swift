@@ -72,9 +72,17 @@ extension NeevaExperiment {
     //        case showDBPrompt
     //    }
 
+    public enum DefaultBrowserInterstitialFirst: String, ExperimentArms {
+        case control
+        case showInterstitialFirst
+    }
 }
 
 // Experiment Example */
 //extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserV2 {
 //public static let defaultBrowserPromptV2 = Self()
 //}
+
+extension NeevaExperiment.Experiment where Arm == NeevaExperiment.DefaultBrowserInterstitialFirst {
+    public static let defaultBrowserInterstitialFirst = Self()
+}

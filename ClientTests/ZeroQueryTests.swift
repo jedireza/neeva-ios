@@ -45,7 +45,7 @@ class ZeroQueryTests: XCTestCase {
         try skipTest(issue: 2522, "fails with new content layout, disabling until that stabilizes")
         let tab = tabManager.addTab()
         tab.loadRequest(URLRequest(url: .aboutBlank))
-        tabManager.selectTab(tab)
+        tabManager.selectTab(tab, notify: true)
         waitForCondition(condition: {
             switch tabContainerModel.currentContentUI {
             case .webPage:
@@ -68,7 +68,7 @@ class ZeroQueryTests: XCTestCase {
         try skipTest(issue: 2522, "fails with new content layout, disabling until that stabilizes")
         let tab = tabManager.addTab()
         tab.loadRequest(URLRequest(url: .aboutBlank))
-        tabManager.selectTab(tab)
+        tabManager.selectTab(tab, notify: true)
         waitForCondition(condition: {
             switch tabContainerModel.currentContentUI {
             case .webPage:
@@ -91,7 +91,7 @@ class ZeroQueryTests: XCTestCase {
         try skipTest(issue: 2522, "fails with new content layout, disabling until that stabilizes")
         let tab = tabManager.addTab()
         tab.loadRequest(URLRequest(url: .aboutBlank))
-        tabManager.selectTab(tab)
+        tabManager.selectTab(tab, notify: true)
         waitForCondition(condition: {
             switch tabContainerModel.currentContentUI {
             case .webPage:

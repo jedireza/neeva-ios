@@ -99,6 +99,9 @@ class TabManager: NSObject {
         NotificationCenter.default.addObserver(
             self, selector: #selector(prefsDidChange), name: UserDefaults.didChangeNotification,
             object: nil)
+
+        ScreenCaptureHelper.defaultHelper.subscribeToTabUpdates(
+            from: selectedTabPublisher.eraseToAnyPublisher())
     }
 
     func addNavigationDelegate(_ delegate: WKNavigationDelegate) {
@@ -192,7 +195,7 @@ class TabManager: NSObject {
     // MARK: - Select Tab
     // This function updates the _selectedIndex.
     // Note: it is safe to call this with `tab` and `previous` as the same tab, for use in the case where the index of the tab has changed (such as after deletion).
-    func selectTab(_ tab: Tab?, previous: Tab? = nil, notify: Bool = true) {
+    func selectTab(_ tab: Tab?, previous: Tab? = nil, notify: Bool) {
         assert(Thread.isMainThread)
         let previous = previous ?? selectedTab
 
@@ -203,7 +206,10 @@ class TabManager: NSObject {
 
         selectedTab = tab
 
-        incognitoModel.update(isIncognito: tab?.isIncognito ?? false)
+        // TODO(darin): This writes to a published variable generating a notification.
+        // Are we okay with that happening here?
+        incognitoModel.update(isIncognito: tab?.isIncognito ?? isIncognito)
+
         store.preserveTabs(tabs, selectedTab: selectedTab, for: scene)
 
         assert(tab === selectedTab, "Expected tab is selected")
@@ -277,7 +283,7 @@ class TabManager: NSObject {
         incognitoModel.toggle()
 
         if let mostRecentTab = mostRecentTab(inTabs: isIncognito ? incognitoTabs : normalTabs) {
-            selectTab(mostRecentTab)
+            selectTab(mostRecentTab, notify: true)
         } else if isIncognito && openLazyTab {  // no empty tab tray in incognito
             bvc.openLazyTab(openedFrom: fromTabTray ? .tabTray : .openTab(selectedTab))
         } else {
@@ -310,7 +316,7 @@ class TabManager: NSObject {
         let parentTabIsMostRecentUsed = mostRecentTab(inTabs: viableTabs) == parentTab
 
         if parentTabIsMostRecentUsed, parentTab.lastExecutedTime != nil {
-            selectTab(parentTab, previous: tab)
+            selectTab(parentTab, previous: tab, notify: true)
             return true
         }
         return false
@@ -343,7 +349,17 @@ class TabManager: NSObject {
         // may be unable to set `window.location` on the popup immediately after
         // calling `window.open("")`.
         DispatchQueue.main.asyncAfter(deadline: .now() + delaySelectingNewPopupTab) {
-            self.selectTab(popup)
+            self.selectTab(popup, notify: true)
+        }
+
+        // if we open from SRP, carry over the query
+        if let parentURL = parentTab.url,
+            NeevaConstants.isNeevaSearchResultPage(parentURL),
+            let parentQuery = parentTab.queryForNavigation.findQueryForNavigation(with: parentURL)
+        {
+            var copiedQuery = parentQuery
+            copiedQuery.location = .SRP
+            popup.queryForNavigation.currentQuery = copiedQuery
         }
 
         return popup
@@ -365,6 +381,13 @@ class TabManager: NSObject {
 
         if let tab = selectedTab {
             TabEvent.post(.didGainFocus, for: tab)
+        }
+    }
+
+    func rearrangeTabs(fromIndex: Int, toIndex: Int, notify: Bool) {
+        tabs.rearrange(from: fromIndex, to: toIndex)
+        if notify {
+            tabsUpdatedPublisher.send()
         }
     }
 }

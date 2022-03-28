@@ -26,8 +26,10 @@ extension BaseTestCase {
             app.buttons["TabOverflowButton"].tap(force: true)
             // scroll up the view
             if !app.buttons[button].isHittable {
-                let start = app.buttons["Support"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
-                let finish = app.buttons["Find on Page"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                let start = app.buttons["Support"].coordinate(
+                    withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                let finish = app.buttons["Find on Page"].coordinate(
+                    withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
                 start.press(forDuration: 1, thenDragTo: finish)
             }
         } else if app.buttons["TopBarOverflowButton"].exists {

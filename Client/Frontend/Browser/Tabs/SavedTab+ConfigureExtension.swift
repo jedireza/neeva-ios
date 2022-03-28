@@ -30,7 +30,9 @@ extension SavedTab {
                     currentPage: currentPage, urls: urls,
                     queries: queries.map { $0?.typed },
                     suggestedQueries: queries.map { $0?.suggested },
-                    lastUsedTime: tab.lastExecutedTime ?? Date.nowMilliseconds())
+                    queryLocations: queries.map { $0?.location },
+                    lastUsedTime: tab.lastExecutedTime ?? Date.nowMilliseconds()
+                )
             }
         }
 

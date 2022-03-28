@@ -14,6 +14,7 @@ import web3swift
 
 struct WalletDashboard: View {
     @Default(.sessionsPeerIDs) var savedSessions
+    @Default(.currentTheme) var currentTheme
     @Environment(\.hideOverlay) var hideOverlay
     @EnvironmentObject var model: Web3Model
 
@@ -21,6 +22,7 @@ struct WalletDashboard: View {
 
     @State var showBalances: Bool = true
     @State var showSessions: Bool = true
+    @State var showThemes: Bool = true
     @State var showSendForm: Bool = false
     @State var showOverflowSheet: Bool = false
     @State var showConfirmDisconnectAlert = false
@@ -28,6 +30,8 @@ struct WalletDashboard: View {
     @State var sessionToDisconnect: Session? = nil
     @State var showQRScanner: Bool = false
     @State var qrCodeStr: String = ""
+
+    @ObservedObject var assetStore: AssetStore
 
     var addressText: String {
         "\(String(Defaults[.cryptoPublicKey].prefix(3)))...\(String(Defaults[.cryptoPublicKey].suffix(3)))"
@@ -164,7 +168,7 @@ struct WalletDashboard: View {
                         Symbol(decorative: .docOnDoc, style: .bodyMedium)
                         Text("Copy address")
                     }
-                }.buttonStyle(WalletDashboardButtonStyle())
+                }.buttonStyle(DashboardButtonStyle())
                 Button(action: { showQRScanner = true }) {
                     HStack(spacing: 4) {
                         Symbol(decorative: .qrcodeViewfinder, style: .bodyMedium)
@@ -174,14 +178,14 @@ struct WalletDashboard: View {
                     ScannerView(
                         showQRScanner: $showQRScanner, returnAddress: $qrCodeStr,
                         onComplete: onScanComplete)
-                }.buttonStyle(WalletDashboardButtonStyle())
+                }.buttonStyle(DashboardButtonStyle())
                 Button(action: { showSendForm = true }) {
                     HStack(spacing: 4) {
                         Symbol(decorative: .paperplane, style: .bodyMedium)
                         Text("Send")
                     }
                 }
-                .buttonStyle(WalletDashboardButtonStyle())
+                .buttonStyle(DashboardButtonStyle())
                 .sheet(isPresented: $showSendForm, onDismiss: {}) {
                     VStack {
                         sheetHeader("Send")
@@ -321,6 +325,74 @@ struct WalletDashboard: View {
             })
     }
 
+    var unlockedThemesSection: some View {
+        Section(
+            content: {
+                ForEach(
+                    model.unlockedThemes.sorted(by: { $0.rawValue > $1.rawValue }),
+                    id: \.rawValue
+                ) { theme in
+                    if showThemes {
+                        Button(
+                            action: {
+                                if let slug = theme.asset?.collection?.openSeaSlug {
+                                    Defaults[.currentTheme] = slug == currentTheme ? "" : slug
+                                }
+                            },
+                            label: {
+                                HStack {
+                                    WebImage(url: theme.asset?.collection?.imageURL)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 34, height: 34)
+                                        .clipShape(Circle())
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        Text(theme.asset?.collection?.name ?? "")
+                                            .withFont(.bodyMedium)
+                                            .lineLimit(1)
+                                            .foregroundColor(.label)
+                                        Text(theme.asset?.collection?.externalURL?.baseDomain ?? "")
+                                            .withFont(.bodySmall)
+                                            .foregroundColor(.secondaryLabel)
+                                    }
+                                    Spacer()
+                                    Symbol(
+                                        decorative: currentTheme
+                                            == theme.asset?.collection?.openSeaSlug
+                                            ? .checkmarkCircleFill : .circle,
+                                        size: 24
+                                    )
+                                    .foregroundColor(.label)
+                                }
+                            }
+                        )
+                        .padding(16)
+                        .background(Color.clear)
+                        .modifier(WalletListSeparatorModifier())
+                    }
+                }
+            },
+            header: {
+                if !model.unlockedThemes.isEmpty {
+                    HStack {
+                        Text("Unlocked Themes")
+                            .withFont(.headingMedium)
+                            .foregroundColor(.label)
+                        Spacer()
+                        Button(action: {
+                            showThemes.toggle()
+                        }) {
+                            Symbol(
+                                decorative: showThemes ? .chevronUp : .chevronDown,
+                                style: .headingMedium
+                            )
+                            .foregroundColor(.label)
+                        }
+                    }.padding(.vertical, 10)
+                }
+            })
+    }
+
     var confirmRemoveWalletSheet: ActionSheet {
         ActionSheet(
             title: Text(
@@ -334,14 +406,19 @@ struct WalletDashboard: View {
                         showConfirmRemoveWalletAlert = false
                         viewState = .starter
                         hideOverlay()
-                        Defaults[.cryptoPhrases] = ""
                         Defaults[.cryptoPublicKey] = ""
-                        Defaults[.cryptoPrivateKey] = ""
+                        try? NeevaConstants.cryptoKeychain.remove(NeevaConstants.cryptoSecretPhrase)
+                        try? NeevaConstants.cryptoKeychain.remove(NeevaConstants.cryptoPrivateKey)
                         Defaults[.sessionsPeerIDs].forEach {
                             Defaults[.dAppsSession($0)] = nil
                         }
                         Defaults[.sessionsPeerIDs] = Set<String>()
                         model.wallet = WalletAccessor()
+                        Defaults[.currentTheme] = "default"
+                        AssetStore.shared.assets.removeAll()
+                        AssetStore.shared.availableThemes.removeAll()
+                        AssetStore.shared.collections.removeAll()
+
                     }),
                 .cancel(),
             ])
@@ -373,6 +450,7 @@ struct WalletDashboard: View {
                 accountInfo
                 balancesSection
                 openSessionsSection
+                unlockedThemesSection
                     .actionSheet(isPresented: $showConfirmDisconnectAlert) {
                         confirmDisconnectSheet
                     }
@@ -501,20 +579,5 @@ struct SessionActionsModifier: ViewModifier {
                     })
                 )
         }
-    }
-}
-
-public struct WalletDashboardButtonStyle: ButtonStyle {
-    @Environment(\.isEnabled) private var isEnabled
-
-    public func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .withFont(unkerned: .bodyMedium)
-            .foregroundColor(.label)
-            .padding(12)
-            .frame(height: 40)
-            .background(configuration.isPressed ? Color.tertiarySystemFill : Color.clear)
-            .roundedOuterBorder(cornerRadius: 20, color: .secondarySystemFill, lineWidth: 1)
-            .clipShape(Capsule())
     }
 }

@@ -300,15 +300,6 @@
 /* The description text in the Download progress toast for showing the downloaded file size (1$) out of the total expected file size (2$). */
 "Downloads.Toast.Progress.DescriptionText" = "%1$@/%2$@";
 
-/* Action button for deleting downloaded files in the Downloads panel. */
-"DownloadsPanel.Delete.Title" = "Delete";
-
-/* Title for the Downloads Panel empty state. */
-"DownloadsPanel.EmptyState.Title" = "Downloaded files will show up here.";
-
-/* Action button for sharing downloaded files in the Downloads panel. */
-"DownloadsPanel.Share.Title" = "Share";
-
 /* Text message in the settings table view */
 "Enter your password to connect" = "Enter your password to connect";
 

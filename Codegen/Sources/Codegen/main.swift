@@ -14,10 +14,29 @@ func / (dir: URL, folderName: String) -> URL {
 
 do {
     let targetRootURL = sourceRootURL / "Shared" / "API"
+
+    let schema = targetRootURL.appendingPathComponent("schema.json")
+    let codegenEngine: ApolloCodegenOptions.CodeGenerationEngine = .default
+    let outputFileURL: URL
+    switch codegenEngine {
+    case .typescript:
+        outputFileURL = targetRootURL.appendingPathComponent("API.swift")
+    }
+
+    let operationIDsURL = targetRootURL.appendingPathComponent("operationIDs.json")
+
+    let options = ApolloCodegenOptions(
+        codegenEngine: codegenEngine,
+        operationIDsURL: operationIDsURL,
+        outputFormat: .singleFile(atFileURL: outputFileURL),
+        urlToSchemaFile: schema,
+        downloadTimeout: 30.0
+    )
+
     try ApolloCodegen.run(
         from: parentFolderOfScriptFile,
         with: sourceRootURL / "Codegen" / "ApolloCLI",
-        options: ApolloCodegenOptions(targetRootURL: targetRootURL)
+        options: options
     )
     let compiledFileURL = targetRootURL / "API.swift"
     let compiledFile =

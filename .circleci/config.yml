@@ -143,7 +143,7 @@ commands:
 jobs:
   build:
     macos:
-      xcode: "13.2.1"
+      xcode: "13.3.0"
     resource_class: macos.x86.medium.gen2
     steps:
       - bootstrap
@@ -156,7 +156,7 @@ jobs:
             - ~/Library/Developer/Xcode/DerivedData
   swift-format:
     macos:
-      xcode: "13.2.1"
+      xcode: "13.3.0"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
@@ -164,7 +164,7 @@ jobs:
       - swift-format-check
   test-client:
     macos:
-      xcode: "13.2.1"
+      xcode: "13.3.0"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
@@ -173,21 +173,21 @@ jobs:
       - app-clip-tests
   ui-tests:
     macos:
-      xcode: "13.2.1"
+      xcode: "13.3.0"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - ui-tests
   xcui-tests:
     macos:
-      xcode: "13.2.1"
+      xcode: "13.3.0"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache
       - xcui-tests
   xcui-tests-ipad:
     macos:
-      xcode: "13.2.1"
+      xcode: "13.3.0"
     resource_class: macos.x86.medium.gen2
     steps:
       - restore-build-cache

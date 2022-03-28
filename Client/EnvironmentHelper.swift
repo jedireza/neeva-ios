@@ -109,10 +109,10 @@ public class EnvironmentHelper {
 
         let attributes = [
             normalTabsOpened, incongitoTabsOpened, numTabGroupsTotal, numChildTabsTotal,
-            deviceTheme, deviceOrientation, deviceScreensSize, 
+            deviceTheme, deviceOrientation, deviceScreensSize,
             isUserSignedIn, getSessionUUID(),
         ]
-      
+
         return attributes
     }
 
@@ -157,5 +157,11 @@ public class EnvironmentHelper {
         // session UUID that will rotate every 30 mins
         return ClientLogCounterAttribute(
             key: LogConfig.Attribute.SessionUUID, value: Defaults[.sessionUUID])
+    }
+
+    public func getSessionUUIDv2() -> ClientLogCounterAttribute {
+        // session UUID that will rotate every 30 mins
+        return ClientLogCounterAttribute(
+            key: LogConfig.Attribute.SessionUUIDv2, value: Defaults[.sessionUUIDv2])
     }
 }

@@ -105,11 +105,18 @@ public class CheatsheetMenuViewModel: ObservableObject {
 
         clearCheatsheetData()
 
-        currentPageURL = tab?.webView?.url
+        currentPageURL = tab?.url
         self.cheatsheetDataLoading = true
 
+        // Unwrap reader mode URLs
+        if (currentPageURL?.isReaderModeURL ?? false)
+            || (currentPageURL?.isSyncedReaderModeURL ?? false)
+        {
+            currentPageURL = currentPageURL?.decodeReaderModeURL
+        }
+
         guard let url = currentPageURL,
-            url.scheme == "https",
+            ["https", "http"].contains(url.scheme),
             !NeevaConstants.isInNeevaDomain(url)
         else {
             self.cheatsheetDataLoading = false

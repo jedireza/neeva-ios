@@ -6,6 +6,7 @@ import Defaults
 import Shared
 import SwiftUI
 
+// TODO: migrate this to OverlayManager to do the presentation
 class DefaultBrowserOnboardingViewController: UIHostingController<
     DefaultBrowserOnboardingViewController.Content
 >

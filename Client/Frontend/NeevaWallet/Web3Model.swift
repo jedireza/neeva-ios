@@ -157,6 +157,10 @@ class Web3Model: ObservableObject, ResponseRelay {
         }.compactMap { $0 }
     }
 
+    var unlockedThemes: [Web3Theme] {
+        return Array(AssetStore.shared.availableThemes)
+    }
+
     func updateBalances() {
         CurrencyStore.shared.refresh()
         balances.keys.forEach { token in
@@ -211,6 +215,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 self.allSavedSessions.first(where: {
                     $0.dAppInfo.peerMeta.url.baseDomain == url?.baseDomain
                 })
+            self.matchingCollection = nil
             if let session = self.currentSession, let server = self.server,
                 !(server.openSessions().contains(where: {
                     session.dAppInfo.peerId == $0.dAppInfo.peerId

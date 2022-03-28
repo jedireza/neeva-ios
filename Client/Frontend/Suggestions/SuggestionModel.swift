@@ -335,12 +335,14 @@ class SuggestionModel: ObservableObject {
             guard error == nil, let data = data else { return }
             DispatchQueue.main.async { [self] in
                 xyzQuerySuggestions = []
-                guard let suggestionResult = try? JSONDecoder().decode(
-                    NFTSuggestionResult.self, from: data), let groups = suggestionResult.groups, !groups.isEmpty
+                guard
+                    let suggestionResult = try? JSONDecoder().decode(
+                        NFTSuggestionResult.self, from: data), let groups = suggestionResult.groups,
+                    !groups.isEmpty
                 else { return }
                 xyzQuerySuggestions = groups[0].suggestions.prefix(3).map { suggestedQuery in
-                        .xyzQuery(suggestedQuery.displayText)
-                    }
+                    .xyzQuery(suggestedQuery.displayText)
+                }
             }
         }.resume()
     }
@@ -1010,8 +1012,6 @@ extension SuggestionModel {
                 )
             )
         }
-
-        queryAttributes.append(EnvironmentHelper.shared.getSessionUUID())
 
         if let suggestStartTime = suggestStartTime {
             if let timeToFirstScreen = timeToFirstScreen {

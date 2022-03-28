@@ -7,6 +7,7 @@ import CryptoSwift
 import Defaults
 import Foundation
 import PromiseKit
+import Shared
 import SwiftUI
 import WalletConnectSwift
 import secp256k1
@@ -35,7 +36,7 @@ public struct WalletAccessor {
         self.web3 = try? Web3.new(EthNode.Ethereum.url ?? .aboutBlank)
         self.polygonWeb3 = try? Web3.new(EthNode.Polygon.url ?? .aboutBlank)
         self.password = CryptoConfig.shared.password
-        let key = Defaults[.cryptoPrivateKey]
+        let key = NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoPrivateKey] ?? ""
         let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
         let dataKey = Data.fromHex(formattedKey)!
         self.keystore = try? EthereumKeystoreV3(privateKey: dataKey, password: password)
@@ -46,9 +47,9 @@ public struct WalletAccessor {
     }
 
     var privateKey: [UInt8] {
-        let key = Defaults[.cryptoPrivateKey]
-        let formattedKey = key.trimmingCharacters(in: .whitespacesAndNewlines)
-        return formattedKey.bytes
+        let key = NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoPrivateKey]
+        let formattedKey = key?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return formattedKey!.bytes
     }
 
     public var walletMeta: Session.ClientMeta {
@@ -68,7 +69,7 @@ public struct WalletAccessor {
     }
 
     public func sign(on chain: EthNode, message: String) throws -> String {
-        guard let web3 =  web3(on: chain), let address = ethereumAddress else { return "" }
+        guard let web3 = web3(on: chain), let address = ethereumAddress else { return "" }
 
         return try "0x"
             + web3.wallet.signPersonalMessage(
@@ -77,7 +78,7 @@ public struct WalletAccessor {
     }
 
     public func sign(on chain: EthNode, message: Data) throws -> String {
-        guard let web3 =  web3(on: chain), let address = ethereumAddress else {
+        guard let web3 = web3(on: chain), let address = ethereumAddress else {
             throw WalletAccessorError.invalidState
         }
 
@@ -97,7 +98,7 @@ public struct WalletAccessor {
     }
 
     public func balance(on chain: EthNode, completion: @escaping (String?) -> Void) {
-        guard let web3 =  web3(on: chain), let _ = EthereumAddress(publicAddress) else {
+        guard let web3 = web3(on: chain), let _ = EthereumAddress(publicAddress) else {
             return
         }
 
@@ -112,8 +113,8 @@ public struct WalletAccessor {
     }
 
     public func tokenBalance(token: TokenType, completion: @escaping (String?) -> Void) {
-        guard let web3 =  web3(on: token.network),
-              let walletAddress = EthereumAddress(publicAddress), !token.contractAddress.isEmpty
+        guard let web3 = web3(on: token.network),
+            let walletAddress = EthereumAddress(publicAddress), !token.contractAddress.isEmpty
         else {
             balance(on: token.network, completion: completion)
             return
@@ -147,7 +148,7 @@ public struct WalletAccessor {
     }
 
     public func gasPrice(on chain: EthNode, completion: @escaping (BigUInt?) -> Void) {
-        guard let web3 =  web3(on: chain) else { return }
+        guard let web3 = web3(on: chain) else { return }
 
         DispatchQueue.global(qos: .userInitiated).async {
             web3.eth.getGasPricePromise().done(on: DispatchQueue.main) { estimate in
@@ -162,7 +163,7 @@ public struct WalletAccessor {
         transaction: EthereumTransaction,
         completion: @escaping (BigUInt, BigUInt?) -> Void
     ) {
-        guard let web3 =  web3(on: chain) else { return }
+        guard let web3 = web3(on: chain) else { return }
 
         DispatchQueue.global(qos: .userInitiated).async {
             let gasPrice: BigUInt =
@@ -180,7 +181,7 @@ public struct WalletAccessor {
     }
 
     public func send(on chain: EthNode, transactionData: TransactionData) throws -> String {
-        guard let web3 =  web3(on: chain) else { throw WalletAccessorError.invalidState }
+        guard let web3 = web3(on: chain) else { throw WalletAccessorError.invalidState }
 
         let contract = web3.contract(
             Web3.Utils.coldWalletABI, at: transactionData.toAddress, abiVersion: 2)!

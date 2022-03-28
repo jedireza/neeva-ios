@@ -11,8 +11,10 @@ public struct ScannerView: View {
     @Binding var returnAddress: String
     let onComplete: () -> Void
 
-    public init(showQRScanner: Binding<Bool>, returnAddress: Binding<String>, onComplete: @escaping () -> Void = {})
-    {
+    public init(
+        showQRScanner: Binding<Bool>, returnAddress: Binding<String>,
+        onComplete: @escaping () -> Void = {}
+    ) {
         self._showQRScanner = showQRScanner
         self._returnAddress = returnAddress
         self.onComplete = onComplete

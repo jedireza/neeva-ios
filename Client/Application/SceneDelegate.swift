@@ -166,6 +166,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 )
             }
             ClientLogger.shared.logCounter(.OpenDefaultBrowserURL, attributes: attributes)
+            ConversionLogger.log(event: .handledNavigationAsDefaultBrowser)
 
             Defaults[.didSetDefaultBrowser] = true
         }
@@ -245,16 +246,35 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func continueSiriIntent(continue userActivity: NSUserActivity) -> Bool {
+        var attributes = [
+            EnvironmentHelper.shared.getSessionUUID()
+        ]
         if let intent = userActivity.interaction?.intent as? OpenURLIntent {
             self.bvc.openURLInNewTab(intent.url)
+            ClientLogger.shared.logCounter(.openURLShortcut, attributes: attributes)
             return true
         }
 
-        if let intent = userActivity.interaction?.intent as? SearchNeevaIntent,
-            let query = intent.text,
-            let url = SearchEngine.current.searchURLForQuery(query)
-        {
-            self.bvc.openURLInNewTab(url)
+        if let intent = userActivity.interaction?.intent as? SearchNeevaIntent {
+            // shortcut has query input, start search for query
+            if let query = intent.text,
+                !query.isEmpty,
+                let url = SearchEngine.current.searchURLForQuery(query)
+            {
+                attributes.append(ClientLogCounterAttribute(key: "hasQuery", value: String(true)))
+                self.bvc.openURLInNewTab(url)
+            } else {
+                // open a new search
+                DispatchQueue.main.async { [self] in
+                    let isEmpty = self.bvc.tabManager.normalTabs.count == 0
+                    self.bvc.searchQueryModel.value = ""
+                    self.bvc.openLazyTab(
+                        openedFrom: isEmpty ? .tabTray : .openTab(nil),
+                        switchToIncognitoMode: false
+                    )
+                }
+            }
+            ClientLogger.shared.logCounter(.searchShortcut, attributes: attributes)
             return true
         }
 

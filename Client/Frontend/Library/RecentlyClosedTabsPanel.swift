@@ -134,7 +134,7 @@ class RecentlyClosedTabsPanelSiteTableViewController: SiteTableViewController {
                     text: toastLabelText,
                     buttonText: "Switch",
                     buttonAction: {
-                        self.tabManager?.selectTab(tab)
+                        self.tabManager?.selectTab(tab, notify: true)
                     }
                 ).enqueue(manager: toastManager)
             }

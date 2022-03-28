@@ -118,7 +118,7 @@ extension BrowserViewController {
             )
             self.showBackForwardList()
         case .toggleIncognitoMode:
-            self.toolbarModel.onToggleIncognito()
+            self.browserModel.switcherToolbarModel.onToggleIncognito()
         case .goToSettings:
             ClientLogger.shared.logCounter(
                 .OpenSetting,

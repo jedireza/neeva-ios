@@ -15,7 +15,6 @@ enum Clearable: String, CaseIterable {
     case cache = "Cache"
     case cookies = "Cookies"
     case trackingProtection = "Tracking Protection"
-    case downloads = "Downloaded Files"
 
     func label() -> String? {
         switch self {
@@ -30,7 +29,6 @@ enum Clearable: String, CaseIterable {
 class UITestBase: KIFTestCase {
     static let AllClearables = Set([
         Clearable.history, Clearable.cache, Clearable.cookies, Clearable.trackingProtection,
-        Clearable.downloads,
     ])
 
     func resetToHome() {

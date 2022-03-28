@@ -18,8 +18,9 @@ public class WalletConnectDetector: ObservableObject {
     public static var shared = WalletConnectDetector()
 
     public func detectWalletConnect(for url: URL, in mainDocumentURL: URL) {
-        if url.equals(WalletConnectDetector.WalletRegistryURL) ||
-            url.equals(WalletConnectDetector.WalletRegistryv2URL) {
+        if url.equals(WalletConnectDetector.WalletRegistryURL)
+            || url.equals(WalletConnectDetector.WalletRegistryv2URL)
+        {
             walletConnectURL = mainDocumentURL
         }
     }

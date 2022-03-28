@@ -9,9 +9,11 @@ import Defaults
 import Shared
 import UIKit
 
+private let log = Logger.auth
+
 enum FirstRunButtonActions {
     case signin
-    case signupWithApple(Bool?, String?)
+    case signupWithApple(Bool?, String?, String?)
     case signupWithOther
     case skipToBrowser
     case oktaSignup(String, String, String, Bool)  //email, first name, password, marketing option
@@ -36,7 +38,7 @@ class IntroViewModel: NSObject, ObservableObject {
         // Make sure all actions are run on the main thread to prevent runtime errors
         DispatchQueue.main.async {
             switch option {
-            case FirstRunButtonActions.signupWithApple(let marketingEmailOptOut, _):
+            case FirstRunButtonActions.signupWithApple(let marketingEmailOptOut, _, _):
                 if !Defaults[.introSeen] {
                     Defaults[.firstRunPath] = "FirstRunSignupWithApple"
                 }
@@ -199,20 +201,32 @@ extension IntroViewModel: ASAuthorizationControllerDelegate {
         switch authorization.credential {
         case let appleIDCredential as ASAuthorizationAppleIDCredential:
             // redirect and create account
-            let token = appleIDCredential.identityToken
-
-            if token != nil {
-                if let authStr = String(data: token!, encoding: .utf8) {
-                    // only log for users who signed in at least once
-                    if Defaults[.signedInOnce] {
-                        ClientLogger.shared.logCounter(
-                            .SignInWithAppleSuccess,
-                            attributes: EnvironmentHelper.shared.getFirstRunAttributes()
-                        )
-                    }
-                    self.onDismiss(.signupWithApple(self.marketingEmailOptOut, authStr))
-                }
+            guard let identityToken = appleIDCredential.identityToken else {
+                log.error("Unable to fetch identity token")
+                return
             }
+            guard let authorizationCode = appleIDCredential.authorizationCode else {
+                log.error("Unable to fetch authorization code")
+                return
+            }
+            guard let identityTokenStr = String(data: identityToken, encoding: .utf8) else {
+                log.error("Unable to convert identity token to utf8")
+                return
+            }
+            guard let authorizationCodeStr = String(data: authorizationCode, encoding: .utf8) else {
+                log.error("Unable to convert authorization code to utf8")
+                return
+            }
+
+            // only log for users who signed in at least once
+            if Defaults[.signedInOnce] {
+                ClientLogger.shared.logCounter(
+                    .SignInWithAppleSuccess,
+                    attributes: EnvironmentHelper.shared.getFirstRunAttributes()
+                )
+            }
+            self.onDismiss(
+                .signupWithApple(self.marketingEmailOptOut, identityTokenStr, authorizationCodeStr))
             break
         default:
             break

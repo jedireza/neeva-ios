@@ -117,7 +117,7 @@ class TabMenuTests: BaseTestCase {
         waitForExistence(app.buttons["restore"])
     }
 
-    func testPinTabFromSwitcher() {        
+    func testPinTabFromSwitcher() {
         openURL(firstWebsite.url)
         goToTabTray()
 

@@ -42,7 +42,8 @@ enum NavigationPath {
             return nil
         }
 
-        guard let scheme = components.scheme, urlSchemes.contains(scheme) else {
+        // Schemes are case-insensitive per RFC 3986
+        guard let scheme = components.scheme?.lowercased(), urlSchemes.contains(scheme) else {
             return nil
         }
 
@@ -52,7 +53,7 @@ enum NavigationPath {
             urlString: urlString, scheme: scheme, components: components)
         {
             self = widgetKitNavPath
-        } else if urlString.starts(with: "http:") || urlString.starts(with: "https:") {
+        } else if scheme == "http" || scheme == "https" {
             self = .url(
                 webURL: NavigationPath.maybeRewriteURL(url, components) ?? url,
                 // Use the last browsing mode the user was in
@@ -176,10 +177,10 @@ enum NavigationPath {
     private static func handleCloseIncognitoTabs(with bvc: BrowserViewController) {
         bvc.tabManager.removeTabs(bvc.tabManager.incognitoTabs)
         guard let tab = mostRecentTab(inTabs: bvc.tabManager.normalTabs) else {
-            bvc.tabManager.selectTab(bvc.tabManager.addTab())
+            bvc.tabManager.selectTab(bvc.tabManager.addTab(), notify: true)
             return
         }
-        bvc.tabManager.selectTab(tab)
+        bvc.tabManager.selectTab(tab, notify: true)
     }
 
     private static func handleURL(url: URL?, isIncognito: Bool, with bvc: BrowserViewController) {

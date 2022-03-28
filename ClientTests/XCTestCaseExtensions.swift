@@ -8,10 +8,12 @@ import XCTest
 extension XCTestCase {
     func wait(_ time: TimeInterval) {
         let expectation = self.expectation(description: "Wait")
-        DispatchQueue.main.asyncAfter(deadline: .now() + time) {
-            expectation.fulfill()
+        let result = XCTWaiter.wait(for: [expectation], timeout: time)
+        if result == XCTWaiter.Result.timedOut {
+            return
+        } else {
+            XCTFail("Delay interrupted")
         }
-        waitForExpectations(timeout: time + 1, handler: nil)
     }
 
     func waitForCondition(timeout: TimeInterval = 10, condition: () throws -> Bool) {

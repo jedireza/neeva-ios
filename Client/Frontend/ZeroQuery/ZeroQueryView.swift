@@ -6,6 +6,7 @@ import Defaults
 import Shared
 import Storage
 import SwiftUI
+import WalletCore
 
 public struct ZeroQueryUX {
     fileprivate static let ToggleButtonSize: CGFloat = 32
@@ -118,51 +119,6 @@ struct ZeroQueryPlaceholder: View {
     }
 }
 
-struct PromoCardImpressionModifier: ViewModifier {
-    private let promoCardImpressionTimerInterval: TimeInterval = 2
-    @State var impressionTimer: Timer? = nil
-
-    let attributeValue: String
-
-    func startImpressionTimer(with attributeValue: String) {
-        impressionTimer?.invalidate()
-        impressionTimer = Timer.scheduledTimer(
-            withTimeInterval: promoCardImpressionTimerInterval,
-            repeats: false,
-            block: { _ in
-                ClientLogger.shared.logCounter(
-                    .PromoCardAppear,
-                    attributes: EnvironmentHelper.shared.getAttributes()
-                        + [
-                            ClientLogCounterAttribute(
-                                key: LogConfig.PromoCardAttribute
-                                    .promoCardType,
-                                value: attributeValue
-                            )
-                        ]
-                )
-            }
-        )
-    }
-
-    func resetImpressionTimer() {
-        impressionTimer?.invalidate()
-        impressionTimer = nil
-    }
-
-    func body(content: Content) -> some View {
-        content
-            .onAppear {
-                startImpressionTimer(
-                    with: attributeValue
-                )
-            }
-            .onDisappear {
-                resetImpressionTimer()
-            }
-    }
-}
-
 struct ZeroQueryView: View {
     @EnvironmentObject var viewModel: ZeroQueryModel
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -172,6 +128,7 @@ struct ZeroQueryView: View {
     @Default(.expandSearches) private var expandSearches
     @Default(.expandSpaces) private var expandSpaces
     @Default(.expandSuggestedSpace) private var expandSuggestedSpace
+    @Default(.cryptoPublicKey) private var cryptoPublicKey
 
     @State var url: URL?
     @State var tab: Tab?
@@ -191,8 +148,16 @@ struct ZeroQueryView: View {
             viewWidth: viewWidth
         )
         .modifier(
-            PromoCardImpressionModifier(
-                attributeValue: "RatingCard"
+            ImpressionLoggerModifier(
+                path: .PromoCardAppear,
+                attributes: EnvironmentHelper.shared.getAttributes()
+                    + [
+                        ClientLogCounterAttribute(
+                            key: LogConfig.PromoCardAttribute
+                                .promoCardType,
+                            value: "RatingCard"
+                        )
+                    ]
             )
         )
     }
@@ -241,8 +206,16 @@ struct ZeroQueryView: View {
                         if let promoCardType = viewModel.promoCard {
                             PromoCard(type: promoCardType, viewWidth: geom.size.width)
                                 .modifier(
-                                    PromoCardImpressionModifier(
-                                        attributeValue: viewModel.promoCard?.name ?? "None"
+                                    ImpressionLoggerModifier(
+                                        path: .PromoCardAppear,
+                                        attributes: EnvironmentHelper.shared.getAttributes()
+                                            + [
+                                                ClientLogCounterAttribute(
+                                                    key: LogConfig.PromoCardAttribute
+                                                        .promoCardType,
+                                                    value: viewModel.promoCard?.name ?? "None"
+                                                )
+                                            ]
                                     )
                                 )
                         }
@@ -285,7 +258,11 @@ struct ZeroQueryView: View {
 
                         if expandSearches {
                             if !Defaults[.signedInOnce] {
-                                SuggestedPreviewSearchesView()
+                                if FeatureFlag[.web3Mode] {
+                                    SuggestedXYZSearchesView()
+                                } else {
+                                    SuggestedPreviewSearchesView()
+                                }
                             } else {
                                 SuggestedSearchesView()
                             }

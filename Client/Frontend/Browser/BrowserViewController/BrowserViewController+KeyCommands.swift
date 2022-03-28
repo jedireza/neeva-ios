@@ -37,7 +37,8 @@ extension BrowserViewController {
     }
 
     @objc func newTabKeyCommand() {
-        openLazyTab(openedFrom: browserModel.showContent ? .openTab(nil) : .tabTray)
+        openLazyTab(
+            openedFrom: browserModel.contentVisibilityModel.showContent ? .openTab(nil) : .tabTray)
     }
 
     @objc func newIncognitoTabKeyCommand() {
@@ -46,7 +47,9 @@ extension BrowserViewController {
         }
 
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { [self] in
-            openLazyTab(openedFrom: browserModel.showContent ? .openTab(nil) : .tabTray)
+            openLazyTab(
+                openedFrom: browserModel.contentVisibilityModel.showContent
+                    ? .openTab(nil) : .tabTray)
         }
     }
 
@@ -65,9 +68,9 @@ extension BrowserViewController {
 
         let tabs = incognitoModel.isIncognito ? tabManager.incognitoTabs : tabManager.normalTabs
         if let index = tabs.firstIndex(of: currentTab), index + 1 < tabs.count {
-            tabManager.selectTab(tabs[index + 1])
+            tabManager.selectTab(tabs[index + 1], notify: true)
         } else if let firstTab = tabs.first {
-            tabManager.selectTab(firstTab)
+            tabManager.selectTab(firstTab, notify: true)
         }
     }
 
@@ -78,9 +81,9 @@ extension BrowserViewController {
 
         let tabs = incognitoModel.isIncognito ? tabManager.incognitoTabs : tabManager.normalTabs
         if let index = tabs.firstIndex(of: currentTab), index - 1 < tabs.count && index != 0 {
-            tabManager.selectTab(tabs[index - 1])
+            tabManager.selectTab(tabs[index - 1], notify: true)
         } else if let lastTab = tabs.last {
-            tabManager.selectTab(lastTab)
+            tabManager.selectTab(lastTab, notify: true)
         }
     }
 

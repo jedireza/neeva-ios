@@ -46,7 +46,7 @@ class ScrollingControlModel: NSObject, ObservableObject {
     }
 
     private var headerHeight: CGFloat = 0
-    private var footerHeight: CGFloat = 0
+    private(set) var footerHeight: CGFloat = 0
 
     private var subscriptions: Set<AnyCancellable> = []
     private var tabSubscriptions: Set<AnyCancellable> = []

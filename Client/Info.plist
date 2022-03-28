@@ -96,12 +96,12 @@
 	<string>Websites you visit may request your location.</string>
 	<key>NSUserActivityTypes</key>
 	<array>
-		<string>co.neeva.app.ios.browser.browsing</string>
 		<string>IntentHandler</string>
 		<string>IntentIntent</string>
 		<string>NSUserActivityTypeBrowsingWeb</string>
 		<string>OpenURLIntent</string>
 		<string>SearchNeevaIntent</string>
+		<string>co.neeva.app.ios.browser.browsing</string>
 	</array>
 	<key>OPENSEA_API_KEY</key>
 	<string>$(OPENSEA_API_KEY)</string>

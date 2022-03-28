@@ -21,7 +21,7 @@ extension TabManager {
         }
 
         // Select the most recent.
-        selectTab(tab)
+        selectTab(tab, notify: true)
 
         // Okay now notify that we bulk-loaded so we can adjust counts and animate changes.
         tabsUpdatedPublisher.send()
@@ -73,6 +73,7 @@ extension TabManager {
         _ tab: Tab, request: URLRequest?, webView: WKWebView? = nil, atIndex: Int? = nil,
         afterTab parent: Tab? = nil, flushToDisk: Bool, zombie: Bool, isPopup: Bool = false,
         query: String? = nil, suggestedQuery: String? = nil,
+        queryLocation: QueryForNavigation.Query.Location = .suggestion,
         visitType: VisitType? = nil, notify: Bool
     ) {
         assert(Thread.isMainThread)
@@ -92,7 +93,11 @@ extension TabManager {
         tab.navigationDelegate = self.navDelegate
 
         if let query = query {
-            tab.queryForNavigation.currentQuery = .init(typed: query, suggested: suggestedQuery)
+            tab.queryForNavigation.currentQuery = .init(
+                typed: query,
+                suggested: suggestedQuery,
+                location: queryLocation
+            )
         }
 
         if let request = request {
@@ -234,7 +239,7 @@ extension TabManager {
         SceneDelegate.getBVC(with: scene).browserModel.cardTransitionModel.update(to: .hidden)
 
         if let selectedSavedTab = selectedSavedTab, (shouldSelectTab || selectedTab == nil) {
-            self.selectTab(selectedSavedTab)
+            self.selectTab(selectedSavedTab, notify: true)
         }
 
         // remove restored tabs from recently closed

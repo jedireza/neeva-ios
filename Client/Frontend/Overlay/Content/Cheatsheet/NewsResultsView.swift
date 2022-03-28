@@ -11,14 +11,14 @@ import Shared
 import SwiftUI
 
 struct NewsResultsView: View {
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     let newsResults: NewsResults
 
     var newsQueryURL: URL? {
         let components = URLComponents(url: newsResults.actionURL, resolvingAgainstBaseURL: false)
         guard let queryItems = components?.percentEncodedQueryItems,
-              let query = queryItems.first(where: { $0.name == "q" })?.value
+            let query = queryItems.first(where: { $0.name == "q" })?.value
         else {
             return URL(string: "\(NeevaConstants.appSearchURL)?q=\(newsResults.title ?? "")")
         }
@@ -29,7 +29,7 @@ struct NewsResultsView: View {
         VStack(alignment: .leading) {
             Button(action: {
                 if let newsQueryURL = newsQueryURL {
-                    onOpenURL(newsQueryURL)
+                    onOpenURLForCheatsheet(newsQueryURL, String(describing: Self.self))
                 }
             }) {
                 HStack(alignment: .center) {
@@ -53,7 +53,7 @@ struct NewsResultsView: View {
 }
 
 struct NewsResultItemView: View {
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     let newsItem: NewsResult
 
@@ -72,7 +72,9 @@ struct NewsResultItemView: View {
                     }
                     .resizable()
                     .scaledToFill()
-                    .frame(width: thumbnailSize.width, height: thumbnailSize.height, alignment: .center)
+                    .frame(
+                        width: thumbnailSize.width, height: thumbnailSize.height, alignment: .center
+                    )
                     .clipped()
                     .cornerRadius(cornerRadius, corners: .top)
 
@@ -98,7 +100,8 @@ struct NewsResultItemView: View {
                     HStack(alignment: .center) {
                         Group {
                             if let faviconURLString = newsItem.faviconURL,
-                               let faviconURL = URL(string: faviconURLString) {
+                                let faviconURL = URL(string: faviconURLString)
+                            {
                                 WebImage(url: faviconURL)
                                     .resizable()
                                     .scaledToFill()
@@ -106,7 +109,9 @@ struct NewsResultItemView: View {
                                 FaviconView(forSiteUrl: newsItem.url)
                             }
                         }
-                        .frame(width: faviconSize.width, height: faviconSize.height, alignment: .center)
+                        .frame(
+                            width: faviconSize.width, height: faviconSize.height, alignment: .center
+                        )
                         .clipShape(Circle())
 
                         Text(provider)
@@ -127,6 +132,6 @@ struct NewsResultItemView: View {
     }
 
     func openNews() {
-        onOpenURL(newsItem.url)
+        onOpenURLForCheatsheet(newsItem.url, String(describing: Self.self))
     }
 }

@@ -105,7 +105,8 @@ open class DiskImageStore {
 
         let imageURL = URL(fileURLWithPath: filesDir).appendingPathComponent(key)
         if let data = image.jpegData(compressionQuality: quality)
-            ?? image.writeJpegDataViaCGImage(compressionQuality: self.quality) {
+            ?? image.writeJpegDataViaCGImage(compressionQuality: self.quality)
+        {
             do {
                 try data.write(to: imageURL, options: .noFileProtection)
                 keys.insert(key)

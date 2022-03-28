@@ -9,23 +9,26 @@ import SwiftUI
 class BrowserModel: ObservableObject {
     @Published var showGrid = false {
         didSet {
-            // Ensures toolbars are visible when user closes from the CardGrid.
-            // Expand when set to true, so ready when user returns.
             if showGrid {
+                // Ensures toolbars are visible when user closes from the CardGrid.
+                // Expand when set to true, so ready when user returns.
                 scrollingControlModel.showToolbars(animated: true, completion: nil)
+
+                // Ensure that the switcher is reset in case a previous drag was not
+                // properly completed.
+                switcherToolbarModel.dragOffset = nil
             }
         }
     }
-
-    /// Like `!showGrid`, but not animated and only set when the web view should be visible
-    @Published private(set) var showContent = true
 
     let gridModel: GridModel
     let incognitoModel: IncognitoModel
     let tabManager: TabManager
 
     var cardTransitionModel: CardTransitionModel
+    var contentVisibilityModel: ContentVisibilityModel
     var scrollingControlModel: ScrollingControlModel
+    let switcherToolbarModel: SwitcherToolbarModel
 
     func show() {
         if gridModel.switcherState != .tabs {
@@ -35,18 +38,14 @@ class BrowserModel: ObservableObject {
             showWithNoAnimation()
         } else {
             cardTransitionModel.update(to: .visibleForTrayShow)
-            if showContent {
-                showContent = false
-            }
+            contentVisibilityModel.update(showContent: false)
             updateSpaces()
         }
     }
 
     func showWithNoAnimation() {
         cardTransitionModel.update(to: .hidden)
-        if showContent {
-            showContent = false
-        }
+        contentVisibilityModel.update(showContent: false)
         if !showGrid {
             showGrid = true
         }
@@ -55,7 +54,7 @@ class BrowserModel: ObservableObject {
 
     func showSpaces(forceUpdate: Bool = true) {
         cardTransitionModel.update(to: .hidden)
-        showContent = false
+        contentVisibilityModel.update(showContent: false)
         showGrid = true
         gridModel.switcherState = .spaces
 
@@ -78,9 +77,7 @@ class BrowserModel: ObservableObject {
             showGrid = false
         }
 
-        if !showContent {
-            showContent = true
-        }
+        contentVisibilityModel.update(showContent: true)
 
         gridModel.closeDetailView()
     }
@@ -152,7 +149,7 @@ class BrowserModel: ObservableObject {
                     completion()
                 } else {
                     followPublicSpaceSubscription = spaceCardModel.objectWillChange.sink {
-                        [unowned self] in
+                        [self] in  // OK to hold a strong ref as this should terminate.
                         if let _ = spaceCardModel.allDetails.first(where: { $0.id == spaceId }) {
                             openSpace(
                                 spaceID: spaceId, animate: false)
@@ -190,13 +187,15 @@ class BrowserModel: ObservableObject {
 
     init(
         gridModel: GridModel, tabManager: TabManager, chromeModel: TabChromeModel,
-        incognitoModel: IncognitoModel
+        incognitoModel: IncognitoModel, switcherToolbarModel: SwitcherToolbarModel
     ) {
         self.gridModel = gridModel
         self.tabManager = tabManager
         self.incognitoModel = incognitoModel
         self.cardTransitionModel = CardTransitionModel()
+        self.contentVisibilityModel = ContentVisibilityModel()
         self.scrollingControlModel = ScrollingControlModel(
             tabManager: tabManager, chromeModel: chromeModel)
+        self.switcherToolbarModel = switcherToolbarModel
     }
 }

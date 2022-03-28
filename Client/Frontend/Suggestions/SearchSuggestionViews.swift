@@ -581,13 +581,13 @@ private struct EditCurrentURLSuggestionView: View {
     }
 
     var label: some View {
-        Text(url?.absoluteString ?? "")
-            .withFont(.bodySmall).lineLimit(1)
+        Text("Edit current address")
+            .withFont(.bodyLarge).foregroundColor(.label).lineLimit(1)
     }
 
     var secondaryLabel: some View {
-        Text("Edit current address")
-            .withFont(.bodyMedium).foregroundColor(.secondaryLabel).lineLimit(1)
+        Text(url?.absoluteString ?? "")
+            .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
     }
 
     var copyBotton: some View {
@@ -641,7 +641,7 @@ private struct EditCurrentURLSuggestionView: View {
         )
         .environmentObject(model)
         .contextMenu { menuItems }
-        .accessibility(label: Text("Edit Current Address"))
+        .accessibility(label: Text("Edit current address"))
     }
 }
 
@@ -658,13 +658,13 @@ private struct EditCurrentQuerySuggestionView: View {
     }
 
     var label: some View {
-        Text(suggestion.0)
-            .withFont(.bodySmall).lineLimit(1)
+        Text("Edit current search")
+            .withFont(.bodyLarge).foregroundColor(.label).lineLimit(1)
     }
 
     var secondaryLabel: some View {
-        Text("Edit current search")
-            .withFont(.bodyMedium).foregroundColor(.secondaryLabel).lineLimit(1)
+        Text(suggestion.0)
+            .withFont(.bodySmall).foregroundColor(.secondaryLabel).lineLimit(1)
     }
 
     var body: some View {

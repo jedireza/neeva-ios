@@ -8,6 +8,7 @@ import Foundation
 import Shared
 
 public struct LogConfig {
+    // MARK: - Interactions
     public enum Interaction: String {
         /// Open tracking shield
         case OpenShield
@@ -17,6 +18,11 @@ public struct LogConfig {
         case TapReload
         /// Tap stop reload page
         case TapStopReload
+
+        // MARK: Screen Capture
+        case didTakeScreenshot
+        case screenCaptureStarted
+        case screenCaptureFinished
 
         // MARK: bottom nav
         /// Click tab button to see all available tabs
@@ -182,6 +188,8 @@ public struct LogConfig {
         case StartExperiment
         /// Default browser interstitial impression (skip to browser)
         case DefaultBrowserInterstitialImpSkipToBrowser
+        /// Tap on Get started in welcome screen
+        case GetStartedInWelcome
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -218,7 +226,7 @@ public struct LogConfig {
         /// Close referral promo card
         case CloseReferralPromo
 
-        // MARK: performance
+        // MARK: stability
         /// App Crash # With Page load #
         case AppCrashWithPageLoad
         /// App Crash # With Crash Reporter
@@ -290,14 +298,18 @@ public struct LogConfig {
         case didIndex
         case clearIndexError
 
+        // MARK: Shortcuts
+        case openURLShortcut
+        case searchShortcut
+
         // MARK: recipe cheatsheet
         case RecipeCheatsheetShowMoreRecipe
-        case RelatedRecipeClick
-        case RelatedSearchClick
 
         // MARK: Cheatsheet(NeevaScope)
         case CheatsheetPopoverImpression
         case OpenCheatsheet
+        case CheatsheetEducationImpressionOnSRP
+        case CheatsheetEducationImpressionOnPage
         case AckCheatsheetEducationOnSRP
         case AckCheatsheetEducationOnPage
         case ShowCheatsheetEducationOnSRP
@@ -338,13 +350,14 @@ public struct LogConfig {
         case Settings = "Settings"
         case Suggestions = "Suggestions"
         case ReferralPromo = "ReferralPromo"
-        case Performance = "Performance"
+        case Stability = "Stability"
         case FirstRun = "FirstRun"
         case PromoCard = "PromoCard"
         case Spaces = "Spaces"
         case RatingsCard = "RatingsCard"
         case Notification = "Notification"
         case Spotlight = "Spotlight"
+        case Shortcuts = "Shortcuts"
         case RecipeCheatsheet = "RecipeCheatsheet"
         case Cheatsheet = "Cheatsheet"
         case TabGroup = "TabGroup"
@@ -360,7 +373,7 @@ public struct LogConfig {
         if category == .FirstRun
             || category == .Notification
             || category == .Suggestions
-            || category == .Performance
+            || category == .Stability
             || category == .DebugMode
             || category == .PromoCard
         {
@@ -392,8 +405,19 @@ public struct LogConfig {
             }
     }
 
+    public static func shouldAddSessionID(
+        for path: LogConfig.Interaction
+    ) -> Bool {
+        let category = LogConfig.category(for: path)
+        return category == .FirstRun
+            || category == .Stability
+            || category == .PromoCard
+    }
+
+    // MARK: - Category
     public static func category(for interaction: Interaction) -> InteractionCategory {
         switch interaction {
+        // MARK: - UI
         case .OpenShield: return .UI
         case .OpenOverflowMenu: return .UI
         case .TapReload: return .UI
@@ -413,6 +437,11 @@ public struct LogConfig {
         case .TurnOnGlobalBlockTracking: return .UI
         case .TurnOffGlobalBlockTracking: return .UI
 
+        case .didTakeScreenshot: return .UI
+        case .screenCaptureStarted: return .UI
+        case .screenCaptureFinished: return .UI
+
+        // MARK: - OverflowMenu
         case .OpenDownloads: return .OverflowMenu
         case .OpenHistory: return .OverflowMenu
         case .OpenSetting: return .OverflowMenu
@@ -425,6 +454,7 @@ public struct LogConfig {
         case .ClickDownloadPage: return .OverflowMenu
         case .ClickCloseAllTabs: return .OverflowMenu
 
+        // MARK: - Settings
         case .SettingAccountSettings: return .Settings
         case .SettingDefaultBrowser: return .Settings
         case .SettingSignout: return .Settings
@@ -438,6 +468,7 @@ public struct LogConfig {
         case .ClearPrivateData: return .Settings
         case .ClearAllWebsiteData: return .Settings
 
+        // MARK: - FirstRun
         case .FirstRunSignupWithApple: return .FirstRun
         case .FirstRunOtherSignUpOptions: return .FirstRun
         case .FirstRunSignin: return .FirstRun
@@ -478,8 +509,11 @@ public struct LogConfig {
         case .DefaultBrowserOnboardingInterstitialOpen: return .FirstRun
         case .DefaultBrowserInterstitialImp: return .FirstRun
         case .DefaultBrowserInterstitialImpSkipToBrowser: return .FirstRun
+        case .OpenDefaultBrowserURL: return .FirstRun
         case .StartExperiment: return .FirstRun
+        case .GetStartedInWelcome: return .FirstRun
 
+        // MARK: - PromoCard
         case .PromoCardAppear: return .PromoCard
         case .PromoDefaultBrowser: return .PromoCard
         case .CloseDefaultBrowserPromo: return .PromoCard
@@ -487,6 +521,7 @@ public struct LogConfig {
         case .DefaultBrowserPromoCardImp: return .PromoCard
         case .DismissDefaultBrowserOnboardingScreen: return .PromoCard
 
+        // MARK: - Suggestions
         case .QuerySuggestion: return .Suggestions
         case .MemorizedSuggestion: return .Suggestions
         case .HistorySuggestion: return .Suggestions
@@ -503,14 +538,17 @@ public struct LogConfig {
         case .tabSuggestion: return .Suggestions
         case .editCurrentURL: return .Suggestions
 
+        // MARK: - ReferralPromo
         case .OpenReferralPromo: return .ReferralPromo
         case .CloseReferralPromo: return .ReferralPromo
 
-        case .AppCrashWithPageLoad: return .Performance
-        case .AppCrashWithCrashReporter: return .Performance
-        case .LowMemoryWarning: return .Performance
-        case .AppEnterForeground: return .Performance
+        // MARK: - Stability
+        case .AppCrashWithPageLoad: return .Stability
+        case .AppCrashWithCrashReporter: return .Stability
+        case .LowMemoryWarning: return .Stability
+        case .AppEnterForeground: return .Stability
 
+        // MARK: - Spaces
         case .SpacesUIVisited: return .Spaces
         case .SpacesDetailUIVisited: return .Spaces
         case .SpacesDetailEntityClicked: return .Spaces
@@ -529,6 +567,7 @@ public struct LogConfig {
         case .SpaceFilterClicked: return .Spaces
         case .OpenSuggestedSpace: return .Spaces
 
+        // MARK: - RatingsCard
         case .RatingsRateExperience: return .RatingsCard
         case .RatingsPromptFeedback: return .RatingsCard
         case .RatingsPromptAppStore: return .RatingsCard
@@ -539,6 +578,7 @@ public struct LogConfig {
         case .RatingsSendFeedback: return .RatingsCard
         case .RatingsSendAppReview: return .RatingsCard
 
+        // MARK: - Notification
         case .ShowNotificationPrompt: return .Notification
         case .NotificationPromptEnable: return .Notification
         case .NotificationPromptSkip: return .Notification
@@ -548,10 +588,10 @@ public struct LogConfig {
         case .ScheduleLocalNotification: return .Notification
         case .OpenLocalNotification: return .Notification
         case .OpenNotification: return .Notification
-        case .OpenDefaultBrowserURL: return .Notification
         case .PromoEnableNotification: return .Notification
         case .CloseEnableNotificationPromo: return .Notification
 
+        // MARK: - Spotlight
         case .openURLFromUserActivity: return .Spotlight
         case .createUserActivity: return .Spotlight
         case .addThumbnailToUserActivity: return .Spotlight
@@ -560,12 +600,17 @@ public struct LogConfig {
         case .didIndex: return .Spotlight
         case .clearIndexError: return .Spotlight
 
+        // MARK: - Shortcuts
+        case .openURLShortcut: return .Shortcuts
+        case .searchShortcut: return .Shortcuts
+
+        // MARK: - Cheatsheet
         case .RecipeCheatsheetShowMoreRecipe: return .RecipeCheatsheet
-        case .RelatedRecipeClick: return .RecipeCheatsheet
-        case .RelatedSearchClick: return .RecipeCheatsheet
 
         case .CheatsheetPopoverImpression: return .Cheatsheet
         case .OpenCheatsheet: return .Cheatsheet
+        case .CheatsheetEducationImpressionOnSRP: return .Cheatsheet
+        case .CheatsheetEducationImpressionOnPage: return .Cheatsheet
         case .AckCheatsheetEducationOnSRP: return .Cheatsheet
         case .AckCheatsheetEducationOnPage: return .Cheatsheet
         case .ShowCheatsheetEducationOnSRP: return .Cheatsheet
@@ -577,6 +622,7 @@ public struct LogConfig {
         case .OpenCheatsheetSupport: return .Cheatsheet
         case .CheatsheetBadURLString: return .Cheatsheet
 
+        // MARK: - TabGroup
         case .tabGroupExpanded: return .TabGroup
         case .tabGroupCollapsed: return .TabGroup
         case .tabGroupRenameThroughThreeDotMenu: return .TabGroup
@@ -587,8 +633,10 @@ public struct LogConfig {
         case .tabInTabGroupClicked: return .TabGroup
         case .tabRemovedFromGroup: return .TabGroup
 
+        // MARK: - Feedback
         case .FeedbackFailedToSend: return .Feedback
 
+        // MARK: - DebugMode
         case .SignInWithAppleSuccess: return .DebugMode
         case .SignInWithAppleFailed: return .DebugMode
         case .ImplicitDeleteCookie: return .DebugMode
@@ -626,6 +674,8 @@ public struct LogConfig {
         public static let FirstSessionUUID = "FirstSessionUUID"
         /// Preview mode query count
         public static let PreviewModeQueryCount = "PreviewModeQueryCount"
+        /// Session UUID v2
+        public static let SessionUUIDv2 = "SessionUUIDv2"
     }
 
     public struct UIInteractionAttribute {
@@ -677,7 +727,7 @@ public struct LogConfig {
 
     public struct PromoCardAttribute {
         public static let promoCardType = "promoCardType"
-        public static let fromSkipToBrowser = "fromSkipToBrowser"
+        public static let defaultBrowserInterstitialTrigger = "defaultBrowserInterstitialTrigger"
     }
 
     public struct ExperimentAttribute {
@@ -689,6 +739,7 @@ public struct LogConfig {
         public static let currentCheatsheetQuery = "currentCheatsheetQuery"
         public static let currentPageURL = "currentCheatsheetPageURL"
         public static let cheatsheetQuerySource = "cheatsheetQuerySource"
+        public static let openLinkSource = "openLinkSource"
 
         public enum QuerySource: String {
             case uToQ

@@ -40,6 +40,7 @@ class CardTests: XCTestCase {
     var tabCardModel: TabCardModel!
     var tabGroupCardModel: TabGroupCardModel!
     var spaceCardModel: SpaceCardModel!
+    var switcherToolbarModel: SwitcherToolbarModel!
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     fileprivate let spyDidSelectedTabChange =
@@ -76,9 +77,11 @@ class CardTests: XCTestCase {
         groupManager = TabGroupManager(tabManager: manager)
         gridModel = GridModel(tabManager: manager, tabGroupManager: groupManager)
         incognitoModel = IncognitoModel(isIncognito: false)
+        switcherToolbarModel = SwitcherToolbarModel(
+            tabManager: manager, openLazyTab: {}, createNewSpace: {}, onMenuAction: { _ in })
         browserModel = BrowserModel(
             gridModel: gridModel, tabManager: manager, chromeModel: .init(),
-            incognitoModel: incognitoModel)
+            incognitoModel: incognitoModel, switcherToolbarModel: switcherToolbarModel)
         manager.didRestoreAllTabs = true
         groupManager = TabGroupManager(tabManager: manager)
         tabCardModel = TabCardModel(manager: manager, groupManager: groupManager)
@@ -102,7 +105,7 @@ class CardTests: XCTestCase {
             XCTAssertEqual(self.tabCardModel.allDetails.count, 1)
             XCTAssertEqual(self.tabCardModel.allDetails.first?.id, tab1.tabUUID)
             XCTAssertFalse(self.tabCardModel.allDetails.first?.isSelected ?? true)
-            self.manager.selectTab(tab1)
+            self.manager.selectTab(tab1, notify: true)
             XCTAssertTrue(self.tabCardModel.allDetails.first?.isSelected ?? false)
 
             let tab2 = self.manager.addTab()
@@ -124,7 +127,7 @@ class CardTests: XCTestCase {
             XCTAssertEqual(self.tabCardModel.allDetails.count, 1)
             XCTAssertEqual(self.tabCardModel.allDetails.first?.id, tab1.tabUUID)
             XCTAssertFalse(self.tabCardModel.allDetails.first?.isSelected ?? true)
-            self.manager.selectTab(tab1)
+            self.manager.selectTab(tab1, notify: true)
             XCTAssertTrue(self.tabCardModel.allDetails.first?.isSelected ?? false)
 
             let tab2 = self.manager.addTab(afterTab: tab1)
@@ -441,7 +444,7 @@ class CardTests: XCTestCase {
         manager.addTab()
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 5 })
-        
+
         XCTAssertEqual(manager.tabs.count, 5)
         waitForCondition {
             try cardContainer.inspect().findAll(FaviconView.self).count == 5

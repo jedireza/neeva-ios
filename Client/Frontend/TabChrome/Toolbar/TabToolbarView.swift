@@ -6,10 +6,12 @@ import Defaults
 import SFSafeSymbols
 import Shared
 import SwiftUI
+import WalletCore
 
 struct TabToolbarView: View {
     @EnvironmentObject var chromeModel: TabChromeModel
     @EnvironmentObject var scrollingControlModel: ScrollingControlModel
+    @Default(.currentTheme) var currentTheme
 
     let performAction: (ToolbarAction) -> Void
     let buildTabsMenu: (_ sourceView: UIView) -> UIMenu?
@@ -23,13 +25,26 @@ struct TabToolbarView: View {
 
             if chromeModel.toolBarContentView == .recipeContent {
                 cheatsheetToolbar
+            } else if FeatureFlag[.web3Mode] {
+                Web3Toolbar(
+                    opacity: scrollingControlModel.controlOpacity,
+                    buildTabsMenu: buildTabsMenu,
+                    onBack: { performAction(.back) },
+                    onLongPress: { performAction(.longPressBackForward) },
+                    overFlowMenuAction: { performAction(.overflow) },
+                    showTabsAction: { performAction(.showTabs) },
+                    openLazyTabAction: { performAction(.openLazyTab) }
+                )
             } else {
                 normalTabToolbar
             }
-
             Spacer()
         }
-        .background(Color.DefaultBackground.ignoresSafeArea())
+        .background(
+            FeatureFlag[.web3Mode]
+                ? Web3Theme(with: currentTheme).backgroundColor.ignoresSafeArea()
+                : Color.DefaultBackground.ignoresSafeArea()
+        )
         .accentColor(.label)
         .offset(y: scrollingControlModel.footerBottomOffset)
     }
@@ -49,13 +64,9 @@ struct TabToolbarView: View {
                 },
                 identifier: "TabOverflowButton"
             )
-            if FeatureFlag[.web3Mode] {
-                TabToolbarButtons.NeevaWallet()
-            } else {
-                neevaButton
-                TabToolbarButtons.AddToSpace(
-                    weight: .medium, action: { performAction(.addToSpace) })
-            }
+            neevaButton
+            TabToolbarButtons.AddToSpace(
+                weight: .medium, action: { performAction(.addToSpace) })
             TabToolbarButtons.ShowTabs(
                 weight: .medium,
                 action: { performAction(.showTabs) },

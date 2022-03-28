@@ -6,8 +6,6 @@ import Shared
 import SwiftUI
 
 struct RelatedSearchesView: View {
-    @Environment(\.onOpenURL) var onOpenURL
-
     let relatedSearches: [String]
 
     var body: some View {

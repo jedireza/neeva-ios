@@ -10,7 +10,7 @@ struct BuyingGuideItem: View {
     let guide: BuyingGuide
     let index: Int
     let total: Int
-    @Environment(\.onOpenURL) var onOpenURL
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
     var body: some View {
         Button(action: onClick) {
@@ -73,7 +73,7 @@ struct BuyingGuideItem: View {
     }
 
     func onClick() {
-        onOpenURL(guide.actionURL)
+        onOpenURLForCheatsheet(guide.actionURL, String(describing: Self.self))
     }
 }
 
