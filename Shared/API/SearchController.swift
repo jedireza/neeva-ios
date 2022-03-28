@@ -99,6 +99,57 @@ public struct NewsResult {
     public let provider: Provider
 }
 
+public struct Place {
+    public struct Address {
+        public let street: String
+        public let full: String
+    }
+    public struct Coordinate {
+        public let lat: String
+        public let lon: String
+    }
+    public struct Hour {
+        public let isOvernight: Bool
+        public let isClosed: Bool
+        public let start: String
+        public let end: String
+        public let day: String
+    }
+    public struct MapImage {
+        public let url: String
+        public let darkURL: String
+        public let width: Int
+        public let height: Int
+    }
+    // basic info
+    public let name: String
+    public let subTitle: String
+    public let address: Address
+    public let position: Coordinate
+    public let telephone: String
+    public let price: String
+
+    // review
+    public let rating: String
+    public let reviewCount: Int
+
+    // hours
+    public let articulatedOperatingStatus: String
+    public let articulatedHour: String
+    public let specialHours: [Hour]?
+    public let hours: [Hour]
+
+    // urls
+    public let websiteURL: String
+    public let yelpURL: String
+    public let imageURL: String
+    public let mapURL: String
+
+    public let mapImage: MapImage
+    public let mapImageLarge: MapImage
+
+}
+
 public typealias ProductClusterResult = ([Product])
 public typealias RecipeBlockResult = ([RelatedRecipe])
 public typealias RelatedSearchesResult = ([String])
@@ -109,6 +160,8 @@ public struct NewsResults {
     public let snippet: String?
     public let actionURL: URL
 }
+public typealias PlaceResult = (Place)
+public typealias PlaceListResult = ([Place])
 
 private struct PartialResult<T> {
     let skippedItem: Bool
@@ -126,10 +179,12 @@ public enum RichResultType {
     case RelatedSearches(result: RelatedSearchesResult)
     case WebGroup(result: WebResults)
     case NewsGroup(result: NewsResults)
+    case Place(result: PlaceResult)
+    case PlaceList(result: PlaceListResult)
 
     var order: Int {
         switch self {
-        case .ProductCluster, .RecipeBlock, .NewsGroup:
+        case .ProductCluster, .RecipeBlock, .NewsGroup, .Place, .PlaceList:
             return 0
         case .WebGroup:
             return 1
