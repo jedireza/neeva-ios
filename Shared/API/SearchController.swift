@@ -512,7 +512,8 @@ public class SearchController:
 
     private class func constructPlace(
         from data: SearchQuery.Data.Search.ResultGroup.Result.TypeSpecific.AsPlace.Place
-    ) -> Place? {
+    ) -> Place?
+    {
         guard let streetAddress = data.address.streetAddress,
               let fullAddress = data.address.fullAddress
         else {
@@ -579,7 +580,8 @@ public class SearchController:
 
     private class func constructPlace(
         from data: SearchQuery.Data.Search.ResultGroup.Result.TypeSpecific.AsPlaceList.PlaceList.Place.Place
-    ) -> Place? {
+    ) -> Place?
+    {
         guard let streetAddress = data.address.streetAddress,
               let fullAddress = data.address.fullAddress
         else {
@@ -649,7 +651,36 @@ public class SearchController:
         from result: SearchQuery.Data.Search.ResultGroup.Result
     ) -> PartialResult<PlaceResult>
     {
-        return PartialResult()
+        guard let place = result.typeSpecific?.asPlace?.place,
+              let parsedPlace = constructPlace(from: place)
+        else {
+            return PartialResult()
+        }
+
+        // purely to conform to the Result type alias
+        let placeResult = parsedPlace as PlaceResult
+
+        return PartialResult(skippedItem: false, result: placeResult)
+    }
+
+    private class func constructPlaceListResult(
+        from result: SearchQuery.Data.Search.ResultGroup.Result
+    ) -> PartialResult<PlaceListResult>
+    {
+        guard let placeList = result
+            .typeSpecific?
+            .asPlaceList?
+            .placeList
+        else {
+            return PartialResult()
+        }
+
+        return PartialResult(
+            skippedItem: false,
+            result: PlaceListResult(
+                placeList.places.map({ $0.place }).compactMap(constructPlace)
+            )
+        )
     }
 
     public override class func processData(_ data: SearchQuery.Data) -> [RichResult] {
