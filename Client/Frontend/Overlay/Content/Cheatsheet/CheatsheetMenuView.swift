@@ -326,8 +326,14 @@ public struct CheatsheetMenuView: View {
             NewsResultsView(
                 newsResults: newsResults
             )
-        default:
-            EmptyView()
+        case .Place(result: let placeResult):
+            PlaceView(place: placeResult)
+        case .PlaceList(result: let placeListResult):
+            VStack {
+                ForEach(placeListResult, id: \.address.full) { place in
+                    PlaceView(place: place)
+                }
+            }
         }
     }
 

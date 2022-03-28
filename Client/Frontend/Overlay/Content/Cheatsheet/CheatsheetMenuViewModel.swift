@@ -206,7 +206,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
         ]
         return richResults.compactMap { richResult -> RichResult? in
             switch richResult.resultType {
-            case .ProductCluster:
+            case .ProductCluster, .Place, .PlaceList:
                 return richResult
             case .RecipeBlock(let result):
                 let filteredRecipes = result.filter {
@@ -245,8 +245,6 @@ public class CheatsheetMenuViewModel: ObservableObject {
                     id: richResult.id,
                     resultType: .NewsGroup(result: newResult)
                 )
-            default:
-                return nil
             }
         }
     }
