@@ -105,48 +105,51 @@ public struct Place {
         public let full: String
     }
     public struct Coordinate {
-        public let lat: String
-        public let lon: String
+        public let lat: Double
+        public let lon: Double
     }
     public struct Hour {
+        public let isOvernight: Bool
+        public let start: String
+        public let end: String
+        public let day: Int
+    }
+    public struct SpecialHour {
         public let isOvernight: Bool
         public let isClosed: Bool
         public let start: String
         public let end: String
-        public let day: String
+        public let date: String
     }
     public struct MapImage {
-        public let url: String
-        public let darkURL: String
-        public let width: Int
-        public let height: Int
+        public let url: URL?
+        public let darkURL: URL?
     }
     // basic info
     public let name: String
-    public let subTitle: String
     public let address: Address
     public let position: Coordinate
     public let telephone: String
-    public let price: String
+    public let telephonePretty: String
+    public let price: String?
 
     // review
-    public let rating: String
-    public let reviewCount: Int
+    public let rating: Double?
+    public let reviewCount: Int?
 
     // hours
-    public let articulatedOperatingStatus: String
-    public let articulatedHour: String
-    public let specialHours: [Hour]?
-    public let hours: [Hour]
+    public let articulatedOperatingStatus: String?
+    public let articulatedHour: String?
+    public let specialHours: [SpecialHour]?
+    public let hours: [Hour]?
 
     // urls
-    public let websiteURL: String
-    public let yelpURL: String
-    public let imageURL: String
-    public let mapURL: String
+    public let websiteURL: URL?
+    public let yelpURL: URL?
+    public let imageURL: URL?
 
-    public let mapImage: MapImage
-    public let mapImageLarge: MapImage
+    public let mapImage: MapImage?
+    public let mapImageLarge: MapImage?
 
 }
 
@@ -507,6 +510,80 @@ public class SearchController:
         )
     }
 
+    private class func constructPlace(
+        from data: SearchQuery.Data.Search.ResultGroup.Result.TypeSpecific.AsPlace.Place
+    ) -> Place? {
+        guard let streetAddress = data.address.streetAddress,
+              let fullAddress = data.address.fullAddress
+        else {
+            return nil
+        }
+        let address = Place.Address(street: streetAddress, full: fullAddress)
+        let coordinate = Place.Coordinate(lat: data.position.lat, lon: data.position.lon)
+        let specialHours = data.specialHours?.map {
+            return Place.SpecialHour(
+                isOvernight: $0.isOvernight,
+                isClosed: $0.isClosed,
+                start: $0.start,
+                end: $0.end,
+                date: $0.date
+            )
+        }
+        let hours = data.hours?.open.map {
+            return Place.Hour(
+                isOvernight: $0.isOvernight,
+                start: $0.start,
+                end: $0.end,
+                day: $0.day
+            )
+        }
+
+        var mapImage: Place.MapImage?
+        if let mapImageURLString = data.mapImage?.url,
+           let mapImageDarkURLString = data.mapImage?.darkUrl {
+            mapImage = .init(
+                url: URL(string: mapImageURLString),
+                darkURL: URL(string: mapImageDarkURLString)
+            )
+        }
+
+        var mapImageLarge: Place.MapImage?
+        if let mapImageURLString = data.mapImageLarge?.url,
+           let mapImageDarkURLString = data.mapImageLarge?.darkUrl {
+            mapImageLarge = .init(
+                url: URL(string: mapImageURLString),
+                darkURL: URL(string: mapImageDarkURLString)
+            )
+        }
+
+        return Place(
+            name: data.name,
+            address: address,
+            position: coordinate,
+            telephone: data.telephone,
+            telephonePretty: data.telephonePretty,
+            price: data.price.isEmpty ? nil : data.price,
+            rating: data.rating > 0 ? data.rating: nil,
+            reviewCount: data.reviewCount > 0 ? data.reviewCount : nil,
+            articulatedOperatingStatus: data.articulatedOperatingStatus,
+            articulatedHour: data.articulatedHour,
+            specialHours: specialHours,
+            hours: hours,
+            websiteURL: URL(string: data.websiteUrl),
+            yelpURL: URL(string: data.yelpUrl),
+            imageURL: URL(string: data.imageUrl),
+            mapImage: mapImage,
+            mapImageLarge: mapImageLarge
+        )
+    }
+
+    private class func constructPlaceResult(
+        from result: SearchQuery.Data.Search.ResultGroup.Result
+    ) -> PartialResult<PlaceResult>
+    {
+        return PartialResult()
+    }
+
     public override class func processData(_ data: SearchQuery.Data) -> [RichResult] {
         var richResults: [RichResult] = []
         // recipe and web results need to be merged into single RichResult objects
@@ -578,6 +655,8 @@ public class SearchController:
                             webResults.append(parsedData)
                         }
                         webResultsDataComplete = !webResult.skippedItem && webResultsDataComplete
+                    case "Place":
+                        break
                     default:
                         return
                     }
