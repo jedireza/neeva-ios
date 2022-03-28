@@ -194,6 +194,7 @@ public struct NeevaConstants {
         let queryItems: [URLQueryItem] = [
             URLQueryItem(name: "provider", value: "neeva.co/auth/oauth2/authenticators/apple"),
             URLQueryItem(name: "identityToken", value: identityToken),
+            URLQueryItem(name: "serverAuthCode", value: identityToken),
             URLQueryItem(name: "authorizationCode", value: authorizationCode),
             URLQueryItem(name: "mktEmailOptOut", value: String(marketingEmailOptOut)),
             URLQueryItem(name: "signup", value: String(signup)),
