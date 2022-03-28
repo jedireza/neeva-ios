@@ -326,6 +326,8 @@ public struct CheatsheetMenuView: View {
             NewsResultsView(
                 newsResults: newsResults
             )
+        default:
+            EmptyView()
         }
     }
 

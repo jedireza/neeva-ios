@@ -245,6 +245,8 @@ public class CheatsheetMenuViewModel: ObservableObject {
                     id: richResult.id,
                     resultType: .NewsGroup(result: newResult)
                 )
+            default:
+                return nil
             }
         }
     }
