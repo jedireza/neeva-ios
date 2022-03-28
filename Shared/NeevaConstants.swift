@@ -158,21 +158,6 @@ public struct NeevaConstants {
         ])!
     }
 
-    /// Generates a serverAuthCodeCookie cookie from the given cookie value.
-    public static func serverAuthCodeCookie(for value: String) -> HTTPCookie {
-        HTTPCookie(properties: [
-            .name: "serverAuthCode",
-            .value: value,
-            .domain: NeevaConstants.appHost,
-            .path: "/",
-            .expires: Date() + 1 * 60,
-            .secure: true,
-            .sameSitePolicy: HTTPCookieStringPolicy.sameSiteLax,
-            // ! potentially undocumented API
-            .init("HttpOnly"): true,
-        ])!
-    }
-
     public static let sharedBundle = Bundle(for: BundleHookClass.self)
 
     public static func isNeevaHome(url: URL?) -> Bool {
@@ -206,14 +191,16 @@ public struct NeevaConstants {
 
     // Construct auth url for signin with apple
     public static func appleAuthURL(
-        serverAuthCode: String,
+        identityToken: String,
+        authorizationCode: String,
         marketingEmailOptOut: Bool,
         signup: Bool
     ) -> URL {
         let authURL = buildAppURL("login-mobile")
         let queryItems: [URLQueryItem] = [
             URLQueryItem(name: "provider", value: "neeva.co/auth/oauth2/authenticators/apple"),
-            URLQueryItem(name: "serverAuthCode", value: serverAuthCode),
+            URLQueryItem(name: "identityToken", value: identityToken),
+            URLQueryItem(name: "authorizationCode", value: authorizationCode),
             URLQueryItem(name: "mktEmailOptOut", value: String(marketingEmailOptOut)),
             URLQueryItem(name: "signup", value: String(signup)),
             URLQueryItem(name: "ignoreCountryCode", value: "true"),

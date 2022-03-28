@@ -1658,19 +1658,17 @@ extension BrowserViewController {
                     self.introViewModel = nil
 
                     switch action {
-                    case .signupWithApple(let marketingEmailOptOut, let serverAuthCode):
-                        if let serverAuthCode = serverAuthCode {
+                    case .signupWithApple(
+                        let marketingEmailOptOut, let identityToken, let authorizationCode):
+                        if let identityToken = identityToken,
+                            let authorizationCode = authorizationCode
+                        {
                             let authURL = NeevaConstants.appleAuthURL(
-                                serverAuthCode: serverAuthCode,
+                                identityToken: identityToken,
+                                authorizationCode: authorizationCode,
                                 marketingEmailOptOut: marketingEmailOptOut ?? false,
                                 signup: true)
-                            let httpCookieStore = self.tabManager.configuration.websiteDataStore
-                                .httpCookieStore
-                            httpCookieStore.setCookie(
-                                NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)
-                            ) {
-                                self.openURLInNewTab(authURL)
-                            }
+                            self.openURLInNewTab(authURL)
                         }
                     case .skipToBrowser:
                         if let onDismiss = onDismiss {
