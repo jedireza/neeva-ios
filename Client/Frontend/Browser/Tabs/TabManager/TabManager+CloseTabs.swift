@@ -85,17 +85,18 @@ extension TabManager {
 
         if closedLastNormalTab || closedLastIncognitoTab {
             DispatchQueue.main.async {
+                self.selectTab(nil, notify: notify)
                 bvc.showTabTray()
             }
-        } else if tab == selectedTab {
-            if !selectParentTab(afterRemoving: tab) {
+        } else if let selectedTab = selectedTab, !viableTabs.contains(selectedTab) {
+            if !selectParentTab(afterRemoving: selectedTab) {
                 if let rightOrLeftTab = viableTabs[safe: deletedIndex]
                     ?? viableTabs[safe: deletedIndex - 1]
                 {
-                    selectTab(rightOrLeftTab, previous: tab, notify: notify)
+                    selectTab(rightOrLeftTab, previous: selectedTab, notify: notify)
                 } else {
                     selectTab(
-                        mostRecentTab(inTabs: viableTabs) ?? viableTabs.last, previous: tab,
+                        mostRecentTab(inTabs: viableTabs) ?? viableTabs.last, previous: selectedTab,
                         notify: notify)
                 }
             }

@@ -479,4 +479,15 @@ class CardTests: XCTestCase {
         let spaceCards = spaceCardsView.findAll(FittedCard<SpaceCardDetails>.self)
         XCTAssertEqual(spaceCards.count, 4)
     }
+
+    func testSelectedTabAfterTabGroupRemoved() {
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab()
+        let tab3 = manager.addTab(afterTab: tab2)
+        manager.selectedTab = tab2
+        manager.removeTabs([tab2, tab3])
+        if let tab = tabCardModel.allDetails.first(where: {$0.id == tab1.id}) {
+            XCTAssertEqual(tab.isSelected, true)
+        }
+    }
 }
