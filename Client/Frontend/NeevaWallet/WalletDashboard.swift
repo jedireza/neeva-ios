@@ -456,8 +456,6 @@ struct WalletDashboard: View {
                     }
             }
             .modifier(WalletListStyleModifier())
-            .padding(.horizontal, 16)
-            .background(Color.DefaultBackground)
             .navigationBarHidden(true)
         }
         .navigationViewStyle(.automatic)
