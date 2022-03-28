@@ -167,11 +167,9 @@ class TabManager: NSObject {
                     return tab
                 }
 
-                if let internalUrl = InternalURL(sessionUrl), internalUrl.isSessionRestore,
-                    let extractedUrlParam = internalUrl.extractedUrlParam
-                {
-                    log.info("Checking extractedUrlParam: \(extractedUrlParam)")
-                    if url.equals(extractedUrlParam, with: options) {
+                if let nestedUrl = InternalURL.unwrapSessionRestore(url: sessionUrl) {
+                    log.info("Checking extractedUrlParam: \(nestedUrl)")
+                    if url.equals(nestedUrl, with: options) {
                         return tab
                     }
                 }

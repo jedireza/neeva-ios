@@ -77,4 +77,28 @@ class TabGroupTests: BaseTestCase {
         goToTabTray()
         confirmOneTabGroupExists()
     }
+
+    func testNYTimesCaseAfterTabRestore() {
+        closeAllTabs(createNewTab: false)
+
+        openTestURLInNewTab(andNavigateAway: true)
+        openURL(path(forTestPage: "test-mozilla-book.html"))
+
+        goToTabTray()
+
+        app.buttons["Close"].firstMatch.tap()
+
+        // Restore the closed tab.
+        app.buttons["Add Tab"].press(forDuration: 2.0)
+        waitForExistence(app.collectionViews.firstMatch)
+
+        app.collectionViews.firstMatch.buttons.firstMatch.tap()
+
+        // This should result in a Tab Group.
+        openURL()
+
+        goToTabTray()
+
+        XCTAssertTrue(app.buttons["Tab Group, https://example.com/"].exists)
+    }
 }

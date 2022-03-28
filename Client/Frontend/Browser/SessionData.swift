@@ -67,8 +67,17 @@ class SessionData: NSObject, NSCoding {
     }
 
     var currentUrl: URL? {
+        // TODO: We should probably unwrap this if it is a session restore internal URL.
         let index = urls.count - 1 + currentPage
         return 0..<urls.count ~= index ? urls[index] : nil
+    }
+
+    var initialUrl: URL? {
+        let url = urls.first
+        if let nestedUrl = InternalURL.unwrapSessionRestore(url: url) {
+            return nestedUrl
+        }
+        return url
     }
 
     /// Creates a new SessionData object representing a serialized tab.
