@@ -7275,6 +7275,7 @@ public final class SearchQuery: GraphQLQuery {
                         }
                       }
                       reviewCount
+                      imageURL
                       imageURLs
                       isClosed
                       isOpenNow
@@ -7574,7 +7575,7 @@ public final class SearchQuery: GraphQLQuery {
 
   public let operationName: String = "Search"
 
-  public let operationIdentifier: String? = "79bb1880cdd298979d94702f551a4146fd42295333a2de85a99ee033336f4e2b"
+  public let operationIdentifier: String? = "044087d7eb05d628602711572f6904b11aef710ffbe4612ffdc66b26191a5748"
 
   public var query: String
 
@@ -9676,6 +9677,7 @@ public final class SearchQuery: GraphQLQuery {
                         GraphQLField("specialHours", type: .list(.nonNull(.object(SpecialHour.selections)))),
                         GraphQLField("hours", type: .object(Hour.selections)),
                         GraphQLField("reviewCount", type: .nonNull(.scalar(Int.self))),
+                        GraphQLField("imageURL", type: .nonNull(.scalar(String.self))),
                         GraphQLField("imageURLs", type: .list(.nonNull(.scalar(String.self)))),
                         GraphQLField("isClosed", type: .nonNull(.scalar(Bool.self))),
                         GraphQLField("isOpenNow", type: .scalar(Bool.self)),
@@ -9696,8 +9698,8 @@ public final class SearchQuery: GraphQLQuery {
                       self.resultMap = unsafeResultMap
                     }
 
-                    public init(id: String? = nil, type: String, placeSubType: PlaceSubType? = nil, name: String, address: Address, telephone: String, telephonePretty: String, websiteUrl: String, yelpUrl: String, position: Position, isAddress: Bool? = nil, rating: Double, price: String, specialHours: [SpecialHour]? = nil, hours: Hour? = nil, reviewCount: Int, imageUrLs: [String]? = nil, isClosed: Bool, isOpenNow: Bool? = nil, categories: [String], mapImage: MapImage? = nil, mapImageLarge: MapImageLarge? = nil, googleMapsUrl: String? = nil, useHighVisuals: Bool? = nil, articulatedOperatingStatus: String? = nil, articulatedHour: String? = nil, placeSuggestions: [PlaceSuggestion]? = nil) {
-                      self.init(unsafeResultMap: ["__typename": "PlaceData", "id": id, "type": type, "placeSubType": placeSubType, "name": name, "address": address.resultMap, "telephone": telephone, "telephonePretty": telephonePretty, "websiteURL": websiteUrl, "yelpURL": yelpUrl, "position": position.resultMap, "isAddress": isAddress, "rating": rating, "price": price, "specialHours": specialHours.flatMap { (value: [SpecialHour]) -> [ResultMap] in value.map { (value: SpecialHour) -> ResultMap in value.resultMap } }, "hours": hours.flatMap { (value: Hour) -> ResultMap in value.resultMap }, "reviewCount": reviewCount, "imageURLs": imageUrLs, "isClosed": isClosed, "isOpenNow": isOpenNow, "categories": categories, "mapImage": mapImage.flatMap { (value: MapImage) -> ResultMap in value.resultMap }, "mapImageLarge": mapImageLarge.flatMap { (value: MapImageLarge) -> ResultMap in value.resultMap }, "googleMapsURL": googleMapsUrl, "useHighVisuals": useHighVisuals, "articulatedOperatingStatus": articulatedOperatingStatus, "articulatedHour": articulatedHour, "placeSuggestions": placeSuggestions.flatMap { (value: [PlaceSuggestion]) -> [ResultMap] in value.map { (value: PlaceSuggestion) -> ResultMap in value.resultMap } }])
+                    public init(id: String? = nil, type: String, placeSubType: PlaceSubType? = nil, name: String, address: Address, telephone: String, telephonePretty: String, websiteUrl: String, yelpUrl: String, position: Position, isAddress: Bool? = nil, rating: Double, price: String, specialHours: [SpecialHour]? = nil, hours: Hour? = nil, reviewCount: Int, imageUrl: String, imageUrLs: [String]? = nil, isClosed: Bool, isOpenNow: Bool? = nil, categories: [String], mapImage: MapImage? = nil, mapImageLarge: MapImageLarge? = nil, googleMapsUrl: String? = nil, useHighVisuals: Bool? = nil, articulatedOperatingStatus: String? = nil, articulatedHour: String? = nil, placeSuggestions: [PlaceSuggestion]? = nil) {
+                      self.init(unsafeResultMap: ["__typename": "PlaceData", "id": id, "type": type, "placeSubType": placeSubType, "name": name, "address": address.resultMap, "telephone": telephone, "telephonePretty": telephonePretty, "websiteURL": websiteUrl, "yelpURL": yelpUrl, "position": position.resultMap, "isAddress": isAddress, "rating": rating, "price": price, "specialHours": specialHours.flatMap { (value: [SpecialHour]) -> [ResultMap] in value.map { (value: SpecialHour) -> ResultMap in value.resultMap } }, "hours": hours.flatMap { (value: Hour) -> ResultMap in value.resultMap }, "reviewCount": reviewCount, "imageURL": imageUrl, "imageURLs": imageUrLs, "isClosed": isClosed, "isOpenNow": isOpenNow, "categories": categories, "mapImage": mapImage.flatMap { (value: MapImage) -> ResultMap in value.resultMap }, "mapImageLarge": mapImageLarge.flatMap { (value: MapImageLarge) -> ResultMap in value.resultMap }, "googleMapsURL": googleMapsUrl, "useHighVisuals": useHighVisuals, "articulatedOperatingStatus": articulatedOperatingStatus, "articulatedHour": articulatedHour, "placeSuggestions": placeSuggestions.flatMap { (value: [PlaceSuggestion]) -> [ResultMap] in value.map { (value: PlaceSuggestion) -> ResultMap in value.resultMap } }])
                     }
 
                     public var __typename: String {
@@ -9850,6 +9852,16 @@ public final class SearchQuery: GraphQLQuery {
                       }
                       set {
                         resultMap.updateValue(newValue, forKey: "reviewCount")
+                      }
+                    }
+
+                    /// DEPRECATED in favor of imageURLs
+                    public var imageUrl: String {
+                      get {
+                        return resultMap["imageURL"]! as! String
+                      }
+                      set {
+                        resultMap.updateValue(newValue, forKey: "imageURL")
                       }
                     }
 
