@@ -129,8 +129,8 @@ public struct Place {
     public let name: String
     public let address: Address
     public let position: Coordinate
-    public let telephone: String
-    public let telephonePretty: String
+    public let telephone: String?
+    public let telephonePretty: String?
     public let price: String?
 
     // review
@@ -560,8 +560,8 @@ public class SearchController:
             name: data.name,
             address: address,
             position: coordinate,
-            telephone: data.telephone,
-            telephonePretty: data.telephonePretty,
+            telephone: data.telephone.isEmpty ? nil : data.telephone,
+            telephonePretty: data.telephonePretty.isEmpty ? nil : data.telephonePretty,
             price: data.price.isEmpty ? nil : data.price,
             rating: data.rating > 0 ? data.rating: nil,
             reviewCount: data.reviewCount > 0 ? data.reviewCount : nil,
@@ -572,6 +572,74 @@ public class SearchController:
             websiteURL: URL(string: data.websiteUrl),
             yelpURL: URL(string: data.yelpUrl),
             imageURL: URL(string: data.imageUrl),
+            mapImage: mapImage,
+            mapImageLarge: mapImageLarge
+        )
+    }
+
+    private class func constructPlace(
+        from data: SearchQuery.Data.Search.ResultGroup.Result.TypeSpecific.AsPlaceList.PlaceList.Place.Place
+    ) -> Place? {
+        guard let streetAddress = data.address.streetAddress,
+              let fullAddress = data.address.fullAddress
+        else {
+            return nil
+        }
+        let address = Place.Address(street: streetAddress, full: fullAddress)
+        let coordinate = Place.Coordinate(lat: data.position.lat, lon: data.position.lon)
+
+        let specialHours = data.specialHours?.map {
+            return Place.SpecialHour(
+                isOvernight: $0.isOvernight,
+                isClosed: $0.isClosed,
+                start: $0.start,
+                end: $0.end,
+                date: $0.date
+            )
+        }
+        let hours = data.hours?.open.map {
+            return Place.Hour(
+                isOvernight: $0.isOvernight,
+                start: $0.start,
+                end: $0.end,
+                day: $0.day
+            )
+        }
+
+        var mapImage: Place.MapImage?
+        if let mapImageURLString = data.mapImage?.url,
+           let mapImageDarkURLString = data.mapImage?.darkUrl {
+            mapImage = .init(
+                url: URL(string: mapImageURLString),
+                darkURL: URL(string: mapImageDarkURLString)
+            )
+        }
+
+        var mapImageLarge: Place.MapImage?
+        if let mapImageURLString = data.mapImageLarge?.url,
+           let mapImageDarkURLString = data.mapImageLarge?.darkUrl {
+            mapImageLarge = .init(
+                url: URL(string: mapImageURLString),
+                darkURL: URL(string: mapImageDarkURLString)
+            )
+        }
+
+        return Place(
+            name: data.name,
+            address: address,
+            position: coordinate,
+            telephone: data.telephone.isEmpty ? nil : data.telephone,
+            telephonePretty: data.telephonePretty.isEmpty ? nil : data.telephonePretty,
+            price: data.price.isEmpty ? nil : data.price,
+            rating: data.rating > 0 ? data.rating: nil,
+            reviewCount: data.reviewCount > 0 ? data.reviewCount : nil,
+            articulatedOperatingStatus: data.articulatedOperatingStatus,
+            articulatedHour: data.articulatedHour,
+            specialHours: specialHours,
+            hours: hours,
+            websiteURL: URL(string: data.websiteUrl),
+            yelpURL: URL(string: data.yelpUrl),
+            imageURL: URL(string: data.imageUrLs?.first ?? data.imageUrl),
             mapImage: mapImage,
             mapImageLarge: mapImageLarge
         )
