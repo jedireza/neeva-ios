@@ -26,11 +26,6 @@ done
 # Script used to build a release. Use the Xcode Organizer to distribute
 # the resulting archive.
 
-if [ -z ${OPENSEA_API_KEY} ] || [ -z ${CRYPTO_ETH_URL} ] || [ -z ${CRYPTO_ROPSTEN_URL} ] || [ -z ${CRYPTO_POLYGON_URL} ]; then
-  echo "OPENSEA_API_KEY, CRYPTO_ETH_URL, CRYPTO_ROPSTEN_URL or CRYPTO_POLYGON_URL keys are not defined. Abort"
-  exit 1
-fi
-
 ./bootstrap.sh
 
 if ! test -f "$NEEVA_REPO/client/browser/scripts/send-slack-message.sh"; then
