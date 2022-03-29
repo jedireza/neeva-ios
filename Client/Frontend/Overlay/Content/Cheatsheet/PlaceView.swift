@@ -161,16 +161,18 @@ struct PlaceView: View {
             // rating is out of 5
             if let rating = place.rating {
                 RatingsView(rating: rating)
-            } else {
-                EmptyView()
             }
 
             if let reviews = place.reviewCount {
                 Text("\(reviews) Reviews")
                     .withFont(.bodySmall)
                     .foregroundColor(.secondaryLabel)
-            } else {
-                EmptyView()
+            }
+
+            if let price = place.price {
+                Text(price)
+                    .withFont(.bodySmall)
+                    .foregroundColor(.secondaryLabel)
             }
         }
     }
