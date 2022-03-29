@@ -26,7 +26,10 @@ class TabGroupTests: BaseTestCase {
     private func confirmOneTabGroupExists() {
         // Confirms only one Tab Group exists,
         // will fail with multiple options error if more than one exists.
-        XCTAssertTrue(app.buttons["TabGroup"].exists)
+        XCTAssertTrue(app.staticTexts["TabGroupTitle"].exists)
+
+        let titleValue = app.staticTexts["TabGroupTitle"].value as? String
+        XCTAssertTrue(titleValue?.contains("example.com") ?? false)
     }
 
     /// Tests the NYTimes case in an instance where the child tab (nytimes.com/article)
@@ -98,7 +101,6 @@ class TabGroupTests: BaseTestCase {
         openURL()
 
         goToTabTray()
-
-        XCTAssertTrue(app.buttons["Tab Group, https://example.com/"].exists)
+        confirmOneTabGroupExists()
     }
 }

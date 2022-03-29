@@ -20,8 +20,7 @@ struct CollapsedCardGroupView: View {
 
     @State private var frame = CGRect.zero
 
-    @ViewBuilder
-    var group: some View {
+    var body: some View {
         if groupDetails.allDetails.count <= columns.count {
             // Don't make it a scroll view if the tab group can't be expanded
             ExpandedCardGroupRowView(
@@ -45,10 +44,6 @@ struct CollapsedCardGroupView: View {
                     )
             )
         }
-    }
-
-    var body: some View {
-        group.accessibilityIdentifier("TabGroup")
     }
 
     @ViewBuilder
@@ -248,9 +243,13 @@ struct TabGroupHeader: View {
                     .labelStyle(.iconOnly)
                     .frame(height: 44)
             }
+
             Text(groupDetails.title)
                 .withFont(.labelLarge)
                 .foregroundColor(.label)
+                .accessibility(identifier: "TabGroupTitle")
+                .accessibility(value: Text(groupDetails.title))
+
             Spacer()
             if groupDetails.allDetails.count > columns.count {
                 Button {
