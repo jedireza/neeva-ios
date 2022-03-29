@@ -23,8 +23,7 @@ struct SingleLevelTabCardsView: View {
 
     var body: some View {
         ForEach(
-            tabModel.buildRows(
-                incognito: incognito, maxCols: columns.count)
+            incognito ? tabModel.incognitoRows : tabModel.normalRows
         ) { row in
             HStack(spacing: CardGridUX.GridSpacing) {
                 ForEach(row.cells) { details in

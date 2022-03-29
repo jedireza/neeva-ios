@@ -40,10 +40,9 @@ struct TabGridContainer: View {
     @Environment(\.columns) private var columns
 
     var selectedRowId: TabCardModel.Row.ID? {
-        tabModel.buildRows(
-            incognito: isIncognito, maxCols: columns.count
-        )
-        .first { $0.cells.contains(where: \.isSelected) }?.id
+        isIncognito
+            ? tabModel.incognitoRows.first { $0.cells.contains(where: \.isSelected) }?.id
+            : tabModel.normalRows.first { $0.cells.contains(where: \.isSelected) }?.id
     }
 
     var selectedCardID: String? {

@@ -173,8 +173,7 @@ class CardTests: XCTestCase {
         let tab3 = manager.addTab(afterTab: tab2)
         let tab4 = manager.addTab()
 
-        let buildRowsPromotetab4 = tabCardModel.buildRows(
-            incognito: false, maxCols: 2)
+        let buildRowsPromotetab4 = tabCardModel.buildRows(incognito: false)
 
         // Two rows in total
         XCTAssertEqual(buildRowsPromotetab4.count, 2)
@@ -204,8 +203,7 @@ class CardTests: XCTestCase {
         // Make the tab group expanded
         tabGroupExpanded.insert(tab2.rootUUID)
 
-        let buildRowsDontPromotetab6 = tabCardModel.buildRows(
-            incognito: false, maxCols: 2)
+        let buildRowsDontPromotetab6 = tabCardModel.buildRows(incognito: false)
 
         // There should be four rows in total
         XCTAssertEqual(buildRowsDontPromotetab6.count, 4)
@@ -239,8 +237,8 @@ class CardTests: XCTestCase {
         let tab5 = manager.addTab()
         let tab6 = manager.addTab(afterTab: tab5)
 
-        let buildRowsAllSameRow = tabCardModel.buildRows(
-            incognito: false, maxCols: 3)
+        tabCardModel.columnCount = 3
+        let buildRowsAllSameRow = tabCardModel.buildRows(incognito: false)
 
         // There should be only two rows
         XCTAssertEqual(buildRowsAllSameRow.count, 2)
@@ -270,8 +268,8 @@ class CardTests: XCTestCase {
         // Make the tab group expanded
         tabGroupExpanded.insert(tab2.rootUUID)
 
-        let buildRowsDontPromotetab8 = tabCardModel.buildRows(
-            incognito: false, maxCols: 3)
+        tabCardModel.columnCount = 3
+        let buildRowsDontPromotetab8 = tabCardModel.buildRows(incognito: false)
 
         // There should be four rows in total
         XCTAssertEqual(buildRowsDontPromotetab8.count, 4)
@@ -301,8 +299,7 @@ class CardTests: XCTestCase {
         tab2.pinnedTime = Date().timeIntervalSinceReferenceDate
         tabCardModel.onDataUpdated()
 
-        let buildRowsTwoTabs = tabCardModel.buildRows(
-            incognito: false, maxCols: 2)
+        let buildRowsTwoTabs = tabCardModel.buildRows(incognito: false)
 
         XCTAssertEqual(buildRowsTwoTabs[0].cells.count, 2)
         XCTAssertEqual(buildRowsTwoTabs[0].cells[0].id, tab2.id)
@@ -324,8 +321,7 @@ class CardTests: XCTestCase {
         tab5.pinnedTime = Date().timeIntervalSinceReferenceDate
         tabCardModel.onDataUpdated()
 
-        let buildRowsThreeTabs = tabCardModel.buildRows(
-            incognito: false, maxCols: 2)
+        let buildRowsThreeTabs = tabCardModel.buildRows(incognito: false)
 
         XCTAssertEqual(buildRowsThreeTabs[0].numTabsInRow, 2)
         XCTAssertNotEqual(buildRowsThreeTabs[0].cells[0].id, tab5.id)
@@ -348,8 +344,7 @@ class CardTests: XCTestCase {
         tab7.pinnedTime = Date().timeIntervalSinceReferenceDate
         tabCardModel.onDataUpdated()
 
-        let buildRowsFourTabs = tabCardModel.buildRows(
-            incognito: false, maxCols: 2)
+        let buildRowsFourTabs = tabCardModel.buildRows(incognito: false)
 
         XCTAssertEqual(buildRowsFourTabs.count, 3)
         XCTAssertEqual(buildRowsFourTabs[2].cells[0].id, tab9.id)
