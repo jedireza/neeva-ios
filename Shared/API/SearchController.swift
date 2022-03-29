@@ -132,6 +132,7 @@ public struct Place {
     public let telephone: String?
     public let telephonePretty: String?
     public let price: String?
+    public let categories: [String]
 
     // review
     public let rating: Double?
@@ -564,6 +565,7 @@ public class SearchController:
             telephone: data.telephone.isEmpty ? nil : data.telephone,
             telephonePretty: data.telephonePretty.isEmpty ? nil : data.telephonePretty,
             price: data.price.isEmpty ? nil : data.price,
+            categories: data.categories.filter { !$0.isEmpty },
             rating: data.rating > 0 ? data.rating: nil,
             reviewCount: data.reviewCount > 0 ? data.reviewCount : nil,
             articulatedOperatingStatus: data.articulatedOperatingStatus,
@@ -633,6 +635,7 @@ public class SearchController:
             telephone: data.telephone.isEmpty ? nil : data.telephone,
             telephonePretty: data.telephonePretty.isEmpty ? nil : data.telephonePretty,
             price: data.price.isEmpty ? nil : data.price,
+            categories: data.categories.filter { !$0.isEmpty },
             rating: data.rating > 0 ? data.rating: nil,
             reviewCount: data.reviewCount > 0 ? data.reviewCount : nil,
             articulatedOperatingStatus: data.articulatedOperatingStatus,
