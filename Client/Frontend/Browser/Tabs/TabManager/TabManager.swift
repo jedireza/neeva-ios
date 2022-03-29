@@ -201,6 +201,11 @@ class TabManager: NSObject {
     // This function updates the _selectedIndex.
     // Note: it is safe to call this with `tab` and `previous` as the same tab, for use in the case where the index of the tab has changed (such as after deletion).
     func selectTab(_ tab: Tab?, previous: Tab? = nil, notify: Bool) {
+        // Don't need to re-select the tab if it's already selected.
+        guard tab != selectedTab else {
+            return
+        }
+        
         assert(Thread.isMainThread)
         let previous = previous ?? selectedTab
 

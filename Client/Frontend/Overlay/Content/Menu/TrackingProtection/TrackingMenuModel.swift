@@ -17,7 +17,7 @@ class TrackingMenuModel: ObservableObject {
     @Published private(set) var hallOfShameDomains = [HallOfShameDomain]()
     @Published var preventTrackersForCurrentPage: Bool {
         didSet {
-            setTrackingProtectionAllowedForCurrentPage(preventTrackersForCurrentPage)
+            setTrackingProtectionEnabledForCurrentPage(preventTrackersForCurrentPage)
         }
     }
 
@@ -41,7 +41,8 @@ class TrackingMenuModel: ObservableObject {
                 return
             }
 
-            preventTrackersForCurrentPage = TrackingPreventionConfig.trackersAllowedFor(domain)
+            // Enable tracking protection **if trackers are not** allowed.
+            preventTrackersForCurrentPage = !TrackingPreventionConfig.trackersAllowedFor(domain)
         }
     }
 
@@ -85,8 +86,8 @@ class TrackingMenuModel: ObservableObject {
             .toArray()
     }
 
-    public func setTrackingProtectionAllowedForCurrentPage(_ allowed: Bool) {
-        let trackersAllowed = !allowed
+    public func setTrackingProtectionEnabledForCurrentPage(_ enabled: Bool) {
+        let trackersAllowed = !enabled
 
         guard let domain = selectedTab?.currentURL()?.host,
             TrackingPreventionConfig.trackersAllowedFor(domain) != trackersAllowed
