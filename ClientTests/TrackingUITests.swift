@@ -164,10 +164,10 @@ class TrackingUITests: XCTestCase {
         manager.selectTab(tab, notify: true)
         tab.setURL("https://neeva.com")
         model = TrackingMenuModel(tabManager: manager)
-        model.setTrackingProtectionAllowedForCurrentPage(false)
+        model.setTrackingProtectionEnabledForCurrentPage(false)
         XCTAssertTrue(Defaults[.unblockedDomains].contains("neeva.com"))
 
-        model.setTrackingProtectionAllowedForCurrentPage(true)
+        model.setTrackingProtectionEnabledForCurrentPage(true)
         XCTAssertFalse(Defaults[.unblockedDomains].contains("neeva.com"))
     }
 
