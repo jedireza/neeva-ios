@@ -111,9 +111,23 @@ class Tab: NSObject, ObservableObject {
     }
 
     // MARK: - Navigation Properties
-    /// URL of the original page opened in this Tab
-    var originalURL: URL? {
-        backList?.first?.initialURL
+    /// URL of the initial page opened in this Tab
+    var initialURL: URL? {
+        // Using `.url` here rather than `.initialURL` since the latter can be an
+        // "internal://local/sessionrestore?history=..." URL. For newly created
+        // tabs, checking `.initialURL` might still be interesting to better handle
+        // redirect scenarios, but this approach will be more consistent across
+        // restarts of the app.
+        if let initialURL = backList?.first?.url {
+            // Check if this is a session restore URL and if so, then extract the real
+            // URL from the parameter.
+            if let nestedURL = InternalURL.unwrapSessionRestore(url: initialURL) {
+                return nestedURL
+            }
+            return initialURL
+        }
+        // Fallback to reading from `sessionData` when `webView` is not loaded yet.
+        return sessionData?.initialUrl
     }
     var queryForNavigation: QueryForNavigation = QueryForNavigation()
     var backList: [WKBackForwardListItem]? { webView?.backForwardList.backList }

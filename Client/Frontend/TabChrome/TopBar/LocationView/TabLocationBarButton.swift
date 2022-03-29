@@ -22,7 +22,7 @@ struct TabLocationBarButton<Label: View>: View {
 struct LocationViewTrackingButton: View {
     @State private var showingPopover = false
     @EnvironmentObject private var incognitoModel: IncognitoModel
-    @EnvironmentObject private var trackingStatsModel: TrackingStatsViewModel
+    @EnvironmentObject private var trackingStatsModel: TrackingMenuModel
 
     let currentDomain: String
 

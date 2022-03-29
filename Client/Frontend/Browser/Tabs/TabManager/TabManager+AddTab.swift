@@ -123,9 +123,9 @@ extension TabManager {
         } else if parent == nil || parent?.isIncognito != tab.isIncognito {
             var insertIndex: Int? = nil
 
-            for incognitoStateTab in isIncognito ? incognitoTabs : normalTabs {
-                if addTabToTabGroupIfNeeded(newTab: tab, possibleChildTab: incognitoStateTab) {
-                    guard let childTabIndex = tabs.firstIndex(of: incognitoStateTab) else {
+            for possibleChildTab in isIncognito ? incognitoTabs : normalTabs {
+                if addTabToTabGroupIfNeeded(newTab: tab, possibleChildTab: possibleChildTab) {
+                    guard let childTabIndex = tabs.firstIndex(of: possibleChildTab) else {
                         continue
                     }
 
@@ -155,7 +155,7 @@ extension TabManager {
         }
 
         if notify {
-            tabsUpdatedPublisher.send()
+            updateTabGroupsAndSendNotifications(notify: notify)
         }
     }
 
@@ -166,13 +166,13 @@ extension TabManager {
         newTab: Tab, possibleChildTab: Tab
     ) -> Bool {
         guard
-            let childTabOriginalURL = possibleChildTab.originalURL?.normalizedHostAndPathForDisplay,
+            let childTabInitialURL = possibleChildTab.initialURL?.normalizedHostAndPathForDisplay,
             let newTabURL = newTab.url?.normalizedHostAndPathForDisplay
         else {
             return false
         }
 
-        let shouldCreateTabGroup = childTabOriginalURL == newTabURL
+        let shouldCreateTabGroup = childTabInitialURL == newTabURL
 
         /// TODO: To make this more effecient, we should refactor `TabGroupManager`
         /// to be apart of `TabManager`. That we can quickly check if the ChildTab is in a Tab Group.
@@ -233,7 +233,7 @@ extension TabManager {
             }
         }
 
-        tabsUpdatedPublisher.send()
+        updateTabGroupsAndSendNotifications(notify: true)
 
         // Prevents a sticky tab tray
         SceneDelegate.getBVC(with: scene).browserModel.cardTransitionModel.update(to: .hidden)

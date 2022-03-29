@@ -2,134 +2,14 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-import Combine
-import Defaults
 import SFSafeSymbols
 import Shared
-import Storage
 import SwiftUI
 
 private enum TrackingMenuUX {
     static let hallOfShameElementSpacing: CGFloat = 8
     static let hallOfShameRowSpacing: CGFloat = 60
     static let hallOfShameElementFaviconSize: CGFloat = 25
-}
-
-struct HallOfShameDomain {
-    let domain: TrackingEntity
-    let count: Int
-}
-
-class TrackingStatsViewModel: ObservableObject {
-    var numTrackers: Int {
-        if let numTrackersTesting = numTrackersTesting {
-            return numTrackersTesting
-        } else {
-            return selectedTab?.contentBlocker?.stats.domains.count ?? 0
-        }
-    }
-
-    @Published private(set) var numDomains = 0
-    @Published private(set) var hallOfShameDomains = [HallOfShameDomain]()
-    @Published var preventTrackersForCurrentPage: Bool {
-        didSet {
-            ClientLogger.shared.logCounter(
-                preventTrackersForCurrentPage ? .TurnOnBlockTracking : .TurnOffBlockTracking,
-                attributes: EnvironmentHelper.shared.getAttributes() + [
-                    ClientLogCounterAttribute(
-                        key: LogConfig.TrackingProtectionAttribute.toggleProtectionForURL,
-                        value: selectedTab?.currentURL()?.absoluteString)
-                ]
-            )
-
-            guard let domain = selectedTab?.currentURL()?.host else {
-                return
-            }
-
-            TrackingPreventionConfig.updateAllowList(
-                with: domain, allowed: !preventTrackersForCurrentPage
-            ) {
-                self.selectedTab?.contentBlocker?.notifiedTabSetupRequired()
-                self.selectedTab?.reload()
-                self.refreshStats()
-            }
-
-        }
-    }
-
-    var viewVisible: Bool = false
-
-    private var selectedTab: Tab? = nil {
-        didSet {
-            statsSubscription = nil
-        }
-    }
-
-    private var subscriptions: Set<AnyCancellable> = []
-    private var statsSubscription: AnyCancellable? = nil
-
-    // read by tests
-    private(set) var trackers: [TrackingEntity] {
-        didSet {
-            onDataUpdated()
-        }
-    }
-
-    init(tabManager: TabManager) {
-        self.selectedTab = tabManager.selectedTab
-        self.preventTrackersForCurrentPage =
-            !Defaults[.unblockedDomains].contains(selectedTab?.currentURL()?.host ?? "")
-        let trackingData = TrackingEntity.getTrackingDataForCurrentTab(
-            stats: selectedTab?.contentBlocker?.stats)
-        self.numDomains = trackingData.numDomains
-        self.trackers = trackingData.trackingEntities
-        tabManager.selectedTabPublisher.assign(to: \.selectedTab, on: self).store(
-            in: &subscriptions)
-        onDataUpdated()
-    }
-
-    /// FOR TESTING ONLY
-    private(set) var numTrackersTesting: Int?
-
-    /// For usage with static data and testing only
-    init(testingData: TrackingData) {
-        self.preventTrackersForCurrentPage = true
-        self.numDomains = testingData.numDomains
-        self.trackers = testingData.trackingEntities
-        self.numTrackersTesting = testingData.numTrackers
-        onDataUpdated()
-    }
-
-    func refreshStats() {
-        guard let tab = selectedTab else {
-            return
-        }
-
-        let trackingData = TrackingEntity.getTrackingDataForCurrentTab(
-            stats: tab.contentBlocker?.stats)
-        self.numDomains = trackingData.numDomains
-        self.trackers = trackingData.trackingEntities
-        onDataUpdated()
-        statsSubscription = selectedTab?.contentBlocker?.$stats
-            .filter { [weak self] _ in self?.viewVisible ?? false }
-            .map { TrackingEntity.getTrackingDataForCurrentTab(stats: $0) }
-            .sink { [weak self] data in
-                guard let self = self else { return }
-                self.numDomains = data.numDomains
-                self.trackers = data.trackingEntities
-                self.onDataUpdated()
-            }
-    }
-
-    func onDataUpdated() {
-        hallOfShameDomains =
-            trackers
-            .reduce(into: [:]) { dict, tracker in dict[tracker] = (dict[tracker] ?? 0) + 1 }
-            .map { HallOfShameDomain(domain: $0.key, count: $0.value) }
-            .sorted(by: { $0.count > $1.count })
-            .prefix(3)
-            .toArray()
-    }
 }
 
 struct TrackingMenuFirstRowElement: View {
@@ -188,7 +68,7 @@ struct HallOfShameView: View {
 }
 
 struct TrackingMenuView: View {
-    @EnvironmentObject var viewModel: TrackingStatsViewModel
+    @EnvironmentObject var viewModel: TrackingMenuModel
 
     @State private var isShowingPopup = false
 
@@ -204,8 +84,7 @@ struct TrackingMenuView: View {
                 }
             }
 
-            TrackingMenuProtectionRowButton(
-                preventTrackers: $viewModel.preventTrackersForCurrentPage)
+            TrackingMenuProtectionRow()
 
             if FeatureFlag[.newTrackingProtectionSettings] {
                 GroupedCellButton(action: { isShowingPopup = true }) {
@@ -228,5 +107,6 @@ struct TrackingMenuView: View {
         .onDisappear {
             viewModel.viewVisible = false
         }
+        .padding(.top, 6)
     }
 }

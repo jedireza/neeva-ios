@@ -593,6 +593,15 @@ public struct InternalURL {
         return nil
     }
 
+    static public func unwrapSessionRestore(url: URL?) -> URL? {
+        if let internalUrl = InternalURL(url), internalUrl.isSessionRestore,
+            let nestedUrl = internalUrl.extractedUrlParam
+        {
+            return nestedUrl
+        }
+        return nil
+    }
+
     public var isAboutURL: Bool {
         return aboutComponent != nil
     }

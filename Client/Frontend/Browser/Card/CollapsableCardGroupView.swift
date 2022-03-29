@@ -16,7 +16,6 @@ struct CollapsedCardGroupView: View {
     @Environment(\.cardSize) private var size
     @Environment(\.columns) private var columns
     @EnvironmentObject var browserModel: BrowserModel
-    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @EnvironmentObject private var gridModel: GridModel
 
     @State private var frame = CGRect.zero
@@ -114,7 +113,6 @@ struct ExpandedCardGroupRowView: View {
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
     @EnvironmentObject var browserModel: BrowserModel
-    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -188,7 +186,6 @@ struct ExpandedCardGroupRowView: View {
 
 struct TabGroupHeader: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
-    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @Environment(\.columns) private var columns
     let rowIndex: Int?
     let nextToCells: Bool
@@ -198,7 +195,7 @@ struct TabGroupHeader: View {
         didSet {
             if deleting {
                 guard Defaults[.confirmCloseAllTabs] else {
-                    groupDetails.onClose()
+                    groupDetails.onClose(showToast: true)
                     deleting = false
                     return
                 }
@@ -208,7 +205,7 @@ struct TabGroupHeader: View {
 
     var groupFromSpace: Bool {
         return groupDetails.id
-            == tabGroupCardModel.manager.get(for: groupDetails.id)?.children.first?.parentSpaceID
+            == groupDetails.manager.getTabGroup(for: groupDetails.id)?.children.first?.parentSpaceID
     }
 
     var body: some View {

@@ -63,9 +63,9 @@ public class EnvironmentHelper {
 
         var numOfChildTabs = 0
         var numOfTabGroups = 0
-        TabGroupManager.all.forEach { tabGroupManager in
-            numOfTabGroups += tabGroupManager.tabGroups.count
-            numOfChildTabs += tabGroupManager.childTabs.count
+        TabManager.all.forEach { tabManager in
+            numOfTabGroups += tabManager.tabGroups.count
+            numOfChildTabs += tabManager.childTabs.count
         }
 
         // number of normal tabs opened

@@ -34,10 +34,9 @@ struct CardStripContent: View {
 
     init(bvc: BrowserViewController, width: CGFloat) {
         let tabManager = bvc.tabManager
-        let tabGroupManager = bvc.tabGroupManager
 
         self.tabCardModel = TabCardModel(
-            manager: tabManager, groupManager: tabGroupManager)
+            manager: tabManager)
         self.spaceCardModel = SpaceCardModel()
         self.sitesCardModel = SiteCardModel(urls: [], tabManager: tabManager)
         self.cardStripModel = CardStripModel()

@@ -1042,7 +1042,6 @@ extension BrowserViewController: WKNavigationDelegate {
                     ClientLogger.shared.logCounter(
                         .DefaultBrowserInterstitialImp
                     )
-                    NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
                     shouldLogDBPrompt = false
                 }
 

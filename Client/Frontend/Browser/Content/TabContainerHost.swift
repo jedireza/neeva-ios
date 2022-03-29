@@ -51,7 +51,6 @@ class TabContainerModel: ObservableObject {
 
     init(bvc: BrowserViewController) {
         let tabManager = bvc.tabManager
-        let tabGroupManager = bvc.tabGroupManager
         let webView = tabManager.selectedTab?.webView
         let type = webView.map(ContentUIType.webPage) ?? Self.defaultType
 
@@ -60,7 +59,7 @@ class TabContainerModel: ObservableObject {
         self.recipeModel = RecipeViewModel(tabManager: tabManager)
         self.zeroQueryModel = bvc.zeroQueryModel
         self.tabCardModel = TabCardModel(
-            manager: tabManager, groupManager: tabGroupManager)
+            manager: tabManager)
         self.overlayManager = bvc.overlayManager
 
         self.subscription = tabManager.selectedTabPublisher.sink { [weak self] tab in
