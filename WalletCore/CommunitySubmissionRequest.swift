@@ -17,7 +17,7 @@ public class TrustSignalRequest: MutationRequest<ReportDomainTrustSignalMutation
 
 public let web3Extensions = [".io", ".xyz", ".com", ".art"]
 
-public typealias DomainTrustSignal = GetDomainTrustSignalsQuery.Data.DomainTrustSignal
+public typealias DomainTrustSignal = GetDomainTrustSignalsQuery.Data.XyzDomainTrustSignal
 
 public class TrustSignalController: QueryController<GetDomainTrustSignalsQuery, [DomainTrustSignal]>
 {
@@ -25,7 +25,7 @@ public class TrustSignalController: QueryController<GetDomainTrustSignalsQuery, 
     public override class func processData(_ data: GetDomainTrustSignalsQuery.Data)
         -> [DomainTrustSignal]
     {
-        data.domainTrustSignals ?? []
+        data.xyzDomainTrustSignals ?? []
     }
 
     @discardableResult static func getTrustSignals(

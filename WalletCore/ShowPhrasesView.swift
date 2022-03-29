@@ -8,6 +8,7 @@ import Shared
 import SwiftUI
 
 public struct ShowPhrasesView: View {
+    let dismiss: () -> Void
     @State var copyButtonText = "Copy"
     @State var showPhrases = false
     @Binding public var viewState: ViewState
@@ -15,8 +16,9 @@ public struct ShowPhrasesView: View {
         NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoSecretPhrase] ?? ""
     }
 
-    public init(viewState: Binding<ViewState>) {
+    public init(dismiss: @escaping () -> Void, viewState: Binding<ViewState>) {
         self._viewState = viewState
+        self.dismiss = dismiss
     }
 
     public var body: some View {
@@ -106,7 +108,7 @@ public struct ShowPhrasesView: View {
             }
             .buttonStyle(.wallet(.secondary))
             Button(action: {
-                viewState = .dashboard
+                dismiss()
             }) {
                 Text("Done")
                     .frame(maxWidth: .infinity)

@@ -27,7 +27,7 @@ public struct CommunitySubmissionView: View {
         VStack(spacing: 24) {
             VStack(spacing: 8) {
                 WalletSequenceSiteHeader(iconURL: iconURL, domain: domain, trusted: false)
-                Text("We were not able to confirm the validity of this site.")
+                Text("We're building out community trust flags for sites like this one.")
                     .withFont(.bodyLarge)
                     .foregroundColor(Color(light: .brand.variant.blue, dark: .brand.blue))
                     .multilineTextAlignment(.center)
@@ -38,7 +38,7 @@ public struct CommunitySubmissionView: View {
             .background(Color.quaternarySystemFill)
             .cornerRadius(12)
             Text(
-                "If you have knowledge of this site, please help the community and verify it as authentic or report as scam."
+                "Do you have knowledge of this site? Help keep the community safe and contribute below."
             )
             .withFont(.bodyXLarge)
             .foregroundColor(.label)

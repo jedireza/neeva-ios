@@ -240,14 +240,8 @@ public struct MaliciousSiteView: View {
                     .withFont(.labelLarge)
                     .foregroundColor(.label)
                 if let trustedDomain = alternativeDomain {
-                    (Text("This site has a similar address to the verified site ")
+                    (Text("This site's address is misleadinglu similar to a verified site ")
                         + Text(trustedDomain).bold())
-                    Text(
-                        "A misleading address like this is commonly used by malicious sites to scam people."
-                    )
-                    Text(
-                        "Reason: Wrong extension"
-                    )
                 } else if case .malicious = trustSignal {
                     Text("This site has been identified as malicious.")
                 }

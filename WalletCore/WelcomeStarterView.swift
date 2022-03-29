@@ -8,32 +8,46 @@ import SwiftUI
 import web3swift
 
 public struct WelcomeStarterView: View {
+    let dismiss: () -> Void
     @Default(.cryptoPublicKey) var publicKey
     @State var isCreatingWallet: Bool = false
     @Binding var viewState: ViewState
 
-    public init(viewState: Binding<ViewState>) {
+    public init(dismiss: @escaping () -> Void, viewState: Binding<ViewState>) {
         self._viewState = viewState
+        self.dismiss = dismiss
     }
 
     public var body: some View {
         VStack {
             CreateWalletIllustration(isCreatingWallet: $isCreatingWallet)
             if publicKey.isEmpty {
+                Button(action: { viewState = .importWallet }) {
+                    Text("Import My Wallet")
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.wallet(.primary))
+                .padding(.vertical, 8)
+                Text(
+                    "Already have one? **Whether you created it on Metamask or elsewhere**, you can access your wallet here."
+                )
+                .withFont(.bodyMedium)
+                .foregroundColor(.secondaryLabel)
+                .multilineTextAlignment(.center)
                 Button(action: {
                     isCreatingWallet = true
                 }) {
                     Text(isCreatingWallet ? "Creating your wallet... " : "Create a new wallet")
                         .frame(maxWidth: .infinity)
                 }
-                .buttonStyle(.wallet(.primary))
-                .padding(.vertical, 8)
-                Button(action: { viewState = .importWallet }) {
-                    Text("I already have one")
-                        .frame(maxWidth: .infinity)
-                }
                 .buttonStyle(.wallet(.secondary))
                 .padding(.vertical, 8)
+                Text(
+                    "Remember, this wallet is yours. You own its contents, and **can access it through any wallet app**."
+                )
+                .withFont(.bodyMedium)
+                .foregroundColor(.secondaryLabel)
+                .multilineTextAlignment(.center)
             } else {
                 Button(action: { viewState = .showPhrases }) {
                     Text("View Secret Recovery Phrase")
@@ -41,7 +55,7 @@ public struct WelcomeStarterView: View {
                 }
                 .buttonStyle(.wallet(.secondary))
                 .padding(.vertical, 8)
-                Button(action: { viewState = .dashboard }) {
+                Button(action: { dismiss() }) {
                     Text("Done")
                         .frame(maxWidth: .infinity)
                 }
@@ -88,7 +102,7 @@ struct CreateWalletIllustration: View {
                     counter: $confettiCounter, num: 50, radius: 300, repetitions: 3,
                     repetitionInterval: 0.3)
             }
-        }.frame(height: 384)
+        }.frame(height: 300)
             .onChange(of: isCreatingWallet) { value in
                 guard value else { return }
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) {

@@ -660,6 +660,7 @@
 		4A72AFC2278E42F60057E58B /* MutationRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC1278E42F60057E58B /* MutationRequest.swift */; };
 		4A72D21F27A0969900F5D14B /* EmailVerificationPrompt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72D21E27A0969900F5D14B /* EmailVerificationPrompt.swift */; };
 		4A72D22127A0AD1300F5D14B /* EmailVerificationContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */; };
+		4A7AC46427F27471001EFB8F /* XYZLaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A7AC46327F27470001EFB8F /* XYZLaunchScreen.xib */; };
 		4A87E8C927E90F3500CD47BA /* (null) in Sources */ = {isa = PBXBuildFile; };
 		4A88F9732662AEAB007C203D /* CardStrip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F9722662AEAB007C203D /* CardStrip.swift */; };
 		4A88F97526630EFC007C203D /* CardDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97426630EFC007C203D /* CardDetails.swift */; };
@@ -728,6 +729,8 @@
 		4AB8160527EA64ED0017203D /* SuggestedXYZSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB8160427EA64ED0017203D /* SuggestedXYZSearchesView.swift */; };
 		4AB8160627EA662E0017203D /* ScreenCaptureHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 328585B127E8FE7D00717DD5 /* ScreenCaptureHelper.swift */; };
 		4AB8160727EA663A0017203D /* ServerLoggingSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676685C427E50EAF003CEA6D /* ServerLoggingSettingsView.swift */; };
+		4AB8160927EA9A150017203D /* Web3Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC15D7527E924A8005F71CE /* Web3Toolbar.swift */; };
+		4AB8160B27EADCEF0017203D /* XYZIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB8160A27EADCEF0017203D /* XYZIntroView.swift */; };
 		4AB8160F27EBC3040017203D /* Web3Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC15D7527E924A8005F71CE /* Web3Toolbar.swift */; };
 		4AB8161027EBC3190017203D /* ConversionLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62FC4AA27E9162600848461 /* ConversionLogger.swift */; };
 		4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */; };
@@ -1968,6 +1971,7 @@
 		4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommunitySubmissionView.swift; sourceTree = "<group>"; };
 		4A72D21E27A0969900F5D14B /* EmailVerificationPrompt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationPrompt.swift; sourceTree = "<group>"; };
 		4A72D22027A0AD1300F5D14B /* EmailVerificationContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailVerificationContent.swift; sourceTree = "<group>"; };
+		4A7AC46327F27470001EFB8F /* XYZLaunchScreen.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = XYZLaunchScreen.xib; sourceTree = "<group>"; };
 		4A88F9722662AEAB007C203D /* CardStrip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardStrip.swift; sourceTree = "<group>"; };
 		4A88F97426630EFC007C203D /* CardDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDetails.swift; sourceTree = "<group>"; };
 		4A88F97626630F39007C203D /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
@@ -2009,6 +2013,7 @@
 		4A9FCD4726F107BF00725E17 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		4AA14F1F264C7954003B815A /* ZeroQueryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryView.swift; sourceTree = "<group>"; };
 		4AA285AE278BA884001993EE /* ConnectWallet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectWallet.swift; sourceTree = "<group>"; };
+		4AA5109927F29CF3007609C4 /* NeevaxyzDev.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NeevaxyzDev.entitlements; sourceTree = "<group>"; };
 		4AA9F66627478DB8005F6F81 /* SpaceDetailList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceDetailList.swift; sourceTree = "<group>"; };
 		4AB07F28276C4E6300C85ED4 /* SingleLevelTabCardsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SingleLevelTabCardsView.swift; sourceTree = "<group>"; };
 		4AB2039F267D4EEC00920F39 /* BrowserPrimitive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserPrimitive.swift; sourceTree = "<group>"; };
@@ -2016,6 +2021,7 @@
 		4AB678B526E874E40078F61B /* CreateSpaceOverlayContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateSpaceOverlayContent.swift; sourceTree = "<group>"; };
 		4AB678B726EAA8160078F61B /* SpacesIntro.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpacesIntro.swift; sourceTree = "<group>"; };
 		4AB8160427EA64ED0017203D /* SuggestedXYZSearchesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SuggestedXYZSearchesView.swift; sourceTree = "<group>"; };
+		4AB8160A27EADCEF0017203D /* XYZIntroView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XYZIntroView.swift; sourceTree = "<group>"; };
 		4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryModel.swift; sourceTree = "<group>"; };
 		4AD771AD2729C4C000B6769D /* PreviewEntities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEntities.swift; sourceTree = "<group>"; };
 		4AD771AF27322BCF00B6769D /* SpaceHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceHeaderView.swift; sourceTree = "<group>"; };
@@ -3383,6 +3389,7 @@
 				4A8CE5BD27CCA07700735C75 /* WalletCore.h */,
 				4A8CE5F127CCC74100735C75 /* WalletSequenceHeader.swift */,
 				BCAAA0E5276D9D3D0013223E /* WelcomeStarterView.swift */,
+				4AB8160A27EADCEF0017203D /* XYZIntroView.swift */,
 				3FCCFF9727E943390058A055 /* Web3Theme.swift */,
 			);
 			path = WalletCore;
@@ -4637,6 +4644,7 @@
 			isa = PBXGroup;
 			children = (
 				4ADFE2C927E93DFA00278C3B /* Neevaxyz.entitlements */,
+				4AA5109927F29CF3007609C4 /* NeevaxyzDev.entitlements */,
 				F0ACC19E25E8C2380024991B /* Neeva.entitlements */,
 				F0ACC18A25E8C19D0024991B /* NeevaDev.entitlements */,
 			);
@@ -4871,6 +4879,7 @@
 				E6327A631BF6438E008D12E0 /* DebugSettingsBundleOptions.swift */,
 				E652F6F91BF66A79007FFDD6 /* Delegates */,
 				E4D6BEB81A0930EC00F538BD /* LaunchScreen.xib */,
+				4A7AC46327F27470001EFB8F /* XYZLaunchScreen.xib */,
 				D3BE7B251B054D4400641031 /* main.swift */,
 				D8EFFA0B1FF5B1FA001D3A09 /* NavigationRouter.swift */,
 				324948F127BDE84B00082FCF /* NavigationRouter+MaybeRewriteURL.swift */,
@@ -5967,6 +5976,7 @@
 				7B42406E1CA04CAC009B5C28 /* Menu.xcassets in Resources */,
 				23BEA767251A99ED00A014BF /* NewYorkMedium-Bold.otf in Resources */,
 				2328616825C9BD3D0015EA47 /* DefaultBrowserOnboarding.xcassets in Resources */,
+				4A7AC46427F27471001EFB8F /* XYZLaunchScreen.xib in Resources */,
 				C9AFE6E126582ACE000C5A03 /* Error.css in Resources */,
 				3BC659591E5BA505006D560F /* top_sites.json in Resources */,
 				BC6D34842622D4DE0050DEC4 /* Roobert-Bold.otf in Resources */,
@@ -6601,6 +6611,7 @@
 				4A42C4D627E58487003B9826 /* SpaceGeneratorView.swift in Sources */,
 				4A42C4D727E58487003B9826 /* Action.swift in Sources */,
 				4A42C4D827E58487003B9826 /* ZeroQueryCommonContextMenuActions.swift in Sources */,
+				4AB8160927EA9A150017203D /* Web3Toolbar.swift in Sources */,
 				4A42C4D927E58487003B9826 /* SuggestionModel.swift in Sources */,
 				4A42C4DA27E58487003B9826 /* NotificationRow.swift in Sources */,
 				4A42C4DB27E58487003B9826 /* Web3Model.swift in Sources */,
@@ -6795,6 +6806,7 @@
 				4A447A6E27CDC2A200B141F6 /* EIP712.swift in Sources */,
 				4A8CE5F927CD41C000735C75 /* ImportWalletView.swift in Sources */,
 				4A8CE5FA27CD41C000735C75 /* ScannerView.swift in Sources */,
+				4AB8160B27EADCEF0017203D /* XYZIntroView.swift in Sources */,
 				4A8CE5FB27CD41C000735C75 /* SendForm.swift in Sources */,
 				4A8CE5FD27CD41C000735C75 /* ShowPhrasesView.swift in Sources */,
 				4A8CE5FE27CD41C000735C75 /* TransactionFee.swift in Sources */,
@@ -7716,6 +7728,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = XYZAppIcon;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/Neevaxyz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
@@ -7751,7 +7764,8 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = XYZAppIcon;
-				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/Neevaxyz.entitlements;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
+				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaxyzDev.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 201;

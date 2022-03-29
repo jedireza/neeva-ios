@@ -12,12 +12,12 @@
 	<true/>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.co.neeva.app.ios.browser</string>
+		<string>group.co.neeva.app.ios.browser-dev</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)xyz.neeva.app.ios.browser</string>
-		<string>$(AppIdentifierPrefix)group.co.neeva.app.ios.browser</string>
+		<string>$(AppIdentifierPrefix)xyz.neeva.app.ios.browser-dev</string>
+		<string>$(AppIdentifierPrefix)group.co.neeva.app.ios.browser-dev</string>
 	</array>
 </dict>
 </plist>

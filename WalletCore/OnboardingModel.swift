@@ -44,27 +44,33 @@ public struct OnboardingModel {
         }
     }
 
-    public func importWallet(inputPhrase: String, completion: @escaping () -> Void) {
+    public func importWallet(inputPhrase: String, completion: @escaping (Bool) -> Void) {
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let password = CryptoConfig.shared.password
                 let mnemonics = inputPhrase
-                let keystore = try! BIP32Keystore(
+                let keystore = try? BIP32Keystore(
                     mnemonics: mnemonics,
                     password: password,
                     mnemonicsPassword: "",
                     language: .english)!
-                let address = keystore.addresses!.first!.address
+                guard let address = keystore?.addresses?.first?.address,
+                    let account = EthereumAddress(address),
+                    let privateKey = try keystore?.UNSAFE_getPrivateKeyData(
+                        password: password, account: account
+                    ).toHexString()
+                else {
+                    completion(false)
+                    return
+                }
+                Defaults[.cryptoPublicKey] = address
                 try? NeevaConstants.cryptoKeychain.set(
                     mnemonics, key: NeevaConstants.cryptoSecretPhrase)
-                Defaults[.cryptoPublicKey] = address
-                let privateKey = try keystore.UNSAFE_getPrivateKeyData(
-                    password: password, account: EthereumAddress(address)!
-                ).toHexString()
                 try? NeevaConstants.cryptoKeychain.set(
                     privateKey, key: NeevaConstants.cryptoPrivateKey)
-                completion()
+                completion(true)
             } catch {
+                completion(false)
                 print("🔥 Unexpected error: \(error).")
             }
         }

@@ -128,7 +128,7 @@ struct ZeroQueryView: View {
     @Default(.expandSearches) private var expandSearches
     @Default(.expandSpaces) private var expandSpaces
     @Default(.expandSuggestedSpace) private var expandSuggestedSpace
-    @Default(.cryptoPublicKey) private var cryptoPublicKey
+    @Default(.cryptoPublicKey) private var cryptoPublicKey: String
 
     @State var url: URL?
     @State var tab: Tab?
@@ -260,6 +260,9 @@ struct ZeroQueryView: View {
                             if !Defaults[.signedInOnce] {
                                 if FeatureFlag[.web3Mode] {
                                     SuggestedXYZSearchesView()
+                                        .onChange(of: cryptoPublicKey) { _ in
+                                            viewModel.updateState()
+                                        }
                                 } else {
                                     SuggestedPreviewSearchesView()
                                 }

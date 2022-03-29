@@ -328,13 +328,41 @@ class Web3Model: ObservableObject, ResponseRelay {
         updateBalances()
         presenter.presentFullScreenModal(
             content: AnyView(
+                CryptoWalletView(dismiss: {
+                    self.presenter.dismissCurrentOverlay()
+                    if !Defaults[.cryptoPublicKey].isEmpty, self.wallet?.ethereumAddress == nil {
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            self.wallet = WalletAccessor()
+                            self.updateBalances()
+                        }
+                        AssetStore.shared.refresh()
+                        if !Defaults[.walletOnboardingDone] {
+                            DispatchQueue.main.async {
+                                self.showWalletPanelHalfScreen()
+                            }
+                            Defaults[.walletOnboardingDone] = true
+                        }
+
+                    }
+                })
+                .environmentObject(self)
+                .overlayIsFixedHeight(isFixedHeight: true)
+                .onDisappear {
+                    self.reset()
+                }
+            ), completion: {})
+    }
+
+    func showWalletPanelHalfScreen() {
+        presenter.showModal(
+            style: .grouped,
+            headerButton: nil,
+            content: {
                 CryptoWalletView(dismiss: { self.presenter.dismissCurrentOverlay() })
+                    .frame(minHeight: 500)
                     .environmentObject(self)
                     .overlayIsFixedHeight(isFixedHeight: true)
-                    .onDisappear {
-                        self.reset()
-                    }
-            ), completion: nil)
+            }, onDismiss: {})
     }
 
     func toggle(session: Session, to chain: EthNode) {

@@ -496,7 +496,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     self.showZeroQuery()
                     if !Defaults[.walletIntroSeen] {
                         self.web3Model.showWalletPanel()
-                        Defaults[.walletIntroSeen] = true
                     }
                 } else if !Defaults[.didFirstNavigation] {
                     self.showPreviewHome()

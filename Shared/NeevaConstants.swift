@@ -15,6 +15,7 @@ extension Defaults.Keys {
 public struct NeevaConstants {
     /// The App Group, used for the keychain and UserDefaults
     public static let appGroup = "group." + AppInfo.baseBundleIdentifier
+    public static let neevaAppGroup = "group.co.neeva.app.ios.browser"
 
     /// The host for the Neeva API/website, such as `neeva.com`
     public static var appHost: String {
@@ -70,7 +71,7 @@ public struct NeevaConstants {
 
     /// The shared keychain accessible to the Neeva app and its extensions
     public static let keychain = Keychain(service: "Neeva", accessGroup: appGroup)
-    public static let cryptoKeychain = Keychain(service: "Neeva-Wallet", accessGroup: appGroup)
+    public static let cryptoKeychain = Keychain(service: "Neeva-Wallet")
         .accessibility(.whenUnlockedThisDeviceOnly)
 
     public static var deviceTypeValue: String {
