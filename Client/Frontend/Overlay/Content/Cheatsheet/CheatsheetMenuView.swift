@@ -327,7 +327,11 @@ public struct CheatsheetMenuView: View {
                 newsResults: newsResults
             )
         case .Place(result: let placeResult):
-            PlaceView(place: placeResult)
+            if let viewModel = model.placeViewModel {
+                PlaceView(viewModel: viewModel)
+            } else {
+                EmptyView()
+            }
         case .PlaceList(result: let placeListResult):
             VStack {
                 ForEach(placeListResult, id: \.address.full) { place in

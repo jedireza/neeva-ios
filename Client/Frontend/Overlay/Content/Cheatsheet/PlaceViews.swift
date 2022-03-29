@@ -6,24 +6,6 @@ import MapKit
 import SwiftUI
 import Shared
 
-private struct PlaceAnnotation: Identifiable {
-    typealias ID = String
-
-    let lat: Double
-    let lon: Double
-    let address: String
-
-    var id: String {
-        address
-    }
-
-    init(from place: Place) {
-        self.lat = place.position.lat
-        self.lon = place.position.lon
-        self.address = place.address.full
-    }
-}
-
 private struct RatingsView: View {
     private struct StarView: View {
         let fill: Double
@@ -60,15 +42,41 @@ private struct RatingsView: View {
     }
 }
 
-struct PlaceView: View {
-    @State private var mapRegion: MKCoordinateRegion
+private struct QuickActionButtonStyle: ButtonStyle {
+    let cornerRadius: CGFloat = 10
+    let padding: CGFloat = 7
 
-    let place: Place
-    private let annotatedMapItems: [PlaceAnnotation]
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            Spacer()
+            configuration.label
+                .foregroundColor(.accentColor)
+                .padding(padding)
+            Spacer()
+        }
+        .background(
+            Color.secondaryBackground
+                .cornerRadius(cornerRadius)
+        )
+        .overlay(
+            Color.white
+                .cornerRadius(cornerRadius)
+                .opacity(configuration.isPressed ? 0.2 : 0)
+        )
+
+    }
+}
+
+struct PlaceView: View {
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
+
+    @StateObject private var viewModel: PlaceViewModel
 
     let mapHeight: CGFloat = 200
-    let mapSpanMeters: CLLocationDistance = 500
 
+    var place: Place {
+        viewModel.place
+    }
     var categories: String? {
         let joined = place.categories.joined(separator: ", ")
         return !joined.isEmpty ? joined : nil
@@ -102,26 +110,18 @@ struct PlaceView: View {
         return texts
     }
 
-    init(place: Place) {
-        _mapRegion = State(
-            wrappedValue: MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: place.position.lat, longitude: place.position.lon),
-                latitudinalMeters: mapSpanMeters,
-                longitudinalMeters: mapSpanMeters
-            )
-        )
-        annotatedMapItems = [PlaceAnnotation(from: place)]
-        self.place = place
+    init(viewModel: PlaceViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     var body: some View {
         GeometryReader { geometry in
             Map(
-                coordinateRegion: $mapRegion,
+                coordinateRegion: $viewModel.mapRegion,
                 interactionModes: .all,
                 showsUserLocation: true,
                 userTrackingMode: nil,
-                annotationItems: annotatedMapItems
+                annotationItems: viewModel.annotatedMapItems
             ) { place in
                 MapMarker(
                     coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
@@ -134,14 +134,18 @@ struct PlaceView: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(place.name)
                 .withFont(.headingXLarge)
-                .lineLimit(1)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
                 .foregroundColor(.label)
 
             subTitle
                 .withFont(unkerned: .bodyMedium)
                 .multilineTextAlignment(.leading)
                 .fixedSize(horizontal: false, vertical: true)
+
             ratings
+
+            quickActions
         }
     }
 
@@ -174,6 +178,67 @@ struct PlaceView: View {
                     .withFont(.bodySmall)
                     .foregroundColor(.secondaryLabel)
             }
+        }
+    }
+
+    @ViewBuilder
+    var quickActions: some View {
+        HStack(spacing: 5) {
+            if let phone = place.telephone ?? place.telephonePretty {
+                Button(action: {
+                    if let url = URL(string: "tel://\(phone)"),
+                       UIApplication.shared.canOpenURL(url) {
+                      UIApplication.shared.open(url)
+                    }
+                }, label: {
+                    VStack {
+                        Image(systemSymbol: .phoneFill)
+                        Text("Call")
+                            .withFont(.bodyMedium)
+                    }
+                })
+                .buttonStyle(QuickActionButtonStyle())
+            }
+
+            if let website = place.websiteURL {
+                Button(action: {
+                    onOpenURLForCheatsheet(website, "PlaceViewQuickActionWebsite")
+                }, label: {
+                    VStack {
+                        Image(systemSymbol: .globe)
+                        Text("Website")
+                            .withFont(.bodyMedium)
+                    }
+                })
+                .buttonStyle(QuickActionButtonStyle())
+            }
+
+            if let yelpLink = place.yelpURL {
+                Button(action: {
+                    onOpenURLForCheatsheet(yelpLink, "PlaceViewQuickActionYelp")
+                }, label: {
+                    VStack {
+                        Image(systemSymbol: .globe)
+                        Text("Yelp")
+                            .withFont(.bodyMedium)
+                    }
+                })
+                .buttonStyle(QuickActionButtonStyle())
+            }
+
+            Button(action: {
+                let mapItem = MKMapItem(placemark: MKPlacemark(placemark: viewModel.placeMark))
+                mapItem.name = place.name
+                mapItem.openInMaps()
+            }, label: {
+                VStack {
+                    Image(systemSymbol: .arrowTriangleTurnUpRightDiamondFill)
+                    Text("Directions")
+                        .withFont(.bodyMedium)
+                        .lineLimit(1)
+                }
+            })
+            .buttonStyle(QuickActionButtonStyle())
         }
     }
 }
