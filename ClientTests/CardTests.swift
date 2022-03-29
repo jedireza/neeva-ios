@@ -415,18 +415,16 @@ class CardTests: XCTestCase {
         .environmentObject(spaceCardModel)
         .environmentObject(gridModel)
 
-        waitForCondition {
-            try cardContainer.inspect().findAll(FaviconView.self).count == 3
-        }
+        let tabGridContainer = try cardContainer.inspect().find(TabGridContainer.self)
+        XCTAssertNotNil(tabGridContainer)
+        XCTAssertEqual(tabCardModel.allDetails.count, 3)
 
         manager.addTab()
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 5 })
 
         XCTAssertEqual(manager.tabs.count, 5)
-        waitForCondition {
-            try cardContainer.inspect().findAll(FaviconView.self).count == 5
-        }
+        XCTAssertEqual(tabCardModel.allDetails.count, 5)
     }
 
     func testCardGridWithSpaces() throws {
@@ -462,7 +460,7 @@ class CardTests: XCTestCase {
         let tab3 = manager.addTab(afterTab: tab2)
         manager.selectedTab = tab2
         manager.removeTabs([tab2, tab3])
-        if let tab = tabCardModel.allDetails.first(where: {$0.id == tab1.id}) {
+        if let tab = tabCardModel.allDetails.first(where: { $0.id == tab1.id }) {
             XCTAssertEqual(tab.isSelected, true)
         }
     }
