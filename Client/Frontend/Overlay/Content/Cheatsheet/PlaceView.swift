@@ -12,17 +12,15 @@ private struct PlaceAnnotation: Identifiable {
     let lat: Double
     let lon: Double
     let address: String
-    let onTap: () -> Void
 
     var id: String {
         address
     }
 
-    init(from place: Place, onTap: @escaping () -> Void ) {
+    init(from place: Place) {
         self.lat = place.position.lat
         self.lon = place.position.lon
         self.address = place.address.full
-        self.onTap = onTap
     }
 }
 
@@ -40,7 +38,7 @@ struct PlaceView: View {
                 longitudinalMeters: 200
             )
         )
-        annotatedMapItems = [PlaceAnnotation(from: place, onTap: { print("tap!") })]
+        annotatedMapItems = [PlaceAnnotation(from: place)]
         self.place = place
     }
 
@@ -52,20 +50,12 @@ struct PlaceView: View {
             userTrackingMode: nil,
             annotationItems: annotatedMapItems
         ) { place in
-            MapAnnotation(
+            MapMarker(
                 coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
-                anchorPoint: .zero
-            ) {
-                Circle()
-                    .stroke(.red, lineWidth: 3)
-                    .frame(width: 44, height: 44)
-                    .onTapGesture {
-                        place.onTap()
-                    }
-            }
+                tint: Color.brand.variant.red
+            )
         }
         .frame(width: 400, height: 400, alignment: .center)
-        Text("im here!")
     }
 }
 struct PlaceInlineView: View {
