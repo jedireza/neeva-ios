@@ -128,8 +128,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
         return TabContainerModel(bvc: self)
     }()
 
-    private(set) lazy var trackingStatsViewModel: TrackingStatsViewModel = {
-        return TrackingStatsViewModel(tabManager: tabManager)
+    private(set) lazy var trackingStatsViewModel: TrackingMenuModel = {
+        return TrackingMenuModel(tabManager: tabManager)
     }()
 
     var findInPageModel: FindInPageModel?

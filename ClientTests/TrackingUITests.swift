@@ -14,7 +14,7 @@ extension TrackingMenuView: Inspectable {}
 extension TrackingMenuFirstRowElement: Inspectable {}
 extension HallOfShameElement: Inspectable {}
 extension HallOfShameView: Inspectable {}
-extension TrackingMenuProtectionRowButton: Inspectable {}
+extension TrackingMenuProtectionRow: Inspectable {}
 extension Text: Inspectable {}
 extension Toggle: Inspectable {}
 extension GroupedStack: Inspectable {}
@@ -44,7 +44,7 @@ class TrackingUITests: XCTestCase {
     var stats: TPPageStats = TPPageStats()
     var trackingData: TrackingData!
     var expectedEntities: [TrackingEntity]!
-    var model: TrackingStatsViewModel!
+    var model: TrackingMenuModel!
 
     override func setUp() {
         super.setUp()
@@ -70,7 +70,7 @@ class TrackingUITests: XCTestCase {
     }
 
     func testTrackingStatsViewModel() throws {
-        model = TrackingStatsViewModel(testingData: trackingData)
+        model = TrackingMenuModel(testingData: trackingData)
         XCTAssertEqual(
             model.numTrackers,
             (domainsOutbrain + domainsGoogle + domainsAmazon + domainsUnknownSource).count)
@@ -93,7 +93,7 @@ class TrackingUITests: XCTestCase {
         domainsUnknownSource.forEach { tempStats = tempStats.create(host: $0) }
 
         let tempData = TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)
-        model = TrackingStatsViewModel(testingData: tempData)
+        model = TrackingMenuModel(testingData: tempData)
         XCTAssertEqual(
             model.numTrackers,
             (domainsGoogle + domainsAmazon + domainsUnknownSource).count)
@@ -108,7 +108,7 @@ class TrackingUITests: XCTestCase {
 
     func testTrackingUIFirstRow() throws {
         let ui = TrackingMenuView().environmentObject(
-            TrackingStatsViewModel(testingData: trackingData))
+            TrackingMenuModel(testingData: trackingData))
         let firstRowElements = try ui.inspect().findAll(TrackingMenuFirstRowElement.self)
         XCTAssertEqual(firstRowElements.count, 2)
 
@@ -122,7 +122,7 @@ class TrackingUITests: XCTestCase {
 
     func testTrackingHallOfShame() throws {
         let ui = TrackingMenuView().environmentObject(
-            TrackingStatsViewModel(testingData: trackingData))
+            TrackingMenuModel(testingData: trackingData))
         let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
         XCTAssertEqual(hallOfShameElements.count, 3)
 
@@ -143,7 +143,7 @@ class TrackingUITests: XCTestCase {
         domainsAmazon.forEach { tempStats = tempStats.create(host: $0) }
         domainsUnknownSource.forEach { tempStats = tempStats.create(host: $0) }
         let ui = TrackingMenuView().environmentObject(
-            TrackingStatsViewModel(
+            TrackingMenuModel(
                 testingData:
                     TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)))
         let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
@@ -163,10 +163,11 @@ class TrackingUITests: XCTestCase {
         let tab = manager.addTab()
         manager.selectTab(tab, notify: true)
         tab.setURL("https://neeva.com")
-        model = TrackingStatsViewModel(tabManager: manager)
-        model.preventTrackersForCurrentPage = false
+        model = TrackingMenuModel(tabManager: manager)
+        model.setTrackingProtectionAllowedForCurrentPage(false)
         XCTAssertTrue(Defaults[.unblockedDomains].contains("neeva.com"))
-        model.preventTrackersForCurrentPage = true
+
+        model.setTrackingProtectionAllowedForCurrentPage(true)
         XCTAssertFalse(Defaults[.unblockedDomains].contains("neeva.com"))
     }
 
@@ -176,16 +177,17 @@ class TrackingUITests: XCTestCase {
         let tab = manager.addTab()
         manager.selectTab(tab, notify: true)
         tab.setURL("https://neeva.com")
-        model = TrackingStatsViewModel(tabManager: manager)
+        model = TrackingMenuModel(tabManager: manager)
         let ui = TrackingMenuView().environmentObject(model)
-        let rowButton = try ui.inspect().find(TrackingMenuProtectionRowButton.self).actualView()
+        let rowButton = try ui.inspect().find(TrackingMenuProtectionRow.self).actualView()
+            .environmentObject(model)
         XCTAssertNotNil(rowButton)
         let toggle = try rowButton.inspect().find(ViewType.Toggle.self)
         XCTAssertNotNil(toggle)
-        rowButton.preventTrackers = false
+        model.preventTrackersForCurrentPage = false
         XCTAssertTrue(Defaults[.unblockedDomains].contains("neeva.com"))
         XCTAssertFalse(try toggle.isOn())
-        rowButton.preventTrackers = true
+        model.preventTrackersForCurrentPage = true
         XCTAssertFalse(Defaults[.unblockedDomains].contains("neeva.com"))
         XCTAssertTrue(try toggle.isOn())
     }

@@ -28,6 +28,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case enableCryptoWallet = "Enable crypto wallet"
     case customSearchEngine = "Custom Search Engine"
     case swipeToCloseTabs = "Swipe to close tabs"
+    case siteSpecificSettings = "Site specific settings"
 
     public init?(caseName: String) {
         for value in FeatureFlag.allCases where "\(value)" == caseName {
