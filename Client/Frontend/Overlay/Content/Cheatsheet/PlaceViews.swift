@@ -95,17 +95,17 @@ struct PlaceView: View {
                     Text(" · ")
                 )
             }
-            let string = operatingStatus + (place.isOpenNow ? ": " : " ")
             texts.append(
-                Text(string)
+                Text(operatingStatus)
                     .foregroundColor(place.isOpenNow ? .brand.green : .brand.red)
             )
-        }
-        if let hour = place.articulatedHour {
-            texts.append(
-                Text(hour)
-                    .foregroundColor(.secondaryLabel)
-            )
+            if let hour = place.articulatedHour {
+                texts += [
+                    Text(" "),
+                    Text(hour)
+                        .foregroundColor(.secondaryLabel)
+                ]
+            }
         }
         return texts
     }
@@ -242,6 +242,7 @@ struct PlaceView: View {
         }
     }
 }
+
 struct PlaceInlineView: View {
     let place: Place
 
