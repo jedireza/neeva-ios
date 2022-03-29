@@ -517,6 +517,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 } else {
                     presentIntroViewController()
                 }
+                NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
             }
         }
 
@@ -1586,7 +1587,6 @@ extension BrowserViewController {
             ClientLogger.shared.logCounter(
                 .DefaultBrowserInterstitialImp
             )
-            NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
         }
     }
 
@@ -1744,7 +1744,6 @@ extension BrowserViewController {
             ClientLogger.shared.logCounter(
                 .DefaultBrowserInterstitialImpSkipToBrowser
             )
-            NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
         }
 
         self.overlayManager.presentFullScreenModal(
