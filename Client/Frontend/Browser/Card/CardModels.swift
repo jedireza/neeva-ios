@@ -343,7 +343,7 @@ class TabCardModel: CardModel {
 
     func rearrangeAllDetails(fromIndex: Int, toIndex: Int) {
         allDetails.rearrange(from: fromIndex, to: toIndex)
-        self.objectWillChange.send()
+        updateRows()
     }
 }
 
