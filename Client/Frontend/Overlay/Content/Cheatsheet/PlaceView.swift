@@ -24,6 +24,42 @@ private struct PlaceAnnotation: Identifiable {
     }
 }
 
+private struct RatingsView: View {
+    private struct StarView: View {
+        let fill: Double
+
+        var body: some View {
+            switch fill {
+            case 0:
+                Image(systemSymbol: .star)
+                    .renderingMode(.template)
+            case 0..<1:
+                Image(systemSymbol: .starLeadinghalfFill)
+                    .renderingMode(.template)
+            case 1...:
+                Image(systemSymbol: .starFill)
+                    .renderingMode(.template)
+            default:
+                EmptyView()
+            }
+        }
+    }
+
+    let rating: Double
+
+    var body: some View {
+        HStack(alignment: .center, spacing: 2) {
+            StarView(fill: max(min(1, rating), 0))
+            StarView(fill: max(min(1, rating - 1), 0))
+            StarView(fill: max(min(1, rating - 2), 0))
+            StarView(fill: max(min(1, rating - 3), 0))
+            StarView(fill: max(min(1, rating - 4), 0))
+        }
+        .foregroundColor(Color.brand.orange)
+        .font(.system(size: 12))
+    }
+}
+
 struct PlaceView: View {
     @State private var mapRegion: MKCoordinateRegion
 
@@ -32,6 +68,39 @@ struct PlaceView: View {
 
     let mapHeight: CGFloat = 200
     let mapSpanMeters: CLLocationDistance = 500
+
+    var categories: String? {
+        let joined = place.categories.joined(separator: ", ")
+        return !joined.isEmpty ? joined : nil
+    }
+    var subTitles: [Text] {
+        var texts: [Text] = []
+        if let categories = categories {
+            texts.append(
+                Text(categories)
+                    .foregroundColor(.secondaryLabel)
+            )
+        }
+        if let operatingStatus = place.articulatedOperatingStatus {
+            if categories != nil {
+                texts.append(
+                    Text(" · ")
+                )
+            }
+            let string = operatingStatus + (place.isOpenNow ? ": " : " ")
+            texts.append(
+                Text(string)
+                    .foregroundColor(place.isOpenNow ? .brand.green : .brand.red)
+            )
+        }
+        if let hour = place.articulatedHour {
+            texts.append(
+                Text(hour)
+                    .foregroundColor(.secondaryLabel)
+            )
+        }
+        return texts
+    }
 
     init(place: Place) {
         _mapRegion = State(
@@ -49,7 +118,7 @@ struct PlaceView: View {
         GeometryReader { geometry in
             Map(
                 coordinateRegion: $mapRegion,
-                interactionModes: .zoom,
+                interactionModes: .all,
                 showsUserLocation: true,
                 userTrackingMode: nil,
                 annotationItems: annotatedMapItems
@@ -62,10 +131,47 @@ struct PlaceView: View {
             .frame(width: geometry.size.width, alignment: .center)
         }
         .frame(height: mapHeight)
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 5) {
             Text(place.name)
-                .withFont(.headingLarge)
+                .withFont(.headingXLarge)
+                .lineLimit(1)
                 .foregroundColor(.label)
+
+            subTitle
+                .withFont(unkerned: .bodyMedium)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            ratings
+        }
+    }
+
+    @ViewBuilder
+    var subTitle: some View {
+        let texts = subTitles
+        if texts.isEmpty {
+            EmptyView()
+        } else {
+            texts.reduce(Text(""), +)
+        }
+    }
+
+    @ViewBuilder
+    var ratings: some View {
+        HStack(alignment: .center) {
+            // rating is out of 5
+            if let rating = place.rating {
+                RatingsView(rating: rating)
+            } else {
+                EmptyView()
+            }
+
+            if let reviews = place.reviewCount {
+                Text("\(reviews) Reviews")
+                    .withFont(.bodySmall)
+                    .foregroundColor(.secondaryLabel)
+            } else {
+                EmptyView()
+            }
         }
     }
 }

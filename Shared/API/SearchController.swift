@@ -143,6 +143,7 @@ public struct Place {
     public let articulatedHour: String?
     public let specialHours: [SpecialHour]?
     public let hours: [Hour]?
+    public let isOpenNow: Bool
 
     // urls
     public let websiteURL: URL?
@@ -572,6 +573,7 @@ public class SearchController:
             articulatedHour: data.articulatedHour,
             specialHours: specialHours,
             hours: hours,
+            isOpenNow: data.isOpenNow ?? !data.isClosed,
             websiteURL: URL(string: data.websiteUrl),
             yelpURL: URL(string: data.yelpUrl),
             imageURL: URL(string: data.imageUrl),
@@ -642,6 +644,7 @@ public class SearchController:
             articulatedHour: data.articulatedHour,
             specialHours: specialHours,
             hours: hours,
+            isOpenNow: data.isOpenNow ?? data.isClosed,
             websiteURL: URL(string: data.websiteUrl),
             yelpURL: URL(string: data.yelpUrl),
             imageURL: URL(string: data.imageUrLs?.first ?? data.imageUrl),
