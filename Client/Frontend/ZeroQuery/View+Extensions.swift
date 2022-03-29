@@ -22,6 +22,8 @@ extension View {
             self.background(WalletTheme.gradient.opacity(0.1))
         } else if let color = color {
             self.background(color)
+        } else {
+            self
         }
     }
 }
