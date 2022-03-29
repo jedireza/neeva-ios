@@ -825,7 +825,6 @@
 		66B7A0E926EAF5B000AB751A /* OverlayGenerics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B7A0E826EAF5B000AB751A /* OverlayGenerics.swift */; };
 		66B9570E26AF827E004C6117 /* AppClipHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B9570D26AF827E004C6117 /* AppClipHelper.swift */; };
 		66BB89DB26A64FB0000C4BDF /* OpenInAppOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */; };
-		66BCAC8D27E2CD8B00445C0D /* TrackingMenuModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66BCAC8C27E2CD8B00445C0D /* TrackingMenuModel.swift */; };
 		66C2B6312748AA020074B695 /* QueuedViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C2B6302748AA020074B695 /* QueuedViewManager.swift */; };
 		66C3C76C267A8858002B50B1 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C763267A8858002B50B1 /* ToastView.swift */; };
 		66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66C3C766267A8858002B50B1 /* ToastProgressView.swift */; };
@@ -1413,7 +1412,7 @@
 		EBE26B57220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBE26B4E220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift */; };
 		EBFDB790211C83A5005CCA2F /* BrowserViewController+FindInPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */; };
 		F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */; };
-		F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRow.swift */; };
+		F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */; };
 		F056696025EAD8F70082BB61 /* UIMenuHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */; };
 		F0FDDB4D25EE85AD00B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
 		F0FDDBB025EE91F300B12287 /* libStorage.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FCAE21A1ABB51F800877008 /* libStorage.a */; };
@@ -2111,7 +2110,6 @@
 		66B7A0EA26EAFCAB00AB751A /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		66B9570D26AF827E004C6117 /* AppClipHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppClipHelper.swift; sourceTree = "<group>"; };
 		66BB89D926A64FB0000C4BDF /* OpenInAppOverlayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OpenInAppOverlayView.swift; sourceTree = "<group>"; };
-		66BCAC8C27E2CD8B00445C0D /* TrackingMenuModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuModel.swift; sourceTree = "<group>"; };
 		66BEFDC826A7678200AA32EF /* GroupedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupedCell.swift; sourceTree = "<group>"; };
 		66C2B6302748AA020074B695 /* QueuedViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QueuedViewManager.swift; sourceTree = "<group>"; };
 		66C3C763267A8858002B50B1 /* ToastView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
@@ -2699,7 +2697,7 @@
 		EBE26B4E220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+TabToolbarDelegate.swift"; sourceTree = "<group>"; };
 		EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+FindInPage.swift"; sourceTree = "<group>"; };
 		F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuView.swift; sourceTree = "<group>"; };
-		F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuProtectionRow.swift; sourceTree = "<group>"; };
+		F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingMenuProtectionRowButton.swift; sourceTree = "<group>"; };
 		F0405D0B25FFCA5100A0A3B2 /* GroupedButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupedButtonView.swift; sourceTree = "<group>"; };
 		F0405D0C25FFCA5100A0A3B2 /* GroupedRowButtonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GroupedRowButtonView.swift; sourceTree = "<group>"; };
 		F056695F25EAD8F70082BB61 /* UIMenuHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIMenuHelpers.swift; sourceTree = "<group>"; };
@@ -3544,10 +3542,9 @@
 			children = (
 				4A22DD0726575FD6009BE9FC /* TrackingEntity.xcassets */,
 				4A22DCF926574AA4009BE9FC /* TrackingEntity.swift */,
-				F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */,
-				66BCAC8C27E2CD8B00445C0D /* TrackingMenuModel.swift */,
+				F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift */,
 				C9ACC469267A8A1E009AE182 /* TrackingMenuSettingsView.swift */,
-				F0102C7E26053D7300B5F884 /* TrackingMenuProtectionRow.swift */,
+				F0102C2E2605240B00B5F884 /* TrackingMenuView.swift */,
 			);
 			path = TrackingProtection;
 			sourceTree = "<group>";
@@ -7125,7 +7122,6 @@
 				BC5C43BF265F407F007E2F61 /* TourPromptViewController.swift in Sources */,
 				C9DDC12026B9E24900F293AB /* WebViewContainer.swift in Sources */,
 				F0102C2F2605240B00B5F884 /* TrackingMenuView.swift in Sources */,
-				66BCAC8D27E2CD8B00445C0D /* TrackingMenuModel.swift in Sources */,
 				6658712627D00971003B4987 /* TabManager+TabEventHandler.swift in Sources */,
 				C832BF8326E15B5B00B9A1F8 /* OverflowMenuOverlayContent.swift in Sources */,
 				668DC29926E9B1310072799E /* AppDelegate+UNUserNotificationCenterDelegate.swift in Sources */,
@@ -7228,7 +7224,7 @@
 				D03F8EB22004014E003C2224 /* FaviconHandler.swift in Sources */,
 				328585B227E8FE7D00717DD5 /* ScreenCaptureHelper.swift in Sources */,
 				EBC486992195F46B00CDA48D /* InternalSchemeHandler.swift in Sources */,
-				F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRow.swift in Sources */,
+				F0102C7F26053D7300B5F884 /* TrackingMenuProtectionRowButton.swift in Sources */,
 				C98E405B2658547A003AC0E2 /* GeneralSettingsSection.swift in Sources */,
 				66C3C76F267A8858002B50B1 /* ToastProgressView.swift in Sources */,
 				323E460A27C6C76900F325E2 /* SpotlightSettingsView.swift in Sources */,

@@ -8,7 +8,7 @@ class FindInPageTests: BaseTestCase {
     private func openFindInPageFromMenu(
         _ url: String = "http://localhost:\(serverPort)/test-fixture/find-in-page-test.html"
     ) {
-        openURL(url, waitForPageLoad: false)
+        openURL(url)
         goToFindOnPage()
 
         waitForExistence(app.buttons["FindInPage_Next"])
