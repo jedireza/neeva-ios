@@ -22,6 +22,7 @@ protocol CardDetails: ObservableObject, DropDelegate, SelectableThumbnail, Ident
     associatedtype FaviconViewType: View
 
     var id: String { get }
+    var item: Item? { get }
     var closeButtonImage: UIImage? { get }
     var title: String { get }
     var description: String? { get }
@@ -65,7 +66,7 @@ where
     Manager: AccessingManager
 {
     func onSelect() {
-        if let item = manager.get(for: id) {
+        if let item = item {
             manager.select(item)
         }
     }
@@ -82,7 +83,7 @@ where
     }
 
     func onClose() {
-        if let item = manager.get(for: id) {
+        if let item = item {
             manager.close(item)
         }
     }
@@ -90,19 +91,19 @@ where
 
 extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item == Item {
     var title: String {
-        manager.get(for: id)?.displayTitle ?? ""
+        item?.displayTitle ?? ""
     }
 
     var description: String? {
-        return manager.get(for: id)?.pageMetadata?.description
+        return item?.pageMetadata?.description
     }
 
-    var isSharedWithGroup: Bool { manager.get(for: id)?.isSharedWithGroup ?? false }
-    var isSharedPublic: Bool { manager.get(for: id)?.isSharedPublic ?? false }
-    var ACL: SpaceACLLevel { manager.get(for: id)?.ACL ?? .owner }
+    var isSharedWithGroup: Bool { item?.isSharedWithGroup ?? false }
+    var isSharedPublic: Bool { item?.isSharedPublic ?? false }
+    var ACL: SpaceACLLevel { item?.ACL ?? .owner }
 
     @ViewBuilder var thumbnail: some View {
-        if let image = manager.get(for: id)?.image {
+        if let image = item?.image {
             Image(uiImage: image).resizable().aspectRatio(contentMode: .fill)
         } else {
             Color.white
@@ -110,7 +111,7 @@ extension CardDetails where Self: AccessingManagerProvider, Self.Manager.Item ==
     }
 
     @ViewBuilder var favicon: some View {
-        if let item = manager.get(for: id) {
+        if let item = item {
             if let favicon = item.displayFavicon {
                 FaviconView(forFavicon: favicon)
                     .background(Color.white)
@@ -133,6 +134,9 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     public let id: String
     private var subscriptions: Set<AnyCancellable> = []
 
+    let tab: Tab
+    var item: Tab? { tab }
+
     struct DragState {
         var tabCardModel: TabCardModel?
         var draggingDetail: TabCardDetails?
@@ -143,20 +147,16 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     var manager: TabManager
     var isChild: Bool
 
-    private var tab: Tab? {
-        manager.get(for: id)
-    }
-
     var isPinned: Bool {
-        tab?.isPinned ?? false
+        tab.isPinned
     }
 
     var pinnedTime: Double? {
-        tab?.pinnedTime
+        tab.pinnedTime
     }
 
     var url: URL? {
-        tab?.url ?? tab?.sessionData?.currentUrl
+        tab.url ?? tab.sessionData?.currentUrl
     }
 
     var closeButtonImage: UIImage? {
@@ -168,7 +168,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     var rootID: String? {
-        tab?.rootUUID
+        tab.rootUUID
     }
 
     var accessibilityLabel: String {
@@ -183,6 +183,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     // access to, but also to not worry about reference copying while using CardDetails for View updates.
     init(tab: Tab, manager: TabManager, isChild: Bool = false) {
         self.id = tab.id
+        self.tab = tab
         self.manager = manager
         self.isChild = isChild
 
@@ -266,15 +267,15 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
     }
 
     func onClose() {
-        if let item = tab, !item.isPinned {
-            manager.close(item)
+        if !tab.isPinned {
+            manager.close(tab)
         }
     }
 
     @ViewBuilder func contextMenu() -> some View {
-        if !(tab?.isIncognito ?? false) {
+        if !tab.isIncognito {
             Button { [self] in
-                guard let url = url, let tab = tab else { return }
+                guard let url = url else { return }
                 let newTab = manager.addTab(
                     URLRequest(url: url), afterTab: tab, isIncognito: tab.isIncognito)
                 newTab.rootUUID = UUID().uuidString
@@ -284,7 +285,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             }.disabled(url == nil)
 
             Button { [self] in
-                guard let url = url, let tab = tab else { return }
+                guard let url = url else { return }
                 let newTab = manager.addTab(URLRequest(url: url), afterTab: tab, isIncognito: true)
                 newTab.rootUUID = UUID().uuidString
                 manager.selectTab(newTab, previous: tab, notify: true)
@@ -293,17 +294,14 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             }.disabled(url == nil)
 
             Button(action: { [self] in
-                tab?.showAddToSpacesSheet()
+                tab.showAddToSpacesSheet()
             }) {
                 Label("Save to Spaces", systemSymbol: .bookmark)
-            }.disabled(tab == nil)
+            }.disabled(url == nil)
 
-            if let tab = tab,
-                tab.canonicalURL?.displayURL != nil,
-                let bvc = tab.browserViewController
-            {
+            if tab.canonicalURL?.displayURL != nil, let bvc = tab.browserViewController {
                 Button {
-                    tab.browserViewController?.share(tab: tab, from: bvc.view, presentableVC: bvc)
+                    bvc.share(tab: self.tab, from: bvc.view, presentableVC: bvc)
                 } label: {
                     Label("Share", systemSymbol: .squareAndArrowUp)
                 }
@@ -317,9 +315,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                 Button(
                     action: { [self] in
                         ClientLogger.shared.logCounter(.tabRemovedFromGroup)
-                        if let tab = manager.get(for: id) {
-                            manager.removeTabFromTabGroup(tab)
-                        }
+                        manager.removeTabFromTabGroup(tab)
                         ToastDefaults().showToastForPinningTab(
                             pinning: isPinned, tabManager: manager)
                     },
@@ -331,9 +327,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
             Button(
                 action: { [self] in
-                    if let tab = manager.get(for: id) {
-                        manager.toggleTabPinnedState(tab)
-                    }
+                    manager.toggleTabPinnedState(tab)
                 },
                 label: {
                     isPinned
@@ -348,9 +342,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
                 Button(
                     role: .destructive,
                     action: { [self] in
-                        if let item = tab {
-                            manager.close(item)
-                        }
+                        manager.close(tab)
                     },
                     label: {
                         Label("Close Tab", systemSymbol: .trash)
@@ -359,9 +351,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
             } else {
                 Button(
                     action: { [self] in
-                        if let item = tab {
-                            manager.close(item)
-                        }
+                        manager.close(tab)
                     },
                     label: {
                         Label("Close Tab", systemSymbol: .trash)
@@ -384,6 +374,7 @@ class SpaceEntityThumbnail: CardDetails, AccessingManagerProvider {
     var data: SpaceEntityData
 
     var id: String
+    var item: SpaceEntityData? { manager.get(for: id) }
     var closeButtonImage: UIImage? = nil
     var accessibilityLabel: String = "Space Item"
 
@@ -495,6 +486,7 @@ class SpaceCardDetails: CardDetails, AccessingManagerProvider, ThumbnailModel {
     @Published var showingDetails = false
 
     var id: String
+    var item: Space? { manager.get(for: id) }
     var closeButtonImage: UIImage? = nil
     @Published var allDetails: [SpaceEntityThumbnail] = []
 
@@ -578,6 +570,7 @@ class SiteCardDetails: CardDetails, AccessingManagerProvider {
     @Published var manager: SiteFetcher
     var anyCancellable: AnyCancellable? = nil
     var id: String
+    var item: Site? { manager.get(for: id) }
     var closeButtonImage: UIImage?
     var tabManager: TabManager
 
@@ -669,11 +662,11 @@ class TabGroupCardDetails: ObservableObject {
     }
 
     var defaultTitle: String? {
-        manager.get(for: id)?.displayTitle
+        manager.getTabForUUID(uuid: id)?.displayTitle
     }
 
     var title: String {
-        Defaults[.tabGroupNames][id] ?? manager.get(for: id)?.displayTitle ?? ""
+        Defaults[.tabGroupNames][id] ?? manager.getTabForUUID(uuid: id)?.displayTitle ?? ""
     }
 
     @Published var allDetails: [TabCardDetails] = []

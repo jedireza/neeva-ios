@@ -64,7 +64,6 @@ protocol AccessingManagerProvider {
 
 protocol AccessingManager {
     associatedtype Item: BrowserPrimitive
-    func get(for id: String) -> Item?
     func getAll() -> [Item]
 }
 
@@ -129,10 +128,6 @@ extension TabManager: ClosingManager, SelectingManager, AccessingManager {
 
     func select(_ tab: Tab) {
         selectTab(tab, notify: true)
-    }
-
-    func get(for id: String) -> Tab? {
-        getTabForUUID(uuid: id)
     }
 
     func getAll() -> [Tab] {

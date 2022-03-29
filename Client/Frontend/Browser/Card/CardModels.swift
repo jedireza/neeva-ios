@@ -66,13 +66,13 @@ class TabCardModel: CardModel {
 
     var normalDetails: [TabCardDetails] {
         allDetails.filter {
-            manager.get(for: $0.id)?.isIncognito == false
+            $0.tab.isIncognito == false
         }
     }
 
     var incognitoDetails: [TabCardDetails] {
         allDetails.filter {
-            manager.get(for: $0.id)?.isIncognito == true
+            $0.tab.isIncognito == true
         }
     }
 
@@ -148,7 +148,7 @@ class TabCardModel: CardModel {
         var rows: [Row] = []
 
         var allDetailsFiltered = allDetails.filter { tabCard in
-            let tab = tabCard.manager.get(for: tabCard.id)!
+            let tab = tabCard.tab
             return
                 (representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
