@@ -25,17 +25,20 @@ private struct PlaceAnnotation: Identifiable {
 }
 
 struct PlaceView: View {
-    let place: Place
-
     @State private var mapRegion: MKCoordinateRegion
+
+    let place: Place
     private let annotatedMapItems: [PlaceAnnotation]
+
+    let mapHeight: CGFloat = 200
+    let mapSpanMeters: CLLocationDistance = 500
 
     init(place: Place) {
         _mapRegion = State(
             wrappedValue: MKCoordinateRegion(
                 center: CLLocationCoordinate2D(latitude: place.position.lat, longitude: place.position.lon),
-                latitudinalMeters: 200,
-                longitudinalMeters: 200
+                latitudinalMeters: mapSpanMeters,
+                longitudinalMeters: mapSpanMeters
             )
         )
         annotatedMapItems = [PlaceAnnotation(from: place)]
@@ -43,19 +46,27 @@ struct PlaceView: View {
     }
 
     var body: some View {
-        Map(
-            coordinateRegion: $mapRegion,
-            interactionModes: .all,
-            showsUserLocation: true,
-            userTrackingMode: nil,
-            annotationItems: annotatedMapItems
-        ) { place in
-            MapMarker(
-                coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
-                tint: Color.brand.variant.red
-            )
+        GeometryReader { geometry in
+            Map(
+                coordinateRegion: $mapRegion,
+                interactionModes: .zoom,
+                showsUserLocation: true,
+                userTrackingMode: nil,
+                annotationItems: annotatedMapItems
+            ) { place in
+                MapMarker(
+                    coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
+                    tint: Color.brand.variant.red
+                )
+            }
+            .frame(width: geometry.size.width, alignment: .center)
         }
-        .frame(width: 400, height: 400, alignment: .center)
+        .frame(height: mapHeight)
+        VStack(alignment: .leading) {
+            Text(place.name)
+                .withFont(.headingLarge)
+                .foregroundColor(.label)
+        }
     }
 }
 struct PlaceInlineView: View {
