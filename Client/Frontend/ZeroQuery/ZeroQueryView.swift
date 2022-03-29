@@ -8,23 +8,6 @@ import Storage
 import SwiftUI
 import WalletCore
 
-public struct ZeroQueryUX {
-    fileprivate static let ToggleButtonSize: CGFloat = 32
-    fileprivate static let ToggleIconSize: CGFloat = 14
-    static let Padding: CGFloat = 16
-}
-
-extension EnvironmentValues {
-    private struct ZeroQueryWidthKey: EnvironmentKey {
-        static let defaultValue: CGFloat = 0
-    }
-    /// The width of the zero query view, in points.
-    var zeroQueryWidth: CGFloat {
-        get { self[ZeroQueryWidthKey.self] }
-        set { self[ZeroQueryWidthKey.self] = newValue }
-    }
-}
-
 private enum TriState: Int, Codable {
     case hidden
     case compact
@@ -59,6 +42,17 @@ private enum TriState: Int, Codable {
     }
 }
 
+extension EnvironmentValues {
+    private struct ZeroQueryWidthKey: EnvironmentKey {
+        static let defaultValue: CGFloat = 0
+    }
+    /// The width of the zero query view, in points.
+    var zeroQueryWidth: CGFloat {
+        get { self[ZeroQueryWidthKey.self] }
+        set { self[ZeroQueryWidthKey.self] = newValue }
+    }
+}
+
 extension Defaults.Keys {
     fileprivate static let expandSuggestedSites = Defaults.Key<TriState>(
         "profile.home.suggestedSites.expanded",
@@ -70,53 +64,6 @@ extension Defaults.Keys {
         "profile.home.spaces.expanded", default: true)
     fileprivate static let expandSuggestedSpace = Defaults.Key<Bool>(
         "profile.home.suggestedSpace.expanded", default: true)
-}
-
-struct ZeroQueryHeader: View {
-    let title: LocalizedStringKey
-    let action: () -> Void
-    let label: LocalizedStringKey
-    let icon: Nicon
-
-    var body: some View {
-        HStack {
-            Text(title)
-                .withFont(.headingMedium)
-                .foregroundColor(.secondaryLabel)
-                .minimumScaleFactor(0.6)
-                .lineLimit(1)
-            Spacer()
-            Button(action: action) {
-                // decorative because the toggle action is expressed on the header view itself.
-                // This button is not an accessibility element.
-                Symbol(decorative: icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
-                    .frame(
-                        width: ZeroQueryUX.ToggleButtonSize, height: ZeroQueryUX.ToggleButtonSize,
-                        alignment: .center
-                    )
-                    .background(Color(light: .ui.gray98, dark: .systemFill)).clipShape(Circle())
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityAddTraits([.isHeader, .isButton])
-        .accessibilityLabel("\(Text(title)), \(Text(label))")
-        .accessibilityAction(.default, action)
-        .padding([.top, .horizontal], ZeroQueryUX.Padding)
-    }
-}
-
-struct ZeroQueryPlaceholder: View {
-    let label: LocalizedStringKey
-
-    var body: some View {
-        HStack {
-            Spacer()
-            Text(label)
-                .withFont(.bodyMedium)
-                .multilineTextAlignment(.center)
-            Spacer()
-        }.padding(.vertical, 12)
-    }
 }
 
 struct ZeroQueryView: View {
@@ -179,117 +126,13 @@ struct ZeroQueryView: View {
         GeometryReader { geom in
             ScrollView {
                 VStack(spacing: 0) {
-                    if let searchQuery = viewModel.searchQuery, let url = url {
-                        SearchSuggestionView(
-                            Suggestion.editCurrentQuery(searchQuery, url)
-                        )
-                        .environmentObject(viewModel.bvc.suggestionModel)
-
-                        SuggestionsDivider(height: 8)
-                    } else if let openTab = tab {
-                        SearchSuggestionView(
-                            Suggestion.editCurrentURL(
-                                TabCardDetails(
-                                    tab: openTab,
-                                    manager: viewModel.bvc.tabManager)
-                            )
-                        )
-                        .environmentObject(viewModel.bvc.suggestionModel)
-
-                        SuggestionsDivider(height: 8)
-                    }
-
+                    queryView
                     if viewModel.isIncognito {
                         IncognitoDescriptionView().clipShape(RoundedRectangle(cornerRadius: 12.0))
                             .padding(ZeroQueryUX.Padding)
                     } else {
-                        if let promoCardType = viewModel.promoCard {
-                            PromoCard(type: promoCardType, viewWidth: geom.size.width)
-                                .modifier(
-                                    ImpressionLoggerModifier(
-                                        path: .PromoCardAppear,
-                                        attributes: EnvironmentHelper.shared.getAttributes()
-                                            + [
-                                                ClientLogCounterAttribute(
-                                                    key: LogConfig.PromoCardAttribute
-                                                        .promoCardType,
-                                                    value: viewModel.promoCard?.name ?? "None"
-                                                )
-                                            ]
-                                    )
-                                )
-                        }
-
-                        if isLandScape() && viewModel.showRatingsCard {
-                            ratingsCard(geom.size.width)
-                        }
-
-                        if !SpaceStore.suggested.allSpaces.isEmpty,
-                            expandSuggestedSpace
-                        {
-                            suggestedSpace
-                        }
-
-                        if Defaults[.signedInOnce] || FeatureFlag[.web3Mode] {
-                            ZeroQueryHeader(
-                                title: "Suggested sites",
-                                action: { expandSuggestedSites.advance() },
-                                label: "\(expandSuggestedSites.verb) this section",
-                                icon: expandSuggestedSites.icon
-                            )
-
-                            if expandSuggestedSites != .hidden {
-                                SuggestedSitesView(
-                                    isExpanded: expandSuggestedSites == .expanded,
-                                    viewModel: viewModel.suggestedSitesViewModel)
-                            }
-
-                            if !isLandScape() && viewModel.showRatingsCard {
-                                ratingsCard(geom.size.width)
-                            }
-                        }
-
-                        ZeroQueryHeader(
-                            title: "Searches",
-                            action: { expandSearches.toggle() },
-                            label: "\(expandSearches ? "hides" : "shows") this section",
-                            icon: expandSearches ? .chevronUp : .chevronDown
-                        )
-
-                        if expandSearches {
-                            if !Defaults[.signedInOnce] {
-                                if FeatureFlag[.web3Mode] {
-                                    SuggestedXYZSearchesView()
-                                        .onChange(of: cryptoPublicKey) { _ in
-                                            viewModel.updateState()
-                                        }
-                                } else {
-                                    SuggestedPreviewSearchesView()
-                                }
-                            } else {
-                                SuggestedSearchesView()
-                            }
-                        }
-
-                        if NeevaUserInfo.shared.isUserLoggedIn && Defaults[.signedInOnce] {
-                            ZeroQueryHeader(
-                                title: "Spaces",
-                                action: { expandSpaces.toggle() },
-                                label: "\(expandSpaces ? "hides" : "shows") this section",
-                                icon: expandSpaces ? .chevronUp : .chevronDown
-                            )
-                            if expandSpaces {
-                                SuggestedSpacesView()
-                            }
-                        }
-
-                        if !SpaceStore.suggested.allSpaces.isEmpty,
-                            !expandSuggestedSpace
-                        {
-                            suggestedSpace
-                        }
+                        contentView(geom)
                     }
-
                     Spacer()
                 }
             }
@@ -301,55 +144,152 @@ struct ZeroQueryView: View {
             }
         }
     }
-}
 
-struct RecommendedSpacesView: View {
-    @ObservedObject var store: SpaceStore
-    @ObservedObject var viewModel: ZeroQueryModel
-    @Binding var expandSuggestedSpace: Bool
+    @ViewBuilder
+    private func contentView(_ parentGeom: GeometryProxy) -> some View {
+        if FeatureFlag[.web3Mode] {
+            promoCardView(parentGeom)
+            suggestedSitesView(parentGeom)
+            browseNFTsView
+            searchesView
+        } else {
+            promoCardView(parentGeom)
+            suggestedSitesView(parentGeom)
+            searchesView
+            spacesView
+        }
+    }
 
-    var body: some View {
-        if let space = store.allSpaces.first {
-            ZeroQueryHeader(
-                title: "\(space.name)",
-                action: { expandSuggestedSpace.toggle() },
-                label: "\(expandSuggestedSpace ? "hides" : "shows") this section",
-                icon: expandSuggestedSpace ? .chevronUp : .chevronDown
+    @ViewBuilder
+    private var queryView: some View {
+        if let searchQuery = viewModel.searchQuery, let url = url {
+            SearchSuggestionView(
+                Suggestion.editCurrentQuery(searchQuery, url)
             )
-            if expandSuggestedSpace {
-                CompactSpaceDetailList(
-                    primitive: SpaceCardDetails(
-                        space: space,
-                        manager: SpaceStore.suggested)
+            .environmentObject(viewModel.bvc.suggestionModel)
+
+            SuggestionsDivider(height: 8)
+        } else if let openTab = tab {
+            SearchSuggestionView(
+                Suggestion.editCurrentURL(
+                    TabCardDetails(
+                        tab: openTab,
+                        manager: viewModel.bvc.tabManager)
                 )
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 16)
-                .environment(
-                    \.onOpenURLForSpace,
-                    { url, _ in
-                        if url.absoluteString.starts(
-                            with: NeevaConstants.appSpacesURL.absoluteString),
-                            let navPath = NavigationPath.navigationPath(
-                                from: URL(
-                                    string: NeevaConstants.appDeepLinkURL.absoluteString
-                                        + "space?id="
-                                        + url.lastPathComponent)!,
-                                with: viewModel.bvc)
-                        {
-                            viewModel.bvc.hideZeroQuery()
-                            NavigationPath.handle(nav: navPath, with: viewModel.bvc)
-                        } else {
-                            viewModel.bvc.tabManager.createOrSwitchToTab(
-                                for: url)
-                            viewModel.bvc.hideZeroQuery()
-                        }
-                    }
+            )
+            .environmentObject(viewModel.bvc.suggestionModel)
+
+            SuggestionsDivider(height: 8)
+        }
+    }
+
+    @ViewBuilder
+    private func promoCardView(_ parentGeom: GeometryProxy) -> some View {
+        if let promoCardType = viewModel.promoCard {
+            PromoCard(type: promoCardType, viewWidth: parentGeom.size.width)
+                .modifier(
+                    ImpressionLoggerModifier(
+                        path: .PromoCardAppear,
+                        attributes: EnvironmentHelper.shared.getAttributes()
+                            + [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.PromoCardAttribute
+                                        .promoCardType,
+                                    value: viewModel.promoCard?.name ?? "None"
+                                )
+                            ]
+                    )
                 )
-                .environmentObject(viewModel.bvc.gridModel)
-                .environmentObject(viewModel.bvc.gridModel.tabCardModel)
-                .environmentObject(viewModel.bvc.gridModel.spaceCardModel)
+        }
+    }
+
+    @ViewBuilder
+    private func suggestedSitesView(_ parentGeom: GeometryProxy) -> some View {
+        if isLandScape() && viewModel.showRatingsCard {
+            ratingsCard(parentGeom.size.width)
+        }
+
+        if !SpaceStore.suggested.allSpaces.isEmpty,
+            expandSuggestedSpace
+        {
+            suggestedSpace
+        }
+
+        if Defaults[.signedInOnce] || FeatureFlag[.web3Mode] {
+            ZeroQueryHeader(
+                title: FeatureFlag[.web3Mode] ? "Web3 Tools" : "Suggested sites",
+                action: { expandSuggestedSites.advance() },
+                label: "\(expandSuggestedSites.verb) this section",
+                icon: expandSuggestedSites.icon
+            )
+
+            if expandSuggestedSites != .hidden {
+                SuggestedSitesView(
+                    isExpanded: expandSuggestedSites == .expanded,
+                    viewModel: viewModel.suggestedSitesViewModel)
+            }
+
+            if !isLandScape() && viewModel.showRatingsCard {
+                ratingsCard(parentGeom.size.width)
             }
         }
+    }
+
+    @ViewBuilder
+    private var searchesView: some View {
+        ZeroQueryHeader(
+            title: FeatureFlag[.web3Mode] ? "Search on Ethereum (or the web)" : "Searches",
+            action: { expandSearches.toggle() },
+            label: "\(expandSearches ? "hides" : "shows") this section",
+            icon: expandSearches ? .chevronUp : .chevronDown
+        )
+
+        if expandSearches {
+            if !Defaults[.signedInOnce] {
+                if FeatureFlag[.web3Mode] {
+                    SuggestedXYZSearchesView()
+                        .onChange(of: cryptoPublicKey) { _ in
+                            viewModel.updateState()
+                        }
+                } else {
+                    SuggestedPreviewSearchesView()
+                }
+            } else {
+                SuggestedSearchesView()
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var spacesView: some View {
+        if NeevaUserInfo.shared.isUserLoggedIn && Defaults[.signedInOnce] {
+            ZeroQueryHeader(
+                title: "Spaces",
+                action: { expandSpaces.toggle() },
+                label: "\(expandSpaces ? "hides" : "shows") this section",
+                icon: expandSpaces ? .chevronUp : .chevronDown
+            )
+            if expandSpaces {
+                SuggestedSpacesView()
+            }
+        }
+
+        if !SpaceStore.suggested.allSpaces.isEmpty,
+            !expandSuggestedSpace
+        {
+            suggestedSpace
+        }
+    }
+
+    @ViewBuilder
+    private var browseNFTsView: some View {
+        ZeroQueryHeader(
+            title: "Browse NFTs"
+        )
+        SuggestedSitesView(
+            isExpanded: false,
+            withHome: false,
+            viewModel: Web3SuggestedSitesViewModel())
     }
 }
 

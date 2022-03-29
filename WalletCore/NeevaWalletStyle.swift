@@ -34,6 +34,14 @@ extension Color {
     }
 }
 
+extension View {
+    public func gradientForeground() -> some View {
+        self
+            .overlay(WalletTheme.gradient)
+            .mask(self)
+    }
+}
+
 public struct NeevaWalletButtonStyle: ButtonStyle {
     public enum VisualSpec {
         case primary

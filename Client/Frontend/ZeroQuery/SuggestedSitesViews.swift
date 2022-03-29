@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import Defaults
 import Shared
 import Storage
 import SwiftUI
@@ -40,11 +41,11 @@ struct SuggestedNavigationView<Content: View>: View {
                         width: SuggestedSiteUX.IconSize, height: SuggestedSiteUX.IconSize,
                         alignment: .center
                     )
-                    .background(Color(light: .ui.gray97, dark: .systemFill))
-                    .cornerRadius(SuggestedSiteUX.IconCornerRadius)
+                    .modifier(SuggestedItemBackgroundModifier())
                 HStack {
                     if isPinnedSite {
-                        Image("pin_small").renderingMode(.template).foregroundColor(Color.ui.gray60)
+                        Image("pin_small").renderingMode(.template)
+                            .foregroundColor(Color.ui.gray60)
                             .frame(
                                 width: SuggestedSiteUX.PinIconSize,
                                 height: SuggestedSiteUX.PinIconSize, alignment: .center)
@@ -52,11 +53,8 @@ struct SuggestedNavigationView<Content: View>: View {
                     Text(title())
                         .withFont(.bodyMedium)
                         .lineLimit(1)
-                        .background(
-                            RoundedRectangle(cornerRadius: 4).fill(Color.background).padding(-4)
-                        )
+                        .foregroundColorOrGradient(.secondaryLabel)
                         .padding(.top, 4)
-                        .foregroundColor(.secondaryLabel)
                 }
                 .contentShape(Rectangle())
             }
@@ -69,8 +67,24 @@ struct SuggestedNavigationView<Content: View>: View {
     }
 }
 
+private struct SuggestedItemBackgroundModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if FeatureFlag[.web3Mode] {
+            content
+                .hexagonClip()
+        } else {
+            content
+                .background(Color(light: .ui.gray97, dark: .systemFill))
+                .cornerRadius(SuggestedSiteUX.IconCornerRadius)
+        }
+
+    }
+}
+
 struct SuggestedHomeView: View {
-    let title = "Home"
+    var title: String {
+        FeatureFlag[.web3Mode] ? Defaults[.cryptoPublicKey].isEmpty ? "You" : "Your NFTs" : "Home"
+    }
     @State private var shareTargetView: UIView!
 
     var body: some View {
@@ -80,7 +94,7 @@ struct SuggestedHomeView: View {
                 title
             },
             icon: {
-                Symbol(.house, size: SuggestedSiteUX.HomeIconSize, label: "Home")
+                Symbol(.house, size: SuggestedSiteUX.HomeIconSize, label: title)
                     .accentColor(.ui.adaptive.blue)
             }
         )
@@ -157,6 +171,7 @@ struct SuggestedSiteView: View {
 
 struct SuggestedSitesView: View {
     let isExpanded: Bool
+    var withHome: Bool = true
     @ObservedObject var viewModel: SuggestedSitesViewModel
     @Environment(\.zeroQueryWidth) private var zeroQueryWidth
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -186,7 +201,9 @@ struct SuggestedSitesView: View {
         if isExpanded {
             LazyVGrid(columns: columns, alignment: .leading, spacing: SuggestedSiteUX.BlockSpacing)
             {
-                SuggestedHomeView()
+                if withHome {
+                    SuggestedHomeView()
+                }
                 ForEach(viewModel.sites, id: \.self) { suggestedSite in
                     SuggestedSiteView(
                         site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
@@ -196,26 +213,43 @@ struct SuggestedSitesView: View {
             .padding(.vertical, 10)
             .padding(.horizontal, ZeroQueryUX.Padding - 2)
         } else {
+            horizontalScrollView
+                .frame(height: SuggestedSiteUX.BlockSize + 20)
+        }
+    }
+
+    @ViewBuilder
+    private var horizontalScrollView: some View {
+        if FeatureFlag[.web3Mode] {
+            ScrollView(.horizontal, showsIndicators: false) {
+                horizontalScrollContentView
+            }
+        } else {
             FadingHorizontalScrollView { _ in
-                HStack {
-                    HStack(spacing: SuggestedSiteUX.BlockSpacing) {
-                        SuggestedHomeView()
+                horizontalScrollContentView
+            }
+        }
+    }
 
-                        ForEach(viewModel.sites, id: \.self) { suggestedSite in
-                            SuggestedSiteView(
-                                site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
-                            )
-                        }
-                    }
-                    .frame(height: SuggestedSiteUX.BlockSize)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, ZeroQueryUX.Padding - 2)
-                    .fixedSize()
-
-                    Spacer()
+    private var horizontalScrollContentView: some View {
+        HStack {
+            HStack(spacing: SuggestedSiteUX.BlockSpacing) {
+                if withHome {
+                    SuggestedHomeView()
                 }
-            }.frame(height: SuggestedSiteUX.BlockSize + 20)
+                ForEach(viewModel.sites, id: \.self) { suggestedSite in
+                    SuggestedSiteView(
+                        site: suggestedSite, isPinnedSite: suggestedSite is PinnedSite
+                    )
+                }
+            }
+            .frame(height: SuggestedSiteUX.BlockSize)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .padding(.horizontal, ZeroQueryUX.Padding - 2)
+            .fixedSize()
+
+            Spacer()
         }
     }
 }

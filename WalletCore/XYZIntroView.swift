@@ -47,11 +47,3 @@ public struct XYZIntroView: View {
         }.padding(.horizontal, 32)
     }
 }
-
-extension View {
-    fileprivate func gradientForeground() -> some View {
-        self
-            .overlay(WalletTheme.gradient)
-            .mask(self)
-    }
-}
