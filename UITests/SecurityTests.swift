@@ -54,7 +54,9 @@ class SecurityTests: UITestBase {
     /// Tap the New tab exploit button, which tries to piggyback off of an error page
     /// to load the session restore exploit. A new tab will load showing an error page,
     /// but we shouldn't be able to load session restore.
-    func testWindowExploit() {
+    func testWindowExploit() throws {
+        try skipTest(issue: 3258, "The error page is not visible.")
+
         let testURL = "\(webRoot!)/localhostLoad.html"
         openURL(testURL)
 
