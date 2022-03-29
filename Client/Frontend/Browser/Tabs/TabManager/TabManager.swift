@@ -205,7 +205,7 @@ class TabManager: NSObject {
         guard tab != selectedTab else {
             return
         }
-        
+
         assert(Thread.isMainThread)
         let previous = previous ?? selectedTab
 
