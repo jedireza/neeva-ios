@@ -57,14 +57,13 @@ public struct NeevaButtonStyle: ButtonStyle {
     }
 
     let visualSpec: VisualSpec
-    var height: CGFloat = 48
     @Environment(\.isEnabled) private var isEnabled
 
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .foregroundColor(visualSpec == VisualSpec.primary ? .white : .blue)
+            .foregroundColor(visualSpec == VisualSpec.primary ? .white : .label)
             .padding(.vertical, 8)
-            .frame(height: height)
+            .frame(height: 48)
             .background(
                 Capsule()
                     .fill(
@@ -80,9 +79,7 @@ public struct NeevaButtonStyle: ButtonStyle {
 }
 
 extension ButtonStyle where Self == NeevaButtonStyle {
-    public static func neeva(_ visualSpec: NeevaButtonStyle.VisualSpec, height: CGFloat = 48)
-        -> Self
-    {
-        .init(visualSpec: visualSpec, height: height)
+    public static func neeva(_ visualSpec: NeevaButtonStyle.VisualSpec) -> Self {
+        .init(visualSpec: visualSpec)
     }
 }

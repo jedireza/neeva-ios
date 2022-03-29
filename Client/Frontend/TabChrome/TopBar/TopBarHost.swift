@@ -30,7 +30,7 @@ struct TopBarContent: View {
     let model: LocationViewModel
     let queryModel: SearchQueryModel
     let gridModel: GridModel
-    let trackingStatsViewModel: TrackingMenuModel
+    let trackingStatsViewModel: TrackingStatsViewModel
     let chromeModel: TabChromeModel
     let readerModeModel: ReaderModeModel
     let web3Model: Web3Model
