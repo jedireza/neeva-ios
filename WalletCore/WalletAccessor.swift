@@ -139,7 +139,7 @@ public struct WalletAccessor {
                 completion(
                     Web3.Utils.formatToEthereumUnits(
                         balanceBigUInt,
-                        toUnits: token.currency == .USDC ? .Mwei : .eth,
+                        toUnits: token.currency == .USDC || token.currency == .USDT ? .Mwei : .eth,
                         decimals: 6
                     )
                 )

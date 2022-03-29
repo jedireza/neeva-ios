@@ -240,7 +240,7 @@ public struct MaliciousSiteView: View {
                     .withFont(.labelLarge)
                     .foregroundColor(.label)
                 if let trustedDomain = alternativeDomain {
-                    (Text("This site's address is misleadinglu similar to a verified site ")
+                    (Text("This site's address is misleadingly similar to a verified site ")
                         + Text(trustedDomain).bold())
                 } else if case .malicious = trustSignal {
                     Text("This site has been identified as malicious.")
@@ -429,17 +429,17 @@ public struct WalletSequenceMessage: View {
         self.dAppName = dAppName
     }
 
-    var message: String {
+    var message: Text {
         switch type {
         case .sessionRequest:
-            return " wants to connect to your wallet"
+            return Text(dAppName).bold() + Text(" wants to connect to your wallet")
         case .personalSign:
-            return
-                " wants to confirm your ownership of this wallet."
+            return Text(dAppName).bold() + Text(" wants to confirm your ownership of this wallet.")
         case .signTypedData:
-            return " wants to facilitate a transaction on your behalf."
+            return Text(dAppName).bold()
+                + Text(" wants to facilitate a transaction on your behalf.")
         case .sendTransaction:
-            return " wants to send a transaction from your wallet"
+            return Text("Confirm this transaction with ") + Text(dAppName).bold() + Text("?")
         }
     }
 
@@ -456,7 +456,7 @@ public struct WalletSequenceMessage: View {
     }
 
     public var body: some View {
-        (Text(dAppName).bold() + Text(message)
+        (message
             + Text(warning).foregroundColor(
                 type == .personalSign ? .label : Color(light: .brand.red, dark: .brand.variant.red)))
             .withFont(.headingLarge)

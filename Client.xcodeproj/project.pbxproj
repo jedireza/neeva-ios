@@ -653,6 +653,7 @@
 		4A42C5E727E58487003B9826 /* Shared.framework in Copy Frameworks */ = {isa = PBXBuildFile; fileRef = 288A2D861AB8B3260023ABC3 /* Shared.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		4A447A6E27CDC2A200B141F6 /* EIP712.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A447A6D27CDC2A200B141F6 /* EIP712.swift */; };
 		4A46E4E426730D790001687E /* CarouselProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A46E4E326730D790001687E /* CarouselProgressView.swift */; };
+		4A50D5B427F2E638006C9A39 /* TabGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A78AA2427ED33C4002E7A86 /* TabGroup.swift */; };
 		4A51E57026BDBCDF00AD7CDE /* ImportToSpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A51E56F26BDBCDF00AD7CDE /* ImportToSpace.swift */; };
 		4A59B58AD11B5EE1F80BBDEB /* TestHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A59BF410BBD9B3BE71F4C7C /* TestHistory.swift */; };
 		4A5B0F2126AF9610009D1336 /* CardTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A5B0F2026AF9610009D1336 /* CardTests.swift */; };
@@ -6628,6 +6629,7 @@
 				4A42C4E627E58487003B9826 /* BrowserPrompts.swift in Sources */,
 				4A42C4E727E58487003B9826 /* NavigationRouter+MaybeRewriteURL.swift in Sources */,
 				4A42C4E827E58487003B9826 /* WebResultView.swift in Sources */,
+				4A50D5B427F2E638006C9A39 /* TabGroup.swift in Sources */,
 				4A42C4E927E58487003B9826 /* WidgetKitTopSiteModel.swift in Sources */,
 				4A42C4EA27E58487003B9826 /* CardDetails.swift in Sources */,
 				4A42C4EB27E58487003B9826 /* SpaceHeaderView.swift in Sources */,
