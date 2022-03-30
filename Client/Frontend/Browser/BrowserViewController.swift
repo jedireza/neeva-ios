@@ -84,8 +84,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
     let chromeModel = TabChromeModel()
     let incognitoModel = IncognitoModel(isIncognito: false)
 
+    lazy var tabCardModel: TabCardModel = {
+        TabCardModel(manager: tabManager)
+    }()
+
     lazy var gridModel: GridModel = {
-        GridModel(tabManager: tabManager)
+        GridModel(tabManager: tabManager, tabCardModel: tabCardModel)
     }()
     lazy var browserModel: BrowserModel = {
         BrowserModel(

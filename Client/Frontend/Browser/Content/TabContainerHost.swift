@@ -58,8 +58,7 @@ class TabContainerModel: ObservableObject {
         self.currentContentUI = type
         self.recipeModel = RecipeViewModel(tabManager: tabManager)
         self.zeroQueryModel = bvc.zeroQueryModel
-        self.tabCardModel = TabCardModel(
-            manager: tabManager)
+        self.tabCardModel = bvc.tabCardModel
         self.overlayManager = bvc.overlayManager
 
         self.subscription = tabManager.selectedTabPublisher.sink { [weak self] tab in

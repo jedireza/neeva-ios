@@ -40,8 +40,8 @@ class GridModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private let tabMenu: TabMenu
 
-    init(tabManager: TabManager) {
-        self.tabCardModel = TabCardModel(manager: tabManager)
+    init(tabManager: TabManager, tabCardModel: TabCardModel) {
+        self.tabCardModel = tabCardModel
         self.spaceCardModel = SpaceCardModel()
 
         self.tabMenu = TabMenu(tabManager: tabManager)
