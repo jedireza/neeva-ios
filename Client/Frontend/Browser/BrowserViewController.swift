@@ -1127,10 +1127,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     // nothing when the screenshot is being taken, depending on internet connection
                     // Issue created: https://github.com/mozilla-mobile/firefox-ios/issues/7003
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        // The screenshot's frame seems to be equal to webView's frame. The
-                        // frame is manually set here to make sure the screenshot is not blank
-                        // when generated via the long presss menu.
-                        webView.frame = self.tabManager.selectedTab?.webView?.frame ?? CGRect.zero
                         self.screenshotHelper.takeScreenshot(tab)
                         if webView.superview == self.view {
                             webView.removeFromSuperview()
