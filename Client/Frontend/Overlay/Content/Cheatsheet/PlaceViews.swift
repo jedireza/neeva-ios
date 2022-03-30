@@ -257,18 +257,15 @@ struct PlaceView: View {
                         Text("Hours")
                             .withFont(.headingMedium)
                             .foregroundColor(.label)
-                        if place.isOpenNow {
-                            Text("Open")
+                        if let operatingStatus = place.articulatedOperatingStatus {
+                            Text(operatingStatus)
                                 .withFont(.headingMedium, weight: .semibold)
-                                .foregroundColor(.brand.green)
-                        } else {
-                            Text(
-                                nextOpen.gregorianWeekday == viewModel.currentDayOfTheWeek ?
-                                "Closed Now" :
-                                "Closed Today"
-                            )
-                            .withFont(.headingMedium, weight: .semibold)
-                            .foregroundColor(.brand.red)
+                                .foregroundColor(place.isOpenNow ? .brand.green : .brand.red)
+                            if let hour = place.articulatedHour {
+                                Text(" \(hour)")
+                                    .withFont(.bodyMedium)
+                                    .foregroundColor(.secondaryLabel)
+                            }
                         }
                         Spacer()
                         Button(action: {
