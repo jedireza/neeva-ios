@@ -3,8 +3,9 @@
 // found in the LICENSE file.
 
 import MapKit
-import SwiftUI
+import SDWebImageSwiftUI
 import Shared
+import SwiftUI
 
 private struct RatingsView: View {
     private struct StarView: View {
@@ -135,18 +136,35 @@ struct PlaceView: View {
         }
         .frame(height: mapHeight)
         VStack(alignment: .leading, spacing: 5) {
-            Text(place.name)
-                .withFont(.headingXLarge)
-                .lineLimit(2)
-                .multilineTextAlignment(.leading)
-                .foregroundColor(.label)
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 5) {
+                    Text(place.name)
+                        .withFont(.headingXLarge)
+                        .lineLimit(2)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .foregroundColor(.label)
 
-            subTitle
-                .withFont(unkerned: .bodyMedium)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
+                    subTitle
+                        .withFont(unkerned: .bodyMedium)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
 
-            ratings
+                    ratings
+                }
+
+                Spacer()
+
+                if let imageURL = place.imageURL {
+                    WebImage(url: imageURL)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 80, height: 80)
+                        .clipped()
+                        .cornerRadius(10)
+                }
+            }
+
 
             quickActions
 
