@@ -189,12 +189,10 @@ struct PlaceView: View {
     @ViewBuilder
     var quickActions: some View {
         HStack(spacing: 5) {
-            if let phone = place.telephone ?? place.telephonePretty {
+            if let url = viewModel.telephoneURL,
+               UIApplication.shared.canOpenURL(url) {
                 Button(action: {
-                    if let url = URL(string: "tel://\(phone)"),
-                       UIApplication.shared.canOpenURL(url) {
-                      UIApplication.shared.open(url)
-                    }
+                    UIApplication.shared.open(url)
                 }, label: {
                     VStack {
                         Image(systemSymbol: .phoneFill)
@@ -386,7 +384,7 @@ struct PlaceView: View {
                         .withFont(.headingMedium)
                         .foregroundColor(.label)
                     Button(action: {
-                        if let url = URL(string: "tel://\(phone)"),
+                        if let url = viewModel.telephoneURL,
                            UIApplication.shared.canOpenURL(url) {
                           UIApplication.shared.open(url)
                         }

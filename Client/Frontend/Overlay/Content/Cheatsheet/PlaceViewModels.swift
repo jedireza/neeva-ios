@@ -91,6 +91,14 @@ class PlaceViewModel: ObservableObject {
         return nil
     }
 
+    var telephoneURL: URL? {
+        guard let telephone = place.telephone ?? place.telephonePretty?.remove(" ")
+        else {
+            return nil
+        }
+        return URL(string: "tel://\(telephone)")
+    }
+
     init(_ place: Place) {
         print("init")
         self.place = place
