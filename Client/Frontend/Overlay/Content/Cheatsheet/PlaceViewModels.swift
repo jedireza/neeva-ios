@@ -40,8 +40,6 @@ class PlaceViewModel: ObservableObject {
     @Published var mapRegion: MKCoordinateRegion
 
     static let geocoder = CLGeocoder()
-    // Dummy date for formatting use
-    static let dummyDate = Date()
     static let inputTimeFormatter: DateFormatter = {
         let formatter = DateFormatter()
         // 24h clock
@@ -74,8 +72,8 @@ class PlaceViewModel: ObservableObject {
     let mapSpanMeters: CLLocationDistance = 500
 
     // Gregorian Day of the Week (Sunday is 1, Saturday is 7)
-    var currentDayOfTheWeek: Int? {
-        return Calendar(identifier: .gregorian).dateComponents([.weekday], from: Date()).weekday
+    var currentDayOfTheWeek: Int {
+        return Calendar(identifier: .gregorian).dateComponents([.weekday], from: Date()).weekday!
     }
     var sortedLocalizedHours: [LocalizedOperatingHour]?
 

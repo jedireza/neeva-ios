@@ -73,6 +73,7 @@ struct PlaceView: View {
     @StateObject private var viewModel: PlaceViewModel
 
     @State private var hourExpanded: Bool = false
+    @State private var addressExpanded: Bool = false
 
     let mapHeight: CGFloat = 200
 
@@ -248,37 +249,89 @@ struct PlaceView: View {
 
     @ViewBuilder
     var detailsSection: some View {
-        VStack(alignment: .leading) {
+        VStack(alignment: .leading, spacing: 0) {
             // Operating Hour
-            VStack(alignment: .leading) {
-                HStack(alignment: .center) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack(alignment: .center) {
-                            Text("Hours")
-                                .withFont(.headingMedium)
-                            if place.isOpenNow {
-                                Text("Open")
-                                    .withFont(.headingMedium, weight: .semibold)
-                                    .foregroundColor(.brand.green)
+            if let hours = viewModel.sortedLocalizedHours {
+                VStack(alignment: .leading , spacing: 0) {
+                    HStack(alignment: .center) {
+                        Text("Hours")
+                            .withFont(.headingMedium)
+                            .foregroundColor(.label)
+                        if place.isOpenNow {
+                            Text("Open")
+                                .withFont(.headingMedium, weight: .semibold)
+                                .foregroundColor(.brand.green)
+                        }
+                        Spacer()
+                        Button(action: {
+                            hourExpanded.toggle()
+                        }, label: {
+                            if hourExpanded {
+                                Image(systemSymbol: .chevronUp)
+                                    .foregroundColor(.label)
+                            } else {
+                                Image(systemSymbol: .chevronDown)
+                                    .foregroundColor(.label)
+                            }
+                        })
+                        .padding(.horizontal)
+                    }
+
+                    Group {
+                        if !hourExpanded {
+                            if let hoursToday = hours.first(
+                                where: { $0.gregorianWeekday == viewModel.currentDayOfTheWeek }
+                               )
+                            {
+                                if case let .open(start, end) = hoursToday.articulatedHours{
+                                    Text("\(start) - \(end)")
+                                        .withFont(.bodyMedium)
+                                        .foregroundColor(.label)
+                                } else {
+                                    Text("Closed Today")
+                                        .withFont(.bodyMedium)
+                                        .foregroundColor(.label)
+                                }
+                            }
+                        } else {
+                            VStack(alignment: .leading, spacing: 5) {
+                                ForEach(hours, id: \.gregorianWeekday) { hour in
+                                    HStack {
+                                        Text(hour.weekday)
+                                            .withFont(.bodyMedium)
+                                        Spacer()
+                                        switch hour.articulatedHours {
+                                        case .open(let start, let end):
+                                            Text("\(start) - \(end)")
+                                                .withFont(.bodyMedium)
+                                        case .closed:
+                                            Text("Closed")
+                                                .withFont(.bodyMedium)
+                                        }
+                                    }
+                                    .foregroundColor(.label)
+                                }
                             }
                         }
-                        if !hourExpanded,
-                           let currentWeekday = viewModel.currentDayOfTheWeek,
-                           let hours = viewModel.sortedLocalizedHours?.first(
-                            where: { $0.gregorianWeekday == currentWeekday }
-                           ),
-                           case let .open(start, end) = hours.articulatedHours
-                        {
-                            Text("\(start) - \(end)")
-                                .withFont(.bodyMedium)
-                                .foregroundColor(.label)
-                        }
                     }
+                    .padding(.top, 5)
+                }
+
+                Divider()
+                    .padding(.vertical, 7)
+            }
+
+            // Address Section
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .center) {
+                    Text("Address")
+                        .withFont(.headingMedium)
+                        .foregroundColor(.label)
                     Spacer()
                     Button(action: {
-                        hourExpanded.toggle()
+                        addressExpanded.toggle()
                     }, label: {
-                        if hourExpanded {
+                        if addressExpanded {
                             Image(systemSymbol: .chevronUp)
                                 .foregroundColor(.label)
                         } else {
@@ -288,26 +341,24 @@ struct PlaceView: View {
                     })
                     .padding(.horizontal)
                 }
-                if hourExpanded,
-                   let hours = viewModel.sortedLocalizedHours
-                {
-                    ForEach(hours, id: \.gregorianWeekday) { hour in
-                        HStack {
-                            Text(hour.weekday)
-                                .withFont(.bodyMedium)
-                            Spacer()
-                            switch hour.articulatedHours {
-                            case .open(let start, let end):
-                                Text("\(start) - \(end)")
-                                    .withFont(.bodyMedium)
-                            case .closed:
-                                Text("Closed")
+                Group {
+                    if !addressExpanded {
+                        Text(place.address.street)
+                            .withFont(.bodyMedium)
+                    } else {
+                        let separated = place.address.full.components(separatedBy: ", ")
+                        VStack(alignment: .leading, spacing: 5) {
+                            ForEach(
+                                separated.indices,
+                                id: \.self
+                            ) { idx in
+                                Text(separated[idx])
                                     .withFont(.bodyMedium)
                             }
                         }
-                        .foregroundColor(.label)
                     }
                 }
+                .padding(.top, 5)
             }
         }
         .padding()
