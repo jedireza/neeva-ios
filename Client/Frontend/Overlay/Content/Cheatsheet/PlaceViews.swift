@@ -72,6 +72,8 @@ struct PlaceView: View {
 
     @StateObject private var viewModel: PlaceViewModel
 
+    @State private var hourExpanded: Bool = false
+
     let mapHeight: CGFloat = 200
 
     var place: Place {
@@ -146,6 +148,8 @@ struct PlaceView: View {
             ratings
 
             quickActions
+
+            detailsSection
         }
     }
 
@@ -240,6 +244,69 @@ struct PlaceView: View {
             })
             .buttonStyle(QuickActionButtonStyle())
         }
+    }
+
+    @ViewBuilder
+    var detailsSection: some View {
+        VStack(alignment: .leading) {
+            // Operating Hour
+            VStack(alignment: .leading) {
+                HStack(alignment: .center) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        HStack(alignment: .center) {
+                            Text("Hours")
+                                .withFont(.headingMedium)
+                            if place.isOpenNow {
+                                Text("Open")
+                                    .withFont(.headingMedium, weight: .semibold)
+                                    .foregroundColor(.brand.green)
+                            }
+                        }
+                        if !hourExpanded,
+                           let currentWeekday = viewModel.currentDayOfTheWeek,
+                           let hours = viewModel.sortedLocalizedHours?.first(
+                            where: { $0.gregorianWeekday == currentWeekday }
+                           ) {
+                            Text("\(hours.start) - \(hours.end)")
+                                .withFont(.bodyMedium)
+                                .foregroundColor(.label)
+                        }
+                    }
+                    Spacer()
+                    Button(action: {
+                        hourExpanded.toggle()
+                    }, label: {
+                        if hourExpanded {
+                            Image(systemSymbol: .chevronUp)
+                                .foregroundColor(.label)
+                        } else {
+                            Image(systemSymbol: .chevronDown)
+                                .foregroundColor(.label)
+                        }
+                    })
+                    .padding(.horizontal)
+                }
+                if hourExpanded,
+                   let hours = viewModel.sortedLocalizedHours
+                {
+                    ForEach(hours, id: \.gregorianWeekday) { hour in
+                        HStack {
+                            Text(hour.weekday)
+                                .withFont(.bodyMedium)
+                            Spacer()
+                            Text("\(hour.start) - \(hour.end)")
+                                .withFont(.bodyMedium)
+                        }
+                        .foregroundColor(.label)
+                    }
+                }
+            }
+        }
+        .padding()
+        .background(
+            Color.secondaryBackground
+                .cornerRadius(10)
+        )
     }
 }
 
