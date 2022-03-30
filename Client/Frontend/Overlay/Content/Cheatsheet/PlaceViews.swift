@@ -73,6 +73,7 @@ struct PlaceView: View {
 
     @StateObject private var viewModel: PlaceViewModel
 
+    @State private var enableMapInteraction: Bool = false
     @State private var hourExpanded: Bool = false
     @State private var addressExpanded: Bool = false
 
@@ -120,17 +121,31 @@ struct PlaceView: View {
 
     var body: some View {
         GeometryReader { geometry in
-            Map(
-                coordinateRegion: $viewModel.mapRegion,
-                interactionModes: .all,
-                showsUserLocation: true,
-                userTrackingMode: nil,
-                annotationItems: viewModel.annotatedMapItems
-            ) { place in
-                MapMarker(
-                    coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
-                    tint: Color.brand.variant.red
-                )
+            ZStack {
+                Map(
+                    coordinateRegion: $viewModel.mapRegion,
+                    interactionModes: enableMapInteraction ? .all : [],
+                    showsUserLocation: true,
+                    userTrackingMode: nil,
+                    annotationItems: viewModel.annotatedMapItems
+                ) { place in
+                    MapMarker(
+                        coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
+                        tint: Color.brand.variant.red
+                    )
+                }
+
+                ZStack(alignment: .center) {
+                    Color.black
+                    Text("Tap to pan and zoom")
+                        .withFont(.headingLarge)
+                        .foregroundColor(.white)
+                }
+                .opacity(enableMapInteraction ? 0 : 0.5)
+                .onTapGesture {
+                    print("tapped")
+                    enableMapInteraction.toggle()
+                }
             }
             .frame(width: geometry.size.width, alignment: .center)
         }
