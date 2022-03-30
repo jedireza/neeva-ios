@@ -34,10 +34,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
 
-    // Default Browser intersititual
-    private var shouldPresentDBPrompt = false
-    var shouldLogDBPrompt = false
-
     lazy var readerModeModel: ReaderModeModel = {
         let model = ReaderModeModel(
             setReadingMode: { [self] enabled in
@@ -513,14 +509,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     override func viewDidAppear(_ animated: Bool) {
         if !FeatureFlag[.web3Mode] {
             if !Defaults[.introSeen] {
-                if NeevaExperiment.startExperiment(
-                    for: .defaultBrowserInterstitialFirst
-                ) == .showInterstitialFirst {
-                    presentDefaultBrowserFirstRun()
-                } else {
-                    presentIntroViewController()
-                }
-                NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
+                presentDefaultBrowserFirstRun()
             }
         }
 
@@ -876,11 +865,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 ),
                 notify: true
             )
-
-            if self.shouldPresentDBPrompt {
-                self.presentDBPromptView()
-            }
-
             self.hideCardGrid(withAnimation: false)
         }
     }
@@ -1619,9 +1603,6 @@ extension BrowserViewController {
             {
                 DispatchQueue.main.async {
                     selectedTab.loadRequest(URLRequest(url: url))
-                    if self.shouldPresentDBPrompt {
-                        self.presentDBPromptView()
-                    }
                     self.hideCardGrid(withAnimation: false)
                 }
             } else {
@@ -1690,22 +1671,6 @@ extension BrowserViewController {
                         }
                     }
 
-                    if let arm = NeevaExperiment.arm(for: .defaultBrowserInterstitialFirst),
-                        arm == .control
-                            && !Defaults[.didSetDefaultBrowser]
-                            && !Defaults[.didShowDefaultBrowserInterstitial]
-                            && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
-                    {
-                        if case .skipToBrowser = action {
-                            if !introSeen {
-                                self.presentDBPromptView(fromSkipToBrowser: true)
-                            }
-                        } else {
-                            self.shouldPresentDBPrompt = true
-                            self.shouldLogDBPrompt = true
-                        }
-                    }
-
                     SpaceStore.shared.refresh(force: true)
                 }
             })
@@ -1727,45 +1692,6 @@ extension BrowserViewController {
             )
         ) {
             completion?()
-        }
-    }
-
-    private func presentDBPromptView(fromSkipToBrowser: Bool = false) {
-        if let arm = NeevaExperiment.arm(for: .defaultBrowserInterstitialFirst),
-            arm == .showInterstitialFirst
-        {
-            return
-        }
-
-        self.shouldPresentDBPrompt = false
-
-        if fromSkipToBrowser {
-            ClientLogger.shared.logCounter(
-                .DefaultBrowserInterstitialImpSkipToBrowser
-            )
-        }
-
-        self.overlayManager.presentFullScreenModal(
-            content: AnyView(
-                DefaultBrowserInterstitialOnboardingView(
-                    trigger: fromSkipToBrowser ? .skipToBrowser : .afterSignup
-                ) {
-                    self.overlayManager.hideCurrentOverlay()
-                } buttonAction: {
-                    self.overlayManager.hideCurrentOverlay()
-                    UIApplication.shared.openSettings(
-                        triggerFrom: fromSkipToBrowser
-                            ? .defaultBrowserPromptSkipToBrowser
-                            : .defaultBrowserPromptMergeEduction
-                    )
-                }
-            )
-        ) {}
-
-        if fromSkipToBrowser {
-            Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
-        } else {
-            Defaults[.didShowDefaultBrowserInterstitial] = true
         }
     }
 
