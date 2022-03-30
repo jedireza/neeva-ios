@@ -890,6 +890,7 @@
 		67462B2C27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67462B2B27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift */; };
 		6751BAB926AA08FB007FC7EA /* NavSuggestion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */; };
 		6751BABB26AA173D007FC7EA /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
+		6758FBD727F3A403000709AC /* AppConfig.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 6758FBD627F3A403000709AC /* AppConfig.xcconfig */; };
 		675EEDD326D9AF1700473332 /* LongPressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 675EEDD226D9AF1700473332 /* LongPressButton.swift */; };
 		676685C527E50EAF003CEA6D /* ServerLoggingSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 676685C427E50EAF003CEA6D /* ServerLoggingSettingsView.swift */; };
 		677858C726CB377800274BC3 /* APIExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 677858C626CB377700274BC3 /* APIExtension.swift */; };
@@ -2202,6 +2203,7 @@
 		67462B2B27D8363D00141379 /* DefaultBrowserIntestitialOnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultBrowserIntestitialOnboardingView.swift; sourceTree = "<group>"; };
 		6751BAB826AA08FB007FC7EA /* NavSuggestion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestion.swift; sourceTree = "<group>"; };
 		6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavSuggestionView.swift; sourceTree = "<group>"; };
+		6758FBD627F3A403000709AC /* AppConfig.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = AppConfig.xcconfig; path = Client/AppConfig.xcconfig; sourceTree = "<group>"; };
 		675EEDD226D9AF1700473332 /* LongPressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongPressButton.swift; sourceTree = "<group>"; };
 		676685C427E50EAF003CEA6D /* ServerLoggingSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServerLoggingSettingsView.swift; sourceTree = "<group>"; };
 		677858C626CB377700274BC3 /* APIExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = APIExtension.swift; sourceTree = "<group>"; };
@@ -3968,6 +3970,7 @@
 		C9098F6026B0533200D2B5F4 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
+				6758FBD627F3A403000709AC /* AppConfig.xcconfig */,
 				67B649C727B453E5006024C0 /* APIConfig.xcconfig */,
 				C9098F6526B0534D00D2B5F4 /* .circleci */,
 				C9098F6626B0534D00D2B5F4 /* .cron.yml */,
@@ -6027,6 +6030,7 @@
 				E4B7B7791A793CF20022C5E0 /* FiraSans-Light.ttf in Resources */,
 				BCC1388F2656CBDB0018D87D /* nicons-400.ttf in Resources */,
 				D0FCF8081FE4772D004A7995 /* MainFrameAtDocumentStart.js in Resources */,
+				6758FBD727F3A403000709AC /* AppConfig.xcconfig in Resources */,
 				4A22DD0826575FD6009BE9FC /* TrackingEntity.xcassets in Resources */,
 				D30684F11C84F12A002D8D82 /* SearchPlugins in Resources */,
 				D308EE561CBF0BF5006843F2 /* CertError.css in Resources */,
@@ -7776,7 +7780,7 @@
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/Neevaxyz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 201;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = Client/XYZClient.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -7787,7 +7791,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 1.35.0;
+				MARKETING_VERSION = 1.1.1;
 				NEEVA_BUNDLE_DISPLAY_NAME = Neevaxyz;
 				NEEVA_ROOT_BUNDLE_INDENTIFIER = xyz.neeva.app.ios.browser;
 				OTHER_SWIFT_FLAGS = "$(OTHER_SWIFT_FLAGS_common) -DMOZ_CHANNEL_NEEVA -DPROD";
@@ -7812,7 +7816,7 @@
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaxyzDev.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
+				CURRENT_PROJECT_VERSION = 25;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INCLUDE_SETTINGS_BUNDLE = NO;
 				INFOPLIST_FILE = Client/XYZClient.plist;
@@ -7825,7 +7829,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 1.35.0;
+				MARKETING_VERSION = 1.1.1;
 				NEEVA_BUNDLE_DISPLAY_NAME = "Neevaxyz ($(USER))";
 				NEEVA_ROOT_BUNDLE_INDENTIFIER = "xyz.neeva.app.ios.browser-dev";
 				PRODUCT_BUNDLE_IDENTIFIER = "xyz.neeva.app.ios.browser-dev";
@@ -7854,7 +7858,6 @@
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 201;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A9735M6NPH;
@@ -7873,7 +7876,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser.WalletCore;
@@ -7904,7 +7906,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -7927,7 +7928,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.neeva.app.ios.browser-dev.WalletCore";
@@ -7958,7 +7958,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 201;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -7966,7 +7965,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neeva.WalletCoreTests;
@@ -7993,7 +7991,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -8005,7 +8002,6 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.neeva.WalletCoreTests;
@@ -8224,7 +8220,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 201;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -8240,7 +8235,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -8272,7 +8266,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -8292,7 +8285,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -8327,7 +8319,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 201;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -8347,7 +8338,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -8381,7 +8371,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -8405,7 +8394,6 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_LDFLAGS = (
@@ -8439,7 +8427,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 201;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -8452,7 +8439,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "neeva.Neeva-for-SafariTests";
@@ -8480,7 +8466,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -8497,7 +8482,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "neeva.Neeva-for-SafariTests";
@@ -8525,7 +8509,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 201;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -8538,7 +8521,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "neeva.Neeva-for-SafariUITests";
@@ -8565,7 +8547,6 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -8582,7 +8563,6 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "neeva.Neeva-for-SafariUITests";
@@ -8610,7 +8590,6 @@
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 201;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -8626,7 +8605,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = co.neeva.app.ios.browser.NotificationServiceExtension;
@@ -8654,7 +8632,6 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -8674,7 +8651,6 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "co.neeva.app.ios.browser-dev.NotificationServiceExtension";
@@ -8860,6 +8836,7 @@
 		};
 		F0FF957125E03EFF00008BD2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6758FBD627F3A403000709AC /* AppConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -8886,7 +8863,7 @@
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/Neeva.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Distribution";
 				COMMON_DEFS = USE_PRIVATE_WEB_VIEW_ZOOM_API;
-				CURRENT_PROJECT_VERSION = 201;
+				CURRENT_PROJECT_VERSION = "$(BROWSER_PROJECT_VERSION)";
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -8917,7 +8894,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
+				MARKETING_VERSION = "$(BROWSER_MARKETING_VERSION)";
 				MOZ_INTERNAL_URL_SCHEME = neeva;
 				NEEVA_BUNDLE_DISPLAY_NAME = Neeva;
 				NEEVA_ROOT_BUNDLE_INDENTIFIER = co.neeva.app.ios.browser;
@@ -8942,7 +8919,6 @@
 		};
 		F0FF957225E03EFF00008BD2 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 67B649C727B453E5006024C0 /* APIConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -9006,7 +8982,6 @@
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 201;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				INFOPLIST_FILE = "Shared/Supporting Files/Info.plist";
@@ -9015,7 +8990,6 @@
 					NSLocalizedString,
 					CFCopyLocalizedString,
 				);
-				MARKETING_VERSION = 1.35.0;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Shared/Shared-Bridging-Header.h";
@@ -9132,6 +9106,7 @@
 		};
 		F0FF95C025E03F8F00008BD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6758FBD627F3A403000709AC /* AppConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -9158,7 +9133,7 @@
 				CODE_SIGN_ENTITLEMENTS = Client/Entitlements/NeevaDev.entitlements;
 				COMMON_DEFS = USE_PRIVATE_WEB_VIEW_ZOOM_API;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 201;
+				CURRENT_PROJECT_VERSION = "$(BROWSER_PROJECT_VERSION)";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = A9735M6NPH;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -9191,7 +9166,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.35.0;
+				MARKETING_VERSION = "$(BROWSER_MARKETING_VERSION)";
 				MOZ_INTERNAL_URL_SCHEME = neeva;
 				NEEVA_BUNDLE_DISPLAY_NAME = "Neeva ($(USER))";
 				NEEVA_ROOT_BUNDLE_INDENTIFIER = "co.neeva.app.ios.browser-dev";
@@ -9216,7 +9191,6 @@
 		};
 		F0FF95C125E03F8F00008BD2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 67B649C727B453E5006024C0 /* APIConfig.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon_Developer;
@@ -9272,7 +9246,6 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 201;
 				DEFINES_MODULE = YES;
 				INFOPLIST_FILE = "Shared/Supporting Files/Info.plist";
 				LOCALIZED_STRING_MACRO_NAMES = (
@@ -9280,7 +9253,6 @@
 					NSLocalizedString,
 					CFCopyLocalizedString,
 				);
-				MARKETING_VERSION = 1.35.0;
 				SWIFT_OBJC_BRIDGING_HEADER = "$SRCROOT/Shared/Shared-Bridging-Header.h";
 			};
 			name = Debug;

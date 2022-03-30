@@ -10,12 +10,12 @@ SCRIPTS_DIR=$(dirname $0)
 . $SCRIPTS_DIR/version-util.sh
 
 # We expect to be run from the root directory of the project.
-if [ ! -s $PROJECT_FILE ]; then
-    echo "Error: $PROJECT_FILE not found"
+if [ ! -s $CONFIG_FILE ]; then
+    echo "Error: $CONFIG_FILE not found"
     exit 1
 fi
 
-# Search and replace on $PROJECT_FILE the field named $1 with new value $2.
+# Search and replace on $CONFIG_FILE the field named $1 with new value $2.
 put_version() {
     if [ $# != 2 ]; then
         echo "put_version: expected two arguments"
@@ -23,7 +23,7 @@ put_version() {
     fi
     field_name=$1
     new_value=$2
-    perl -pi -e "s/$field_name = .*;/$field_name = $new_value;/g" $PROJECT_FILE
+    perl -pi -e "s/$field_name = .*/$field_name = $new_value/" $CONFIG_FILE
 }
 
 # Increment the given input value by one.
@@ -76,39 +76,39 @@ increment_build_number() {
     fi
 }
 
-MARKETING_VERSION=$(get_marketing_version)
-CURRENT_PROJECT_VERSION=$(get_current_project_version)
+BROWSER_MARKETING_VERSION=$(get_marketing_version)
+BROWSER_PROJECT_VERSION=$(get_current_project_version)
 
 echo "Current version info:"
-echo "  MARKETING_VERSION = $MARKETING_VERSION"
-echo "  CURRENT_PROJECT_VERSION = $CURRENT_PROJECT_VERSION"
+echo "  BROWSER_MARKETING_VERSION = $BROWSER_MARKETING_VERSION"
+echo "  BROWSER_PROJECT_VERSION = $BROWSER_PROJECT_VERSION"
 
 # if CREATE_BRANCH is set in build script, we should bump the minor version
 if [ -n "$CREATE_BRANCH" ] && $CREATE_BRANCH && is_branch_of_main; then
-  PROPOSED_MARKETING_VERSION=$(increment_version $MARKETING_VERSION minor)
+  PROPOSED_BROWSER_MARKETING_VERSION=$(increment_version $BROWSER_MARKETING_VERSION minor)
 else
-  PROPOSED_MARKETING_VERSION=$(increment_version $MARKETING_VERSION patch)
+  PROPOSED_BROWSER_MARKETING_VERSION=$(increment_version $BROWSER_MARKETING_VERSION patch)
 fi
 
-PROPOSED_CURRENT_PROJECT_VERSION=$(increment_build_number $CURRENT_PROJECT_VERSION)
+PROPOSED_BROWSER_PROJECT_VERSION=$(increment_build_number $BROWSER_PROJECT_VERSION)
 
 echo "Proposed version info:"
 
-read -ep "  MARKETING_VERSION = [$PROPOSED_MARKETING_VERSION] " version
+read -ep "  BROWSER_MARKETING_VERSION = [$PROPOSED_BROWSER_MARKETING_VERSION] " version
 if [ -n "$version" ]; then
-    PROPOSED_MARKETING_VERSION=$version
+    PROPOSED_BROWSER_MARKETING_VERSION=$version
 fi
-read -ep "  CURRENT_PROJECT_VERSION = [$PROPOSED_CURRENT_PROJECT_VERSION] " version
+read -ep "  BROWSER_PROJECT_VERSION = [$PROPOSED_BROWSER_PROJECT_VERSION] " version
 if [ -n "$version" ]; then
-    PROPOSED_CURRENT_PROJECT_VERSION=$version
+    PROPOSED_BROWSER_PROJECT_VERSION=$version
 fi
 
 echo "New version info:"
-echo "  MARKETING_VERSION = $PROPOSED_MARKETING_VERSION"
-echo "  CURRENT_PROJECT_VERSION = $PROPOSED_CURRENT_PROJECT_VERSION"
+echo "  BROWSER_MARKETING_VERSION = $PROPOSED_BROWSER_MARKETING_VERSION"
+echo "  BROWSER_PROJECT_VERSION = $PROPOSED_BROWSER_PROJECT_VERSION"
 
 echo "Commit version info? Press ENTER to continue. Ctrl+C to cancel."
 read
 
-put_version "MARKETING_VERSION" $PROPOSED_MARKETING_VERSION
-put_version "CURRENT_PROJECT_VERSION" $PROPOSED_CURRENT_PROJECT_VERSION
+put_version "BROWSER_MARKETING_VERSION" $PROPOSED_BROWSER_MARKETING_VERSION
+put_version "BROWSER_PROJECT_VERSION" $PROPOSED_BROWSER_PROJECT_VERSION
