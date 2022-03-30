@@ -266,8 +266,10 @@ struct PlaceView: View {
                            let currentWeekday = viewModel.currentDayOfTheWeek,
                            let hours = viewModel.sortedLocalizedHours?.first(
                             where: { $0.gregorianWeekday == currentWeekday }
-                           ) {
-                            Text("\(hours.start) - \(hours.end)")
+                           ),
+                           case let .open(start, end) = hours.articulatedHours
+                        {
+                            Text("\(start) - \(end)")
                                 .withFont(.bodyMedium)
                                 .foregroundColor(.label)
                         }
@@ -294,8 +296,14 @@ struct PlaceView: View {
                             Text(hour.weekday)
                                 .withFont(.bodyMedium)
                             Spacer()
-                            Text("\(hour.start) - \(hour.end)")
-                                .withFont(.bodyMedium)
+                            switch hour.articulatedHours {
+                            case .open(let start, let end):
+                                Text("\(start) - \(end)")
+                                    .withFont(.bodyMedium)
+                            case .closed:
+                                Text("Closed")
+                                    .withFont(.bodyMedium)
+                            }
                         }
                         .foregroundColor(.label)
                     }

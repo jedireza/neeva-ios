@@ -27,8 +27,11 @@ struct PlaceAnnotation: Identifiable {
 }
 
 struct LocalizedOperatingHour {
-    let start: String
-    let end: String
+    enum Hours {
+        case open(String, String)
+        case closed
+    }
+    let articulatedHours: Hours
     let weekday: String
     let gregorianWeekday: Int
 }
@@ -103,30 +106,39 @@ class PlaceViewModel: ObservableObject {
     }
 
     class func sortAndFormatOperatingHour(from hours: [Place.Hour]) -> [LocalizedOperatingHour] {
-        hours.map { hour -> (LocalizedOperatingHour, Int) in
-            // Parse time of day
-            let start = Self.inputTimeFormatter.date(from: hour.start)!
-            let end = Self.inputTimeFormatter.date(from: hour.end)!
-
+        // fill in days that are missing because they are closed
+        return stride(from: 0, through: 6, by: 1).map { yelpDay -> (LocalizedOperatingHour, Int) in
             // put the days from API response into gregorian calendar
             // yelp uses 0 through 6 for monday through sunday
             // Calendar.gregorian uses 1 through 7 for sunday through saturday
-            let gregorianWeekday = (hour.day + 1) % 7 + 1
+            let gregorianWeekday = (yelpDay + 1) % 7 + 1
 
             // find weekday in current local
-            var calendar = Calendar.current
-            calendar.locale = Locale.current
+            var calendar = Calendar.autoupdatingCurrent
+            calendar.locale = Locale.autoupdatingCurrent
             let weekday = (gregorianWeekday + 7 - calendar.firstWeekday) % 7 + 1
 
-            let hour = LocalizedOperatingHour(
-                start: Self.timeLocalizedFormatter.string(from: start),
-                end: Self.timeLocalizedFormatter.string(from: end),
+            var articulatedHours: LocalizedOperatingHour.Hours = .closed
+            if let hour = hours.first(where: { $0.day == yelpDay}) {
+                // Parse time of day
+                let start = Self.inputTimeFormatter.date(from: hour.start)!
+                let end = Self.inputTimeFormatter.date(from: hour.end)!
+
+                articulatedHours = .open(
+                    Self.timeLocalizedFormatter.string(from: start),
+                    Self.timeLocalizedFormatter.string(from: end)
+                )
+            }
+
+            let operatingHour = LocalizedOperatingHour(
+                articulatedHours: articulatedHours,
                 // in English in Gregrorian, the symols are ["Sun", "Mon", ...]
-                weekday: calendar.shortWeekdaySymbols[weekday - 1],
+                // this array seems to always be in Gregorian, despite the locale
+                weekday: calendar.shortWeekdaySymbols[gregorianWeekday - 1],
                 gregorianWeekday: gregorianWeekday
             )
 
-            return (hour, weekday)
+            return (operatingHour, weekday)
         }.sorted {
             $0.1 < $1.1
         }.map {
