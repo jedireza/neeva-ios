@@ -436,63 +436,6 @@ struct PlaceView: View {
     }
 }
 
-private struct PlaceInlineView: View {
-    let place: Place
-
-    var body: some View {
-        VStack {
-            Group {
-                Text(place.name)
-                Text(place.price ?? "no price")
-                Text(String(place.rating ?? 0))
-                Text(String(place.reviewCount ?? 0))
-            }
-            Group {
-                Text(place.address.full)
-                Text(place.address.street)
-                Text(String(place.position.lon))
-                Text(String(place.position.lat))
-            }
-            Group {
-                Text(place.telephone ?? "no tele")
-                Text(place.telephonePretty ?? "no pretty tele")
-            }
-            Group {
-                Text(place.articulatedOperatingStatus ?? "no art oper status")
-                Text(place.articulatedHour ?? "no art hour")
-                if let specialHours = place.specialHours {
-                    ForEach(specialHours, id: \.date) { hour in
-                        VStack {
-                            Text(String(hour.isOvernight))
-                            Text(String(hour.isClosed))
-                            Text(String(hour.start))
-                            Text(String(hour.end))
-                            Text(String(hour.date))
-                        }
-                    }
-                }
-                if let hours = place.hours {
-                    ForEach(hours, id: \.day) { hour in
-                        Text(String(hour.isOvernight))
-                        Text(String(hour.start))
-                        Text(String(hour.end))
-                        Text(String(hour.day))
-                    }
-                }
-            }
-            Group {
-                Text(place.websiteURL?.absoluteString ?? "no website url")
-                Text(place.yelpURL?.absoluteString ?? "no yelp url")
-                Text(place.yelpURL?.absoluteString ?? "no image url")
-            }
-            Group {
-                Text(place.mapImage?.url?.absoluteString ?? "no map image url")
-                Text(place.mapImageLarge?.url?.absoluteString ?? "no large map image url")
-            }
-        }
-    }
-}
-
 struct PlaceListView: View {
     @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
 
@@ -519,24 +462,113 @@ struct PlaceListView: View {
                     MapAnnotation(
                         coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon)
                     ) {
-                        ZStack(alignment: .center) {
-                            Circle()
-                                .fill(Color.brand.red)
-                            Circle()
-                                .stroke(Color.white, lineWidth: 2.5)
-                            Text(String(viewModel.placeIndex[place.id]!))
-                                .withFont(.headingMedium)
-                                .foregroundColor(.white)
-                        }
-                        .frame(width: 25, height: 25, alignment: .center)
+                        Image(systemName: "\(viewModel.placeIndex[place.id]!+1).circle.fill")
+                            .foregroundColor(.brand.red)
+                            .scaledToFit()
+                            .frame(width: 25, height: 25)
+                            .background(
+                                Circle()
+                                    .fill(Color.white)
+                            )
                     }
                 }
                 .frame(width: geometry.size.width)
             }
             .frame(height: mapHeight)
 
-            ForEach(placeList, id: \.address.full) { place in
+            VStack(alignment: .center, spacing: 5) {
+                ForEach(Array(placeList.enumerated()), id: \.element.address.full) { idx, place in
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack(alignment: .top) {
+                            Image(systemName: "\(idx+1).circle.fill")
+                                .foregroundColor(.brand.red)
+                                .scaledToFit()
+                                .frame(width: 15, height: 15)
+                                .padding(5)
+
+                            HeaderView(place: place)
+
+                            Spacer()
+
+                            if let imageURL = place.imageURL {
+                                WebImage(url: imageURL)
+                                    .resizable()
+                                    .scaledToFill()
+                                    .frame(width: 50, height: 50)
+                                    .clipped()
+                                    .cornerRadius(10)
+                            }
+                        }
+                    }
+
+                    if idx != placeList.endIndex.advanced(by: -1) {
+                        Divider()
+                    }
+                }
+            }
+            .padding()
+            .background(
+                Color.groupedBackground
+                    .cornerRadius(10)
+            )
+            .padding(.top)
+        }
+    }
+
+    private struct HeaderView: View {
+        let place: Place
+
+        var body: some View {
+            VStack(alignment: .leading) {
+                // Name
                 Text(place.name)
+                    .withFont(.headingMedium)
+                    .foregroundColor(.label)
+                    .lineLimit(1)
+
+                // Ratings
+                HStack(alignment: .center) {
+                    // rating is out of 5
+                    if let rating = place.rating {
+                        RatingsView(rating: rating)
+                    }
+
+                    if let reviews = place.reviewCount {
+                        Text("\(reviews) Reviews")
+                            .withFont(.bodySmall)
+                            .foregroundColor(.secondaryLabel)
+                    }
+
+                    if let price = place.price {
+                        Text(price)
+                            .withFont(.bodySmall)
+                            .foregroundColor(.secondaryLabel)
+                    }
+                }
+
+                // Categories
+                if let categories = place.categories.joined(separator: ", "),
+                   !categories.isEmpty
+                {
+                    Text(categories)
+                        .withFont(.bodySmall)
+                        .foregroundColor(.secondaryLabel)
+                        .lineLimit(1)
+                }
+
+                // Operating Status
+                if let operatingStatus = place.articulatedOperatingStatus {
+                    HStack {
+                        Text(operatingStatus)
+                            .withFont(.bodySmall, weight: .semibold)
+                            .foregroundColor(place.isOpenNow ? .brand.green : .brand.red)
+                        if let hour = place.articulatedHour {
+                            Text(" \(hour)")
+                                .withFont(.bodySmall)
+                                .foregroundColor(.secondaryLabel)
+                        }
+                    }
+                }
             }
         }
     }
