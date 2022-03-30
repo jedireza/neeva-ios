@@ -459,6 +459,7 @@ struct WalletDashboard: View {
             .navigationBarHidden(true)
         }
         .navigationViewStyle(.automatic)
+        .padding(.horizontal, 8)
     }
 
     func onScanComplete() {

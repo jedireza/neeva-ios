@@ -732,6 +732,7 @@
 		4AB8160B27EADCEF0017203D /* XYZIntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AB8160A27EADCEF0017203D /* XYZIntroView.swift */; };
 		4AB8160F27EBC3040017203D /* Web3Toolbar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC15D7527E924A8005F71CE /* Web3Toolbar.swift */; };
 		4AB8161027EBC3190017203D /* ConversionLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = B62FC4AA27E9162600848461 /* ConversionLogger.swift */; };
+		4AC534F127F3B86A0084C62B /* XYZLaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4A7AC46327F27470001EFB8F /* XYZLaunchScreen.xib */; };
 		4AC6658F26C20A5A00019C24 /* ZeroQueryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AC6658E26C20A5900019C24 /* ZeroQueryModel.swift */; };
 		4AC8827027CDC4600022CF94 /* CommunitySubmissionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A72AFC5278E9E500057E58B /* CommunitySubmissionView.swift */; };
 		4AD771AE2729C4C000B6769D /* PreviewEntities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AD771AD2729C4C000B6769D /* PreviewEntities.swift */; };
@@ -5821,6 +5822,7 @@
 				4A42C59B27E58487003B9826 /* Roobert-Regular.otf in Resources */,
 				4A42C59C27E58487003B9826 /* Reader.html in Resources */,
 				4A42C59D27E58487003B9826 /* NewYorkMedium-RegularItalic.otf in Resources */,
+				4AC534F127F3B86A0084C62B /* XYZLaunchScreen.xib in Resources */,
 				4A42C59E27E58487003B9826 /* InfoPlist.strings in Resources */,
 				4A42C59F27E58487003B9826 /* Licenses.html in Resources */,
 				4A42C5A027E58487003B9826 /* Reader.css in Resources */,
