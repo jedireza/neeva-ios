@@ -360,6 +360,14 @@ struct PlaceView: View {
                 }
                 .padding(.top, 5)
             }
+            .contextMenu {
+                Button(action: {
+                    UIPasteboard.general.string = addressExpanded ? place.address.full : place.address.street
+                }, label: {
+                    Text("Copy to clipboard")
+                    Image(systemName: "doc.on.doc")
+                })
+            }
         }
         .padding()
         .background(
