@@ -264,9 +264,13 @@ struct PlaceView: View {
                                 .withFont(.headingMedium, weight: .semibold)
                                 .foregroundColor(.brand.green)
                         } else {
-                            Text("Closed Today")
-                                .withFont(.headingMedium, weight: .semibold)
-                                .foregroundColor(.brand.red)
+                            Text(
+                                nextOpen.gregorianWeekday == viewModel.currentDayOfTheWeek ?
+                                "Closed Now" :
+                                "Closed Today"
+                            )
+                            .withFont(.headingMedium, weight: .semibold)
+                            .foregroundColor(.brand.red)
                         }
                         Spacer()
                         Button(action: {
