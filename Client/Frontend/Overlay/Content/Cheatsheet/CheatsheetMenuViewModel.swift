@@ -22,6 +22,7 @@ public class CheatsheetMenuViewModel: ObservableObject {
     private(set) var searchRichResultsError: Error?
 
     private(set) var placeViewModel: PlaceViewModel?
+    private(set) var placeListViewModel: PlaceListViewModel?
 
     private var cheatsheetLoggerSubscription: AnyCancellable?
     // Workaround to indicate to SwiftUI view if it should log empty cheatsheet
@@ -195,16 +196,20 @@ public class CheatsheetMenuViewModel: ObservableObject {
                 }
                 self.searchRichResults = self.removeCurrentPageURLs(from: richResults)
 
-                // Create PlaceViewModel if result exists
-                if let placeResult = self.searchRichResults?.compactMap({ result -> PlaceResult? in
+                // Create Children ViewModels if corresponding results exist
+                self.searchRichResults?.forEach { result in
                     switch result.resultType {
                     case .Place(let result):
-                        return result
+                        if self.placeViewModel == nil {
+                            self.placeViewModel = PlaceViewModel(result)
+                        }
+                    case .PlaceList(let result):
+                        if self.placeListViewModel == nil {
+                            self.placeListViewModel = PlaceListViewModel(result)
+                        }
                     default:
-                        return nil
+                        return
                     }
-                }).first {
-                    self.placeViewModel = PlaceViewModel(placeResult)
                 }
             case .failure(let error):
                 Logger.browser.error("Error: \(error)")
@@ -269,6 +274,9 @@ public class CheatsheetMenuViewModel: ObservableObject {
         searchRichResults = nil
         cheatsheetDataError = nil
         searchRichResultsError = nil
+
+        placeViewModel = nil
+        placeListViewModel = nil
     }
 
     private func setupCheatsheetLoaderLogger() {

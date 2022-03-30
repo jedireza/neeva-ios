@@ -11,8 +11,8 @@ import SwiftUI
 struct PlaceAnnotation: Identifiable {
     typealias ID = String
 
-    let lat: Double
-    let lon: Double
+    let lat: CLLocationDegrees
+    let lon: CLLocationDegrees
     let address: String
 
     var id: String {
@@ -164,5 +164,55 @@ class PlaceViewModel: ObservableObject {
         }.map {
             $0.0
         }
+    }
+}
+
+class PlaceListViewModel: ObservableObject {
+    @Published var mapRect: MKMapRect
+
+    static let geocoder = CLGeocoder()
+
+    let placelist: [Place]
+
+    let annotatedMapItems: [PlaceAnnotation]
+    let placeIndex: [PlaceAnnotation.ID: Int]
+    let telephoneURLs: [URL?]
+
+    init(_ placelist: [Place]) {
+        self.placelist = placelist
+
+        annotatedMapItems = placelist.map {
+            PlaceAnnotation(from: $0)
+        }
+        placeIndex = annotatedMapItems.enumerated()
+            .reduce(into: [PlaceAnnotation.ID: Int]()) { partialResult, item in
+                partialResult[item.element.id] = item.offset
+            }
+        telephoneURLs = placelist.map {
+            guard let telephone = $0.telephone ?? $0.telephonePretty?.remove(" ")
+            else {
+                return nil
+            }
+            return URL(string: "tel://\(telephone)")
+        }
+
+        let unionRect = placelist.map { place -> MKMapPoint in
+            MKMapPoint(CLLocationCoordinate2D(latitude: place.position.lat, longitude: place.position.lon))
+        }.map {
+            MKMapRect(origin: $0, size: MKMapSize(width: 0.0001, height: 0.0001))
+        }
+        .reduce(MKMapRect.null) { prev, next in
+            prev.union(next)
+        }
+        let newSize = MKMapSize(
+            width: unionRect.width * 3,
+            height: unionRect.height * 3
+        )
+        mapRect = MKMapRect(
+            x: unionRect.midX - newSize.width / 2,
+            y: unionRect.midY - newSize.height / 2,
+            width: newSize.width,
+            height: newSize.height
+        )
     }
 }

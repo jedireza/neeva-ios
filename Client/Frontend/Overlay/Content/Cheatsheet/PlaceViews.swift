@@ -436,7 +436,7 @@ struct PlaceView: View {
     }
 }
 
-struct PlaceInlineView: View {
+private struct PlaceInlineView: View {
     let place: Place
 
     var body: some View {
@@ -488,6 +488,59 @@ struct PlaceInlineView: View {
             Group {
                 Text(place.mapImage?.url?.absoluteString ?? "no map image url")
                 Text(place.mapImageLarge?.url?.absoluteString ?? "no large map image url")
+            }
+        }
+    }
+}
+
+struct PlaceListView: View {
+    @Environment(\.onOpenURLForCheatsheet) var onOpenURLForCheatsheet
+
+    @StateObject private var viewModel: PlaceListViewModel
+
+    var placeList: [Place] { viewModel.placelist }
+
+    let mapHeight: CGFloat = 200
+
+    init(viewModel: PlaceListViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            GeometryReader { geometry in
+                Map(
+                    mapRect: $viewModel.mapRect,
+                    interactionModes: .all,
+                    showsUserLocation: true,
+                    userTrackingMode: nil,
+                    annotationItems: viewModel.annotatedMapItems
+                ) { place in
+//                    MapAnnotation(
+//                        coordinate: CLLocationCoordinate2D(latitude: place.lon, longitude: place.lat)
+//                    ) {
+//                        let idx = viewModel.placeIndex[place.id]!
+//                        Text(String(idx))
+//                            .withFont(.bodyMedium)
+//                            .foregroundColor(.white)
+//                            .padding()
+//                            .background (
+//                                Circle()
+//                                    .fill(Color.brand.red)
+//                            )
+//                            .overlay (
+//                                Circle()
+//                                    .stroke(Color.white, lineWidth: 2.5)
+//                            )
+//                    }
+                    MapMarker(coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon), tint: .red)
+                }
+                .frame(width: geometry.size.width)
+            }
+            .frame(height: mapHeight)
+
+            ForEach(placeList, id: \.address.full) { place in
+                Text(place.name)
             }
         }
     }
