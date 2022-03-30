@@ -516,24 +516,20 @@ struct PlaceListView: View {
                     userTrackingMode: nil,
                     annotationItems: viewModel.annotatedMapItems
                 ) { place in
-//                    MapAnnotation(
-//                        coordinate: CLLocationCoordinate2D(latitude: place.lon, longitude: place.lat)
-//                    ) {
-//                        let idx = viewModel.placeIndex[place.id]!
-//                        Text(String(idx))
-//                            .withFont(.bodyMedium)
-//                            .foregroundColor(.white)
-//                            .padding()
-//                            .background (
-//                                Circle()
-//                                    .fill(Color.brand.red)
-//                            )
-//                            .overlay (
-//                                Circle()
-//                                    .stroke(Color.white, lineWidth: 2.5)
-//                            )
-//                    }
-                    MapMarker(coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon), tint: .red)
+                    MapAnnotation(
+                        coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon)
+                    ) {
+                        ZStack(alignment: .center) {
+                            Circle()
+                                .fill(Color.brand.red)
+                            Circle()
+                                .stroke(Color.white, lineWidth: 2.5)
+                            Text(String(viewModel.placeIndex[place.id]!))
+                                .withFont(.headingMedium)
+                                .foregroundColor(.white)
+                        }
+                        .frame(width: 25, height: 25, alignment: .center)
+                    }
                 }
                 .frame(width: geometry.size.width)
             }
