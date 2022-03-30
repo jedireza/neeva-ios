@@ -27,54 +27,73 @@ extension Asset: SelectableThumbnail {
 }
 
 struct AssetView: View {
-    @Environment(\.cardSize) private var cardSize
-    @Environment(\.aspectRatio) private var aspectRatio
-    @Environment(\.onOpenURLForSpace) private var openURLForSpace
     @EnvironmentObject var web3Model: Web3Model
     @EnvironmentObject var walletDetailsModel: WalletDetailsModel
     @EnvironmentObject var browserModel: BrowserModel
     let asset: Asset
+    let cardSize: CGFloat = 100
 
     var body: some View {
-        HStack {
-            asset.thumbnail
-                .frame(width: cardSize, height: cardSize * aspectRatio)
-                .cornerRadius(CardUX.CornerRadius)
-                .padding(16)
-            VStack {
-                Text(asset.name)
-                    .withFont(.headingMedium)
-                Text(asset.description ?? "")
-                    .withFont(.bodyMedium)
-                    .foregroundColor(.secondaryLabel)
-                    .lineLimit(4)
-                Image("opensea-badge")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(height: 24)
-                    .padding(12)
-                    .background(Color.tertiarySystemFill)
-                    .clipShape(Capsule())
-                    .highPriorityGesture(
-                        TapGesture().onEnded({
-                            guard
-                                let url = URL(
-                                    string:
-                                        "https://opensea.io/assets/\(asset.contract.address)/\(asset.tokenID)"
-                                )
-                            else {
-                                return
-                            }
+        VStack {
+            titleView
+            HStack {
+                thumbnailView
+                VStack {
+                    neevaButton
+                    openSeaButton
+                }.padding(.trailing, 12)
+            }
+        }
+        .padding(4)
+        .backgroundColorOrGradient()
+        .cornerRadius(CardUX.CornerRadius)
+    }
 
-                            walletDetailsModel.showingWalletDetails = false
-                            browserModel.hideWithNoAnimation()
-                            DispatchQueue.main.async {
-                                openURLForSpace(url, web3Model.wallet?.publicAddress ?? "")
-                            }
-                        }))
-            }.padding(.trailing, 16)
+    private var titleView: some View {
+        Text(asset.name)
+            .withFont(.headingSmall)
+            .padding(.horizontal, 8)
+    }
+
+    private var thumbnailView: some View {
+        asset.thumbnail
+            .frame(width: cardSize, height: cardSize)
+            .cornerRadius(CardUX.CornerRadius)
+            .padding(12)
+    }
+
+    private var neevaButton: some View {
+        createCircularButton(
+            with:
+                "https://neeva.xyz/search?q=\(asset.contract.address)&contractAddress=\(asset.contract.address)&tokenID=\(asset.tokenID)",
+            assetUrl: SearchEngine.nft.icon)
+    }
+
+    private var openSeaButton: some View {
+        createCircularButton(
+            with: "https://opensea.io/assets/\(asset.contract.address)/\(asset.tokenID)",
+            assetUrl: URL("https://opensea.io/static/images/favicon/180x180.png"))
+    }
+
+    private func createCircularButton(with urlString: String, assetUrl: URL?) -> some View {
+        Button {
+            guard let url = URL(string: urlString) else {
+                return
+            }
+            DispatchQueue.main.async {
+                web3Model.openURLForSpace(url, web3Model.wallet?.publicAddress ?? "")
+            }
+        } label: {
+            WebImage(url: assetUrl)
+                .resizable()
+                .scaledToFit()
+                .frame(height: 24)
+                .padding(12)
+                .background(Color.tertiarySystemFill)
+                .clipShape(Capsule())
         }
     }
+
 }
 
 public class AssetGroup: ThumbnailModel, Identifiable {

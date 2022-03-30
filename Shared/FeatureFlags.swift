@@ -26,6 +26,7 @@ public enum FeatureFlag: String, CaseIterable, RawRepresentable {
     case web3Mode = "Optimized for web3 features"
     case enableSuggestedSpaces = "Show Spaces from Neeva Community"
     case enableCryptoWallet = "Enable crypto wallet"
+    case showNFTsInWallet = "Show NFTs in Wallet"
     case customSearchEngine = "Custom Search Engine"
     case swipeToCloseTabs = "Swipe to close tabs"
 
