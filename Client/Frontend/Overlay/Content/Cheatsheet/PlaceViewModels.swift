@@ -76,6 +76,20 @@ class PlaceViewModel: ObservableObject {
         return Calendar(identifier: .gregorian).dateComponents([.weekday], from: Date()).weekday!
     }
     var sortedLocalizedHours: [LocalizedOperatingHour]?
+    var nextOpen: LocalizedOperatingHour? {
+        guard let hours = sortedLocalizedHours,
+              let startIdx = hours.firstIndex(where: { $0.gregorianWeekday == currentDayOfTheWeek })
+        else {
+            return nil
+        }
+        for offset in 0...6 {
+            let idx = (startIdx + offset) % hours.count
+            if case .open = hours[idx].articulatedHours {
+                return hours[idx]
+            }
+        }
+        return nil
+    }
 
     init(_ place: Place) {
         print("init")

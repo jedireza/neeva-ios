@@ -251,7 +251,9 @@ struct PlaceView: View {
     var detailsSection: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Operating Hour
-            if let hours = viewModel.sortedLocalizedHours {
+            if let hours = viewModel.sortedLocalizedHours,
+               let nextOpen = viewModel.nextOpen
+            {
                 VStack(alignment: .leading , spacing: 0) {
                     HStack(alignment: .center) {
                         Text("Hours")
@@ -261,6 +263,10 @@ struct PlaceView: View {
                             Text("Open")
                                 .withFont(.headingMedium, weight: .semibold)
                                 .foregroundColor(.brand.green)
+                        } else {
+                            Text("Closed Today")
+                                .withFont(.headingMedium, weight: .semibold)
+                                .foregroundColor(.brand.red)
                         }
                         Spacer()
                         Button(action: {
@@ -279,16 +285,14 @@ struct PlaceView: View {
 
                     Group {
                         if !hourExpanded {
-                            if let hoursToday = hours.first(
-                                where: { $0.gregorianWeekday == viewModel.currentDayOfTheWeek }
-                               )
-                            {
-                                if case let .open(start, end) = hoursToday.articulatedHours{
+                            HStack {
+                                if case let .open(start, end) = nextOpen.articulatedHours{
+                                    if nextOpen.gregorianWeekday != viewModel.currentDayOfTheWeek {
+                                        Text(nextOpen.weekday)
+                                            .withFont(.bodyMedium)
+                                            .foregroundColor(.label)
+                                    }
                                     Text("\(start) - \(end)")
-                                        .withFont(.bodyMedium)
-                                        .foregroundColor(.label)
-                                } else {
-                                    Text("Closed Today")
                                         .withFont(.bodyMedium)
                                         .foregroundColor(.label)
                                 }
