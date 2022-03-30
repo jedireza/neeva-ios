@@ -12,6 +12,30 @@ import WalletConnectSwift
 import WalletCore
 import web3swift
 
+struct WalletHeader: View {
+    let title: String
+    @Binding var isExpanded: Bool
+
+    var body: some View {
+        HStack {
+            Text(title)
+                .withFont(.headingMedium)
+                .foregroundColor(.label)
+            Spacer()
+            Button(action: {
+                isExpanded.toggle()
+            }) {
+                Symbol(
+                    decorative: isExpanded ? .chevronUp : .chevronDown,
+                    style: .headingMedium
+                )
+                .foregroundColor(.label)
+            }
+        }
+        .padding(.bottom, 4)
+    }
+}
+
 struct WalletDashboard: View {
     @Default(.sessionsPeerIDs) var savedSessions
     @Default(.currentTheme) var currentTheme
@@ -22,6 +46,7 @@ struct WalletDashboard: View {
 
     @State var showBalances: Bool = true
     @State var showSessions: Bool = true
+    @State var showNFTs: Bool = true
     @State var showThemes: Bool = true
     @State var showSendForm: Bool = false
     @State var showOverflowSheet: Bool = false
@@ -197,6 +222,28 @@ struct WalletDashboard: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)
+            if !FeatureFlag[.showNFTsInWallet] {
+                Button(
+                    action: {
+                        model.openURLForSpace(
+                            NeevaConstants.appHomeURL, model.wallet?.publicAddress ?? "")
+                    },
+                    label: {
+                        HStack(spacing: 4) {
+                            WebImage(url: SearchEngine.nft.icon)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 16, height: 16)
+                                .padding(4)
+                                .background(Color.quaternarySystemFill)
+                                .cornerRadius(4)
+                            Text("Your NFTs")
+                        }
+                    }
+                )
+                .padding(.horizontal, 16)
+                .buttonStyle(DashboardButtonStyle())
+            }
         }
         .padding(.top, 24)
         .modifier(WalletListSeparatorModifier())
@@ -213,7 +260,7 @@ struct WalletDashboard: View {
                     ) {
                         token in
                         HStack {
-                            token.thumbnail.padding(.leading, 4)
+                            token.thumbnail
                             VStack(alignment: .leading, spacing: 0) {
                                 Text(token.currency.name)
                                     .withFont(.bodyMedium)
@@ -241,21 +288,10 @@ struct WalletDashboard: View {
                 }
             },
             header: {
-                HStack {
-                    Text("Balances")
-                        .withFont(.headingMedium)
-                        .foregroundColor(.label)
-                    Spacer()
-                    Button(action: {
-                        showBalances.toggle()
-                    }) {
-                        Symbol(
-                            decorative: showBalances ? .chevronUp : .chevronDown,
-                            style: .headingMedium
-                        )
-                        .foregroundColor(.label)
-                    }
-                }.padding(.vertical, 10)
+                WalletHeader(
+                    title: "Balances",
+                    isExpanded: $showBalances
+                )
             })
     }
 
@@ -273,7 +309,7 @@ struct WalletDashboard: View {
                             WebImage(url: session.dAppInfo.peerMeta.icons.first)
                                 .resizable()
                                 .scaledToFit()
-                                .frame(width: 34, height: 34)
+                                .frame(width: 32, height: 32)
                             VStack(alignment: .leading, spacing: 0) {
                                 Text(session.dAppInfo.peerMeta.name)
                                     .withFont(.bodyMedium)
@@ -293,7 +329,6 @@ struct WalletDashboard: View {
                                 TokenType.ether.ethLogo
                             }
                         }
-                        .padding(16)
                         .modifier(
                             SessionActionsModifier(
                                 session: session,
@@ -306,23 +341,41 @@ struct WalletDashboard: View {
             },
             header: {
                 if !model.allSavedSessions.isEmpty {
-                    HStack {
-                        Text("Connected Sites")
-                            .withFont(.headingMedium)
-                            .foregroundColor(.label)
-                        Spacer()
-                        Button(action: {
-                            showSessions.toggle()
-                        }) {
-                            Symbol(
-                                decorative: showSessions ? .chevronUp : .chevronDown,
-                                style: .headingMedium
-                            )
-                            .foregroundColor(.label)
-                        }
-                    }.padding(.vertical, 10)
+                    WalletHeader(
+                        title: "Connected Sites",
+                        isExpanded: $showSessions
+                    )
                 }
             })
+    }
+
+    var nftSection: some View {
+        Section(
+            content: {
+                if showNFTs {
+                    ScrollView(
+                        .horizontal, showsIndicators: false,
+                        content: {
+                            HStack {
+                                ForEach(
+                                    assetStore.assets, id: \.id,
+                                    content: { asset in
+                                        AssetView(asset: asset)
+                                    })
+                            }
+                        })
+                }
+            },
+            header: {
+                if !assetStore.assets.isEmpty {
+                    WalletHeader(
+                        title: "Your NFTs",
+                        isExpanded: $showNFTs
+                    )
+                }
+            }
+        )
+        .modifier(WalletListSeparatorModifier())
     }
 
     var unlockedThemesSection: some View {
@@ -344,7 +397,7 @@ struct WalletDashboard: View {
                                     WebImage(url: theme.asset?.collection?.imageURL)
                                         .resizable()
                                         .scaledToFit()
-                                        .frame(width: 34, height: 34)
+                                        .frame(width: 32, height: 32)
                                         .clipShape(Circle())
                                     VStack(alignment: .leading, spacing: 0) {
                                         Text(theme.asset?.collection?.name ?? "")
@@ -366,29 +419,16 @@ struct WalletDashboard: View {
                                 }
                             }
                         )
-                        .padding(16)
-                        .background(Color.clear)
                         .modifier(WalletListSeparatorModifier())
                     }
                 }
             },
             header: {
                 if !model.unlockedThemes.isEmpty {
-                    HStack {
-                        Text("Unlocked Themes")
-                            .withFont(.headingMedium)
-                            .foregroundColor(.label)
-                        Spacer()
-                        Button(action: {
-                            showThemes.toggle()
-                        }) {
-                            Symbol(
-                                decorative: showThemes ? .chevronUp : .chevronDown,
-                                style: .headingMedium
-                            )
-                            .foregroundColor(.label)
-                        }
-                    }.padding(.vertical, 10)
+                    WalletHeader(
+                        title: "Unlocked Themes",
+                        isExpanded: $showThemes
+                    )
                 }
             })
     }
@@ -450,6 +490,9 @@ struct WalletDashboard: View {
                 accountInfo
                 balancesSection
                 openSessionsSection
+                if FeatureFlag[.showNFTsInWallet] {
+                    nftSection
+                }
                 unlockedThemesSection
                     .actionSheet(isPresented: $showConfirmDisconnectAlert) {
                         confirmDisconnectSheet
@@ -459,7 +502,6 @@ struct WalletDashboard: View {
             .navigationBarHidden(true)
         }
         .navigationViewStyle(.automatic)
-        .padding(.horizontal, 8)
     }
 
     func onScanComplete() {
@@ -492,26 +534,12 @@ struct WalletListSeparatorModifier: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 15.0, *) {
             content
-                .listRowInsets(
-                    EdgeInsets.init(
-                        top: 0,
-                        leading: 0,
-                        bottom: 0,
-                        trailing: 0)
-                )
                 .listSectionSeparator(Visibility.hidden)
                 .listRowSeparator(Visibility.hidden)
                 .listSectionSeparatorTint(Color.clear)
                 .listRowBackground(Color.clear)
         } else {
             content
-                .listRowInsets(
-                    EdgeInsets.init(
-                        top: 0,
-                        leading: 0,
-                        bottom: 0,
-                        trailing: 0)
-                )
         }
     }
 }
