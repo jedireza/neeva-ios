@@ -17,6 +17,7 @@ struct Wallet {
 }
 
 public enum ViewState {
+    case xyzIntro
     case starter
     case dashboard
     case showPhrases

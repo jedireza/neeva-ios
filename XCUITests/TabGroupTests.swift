@@ -26,7 +26,10 @@ class TabGroupTests: BaseTestCase {
     private func confirmOneTabGroupExists() {
         // Confirms only one Tab Group exists,
         // will fail with multiple options error if more than one exists.
-        XCTAssertTrue(app.buttons["TabGroup"].exists)
+        XCTAssertTrue(app.staticTexts["TabGroupTitle"].exists)
+
+        let titleValue = app.staticTexts["TabGroupTitle"].value as? String
+        XCTAssertTrue(titleValue?.contains("example.com") ?? false)
     }
 
     /// Tests the NYTimes case in an instance where the child tab (nytimes.com/article)
@@ -36,7 +39,7 @@ class TabGroupTests: BaseTestCase {
         openTestURLInNewTab(andNavigateAway: true)
 
         goToTabTray()
-        waitForExistence(app.buttons["Tab Group, https://example.com/"])
+        confirmOneTabGroupExists()
     }
 
     /// Tests the case above, with multiple tabs.
@@ -49,7 +52,6 @@ class TabGroupTests: BaseTestCase {
         openTestURLInNewTab(andNavigateAway: true)
 
         goToTabTray()
-        waitForExistence(app.buttons["Tab Group, https://example.com/"])
         confirmOneTabGroupExists()
     }
 
@@ -65,7 +67,6 @@ class TabGroupTests: BaseTestCase {
         waitForExistence(app.staticTexts[url])
 
         // Confirm that that there is one Tab Group for the example URL
-        waitForExistence(app.buttons["Tab Group, https://example.com/"])
         confirmOneTabGroupExists()
     }
 
@@ -77,7 +78,29 @@ class TabGroupTests: BaseTestCase {
         openTestURLInNewTab()
 
         goToTabTray()
-        waitForExistence(app.buttons["Tab Group, https://example.com/"])
+        confirmOneTabGroupExists()
+    }
+
+    func testNYTimesCaseAfterTabRestore() {
+        closeAllTabs(createNewTab: false)
+
+        openTestURLInNewTab(andNavigateAway: true)
+        openURL(path(forTestPage: "test-mozilla-book.html"))
+
+        goToTabTray()
+
+        app.buttons["Close"].firstMatch.tap()
+
+        // Restore the closed tab.
+        app.buttons["Add Tab"].press(forDuration: 2.0)
+        waitForExistence(app.collectionViews.firstMatch)
+
+        app.collectionViews.firstMatch.buttons.firstMatch.tap()
+
+        // This should result in a Tab Group.
+        openURL()
+
+        goToTabTray()
         confirmOneTabGroupExists()
     }
 }

@@ -43,7 +43,7 @@ if is_branch_of_release; then
     git commit -a -m "Preparing for build $CURRENT_PROJECT_VERSION"
     echo "Push changes? Press ENTER to continue. Ctrl+C to cancel."
     read
-    git push origin $REMOTE_BRANCH_NAME
+    git push origin $REMOTE_BRANCH_NAME --no-verify
     exit 0
   fi
 fi
@@ -71,7 +71,7 @@ else
   read
 fi
 
-git push origin $BRANCH_NAME
+git push origin $BRANCH_NAME --no-verify
 
 if command -v gh &> /dev/null && is_branch_of_main; then
   read -r -p "Looks like you have cli tool set up, do you want to create a PR? [Y/n] " response

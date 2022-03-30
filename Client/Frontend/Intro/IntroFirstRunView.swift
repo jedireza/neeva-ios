@@ -43,7 +43,7 @@ struct FirstRunHomePage: View {
                         color: .black
                     ) {
                         logFirstRunSignUpWithAppleClick()
-                        model.buttonAction(.signupWithApple(model.marketingEmailOptOut, nil))
+                        model.buttonAction(.signupWithApple(model.marketingEmailOptOut, nil, nil))
                     }
 
                     IntroButton(icon: nil, label: "Other sign up options", color: .brand.blue) {

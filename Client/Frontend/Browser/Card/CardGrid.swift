@@ -63,7 +63,7 @@ struct CardGridBackground: View {
 }
 
 struct CardGrid: View {
-    @EnvironmentObject var tabGroupModel: TabGroupCardModel
+    @EnvironmentObject var tabCardModel: TabCardModel
     @EnvironmentObject var spaceModel: SpaceCardModel
     @EnvironmentObject var gridModel: GridModel
     @EnvironmentObject var walletDetailsModel: WalletDetailsModel
@@ -75,7 +75,6 @@ struct CardGrid: View {
 
     @State private var detailDragOffset: CGFloat = 0
     @State private var cardSize: CGFloat = CardUX.DefaultCardSize
-    @State private var columnCount = 2
 
     var geom: GeometryProxy
 
@@ -89,7 +88,7 @@ struct CardGrid: View {
                 GridItem(
                     .fixed(cardSize),
                     spacing: CardGridUX.GridSpacing, alignment: .leading),
-            count: columnCount)
+            count: tabCardModel.columnCount)
     }
 
     var cardContainerBackground: some View {
@@ -133,12 +132,18 @@ struct CardGrid: View {
     }
 
     func updateCardSize(width: CGFloat, topToolbar: Bool) {
+        var columnCount = tabCardModel.columnCount
         if width > 1000 {
             columnCount = 4
         } else {
             columnCount = topToolbar ? 3 : 2
         }
-        self.cardSize = (width - (columnCount + 1) * CardGridUX.GridSpacing) / columnCount
+        if tabCardModel.columnCount != columnCount {
+            tabCardModel.columnCount = columnCount
+        }
+        self.cardSize =
+            (width - (tabCardModel.columnCount + 1) * CardGridUX.GridSpacing)
+            / tabCardModel.columnCount
     }
 
     var body: some View {

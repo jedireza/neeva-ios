@@ -6,6 +6,8 @@ import AuthenticationServices
 import Shared
 import SwiftUI
 
+private let log = Logger.auth
+
 struct SignUpTwoButtonsPromptViewOverlayContent: View {
     var query: String
     var skippable: Bool
@@ -130,21 +132,38 @@ struct SignUpTwoButtonsPromptView: View {
                     switch auth.credential {
                     case let appleIDCredential as ASAuthorizationAppleIDCredential:
                         // redirect and create account
-                        let token = appleIDCredential.identityToken
-
-                        if token != nil {
-                            if let authStr = String(data: token!, encoding: .utf8) {
-                                let authURL = NeevaConstants.appleAuthURL(
-                                    serverAuthCode: authStr,
-                                    marketingEmailOptOut: self.marketingEmailOptOut,
-                                    signup: true)
-                                ClientLogger.shared.logCounter(
-                                    .PreviewPromptSignupWithApple,
-                                    attributes: EnvironmentHelper.shared.getFirstRunAttributes())
-                                hideOverlay()
-                                openInNewTab(authURL, false)
-                            }
+                        // TODO(Seth): ideally reduce the code duplication here with IntroViewModel lines 200-217
+                        guard let identityToken = appleIDCredential.identityToken else {
+                            log.error("Unable to fetch identity token")
+                            return
                         }
+                        guard let authorizationCode = appleIDCredential.authorizationCode else {
+                            log.error("Unable to fetch authorization code")
+                            return
+                        }
+                        guard let identityTokenStr = String(data: identityToken, encoding: .utf8)
+                        else {
+                            log.error("Unable to convert identity token to utf8")
+                            return
+                        }
+                        guard
+                            let authorizationCodeStr = String(
+                                data: authorizationCode, encoding: .utf8)
+                        else {
+                            log.error("Unable to convert authorization code to utf8")
+                            return
+                        }
+
+                        let authURL = NeevaConstants.appleAuthURL(
+                            identityToken: identityTokenStr,
+                            authorizationCode: authorizationCodeStr,
+                            marketingEmailOptOut: self.marketingEmailOptOut,
+                            signup: true)
+                        ClientLogger.shared.logCounter(
+                            .PreviewPromptSignupWithApple,
+                            attributes: EnvironmentHelper.shared.getFirstRunAttributes())
+                        hideOverlay()
+                        openInNewTab(authURL, false)
                         break
                     default:
                         break

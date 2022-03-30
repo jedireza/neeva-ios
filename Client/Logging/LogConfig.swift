@@ -676,6 +676,8 @@ public struct LogConfig {
         public static let PreviewModeQueryCount = "PreviewModeQueryCount"
         /// Session UUID v2
         public static let SessionUUIDv2 = "SessionUUIDv2"
+        /// AdServices AAAttribution.attributionToken
+        public static let AdServicesAttributionToken = "AdServicesAttributionToken"
     }
 
     public struct UIInteractionAttribute {

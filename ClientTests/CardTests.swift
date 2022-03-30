@@ -36,9 +36,7 @@ class CardTests: XCTestCase {
     var incognitoModel: IncognitoModel!
     var browserModel: BrowserModel!
     var gridModel: GridModel!
-    var groupManager: TabGroupManager!
     var tabCardModel: TabCardModel!
-    var tabGroupCardModel: TabGroupCardModel!
     var spaceCardModel: SpaceCardModel!
     var switcherToolbarModel: SwitcherToolbarModel!
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
@@ -74,8 +72,8 @@ class CardTests: XCTestCase {
 
         profile = TabManagerMockProfile()
         manager = TabManager(profile: profile, imageStore: nil)
-        groupManager = TabGroupManager(tabManager: manager)
-        gridModel = GridModel(tabManager: manager, tabGroupManager: groupManager)
+        tabCardModel = TabCardModel(manager: manager)
+        gridModel = GridModel(tabManager: manager, tabCardModel: tabCardModel)
         incognitoModel = IncognitoModel(isIncognito: false)
         switcherToolbarModel = SwitcherToolbarModel(
             tabManager: manager, openLazyTab: {}, createNewSpace: {}, onMenuAction: { _ in })
@@ -83,9 +81,6 @@ class CardTests: XCTestCase {
             gridModel: gridModel, tabManager: manager, chromeModel: .init(),
             incognitoModel: incognitoModel, switcherToolbarModel: switcherToolbarModel)
         manager.didRestoreAllTabs = true
-        groupManager = TabGroupManager(tabManager: manager)
-        tabCardModel = TabCardModel(manager: manager, groupManager: groupManager)
-        tabGroupCardModel = TabGroupCardModel(manager: groupManager)
 
         SpaceStore.shared = .createMock([.stackOverflow, .savedForLater, .shared, .public])
         spaceCardModel = SpaceCardModel()
@@ -114,8 +109,8 @@ class CardTests: XCTestCase {
                 XCTAssertEqual(self.tabCardModel.allDetails.last?.id, tab2.tabUUID)
                 XCTAssertFalse(self.tabCardModel.allDetails.last?.isSelected ?? true)
 
-                XCTAssertTrue(self.groupManager.tabGroups.isEmpty)
-                XCTAssertTrue(self.tabGroupCardModel.allDetails.isEmpty)
+                XCTAssertTrue(self.manager.tabGroups.isEmpty)
+                XCTAssertTrue(self.tabCardModel.allTabGroupDetails.isEmpty)
             }
         }
     }
@@ -137,30 +132,25 @@ class CardTests: XCTestCase {
 
                 XCTAssertTrue(self.tabCardModel.allDetailsWithExclusionList.isEmpty)
 
-                XCTAssertEqual(self.groupManager.tabGroups.count, 1)
-                XCTAssertEqual(self.tabGroupCardModel.allDetails.count, 1)
-                XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.id, tab1.rootUUID)
+                XCTAssertEqual(self.manager.tabGroups.count, 1)
+                XCTAssertEqual(self.tabCardModel.allTabGroupDetails.count, 1)
+                XCTAssertEqual(self.tabCardModel.allTabGroupDetails.first?.id, tab1.rootUUID)
 
-                XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.allDetails.count, 2)
+                XCTAssertEqual(self.tabCardModel.allTabGroupDetails.first?.allDetails.count, 2)
                 XCTAssertEqual(
-                    self.tabGroupCardModel.allDetails.first?.allDetails.first?.id, tab1.tabUUID)
+                    self.tabCardModel.allTabGroupDetails.first?.allDetails.first?.id, tab1.tabUUID)
                 XCTAssertEqual(
-                    self.tabGroupCardModel.allDetails.first?.allDetails.last?.id, tab2.tabUUID)
-
-                let thumbnail = assertCast(
-                    self.tabGroupCardModel.allDetails.first!.thumbnail,
-                    to: ThumbnailGroupView<TabGroupCardDetails>.self)
-                XCTAssertEqual(thumbnail.numItems, 2)
+                    self.tabCardModel.allTabGroupDetails.first?.allDetails.last?.id, tab2.tabUUID)
 
                 let tab3 = self.manager.addTab(afterTab: tab1)
                 let _ = MethodSpy(functionName: self.spyAddTab) { _ in
-                    XCTAssertEqual(self.groupManager.tabGroups.count, 1)
-                    XCTAssertEqual(self.tabGroupCardModel.allDetails.count, 1)
+                    XCTAssertEqual(self.manager.tabGroups.count, 1)
+                    XCTAssertEqual(self.tabCardModel.allTabGroupDetails.count, 1)
 
-                    XCTAssertEqual(self.tabGroupCardModel.allDetails.first?.allDetails.count, 3)
+                    XCTAssertEqual(self.tabCardModel.allTabGroupDetails.first?.allDetails.count, 3)
                     XCTAssertEqual(
-                        self.tabGroupCardModel.allDetails.first?.allDetails.last?.id, tab3.tabUUID)
-                    XCTAssertEqual(thumbnail.numItems, 3)
+                        self.tabCardModel.allTabGroupDetails.first?.allDetails.last?.id,
+                        tab3.tabUUID)
                 }
             }
         }
@@ -182,11 +172,8 @@ class CardTests: XCTestCase {
         let tab2 = manager.addTab()
         let tab3 = manager.addTab(afterTab: tab2)
         let tab4 = manager.addTab()
-        // has to call tabGroupCardModel.onDataUpdated() to update representativeTabs
-        tabGroupCardModel.onDataUpdated()
 
-        let buildRowsPromotetab4 = tabCardModel.buildRows(
-            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+        let buildRowsPromotetab4 = tabCardModel.buildRows(incognito: false)
 
         // Two rows in total
         XCTAssertEqual(buildRowsPromotetab4.count, 2)
@@ -212,14 +199,11 @@ class CardTests: XCTestCase {
 
         let tab5 = manager.addTab(afterTab: tab3)
         let tab6 = manager.addTab()
-        // has to call tabGroupCardModel.onDataUpdated to update representativeTabs
-        tabGroupCardModel.onDataUpdated()
 
         // Make the tab group expanded
         tabGroupExpanded.insert(tab2.rootUUID)
 
-        let buildRowsDontPromotetab6 = tabCardModel.buildRows(
-            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+        let buildRowsDontPromotetab6 = tabCardModel.buildRows(incognito: false)
 
         // There should be four rows in total
         XCTAssertEqual(buildRowsDontPromotetab6.count, 4)
@@ -252,11 +236,9 @@ class CardTests: XCTestCase {
         let tab4 = manager.addTab(afterTab: tab3)
         let tab5 = manager.addTab()
         let tab6 = manager.addTab(afterTab: tab5)
-        // has to call tabGroupCardModel.onDataUpdated to update representativeTabs
-        tabGroupCardModel.onDataUpdated()
 
-        let buildRowsAllSameRow = tabCardModel.buildRows(
-            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 3)
+        tabCardModel.columnCount = 3
+        let buildRowsAllSameRow = tabCardModel.buildRows(incognito: false)
 
         // There should be only two rows
         XCTAssertEqual(buildRowsAllSameRow.count, 2)
@@ -282,14 +264,12 @@ class CardTests: XCTestCase {
 
         let tab7 = manager.addTab(afterTab: tab4)
         let tab8 = manager.addTab()
-        // has to call tabGroupCardModel.onDataUpdated to update representativeTabs
-        tabGroupCardModel.onDataUpdated()
 
         // Make the tab group expanded
         tabGroupExpanded.insert(tab2.rootUUID)
 
-        let buildRowsDontPromotetab8 = tabCardModel.buildRows(
-            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 3)
+        tabCardModel.columnCount = 3
+        let buildRowsDontPromotetab8 = tabCardModel.buildRows(incognito: false)
 
         // There should be four rows in total
         XCTAssertEqual(buildRowsDontPromotetab8.count, 4)
@@ -319,8 +299,7 @@ class CardTests: XCTestCase {
         tab2.pinnedTime = Date().timeIntervalSinceReferenceDate
         tabCardModel.onDataUpdated()
 
-        let buildRowsTwoTabs = tabCardModel.buildRows(
-            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+        let buildRowsTwoTabs = tabCardModel.buildRows(incognito: false)
 
         XCTAssertEqual(buildRowsTwoTabs[0].cells.count, 2)
         XCTAssertEqual(buildRowsTwoTabs[0].cells[0].id, tab2.id)
@@ -341,10 +320,8 @@ class CardTests: XCTestCase {
         tab5.isPinned = true
         tab5.pinnedTime = Date().timeIntervalSinceReferenceDate
         tabCardModel.onDataUpdated()
-        tabGroupCardModel.onDataUpdated()
 
-        let buildRowsThreeTabs = tabCardModel.buildRows(
-            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+        let buildRowsThreeTabs = tabCardModel.buildRows(incognito: false)
 
         XCTAssertEqual(buildRowsThreeTabs[0].numTabsInRow, 2)
         XCTAssertNotEqual(buildRowsThreeTabs[0].cells[0].id, tab5.id)
@@ -366,10 +343,8 @@ class CardTests: XCTestCase {
         tab7.isPinned = true
         tab7.pinnedTime = Date().timeIntervalSinceReferenceDate
         tabCardModel.onDataUpdated()
-        tabGroupCardModel.onDataUpdated()
 
-        let buildRowsFourTabs = tabCardModel.buildRows(
-            incognito: false, tabGroupModel: self.tabGroupCardModel, maxCols: 2)
+        let buildRowsFourTabs = tabCardModel.buildRows(incognito: false)
 
         XCTAssertEqual(buildRowsFourTabs.count, 3)
         XCTAssertEqual(buildRowsFourTabs[2].cells[0].id, tab9.id)
@@ -433,22 +408,18 @@ class CardTests: XCTestCase {
         .environmentObject(incognitoModel)
         .environmentObject(tabCardModel)
         .environmentObject(spaceCardModel)
-        .environmentObject(tabGroupCardModel)
         .environmentObject(gridModel)
-        .environmentObject(tabGroupCardModel)
 
-        waitForCondition {
-            try cardContainer.inspect().findAll(FaviconView.self).count == 3
-        }
+        let tabGridContainer = try cardContainer.inspect().find(TabGridContainer.self)
+        XCTAssertNotNil(tabGridContainer)
+        XCTAssertEqual(tabCardModel.allDetails.count, 3)
 
         manager.addTab()
         manager.addTab()
         waitForCondition(condition: { manager.tabs.count == 5 })
 
         XCTAssertEqual(manager.tabs.count, 5)
-        waitForCondition {
-            try cardContainer.inspect().findAll(FaviconView.self).count == 5
-        }
+        XCTAssertEqual(tabCardModel.allDetails.count, 5)
     }
 
     func testCardGridWithSpaces() throws {
@@ -469,14 +440,23 @@ class CardTests: XCTestCase {
         .environmentObject(incognitoModel)
         .environmentObject(tabCardModel)
         .environmentObject(spaceCardModel)
-        .environmentObject(tabGroupCardModel)
         .environmentObject(gridModel)
-        .environmentObject(tabGroupCardModel)
 
         let spaceCardsView = try cardContainer.inspect().find(SpaceCardsView.self)
         XCTAssertNotNil(spaceCardsView)
 
         let spaceCards = spaceCardsView.findAll(FittedCard<SpaceCardDetails>.self)
         XCTAssertEqual(spaceCards.count, 4)
+    }
+
+    func testSelectedTabAfterTabGroupRemoved() {
+        let tab1 = manager.addTab()
+        let tab2 = manager.addTab()
+        let tab3 = manager.addTab(afterTab: tab2)
+        manager.selectedTab = tab2
+        manager.removeTabs([tab2, tab3])
+        if let tab = tabCardModel.allDetails.first(where: { $0.id == tab1.id }) {
+            XCTAssertEqual(tab.isSelected, true)
+        }
     }
 }

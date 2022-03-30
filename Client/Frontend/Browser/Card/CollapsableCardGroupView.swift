@@ -16,13 +16,11 @@ struct CollapsedCardGroupView: View {
     @Environment(\.cardSize) private var size
     @Environment(\.columns) private var columns
     @EnvironmentObject var browserModel: BrowserModel
-    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @EnvironmentObject private var gridModel: GridModel
 
     @State private var frame = CGRect.zero
 
-    @ViewBuilder
-    var group: some View {
+    var body: some View {
         if groupDetails.allDetails.count <= columns.count {
             // Don't make it a scroll view if the tab group can't be expanded
             ExpandedCardGroupRowView(
@@ -46,10 +44,6 @@ struct CollapsedCardGroupView: View {
                     )
             )
         }
-    }
-
-    var body: some View {
-        group.accessibilityIdentifier("TabGroup")
     }
 
     @ViewBuilder
@@ -114,7 +108,6 @@ struct ExpandedCardGroupRowView: View {
     @Environment(\.aspectRatio) private var aspectRatio
     @Environment(\.cardSize) private var size
     @EnvironmentObject var browserModel: BrowserModel
-    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -188,7 +181,6 @@ struct ExpandedCardGroupRowView: View {
 
 struct TabGroupHeader: View {
     @ObservedObject var groupDetails: TabGroupCardDetails
-    @EnvironmentObject var tabGroupCardModel: TabGroupCardModel
     @Environment(\.columns) private var columns
     let rowIndex: Int?
     let nextToCells: Bool
@@ -198,7 +190,7 @@ struct TabGroupHeader: View {
         didSet {
             if deleting {
                 guard Defaults[.confirmCloseAllTabs] else {
-                    groupDetails.onClose()
+                    groupDetails.onClose(showToast: true)
                     deleting = false
                     return
                 }
@@ -208,7 +200,7 @@ struct TabGroupHeader: View {
 
     var groupFromSpace: Bool {
         return groupDetails.id
-            == tabGroupCardModel.manager.get(for: groupDetails.id)?.children.first?.parentSpaceID
+            == groupDetails.manager.getTabGroup(for: groupDetails.id)?.children.first?.parentSpaceID
     }
 
     var body: some View {
@@ -251,9 +243,13 @@ struct TabGroupHeader: View {
                     .labelStyle(.iconOnly)
                     .frame(height: 44)
             }
+
             Text(groupDetails.title)
                 .withFont(.labelLarge)
                 .foregroundColor(.label)
+                .accessibility(identifier: "TabGroupTitle")
+                .accessibility(value: Text(groupDetails.title))
+
             Spacer()
             if groupDetails.allDetails.count > columns.count {
                 Button {

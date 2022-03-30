@@ -118,14 +118,6 @@ struct CollectionWindowStatsMenu: View {
     }
 }
 
-extension View {
-    fileprivate func gradientForeground() -> some View {
-        self
-            .overlay(WalletTheme.gradient)
-            .mask(self)
-    }
-}
-
 public struct CompactStatsView: View {
     let stats: CollectionStats
 

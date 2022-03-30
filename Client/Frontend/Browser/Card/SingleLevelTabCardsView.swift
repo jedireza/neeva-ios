@@ -15,7 +15,6 @@ enum SingleLevelTabCardsViewUX {
 
 struct SingleLevelTabCardsView: View {
     @EnvironmentObject var tabModel: TabCardModel
-    @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject private var browserModel: BrowserModel
     @Environment(\.columns) private var columns
 
@@ -24,8 +23,7 @@ struct SingleLevelTabCardsView: View {
 
     var body: some View {
         ForEach(
-            tabModel.buildRows(
-                incognito: incognito, tabGroupModel: tabGroupModel, maxCols: columns.count)
+            incognito ? tabModel.incognitoRows : tabModel.normalRows
         ) { row in
             HStack(spacing: CardGridUX.GridSpacing) {
                 ForEach(row.cells) { details in

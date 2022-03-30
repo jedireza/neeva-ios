@@ -84,8 +84,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
     let chromeModel = TabChromeModel()
     let incognitoModel = IncognitoModel(isIncognito: false)
 
+    lazy var tabCardModel: TabCardModel = {
+        TabCardModel(manager: tabManager)
+    }()
+
     lazy var gridModel: GridModel = {
-        GridModel(tabManager: tabManager, tabGroupManager: tabGroupManager)
+        GridModel(tabManager: tabManager, tabCardModel: tabCardModel)
     }()
     lazy var browserModel: BrowserModel = {
         BrowserModel(
@@ -145,7 +149,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     let profile: Profile
     let tabManager: TabManager
-    let tabGroupManager: TabGroupManager
     var server: Server? = nil
 
     // Backdrop used for displaying greyed background for private tabs
@@ -189,7 +192,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
     init(profile: Profile, scene: UIScene) {
         self.profile = profile
         self.tabManager = TabManager(profile: profile, scene: scene, incognitoModel: incognitoModel)
-        self.tabGroupManager = TabGroupManager(tabManager: tabManager)
         self.readerModeCache = DiskReaderModeCache.sharedInstance
         super.init(nibName: nil, bundle: nil)
 
@@ -498,7 +500,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     self.showZeroQuery()
                     if !Defaults[.walletIntroSeen] {
                         self.web3Model.showWalletPanel()
-                        Defaults[.walletIntroSeen] = true
                     }
                 } else if !Defaults[.didFirstNavigation] {
                     self.showPreviewHome()
@@ -519,6 +520,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 } else {
                     presentIntroViewController()
                 }
+                NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
             }
         }
 
@@ -1125,10 +1127,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                     // nothing when the screenshot is being taken, depending on internet connection
                     // Issue created: https://github.com/mozilla-mobile/firefox-ios/issues/7003
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                        // The screenshot's frame seems to be equal to webView's frame. The
-                        // frame is manually set here to make sure the screenshot is not blank
-                        // when generated via the long presss menu.
-                        webView.frame = self.tabManager.selectedTab?.webView?.frame ?? CGRect.zero
                         self.screenshotHelper.takeScreenshot(tab)
                         if webView.superview == self.view {
                             webView.removeFromSuperview()
@@ -1588,7 +1586,6 @@ extension BrowserViewController {
             ClientLogger.shared.logCounter(
                 .DefaultBrowserInterstitialImp
             )
-            NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
         }
     }
 
@@ -1658,19 +1655,17 @@ extension BrowserViewController {
                     self.introViewModel = nil
 
                     switch action {
-                    case .signupWithApple(let marketingEmailOptOut, let serverAuthCode):
-                        if let serverAuthCode = serverAuthCode {
+                    case .signupWithApple(
+                        let marketingEmailOptOut, let identityToken, let authorizationCode):
+                        if let identityToken = identityToken,
+                            let authorizationCode = authorizationCode
+                        {
                             let authURL = NeevaConstants.appleAuthURL(
-                                serverAuthCode: serverAuthCode,
+                                identityToken: identityToken,
+                                authorizationCode: authorizationCode,
                                 marketingEmailOptOut: marketingEmailOptOut ?? false,
                                 signup: true)
-                            let httpCookieStore = self.tabManager.configuration.websiteDataStore
-                                .httpCookieStore
-                            httpCookieStore.setCookie(
-                                NeevaConstants.serverAuthCodeCookie(for: serverAuthCode)
-                            ) {
-                                self.openURLInNewTab(authURL)
-                            }
+                            self.openURLInNewTab(authURL)
                         }
                     case .skipToBrowser:
                         if let onDismiss = onDismiss {
@@ -1748,7 +1743,6 @@ extension BrowserViewController {
             ClientLogger.shared.logCounter(
                 .DefaultBrowserInterstitialImpSkipToBrowser
             )
-            NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
         }
 
         self.overlayManager.presentFullScreenModal(

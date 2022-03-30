@@ -177,6 +177,7 @@ enum TabToolbarButtons {
     }
 
     struct NeevaWallet: View {
+        @ObservedObject var assetStore: AssetStore
         @EnvironmentObject var model: Web3Model
         @Default(.currentTheme) var currentTheme
 

@@ -175,7 +175,7 @@ struct Card<Details>: View where Details: CardDetails {
     }
 
     var titleInMainGrid: String {
-        if let rootUUID = tabCardDetail?.manager.get(for: details.id)?.rootUUID,
+        if let rootUUID = tabCardDetail?.tab.rootUUID,
             Defaults[.tabGroupNames][rootUUID] != nil
         {
             return Defaults[.tabGroupNames][rootUUID]!

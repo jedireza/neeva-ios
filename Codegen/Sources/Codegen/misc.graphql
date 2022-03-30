@@ -137,13 +137,13 @@ mutation ResendVerificationEmail {
 }
 
 mutation ReportDomainTrustSignal($input: ReportDomainTrustSignalInput!)  {
-  reportDomainTrustSignal(input: $input) {
+  xyzReportDomainTrustSignal(input: $input) {
     success
   }
 }
 
 query getDomainTrustSignals($input: DomainTrustSignalsInput!) {
-  domainTrustSignals(input: $input) {
+  xyzDomainTrustSignals(input: $input) {
     domain
     signal
   }

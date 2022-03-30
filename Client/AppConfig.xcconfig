@@ -1,0 +1,9 @@
+// Copyright 2022 Neeva Inc. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+BROWSER_PROJECT_VERSION = 201
+BROWSER_MARKETING_VERSION = 1.35.0

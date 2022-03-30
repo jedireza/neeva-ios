@@ -34,7 +34,7 @@ public struct SuggestedXYZSearchesView: View {
                 Button(action: { onClick(input: suggestion) }) {
                     HStack {
                         Symbol(decorative: .magnifyingglass)
-                            .foregroundColor(.label)
+                            .foregroundColorOrGradient(.label)
                         switch suggestion {
                         case .xyz:
                             WebImage(url: SearchEngine.nft.icon)
@@ -66,7 +66,7 @@ public struct SuggestedXYZSearchesView: View {
 
                         Text(suggestion.query)
                             .withFont(.bodyLarge)
-                            .foregroundColor(.label)
+                            .foregroundColorOrGradient(.label)
                         Spacer()
                     }
                     .padding(16)

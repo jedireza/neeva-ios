@@ -10,8 +10,22 @@ import web3swift
 
 struct CryptoWalletView: View {
     @EnvironmentObject var model: Web3Model
-    @State var viewState: ViewState = CryptoWalletView.cryptoPhrases.isEmpty ? .starter : .dashboard
+    @State var viewState: ViewState = Defaults[.cryptoPublicKey].isEmpty ? .xyzIntro : .dashboard
     let dismiss: () -> Void
+
+    @ViewBuilder var overlay: some View {
+        if viewState != .xyzIntro {
+            Button(action: dismiss) {
+                Text(viewState == .starter ? "Skip" : "Done")
+                    .withFont(.labelLarge)
+                    .foregroundColor(.ui.adaptive.blue)
+                    .frame(height: 48)
+            }
+            .padding(.top, 44)
+            .padding(.horizontal, 16)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        }
+    }
 
     private static var cryptoPhrases: String {
         NeevaConstants.cryptoKeychain[string: NeevaConstants.cryptoSecretPhrase] ?? ""
@@ -22,8 +36,8 @@ struct CryptoWalletView: View {
             Image("wallet-wordmark")
                 .resizable()
                 .scaledToFit()
-                .frame(height: viewState == .starter ? 32 : 20)
-                .padding(.top, viewState == .starter ? 40 : 16)
+                .frame(height: viewState == .starter || viewState == .xyzIntro ? 32 : 20)
+                .padding(.top, viewState == .starter || viewState == .xyzIntro ? 40 : 16)
                 .animation(
                     viewState == .showPhrases || viewState == .importWallet ? .easeInOut : nil
                 )
@@ -32,42 +46,32 @@ struct CryptoWalletView: View {
                 .padding(.horizontal, 16)
                 .padding(.top, 44)
 
-            if viewState != .starter {
+            if viewState != .starter && viewState != .xyzIntro {
                 Color.ui.adaptive.separator.frame(height: 1)
             }
 
             ZStack {
                 switch viewState {
+                case .xyzIntro:
+                    XYZIntroView(viewState: $viewState)
                 case .starter:
-                    WelcomeStarterView(viewState: $viewState)
+                    WelcomeStarterView(dismiss: dismiss, viewState: $viewState)
                 case .dashboard:
                     WalletDashboard(viewState: $viewState, assetStore: AssetStore.shared)
                 case .showPhrases:
-                    ShowPhrasesView(viewState: $viewState)
+                    ShowPhrasesView(dismiss: dismiss, viewState: $viewState)
                 case .importWallet:
-                    ImportWalletView(viewState: $viewState)
+                    ImportWalletView(dismiss: dismiss, viewState: $viewState)
                 }
             }
         }
         .ignoresSafeArea()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .overlay(
-            Button(action: dismiss) {
-                Text(viewState == .starter ? "Skip" : "Done")
-                    .withFont(.labelLarge)
-                    .foregroundColor(.ui.adaptive.blue)
-                    .frame(height: 48)
-            }
-            .padding(.top, 44)
-            .padding(.horizontal, 16)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            overlay
         ).onChange(of: viewState) { value in
-            if case .dashboard = viewState, model.wallet?.publicAddress.isEmpty ?? true {
-                DispatchQueue.main.async {
-                    model.wallet = WalletAccessor()
-                    model.updateBalances()
-                }
-                AssetStore.shared.refresh()
+            if case .starter = viewState {
+                Defaults[.walletIntroSeen] = true
             }
         }
     }

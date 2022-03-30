@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import AdServices
 import Defaults
 import Foundation
 import Shared
@@ -63,9 +64,9 @@ public class EnvironmentHelper {
 
         var numOfChildTabs = 0
         var numOfTabGroups = 0
-        TabGroupManager.all.forEach { tabGroupManager in
-            numOfTabGroups += tabGroupManager.tabGroups.count
-            numOfChildTabs += tabGroupManager.childTabs.count
+        TabManager.all.forEach { tabManager in
+            numOfTabGroups += tabManager.tabGroups.count
+            numOfChildTabs += tabManager.childTabs.count
         }
 
         // number of normal tabs opened
@@ -139,10 +140,17 @@ public class EnvironmentHelper {
             key: LogConfig.Attribute.PreviewModeQueryCount,
             value: String(Defaults[.previewModeQueries].count))
 
-        let attributes = [
+        var attributes = [
             getSessionUUID(), isUserSignedIn, deviceTheme, deviceName, firstRunPath,
             previewQueryCount,
         ]
+
+        if #available(iOS 14.3, *), let token = try? AAAttribution.attributionToken() {
+            attributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.Attribute.AdServicesAttributionToken,
+                    value: token))
+        }
 
         return attributes
     }

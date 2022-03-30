@@ -656,11 +656,9 @@ class SuggestionModel: ObservableObject {
                     ? InternalURL(tabURL)?.originalURLFromErrorPage : tabURL
             bvc.searchQueryModel.value = url?.absoluteString ?? ""
             bvc.zeroQueryModel.targetTab = .currentTab
-        case .tabSuggestion(let selectedTab):
-            if let tab = selectedTab.manager.get(for: selectedTab.id) {
-                interaction = LogConfig.Interaction.tabSuggestion
-                selectedTab.manager.select(tab)
-            }
+        case .tabSuggestion(let tabCardToSelect):
+            interaction = LogConfig.Interaction.tabSuggestion
+            tabCardToSelect.manager.select(tabCardToSelect.tab)
         case .findInPage(let query):
             interaction = .FindOnPageSuggestion
             bvc.updateFindInPageVisibility(visible: true, query: query)

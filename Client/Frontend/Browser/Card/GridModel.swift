@@ -9,7 +9,6 @@ import SwiftUI
 
 class GridModel: ObservableObject {
     let tabCardModel: TabCardModel
-    let tabGroupCardModel: TabGroupCardModel
     let spaceCardModel: SpaceCardModel
 
     @Published private(set) var pickerHeight: CGFloat = UIConstants
@@ -41,9 +40,8 @@ class GridModel: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
     private let tabMenu: TabMenu
 
-    init(tabManager: TabManager, tabGroupManager: TabGroupManager) {
-        self.tabCardModel = TabCardModel(manager: tabManager, groupManager: tabGroupManager)
-        self.tabGroupCardModel = TabGroupCardModel(manager: tabGroupManager)
+    init(tabManager: TabManager, tabCardModel: TabCardModel) {
+        self.tabCardModel = tabCardModel
         self.spaceCardModel = SpaceCardModel()
 
         self.tabMenu = TabMenu(tabManager: tabManager)
@@ -90,6 +88,7 @@ class GridModel: ObservableObject {
 
         tabCardModel.manager.switchIncognitoMode(
             incognito: incognito, fromTabTray: true, openLazyTab: false)
+        tabCardModel.updateRows()
     }
 
     func switchToSpaces() {

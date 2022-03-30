@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 import SwiftUI
+import WalletCore
 
 struct Web3Toolbar: View {
 
@@ -44,7 +45,7 @@ struct Web3Toolbar: View {
                 action: overFlowMenuAction,
                 identifier: "TabOverflowButton"
             )
-            TabToolbarButtons.NeevaWallet()
+            TabToolbarButtons.NeevaWallet(assetStore: AssetStore.shared)
             TabToolbarButtons.LazyTabButton(
                 action: openLazyTabAction
             )

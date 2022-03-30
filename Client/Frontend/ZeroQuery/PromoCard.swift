@@ -114,7 +114,7 @@ enum PromoCardType {
             .blackFridayNotifyPromo:
             return .brand.adaptive.polar
         case .walletPromo:
-            return .brand.adaptive.polar
+            return .quaternarySystemFill
         }
     }
 
@@ -158,24 +158,32 @@ struct PromoCard: View {
 
     @ViewBuilder
     var button: some View {
-        Button(action: type.action) {
-            if type.isCompact {
-                HStack {
-                    type.buttonLabel
-                    Spacer()
+        if FeatureFlag[.web3Mode] {
+            Button(action: type.action) {
+                type
+                    .buttonLabel
+                    .frame(maxWidth: .infinity)
+            }.buttonStyle(.wallet(.primary))
+        } else {
+            Button(action: type.action) {
+                if type.isCompact {
+                    HStack {
+                        type.buttonLabel
+                        Spacer()
+                    }
+                    .font(.system(size: 16, weight: .semibold))
+                    .foregroundColor(Color.brand.blue)
+                } else {
+                    HStack {
+                        Spacer()
+                        type.buttonLabel
+                        Spacer()
+                    }
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+                    .frame(height: 48)
+                    .background(Capsule().fill(Color.brand.blue))
                 }
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundColor(Color.brand.blue)
-            } else {
-                HStack {
-                    Spacer()
-                    type.buttonLabel
-                    Spacer()
-                }
-                .font(.system(size: 16, weight: .medium))
-                .foregroundColor(.white)
-                .frame(height: 48)
-                .background(Capsule().fill(Color.brand.blue))
             }
         }
     }
@@ -195,7 +203,7 @@ struct PromoCard: View {
             type.title
                 .font(.roobert(.regular, size: size))
                 .lineSpacing(lineSpacing)
-                .foregroundColor(.hex(0x131415))
+                .foregroundColorOrGradient(.hex(0x131415))
                 .padding(.vertical, type.isCompact ? 0 : lineSpacing)
         }
     }

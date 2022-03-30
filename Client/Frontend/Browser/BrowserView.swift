@@ -136,7 +136,6 @@ struct BrowserView: View {
         .environmentObject(bvc.gridModel)
         .environmentObject(bvc.gridModel.spaceCardModel)
         .environmentObject(bvc.gridModel.tabCardModel)
-        .environmentObject(bvc.gridModel.tabGroupCardModel)
         .environmentObject(bvc.overlayManager)
         .environmentObject(bvc.simulatedSwipeModel)
         .environmentObject(bvc.tabContainerModel)

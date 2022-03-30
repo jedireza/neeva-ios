@@ -31,7 +31,7 @@ public enum Currency: String, CaseIterable, Codable {
             .resizable()
             .scaledToFit()
             .frame(width: 28, height: 28)
-            .background(Color.white)
+            .background(Color.background)
             .clipShape(Circle())
     }
 }

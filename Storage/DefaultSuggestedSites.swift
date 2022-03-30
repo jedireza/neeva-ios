@@ -86,35 +86,21 @@ open class DefaultSuggestedSites {
                 title: "Uniswap"
             ),
             SuggestedSiteData(
-                url: "https://opensea.io/",
+                url: "https://gitcoin.co",
                 bgColor: "0x000000",
-                imageUrl: "https://opensea.io/static/images/favicon/180x180.png",
-                faviconUrl: "https://opensea.io/static/images/favicon/180x180.png",
+                imageUrl:
+                    "https://s.gitcoin.co/static/v2/images/favicon.ico/apple-touch-icon.486115005c66.png",
+                faviconUrl:
+                    "https://s.gitcoin.co/static/v2/images/favicon.ico/apple-touch-icon.486115005c66.png",
                 trackingId: 801,
-                title: "OpenSea"
-            ),
-            SuggestedSiteData(
-                url: "https://foundation.app/",
-                bgColor: "0x000000",
-                imageUrl: "https://foundation.app/apple-touch-icon.png",
-                faviconUrl: "https://foundation.app/apple-touch-icon.png",
-                trackingId: 802,
-                title: "Foundation"
-            ),
-            SuggestedSiteData(
-                url: "https://superrare.com/",
-                bgColor: "0x000000",
-                imageUrl: "https://superrare.com/favicon.png",
-                faviconUrl: "https://superrare.com/favicon.png",
-                trackingId: 803,
-                title: "Super Rare"
+                title: "Gitcoin"
             ),
             SuggestedSiteData(
                 url: "https://etherscan.io/",
                 bgColor: "0x000000",
                 imageUrl: "https://etherscan.io/images/brandassets/etherscan-logo-r.jpg",
                 faviconUrl: "https://etherscan.io/images/brandassets/etherscan-logo-r.jpg",
-                trackingId: 804,
+                trackingId: 803,
                 title: "Etherscan"
             ),
             SuggestedSiteData(
@@ -122,16 +108,32 @@ open class DefaultSuggestedSites {
                 bgColor: "0x000000",
                 imageUrl: "https://polygon.technology/android-icon-192x192.png",
                 faviconUrl: "https://polygon.technology/android-icon-192x192.png",
-                trackingId: 805,
+                trackingId: 804,
                 title: "Polygon Wallet"
             ),
             SuggestedSiteData(
-                url: "https://mobile.twitter.com/home",
+                url: "https://gnosis-safe.io",
+                bgColor: "0x000000",
+                imageUrl: "https://gnosis-safe.io/favicon/apple-touch-icon.png",
+                faviconUrl: "https://gnosis-safe.io/favicon/apple-touch-icon.png",
+                trackingId: 805,
+                title: "Gnosis Safe"
+            ),
+            SuggestedSiteData(
+                url: "https://aave.com",
                 bgColor: "0x55acee",
-                imageUrl: "asset://suggestedsites_twitter",
-                faviconUrl: "asset://defaultFavicon",
-                trackingId: 628,
-                title: .DefaultSuggestedTwitter
+                imageUrl: "https://aave.com/favicon64.png",
+                faviconUrl: "https://aave.com/favicon64.png",
+                trackingId: 806,
+                title: "Aave"
+            ),
+            SuggestedSiteData(
+                url: "https://syndicate.io",
+                bgColor: "0x55acee",
+                imageUrl: "https://syndicate.io/icons/apple-touch-icon.png",
+                faviconUrl: "https://syndicate.io/icons/apple-touch-icon.png",
+                trackingId: 807,
+                title: "Syndicate DAO"
             ),
         ],
         "zh_CN": [

@@ -9,13 +9,15 @@ import web3swift
 
 public struct ImportWalletView: View {
     let model = OnboardingModel()
+    let dismiss: () -> Void
     @State var inputPhrase: String = ""
     @Binding var viewState: ViewState
     @State var isImporting: Bool = false
     @State var isFocused: Bool = false
 
-    public init(viewState: Binding<ViewState>) {
+    public init(dismiss: @escaping () -> Void, viewState: Binding<ViewState>) {
         self._viewState = viewState
+        self.dismiss = dismiss
     }
 
     public var body: some View {
@@ -55,20 +57,13 @@ public struct ImportWalletView: View {
             if UIPasteboard.general.string?.split(separator: " ").count == 12 && isFocused {
                 Button(
                     action: {
-                        guard !isImporting else { return }
-
                         inputPhrase = UIPasteboard.general.string!
-                        isImporting = true
-                        model.importWallet(inputPhrase: inputPhrase) {
-                            isImporting = false
-                            viewState = .dashboard
-                        }
+                        onImport()
                     },
                     label: {
                         HStack(spacing: 4) {
                             Symbol(decorative: .docOnClipboardFill, style: .bodyMedium)
                             Text("Paste & Import")
-
                         }
                     }
                 )
@@ -84,14 +79,7 @@ public struct ImportWalletView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.wallet(.secondary))
-            Button(action: {
-                guard !isImporting else { return }
-                isImporting = true
-                model.importWallet(inputPhrase: inputPhrase) {
-                    isImporting = false
-                    viewState = .dashboard
-                }
-            }) {
+            Button(action: onImport) {
                 HStack {
                     Text(isImporting ? "Importing  " : "Import")
                     if isImporting {
@@ -104,6 +92,20 @@ public struct ImportWalletView: View {
         }
         .padding(.horizontal, 16)
         .ignoresSafeArea(.keyboard)
+    }
+
+    func onImport() {
+        guard !isImporting else { return }
+        isImporting = true
+        model.importWallet(inputPhrase: inputPhrase.trim()) { success in
+            isImporting = false
+
+            if success {
+                dismiss()
+            } else {
+                inputPhrase = ""
+            }
+        }
     }
 }
 

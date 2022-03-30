@@ -15,6 +15,7 @@ extension Defaults.Keys {
 public struct NeevaConstants {
     /// The App Group, used for the keychain and UserDefaults
     public static let appGroup = "group." + AppInfo.baseBundleIdentifier
+    public static let neevaAppGroup = "group.co.neeva.app.ios.browser"
 
     /// The host for the Neeva API/website, such as `neeva.com`
     public static var appHost: String {
@@ -59,7 +60,9 @@ public struct NeevaConstants {
     public static let appPrivacyURL = appMarketingURL / "privacy"
     public static let appTermsURL = appMarketingURL / "terms"
 
-    public static var xyzURL: URL { "https://neeva.xyz" }
+    public static var xyzURL: URL {
+        URL(string: "https://neeva.xyz/\(Defaults[.cryptoPublicKey])") ?? "https://neeva.xyz/"
+    }
 
     /// The keychain key to store the Neeva login cookie into
     public static var loginKeychainKey: String { "neevaHttpdLogin-\(appHost)" }
@@ -70,7 +73,7 @@ public struct NeevaConstants {
 
     /// The shared keychain accessible to the Neeva app and its extensions
     public static let keychain = Keychain(service: "Neeva", accessGroup: appGroup)
-    public static let cryptoKeychain = Keychain(service: "Neeva-Wallet", accessGroup: appGroup)
+    public static let cryptoKeychain = Keychain(service: "Neeva-Wallet")
         .accessibility(.whenUnlockedThisDeviceOnly)
 
     public static var deviceTypeValue: String {
@@ -158,21 +161,6 @@ public struct NeevaConstants {
         ])!
     }
 
-    /// Generates a serverAuthCodeCookie cookie from the given cookie value.
-    public static func serverAuthCodeCookie(for value: String) -> HTTPCookie {
-        HTTPCookie(properties: [
-            .name: "serverAuthCode",
-            .value: value,
-            .domain: NeevaConstants.appHost,
-            .path: "/",
-            .expires: Date() + 1 * 60,
-            .secure: true,
-            .sameSitePolicy: HTTPCookieStringPolicy.sameSiteLax,
-            // ! potentially undocumented API
-            .init("HttpOnly"): true,
-        ])!
-    }
-
     public static let sharedBundle = Bundle(for: BundleHookClass.self)
 
     public static func isNeevaHome(url: URL?) -> Bool {
@@ -206,14 +194,17 @@ public struct NeevaConstants {
 
     // Construct auth url for signin with apple
     public static func appleAuthURL(
-        serverAuthCode: String,
+        identityToken: String,
+        authorizationCode: String,
         marketingEmailOptOut: Bool,
         signup: Bool
     ) -> URL {
         let authURL = buildAppURL("login-mobile")
         let queryItems: [URLQueryItem] = [
             URLQueryItem(name: "provider", value: "neeva.co/auth/oauth2/authenticators/apple"),
-            URLQueryItem(name: "serverAuthCode", value: serverAuthCode),
+            URLQueryItem(name: "identityToken", value: identityToken),
+            URLQueryItem(name: "serverAuthCode", value: identityToken),
+            URLQueryItem(name: "authorizationCode", value: authorizationCode),
             URLQueryItem(name: "mktEmailOptOut", value: String(marketingEmailOptOut)),
             URLQueryItem(name: "signup", value: String(signup)),
             URLQueryItem(name: "ignoreCountryCode", value: "true"),

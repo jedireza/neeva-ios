@@ -27,6 +27,13 @@ class TabManager: NSObject {
     var tabs = [Tab]()
     var tabsUpdatedPublisher = PassthroughSubject<Void, Never>()
 
+    // Tab Group related variables
+    @Default(.tabGroupNames) private var tabGroupDict: [String: String]
+    var tabGroups: [String: TabGroup] = [:]
+    var childTabs: [Tab] {
+        getAllTabGroup().flatMap(\.children)
+    }
+
     var didRestoreAllTabs: Bool = false
 
     // Use `selectedTabPublisher` to observe changes to `selectedTab`.
@@ -160,11 +167,9 @@ class TabManager: NSObject {
                     return tab
                 }
 
-                if let internalUrl = InternalURL(sessionUrl), internalUrl.isSessionRestore,
-                    let extractedUrlParam = internalUrl.extractedUrlParam
-                {
-                    log.info("Checking extractedUrlParam: \(extractedUrlParam)")
-                    if url.equals(extractedUrlParam, with: options) {
+                if let nestedUrl = InternalURL.unwrapSessionRestore(url: sessionUrl) {
+                    log.info("Checking extractedUrlParam: \(nestedUrl)")
+                    if url.equals(nestedUrl, with: options) {
                         return tab
                     }
                 }
@@ -389,5 +394,66 @@ class TabManager: NSObject {
         if notify {
             tabsUpdatedPublisher.send()
         }
+    }
+
+    // Tab Group related functions
+    internal func updateTabGroupsAndSendNotifications(notify: Bool) {
+        tabGroups = getAll()
+            .reduce(into: [String: [Tab]]()) { dict, tab in
+                dict[tab.rootUUID, default: []].append(tab)
+            }.filter { $0.value.count > 1 }.reduce(into: [String: TabGroup]()) { dict, element in
+                dict[element.key] = TabGroup(children: element.value, id: element.key)
+            }
+        cleanUpTabGroupNames()
+        if notify {
+            tabsUpdatedPublisher.send()
+        }
+    }
+
+    func toggleTabPinnedState(_ tab: Tab) {
+        tab.pinnedTime =
+            (tab.isPinned ? nil : Date().timeIntervalSinceReferenceDate)
+        tab.isPinned.toggle()
+        tabsUpdatedPublisher.send()
+    }
+
+    func removeTabFromTabGroup(_ tab: Tab) {
+        tab.rootUUID = UUID().uuidString
+        updateTabGroupsAndSendNotifications(notify: true)
+    }
+
+    func getTabGroup(for id: String) -> TabGroup? {
+        return tabGroups[id]
+    }
+
+    func getAllTabGroup() -> [TabGroup] {
+        Array(tabGroups.values)
+    }
+
+    func closeTabGroup(_ item: TabGroup) {
+        removeTabs(item.children)
+    }
+
+    func closeTabGroup(_ item: TabGroup, showToast: Bool) {
+        removeTabs(item.children, showToast: showToast)
+    }
+
+    func cleanUpTabGroupNames() {
+        // Write tab group name into dictionary
+        tabGroups.forEach { group in
+            let id = group.key
+            if tabGroupDict[id] == nil {
+                tabGroupDict[id] = group.value.displayTitle
+            }
+        }
+
+        // Filter out deleted tab group names
+        var temp = [String: String]()
+        tabGroups.filter {
+            group in tabGroups[group.key] != nil
+        }.forEach { group in
+            temp[group.key] = tabGroupDict[group.key]
+        }
+        tabGroupDict = temp
     }
 }

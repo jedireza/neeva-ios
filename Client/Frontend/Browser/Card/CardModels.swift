@@ -24,36 +24,58 @@ protocol CardModel: ThumbnailModel {
 }
 
 class TabCardModel: CardModel {
-    private var groupManager: TabGroupManager
-    private var subscription: AnyCancellable? = nil
-    private var isPinnedSubscription: Set<AnyCancellable> = Set()
+    private var subscription: Set<AnyCancellable> = Set()
 
     private(set) var manager: TabManager
+    private(set) var normalRows: [Row] = []
+    private(set) var incognitoRows: [Row] = []
     private(set) var allDetails: [TabCardDetails] = []
     private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
+    var columnCount: Int = 2 {
+        didSet {
+            updateRows()
+        }
+    }
+
+    // Tab Group related members
+    private(set) var representativeTabs: [Tab] = []
+    private(set) var allTabGroupDetails: [TabGroupCardDetails] = []
 
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
+    func updateRows() {
+        incognitoRows = buildRows(incognito: true)
+        normalRows = buildRows(incognito: false)
+
+        // Defer signaling until after we have finished updating. This way our state is
+        // completely consistent with TabManager prior to accessing allDetails, etc.
+        self.objectWillChange.send()
+    }
+
     var normalDetails: [TabCardDetails] {
         allDetails.filter {
-            manager.get(for: $0.id)?.isIncognito == false
+            $0.tab.isIncognito == false
         }
     }
 
     var incognitoDetails: [TabCardDetails] {
         allDetails.filter {
-            manager.get(for: $0.id)?.isIncognito == true
+            $0.tab.isIncognito == true
         }
     }
 
-    init(manager: TabManager, groupManager: TabGroupManager) {
+    init(manager: TabManager) {
         self.manager = manager
-        self.groupManager = groupManager
-        self.subscription = manager.tabsUpdatedPublisher.filter({ [weak self] in
+
+        manager.tabsUpdatedPublisher.filter({ [weak self] in
             self?.manager.didRestoreAllTabs ?? false
         }).sink { [weak self] in
             self?.onDataUpdated()
-        }
+        }.store(in: &subscription)
+
+        _tabGroupExpanded.publisher.sink { [weak self] _ in
+            self?.updateRows()
+        }.store(in: &subscription)
     }
 
     struct Row: Identifiable {
@@ -109,29 +131,19 @@ class TabCardModel: CardModel {
         var multipleCellTypes: Bool = false
     }
 
-    func buildRows(incognito: Bool, tabGroupModel: TabGroupCardModel, maxCols: Int) -> [Row] {
-        // When the number of tabs in a tab group decreases and makes the group
-        // unable to expand, we remove the group from the expanded list. A side-effect
-        // of this resolves a problem where TabGroupHeader doesn't hide arrows button
-        // when the number of tabs drops below maxCols.
-        tabGroupExpanded.forEach { groupID in
-            if let tabGroup = tabGroupModel.allDetails.first(where: { groupID == $0.id }),
-                tabGroup.allDetails.count <= maxCols
-            {
-                tabGroupExpanded.remove(groupID)
-            }
-        }
+    func buildRows(incognito: Bool) -> [Row] {
 
-        var partialResult: [Row] = []
+        var rows: [Row] = []
+
         var allDetailsFiltered = allDetails.filter { tabCard in
-            let tab = tabCard.manager.get(for: tabCard.id)!
+            let tab = tabCard.tab
             return
-                (tabGroupModel.representativeTabs.contains(tab)
+                (representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
                 && tab.isIncognito == incognito
         }
 
-        modifyAllDetailsFilteredPromotingPinnedTabs(&allDetailsFiltered, tabGroupModel)
+        modifyAllDetailsFilteredPromotingPinnedTabs(&allDetailsFiltered)
 
         let lastPinnedIndex = allDetailsFiltered.lastIndex(where: { $0.isPinned })
 
@@ -145,12 +157,12 @@ class TabCardModel: CardModel {
             var didPromote = false
             var id = index
 
-            while id < allDetailsFiltered.count && row.numTabsInRow < maxCols {
+            while id < allDetailsFiltered.count && row.numTabsInRow < columnCount {
                 let details = allDetailsFiltered[id]
 
                 // don't promote non-pinned tabs if we're still in pinned section
                 if let lastPinnedIndex = lastPinnedIndex {
-                    if let tabGroup = tabGroupModel.allDetails.first(where: {
+                    if let tabGroup = allTabGroupDetails.first(where: {
                         $0.id == currDetail.rootID
                     }), tabGroup.isPinned && index > lastPinnedIndex {
                         return
@@ -160,12 +172,11 @@ class TabCardModel: CardModel {
                     }
                 }
 
-                if let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == details.rootID })
-                {
+                if let tabGroup = allTabGroupDetails.first(where: { $0.id == details.rootID }) {
                     // Expanded tab group won't get promoted
                     if !tabGroup.isExpanded
                         && (tabGroup.allDetails.count + row.numTabsInRow)
-                            <= maxCols
+                            <= columnCount
                     {
                         row.cells.append(.tabGroupInline(tabGroup))
                         didPromote = true
@@ -190,77 +201,77 @@ class TabCardModel: CardModel {
 
         for (index, details) in allDetailsFiltered.enumerated() {
             if processed[index] { continue }
-            let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == details.rootID })
-            if partialResult.isEmpty || partialResult.last!.numTabsInRow >= maxCols
+            let tabGroup = allTabGroupDetails.first(where: { $0.id == details.rootID })
+            if rows.isEmpty || rows.last!.numTabsInRow >= columnCount
                 || tabGroup != nil
             {
                 if let tabGroup = tabGroup {
                     if tabGroup.isExpanded {
                         // Perform lookahead before we insert a new row.
-                        if !partialResult.isEmpty {
+                        if !rows.isEmpty {
                             PromoteCellsAfterIndex(
                                 currDetail: allDetailsFiltered[index],
-                                row: &partialResult[partialResult.endIndex - 1], index: index + 1)
+                                row: &rows[rows.endIndex - 1], index: index + 1)
                         }
                         // tabGroupGridRow always occupies a row by itself.
-                        for index in stride(from: 0, to: tabGroup.allDetails.count, by: maxCols) {
-                            var max = index + maxCols
+                        for index in stride(
+                            from: 0, to: tabGroup.allDetails.count, by: columnCount)
+                        {
+                            var max = index + columnCount
                             if max > tabGroup.allDetails.count {
                                 max = tabGroup.allDetails.count
                             }
                             let range = index..<max
-                            partialResult.append(
+                            rows.append(
                                 Row(cells: [Row.Cell.tabGroupGridRow(tabGroup, range)]))
                         }
                     } else {
                         // If there's enough remaining columns, fit the tab group in the same row with individual tabs.
                         // Otherwise, build a horizontal scroll view in the next row.
-                        if (tabGroup.allDetails.count + (partialResult.last?.numTabsInRow ?? 0))
-                            <= maxCols && !partialResult.isEmpty
+                        if (tabGroup.allDetails.count + (rows.last?.numTabsInRow ?? 0))
+                            <= columnCount && !rows.isEmpty
                             && !(!details.isPinned && allDetailsFiltered[index - 1].isPinned)
                         {
-                            partialResult[partialResult.endIndex - 1].cells.append(
+                            rows[rows.endIndex - 1].cells.append(
                                 .tabGroupInline(tabGroup))
-                            partialResult[partialResult.endIndex - 1].multipleCellTypes = true
+                            rows[rows.endIndex - 1].multipleCellTypes = true
                         } else {
                             // Perform lookahead before we insert a new row.
-                            if !partialResult.isEmpty {
+                            if !rows.isEmpty {
                                 PromoteCellsAfterIndex(
                                     currDetail: allDetailsFiltered[index],
-                                    row: &partialResult[partialResult.endIndex - 1],
+                                    row: &rows[rows.endIndex - 1],
                                     index: index + 1)
                             }
-                            partialResult.append(
+                            rows.append(
                                 Row(cells: [Row.Cell.tabGroupInline(tabGroup)]))
                         }
                     }
                 } else {
-                    partialResult.append(Row(cells: [.tab(details)]))
+                    rows.append(Row(cells: [.tab(details)]))
                 }
                 // Insert a new row (following expanded tab group) for individual tabs
                 if tabGroup != nil && tabGroup!.isExpanded {
-                    partialResult.append(Row(cells: []))
+                    rows.append(Row(cells: []))
                 }
             } else {
-                partialResult[partialResult.endIndex - 1].cells.append(.tab(details))
-                partialResult[partialResult.endIndex - 1].multipleCellTypes = true
+                rows[rows.endIndex - 1].cells.append(.tab(details))
+                rows[rows.endIndex - 1].multipleCellTypes = true
             }
         }
 
-        partialResult = partialResult.filter {
+        rows = rows.filter {
             !$0.cells.isEmpty
         }
 
-        for id in 0..<partialResult.count {
-            partialResult[id].index = id + 1
+        for id in 0..<rows.count {
+            rows[id].index = id + 1
         }
 
-        return partialResult
+        return rows
     }
 
     func onDataUpdated() {
-        groupManager.updateTabGroups()
-
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
 
@@ -269,21 +280,38 @@ class TabCardModel: CardModel {
         }
 
         allDetailsWithExclusionList = manager.getAll().filter {
-            !groupManager.childTabs.contains($0)
+            !manager.childTabs.contains($0)
         }
         .map { TabCardDetails(tab: $0, manager: manager) }
 
-        // Defer signaling until after we have finished updating. This way our state is
-        // completely consistent with TabManager prior to accessing allDetails, etc.
-        objectWillChange.send()
+        // Tab Group related updates
+        representativeTabs = manager.getAllTabGroup()
+            .reduce(into: [Tab]()) { $0.append($1.children.first!) }
+        allTabGroupDetails = manager.getAllTabGroup().map {
+            TabGroupCardDetails(tabGroup: $0, tabManager: manager)
+        }
+
+        // When the number of tabs in a tab group decreases and makes the group
+        // unable to expand, we remove the group from the expanded list. A side-effect
+        // of this resolves a problem where TabGroupHeader doesn't hide arrows button
+        // when the number of tabs drops below columnCount.
+        tabGroupExpanded.forEach { groupID in
+            if let tabGroup = allTabGroupDetails.first(where: { groupID == $0.id }),
+                tabGroup.allDetails.count <= columnCount
+            {
+                tabGroupExpanded.remove(groupID)
+            }
+        }
+
+        updateRows()
     }
 
     private func modifyAllDetailsFilteredPromotingPinnedTabs(
-        _ allDetailsFiltered: inout [TabCardDetails], _ tabGroupModel: TabGroupCardModel
+        _ allDetailsFiltered: inout [TabCardDetails]
     ) {
         allDetailsFiltered = allDetailsFiltered.sorted(by: { lhs, rhs in
-            let lhsPinnedTime = findDetailPinnedTime(lhs, tabGroupModel)
-            let rhsPinnedTime = findDetailPinnedTime(rhs, tabGroupModel)
+            let lhsPinnedTime = findDetailPinnedTime(lhs)
+            let rhsPinnedTime = findDetailPinnedTime(rhs)
             if lhsPinnedTime == nil && rhsPinnedTime != nil {
                 return false
             } else if lhsPinnedTime != nil && rhsPinnedTime == nil {
@@ -295,10 +323,10 @@ class TabCardModel: CardModel {
         })
     }
 
-    private func findDetailPinnedTime(_ detail: TabCardDetails, _ tabGroupModel: TabGroupCardModel)
+    private func findDetailPinnedTime(_ detail: TabCardDetails)
         -> Double?
     {
-        if let tabGroup = tabGroupModel.allDetails.first(where: { $0.id == detail.rootID }) {
+        if let tabGroup = allTabGroupDetails.first(where: { $0.id == detail.rootID }) {
             return tabGroup.pinnedTime
         } else {
             return detail.pinnedTime
@@ -315,7 +343,7 @@ class TabCardModel: CardModel {
 
     func rearrangeAllDetails(fromIndex: Int, toIndex: Int) {
         allDetails.rearrange(from: fromIndex, to: toIndex)
-        self.objectWillChange.send()
+        updateRows()
     }
 }
 
@@ -683,47 +711,4 @@ class SiteCardModel: CardModel {
     }
 
     func onDataUpdated() {}
-}
-
-class TabGroupCardModel: CardModel {
-    private var screenshotsSubscriptions: Set<AnyCancellable> = Set()
-    private var stateNeedsRefresh = false
-    private var subscriptions: Set<AnyCancellable> = Set()
-
-    private(set) var manager: TabGroupManager
-    private(set) var allDetails: [TabGroupCardDetails] = [] {
-        didSet {
-            allDetailsWithExclusionList = allDetails
-        }
-    }
-    private(set) var allDetailsWithExclusionList: [TabGroupCardDetails] = []
-    private(set) var representativeTabs: [Tab] = []
-
-    @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
-
-    init(manager: TabGroupManager) {
-        self.manager = manager
-
-        onDataUpdated()
-
-        _tabGroupExpanded.publisher.sink { [weak self] _ in
-            self?.objectWillChange.send()
-        }.store(in: &subscriptions)
-
-        manager.objectWillChange.receive(on: DispatchQueue.main).sink { [weak self] in
-            if manager.tabManager.didRestoreAllTabs {
-                self?.onDataUpdated()
-            }
-        }.store(in: &subscriptions)
-    }
-
-    func onDataUpdated() {
-        representativeTabs = manager.getAll()
-            .reduce(into: [Tab]()) { $0.append($1.children.first!) }
-        allDetails = manager.getAll().map {
-            TabGroupCardDetails(tabGroup: $0, tabGroupManager: manager)
-        }
-        manager.cleanUpTabGroupNames()
-        objectWillChange.send()
-    }
 }

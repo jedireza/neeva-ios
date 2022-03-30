@@ -6914,7 +6914,7 @@ public final class ReportDomainTrustSignalMutation: GraphQLMutation {
   public let operationDefinition: String =
     """
     mutation ReportDomainTrustSignal($input: ReportDomainTrustSignalInput!) {
-      reportDomainTrustSignal(input: $input) {
+      xyzReportDomainTrustSignal(input: $input) {
         __typename
         success
       }
@@ -6923,7 +6923,7 @@ public final class ReportDomainTrustSignalMutation: GraphQLMutation {
 
   public let operationName: String = "ReportDomainTrustSignal"
 
-  public let operationIdentifier: String? = "58a10da0aae8466de03bfea1c56cd1a68858fde019b71d773e18532dd2bd6cd3"
+  public let operationIdentifier: String? = "04a134b9efa4f74e9d39587a7fcc88cef1de531c84a46e89a8f4d3e8354bbd5e"
 
   public var input: ReportDomainTrustSignalInput
 
@@ -6940,7 +6940,7 @@ public final class ReportDomainTrustSignalMutation: GraphQLMutation {
 
     public static var selections: [GraphQLSelection] {
       return [
-        GraphQLField("reportDomainTrustSignal", arguments: ["input": GraphQLVariable("input")], type: .object(ReportDomainTrustSignal.selections)),
+        GraphQLField("xyzReportDomainTrustSignal", arguments: ["input": GraphQLVariable("input")], type: .object(XyzReportDomainTrustSignal.selections)),
       ]
     }
 
@@ -6950,21 +6950,21 @@ public final class ReportDomainTrustSignalMutation: GraphQLMutation {
       self.resultMap = unsafeResultMap
     }
 
-    public init(reportDomainTrustSignal: ReportDomainTrustSignal? = nil) {
-      self.init(unsafeResultMap: ["__typename": "Mutation", "reportDomainTrustSignal": reportDomainTrustSignal.flatMap { (value: ReportDomainTrustSignal) -> ResultMap in value.resultMap }])
+    public init(xyzReportDomainTrustSignal: XyzReportDomainTrustSignal? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Mutation", "xyzReportDomainTrustSignal": xyzReportDomainTrustSignal.flatMap { (value: XyzReportDomainTrustSignal) -> ResultMap in value.resultMap }])
     }
 
-    /// reportDomainTrustSignal
-    public var reportDomainTrustSignal: ReportDomainTrustSignal? {
+    /// Same as reportDomainTrustSignal but for the xyz browser; doesn't require auth'd users
+    public var xyzReportDomainTrustSignal: XyzReportDomainTrustSignal? {
       get {
-        return (resultMap["reportDomainTrustSignal"] as? ResultMap).flatMap { ReportDomainTrustSignal(unsafeResultMap: $0) }
+        return (resultMap["xyzReportDomainTrustSignal"] as? ResultMap).flatMap { XyzReportDomainTrustSignal(unsafeResultMap: $0) }
       }
       set {
-        resultMap.updateValue(newValue?.resultMap, forKey: "reportDomainTrustSignal")
+        resultMap.updateValue(newValue?.resultMap, forKey: "xyzReportDomainTrustSignal")
       }
     }
 
-    public struct ReportDomainTrustSignal: GraphQLSelectionSet {
+    public struct XyzReportDomainTrustSignal: GraphQLSelectionSet {
       public static let possibleTypes: [String] = ["ReportDomainTrustSignalResponse"]
 
       public static var selections: [GraphQLSelection] {
@@ -7010,7 +7010,7 @@ public final class GetDomainTrustSignalsQuery: GraphQLQuery {
   public let operationDefinition: String =
     """
     query getDomainTrustSignals($input: DomainTrustSignalsInput!) {
-      domainTrustSignals(input: $input) {
+      xyzDomainTrustSignals(input: $input) {
         __typename
         domain
         signal
@@ -7020,7 +7020,7 @@ public final class GetDomainTrustSignalsQuery: GraphQLQuery {
 
   public let operationName: String = "getDomainTrustSignals"
 
-  public let operationIdentifier: String? = "87ddf623b789cb9cf03d4d68c205e3da2af81fd20a2555f8f3a794c598b8ec61"
+  public let operationIdentifier: String? = "d624526d21db75a28ed96c70a79cbdffa4c504a58c96e67603359b5b9f6eac56"
 
   public var input: DomainTrustSignalsInput
 
@@ -7037,7 +7037,7 @@ public final class GetDomainTrustSignalsQuery: GraphQLQuery {
 
     public static var selections: [GraphQLSelection] {
       return [
-        GraphQLField("domainTrustSignals", arguments: ["input": GraphQLVariable("input")], type: .list(.nonNull(.object(DomainTrustSignal.selections)))),
+        GraphQLField("xyzDomainTrustSignals", arguments: ["input": GraphQLVariable("input")], type: .list(.nonNull(.object(XyzDomainTrustSignal.selections)))),
       ]
     }
 
@@ -7047,21 +7047,21 @@ public final class GetDomainTrustSignalsQuery: GraphQLQuery {
       self.resultMap = unsafeResultMap
     }
 
-    public init(domainTrustSignals: [DomainTrustSignal]? = nil) {
-      self.init(unsafeResultMap: ["__typename": "Query", "domainTrustSignals": domainTrustSignals.flatMap { (value: [DomainTrustSignal]) -> [ResultMap] in value.map { (value: DomainTrustSignal) -> ResultMap in value.resultMap } }])
+    public init(xyzDomainTrustSignals: [XyzDomainTrustSignal]? = nil) {
+      self.init(unsafeResultMap: ["__typename": "Query", "xyzDomainTrustSignals": xyzDomainTrustSignals.flatMap { (value: [XyzDomainTrustSignal]) -> [ResultMap] in value.map { (value: XyzDomainTrustSignal) -> ResultMap in value.resultMap } }])
     }
 
-    /// Get trust signals for one or more domain
-    public var domainTrustSignals: [DomainTrustSignal]? {
+    /// Same as domainTrustSignals but for the xyz browser; doesn't require auth'd users
+    public var xyzDomainTrustSignals: [XyzDomainTrustSignal]? {
       get {
-        return (resultMap["domainTrustSignals"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [DomainTrustSignal] in value.map { (value: ResultMap) -> DomainTrustSignal in DomainTrustSignal(unsafeResultMap: value) } }
+        return (resultMap["xyzDomainTrustSignals"] as? [ResultMap]).flatMap { (value: [ResultMap]) -> [XyzDomainTrustSignal] in value.map { (value: ResultMap) -> XyzDomainTrustSignal in XyzDomainTrustSignal(unsafeResultMap: value) } }
       }
       set {
-        resultMap.updateValue(newValue.flatMap { (value: [DomainTrustSignal]) -> [ResultMap] in value.map { (value: DomainTrustSignal) -> ResultMap in value.resultMap } }, forKey: "domainTrustSignals")
+        resultMap.updateValue(newValue.flatMap { (value: [XyzDomainTrustSignal]) -> [ResultMap] in value.map { (value: XyzDomainTrustSignal) -> ResultMap in value.resultMap } }, forKey: "xyzDomainTrustSignals")
       }
     }
 
-    public struct DomainTrustSignal: GraphQLSelectionSet {
+    public struct XyzDomainTrustSignal: GraphQLSelectionSet {
       public static let possibleTypes: [String] = ["DomainTrustSignal"]
 
       public static var selections: [GraphQLSelection] {

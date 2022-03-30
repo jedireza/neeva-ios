@@ -98,7 +98,7 @@ struct PopoverView<Content: View>: View {
                     // 60 is button height + VStack padding
                     .frame(
                         minWidth: 400,
-                        maxWidth: geo.size.width - horizontalPadding,
+                        maxWidth: geo.size.width - (horizontalPadding * 2),
                         maxHeight: geo.size.height - verticalPadding - 60,
                         alignment: .center
                     )

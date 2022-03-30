@@ -32,4 +32,4 @@ else
   read
 fi
 
-git push origin "$TAG_NAME"
+git push origin "$TAG_NAME" --no-verify

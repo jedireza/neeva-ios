@@ -29,7 +29,6 @@ struct TabGridContainer: View {
     let scrollProxy: ScrollViewProxy
 
     @EnvironmentObject private var tabModel: TabCardModel
-    @EnvironmentObject private var tabGroupModel: TabGroupCardModel
     @EnvironmentObject private var gridModel: GridModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
@@ -41,17 +40,16 @@ struct TabGridContainer: View {
     @Environment(\.columns) private var columns
 
     var selectedRowId: TabCardModel.Row.ID? {
-        tabModel.buildRows(
-            incognito: isIncognito, tabGroupModel: tabGroupModel, maxCols: columns.count
-        )
-        .first { $0.cells.contains(where: \.isSelected) }?.id
+        isIncognito
+            ? tabModel.incognitoRows.first { $0.cells.contains(where: \.isSelected) }?.id
+            : tabModel.normalRows.first { $0.cells.contains(where: \.isSelected) }?.id
     }
 
     var selectedCardID: String? {
         if let details = tabModel.allDetailsWithExclusionList.first(where: \.isSelected) {
             return details.id
         }
-        if let details = tabGroupModel.allDetails.first(where: \.isSelected) {
+        if let details = tabModel.allTabGroupDetails.first(where: \.isSelected) {
             return details.id
         }
         return nil
@@ -112,7 +110,6 @@ struct CardsContainer: View {
     @Default(.seenSpacesIntro) var seenSpacesIntro: Bool
 
     @EnvironmentObject var tabModel: TabCardModel
-    @EnvironmentObject var tabGroupModel: TabGroupCardModel
     @EnvironmentObject var spacesModel: SpaceCardModel
     @EnvironmentObject var browserModel: BrowserModel
     @EnvironmentObject var gridModel: GridModel
