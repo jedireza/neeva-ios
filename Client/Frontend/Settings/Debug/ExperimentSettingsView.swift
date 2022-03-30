@@ -28,11 +28,6 @@ struct ExperimentSettingsView: View {
                 //    value: $valueText,
                 //    experiment: .defaultBrowserPromptV2
                 //)
-                OptionalPrefilledStringField<NeevaExperiment.DefaultBrowserInterstitialFirst>(
-                    "DefaultBrowserInterstitialFirst",
-                    value: $valueText,
-                    experiment: .defaultBrowserInterstitialFirst
-                )
             }
         }
         .listStyle(.insetGrouped)

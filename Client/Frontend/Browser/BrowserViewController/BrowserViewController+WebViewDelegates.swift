@@ -1036,30 +1036,6 @@ extension BrowserViewController: WKNavigationDelegate {
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 
-                if shouldLogDBPrompt
-                    && userInfo.hasLoginCookie()
-                {
-                    ClientLogger.shared.logCounter(
-                        .DefaultBrowserInterstitialImp
-                    )
-                    shouldLogDBPrompt = false
-                }
-
-                if let interactionStr = Defaults[.lastDefaultBrowserPromptInteraction],
-                    let interaction = LogConfig.Interaction(rawValue: interactionStr),
-                    userInfo.hasLoginCookie()
-                {
-                    ClientLogger.shared.logCounter(
-                        interaction,
-                        attributes: [
-                            ClientLogCounterAttribute(
-                                key: LogConfig.PromoCardAttribute.defaultBrowserInterstitialTrigger,
-                                value: OpenDefaultBrowserOnboardingTrigger.afterSignup.rawValue)
-                        ]
-                    )
-                    Defaults[.lastDefaultBrowserPromptInteraction] = nil
-                }
-
                 userInfo.updateLoginCookieFromWebKitCookieStore {
                     // We have a fresh login cookie.
                     Defaults[.signedInOnce] = true

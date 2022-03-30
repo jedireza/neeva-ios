@@ -233,24 +233,17 @@ struct DefaultBrowserInterstitialOnboardingView: View {
                 action: {
                     buttonAction()
                     didTakeAction = true
-                    if NeevaUserInfo.shared.hasLoginCookie()
-                        || trigger != .afterSignup
-                    {
-                        ClientLogger.shared.logCounter(
-                            .DefaultBrowserOnboardingInterstitialOpen,
-                            attributes: [
-                                ClientLogCounterAttribute(
-                                    key:
-                                        LogConfig.PromoCardAttribute
-                                        .defaultBrowserInterstitialTrigger,
-                                    value: trigger.rawValue
-                                )
-                            ]
-                        )
-                    } else {
-                        Defaults[.lastDefaultBrowserPromptInteraction] =
-                            LogConfig.Interaction.DefaultBrowserOnboardingInterstitialOpen.rawValue
-                    }
+                    ClientLogger.shared.logCounter(
+                        .DefaultBrowserOnboardingInterstitialOpen,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key:
+                                    LogConfig.PromoCardAttribute
+                                    .defaultBrowserInterstitialTrigger,
+                                value: trigger.rawValue
+                            )
+                        ]
+                    )
                 },
                 label: {
                     Text("Open Neeva Settings")
@@ -293,23 +286,16 @@ struct DefaultBrowserInterstitialOnboardingView: View {
 
     private func tapSkip() {
         skipAction()
-        if NeevaUserInfo.shared.hasLoginCookie()
-            || trigger != .afterSignup
-        {
-            ClientLogger.shared.logCounter(
-                .DefaultBrowserOnboardingInterstitialSkip,
-                attributes: [
-                    ClientLogCounterAttribute(
-                        key:
-                            LogConfig.PromoCardAttribute.defaultBrowserInterstitialTrigger,
-                        value: trigger.rawValue
-                    )
-                ]
-            )
-        } else {
-            Defaults[.lastDefaultBrowserPromptInteraction] =
-                LogConfig.Interaction.DefaultBrowserOnboardingInterstitialSkip.rawValue
-        }
+        ClientLogger.shared.logCounter(
+            .DefaultBrowserOnboardingInterstitialSkip,
+            attributes: [
+                ClientLogCounterAttribute(
+                    key:
+                        LogConfig.PromoCardAttribute.defaultBrowserInterstitialTrigger,
+                    value: trigger.rawValue
+                )
+            ]
+        )
     }
 }
 
