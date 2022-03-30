@@ -44,18 +44,6 @@ class TabCardModel: CardModel {
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     func updateRows() {
-        // When the number of tabs in a tab group decreases and makes the group
-        // unable to expand, we remove the group from the expanded list. A side-effect
-        // of this resolves a problem where TabGroupHeader doesn't hide arrows button
-        // when the number of tabs drops below columnCount.
-        tabGroupExpanded.forEach { groupID in
-            if let tabGroup = allTabGroupDetails.first(where: { groupID == $0.id }),
-                tabGroup.allDetails.count <= columnCount
-            {
-                tabGroupExpanded.remove(groupID)
-            }
-        }
-
         incognitoRows = buildRows(incognito: true)
         normalRows = buildRows(incognito: false)
 
@@ -86,7 +74,7 @@ class TabCardModel: CardModel {
         }.store(in: &subscription)
 
         _tabGroupExpanded.publisher.sink { [weak self] _ in
-            self?.objectWillChange.send()
+            self?.updateRows()
         }.store(in: &subscription)
     }
 
@@ -301,6 +289,18 @@ class TabCardModel: CardModel {
             .reduce(into: [Tab]()) { $0.append($1.children.first!) }
         allTabGroupDetails = manager.getAllTabGroup().map {
             TabGroupCardDetails(tabGroup: $0, tabManager: manager)
+        }
+
+        // When the number of tabs in a tab group decreases and makes the group
+        // unable to expand, we remove the group from the expanded list. A side-effect
+        // of this resolves a problem where TabGroupHeader doesn't hide arrows button
+        // when the number of tabs drops below columnCount.
+        tabGroupExpanded.forEach { groupID in
+            if let tabGroup = allTabGroupDetails.first(where: { groupID == $0.id }),
+                tabGroup.allDetails.count <= columnCount
+            {
+                tabGroupExpanded.remove(groupID)
+            }
         }
 
         updateRows()
