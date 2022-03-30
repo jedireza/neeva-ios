@@ -368,6 +368,29 @@ struct PlaceView: View {
                     Image(systemName: "doc.on.doc")
                 })
             }
+
+            // Phone number
+            if let phone = place.telephonePretty ?? place.telephone {
+                Divider()
+                    .padding(.vertical, 7)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Phone")
+                        .withFont(.headingMedium)
+                        .foregroundColor(.label)
+                    Button(action: {
+                        if let url = URL(string: "tel://\(phone)"),
+                           UIApplication.shared.canOpenURL(url) {
+                          UIApplication.shared.open(url)
+                        }
+                    }, label: {
+                        HStack {
+                            Text(phone)
+                                .withFont(.bodyMedium)
+                            Spacer()
+                        }
+                    })
+                }
+            }
         }
         .padding()
         .background(
