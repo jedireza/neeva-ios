@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import AdServices
 import Defaults
 import Foundation
 import Shared
@@ -139,10 +140,17 @@ public class EnvironmentHelper {
             key: LogConfig.Attribute.PreviewModeQueryCount,
             value: String(Defaults[.previewModeQueries].count))
 
-        let attributes = [
+        var attributes = [
             getSessionUUID(), isUserSignedIn, deviceTheme, deviceName, firstRunPath,
             previewQueryCount,
         ]
+
+        if #available(iOS 14.3, *), let token = try? AAAttribution.attributionToken() {
+            attributes.append(
+                ClientLogCounterAttribute(
+                    key: LogConfig.Attribute.AdServicesAttributionToken,
+                    value: token))
+        }
 
         return attributes
     }
