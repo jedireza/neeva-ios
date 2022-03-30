@@ -72,7 +72,8 @@ class CardTests: XCTestCase {
 
         profile = TabManagerMockProfile()
         manager = TabManager(profile: profile, imageStore: nil)
-        gridModel = GridModel(tabManager: manager)
+        tabCardModel = TabCardModel(manager: manager)
+        gridModel = GridModel(tabManager: manager, tabCardModel: tabCardModel)
         incognitoModel = IncognitoModel(isIncognito: false)
         switcherToolbarModel = SwitcherToolbarModel(
             tabManager: manager, openLazyTab: {}, createNewSpace: {}, onMenuAction: { _ in })
@@ -80,7 +81,6 @@ class CardTests: XCTestCase {
             gridModel: gridModel, tabManager: manager, chromeModel: .init(),
             incognitoModel: incognitoModel, switcherToolbarModel: switcherToolbarModel)
         manager.didRestoreAllTabs = true
-        tabCardModel = TabCardModel(manager: manager)
 
         SpaceStore.shared = .createMock([.stackOverflow, .savedForLater, .shared, .public])
         spaceCardModel = SpaceCardModel()
