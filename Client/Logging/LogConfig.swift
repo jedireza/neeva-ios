@@ -190,6 +190,8 @@ public struct LogConfig {
         case DefaultBrowserInterstitialImpSkipToBrowser
         /// Tap on Get started in welcome screen
         case GetStartedInWelcome
+        /// Resolved AdService attributionToken (if one exists)
+        case ResolvedAttributionToken
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -512,6 +514,7 @@ public struct LogConfig {
         case .OpenDefaultBrowserURL: return .FirstRun
         case .StartExperiment: return .FirstRun
         case .GetStartedInWelcome: return .FirstRun
+        case .ResolvedAttributionToken: return .FirstRun
 
         // MARK: - PromoCard
         case .PromoCardAppear: return .PromoCard
@@ -676,8 +679,6 @@ public struct LogConfig {
         public static let PreviewModeQueryCount = "PreviewModeQueryCount"
         /// Session UUID v2
         public static let SessionUUIDv2 = "SessionUUIDv2"
-        /// AdServices AAAttribution.attributionToken
-        public static let AdServicesAttributionToken = "AdServicesAttributionToken"
     }
 
     public struct UIInteractionAttribute {
