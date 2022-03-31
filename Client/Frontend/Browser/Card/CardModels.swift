@@ -150,19 +150,21 @@ class TabCardModel: CardModel {
 
     func filterTabByTime(tab: Tab, byTime: String) -> Bool {
         let lastExecutedTime = tab.lastExecutedTime ?? 0
-        let minusTenSecondsToCurrentDate = Calendar.current.date(byAdding: .second, value: -10, to: Date())
+        let minusTenSecondsToCurrentDate = Calendar.current.date(
+            byAdding: .second, value: -10, to: Date())
         guard let startOftenSecondsAgo = minusTenSecondsToCurrentDate else {
             return true
-        }        
-        if byTime == "Today" { // NOTE: FILTERS TABS ACTIVE 10 SECONDS AGO
-            return lastExecutedTime > Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000)
         }
-        else if byTime == "Last Week" {
-            let minusOneDayToCurrentDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
+        if byTime == "Today" {  // NOTE: FILTERS TABS ACTIVE 10 SECONDS AGO
+            return lastExecutedTime > Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000)
+        } else if byTime == "Last Week" {
+            let minusOneDayToCurrentDate = Calendar.current.date(
+                byAdding: .day, value: -1, to: Date())
             guard let startOfLastDay = minusOneDayToCurrentDate else {
                 return true
             }
-            return lastExecutedTime < Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000) && lastExecutedTime > Int64(startOfLastDay.timeIntervalSince1970 * 1000)
+            return lastExecutedTime < Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000)
+                && lastExecutedTime > Int64(startOfLastDay.timeIntervalSince1970 * 1000)
         }
         print(">>> SHOULD NOT REACH HERE")
         return true

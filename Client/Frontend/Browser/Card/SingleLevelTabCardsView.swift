@@ -22,7 +22,7 @@ struct SingleLevelTabCardsView: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject private var browserModel: BrowserModel
     @Environment(\.columns) private var columns
-    
+
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.verticalSizeClass) private var verticalSizeClass
 
@@ -43,7 +43,9 @@ struct SingleLevelTabCardsView: View {
                         .foregroundColor(.label)
                         .padding(.leading, 20)
                         .padding(.top, 12)
-                    timeLineCardsView(containerGeometry: containerGeometry, incognito: incognito, time: time.rawValue)
+                    timeLineCardsView(
+                        containerGeometry: containerGeometry, incognito: incognito,
+                        time: time.rawValue)
                     //gettimeLineCardsView(time: time.rawValue)
                 }
                 Spacer()
