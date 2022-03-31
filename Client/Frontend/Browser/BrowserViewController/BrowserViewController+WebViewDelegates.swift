@@ -499,6 +499,7 @@ extension BrowserViewController: WKNavigationDelegate {
 
         showModal(style: .grouped) {
             OpenInAppOverlayContent(url: url)
+                .environment(\.hideOverlay, { self.overlayManager.hideCurrentOverlay() })
         }
     }
 

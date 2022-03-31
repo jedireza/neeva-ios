@@ -19,6 +19,7 @@ struct OpenInAppOverlayContent: View {
             },
             onCancel: hideOverlay
         )
+        .padding(.bottom)
         .overlayIsFixedHeight(isFixedHeight: true)
     }
 }
