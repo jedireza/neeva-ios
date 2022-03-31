@@ -28,7 +28,9 @@ class TabCardModel: CardModel {
 
     private(set) var manager: TabManager
     private(set) var normalRows: [Row] = []
+    private(set) var normalRowsLastWeek: [Row] = []
     private(set) var incognitoRows: [Row] = []
+    private(set) var incognitoRowsLastWeek: [Row] = []
     private(set) var allDetails: [TabCardDetails] = []
     private(set) var allDetailsWithExclusionList: [TabCardDetails] = []
     var columnCount: Int = 2 {
@@ -44,12 +46,27 @@ class TabCardModel: CardModel {
     @Default(.tabGroupExpanded) private var tabGroupExpanded: Set<String>
 
     func updateRows() {
-        incognitoRows = buildRows(incognito: true)
-        normalRows = buildRows(incognito: false)
+        incognitoRows = buildRows(incognito: true, byTime: "Today")
+        incognitoRowsLastWeek = buildRows(incognito: true, byTime: "Last Week")
+        normalRows = buildRows(incognito: false, byTime: "Today")
+        normalRowsLastWeek = buildRows(incognito: false, byTime: "Last Week")
 
         // Defer signaling until after we have finished updating. This way our state is
         // completely consistent with TabManager prior to accessing allDetails, etc.
         self.objectWillChange.send()
+    }
+
+    func getRows(incognito: Bool, byTime: String) -> [Row] {
+        if incognito && byTime == "Today" {
+            return incognitoRows
+        } else if incognito && byTime == "Last Week" {
+            return incognitoRowsLastWeek
+        } else if !incognito && byTime == "Today" {
+            return normalRows
+        } else if !incognito && byTime == "Last Week" {
+            return normalRowsLastWeek
+        }
+        return []
     }
 
     var normalDetails: [TabCardDetails] {
@@ -131,7 +148,28 @@ class TabCardModel: CardModel {
         var multipleCellTypes: Bool = false
     }
 
-    func buildRows(incognito: Bool) -> [Row] {
+    func filterTabByTime(tab: Tab, byTime: String) -> Bool {
+        let lastExecutedTime = tab.lastExecutedTime ?? 0
+        let minusTenSecondsToCurrentDate = Calendar.current.date(byAdding: .second, value: -10, to: Date())
+        guard let startOftenSecondsAgo = minusTenSecondsToCurrentDate else {
+            return true
+        }
+        print(">>> tab is \(tab.title), lastExecutedTime is \(lastExecutedTime), Int64(startOfFiveSecondsAgo.timeIntervalSince1970 * 1000 is \(Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000))")
+        if byTime == "Today" { // NOTE: FILTERS TABS ACTIVE 10 SECONDS AGO
+            return lastExecutedTime > Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000)
+        }
+        else if byTime == "Last Week" {
+            let minusOneDayToCurrentDate = Calendar.current.date(byAdding: .day, value: -1, to: Date())
+            guard let startOfLastDay = minusOneDayToCurrentDate else {
+                return true
+            }
+            return lastExecutedTime < Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000) && lastExecutedTime > Int64(startOfLastDay.timeIntervalSince1970 * 1000)
+        }
+        print(">>> SHOULD NOT REACH HERE")
+        return true
+    }
+
+    func buildRows(incognito: Bool, byTime: String) -> [Row] {
 
         var rows: [Row] = []
 
@@ -141,6 +179,7 @@ class TabCardModel: CardModel {
                 (representativeTabs.contains(tab)
                 || allDetailsWithExclusionList.contains { $0.id == tabCard.id })
                 && tab.isIncognito == incognito
+                && filterTabByTime(tab: tab, byTime: byTime)
         }
 
         modifyAllDetailsFilteredPromotingPinnedTabs(&allDetailsFiltered)

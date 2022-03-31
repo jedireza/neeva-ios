@@ -13,17 +13,47 @@ enum SingleLevelTabCardsViewUX {
     static let TabGroupCarouselTabSpacing: CGFloat = 12
 }
 
+enum TimeFilter: String, CaseIterable {
+    case today = "Today"
+    case lastWeek = "Last Week"
+}
+
 struct SingleLevelTabCardsView: View {
     @EnvironmentObject var tabModel: TabCardModel
     @EnvironmentObject private var browserModel: BrowserModel
     @Environment(\.columns) private var columns
+    
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    var landscapeMode: Bool {
+        verticalSizeClass == .compact || horizontalSizeClass == .regular
+    }
 
     let containerGeometry: GeometryProxy
     let incognito: Bool
 
     var body: some View {
-        ForEach(
-            incognito ? tabModel.incognitoRows : tabModel.normalRows
+        ForEach(TimeFilter.allCases, id: \.self) { time in
+            HStack {
+                VStack(alignment: .leading) {
+                    Text(time.rawValue)
+                        .withFont(.labelLarge)
+                        .foregroundColor(.label)
+                        .padding(.leading, 20)
+                        .padding(.top, 12)
+                    gettimeLineCardsView(time: time.rawValue)
+                }
+                Spacer()
+            }
+            .background(Color.background)
+        }
+        .padding(.top, 8)
+    }
+
+    func gettimeLineCardsView(time: String) -> some View {
+        return ForEach(
+            tabModel.getRows(incognito: incognito, byTime: time)
         ) { row in
             HStack(spacing: CardGridUX.GridSpacing) {
                 ForEach(row.cells) { details in
