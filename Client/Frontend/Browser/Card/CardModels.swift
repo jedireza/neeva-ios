@@ -153,8 +153,7 @@ class TabCardModel: CardModel {
         let minusTenSecondsToCurrentDate = Calendar.current.date(byAdding: .second, value: -10, to: Date())
         guard let startOftenSecondsAgo = minusTenSecondsToCurrentDate else {
             return true
-        }
-        print(">>> tab is \(tab.title), lastExecutedTime is \(lastExecutedTime), Int64(startOfFiveSecondsAgo.timeIntervalSince1970 * 1000 is \(Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000))")
+        }        
         if byTime == "Today" { // NOTE: FILTERS TABS ACTIVE 10 SECONDS AGO
             return lastExecutedTime > Int64(startOftenSecondsAgo.timeIntervalSince1970 * 1000)
         }
@@ -311,6 +310,7 @@ class TabCardModel: CardModel {
     }
 
     func onDataUpdated() {
+        // print(">>> cardModel.onDataUpdated()")
         allDetails = manager.getAll()
             .map { TabCardDetails(tab: $0, manager: manager) }
 

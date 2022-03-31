@@ -34,6 +34,7 @@ struct SingleLevelTabCardsView: View {
     let incognito: Bool
 
     var body: some View {
+        // let _ = debugCount("SingleLevelTabCardsView.body")
         ForEach(TimeFilter.allCases, id: \.self) { time in
             HStack {
                 VStack(alignment: .leading) {
@@ -42,7 +43,8 @@ struct SingleLevelTabCardsView: View {
                         .foregroundColor(.label)
                         .padding(.leading, 20)
                         .padding(.top, 12)
-                    gettimeLineCardsView(time: time.rawValue)
+                    timeLineCardsView(containerGeometry: containerGeometry, incognito: incognito, time: time.rawValue)
+                    //gettimeLineCardsView(time: time.rawValue)
                 }
                 Spacer()
             }
@@ -53,6 +55,74 @@ struct SingleLevelTabCardsView: View {
 
     func gettimeLineCardsView(time: String) -> some View {
         return ForEach(
+            tabModel.getRows(incognito: incognito, byTime: time)
+        ) { row in
+            HStack(spacing: CardGridUX.GridSpacing) {
+                ForEach(row.cells) { details in
+                    switch details {
+                    case .tabGroupInline(let groupDetails):
+                        CollapsedCardGroupView(
+                            groupDetails: groupDetails, containerGeometry: containerGeometry,
+                            rowIndex: row.index,
+                            nextToCells: row.multipleCellTypes
+                        )
+                        .padding(.horizontal, -CardGridUX.GridSpacing)
+                        .padding(.bottom, CardGridUX.GridSpacing)
+                        .zIndex(groupDetails.allDetails.contains(where: \.isSelected) ? 1 : 0)
+                    case .tabGroupGridRow(let groupDetails, let range):
+                        ExpandedCardGroupRowView(
+                            groupDetails: groupDetails, containerGeometry: containerGeometry,
+                            range: range, rowIndex: row.index, nextToCells: false
+                        )
+                        .padding(.horizontal, -CardGridUX.GridSpacing)
+                        .padding(
+                            .bottom,
+                            lastRowTabGroup(range, groupDetails) ? CardGridUX.GridSpacing : 0)
+                    case .tab(let tabDetails):
+                        FittedCard(details: tabDetails)
+                            .modifier(
+                                CardTransitionModifier(
+                                    details: tabDetails, containerGeometry: containerGeometry)
+                            )
+                            .padding(.bottom, CardGridUX.GridSpacing)
+                            .environment(\.selectionCompletion) {
+                                ClientLogger.shared.logCounter(
+                                    .SelectTab,
+                                    attributes: getLogCounterAttributesForTabs(
+                                        selectedTabRow: row.index))
+                                browserModel.hideWithAnimation()
+                            }
+                    }
+                }
+            }
+            .padding(.horizontal, CardGridUX.GridSpacing)
+            .zIndex(row.cells.contains(where: \.isSelected) ? 1 : 0)
+        }
+    }
+
+    func lastRowTabGroup(_ rowInfo: Range<Int>, _ groupDetails: TabGroupCardDetails) -> Bool {
+        return rowInfo.last == groupDetails.allDetails.count - 1
+    }
+}
+
+struct timeLineCardsView: View {
+    @EnvironmentObject var tabModel: TabCardModel
+    @EnvironmentObject private var browserModel: BrowserModel
+    @Environment(\.columns) private var columns
+
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
+
+    var landscapeMode: Bool {
+        verticalSizeClass == .compact || horizontalSizeClass == .regular
+    }
+
+    let containerGeometry: GeometryProxy
+    let incognito: Bool
+    let time: String
+    var body: some View {
+        // let _ = debugCount("TimeLineCardsView.body")
+        ForEach(
             tabModel.getRows(incognito: incognito, byTime: time)
         ) { row in
             HStack(spacing: CardGridUX.GridSpacing) {
