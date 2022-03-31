@@ -51,7 +51,6 @@ struct CardGridBackground: View {
                             withAnimation(CardTransitionUX.animation) {
                                 let showGrid =
                                     (cardTransitionModel.state == .visibleForTrayShow)
-
                                 if browserModel.showGrid != showGrid {
                                     browserModel.showGrid = showGrid
                                 }
