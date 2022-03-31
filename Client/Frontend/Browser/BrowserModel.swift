@@ -7,7 +7,7 @@ import Shared
 import SwiftUI
 
 class BrowserModel: ObservableObject {
-    @Published var showGrid = false {
+    var showGrid = false {
         didSet {
             if showGrid {
                 // Ensures toolbars are visible when user closes from the CardGrid.
@@ -18,6 +18,7 @@ class BrowserModel: ObservableObject {
                 // properly completed.
                 switcherToolbarModel.dragOffset = nil
             }
+            objectWillChange.send()
         }
     }
 
