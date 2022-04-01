@@ -119,7 +119,7 @@ class TPStatsBlocklists {
         // keeping in mind the stats can't distinguish block vs cookie-block,
         // only that an url did or didn't match.
         for blockListFile in [
-            BlocklistFileName.easyPrivacy,
+            NeevaConstants.currentTarget == .xyz ? BlocklistFileName.easyPrivacyWeb3 : BlocklistFileName.easyPrivacy,
             ] {
             let list: [[String: AnyObject]]
             do {

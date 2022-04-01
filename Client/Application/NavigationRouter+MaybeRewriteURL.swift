@@ -300,7 +300,7 @@ extension NavigationPath {
     }
 
     public static func maybeRewriteURL(_ url: URL, _ components: URLComponents) -> URL? {
-        if FeatureFlag[.web3Mode], url.scheme == "ipfs" {
+        if NeevaConstants.currentTarget == .xyz, url.scheme == "ipfs" {
             let urlString = url.absoluteString.replacingOccurrences(
                 of: "ipfs://", with: "https://cloudflare-ipfs.com/ipfs/")
             return URL(string: urlString)
