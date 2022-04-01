@@ -23,10 +23,7 @@ extension Defaults.Keys {
 }
 
 class CookieCutterModel: ObservableObject {
-    let toastViewManager: ToastViewManager
-
-    @Environment(\.presentationMode) var presentationMode
-
+    @Published var cookieNoticeStateShouldReset = false
     @Published var cookieNotices: CookieNotices {
         didSet {
             guard cookieNotices != oldValue else {
@@ -65,12 +62,11 @@ class CookieCutterModel: ObservableObject {
             && !analyticCookiesAllowed
             && !socialCookiesAllowed
         {
-            cookieNotices = .declineNonEssential
+            cookieNoticeStateShouldReset = true
         }
     }
 
-    init(toastViewManager: ToastViewManager) {
-        self.toastViewManager = toastViewManager
+    init() {
         self.cookieNotices = Defaults[.cookieNotices]
     }
 }

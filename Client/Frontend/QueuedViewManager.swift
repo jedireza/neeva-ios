@@ -133,6 +133,6 @@ extension QueuedViewManager: BannerViewDelegate {
     }
 
     func dismiss() {
-        dismissCurrentView(animate: false)
+        dismissCurrentView()
     }
 }

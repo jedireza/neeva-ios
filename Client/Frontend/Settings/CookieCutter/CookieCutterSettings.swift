@@ -73,7 +73,6 @@ struct CookieCutterSettings: View {
 struct CookieCutterSettings_Previews: PreviewProvider {
     static var previews: some View {
         CookieCutterSettings()
-            .environmentObject(
-                CookieCutterModel(toastViewManager: ToastViewManager(window: UIWindow())))
+            .environmentObject(CookieCutterModel())
     }
 }

@@ -16,6 +16,17 @@ struct OverlayView: View {
     @State var keyboardHidden = true
     @State var presentSheet = false
 
+    var limitToOverlayType: [OverlayType]?
+    var canDisplay: Bool {
+        if let limitToOverlayType = limitToOverlayType,
+            let currentOverlay = overlayManager.currentOverlay
+        {
+            return limitToOverlayType.contains(currentOverlay)
+        }
+
+        return true
+    }
+
     var isSheet: Bool {
         if let currentOverlay = overlayManager.currentOverlay,
             case OverlayType.sheet(_) = currentOverlay
@@ -95,7 +106,13 @@ struct OverlayView: View {
                     overlayManager.offsetForBottomBar && !chromeModel.inlineToolbar
                         && !chromeModel.keyboardShowing
                         ? chromeModel.bottomBarHeight - scrollingControlModel.footerBottomOffset
-                        : 0)
+                        : 0
+                )
+                .onChange(of: canDisplay) { value in
+                    if !value {
+                        overlayManager.hideCurrentOverlay()
+                    }
+                }
         }
     }
 }

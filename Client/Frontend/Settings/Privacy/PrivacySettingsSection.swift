@@ -63,8 +63,7 @@ struct PrivacySettingsSection: View {
             NavigationLink(
                 "Cookie Cutter",
                 destination: CookieCutterSettings()
-                    .environmentObject(
-                        CookieCutterModel(toastViewManager: browserModel.toastViewManager))
+                    .environmentObject(CookieCutterModel())
             )
         }
 
