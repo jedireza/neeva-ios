@@ -181,8 +181,8 @@ struct WalletDashboard: View {
                     UIPasteboard.general.setValue(
                         Defaults[.cryptoPublicKey],
                         forPasteboardType: kUTTypePlainText as String)
-                    if let toastManager = model.selectedTab?.browserViewController?
-                        .getSceneDelegate()?.toastViewManager
+
+                    if let toastManager = model.selectedTab?.browserViewController?.toastViewManager
                     {
                         hideOverlay()
                         toastManager.makeToast(text: "Address copied to clipboard")

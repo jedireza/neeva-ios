@@ -9,7 +9,9 @@ import SwiftUI
 struct PrivacySettingsSection: View {
     @Default(.closeIncognitoTabs) var closeIncognitoTabs
     @Default(.contentBlockingEnabled) private var contentBlockingEnabled
+
     @Environment(\.onOpenURL) var openURL
+    @EnvironmentObject var browserModel: BrowserModel
 
     var body: some View {
         NavigationLink(
@@ -60,7 +62,10 @@ struct PrivacySettingsSection: View {
         if FeatureFlag[.cookieCutter] {
             NavigationLink(
                 "Cookie Cutter",
-                destination: CookieCutterSettings().environmentObject(CookieCutterModel()))
+                destination: CookieCutterSettings()
+                    .environmentObject(
+                        CookieCutterModel(toastViewManager: browserModel.toastViewManager))
+            )
         }
 
         NavigationLinkButton("Privacy Policy") {

@@ -122,6 +122,7 @@ class SettingsViewController: UIHostingController<AnyView> {
                     } onDismiss: {
                     }
                 }
+                .environmentObject(bvc.browserModel)
         )
     }
 

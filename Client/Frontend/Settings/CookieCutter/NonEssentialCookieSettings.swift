@@ -51,6 +51,7 @@ struct NonEssentialCookieSettings: View {
 struct NonEssentialCookieSettings_Previews: PreviewProvider {
     static var previews: some View {
         NonEssentialCookieSettings()
-            .environmentObject(CookieCutterModel())
+            .environmentObject(
+                CookieCutterModel(toastViewManager: ToastViewManager(window: UIWindow())))
     }
 }

@@ -115,14 +115,10 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
         self.web3Model.updateCurrentSession()
         Defaults[.dAppsSession(session.dAppInfo.peerId)] = nil
         Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
-        DispatchQueue.main.async {
-            if let toastManager = self.getSceneDelegate()?.toastViewManager {
-                toastManager.makeToast(
-                    text:
-                        "Disconnected from \(session.dAppInfo.peerMeta.name)"
-                )
-                .enqueue(manager: toastManager)
-            }
+        DispatchQueue.main.async { [self] in
+            toastViewManager.makeToast(
+                text: "Disconnected from \(session.dAppInfo.peerMeta.name)"
+            ).enqueue(manager: toastViewManager)
         }
     }
 

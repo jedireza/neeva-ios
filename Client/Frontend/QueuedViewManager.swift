@@ -11,7 +11,7 @@ public enum QueuedViewLocation {
     case last
 }
 
-open class QueuedViewManager<View: SwiftUI.View> {
+open class QueuedViewManager<View: SwiftUI.View>: ObservableObject {
     let windowManager: WindowManager
     /// For use with BrowserView only
     lazy var overlayManager: OverlayManager = {
