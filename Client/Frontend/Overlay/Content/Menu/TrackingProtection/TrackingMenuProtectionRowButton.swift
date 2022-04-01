@@ -7,23 +7,51 @@ import Shared
 import SwiftUI
 
 public struct TrackingMenuProtectionRowButton: View {
-
     @Binding var preventTrackers: Bool
 
     public var body: some View {
-        GroupedCell {
-            Toggle(isOn: $preventTrackers) {
-                VStack(alignment: .leading) {
-                    Text("Tracking Prevention")
-                        .withFont(.bodyLarge)
-                    Text("Website not working? Try disabling")
+        GroupedCell.Decoration {
+            VStack(spacing: 0) {
+                Toggle(isOn: $preventTrackers) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(FeatureFlag[.cookieCutter] ? "Cookie Cutter" : "Tracking Prevention")
+                            .withFont(.bodyLarge)
+
+                        Text(
+                            FeatureFlag[.cookieCutter]
+                                ? "Site appears broken? Try disabling."
+                                : "Website not working? Try disabling."
+                        )
                         .foregroundColor(.secondaryLabel)
                         .font(.footnote)
+                    }
+                    .padding(.vertical, 12)
+                    .padding(.trailing, 18)
+                }
+                .applyToggleStyle()
+                .padding(.horizontal, GroupedCellUX.padding)
+                .accessibilityIdentifier("TrackingMenu.TrackingMenuProtectionRow")
+
+                Color.groupedBackground.frame(height: 1)
+
+                if FeatureFlag[.cookieCutter] {
+                    Button {
+                        // TODO: Open Settings
+                    } label: {
+                        HStack {
+                            Text("Cookie Cutter Settings")
+                                .foregroundColor(.label)
+
+                            Spacer()
+
+                            Symbol(decorative: .chevronRight)
+                                .foregroundColor(.secondaryLabel)
+                        }
+                        .padding(.horizontal, GroupedCellUX.padding)
+                        .frame(minHeight: GroupedCellUX.minCellHeight)
+                    }
                 }
             }
-            .accessibilityIdentifier("TrackingMenu.TrackingMenuProtectionRow")
-            .padding(.vertical, 12)
-            .applyToggleStyle()
         }
     }
 }

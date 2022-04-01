@@ -12,8 +12,8 @@ import XCTest
 
 extension TrackingMenuView: Inspectable {}
 extension TrackingMenuFirstRowElement: Inspectable {}
-extension HallOfShameElement: Inspectable {}
-extension HallOfShameView: Inspectable {}
+extension WhosTrackingYouElement: Inspectable {}
+extension WhosTrackingYouView: Inspectable {}
 extension TrackingMenuProtectionRowButton: Inspectable {}
 extension Text: Inspectable {}
 extension Toggle: Inspectable {}
@@ -77,13 +77,13 @@ class TrackingUITests: XCTestCase {
         XCTAssertEqual(model.numDomains, 16)
         XCTAssertEqual(model.trackers, expectedEntities)
 
-        XCTAssertEqual(model.hallOfShameDomains.count, 3)
-        XCTAssertEqual(model.hallOfShameDomains[0].domain, TrackingEntity.Google)
-        XCTAssertEqual(model.hallOfShameDomains[0].count, 15)
-        XCTAssertEqual(model.hallOfShameDomains[1].domain, TrackingEntity.Amazon)
-        XCTAssertEqual(model.hallOfShameDomains[1].count, 8)
-        XCTAssertEqual(model.hallOfShameDomains[2].domain, TrackingEntity.Outbrain)
-        XCTAssertEqual(model.hallOfShameDomains[2].count, 4)
+        XCTAssertEqual(model.whosTrackingYouDomains.count, 3)
+        XCTAssertEqual(model.whosTrackingYouDomains[0].domain, TrackingEntity.Google)
+        XCTAssertEqual(model.whosTrackingYouDomains[0].count, 15)
+        XCTAssertEqual(model.whosTrackingYouDomains[1].domain, TrackingEntity.Amazon)
+        XCTAssertEqual(model.whosTrackingYouDomains[1].count, 8)
+        XCTAssertEqual(model.whosTrackingYouDomains[2].domain, TrackingEntity.Outbrain)
+        XCTAssertEqual(model.whosTrackingYouDomains[2].count, 4)
     }
 
     func testTrackingStatsViewModelTwoEntities() throws {
@@ -99,11 +99,11 @@ class TrackingUITests: XCTestCase {
             (domainsGoogle + domainsAmazon + domainsUnknownSource).count)
         XCTAssertEqual(model.numDomains, 12)
 
-        XCTAssertEqual(model.hallOfShameDomains.count, 2)
-        XCTAssertEqual(model.hallOfShameDomains[0].domain, TrackingEntity.Google)
-        XCTAssertEqual(model.hallOfShameDomains[0].count, 15)
-        XCTAssertEqual(model.hallOfShameDomains[1].domain, TrackingEntity.Amazon)
-        XCTAssertEqual(model.hallOfShameDomains[1].count, 8)
+        XCTAssertEqual(model.whosTrackingYouDomains.count, 2)
+        XCTAssertEqual(model.whosTrackingYouDomains[0].domain, TrackingEntity.Google)
+        XCTAssertEqual(model.whosTrackingYouDomains[0].count, 15)
+        XCTAssertEqual(model.whosTrackingYouDomains[1].domain, TrackingEntity.Amazon)
+        XCTAssertEqual(model.whosTrackingYouDomains[1].count, 8)
     }
 
     func testTrackingUIFirstRow() throws {
@@ -120,24 +120,24 @@ class TrackingUITests: XCTestCase {
                 .string(locale: Locale(identifier: "en")), "16")
     }
 
-    func testTrackingHallOfShame() throws {
+    func testWhosTrackingYou() throws {
         let ui = TrackingMenuView().environmentObject(
             TrackingStatsViewModel(testingData: trackingData))
-        let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
-        XCTAssertEqual(hallOfShameElements.count, 3)
+        let whosTrackingYouElements = try ui.inspect().findAll(WhosTrackingYouElement.self)
+        XCTAssertEqual(whosTrackingYouElements.count, 3)
 
         XCTAssertEqual(
-            try hallOfShameElements[0].find(Kern.self).text()
+            try whosTrackingYouElements[0].find(Kern.self).text()
                 .string(locale: Locale(identifier: "en")), "15")
         XCTAssertEqual(
-            try hallOfShameElements[1].find(Kern.self).text()
+            try whosTrackingYouElements[1].find(Kern.self).text()
                 .string(locale: Locale(identifier: "en")), "8")
         XCTAssertEqual(
-            try hallOfShameElements[2].find(Kern.self).text()
+            try whosTrackingYouElements[2].find(Kern.self).text()
                 .string(locale: Locale(identifier: "en")), "4")
     }
 
-    func testTrackingHallOfShameTwoEntities() throws {
+    func testWhosTrackingYouTwoEntities() throws {
         var tempStats = TPPageStats()
         domainsGoogle.forEach { tempStats = tempStats.create(host: $0) }
         domainsAmazon.forEach { tempStats = tempStats.create(host: $0) }
@@ -146,14 +146,14 @@ class TrackingUITests: XCTestCase {
             TrackingStatsViewModel(
                 testingData:
                     TrackingEntity.getTrackingDataForCurrentTab(stats: tempStats)))
-        let hallOfShameElements = try ui.inspect().findAll(HallOfShameElement.self)
-        XCTAssertEqual(hallOfShameElements.count, 2)
+        let whosTrackingYouElements = try ui.inspect().findAll(WhosTrackingYouElement.self)
+        XCTAssertEqual(whosTrackingYouElements.count, 2)
 
         XCTAssertEqual(
-            try hallOfShameElements[0].find(Kern.self).text()
+            try whosTrackingYouElements[0].find(Kern.self).text()
                 .string(locale: Locale(identifier: "en")), "15")
         XCTAssertEqual(
-            try hallOfShameElements[1].find(Kern.self).text()
+            try whosTrackingYouElements[1].find(Kern.self).text()
                 .string(locale: Locale(identifier: "en")), "8")
     }
 
