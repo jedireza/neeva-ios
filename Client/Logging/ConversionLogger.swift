@@ -52,7 +52,8 @@ class ConversionLogger {
                         var attributes = EnvironmentHelper.shared.getFirstRunAttributes()
                         for (key, value) in json {
                             attributes.append(
-                                ClientLogCounterAttribute(key: "AT-\(key)", value: value.string))
+                                ClientLogCounterAttribute(
+                                    key: "AT-\(key)", value: value.stringValue))
                         }
                         ClientLogger.shared.logCounter(
                             .ResolvedAttributionToken, attributes: attributes)
