@@ -80,7 +80,8 @@ class CardTests: XCTestCase {
         browserModel = BrowserModel(
             gridModel: gridModel, tabManager: manager, chromeModel: .init(),
             incognitoModel: incognitoModel, switcherToolbarModel: switcherToolbarModel,
-            toastViewManager: ToastViewManager(window: UIWindow()), notificationViewManager: NotificationViewManager(window: UIWindow()))
+            toastViewManager: ToastViewManager(window: UIWindow()),
+            notificationViewManager: NotificationViewManager(window: UIWindow()))
         manager.didRestoreAllTabs = true
 
         SpaceStore.shared = .createMock([.stackOverflow, .savedForLater, .shared, .public])
