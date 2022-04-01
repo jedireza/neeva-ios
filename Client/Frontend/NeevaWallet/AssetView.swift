@@ -81,7 +81,7 @@ struct AssetView: View {
                 return
             }
             DispatchQueue.main.async {
-                web3Model.openURLForSpace(url, web3Model.wallet?.publicAddress ?? "")
+                web3Model.openURL(url)
             }
         } label: {
             WebImage(url: assetUrl)

@@ -225,8 +225,8 @@ struct WalletDashboard: View {
             if !FeatureFlag[.showNFTsInWallet] {
                 Button(
                     action: {
-                        model.openURLForSpace(
-                            NeevaConstants.appHomeURL, model.wallet?.publicAddress ?? "")
+                        model.openURL(
+                            NeevaConstants.appHomeURL)
                     },
                     label: {
                         HStack(spacing: 4) {
