@@ -84,7 +84,8 @@ class TabContainerModel: ObservableObject {
     static var defaultType: ContentUIType {
         // TODO(darin): We should get rid of the notion of .blank. We should be showing the empty
         // card grid in this case instead.
-        !Defaults[.didFirstNavigation] && !FeatureFlag[.web3Mode] ? .previewHome : .blank
+        !Defaults[.didFirstNavigation] && NeevaConstants.currentTarget != .xyz
+            ? .previewHome : .blank
     }
 
     func updateContent(_ event: ContentUIVisibilityEvent) {
@@ -112,7 +113,7 @@ class TabContainerModel: ObservableObject {
                 zeroQueryModel.targetTab = .defaultValue
             }
         case .hideZeroQuery:
-            if !Defaults[.didFirstNavigation] && !FeatureFlag[.web3Mode] {
+            if !Defaults[.didFirstNavigation] && NeevaConstants.currentTarget != .xyz {
                 currentContentUI = .previewHome
             } else {
                 currentContentUI = webContainerType

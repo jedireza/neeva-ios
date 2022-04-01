@@ -69,7 +69,7 @@ struct SuggestedNavigationView<Content: View>: View {
 
 private struct SuggestedItemBackgroundModifier: ViewModifier {
     func body(content: Content) -> some View {
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             content
                 .hexagonClip()
         } else {
@@ -83,7 +83,8 @@ private struct SuggestedItemBackgroundModifier: ViewModifier {
 
 struct SuggestedHomeView: View {
     var title: String {
-        FeatureFlag[.web3Mode] ? Defaults[.cryptoPublicKey].isEmpty ? "You" : "Your NFTs" : "Home"
+        NeevaConstants.currentTarget == .xyz
+            ? Defaults[.cryptoPublicKey].isEmpty ? "You" : "Your NFTs" : "Home"
     }
     @State private var shareTargetView: UIView!
 
@@ -220,7 +221,7 @@ struct SuggestedSitesView: View {
 
     @ViewBuilder
     private var horizontalScrollView: some View {
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             ScrollView(.horizontal, showsIndicators: false) {
                 horizontalScrollContentView
             }

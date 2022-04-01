@@ -170,7 +170,7 @@ class SuggestionModel: ObservableObject {
             ? fetchNeevaSuggestions(for: searchQuery)
             : fetchGenericSuggestions(for: searchQuery)
 
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             fetchNFTSuggestions(for: searchQuery)
         }
 

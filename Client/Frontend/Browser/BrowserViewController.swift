@@ -386,7 +386,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             }
         }
 
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             DispatchQueue.main.async {
                 AssetStore.shared.refresh()
             }
@@ -492,7 +492,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             if Self.createNewTabOnStartForTesting {
                 self.tabManager.select(self.tabManager.addTab())
             } else if self.tabManager.normalTabs.isEmpty {
-                if FeatureFlag[.web3Mode] {
+                if NeevaConstants.currentTarget == .xyz {
                     self.showZeroQuery()
                     if !Defaults[.walletIntroSeen] {
                         self.web3Model.showWalletPanel()
@@ -507,7 +507,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        if !FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget != .xyz {
             if !Defaults[.introSeen] {
                 presentDefaultBrowserFirstRun()
             }

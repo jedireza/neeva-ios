@@ -36,7 +36,6 @@ public struct NeevaConstants {
 
     /// The URL form of `appHost` and various routes:
     public static var appURL: URL { buildAppURL("") }
-    public static var appHomeURL: URL { FeatureFlag[.web3Mode] ? xyzURL : appURL }
     public static var appSearchURL: URL { buildAppURL("search") }
     public static var appSpacesURL: URL { buildAppURL("spaces") }
     public static var appSettingsURL: URL { buildAppURL("settings") }
@@ -162,12 +161,6 @@ public struct NeevaConstants {
     }
 
     public static let sharedBundle = Bundle(for: BundleHookClass.self)
-
-    public static func isNeevaHome(url: URL?) -> Bool {
-        return url?.scheme == NeevaConstants.appHomeURL.scheme
-            && url?.host == NeevaConstants.appHomeURL.host
-            && url?.path == NeevaConstants.appHomeURL.path
-    }
 
     // Returns true if the page has an embedded search box, indicating that we
     // should not show the same query in the URL bar.

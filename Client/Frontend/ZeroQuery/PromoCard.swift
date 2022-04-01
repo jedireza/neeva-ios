@@ -158,7 +158,7 @@ struct PromoCard: View {
 
     @ViewBuilder
     var button: some View {
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             Button(action: type.action) {
                 type
                     .buttonLabel

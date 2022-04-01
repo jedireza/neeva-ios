@@ -25,7 +25,7 @@ struct TabToolbarView: View {
 
             if chromeModel.toolBarContentView == .recipeContent {
                 cheatsheetToolbar
-            } else if FeatureFlag[.web3Mode] {
+            } else if NeevaConstants.currentTarget == .xyz {
                 Web3Toolbar(
                     opacity: scrollingControlModel.controlOpacity,
                     buildTabsMenu: buildTabsMenu,
@@ -41,7 +41,7 @@ struct TabToolbarView: View {
             Spacer()
         }
         .background(
-            FeatureFlag[.web3Mode]
+            NeevaConstants.currentTarget == .xyz
                 ? Web3Theme(with: currentTheme).backgroundColor.ignoresSafeArea()
                 : Color.DefaultBackground.ignoresSafeArea()
         )
