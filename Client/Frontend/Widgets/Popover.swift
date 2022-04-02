@@ -206,7 +206,7 @@ struct Popover_Previews: PreviewProvider {
             Button("Popover") { isPresented = true }
                 .presentAsPopover(isPresented: $isPresented) {
                     VStack {
-                        ForEach(0..<count) { _ in
+                        ForEach(0..<count, id: \.self) { _ in
                             Text("Hello, world!")
                                 .padding()
                         }

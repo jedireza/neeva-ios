@@ -16,7 +16,7 @@ struct ServerLoggingSettingsView: View {
     var body: some View {
         List {
             if #available(iOS 15.0, *) {
-                ForEach(0..<debugLoggerHistory.count) { i in
+                ForEach(0..<debugLoggerHistory.count, id: \.self) { i in
                     VStack(alignment: .leading) {
                         Button(debugLoggerHistory[i].pathStr) {
                             self.item = debugLoggerHistory[i]
@@ -31,7 +31,7 @@ struct ServerLoggingSettingsView: View {
                     Button("OK", role: .cancel) {}
                 }
             } else {
-                ForEach(0..<debugLoggerHistory.count) { i in
+                ForEach(0..<debugLoggerHistory.count, id: \.self) { i in
                     Text(debugLoggerHistory[i].pathStr)
                 }
             }

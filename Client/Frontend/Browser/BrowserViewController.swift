@@ -1235,7 +1235,7 @@ extension BrowserViewController: TabDelegate {
                         chromeModel.estimatedProgress = estimatedProgress
                     } else if estimatedProgress == 1 && chromeModel.estimatedProgress != 1 {
                         chromeModel.estimatedProgress = 1
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [self] in
                             if chromeModel.estimatedProgress == 1 {
                                 chromeModel.estimatedProgress = nil
                             }
@@ -1626,9 +1626,6 @@ extension BrowserViewController {
                 }
             }
         }
-
-        // Only show to new users
-        let introSeen = Defaults[.introSeen]
 
         introViewModel = IntroViewModel(
             presentationController: self, overlayManager: overlayManager,
@@ -2123,7 +2120,7 @@ extension BrowserViewController {
         // otherwise, present as popover
         showModal(style: .cheatsheet) { [self] in
             CheatsheetOverlayContent(
-                menuAction: { perform(overflowMenuAction: $0, targetButtonView: nil) },
+                menuAction: { self.perform(overflowMenuAction: $0, targetButtonView: nil) },
                 tabManager: tabManager
             )
             .environment(\.onSigninOrJoinNeeva) {
@@ -2131,12 +2128,12 @@ extension BrowserViewController {
                     .CheatsheetErrorSigninOrJoinNeeva,
                     attributes: EnvironmentHelper.shared.getFirstRunAttributes()
                 )
-                overlayManager.hideCurrentOverlay()
-                presentIntroViewController(
+                self.overlayManager.hideCurrentOverlay()
+                self.presentIntroViewController(
                     true,
                     onDismiss: {
                         DispatchQueue.main.async {
-                            hideCardGrid(withAnimation: true)
+                            self.hideCardGrid(withAnimation: true)
                         }
                     }
                 )

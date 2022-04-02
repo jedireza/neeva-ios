@@ -124,7 +124,7 @@ public class CryptoConfig {
             return
         }
 
-        try? wallet.send(
+        _ = try? wallet.send(
             on: .Ethereum,
             transactionData: TransactionData(
                 from: wallet.publicAddress,
@@ -134,6 +134,7 @@ public class CryptoConfig {
                 gas: nil
             )
         )
+
         completion()
     }
 

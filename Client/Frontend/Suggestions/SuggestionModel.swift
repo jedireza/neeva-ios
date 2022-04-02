@@ -358,7 +358,7 @@ class SuggestionModel: ObservableObject {
             self.completion = nil
 
             log.info(
-                "previous query: \(oldQuery), current query: \(query), completion: \(self.completion)"
+                "previous query: \(oldQuery), current query: \(query), completion: \(String(describing: self.completion))"
             )
 
             if query.isEmpty {
