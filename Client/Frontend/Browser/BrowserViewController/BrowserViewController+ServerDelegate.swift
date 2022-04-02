@@ -81,6 +81,16 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
                             peerMeta: wallet.walletMeta)
                         completion(walletInfo)
                     }
+                    ClientLogger.shared.logCounter(
+                        .ConnectedSite,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.Web3Attribute.walletAddress,
+                                value: Defaults[.cryptoPublicKey]),
+                            ClientLogCounterAttribute(
+                                key: LogConfig.Web3Attribute.connectedSite,
+                                value: session.dAppInfo.peerMeta.url.absoluteString),
+                        ])
                 },
                 onReject: {
                     DispatchQueue.global(qos: .userInitiated).async {

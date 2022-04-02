@@ -395,6 +395,17 @@ class Web3Model: ObservableObject, ResponseRelay {
                 currentSession = updatedSession
             }
         }
+
+        ClientLogger.shared.logCounter(
+            .SwitchedChain,
+            attributes: [
+                ClientLogCounterAttribute(
+                    key: LogConfig.Web3Attribute.walletAddress, value: Defaults[.cryptoPublicKey]),
+                ClientLogCounterAttribute(
+                    key: LogConfig.Web3Attribute.connectedSite,
+                    value: session.dAppInfo.peerMeta.url.absoluteString),
+            ])
+
         objectWillChange.send()
     }
 
@@ -432,6 +443,20 @@ class Web3Model: ObservableObject, ResponseRelay {
                         self.server?.send(
                             .transaction(transact(EthNode.from(chainID: chainId)), for: request)
                         )
+                        ClientLogger.shared.logCounter(
+                            .TransactionSuccessful,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.transactionAmount,
+                                    value: Web3Utils.formatToEthereumUnits(
+                                        options.value ?? BigUInt.zero, toUnits: .eth)),
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.walletAddress,
+                                    value: Defaults[.cryptoPublicKey]),
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.connectedSite,
+                                    value: dappInfo.peerMeta.url.absoluteString),
+                            ])
                     }
                 },
                 onReject: {
@@ -442,6 +467,20 @@ class Web3Model: ObservableObject, ResponseRelay {
                 transaction: transaction,
                 options: options
             )
+            ClientLogger.shared.logCounter(
+                .TransactionAttempted,
+                attributes: [
+                    ClientLogCounterAttribute(
+                        key: LogConfig.Web3Attribute.transactionAmount,
+                        value: Web3Utils.formatToEthereumUnits(
+                            options.value ?? BigUInt.zero, toUnits: .eth)),
+                    ClientLogCounterAttribute(
+                        key: LogConfig.Web3Attribute.walletAddress,
+                        value: Defaults[.cryptoPublicKey]),
+                    ClientLogCounterAttribute(
+                        key: LogConfig.Web3Attribute.connectedSite,
+                        value: dappInfo.peerMeta.url.absoluteString),
+                ])
             self.startSequence()
         }
     }
@@ -471,6 +510,18 @@ class Web3Model: ObservableObject, ResponseRelay {
                 onAccept: { chainId in
                     DispatchQueue.global(qos: .userInitiated).async {
                         let signature = sign(EthNode.from(chainID: chainId))
+                        if !signature.isEmpty {
+                            ClientLogger.shared.logCounter(
+                                .PersonalSign,
+                                attributes: [
+                                    ClientLogCounterAttribute(
+                                        key: LogConfig.Web3Attribute.walletAddress,
+                                        value: Defaults[.cryptoPublicKey]),
+                                    ClientLogCounterAttribute(
+                                        key: LogConfig.Web3Attribute.connectedSite,
+                                        value: dappInfo.peerMeta.url.absoluteString),
+                                ])
+                        }
                         self.server?.send(.signature(signature, for: request))
                     }
                 },

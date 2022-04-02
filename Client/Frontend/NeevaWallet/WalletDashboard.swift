@@ -390,6 +390,18 @@ struct WalletDashboard: View {
                             action: {
                                 if let slug = theme.asset?.collection?.openSeaSlug {
                                     Defaults[.currentTheme] = slug == currentTheme ? "" : slug
+                                    if !currentTheme.isEmpty {
+                                        ClientLogger.shared.logCounter(
+                                            .ThemeSet,
+                                            attributes: [
+                                                ClientLogCounterAttribute(
+                                                    key: LogConfig.Web3Attribute.partnerCollection,
+                                                    value: slug),
+                                                ClientLogCounterAttribute(
+                                                    key: LogConfig.Web3Attribute.walletAddress,
+                                                    value: Defaults[.cryptoPublicKey]),
+                                            ])
+                                    }
                                 }
                             },
                             label: {

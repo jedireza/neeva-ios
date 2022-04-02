@@ -12,15 +12,20 @@ public struct WelcomeStarterView: View {
     @Default(.cryptoPublicKey) var publicKey
     @State var isCreatingWallet: Bool = false
     @Binding var viewState: ViewState
+    let completion: () -> Void
 
-    public init(dismiss: @escaping () -> Void, viewState: Binding<ViewState>) {
+    public init(
+        dismiss: @escaping () -> Void, viewState: Binding<ViewState>,
+        completion: @escaping () -> Void
+    ) {
         self._viewState = viewState
         self.dismiss = dismiss
+        self.completion = completion
     }
 
     public var body: some View {
         VStack {
-            CreateWalletIllustration(isCreatingWallet: $isCreatingWallet)
+            CreateWalletIllustration(isCreatingWallet: $isCreatingWallet, completion: completion)
             if publicKey.isEmpty {
                 Button(action: { viewState = .importWallet }) {
                     Text("Import My Wallet")
@@ -78,6 +83,8 @@ struct CreateWalletIllustration: View {
     @State var timer: Timer? = nil
     @State var finalAnimationShown = false
 
+    let completion: () -> Void
+
     var body: some View {
         ZStack {
             if !finalAnimationShown {
@@ -117,6 +124,7 @@ struct CreateWalletIllustration: View {
                     confettiCounter = 1
                     model.createWallet {
                         isCreatingWallet = false
+                        completion()
                     }
                 }
             }

@@ -14,10 +14,15 @@ public struct ImportWalletView: View {
     @Binding var viewState: ViewState
     @State var isImporting: Bool = false
     @State var isFocused: Bool = false
+    let completion: () -> Void
 
-    public init(dismiss: @escaping () -> Void, viewState: Binding<ViewState>) {
+    public init(
+        dismiss: @escaping () -> Void, viewState: Binding<ViewState>,
+        completion: @escaping () -> Void
+    ) {
         self._viewState = viewState
         self.dismiss = dismiss
+        self.completion = completion
     }
 
     public var body: some View {
@@ -102,6 +107,7 @@ public struct ImportWalletView: View {
 
             if success {
                 dismiss()
+                completion()
             } else {
                 inputPhrase = ""
             }
