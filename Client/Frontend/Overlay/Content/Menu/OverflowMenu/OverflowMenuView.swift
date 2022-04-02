@@ -110,37 +110,9 @@ public struct OverflowMenuView: View {
             }
 
             appNavigationButtons
-
-            if FeatureFlag[.enableCryptoWallet] {
-                walletMenuItem
-            }
         }
         .overlaySheetMiddleHeight(height: frameHeight)
         .overlaySheetIgnoreSafeArea(edges: .bottom)
-    }
-
-    @ViewBuilder
-    var walletMenuItem: some View {
-        GroupedCell.Decoration {
-            Button(action: { self.menuAction(.cryptoWallet) }) {
-                HStack(spacing: 0) {
-                    Image("wallet-wordmark")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 16)
-                    Spacer()
-                    Image("wallet-illustration")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(height: 16)
-                }
-                .padding(.trailing, -6)
-                .padding(.horizontal, GroupedCellUX.padding)
-                .frame(minHeight: GroupedCellUX.minCellHeight)
-            }
-            .buttonStyle(.tableCell)
-            .accessibilityIdentifier("Neeva Wallet")
-        }
     }
 
     @ViewBuilder

@@ -133,7 +133,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                     == tabManager.selectedTab?.url?.baseDomain
             })
         self.selectedTab = tabManager.selectedTab
-        self.wallet = FeatureFlag[.enableCryptoWallet] ? WalletAccessor() : nil
+        self.wallet = NeevaConstants.currentTarget == .xyz ? WalletAccessor() : nil
 
         self.selectedTabSubscription = tabManager.selectedTabPublisher.sink { tab in
             guard let tab = tab else { return }
@@ -177,7 +177,9 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
 
     func updateCurrentSession() {
-        updateCurrentSession(with: selectedTab?.url)
+        DispatchQueue.main.async {
+            self.updateCurrentSession(with: self.selectedTab?.url)
+        }
     }
 
     private func updateCurrentSession(with url: URL?) {
@@ -191,6 +193,7 @@ class Web3Model: ObservableObject, ResponseRelay {
             InternalURL(url)?.isSessionRestore == true
             ? InternalURL(url)?.extractedUrlParam : url
 
+        self.matchingCollection = nil
         updateTrustSignals(url: url)
 
         if let domain = url?.baseDomain {
@@ -220,7 +223,6 @@ class Web3Model: ObservableObject, ResponseRelay {
                 self.allSavedSessions.first(where: {
                     $0.dAppInfo.peerMeta.url.baseDomain == url?.baseDomain
                 })
-            self.matchingCollection = nil
             if let session = self.currentSession, let server = self.server,
                 !(server.openSessions().contains(where: {
                     session.dAppInfo.peerId == $0.dAppInfo.peerId

@@ -710,7 +710,7 @@ extension BrowserViewController: WKNavigationDelegate {
                 }
             }
 
-            if FeatureFlag[.enableCryptoWallet], url.lastPathComponent == "wc" {
+            if NeevaConstants.currentTarget == .xyz, url.lastPathComponent == "wc" {
                 if url.query == nil {
                     // If this is only for invoking a wallet app with no params, cancel the navigation.
                     decisionHandler(.cancel)
@@ -1059,7 +1059,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // mode, and we will show the preview mode sign up prompt
         // we will show the promp for both incognito and normal mode
         if let url = webView.url, url.origin == NeevaConstants.appURL.origin {
-            if !Defaults[.signedInOnce] {
+            if !Defaults[.signedInOnce] && NeevaConstants.currentTarget == .client {
                 if let query = SearchEngine.current.queryForSearchURL(url),
                     Defaults[.previewModeQueries].count == Defaults[.maxQueryLimit]
                         || Defaults[.previewModeQueries].count % Defaults[.signupPromptInterval]

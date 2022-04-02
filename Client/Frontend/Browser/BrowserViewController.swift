@@ -193,7 +193,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         chromeModel.topBarDelegate = self
         chromeModel.toolbarDelegate = self
-        if FeatureFlag[.enableCryptoWallet] {
+        if NeevaConstants.currentTarget == .xyz {
             self.configureWalletServer()
         }
         didInit()

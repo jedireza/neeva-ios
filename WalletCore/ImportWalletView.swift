@@ -76,14 +76,8 @@ public struct ImportWalletView: View {
                 .padding(.horizontal, 16)
                 .frame(maxWidth: .infinity, alignment: .leading)
             } else {
-                Spacer().frame(height: 50)
+                Spacer().frame(height: 10)
             }
-
-            Button(action: { viewState = .starter }) {
-                Text("Back")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.wallet(.secondary))
             Button(action: onImport) {
                 HStack {
                     Text(isImporting ? "Importing  " : "Import")
@@ -94,6 +88,11 @@ public struct ImportWalletView: View {
             }
             .buttonStyle(.wallet(.primary))
             .disabled(inputPhrase.isEmpty)
+            Button(action: { viewState = .starter }) {
+                Text("Back")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.wallet(.secondary))
         }
         .padding(.horizontal, 16)
         .ignoresSafeArea(.keyboard)

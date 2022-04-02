@@ -22,7 +22,7 @@ protocol WalletConnectPresenter: ModalPresenter {
 
 extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
     @discardableResult func connectWallet(to wcURL: WCURL) -> Bool {
-        guard FeatureFlag[.enableCryptoWallet], let _ = web3Model.wallet?.ethereumAddress
+        guard NeevaConstants.currentTarget == .xyz, let _ = web3Model.wallet?.ethereumAddress
         else {
             return false
         }

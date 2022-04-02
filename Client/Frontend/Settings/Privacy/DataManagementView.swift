@@ -83,7 +83,7 @@ struct DataManagementView: View {
             Section(header: Text("Data on This Device")) {
                 ForEach(
                     ClearableDataType.allCases.filter {
-                        $0 == .dapps ? FeatureFlag[.enableCryptoWallet] : true
+                        $0 == .dapps ? NeevaConstants.currentTarget == .xyz : true
                     }
                 ) { dataType in
                     Toggle(

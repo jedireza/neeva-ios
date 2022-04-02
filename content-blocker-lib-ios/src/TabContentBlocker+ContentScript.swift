@@ -34,7 +34,7 @@ extension TabContentBlocker {
             components.scheme = "http"
             guard let url = components.url else { return }
 
-            if FeatureFlag[.enableCryptoWallet] {
+            if NeevaConstants.currentTarget == .xyz {
                 WalletConnectDetector.shared.detectWalletConnect(for: url, in: mainDocumentUrl)
             }
 

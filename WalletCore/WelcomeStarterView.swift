@@ -66,9 +66,12 @@ public struct WelcomeStarterView: View {
                 }
                 .buttonStyle(.wallet(.primary))
                 .padding(.vertical, 8)
-                Text("You can access your Secret Recovery Phrase from your wallet anytime.")
-                    .withFont(.bodyLarge)
-                    .foregroundColor(.secondaryLabel)
+                Text(
+                    "REMEMBER: Write down or save your Secret Recovery Phrase somewhere safe. You need it to ensure you can access your wallet forever."
+                )
+                .withFont(.bodyLarge)
+                .foregroundColor(.secondaryLabel)
+                .multilineTextAlignment(.center)
             }
         }.padding(.horizontal, 16)
     }
