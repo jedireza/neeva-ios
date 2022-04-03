@@ -187,5 +187,6 @@ struct SwitcherToolbarView: View {
         .animation(.easeOut)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Toolbar")
+        .accessibilityHidden(gridModel.showingDetailView)
     }
 }
