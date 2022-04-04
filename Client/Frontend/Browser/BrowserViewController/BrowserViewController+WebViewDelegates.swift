@@ -711,24 +711,23 @@ extension BrowserViewController: WKNavigationDelegate {
                 }
             }
 
-            #if XYZ
-                if url.lastPathComponent == "wc" {
-                    if url.query == nil {
-                        // If this is only for invoking a wallet app with no params, cancel the navigation.
-                        decisionHandler(.cancel)
-                    } else if let components = URLComponents(string: url.absoluteString),
-                        let uri = components.valueForQuery("uri"),
-                        let wcURL = WCURL(uri.removingPercentEncoding ?? ""),
-                        SceneDelegate.getBVC(with: tabManager.scene).connectWallet(to: wcURL)
-                    {
-                        // If we can establish a connection through existing wallet, cancel the navigation.
-                        decisionHandler(.cancel)
+            if NeevaConstants.currentTarget == .xyz, url.lastPathComponent == "wc" {
+                if url.query == nil {
+                    // If this is only for invoking a wallet app with no params, cancel the navigation.
+                    decisionHandler(.cancel)
+                } else if let components = URLComponents(string: url.absoluteString),
+                    let uri = components.valueForQuery("uri"),
+                    let wcURL = WCURL(uri.removingPercentEncoding ?? ""),
+                    SceneDelegate.getBVC(with: tabManager.scene).connectWallet(to: wcURL)
+                {
+                    // If we can establish a connection through existing wallet, cancel the navigation.
+                    decisionHandler(.cancel)
 
-                    }
                 }
-                decisionHandler(.allow)
-                return
-            #endif
+            }
+            
+            decisionHandler(.allow)
+            return
         }
 
         if !(url.scheme?.contains("neeva") ?? true) {
