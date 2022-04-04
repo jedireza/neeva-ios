@@ -322,7 +322,6 @@
 		4A42C48F27E58487003B9826 /* OverlayGenerics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 66B7A0E826EAF5B000AB751A /* OverlayGenerics.swift */; };
 		4A42C49027E58487003B9826 /* GroupedRowButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0405D0C25FFCA5100A0A3B2 /* GroupedRowButtonView.swift */; };
 		4A42C49127E58487003B9826 /* ImageThumbnailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C832BF8426E2DA2B00B9A1F8 /* ImageThumbnailView.swift */; };
-		4A42C49227E58487003B9826 /* WalletDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B55B27829BE800CD5415 /* WalletDetailView.swift */; };
 		4A42C49327E58487003B9826 /* TrackingPreventionUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A255AAF265C48EB00422839 /* TrackingPreventionUtils.swift */; };
 		4A42C49427E58487003B9826 /* NavSuggestionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6751BABA26AA173D007FC7EA /* NavSuggestionView.swift */; };
 		4A42C49527E58487003B9826 /* ZeroQueryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AA14F1F264C7954003B815A /* ZeroQueryView.swift */; };
@@ -1335,6 +1334,7 @@
 		E63B18DD27F7937A001BA0B0 /* NonEssentialCookieSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2026EC2027F4070900817053 /* NonEssentialCookieSettings.swift */; };
 		E63B18DF27FB4630001BA0B0 /* Web3Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B5592782981600CD5415 /* Web3Model.swift */; };
 		E63B18E227FB472E001BA0B0 /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8CE5ED27CCA66600735C75 /* ViewExtension.swift */; };
+		E63B18E327FB5AD9001BA0B0 /* SessionInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */; };
 		E63DBA5727F339FC001B7A68 /* SuggestedXYZSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63DBA5627F339FC001B7A68 /* SuggestedXYZSearchesView.swift */; };
 		E63F71881DB7FBE200A995C9 /* TestSQLiteMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */; };
 		E64024E027F241CA00D65B63 /* ZeroQueryHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64024DF27F241CA00D65B63 /* ZeroQueryHeader.swift */; };
@@ -2022,7 +2022,6 @@
 		4A93B555277F8AE200CD5415 /* AssetStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssetStore.swift; sourceTree = "<group>"; };
 		4A93B5572781318900CD5415 /* CollectionViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViews.swift; sourceTree = "<group>"; };
 		4A93B5592782981600CD5415 /* Web3Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Web3Model.swift; sourceTree = "<group>"; };
-		4A93B55B27829BE800CD5415 /* WalletDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetailView.swift; sourceTree = "<group>"; };
 		4A9E28FC27E270DF00A70CA9 /* NFTSuggestionResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NFTSuggestionResult.swift; sourceTree = "<group>"; };
 		4A9EFAE627ADB8BB00F3ED7F /* CurrencyStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyStore.swift; sourceTree = "<group>"; };
 		4A9EFAE827AF9F6E00F3ED7F /* NeevaWalletStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NeevaWalletStyle.swift; sourceTree = "<group>"; };
@@ -3925,7 +3924,6 @@
 				BCAAA0D6276D9B800013223E /* CryptoWalletView.swift */,
 				4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */,
 				BCAAA0E1276D9C400013223E /* WalletDashboard.swift */,
-				4A93B55B27829BE800CD5415 /* WalletDetailView.swift */,
 				4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */,
 				4A93B5592782981600CD5415 /* Web3Model.swift */,
 				3FC15D7527E924A8005F71CE /* Web3Toolbar.swift */,
@@ -6614,7 +6612,6 @@
 				4A42C48F27E58487003B9826 /* OverlayGenerics.swift in Sources */,
 				4A42C49027E58487003B9826 /* GroupedRowButtonView.swift in Sources */,
 				4A42C49127E58487003B9826 /* ImageThumbnailView.swift in Sources */,
-				4A42C49227E58487003B9826 /* WalletDetailView.swift in Sources */,
 				E67CD27427F33BCA007BFE58 /* ZeroQueryPlaceholder.swift in Sources */,
 				4A42C49327E58487003B9826 /* TrackingPreventionUtils.swift in Sources */,
 				4A42C49427E58487003B9826 /* NavSuggestionView.swift in Sources */,
@@ -7285,6 +7282,7 @@
 				BC264BC226746098001527B6 /* ViewExtensions.swift in Sources */,
 				2026EC2127F4070900817053 /* NonEssentialCookieSettings.swift in Sources */,
 				BC5740A226BB699A0047D29B /* PerformanceLogger.swift in Sources */,
+				E63B18E327FB5AD9001BA0B0 /* SessionInfoView.swift in Sources */,
 				4A255AB3265C48EC00422839 /* TrackingPreventionRules.swift in Sources */,
 				EBC4869E2195F58300CDA48D /* AboutHomeHandler.swift in Sources */,
 				32D7F0EB2797025C000203C7 /* CheatsheetMenuViewModel.swift in Sources */,

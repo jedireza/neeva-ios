@@ -167,15 +167,6 @@ struct CardGrid: View {
             ) {}.useEffect(deps: spaceModel.detailedSpace) { detailedSpace in
                 gridModel.showingDetailView = detailedSpace != nil
             }
-
-            #if XYZ
-                NavigationLink(
-                    destination: WalletDetailView()
-                        .environment(\.cardSize, cardSize)
-                        .environment(\.aspectRatio, CardUX.DefaultTabCardRatio),
-                    isActive: $walletDetailsModel.showingWalletDetails
-                ) {}
-            #endif
         }.useEffect(
             deps: geom.size.width, topToolbar, perform: updateCardSize
         ).ignoresSafeArea(.keyboard)
