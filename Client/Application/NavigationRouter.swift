@@ -106,7 +106,9 @@ enum NavigationPath {
             NavigationPath.handleURL(
                 url: NeevaConstants.configureNewsProviderURL, isIncognito: isIncognito, with: bvc)
         case .walletConnect(let wcURL):
-            bvc.connectWallet(to: wcURL)
+            #if XYZ
+                bvc.connectWallet(to: wcURL)
+            #endif
         }
     }
 

@@ -14,9 +14,12 @@ import SwiftUI
 import SwiftyJSON
 import UIKit
 import WalletConnectSwift
-import WalletCore
 import WebKit
 import XCGLogger
+
+#if XYZ
+    import WalletCore
+#endif
 
 private let ActionSheetTitleMaxLength = 120
 
@@ -196,9 +199,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         chromeModel.topBarDelegate = self
         chromeModel.toolbarDelegate = self
-        if NeevaConstants.currentTarget == .xyz {
+        #if XYZ
             self.configureWalletServer()
-        }
+        #endif
         didInit()
     }
 
@@ -389,11 +392,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
             }
         }
 
-        if NeevaConstants.currentTarget == .xyz {
+        #if XYZ
             DispatchQueue.main.async {
                 AssetStore.shared.refresh()
             }
-        }
+        #endif
     }
 
     override func viewDidLoad() {
@@ -495,12 +498,14 @@ class BrowserViewController: UIViewController, ModalPresenter {
             if Self.createNewTabOnStartForTesting {
                 self.tabManager.select(self.tabManager.addTab())
             } else if self.tabManager.normalTabs.isEmpty {
-                if NeevaConstants.currentTarget == .xyz {
+                #if XYZ
                     self.showZeroQuery()
                     if !Defaults[.walletIntroSeen] {
                         self.web3Model.showWalletPanel()
                     }
-                } else if !Defaults[.didFirstNavigation] {
+                    return
+                #endif
+                if !Defaults[.didFirstNavigation] {
                     self.showPreviewHome()
                 } else {
                     self.showTabTray()

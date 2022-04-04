@@ -7,8 +7,11 @@ import Foundation
 import Shared
 import SwiftUI
 import WalletConnectSwift
-import WalletCore
 import web3swift
+
+#if XYZ
+    import WalletCore
+#endif
 
 extension Defaults.Keys {
     static func dAppsSession(_ sessionID: String) -> Defaults.Key<Data?> {
@@ -22,24 +25,30 @@ protocol WalletConnectPresenter: ModalPresenter {
 
 extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
     @discardableResult func connectWallet(to wcURL: WCURL) -> Bool {
-        guard NeevaConstants.currentTarget == .xyz, let _ = web3Model.wallet?.ethereumAddress
-        else {
-            return false
-        }
+        #if XYZ
+            guard let _ = web3Model.wallet?.ethereumAddress
+            else {
+                return false
+            }
 
-        web3Model.startSequence()
-        DispatchQueue.global(qos: .userInitiated).async {
-            try? self.server?.connect(to: wcURL)
-        }
-        return true
+            web3Model.startSequence()
+            DispatchQueue.global(qos: .userInitiated).async {
+                try? self.server?.connect(to: wcURL)
+            }
+            return true
+        #else
+            return false
+        #endif
     }
 
     func configureWalletServer() {
-        self.server = Server(delegate: self)
-        server!.register(handler: PersonalSignHandler(relay: self.web3Model))
-        server!.register(handler: SendTransactionHandler(relay: self.web3Model))
-        server!.register(handler: SignTypedDataHandler(relay: self.web3Model))
-        web3Model.updateCurrentSession()
+        #if XYZ
+            self.server = Server(delegate: self)
+            server!.register(handler: PersonalSignHandler(relay: self.web3Model))
+            server!.register(handler: SendTransactionHandler(relay: self.web3Model))
+            server!.register(handler: SignTypedDataHandler(relay: self.web3Model))
+            web3Model.updateCurrentSession()
+        #endif
     }
 
     func server(_ server: Server, didFailToConnect url: WCURL) {
@@ -50,60 +59,64 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
         _ server: Server, shouldStart session: Session,
         completion: @escaping (Session.WalletInfo) -> Void
     ) {
-        guard let wallet = self.web3Model.wallet else {
-            let walletInfo = Session.WalletInfo(
-                approved: false,
-                accounts: [],
-                chainId: session.dAppInfo.chainId ?? 1,
-                peerId: UUID().uuidString,
-                peerMeta: Session.ClientMeta(name: "", description: "", icons: [], url: .aboutBlank)
-            )
-            completion(walletInfo)
-            return
-        }
+        #if XYZ
+            guard let wallet = self.web3Model.wallet else {
+                let walletInfo = Session.WalletInfo(
+                    approved: false,
+                    accounts: [],
+                    chainId: session.dAppInfo.chainId ?? 1,
+                    peerId: UUID().uuidString,
+                    peerMeta: Session.ClientMeta(
+                        name: "", description: "", icons: [], url: .aboutBlank)
+                )
+                completion(walletInfo)
+                return
+            }
 
-        LogService.shared.log(
-            "WC: Should Start from \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))")
-        DispatchQueue.main.async {
-            self.web3Model.currentSequence = SequenceInfo(
-                type: .sessionRequest,
-                thumbnailURL: session.dAppInfo.peerMeta.icons.first ?? .aboutBlank,
-                dAppMeta: session.dAppInfo.peerMeta,
-                chain: EthNode.from(chainID: session.dAppInfo.chainId),
-                message: session.dAppInfo.peerMeta.description ?? "",
-                onAccept: { chainID in
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        let walletInfo = Session.WalletInfo(
-                            approved: true,
-                            accounts: [wallet.publicAddress],
-                            chainId: chainID,
-                            peerId: UUID().uuidString,
-                            peerMeta: wallet.walletMeta)
-                        completion(walletInfo)
-                    }
-                    ClientLogger.shared.logCounter(
-                        .ConnectedSite,
-                        attributes: [
-                            ClientLogCounterAttribute(
-                                key: LogConfig.Web3Attribute.walletAddress,
-                                value: Defaults[.cryptoPublicKey]),
-                            ClientLogCounterAttribute(
-                                key: LogConfig.Web3Attribute.connectedSite,
-                                value: session.dAppInfo.peerMeta.url.absoluteString),
-                        ])
-                },
-                onReject: {
-                    DispatchQueue.global(qos: .userInitiated).async {
-                        let walletInfo = Session.WalletInfo(
-                            approved: false,
-                            accounts: [wallet.publicAddress],
-                            chainId: session.dAppInfo.chainId ?? 1,
-                            peerId: UUID().uuidString,
-                            peerMeta: wallet.walletMeta)
-                        completion(walletInfo)
-                    }
-                })
-        }
+            LogService.shared.log(
+                "WC: Should Start from \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))"
+            )
+            DispatchQueue.main.async {
+                self.web3Model.currentSequence = SequenceInfo(
+                    type: .sessionRequest,
+                    thumbnailURL: session.dAppInfo.peerMeta.icons.first ?? .aboutBlank,
+                    dAppMeta: session.dAppInfo.peerMeta,
+                    chain: EthNode.from(chainID: session.dAppInfo.chainId),
+                    message: session.dAppInfo.peerMeta.description ?? "",
+                    onAccept: { chainID in
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            let walletInfo = Session.WalletInfo(
+                                approved: true,
+                                accounts: [wallet.publicAddress],
+                                chainId: chainID,
+                                peerId: UUID().uuidString,
+                                peerMeta: wallet.walletMeta)
+                            completion(walletInfo)
+                        }
+                        ClientLogger.shared.logCounter(
+                            .ConnectedSite,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.walletAddress,
+                                    value: Defaults[.cryptoPublicKey]),
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.connectedSite,
+                                    value: session.dAppInfo.peerMeta.url.absoluteString),
+                            ])
+                    },
+                    onReject: {
+                        DispatchQueue.global(qos: .userInitiated).async {
+                            let walletInfo = Session.WalletInfo(
+                                approved: false,
+                                accounts: [wallet.publicAddress],
+                                chainId: session.dAppInfo.chainId ?? 1,
+                                peerId: UUID().uuidString,
+                                peerMeta: wallet.walletMeta)
+                            completion(walletInfo)
+                        }
+                    })
+            }
+        #endif
     }
 
     func server(_ server: Server, didConnect session: Session) {

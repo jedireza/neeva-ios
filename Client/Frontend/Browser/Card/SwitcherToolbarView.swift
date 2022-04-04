@@ -5,7 +5,10 @@
 import Defaults
 import Shared
 import SwiftUI
-import WalletCore
+
+#if XYZ
+    import WalletCore
+#endif
 
 class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
@@ -179,11 +182,7 @@ struct SwitcherToolbarView: View {
                 Spacer()
             }
         }
-        .background(
-            NeevaConstants.currentTarget == .xyz
-                ? Web3Theme(with: currentTheme).backgroundColor.ignoresSafeArea()
-                : Color.DefaultBackground.ignoresSafeArea()
-        )
+        .defaultBackgroundOrTheme(currentTheme)
         .animation(.easeOut)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Toolbar")
