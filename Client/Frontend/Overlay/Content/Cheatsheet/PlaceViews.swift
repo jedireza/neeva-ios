@@ -7,6 +7,33 @@ import SDWebImageSwiftUI
 import Shared
 import SwiftUI
 
+enum PlaceViewUX {
+    enum Ratings {
+        static let spacing: CGFloat = 2
+        static let size: CGFloat = 12
+    }
+
+    enum QuickActionButton {
+        static let cornerRadius: CGFloat = 10
+        static let padding: CGFloat = 7
+        static let pressedHighlightOpacity: CGFloat = 0.2
+    }
+
+    static let spacing: CGFloat = 5
+
+    static let mapCornerRadius: CGFloat = 10
+    static let mapOverlayOpacity: CGFloat = 0.5
+    static let mapHeight: CGFloat = 200
+    static let mapPinSize: CGFloat = 25
+
+    static let imageSize: CGFloat = 80
+    static let imageCornerRadius: CGFloat = 10
+
+    static let listIconSize: CGFloat = 15
+    static let listImageSize: CGFloat = 50
+    static let listImageCornerRadius: CGFloat = 10
+}
+
 private struct RatingsView: View {
     private struct StarView: View {
         let fill: Double
@@ -31,7 +58,7 @@ private struct RatingsView: View {
     let rating: Double
 
     var body: some View {
-        HStack(alignment: .center, spacing: 2) {
+        HStack(alignment: .center, spacing: PlaceViewUX.Ratings.spacing) {
             StarView(fill: max(min(1, rating), 0))
             StarView(fill: max(min(1, rating - 1), 0))
             StarView(fill: max(min(1, rating - 2), 0))
@@ -39,13 +66,13 @@ private struct RatingsView: View {
             StarView(fill: max(min(1, rating - 4), 0))
         }
         .foregroundColor(Color.brand.orange)
-        .font(.system(size: 12))
+        .font(.system(size: PlaceViewUX.Ratings.size))
     }
 }
 
 private struct QuickActionButtonStyle: ButtonStyle {
-    let cornerRadius: CGFloat = 10
-    let padding: CGFloat = 7
+    let cornerRadius: CGFloat = PlaceViewUX.QuickActionButton.cornerRadius
+    let padding: CGFloat = PlaceViewUX.QuickActionButton.padding
 
     func makeBody(configuration: Configuration) -> some View {
         HStack {
@@ -62,7 +89,10 @@ private struct QuickActionButtonStyle: ButtonStyle {
         .overlay(
             Color.white
                 .cornerRadius(cornerRadius)
-                .opacity(configuration.isPressed ? 0.2 : 0)
+                .opacity(
+                    configuration.isPressed ?
+                    PlaceViewUX.QuickActionButton.pressedHighlightOpacity : 0
+                )
         )
 
     }
@@ -76,8 +106,6 @@ struct PlaceView: View {
     @State private var enableMapInteraction: Bool = false
     @State private var hourExpanded: Bool = false
     @State private var addressExpanded: Bool = false
-
-    let mapHeight: CGFloat = 200
 
     var place: Place {
         viewModel.place
@@ -120,39 +148,41 @@ struct PlaceView: View {
     }
 
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Map(
-                    coordinateRegion: $viewModel.mapRegion,
-                    interactionModes: enableMapInteraction ? .all : [],
-                    showsUserLocation: true,
-                    userTrackingMode: nil,
-                    annotationItems: viewModel.annotatedMapItems
-                ) { place in
-                    MapMarker(
-                        coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
-                        tint: Color.brand.variant.red
-                    )
-                }
+        VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
+            GeometryReader { geometry in
+                ZStack {
+                    Map(
+                        coordinateRegion: $viewModel.mapRegion,
+                        interactionModes: enableMapInteraction ? .all : [],
+                        showsUserLocation: true,
+                        userTrackingMode: nil,
+                        annotationItems: viewModel.annotatedMapItems
+                    ) { place in
+                        MapMarker(
+                            coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
+                            tint: Color.brand.variant.red
+                        )
+                    }
 
-                ZStack(alignment: .center) {
-                    Color.black
-                    Text("Tap to pan and zoom")
-                        .withFont(.headingLarge)
-                        .foregroundColor(.white)
+                    ZStack(alignment: .center) {
+                        Color.black
+                        Text("Tap to pan and zoom")
+                            .withFont(.headingLarge)
+                            .foregroundColor(.white)
+                    }
+                    .opacity(enableMapInteraction ? 0 : PlaceViewUX.mapOverlayOpacity)
+                    .onTapGesture {
+                        print("tapped")
+                        enableMapInteraction.toggle()
+                    }
                 }
-                .opacity(enableMapInteraction ? 0 : 0.5)
-                .onTapGesture {
-                    print("tapped")
-                    enableMapInteraction.toggle()
-                }
+                .frame(width: geometry.size.width, alignment: .center)
+                .cornerRadius(PlaceViewUX.mapCornerRadius)
             }
-            .frame(width: geometry.size.width, alignment: .center)
-        }
-        .frame(height: mapHeight)
-        VStack(alignment: .leading, spacing: 5) {
+            .frame(height: PlaceViewUX.mapHeight)
+
             HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 5) {
+                VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
                     Text(place.name)
                         .withFont(.headingXLarge)
                         .lineLimit(2)
@@ -174,12 +204,11 @@ struct PlaceView: View {
                     WebImage(url: imageURL)
                         .resizable()
                         .scaledToFill()
-                        .frame(width: 80, height: 80)
+                        .frame(width: PlaceViewUX.imageSize, height: PlaceViewUX.imageSize)
                         .clipped()
-                        .cornerRadius(10)
+                        .cornerRadius(PlaceViewUX.imageCornerRadius)
                 }
             }
-
 
             quickActions
 
@@ -221,7 +250,7 @@ struct PlaceView: View {
 
     @ViewBuilder
     var quickActions: some View {
-        HStack(spacing: 5) {
+        HStack(spacing: PlaceViewUX.spacing) {
             if let url = viewModel.telephoneURL,
                UIApplication.shared.canOpenURL(url) {
                 Button(action: {
@@ -330,7 +359,7 @@ struct PlaceView: View {
                                 }
                             }
                         } else {
-                            VStack(alignment: .leading, spacing: 5) {
+                            VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
                                 ForEach(hours, id: \.gregorianWeekday) { hour in
                                     HStack {
                                         Text(hour.weekday)
@@ -350,7 +379,7 @@ struct PlaceView: View {
                             }
                         }
                     }
-                    .padding(.top, 5)
+                    .padding(.top, PlaceViewUX.spacing)
                 }
 
                 Divider()
@@ -383,7 +412,7 @@ struct PlaceView: View {
                             .withFont(.bodyMedium)
                     } else {
                         let separated = place.address.full.components(separatedBy: ", ")
-                        VStack(alignment: .leading, spacing: 5) {
+                        VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
                             ForEach(
                                 separated.indices,
                                 id: \.self
@@ -394,7 +423,7 @@ struct PlaceView: View {
                         }
                     }
                 }
-                .padding(.top, 5)
+                .padding(.top, PlaceViewUX.spacing)
             }
             .contextMenu {
                 Button(action: {
@@ -431,7 +460,7 @@ struct PlaceView: View {
         .padding()
         .background(
             Color.secondaryBackground
-                .cornerRadius(10)
+                .cornerRadius(PlaceViewUX.QuickActionButton.cornerRadius)
         )
     }
 }
@@ -442,8 +471,6 @@ struct PlaceListView: View {
     @StateObject private var viewModel: PlaceListViewModel
 
     var placeList: [Place] { viewModel.placelist }
-
-    let mapHeight: CGFloat = 200
 
     init(viewModel: PlaceListViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -465,7 +492,7 @@ struct PlaceListView: View {
                         Image(systemName: "\(viewModel.placeIndex[place.id]!+1).circle.fill")
                             .foregroundColor(.brand.red)
                             .scaledToFit()
-                            .frame(width: 25, height: 25)
+                            .frame(width: PlaceViewUX.mapPinSize, height:  PlaceViewUX.mapPinSize)
                             .background(
                                 Circle()
                                     .fill(Color.white)
@@ -474,17 +501,18 @@ struct PlaceListView: View {
                 }
                 .frame(width: geometry.size.width)
             }
-            .frame(height: mapHeight)
+            .frame(height: PlaceViewUX.mapHeight)
+            .cornerRadius(PlaceViewUX.mapCornerRadius)
 
-            VStack(alignment: .center, spacing: 5) {
+            VStack(alignment: .center, spacing: PlaceViewUX.spacing) {
                 ForEach(Array(placeList.enumerated()), id: \.element.address.full) { idx, place in
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(alignment: .top) {
                             Image(systemName: "\(idx+1).circle.fill")
                                 .foregroundColor(.brand.red)
                                 .scaledToFit()
-                                .frame(width: 15, height: 15)
-                                .padding(5)
+                                .frame(width: PlaceViewUX.listIconSize, height: PlaceViewUX.listIconSize)
+                                .padding(PlaceViewUX.spacing)
 
                             HeaderView(place: place)
 
@@ -494,9 +522,9 @@ struct PlaceListView: View {
                                 WebImage(url: imageURL)
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: 50, height: 50)
+                                    .frame(width: PlaceViewUX.listImageSize, height: PlaceViewUX.listImageSize)
                                     .clipped()
-                                    .cornerRadius(10)
+                                    .cornerRadius(PlaceViewUX.listImageCornerRadius)
                             }
                         }
                     }
@@ -509,7 +537,7 @@ struct PlaceListView: View {
             .padding()
             .background(
                 Color.groupedBackground
-                    .cornerRadius(10)
+                    .cornerRadius(PlaceViewUX.QuickActionButton.cornerRadius)
             )
             .padding(.top)
         }
