@@ -57,12 +57,16 @@ class Web3Model: ObservableObject, ResponseRelay {
     @Published var matchingCollection: Collection?
     @Published var showingMaliciousSiteWarning = false
 
-    let server: Server?
+    #if XYZ
+        var serverManager: WalletServerManager?
+    #endif
+
     let presenter: WalletConnectPresenter
     var selectedTab: Tab?
     var wallet: WalletAccessor?
     var communityBasedTrustSignals = [String: TrustSignal]()
     let walletDetailsModel: WalletDetailsModel
+    weak var toastDelegate: ToastDelegate?
 
     func updateTrustSignals(url: URL?) {
         trustSignal = computeTrustSignal(url: url)
@@ -117,8 +121,7 @@ class Web3Model: ObservableObject, ResponseRelay {
     private var walletConnectSubscription: AnyCancellable? = nil
     private let closeTab: (Tab) -> Void
 
-    init(server: Server?, presenter: WalletConnectPresenter, tabManager: TabManager) {
-        self.server = server
+    init(presenter: WalletConnectPresenter, tabManager: TabManager) {
         self.presenter = presenter
         self.closeTab = { tab in
             tabManager.close(tab)
@@ -126,6 +129,7 @@ class Web3Model: ObservableObject, ResponseRelay {
         self.openURLForSpace = {
             tabManager.createOrSwitchToTabForSpace(for: $0, spaceID: $1)
         }
+
         self.walletDetailsModel = WalletDetailsModel()
         self.currentSession =
             allSavedSessions.first(where: {
@@ -153,6 +157,10 @@ class Web3Model: ObservableObject, ResponseRelay {
                 }
             }
         }
+
+        #if XYZ
+            self.serverManager = WalletServerManager(delegate: self)
+        #endif
     }
 
     var allSavedSessions: [Session] {
@@ -223,12 +231,12 @@ class Web3Model: ObservableObject, ResponseRelay {
                 self.allSavedSessions.first(where: {
                     $0.dAppInfo.peerMeta.url.baseDomain == url?.baseDomain
                 })
-            if let session = self.currentSession, let server = self.server,
+            if let session = self.currentSession, let server = self.serverManager?.server,
                 !(server.openSessions().contains(where: {
                     session.dAppInfo.peerId == $0.dAppInfo.peerId
                 }))
             {
-                try? self.server?.reconnect(to: session)
+                try? self.serverManager?.server.reconnect(to: session)
             }
         }
     }
@@ -395,7 +403,7 @@ class Web3Model: ObservableObject, ResponseRelay {
             try! JSONEncoder().encode(updatedSession)
         Defaults[.sessionsPeerIDs].insert(updatedSession.dAppInfo.peerId)
 
-        if let server = server,
+        if let server = serverManager?.server,
             server.openSessions().contains(where: { session.dAppInfo.peerId == $0.dAppInfo.peerId })
         {
             try? server.updateSession(session, with: info)
@@ -419,7 +427,7 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
 
     func send(_ response: Response) {
-        server?.send(response)
+        serverManager?.server.send(response)
     }
 
     func askToTransact(
@@ -449,7 +457,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                     "This will transfer this amount from your wallet to a wallet provided by \(dappInfo.peerMeta.name).",
                 onAccept: { chainId in
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.server?.send(
+                        self.serverManager?.server.send(
                             .transaction(transact(EthNode.from(chainID: chainId)), for: request)
                         )
                         ClientLogger.shared.logCounter(
@@ -470,7 +478,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 },
                 onReject: {
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.server?.send(.reject(request))
+                        self.serverManager?.server.send(.reject(request))
                     }
                 },
                 transaction: transaction,
@@ -531,12 +539,12 @@ class Web3Model: ObservableObject, ResponseRelay {
                                         value: dappInfo.peerMeta.url.absoluteString),
                                 ])
                         }
-                        self.server?.send(.signature(signature, for: request))
+                        self.serverManager?.server.send(.signature(signature, for: request))
                     }
                 },
                 onReject: {
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.server?.send(.reject(request))
+                        self.serverManager?.server.send(.reject(request))
                     }
                 })
             self.startSequence()
@@ -546,4 +554,14 @@ class Web3Model: ObservableObject, ResponseRelay {
 
 class WalletDetailsModel: ObservableObject {
     @Published var showingWalletDetails = false
+}
+
+extension Web3Model: WalletServerManagerDelegate {
+    func shouldShowToast(for message: LocalizedStringKey) {
+        self.toastDelegate?.shouldShowToast(for: message)
+    }
+
+    func getWeb3Model() -> Web3Model {
+        return self
+    }
 }

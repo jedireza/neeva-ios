@@ -51,9 +51,11 @@ class BrowserViewController: UIViewController, ModalPresenter {
         model.delegate = self
         return model
     }()
+
     private(set) lazy var web3Model: Web3Model = {
-        return Web3Model(server: self.server, presenter: self, tabManager: self.tabManager)
+        return Web3Model(presenter: self, tabManager: self.tabManager)
     }()
+
     let walletDetailsModel = WalletDetailsModel()
 
     private(set) lazy var suggestionModel: SuggestionModel = {
@@ -151,7 +153,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     let profile: Profile
     let tabManager: TabManager
-    var server: Server? = nil
 
     // Backdrop used for displaying greyed background for private tabs
     private(set) var webViewContainerBackdrop: UIView!
@@ -200,7 +201,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
         chromeModel.topBarDelegate = self
         chromeModel.toolbarDelegate = self
         #if XYZ
-            self.configureWalletServer()
+            web3Model.toastDelegate = self
+            web3Model.updateCurrentSession()
         #endif
         didInit()
     }

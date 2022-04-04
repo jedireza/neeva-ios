@@ -568,7 +568,7 @@
 		4A42C58627E58487003B9826 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A88F97626630F39007C203D /* Card.swift */; };
 		4A42C58727E58487003B9826 /* WebServer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E40FAB0B1A7ABB77009CB80D /* WebServer.swift */; };
 		4A42C58827E58487003B9826 /* TwoLineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A68B1F857A8638598A63A0 /* TwoLineCell.swift */; };
-		4A42C58927E58487003B9826 /* BrowserViewController+ServerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54C277D287300CD5415 /* BrowserViewController+ServerDelegate.swift */; };
+		4A42C58927E58487003B9826 /* BrowserViewController+WalletConnectPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54C277D287300CD5415 /* BrowserViewController+WalletConnectPresenter.swift */; };
 		4A42C58B27E58487003B9826 /* CertError.html in Resources */ = {isa = PBXBuildFile; fileRef = D38A1EDF1CB458EC0080C842 /* CertError.html */; };
 		4A42C58C27E58487003B9826 /* OfflineError.css in Resources */ = {isa = PBXBuildFile; fileRef = 0BA1E02F1B051A07007675AF /* OfflineError.css */; };
 		4A42C58D27E58487003B9826 /* TopSites in Resources */ = {isa = PBXBuildFile; fileRef = 3BC659481E5BA4AE006D560F /* TopSites */; };
@@ -704,7 +704,7 @@
 		4A8CE60A27CD868800735C75 /* Wallet.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 4A9EFAEA27AF9FC200F3ED7F /* Wallet.xcassets */; };
 		4A8CE60F27CD8ACC00735C75 /* WelcomeStarterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCAAA0E5276D9D3D0013223E /* WelcomeStarterView.swift */; };
 		4A8CE61127CD8B0F00735C75 /* Confetti.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9EFAEC27AFBCF900F3ED7F /* Confetti.swift */; };
-		4A93B54D277D287300CD5415 /* BrowserViewController+ServerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54C277D287300CD5415 /* BrowserViewController+ServerDelegate.swift */; };
+		4A93B54D277D287300CD5415 /* BrowserViewController+WalletConnectPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54C277D287300CD5415 /* BrowserViewController+WalletConnectPresenter.swift */; };
 		4A9E28FD27E270DF00A70CA9 /* NFTSuggestionResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9E28FC27E270DF00A70CA9 /* NFTSuggestionResult.swift */; };
 		4A9EFAF027B0BFD100F3ED7F /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 4A9EFAEF27B0BFD100F3ED7F /* README.md */; };
 		4A9F653F2702D2CE00B7C06E /* SpaceContentSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A9F653E2702D2CE00B7C06E /* SpaceContentSheet.swift */; };
@@ -1335,6 +1335,7 @@
 		E63B18DF27FB4630001BA0B0 /* Web3Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B5592782981600CD5415 /* Web3Model.swift */; };
 		E63B18E227FB472E001BA0B0 /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8CE5ED27CCA66600735C75 /* ViewExtension.swift */; };
 		E63B18E327FB5AD9001BA0B0 /* SessionInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */; };
+		E63B18E627FB69DF001BA0B0 /* WalletServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63B18E427FB69B5001BA0B0 /* WalletServerManager.swift */; };
 		E63DBA5727F339FC001B7A68 /* SuggestedXYZSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63DBA5627F339FC001B7A68 /* SuggestedXYZSearchesView.swift */; };
 		E63F71881DB7FBE200A995C9 /* TestSQLiteMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */; };
 		E64024E027F241CA00D65B63 /* ZeroQueryHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64024DF27F241CA00D65B63 /* ZeroQueryHeader.swift */; };
@@ -2015,7 +2016,7 @@
 		4A93B53E2776709400CD5415 /* WalletConnectHandlers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletConnectHandlers.swift; sourceTree = "<group>"; };
 		4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletSequenceContent.swift; sourceTree = "<group>"; };
 		4A93B54A277BC06C00CD5415 /* WalletAccessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletAccessor.swift; sourceTree = "<group>"; };
-		4A93B54C277D287300CD5415 /* BrowserViewController+ServerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+ServerDelegate.swift"; sourceTree = "<group>"; };
+		4A93B54C277D287300CD5415 /* BrowserViewController+WalletConnectPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BrowserViewController+WalletConnectPresenter.swift"; sourceTree = "<group>"; };
 		4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionInfoView.swift; sourceTree = "<group>"; };
 		4A93B551277F80C700CD5415 /* Collection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collection.swift; sourceTree = "<group>"; };
 		4A93B553277F8AA100CD5415 /* Asset.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Asset.swift; sourceTree = "<group>"; };
@@ -2639,6 +2640,7 @@
 		E6231C001B90A44F005ABB0D /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		E6231C041B90A472005ABB0D /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
 		E6327A631BF6438E008D12E0 /* DebugSettingsBundleOptions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DebugSettingsBundleOptions.swift; sourceTree = "<group>"; };
+		E63B18E427FB69B5001BA0B0 /* WalletServerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletServerManager.swift; sourceTree = "<group>"; };
 		E63DBA5627F339FC001B7A68 /* SuggestedXYZSearchesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuggestedXYZSearchesView.swift; sourceTree = "<group>"; };
 		E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestSQLiteMetadata.swift; sourceTree = "<group>"; };
 		E64024DF27F241CA00D65B63 /* ZeroQueryHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ZeroQueryHeader.swift; sourceTree = "<group>"; };
@@ -3927,6 +3929,7 @@
 				4A93B540277A4A4E00CD5415 /* WalletSequenceContent.swift */,
 				4A93B5592782981600CD5415 /* Web3Model.swift */,
 				3FC15D7527E924A8005F71CE /* Web3Toolbar.swift */,
+				E63B18E427FB69B5001BA0B0 /* WalletServerManager.swift */,
 			);
 			path = NeevaWallet;
 			sourceTree = "<group>";
@@ -3962,7 +3965,7 @@
 			isa = PBXGroup;
 			children = (
 				C8FB0C772321523D00031088 /* PageActionMenu.swift */,
-				4A93B54C277D287300CD5415 /* BrowserViewController+ServerDelegate.swift */,
+				4A93B54C277D287300CD5415 /* BrowserViewController+WalletConnectPresenter.swift */,
 				EBE26B4E220C959D00D1D99A /* BrowserViewController+TabToolbarDelegate.swift */,
 				EB1C84B6212EFFBF001489DF /* BrowserViewController+ReaderMode.swift */,
 				EBFDB787211C83A5005CCA2F /* BrowserViewController+FindInPage.swift */,
@@ -6800,6 +6803,7 @@
 				4A42C53C27E58487003B9826 /* TabManager.swift in Sources */,
 				4A42C53D27E58487003B9826 /* DismissBackgroundView.swift in Sources */,
 				4A42C53E27E58487003B9826 /* PressReportingButtonStyle.swift in Sources */,
+				E63B18E627FB69DF001BA0B0 /* WalletServerManager.swift in Sources */,
 				4A42C53F27E58487003B9826 /* FindInPageOverlayView.swift in Sources */,
 				4A42C54027E58487003B9826 /* PinToTopSitesActivity.swift in Sources */,
 				4A42C54127E58487003B9826 /* UIConstants.swift in Sources */,
@@ -6876,7 +6880,7 @@
 				4A42C58627E58487003B9826 /* Card.swift in Sources */,
 				4A42C58727E58487003B9826 /* WebServer.swift in Sources */,
 				4A42C58827E58487003B9826 /* TwoLineCell.swift in Sources */,
-				4A42C58927E58487003B9826 /* BrowserViewController+ServerDelegate.swift in Sources */,
+				4A42C58927E58487003B9826 /* BrowserViewController+WalletConnectPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -7437,7 +7441,7 @@
 				4A88F97726630F39007C203D /* Card.swift in Sources */,
 				E40FAB0C1A7ABB77009CB80D /* WebServer.swift in Sources */,
 				59A68D66379CFA85C4EAF00B /* TwoLineCell.swift in Sources */,
-				4A93B54D277D287300CD5415 /* BrowserViewController+ServerDelegate.swift in Sources */,
+				4A93B54D277D287300CD5415 /* BrowserViewController+WalletConnectPresenter.swift in Sources */,
 				E6EA734727F60E0F00845FFB /* NeevaConstantsExtensions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -55,7 +55,7 @@ struct SessionInfoView: View {
                 HStack(spacing: 12) {
                     Button(action: {
                         DispatchQueue.global(qos: .userInitiated).async {
-                            try? web3Model.server?.disconnect(from: session)
+                            try? web3Model.serverManager?.server.disconnect(from: session)
                         }
                         Defaults[.dAppsSession(session.dAppInfo.peerId)] = nil
                         Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
