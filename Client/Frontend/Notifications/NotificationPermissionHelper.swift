@@ -71,7 +71,8 @@ class NotificationPermissionHelper {
                             )
                         ]
                     )
-                    requestPermissionFromSystem(completion: completion, callSite: callSite)
+
+                    self.requestPermissionFromSystem(completion: completion, callSite: callSite)
                 } else if openSettingsIfNeeded {
                     /// If we can't show the iOS system notification because the user denied our first request,
                     /// this will take them to system settings to enable notifications there.

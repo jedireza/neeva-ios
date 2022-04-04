@@ -56,7 +56,7 @@ extension EnvironmentValues {
 extension Defaults.Keys {
     fileprivate static let expandSuggestedSites = Defaults.Key<TriState>(
         "profile.home.suggestedSites.expanded",
-        default: FeatureFlag[.web3Mode] ? .expanded : .compact
+        default: NeevaConstants.currentTarget == .xyz ? .expanded : .compact
     )
     fileprivate static let expandSearches = Defaults.Key<Bool>(
         "profile.home.searches.expanded", default: true)
@@ -147,7 +147,7 @@ struct ZeroQueryView: View {
 
     @ViewBuilder
     private func contentView(_ parentGeom: GeometryProxy) -> some View {
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             promoCardView(parentGeom)
             suggestedSitesView(parentGeom)
             browseNFTsView
@@ -215,9 +215,9 @@ struct ZeroQueryView: View {
             suggestedSpace
         }
 
-        if Defaults[.signedInOnce] || FeatureFlag[.web3Mode] {
+        if Defaults[.signedInOnce] || NeevaConstants.currentTarget == .xyz {
             ZeroQueryHeader(
-                title: FeatureFlag[.web3Mode] ? "Web3 Tools" : "Suggested sites",
+                title: NeevaConstants.currentTarget == .xyz ? "Web3 Tools" : "Suggested sites",
                 action: { expandSuggestedSites.advance() },
                 label: "\(expandSuggestedSites.verb) this section",
                 icon: expandSuggestedSites.icon
@@ -238,7 +238,8 @@ struct ZeroQueryView: View {
     @ViewBuilder
     private var searchesView: some View {
         ZeroQueryHeader(
-            title: FeatureFlag[.web3Mode] ? "Search on Ethereum (or the web)" : "Searches",
+            title: NeevaConstants.currentTarget == .xyz
+                ? "Search on Ethereum (or the web)" : "Searches",
             action: { expandSearches.toggle() },
             label: "\(expandSearches ? "hides" : "shows") this section",
             icon: expandSearches ? .chevronUp : .chevronDown
@@ -246,7 +247,7 @@ struct ZeroQueryView: View {
 
         if expandSearches {
             if !Defaults[.signedInOnce] {
-                if FeatureFlag[.web3Mode] {
+                if NeevaConstants.currentTarget == .xyz {
                     SuggestedXYZSearchesView()
                         .onChange(of: cryptoPublicKey) { _ in
                             viewModel.updateState()

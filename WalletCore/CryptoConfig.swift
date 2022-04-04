@@ -5,6 +5,7 @@
 import Defaults
 import Foundation
 import Shared
+import secp256k1
 import web3swift
 
 private let log = Logger.browser
@@ -124,16 +125,19 @@ public class CryptoConfig {
             return
         }
 
-        try? wallet.send(
-            on: .Ethereum,
-            transactionData: TransactionData(
-                from: wallet.publicAddress,
-                to: sendToAccountAddress,
-                value: amount,
-                data: nil,
-                gas: nil
+        DispatchQueue.global(qos: .userInitiated).async {
+            _ = try? wallet.send(
+                on: .Ethereum,
+                transactionData: TransactionData(
+                    from: wallet.publicAddress,
+                    to: sendToAccountAddress,
+                    value: nil,
+                    data: nil,
+                    gas: nil,
+                    converted: Web3.Utils.parseToBigUInt(amount, units: .eth)
+                )
             )
-        )
+        }
         completion()
     }
 

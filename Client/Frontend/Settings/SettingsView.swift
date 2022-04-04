@@ -30,27 +30,11 @@ struct SettingsView: View {
 
     var body: some View {
         ZStack {
-            NavigationView {
-                List {
-                    if !FeatureFlag[.web3Mode] {
-                        Section(header: Text("Neeva")) {
-                            NeevaSettingsSection(dismissVC: dismiss, userInfo: .shared)
-                        }
-                    }
-                    Section(header: Text("General")) {
-                        GeneralSettingsSection()
-                    }
-                    Section(header: Text("Privacy")) {
-                        PrivacySettingsSection()
-                    }
-                    Section(header: Text("Support")) {
-                        SupportSettingsSection()
-                    }
-                    Section(header: Text("About")) {
-                        AboutSettingsSection(showDebugSettings: $showDebugSettings)
-                    }
-                    if showDebugSettings {
-                        DebugSettingsSection()
+        NavigationView {
+            List {
+                if NeevaConstants.currentTarget != .xyz {
+                    Section(header: Text("Neeva")) {
+                        NeevaSettingsSection(dismissVC: dismiss, userInfo: .shared)
                     }
                 }
                 .listStyle(.insetGrouped)

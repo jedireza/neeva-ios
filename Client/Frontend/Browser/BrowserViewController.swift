@@ -201,7 +201,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         chromeModel.topBarDelegate = self
         chromeModel.toolbarDelegate = self
-        if FeatureFlag[.enableCryptoWallet] {
+        if NeevaConstants.currentTarget == .xyz {
             self.configureWalletServer()
         }
         didInit()
@@ -394,7 +394,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             }
         }
 
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             DispatchQueue.main.async {
                 AssetStore.shared.refresh()
             }
@@ -500,7 +500,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             if Self.createNewTabOnStartForTesting {
                 self.tabManager.select(self.tabManager.addTab())
             } else if self.tabManager.normalTabs.isEmpty {
-                if FeatureFlag[.web3Mode] {
+                if NeevaConstants.currentTarget == .xyz {
                     self.showZeroQuery()
                     if !Defaults[.walletIntroSeen] {
                         self.web3Model.showWalletPanel()
@@ -515,7 +515,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        if !FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget != .xyz {
             if !Defaults[.introSeen] {
                 presentDefaultBrowserFirstRun()
             }
@@ -1237,7 +1237,7 @@ extension BrowserViewController: TabDelegate {
                         chromeModel.estimatedProgress = estimatedProgress
                     } else if estimatedProgress == 1 && chromeModel.estimatedProgress != 1 {
                         chromeModel.estimatedProgress = 1
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [self] in
                             if chromeModel.estimatedProgress == 1 {
                                 chromeModel.estimatedProgress = nil
                             }
@@ -1569,6 +1569,7 @@ extension BrowserViewController {
         ) {
             Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
             Defaults[.introSeen] = true
+            Defaults[.firstRunSeenAndNotSignedIn] = true
             ClientLogger.shared.logCounter(
                 .DefaultBrowserInterstitialImp
             )
@@ -1627,9 +1628,6 @@ extension BrowserViewController {
                 }
             }
         }
-
-        // Only show to new users
-        let introSeen = Defaults[.introSeen]
 
         introViewModel = IntroViewModel(
             presentationController: self, overlayManager: overlayManager,
@@ -2124,7 +2122,7 @@ extension BrowserViewController {
         // otherwise, present as popover
         showModal(style: .cheatsheet) { [self] in
             CheatsheetOverlayContent(
-                menuAction: { perform(overflowMenuAction: $0, targetButtonView: nil) },
+                menuAction: { self.perform(overflowMenuAction: $0, targetButtonView: nil) },
                 tabManager: tabManager
             )
             .environment(\.onSigninOrJoinNeeva) {
@@ -2132,12 +2130,12 @@ extension BrowserViewController {
                     .CheatsheetErrorSigninOrJoinNeeva,
                     attributes: EnvironmentHelper.shared.getFirstRunAttributes()
                 )
-                overlayManager.hideCurrentOverlay()
-                presentIntroViewController(
+                self.overlayManager.hideCurrentOverlay()
+                self.presentIntroViewController(
                     true,
                     onDismiss: {
                         DispatchQueue.main.async {
-                            hideCardGrid(withAnimation: true)
+                            self.hideCardGrid(withAnimation: true)
                         }
                     }
                 )

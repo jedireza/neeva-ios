@@ -14,7 +14,8 @@ struct TabGroup {
         if let spaceID = children.first?.parentSpaceID, spaceID == children.first?.rootUUID {
             if let spaceTitle = SpaceStore.shared.get(for: spaceID)?.displayTitle {
                 return spaceTitle
-            } else if FeatureFlag[.enableCryptoWallet] && spaceID == Defaults[.cryptoPublicKey] {
+            } else if NeevaConstants.currentTarget == .xyz && spaceID == Defaults[.cryptoPublicKey]
+            {
                 return "Your NFTs"
             }
         }

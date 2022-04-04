@@ -262,7 +262,7 @@ class AutocompleteTextField: UITextField, UITextFieldDelegate {
         }
 
         log.info(
-            "No Autocomplete suggestion taken, query: \(textField.text)"
+            "No Autocomplete suggestion taken, query: \(String(describing: textField.text))"
         )
 
         ClientLogger.shared.logCounter(

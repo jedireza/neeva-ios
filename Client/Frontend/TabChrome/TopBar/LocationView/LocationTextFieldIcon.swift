@@ -36,7 +36,7 @@ struct LocationTextFieldIcon: View {
             {
                 FaviconView(forSiteUrl: url)
                     .cornerRadius(4)
-            } else if FeatureFlag[.web3Mode] {
+            } else if NeevaConstants.currentTarget == .xyz {
                 WebImage(url: SearchEngine.nft.icon)
                     .resizable()
                     .aspectRatio(contentMode: .fit)

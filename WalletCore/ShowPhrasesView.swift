@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct ShowPhrasesView: View {
     let dismiss: () -> Void
-    @State var copyButtonText = "Copy"
+    @State var copyButtonText = "Copy to Clipboard"
     @State var showPhrases = false
     @Binding public var viewState: ViewState
     var secretPhrases: String {
@@ -28,7 +28,7 @@ public struct ShowPhrasesView: View {
                 .foregroundColor(.label)
                 .padding(.top, 60)
             Text(
-                "You will need your Secret Recovery Phrase to recover your wallet and funds. Please write it down and save it in a safe place."
+                "Write down or save your Secret Recovery Phrase somewhere safe. You need it to ensure you can access your wallet forever."
             )
             .withFont(.bodyLarge)
             .foregroundColor(.secondaryLabel)
@@ -60,7 +60,7 @@ public struct ShowPhrasesView: View {
                     .animation(.easeInOut)
                 VStack(spacing: 16) {
                     Text(
-                        "Anyone who has this Secret Recovery Phrase can access your wallet and funds! Make sure no one else can see your screen."
+                        "Anyone with this private key can fully control your wallet, including transferring away your funds. DO NOT let it get compromised!"
                     )
                     .withFont(.bodyLarge)
                     .foregroundColor(labelColor)
@@ -100,10 +100,10 @@ public struct ShowPhrasesView: View {
                     secretPhrases,
                     forPasteboardType: kUTTypePlainText as String)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                    copyButtonText = "Copy"
+                    copyButtonText = "Copy to Clipboard"
                 }
             }) {
-                Text("Copy to clipboard")
+                Text(copyButtonText)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.wallet(.secondary))

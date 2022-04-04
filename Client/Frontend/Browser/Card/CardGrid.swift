@@ -203,7 +203,7 @@ struct GridPicker: View {
                 selectedColor: Color.ui.adaptive.blue,
                 selectedAction: { gridModel.switchToTabs(incognito: false) }),
         ]
-        if !FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget != .xyz {
             segments.append(
                 Segment(
                     symbol: Symbol(.bookmarkOnBookmark, label: "Spaces"),
