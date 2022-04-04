@@ -210,10 +210,9 @@ public struct CheatsheetMenuView: View {
 
     @ViewBuilder
     var cheatsheetContent: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading) {
             if isRecipeAllowed() {
                 recipeView
-                    .padding()
             }
 
             if let richResults = model.searchRichResults {
@@ -222,18 +221,17 @@ public struct CheatsheetMenuView: View {
                         renderRichResult(for: richResult)
                     }
                 }
-                .padding()
-
             }
+
             priceHistorySection
             reviewURLSection
             memorizedQuerySection
 
             Divider()
                 .padding(.horizontal)
-
             supportSection
         }
+        .padding(.horizontal)
     }
 
     @ViewBuilder
@@ -258,7 +256,6 @@ public struct CheatsheetMenuView: View {
                     }
                 })
         }
-        .padding()
     }
 
     @ViewBuilder
@@ -352,7 +349,6 @@ public struct CheatsheetMenuView: View {
                     }
                 }
             }
-            .padding()
         }
     }
 
@@ -366,7 +362,6 @@ public struct CheatsheetMenuView: View {
                     QueryButtonView(query: query)
                 }
             }
-            .padding()
         }
     }
 
@@ -425,7 +420,6 @@ public struct CheatsheetMenuView: View {
                     .withFont(unkerned: .bodyMedium)
                 }
             }
-            .padding()
         }
     }
 
