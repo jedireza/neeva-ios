@@ -34,6 +34,17 @@ enum PlaceViewUX {
     static let listImageCornerRadius: CGFloat = 10
 }
 
+private struct MapOverlayView: View {
+    var body: some View {
+        ZStack(alignment: .center) {
+            Color.black
+            Text("Tap to pan and zoom")
+                .withFont(.headingLarge)
+                .foregroundColor(.white)
+        }
+    }
+}
+
 private struct RatingsView: View {
     private struct StarView: View {
         let fill: Double
@@ -164,22 +175,16 @@ struct PlaceView: View {
                         )
                     }
 
-                    ZStack(alignment: .center) {
-                        Color.black
-                        Text("Tap to pan and zoom")
-                            .withFont(.headingLarge)
-                            .foregroundColor(.white)
-                    }
-                    .opacity(enableMapInteraction ? 0 : PlaceViewUX.mapOverlayOpacity)
-                    .onTapGesture {
-                        print("tapped")
-                        enableMapInteraction.toggle()
-                    }
+                    MapOverlayView()
+                        .opacity(enableMapInteraction ? 0 : PlaceViewUX.mapOverlayOpacity)
+                        .onTapGesture {
+                            enableMapInteraction.toggle()
+                        }
                 }
-                .frame(width: geometry.size.width, alignment: .center)
-                .cornerRadius(PlaceViewUX.mapCornerRadius)
+                .frame(width: geometry.size.width)
             }
             .frame(height: PlaceViewUX.mapHeight)
+            .cornerRadius(PlaceViewUX.mapCornerRadius)
 
             HStack(alignment: .top) {
                 VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
@@ -470,6 +475,8 @@ struct PlaceListView: View {
 
     @StateObject private var viewModel: PlaceListViewModel
 
+    @State private var enableMapInteraction: Bool = false
+
     var placeList: [Place] { viewModel.placelist }
 
     init(viewModel: PlaceListViewModel) {
@@ -479,25 +486,33 @@ struct PlaceListView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             GeometryReader { geometry in
-                Map(
-                    mapRect: $viewModel.mapRect,
-                    interactionModes: .all,
-                    showsUserLocation: true,
-                    userTrackingMode: nil,
-                    annotationItems: viewModel.annotatedMapItems
-                ) { place in
-                    MapAnnotation(
-                        coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon)
-                    ) {
-                        Image(systemName: "\(viewModel.placeIndex[place.id]!+1).circle.fill")
-                            .foregroundColor(.brand.red)
-                            .scaledToFit()
-                            .frame(width: PlaceViewUX.mapPinSize, height:  PlaceViewUX.mapPinSize)
-                            .background(
-                                Circle()
-                                    .fill(Color.white)
-                            )
+                ZStack {
+                    Map(
+                        mapRect: $viewModel.mapRect,
+                        interactionModes: enableMapInteraction ? .all : [],
+                        showsUserLocation: true,
+                        userTrackingMode: nil,
+                        annotationItems: viewModel.annotatedMapItems
+                    ) { place in
+                        MapAnnotation(
+                            coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon)
+                        ) {
+                            Image(systemName: "\(viewModel.placeIndex[place.id]!+1).circle.fill")
+                                .foregroundColor(.brand.red)
+                                .scaledToFit()
+                                .frame(width: PlaceViewUX.mapPinSize, height:  PlaceViewUX.mapPinSize)
+                                .background(
+                                    Circle()
+                                        .fill(Color.white)
+                                )
+                        }
                     }
+
+                    MapOverlayView()
+                        .opacity(enableMapInteraction ? 0 : PlaceViewUX.mapOverlayOpacity)
+                        .onTapGesture {
+                            enableMapInteraction.toggle()
+                        }
                 }
                 .frame(width: geometry.size.width)
             }
