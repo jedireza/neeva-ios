@@ -59,14 +59,21 @@ class Web3Model: ObservableObject, ResponseRelay {
 
     #if XYZ
         var serverManager: WalletServerManager?
+        weak var toastDelegate: ToastDelegate?
     #endif
+    
+    var server: Server? {
+        #if XYZ
+            return server?
+        #endif
+        return nil
+    }
 
     let presenter: WalletConnectPresenter
     var selectedTab: Tab?
     var wallet: WalletAccessor?
     var communityBasedTrustSignals = [String: TrustSignal]()
     let walletDetailsModel: WalletDetailsModel
-    weak var toastDelegate: ToastDelegate?
 
     func updateTrustSignals(url: URL?) {
         trustSignal = computeTrustSignal(url: url)
@@ -231,12 +238,12 @@ class Web3Model: ObservableObject, ResponseRelay {
                 self.allSavedSessions.first(where: {
                     $0.dAppInfo.peerMeta.url.baseDomain == url?.baseDomain
                 })
-            if let session = self.currentSession, let server = self.serverManager?.server,
+            if let session = self.currentSession, let server = self.server,
                 !(server.openSessions().contains(where: {
                     session.dAppInfo.peerId == $0.dAppInfo.peerId
                 }))
             {
-                try? self.serverManager?.server.reconnect(to: session)
+                try? self.server?.reconnect(to: session)
             }
         }
     }
@@ -403,7 +410,7 @@ class Web3Model: ObservableObject, ResponseRelay {
             try! JSONEncoder().encode(updatedSession)
         Defaults[.sessionsPeerIDs].insert(updatedSession.dAppInfo.peerId)
 
-        if let server = serverManager?.server,
+        if let server = server,
             server.openSessions().contains(where: { session.dAppInfo.peerId == $0.dAppInfo.peerId })
         {
             try? server.updateSession(session, with: info)
@@ -427,7 +434,7 @@ class Web3Model: ObservableObject, ResponseRelay {
     }
 
     func send(_ response: Response) {
-        serverManager?.server.send(response)
+        server?.send(response)
     }
 
     func askToTransact(
@@ -457,7 +464,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                     "This will transfer this amount from your wallet to a wallet provided by \(dappInfo.peerMeta.name).",
                 onAccept: { chainId in
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.serverManager?.server.send(
+                        self.server?.send(
                             .transaction(transact(EthNode.from(chainID: chainId)), for: request)
                         )
                         ClientLogger.shared.logCounter(
@@ -478,7 +485,7 @@ class Web3Model: ObservableObject, ResponseRelay {
                 },
                 onReject: {
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.serverManager?.server.send(.reject(request))
+                        self.server?.send(.reject(request))
                     }
                 },
                 transaction: transaction,
@@ -539,12 +546,12 @@ class Web3Model: ObservableObject, ResponseRelay {
                                         value: dappInfo.peerMeta.url.absoluteString),
                                 ])
                         }
-                        self.serverManager?.server.send(.signature(signature, for: request))
+                        self.server?.send(.signature(signature, for: request))
                     }
                 },
                 onReject: {
                     DispatchQueue.global(qos: .userInitiated).async {
-                        self.serverManager?.server.send(.reject(request))
+                        self.server?.send(.reject(request))
                     }
                 })
             self.startSequence()
@@ -556,6 +563,7 @@ class WalletDetailsModel: ObservableObject {
     @Published var showingWalletDetails = false
 }
 
+#if XYZ
 extension Web3Model: WalletServerManagerDelegate {
     func shouldShowToast(for message: LocalizedStringKey) {
         self.toastDelegate?.shouldShowToast(for: message)
@@ -565,3 +573,4 @@ extension Web3Model: WalletServerManagerDelegate {
         return self
     }
 }
+#endif
