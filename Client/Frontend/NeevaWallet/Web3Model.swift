@@ -61,7 +61,7 @@ class Web3Model: ObservableObject, ResponseRelay {
         var serverManager: WalletServerManager?
         weak var toastDelegate: ToastDelegate?
     #endif
-    
+
     var server: Server? {
         #if XYZ
             return server?
@@ -564,13 +564,13 @@ class WalletDetailsModel: ObservableObject {
 }
 
 #if XYZ
-extension Web3Model: WalletServerManagerDelegate {
-    func shouldShowToast(for message: LocalizedStringKey) {
-        self.toastDelegate?.shouldShowToast(for: message)
-    }
+    extension Web3Model: WalletServerManagerDelegate {
+        func shouldShowToast(for message: LocalizedStringKey) {
+            self.toastDelegate?.shouldShowToast(for: message)
+        }
 
-    func getWeb3Model() -> Web3Model {
-        return self
+        func getWeb3Model() -> Web3Model {
+            return self
+        }
     }
-}
 #endif
