@@ -19,7 +19,8 @@ enum PlaceViewUX {
         static let pressedHighlightOpacity: CGFloat = 0.2
     }
 
-    static let spacing: CGFloat = 5
+    static let sectionSpacing: CGFloat = 12
+    static let textSpacing: CGFloat = 5
 
     static let mapCornerRadius: CGFloat = 10
     static let mapOverlayOpacity: CGFloat = 0.5
@@ -159,7 +160,7 @@ struct PlaceView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
+        VStack(alignment: .leading, spacing: PlaceViewUX.sectionSpacing) {
             GeometryReader { geometry in
                 ZStack {
                     Map(
@@ -187,7 +188,7 @@ struct PlaceView: View {
             .cornerRadius(PlaceViewUX.mapCornerRadius)
 
             HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
+                VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
                     Text(place.name)
                         .withFont(.headingXLarge)
                         .lineLimit(2)
@@ -255,7 +256,7 @@ struct PlaceView: View {
 
     @ViewBuilder
     var quickActions: some View {
-        HStack(spacing: PlaceViewUX.spacing) {
+        HStack(spacing: PlaceViewUX.textSpacing) {
             if let url = viewModel.telephoneURL,
                UIApplication.shared.canOpenURL(url) {
                 Button(action: {
@@ -314,12 +315,12 @@ struct PlaceView: View {
 
     @ViewBuilder
     var detailsSection: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
             // Operating Hour
             if let hours = viewModel.sortedLocalizedHours,
                let nextOpen = viewModel.nextOpen
             {
-                VStack(alignment: .leading , spacing: 0) {
+                VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
                     HStack(alignment: .center) {
                         Text("Hours")
                             .withFont(.headingMedium)
@@ -364,7 +365,7 @@ struct PlaceView: View {
                                 }
                             }
                         } else {
-                            VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
+                            VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
                                 ForEach(hours, id: \.gregorianWeekday) { hour in
                                     HStack {
                                         Text(hour.weekday)
@@ -384,15 +385,13 @@ struct PlaceView: View {
                             }
                         }
                     }
-                    .padding(.top, PlaceViewUX.spacing)
                 }
 
                 Divider()
-                    .padding(.vertical, 7)
             }
 
             // Address Section
-            VStack(alignment: .leading, spacing: 0) {
+            VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
                 HStack(alignment: .center) {
                     Text("Address")
                         .withFont(.headingMedium)
@@ -417,7 +416,7 @@ struct PlaceView: View {
                             .withFont(.bodyMedium)
                     } else {
                         let separated = place.address.full.components(separatedBy: ", ")
-                        VStack(alignment: .leading, spacing: PlaceViewUX.spacing) {
+                        VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
                             ForEach(
                                 separated.indices,
                                 id: \.self
@@ -428,7 +427,6 @@ struct PlaceView: View {
                         }
                     }
                 }
-                .padding(.top, PlaceViewUX.spacing)
             }
             .contextMenu {
                 Button(action: {
@@ -442,8 +440,7 @@ struct PlaceView: View {
             // Phone number
             if let phone = place.telephonePretty ?? place.telephone {
                 Divider()
-                    .padding(.vertical, 7)
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
                     Text("Phone")
                         .withFont(.headingMedium)
                         .foregroundColor(.label)
@@ -462,7 +459,7 @@ struct PlaceView: View {
                 }
             }
         }
-        .padding()
+        .padding(PlaceViewUX.sectionSpacing)
         .background(
             Color.secondaryBackground
                 .cornerRadius(PlaceViewUX.QuickActionButton.cornerRadius)
@@ -484,7 +481,7 @@ struct PlaceListView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: PlaceViewUX.sectionSpacing) {
             GeometryReader { geometry in
                 ZStack {
                     Map(
@@ -519,7 +516,7 @@ struct PlaceListView: View {
             .frame(height: PlaceViewUX.mapHeight)
             .cornerRadius(PlaceViewUX.mapCornerRadius)
 
-            VStack(alignment: .center, spacing: PlaceViewUX.spacing) {
+            VStack(alignment: .center, spacing: PlaceViewUX.textSpacing) {
                 ForEach(Array(placeList.enumerated()), id: \.element.address.full) { idx, place in
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(alignment: .top) {
@@ -527,7 +524,7 @@ struct PlaceListView: View {
                                 .foregroundColor(.brand.red)
                                 .scaledToFit()
                                 .frame(width: PlaceViewUX.listIconSize, height: PlaceViewUX.listIconSize)
-                                .padding(PlaceViewUX.spacing)
+                                .padding(PlaceViewUX.textSpacing)
 
                             HeaderView(place: place)
 
@@ -554,7 +551,6 @@ struct PlaceListView: View {
                 Color.groupedBackground
                     .cornerRadius(PlaceViewUX.QuickActionButton.cornerRadius)
             )
-            .padding(.top)
         }
     }
 
