@@ -58,9 +58,9 @@ class PlaceViewModel: ObservableObject {
     let place: Place
 
     // Core Location Objects for Displaying and Opening Maps
-    private var _placeMark: CLPlacemark?
+    private var resolvedPlaceMark: CLPlacemark?
     var placeMark: CLPlacemark {
-        _placeMark
+        resolvedPlaceMark
             ?? CLPlacemark(
                 location: CLLocation(latitude: place.position.lat, longitude: place.position.lon),
                 name: place.name,
@@ -114,7 +114,7 @@ class PlaceViewModel: ObservableObject {
 
         Self.geocoder.geocodeAddressString(place.address.full) { [self] placemarks, error in
             if let placemark = placemarks?.first {
-                self._placeMark = CLPlacemark(
+                self.resolvedPlaceMark = CLPlacemark(
                     location: CLLocation(
                         latitude: place.position.lat, longitude: place.position.lon),
                     name: place.name,
