@@ -58,7 +58,6 @@ struct SettingsView: View {
                         DebugSettingsSection()
                     }
                 }
-                .navigationViewStyle(.stack)
                 .onDisappear(perform: TourManager.shared.notifyCurrentViewClose)
                 .listStyle(.insetGrouped)
                 .applyToggleStyle()
@@ -69,7 +68,7 @@ struct SettingsView: View {
                         Button("Done", action: dismiss)
                     }
                 }
-            }
+            }.navigationViewStyle(.stack)
 
             OverlayView(limitToOverlayType: [.toast(nil)])
         }
