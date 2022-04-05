@@ -410,31 +410,7 @@ struct PlaceView: View {
                     })
                     .padding(.horizontal)
                 }
-                Group {
-                    if !addressExpanded {
-                        Text(place.address.street)
-                            .withFont(.bodyMedium)
-                    } else {
-                        let separated = place.address.full.components(separatedBy: ", ")
-                        VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
-                            ForEach(
-                                separated.indices,
-                                id: \.self
-                            ) { idx in
-                                Text(separated[idx])
-                                    .withFont(.bodyMedium)
-                            }
-                        }
-                    }
-                }
-            }
-            .contextMenu {
-                Button(action: {
-                    UIPasteboard.general.string = addressExpanded ? place.address.full : place.address.street
-                }, label: {
-                    Text("Copy to clipboard")
-                    Image(systemName: "doc.on.doc")
-                })
+                addressTextView
             }
 
             // Phone number
@@ -464,6 +440,47 @@ struct PlaceView: View {
             Color.secondaryBackground
                 .cornerRadius(PlaceViewUX.QuickActionButton.cornerRadius)
         )
+    }
+
+    @ViewBuilder
+    private var addressTextView: some View {
+        if !addressExpanded {
+            if #available(iOS 15, *) {
+                Text(place.address.street)
+                    .withFont(.bodyMedium)
+                    .textSelection(.enabled)
+            } else {
+                Text(place.address.street)
+                    .withFont(.bodyMedium)
+                    .contextMenu {
+                        Button(action: {
+                            UIPasteboard.general.string = place.address.street
+                        }, label: {
+                            Text("Copy to clipboard")
+                            Image(systemName: "doc.on.doc")
+                        })
+                    }
+            }
+        } else {
+            let text = place.address.full.replacingOccurrences(of: ", ", with: ",\n")
+            if #available(iOS 15, *) {
+                Text(text)
+                    .withFont(.bodyMedium)
+                    .textSelection(.enabled)
+            } else {
+                Text(text)
+                    .withFont(.bodyMedium)
+                    .contextMenu {
+                        Button(action: {
+                            UIPasteboard.general.string = text
+                        }, label: {
+                            Text("Copy to clipboard")
+                            Image(systemName: "doc.on.doc")
+                        })
+                    }
+            }
+
+        }
     }
 }
 
