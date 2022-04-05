@@ -572,9 +572,5 @@ class WalletDetailsModel: ObservableObject {
         func updateCurrentSequence(_ sequence: SequenceInfo) {
             self.currentSequence = sequence
         }
-
-        func getWallet() -> WalletAccessor? {
-            return wallet
-        }
     }
 #endif

@@ -17,7 +17,7 @@ protocol ToastDelegate: AnyObject {
 protocol WalletServerManagerDelegate: ResponseRelay, ToastDelegate {
     func updateCurrentSession()
     func updateCurrentSequence(_ sequence: SequenceInfo)
-    func getWallet() -> WalletAccessor?
+    var wallet: WalletAccessor? { get set }
 }
 
 class WalletServerManager {
@@ -48,7 +48,7 @@ extension WalletServerManager: ServerDelegate {
         _ server: Server, shouldStart session: Session,
         completion: @escaping (Session.WalletInfo) -> Void
     ) {
-        guard let wallet = delegate?.getWallet() else {
+        guard let wallet = delegate?.wallet else {
             let walletInfo = Session.WalletInfo(
                 approved: false,
                 accounts: [],
