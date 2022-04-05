@@ -16,6 +16,7 @@ public struct TransactionData: Codable {
     let value: String?
     let data: String?
     let gas: String?
+    var converted: BigUInt? = nil
 
     var ethereumTransaction: EthereumTransaction? {
         guard let toAddress = EthereumAddress(to) else { return nil }
@@ -33,7 +34,10 @@ public struct TransactionData: Codable {
     }
 
     var convertedValue: BigUInt {
-        Web3.Utils.hexToBigUInt(value ?? "0x0") ?? .zero
+        if let converted = converted {
+            return converted
+        }
+        return Web3.Utils.hexToBigUInt(value ?? "0x0") ?? .zero
     }
 
     var convertedGasPrice: BigUInt {

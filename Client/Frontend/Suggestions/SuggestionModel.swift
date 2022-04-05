@@ -170,7 +170,7 @@ class SuggestionModel: ObservableObject {
             ? fetchNeevaSuggestions(for: searchQuery)
             : fetchGenericSuggestions(for: searchQuery)
 
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             fetchNFTSuggestions(for: searchQuery)
         }
 
@@ -358,7 +358,7 @@ class SuggestionModel: ObservableObject {
             self.completion = nil
 
             log.info(
-                "previous query: \(oldQuery), current query: \(query), completion: \(self.completion)"
+                "previous query: \(oldQuery), current query: \(query), completion: \(String(describing: self.completion))"
             )
 
             if query.isEmpty {

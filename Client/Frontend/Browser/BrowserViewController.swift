@@ -134,7 +134,10 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
     var findInPageModel: FindInPageModel?
     var overlayWindowManager: WindowManager?
-    var introViewModel: IntroViewModel?
+
+    lazy var introViewModel: IntroViewModel = {
+        IntroViewModel(presentationController: self, overlayManager: overlayManager)
+    }()
 
     private(set) var readerModeCache: ReaderModeCache
     private(set) var screenshotHelper: ScreenshotHelper!
@@ -193,7 +196,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         chromeModel.topBarDelegate = self
         chromeModel.toolbarDelegate = self
-        if FeatureFlag[.enableCryptoWallet] {
+        if NeevaConstants.currentTarget == .xyz {
             self.configureWalletServer()
         }
         didInit()
@@ -386,7 +389,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             }
         }
 
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             DispatchQueue.main.async {
                 AssetStore.shared.refresh()
             }
@@ -492,7 +495,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             if Self.createNewTabOnStartForTesting {
                 self.tabManager.select(self.tabManager.addTab())
             } else if self.tabManager.normalTabs.isEmpty {
-                if FeatureFlag[.web3Mode] {
+                if NeevaConstants.currentTarget == .xyz {
                     self.showZeroQuery()
                     if !Defaults[.walletIntroSeen] {
                         self.web3Model.showWalletPanel()
@@ -507,7 +510,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        if !FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget != .xyz {
             if !Defaults[.introSeen] {
                 presentDefaultBrowserFirstRun()
             }
@@ -825,6 +828,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
     // MARK: Opening New Tabs
     func switchToTabForURLOrOpen(_ url: URL, isIncognito: Bool = false) {
         popToBVC()
+
         if let tab = tabManager.getTabFor(url) {
             tabManager.selectTab(tab, notify: true)
         } else {
@@ -909,6 +913,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
     func openLazyTab(
         openedFrom: ZeroQueryOpenedLocation = .openTab(nil), switchToIncognitoMode: Bool? = nil
     ) {
+        popToBVC()
+
         if let switchToIncognitoMode = switchToIncognitoMode {
             tabManager.setIncognitoMode(to: switchToIncognitoMode)
         }
@@ -942,12 +948,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
             gridModel.switchToTabs(incognito: incognitoModel.isIncognito)
         }
 
-        if let introViewModel = introViewModel {
-            introViewModel.dismiss {
-                self.introViewModel = nil
-            }
-        }
-
         if let presentedViewController = presentedViewController {
             presentedViewController.dismiss(animated: true, completion: nil)
         } else if chromeModel.isEditingLocation {
@@ -955,7 +955,13 @@ class BrowserViewController: UIViewController, ModalPresenter {
             chromeModel.setEditingLocation(to: false)
         }
 
+        introViewModel.dismiss(nil)
         overlayManager.hideCurrentOverlay()
+
+        DispatchQueue.main.async {
+            // View alpha is set to 0 in `viewWillAppear` creating a blank screen.
+            self.view.alpha = 1
+        }
     }
 
     func presentActivityViewController(
@@ -1205,7 +1211,6 @@ extension BrowserViewController {
 }
 
 extension BrowserViewController: TabDelegate {
-
     private func subscribe(to webView: WKWebView, for tab: Tab) {
         let updateGestureHandler = {
             if let helper = tab.getContentScript(name: ContextMenuHelper.name())
@@ -1235,7 +1240,8 @@ extension BrowserViewController: TabDelegate {
                         chromeModel.estimatedProgress = estimatedProgress
                     } else if estimatedProgress == 1 && chromeModel.estimatedProgress != 1 {
                         chromeModel.estimatedProgress = 1
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [self] in
                             if chromeModel.estimatedProgress == 1 {
                                 chromeModel.estimatedProgress = nil
                             }
@@ -1505,7 +1511,6 @@ extension BrowserViewController {
 }
 
 // MARK: - UIPopoverPresentationControllerDelegate
-
 extension BrowserViewController: UIPopoverPresentationControllerDelegate {
     func popoverPresentationControllerDidDismissPopover(
         _ popoverPresentationController: UIPopoverPresentationController
@@ -1522,193 +1527,6 @@ extension BrowserViewController: UIAdaptivePresentationControllerDelegate {
         for controller: UIPresentationController, traitCollection: UITraitCollection
     ) -> UIModalPresentationStyle {
         return .none
-    }
-}
-
-extension BrowserViewController {
-    func presentIntroViewController(
-        _ alwaysShow: Bool = false,
-        signInMode: Bool = false,
-        onOtherOptionsPage: Bool = false,
-        marketingEmailOptOut: Bool = false,
-        completion: (() -> Void)? = nil,
-        onDismiss: (() -> Void)? = nil
-    ) {
-        if alwaysShow || !Defaults[.introSeen] {
-            showProperIntroVC(
-                signInMode: signInMode,
-                onOtherOptionsPage: onOtherOptionsPage,
-                marketingEmailOptOut: marketingEmailOptOut,
-                completion: completion,
-                onDismiss: onDismiss
-            )
-        }
-    }
-
-    fileprivate func presentDefaultBrowserFirstRun() {
-        // TODO: refactor the logic into view model
-        overlayManager.presentFullScreenModal(
-            content: AnyView(
-                DefaultBrowserInterstitialWelcomeScreen {
-                    self.overlayManager.hideCurrentOverlay()
-                } buttonAction: {
-                    self.overlayManager.hideCurrentOverlay()
-                    UIApplication.shared.openSettings(
-                        triggerFrom: .defaultBrowserPromptMergeEduction
-                    )
-                }
-                .onAppear {
-                    AppDelegate.setRotationLock(to: .portrait)
-                }
-                .onDisappear {
-                    AppDelegate.setRotationLock(to: .all)
-                }
-            )
-        ) {
-            Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
-            Defaults[.introSeen] = true
-            Defaults[.firstRunSeenAndNotSignedIn] = true
-            ClientLogger.shared.logCounter(
-                .DefaultBrowserInterstitialImp
-            )
-        }
-    }
-
-    // Default browser onboarding
-    func presentDBOnboardingViewController(
-        _ force: Bool = false,
-        modalTransitionStyle: UIModalTransitionStyle? = nil,
-        triggerFrom: OpenSysSettingTrigger
-    ) {
-        let onboardingVC = DefaultBrowserInterstitialOnboardingViewController(
-            didOpenSettings: { [weak self] in
-                guard let self = self else { return }
-                self.zeroQueryModel.updateState()
-            }, triggerFrom: triggerFrom)
-
-        onboardingVC.modalPresentationStyle = .formSheet
-        if let modalTransitionStyle = modalTransitionStyle {
-            onboardingVC.modalTransitionStyle = modalTransitionStyle
-        }
-        present(onboardingVC, animated: true, completion: nil)
-    }
-
-    private func showProperIntroVC(
-        signInMode: Bool = false, onOtherOptionsPage: Bool = false,
-        marketingEmailOptOut: Bool = false, completion: (() -> Void)? = nil,
-        onDismiss: (() -> Void)? = nil
-    ) {
-        func createOrSwitchToTabFromAuth(_ url: URL) {
-            if let selectedTab = self.tabManager.selectedTab,
-                let _ = self.tabManager.selectedTab?.url
-            {
-                DispatchQueue.main.async {
-                    selectedTab.loadRequest(URLRequest(url: url))
-                    self.hideCardGrid(withAnimation: false)
-                }
-            } else {
-                openURLInNewTab(url)
-            }
-        }
-
-        func setTokenAndOpenURL(token: String, url: URL) {
-            NeevaUserInfo.shared.setLoginCookie(token)
-
-            if let notificationToken = Defaults[.notificationToken] {
-                NotificationPermissionHelper.shared
-                    .registerDeviceTokenWithServer(deviceToken: notificationToken)
-            }
-
-            let httpCookieStore = self.tabManager.configuration.websiteDataStore.httpCookieStore
-            httpCookieStore.setCookie(NeevaConstants.loginCookie(for: token)) {
-                DispatchQueue.main.async {
-                    createOrSwitchToTabFromAuth(url)
-                }
-            }
-        }
-
-        // Only show to new users
-        let introSeen = Defaults[.introSeen]
-
-        introViewModel = IntroViewModel(
-            presentationController: self, overlayManager: overlayManager,
-            onDismiss: { action in
-                self.introViewModel?.dismiss {
-                    self.introViewModel = nil
-
-                    switch action {
-                    case .signupWithApple(
-                        let marketingEmailOptOut, let identityToken, let authorizationCode):
-                        if let identityToken = identityToken,
-                            let authorizationCode = authorizationCode
-                        {
-                            let authURL = NeevaConstants.appleAuthURL(
-                                identityToken: identityToken,
-                                authorizationCode: authorizationCode,
-                                marketingEmailOptOut: marketingEmailOptOut ?? false,
-                                signup: true)
-                            self.openURLInNewTab(authURL)
-                        }
-                    case .skipToBrowser:
-                        if let onDismiss = onDismiss {
-                            onDismiss()
-                        }
-                    case .oktaSignin(let email):
-                        createOrSwitchToTabFromAuth(NeevaConstants.oktaSigninURL(email: email))
-                    case .oauthWithProvider(_, _, let token, _):
-                        // loading appSearchURL to prevent showing marketing site
-                        setTokenAndOpenURL(token: token, url: NeevaConstants.appSearchURL)
-                    case .oktaAccountCreated(let token):
-                        setTokenAndOpenURL(
-                            token: token, url: NeevaConstants.verificationRequiredURL)
-                    default:
-                        break
-                    }
-
-                    if NeevaUserInfo.shared.hasLoginCookie() {
-                        if let notificationToken = Defaults[.notificationToken] {
-                            NotificationPermissionHelper.shared
-                                .registerDeviceTokenWithServer(deviceToken: notificationToken)
-                        }
-                    }
-
-                    SpaceStore.shared.refresh(force: true)
-                }
-            })
-
-        introViewModel?.onSignInMode = signInMode
-        introViewModel?.onOtherOptionsPage = onOtherOptionsPage
-        introViewModel?.marketingEmailOptOut = marketingEmailOptOut
-
-        overlayManager.presentFullScreenModal(
-            content: AnyView(
-                IntroFirstRunView()
-                    .environmentObject(introViewModel!)
-                    .onAppear {
-                        AppDelegate.setRotationLock(to: .portrait)
-                    }
-                    .onDisappear {
-                        AppDelegate.setRotationLock(to: .all)
-                    }
-            )
-        ) {
-            completion?()
-        }
-    }
-
-    private func introVCPresentHelper(
-        introViewController: UIViewController, completion: (() -> Void)?
-    ) {
-        // On iPad we present it modally in a controller
-        if traitCollection.horizontalSizeClass == .regular
-            && traitCollection.verticalSizeClass == .regular
-        {
-            introViewController.preferredContentSize = CGSize(width: 375, height: 667)
-            introViewController.modalPresentationStyle = .formSheet
-        } else {
-            introViewController.modalPresentationStyle = .fullScreen
-        }
-        present(introViewController, animated: true, completion: completion)
     }
 }
 
@@ -2121,22 +1939,23 @@ extension BrowserViewController {
 
         // if on iphone and portrait, present as sheet
         // otherwise, present as popover
-        showModal(style: .cheatsheet) { [self] in
+        showModal(style: .cheatsheet) {
             CheatsheetOverlayContent(
-                menuAction: { perform(overflowMenuAction: $0, targetButtonView: nil) },
-                tabManager: tabManager
+                menuAction: { self.perform(overflowMenuAction: $0, targetButtonView: nil) },
+                tabManager: self.tabManager
             )
             .environment(\.onSigninOrJoinNeeva) {
                 ClientLogger.shared.logCounter(
                     .CheatsheetErrorSigninOrJoinNeeva,
                     attributes: EnvironmentHelper.shared.getFirstRunAttributes()
                 )
-                overlayManager.hideCurrentOverlay()
-                presentIntroViewController(
+
+                self.overlayManager.hideCurrentOverlay()
+                self.presentIntroViewController(
                     true,
                     onDismiss: {
                         DispatchQueue.main.async {
-                            hideCardGrid(withAnimation: true)
+                            self.hideCardGrid(withAnimation: true)
                         }
                     }
                 )

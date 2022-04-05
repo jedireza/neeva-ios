@@ -31,7 +31,7 @@ struct SettingsView: View {
     var body: some View {
         NavigationView {
             List {
-                if !FeatureFlag[.web3Mode] {
+                if NeevaConstants.currentTarget != .xyz {
                     Section(header: Text("Neeva")) {
                         NeevaSettingsSection(dismissVC: dismiss, userInfo: .shared)
                     }

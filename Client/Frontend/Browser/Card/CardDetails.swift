@@ -206,9 +206,7 @@ public class TabCardDetails: CardDetails, AccessingManagerProvider,
 
     // This function is called when the user drop their item
     public func performDrop(info: DropInfo) -> Bool {
-        guard let tabCardModel = Self.dragState?.tabCardModel,
-            let draggingDetail = Self.dragState?.draggingDetail
-        else {
+        guard let draggingDetail = Self.dragState?.draggingDetail else {
             return true
         }
 

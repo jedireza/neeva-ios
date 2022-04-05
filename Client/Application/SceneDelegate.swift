@@ -475,15 +475,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
             log.info("Navigating to sign in URL: \(signInURL)")
             bvc.switchToTabForURLOrOpen(signInURL)
-
-            // view alpha is set to 0 in viewWillAppear creating a blank screen
-            bvc.view.alpha = 1
-
-            if let introViewModel = bvc.introViewModel {
-                introViewModel.dismiss {
-                    log.info("Dismissed introVC")
-                }
-            }
         }
     }
 

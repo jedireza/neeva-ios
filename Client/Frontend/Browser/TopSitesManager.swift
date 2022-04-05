@@ -91,8 +91,11 @@ struct TopSitesHandler {
         }
     }
 
+    static private let suggestedSites = SuggestedSitesCursor(
+        identifier: NeevaConstants.currentTarget == .xyz ? "web3" : "default")
+
     static func defaultTopSites() -> [Site] {
-        let suggested = SuggestedSites.asArray()
+        let suggested = suggestedSites.asArray()
         let deleted = Defaults[.deletedSuggestedSites]
         return suggested.filter { !deleted.contains($0.url.absoluteString) }
     }

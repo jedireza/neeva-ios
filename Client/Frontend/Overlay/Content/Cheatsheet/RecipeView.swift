@@ -119,7 +119,7 @@ struct RecipeView: View {
                     if let instructions = instructions {
                         Text("Instructions")
                             .withFont(.headingMedium)
-                        ForEach(instructions.indices) { i in
+                        ForEach(instructions.indices, id: \.self) { i in
                             HStack(alignment: .top) {
                                 Text("\(i+1). ")
                                 Text("\(cleanupText(input: instructions[i]))")

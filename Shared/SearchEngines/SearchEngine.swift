@@ -4,7 +4,6 @@
 
 import Defaults
 import Foundation
-import StoreKit
 import UIKit
 
 private let replacements = [
@@ -28,21 +27,6 @@ private let replacementsToStrip = [
 
 public class SearchEngine: Identifiable, Hashable {
     // MARK: Statics
-    public static var current: SearchEngine {
-        let autoEngine = Defaults[.customSearchEngine].flatMap { all[$0] }
-
-        if FeatureFlag[.web3Mode] {
-            let countryCode = SKPaymentQueue.default().storefront?.countryCode
-            let defaultEngine: SearchEngine =
-                countryCode == "USA"
-                ? .neeva
-                : .google
-            return autoEngine ?? defaultEngine
-        }
-
-        return autoEngine ?? .neeva
-    }
-
     public static var nft: SearchEngine {
         return neevaxyz
     }
@@ -138,7 +122,7 @@ public class SearchEngine: Identifiable, Hashable {
         self.isNeeva = isNeeva
     }
 
-    private static var neeva: SearchEngine {
+    public static var neeva: SearchEngine {
         SearchEngine(
             id: "_neeva",
             label: "Neeva",
@@ -159,7 +143,7 @@ public class SearchEngine: Identifiable, Hashable {
         )
     }
 
-    private static var google: SearchEngine {
+    public static var google: SearchEngine {
         SearchEngine(
             id: "google",
             label: "Google",
@@ -244,7 +228,7 @@ extension SearchEngine {
             contentsOf: NeevaConstants.sharedBundle.url(
                 forResource: "engines_by_country", withExtension: "json")!))
 
-    fileprivate static let all: [String: SearchEngine] = Dictionary(
+    public static let all: [String: SearchEngine] = Dictionary(
         uniqueKeysWithValues:
             try! JSONDecoder().decode(
                 PrepopulatedEngines.self,

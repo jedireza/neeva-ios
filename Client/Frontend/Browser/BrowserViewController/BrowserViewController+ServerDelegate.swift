@@ -22,7 +22,7 @@ protocol WalletConnectPresenter: ModalPresenter {
 
 extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
     @discardableResult func connectWallet(to wcURL: WCURL) -> Bool {
-        guard FeatureFlag[.enableCryptoWallet], let _ = web3Model.wallet?.ethereumAddress
+        guard NeevaConstants.currentTarget == .xyz, let _ = web3Model.wallet?.ethereumAddress
         else {
             return false
         }
@@ -81,6 +81,16 @@ extension BrowserViewController: ServerDelegate, WalletConnectPresenter {
                             peerMeta: wallet.walletMeta)
                         completion(walletInfo)
                     }
+                    ClientLogger.shared.logCounter(
+                        .ConnectedSite,
+                        attributes: [
+                            ClientLogCounterAttribute(
+                                key: LogConfig.Web3Attribute.walletAddress,
+                                value: Defaults[.cryptoPublicKey]),
+                            ClientLogCounterAttribute(
+                                key: LogConfig.Web3Attribute.connectedSite,
+                                value: session.dAppInfo.peerMeta.url.absoluteString),
+                        ])
                 },
                 onReject: {
                     DispatchQueue.global(qos: .userInitiated).async {

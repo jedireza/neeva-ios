@@ -39,7 +39,7 @@ struct SpaceTopView: View {
                     self.gridModel.closeDetailView()
                 },
                 label: {
-                    Symbol(decorative: .arrowBackward)
+                    Symbol(.arrowBackward, label: "Return to all Spaces view")
                         .foregroundColor(Color.label)
                         .tapTargetFrame()
                 })
@@ -227,13 +227,13 @@ struct SpaceTopView: View {
         Button(
             action: { showDescriptions.toggle() },
             label: {
-                Symbol(
-                    decorative: showDescriptions
-                        ? .arrowDownRightAndArrowUpLeft : .arrowUpLeftAndArrowDownRight
-                )
-                .foregroundColor(Color.label)
-                .tapTargetFrame()
-            })
+                (showDescriptions
+                    ? Symbol(.arrowDownRightAndArrowUpLeft, label: "Collapse descriptions")
+                    : Symbol(.arrowUpLeftAndArrowDownRight, label: "Expand descriptions"))
+                    .foregroundColor(Color.label)
+                    .tapTargetFrame()
+            }
+        )
     }
 
     @ViewBuilder var menuButton: some View {

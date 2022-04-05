@@ -55,6 +55,7 @@ struct WalletDashboard: View {
     @State var sessionToDisconnect: Session? = nil
     @State var showQRScanner: Bool = false
     @State var qrCodeStr: String = ""
+    @State var copyAddressText = "Copy Address"
 
     @ObservedObject var assetStore: AssetStore
 
@@ -181,17 +182,14 @@ struct WalletDashboard: View {
                     UIPasteboard.general.setValue(
                         Defaults[.cryptoPublicKey],
                         forPasteboardType: kUTTypePlainText as String)
-                    if let toastManager = model.selectedTab?.browserViewController?
-                        .getSceneDelegate()?.toastViewManager
-                    {
-                        hideOverlay()
-                        toastManager.makeToast(text: "Address copied to clipboard")
-                            .enqueue(manager: toastManager)
+                    copyAddressText = "Copied!"
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                        copyAddressText = "Copy Address"
                     }
                 }) {
                     HStack(spacing: 4) {
                         Symbol(decorative: .docOnDoc, style: .bodyMedium)
-                        Text("Copy address")
+                        Text(copyAddressText).frame(minWidth: 100)
                     }
                 }.buttonStyle(DashboardButtonStyle())
                 Button(action: { showQRScanner = true }) {
@@ -390,6 +388,18 @@ struct WalletDashboard: View {
                             action: {
                                 if let slug = theme.asset?.collection?.openSeaSlug {
                                     Defaults[.currentTheme] = slug == currentTheme ? "" : slug
+                                    if !currentTheme.isEmpty {
+                                        ClientLogger.shared.logCounter(
+                                            .ThemeSet,
+                                            attributes: [
+                                                ClientLogCounterAttribute(
+                                                    key: LogConfig.Web3Attribute.partnerCollection,
+                                                    value: slug),
+                                                ClientLogCounterAttribute(
+                                                    key: LogConfig.Web3Attribute.walletAddress,
+                                                    value: Defaults[.cryptoPublicKey]),
+                                            ])
+                                    }
                                 }
                             },
                             label: {

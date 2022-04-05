@@ -9,7 +9,7 @@ import WalletCore
 extension View {
     @ViewBuilder
     func foregroundColorOrGradient(_ color: Color) -> some View {
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             self.gradientForeground()
         } else {
             self.foregroundColor(color)
@@ -18,7 +18,7 @@ extension View {
 
     @ViewBuilder
     func backgroundColorOrGradient(_ color: Color? = nil) -> some View {
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             self.background(WalletTheme.gradient.opacity(0.1))
         } else if let color = color {
             self.background(color)

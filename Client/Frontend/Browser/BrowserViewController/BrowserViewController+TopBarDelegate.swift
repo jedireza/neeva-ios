@@ -88,7 +88,7 @@ extension BrowserViewController: TopBarDelegate {
         }
 
         let searchEngine =
-            FeatureFlag[.web3Mode] && !isSearchQuerySuggestion
+            NeevaConstants.currentTarget == .xyz && !isSearchQuerySuggestion
             ? SearchEngine.nft : SearchEngine.current
         // We couldn't build a URL, so check for a matching search keyword.
         let trimmedText = text.trimmingCharacters(in: .whitespaces)

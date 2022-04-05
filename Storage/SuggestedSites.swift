@@ -22,14 +22,12 @@ open class SuggestedSite: Site {
     }
 }
 
-public let SuggestedSites = SuggestedSitesCursor()
-
 open class SuggestedSitesCursor: ArrayCursor<SuggestedSite> {
-    fileprivate init() {
+    public init(identifier: String = "default") {
         let locale = Locale.current
         let sites =
             DefaultSuggestedSites.sites[locale.identifier] ?? DefaultSuggestedSites.sites[
-                FeatureFlag[.web3Mode] ? "web3" : "default"]! as [SuggestedSiteData]
+                identifier]! as [SuggestedSiteData]
         let tiles = sites.map({ data -> SuggestedSite in
             var site = data
             if let domainMap = DefaultSuggestedSites.urlMap[data.url],

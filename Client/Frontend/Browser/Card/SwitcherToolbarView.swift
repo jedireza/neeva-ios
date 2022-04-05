@@ -180,12 +180,13 @@ struct SwitcherToolbarView: View {
             }
         }
         .background(
-            FeatureFlag[.web3Mode]
+            NeevaConstants.currentTarget == .xyz
                 ? Web3Theme(with: currentTheme).backgroundColor.ignoresSafeArea()
                 : Color.DefaultBackground.ignoresSafeArea()
         )
         .animation(.easeOut)
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Toolbar")
+        .accessibilityHidden(gridModel.showingDetailView)
     }
 }
