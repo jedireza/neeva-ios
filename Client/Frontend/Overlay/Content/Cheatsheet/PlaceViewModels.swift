@@ -60,11 +60,12 @@ class PlaceViewModel: ObservableObject {
     // Core Location Objects for Displaying and Opening Maps
     private var _placeMark: CLPlacemark?
     var placeMark: CLPlacemark {
-        _placeMark ?? CLPlacemark(
-            location: CLLocation(latitude: place.position.lat, longitude: place.position.lon),
-            name: place.name,
-            postalAddress: nil
-        )
+        _placeMark
+            ?? CLPlacemark(
+                location: CLLocation(latitude: place.position.lat, longitude: place.position.lon),
+                name: place.name,
+                postalAddress: nil
+            )
     }
     let annotatedMapItems: [PlaceAnnotation]
 
@@ -78,7 +79,7 @@ class PlaceViewModel: ObservableObject {
     var sortedLocalizedHours: [LocalizedOperatingHour]?
     var nextOpen: LocalizedOperatingHour? {
         guard let hours = sortedLocalizedHours,
-              let startIdx = hours.firstIndex(where: { $0.gregorianWeekday == currentDayOfTheWeek })
+            let startIdx = hours.firstIndex(where: { $0.gregorianWeekday == currentDayOfTheWeek })
         else {
             return nil
         }
@@ -104,7 +105,8 @@ class PlaceViewModel: ObservableObject {
         self.place = place
 
         mapRegion = MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: place.position.lat, longitude: place.position.lon),
+            center: CLLocationCoordinate2D(
+                latitude: place.position.lat, longitude: place.position.lon),
             latitudinalMeters: mapSpanMeters,
             longitudinalMeters: mapSpanMeters
         )
@@ -113,7 +115,8 @@ class PlaceViewModel: ObservableObject {
         Self.geocoder.geocodeAddressString(place.address.full) { [self] placemarks, error in
             if let placemark = placemarks?.first {
                 self._placeMark = CLPlacemark(
-                    location: CLLocation(latitude: place.position.lat, longitude: place.position.lon),
+                    location: CLLocation(
+                        latitude: place.position.lat, longitude: place.position.lon),
                     name: place.name,
                     postalAddress: placemark.postalAddress
                 )
@@ -139,7 +142,7 @@ class PlaceViewModel: ObservableObject {
             let weekday = (gregorianWeekday + 7 - calendar.firstWeekday) % 7 + 1
 
             var articulatedHours: LocalizedOperatingHour.Hours = .closed
-            if let hour = hours.first(where: { $0.day == yelpDay}) {
+            if let hour = hours.first(where: { $0.day == yelpDay }) {
                 // Parse time of day
                 let start = Self.inputTimeFormatter.date(from: hour.start)!
                 let end = Self.inputTimeFormatter.date(from: hour.end)!
@@ -197,7 +200,8 @@ class PlaceListViewModel: ObservableObject {
         }
 
         let unionRect = placelist.map { place -> MKMapPoint in
-            MKMapPoint(CLLocationCoordinate2D(latitude: place.position.lat, longitude: place.position.lon))
+            MKMapPoint(
+                CLLocationCoordinate2D(latitude: place.position.lat, longitude: place.position.lon))
         }.map {
             MKMapRect(origin: $0, size: MKMapSize(width: 0.0001, height: 0.0001))
         }

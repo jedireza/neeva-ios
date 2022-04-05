@@ -514,10 +514,9 @@ public class SearchController:
 
     private class func constructPlace(
         from data: SearchQuery.Data.Search.ResultGroup.Result.TypeSpecific.AsPlace.Place
-    ) -> Place?
-    {
+    ) -> Place? {
         guard let streetAddress = data.address.streetAddress,
-              let fullAddress = data.address.fullAddress
+            let fullAddress = data.address.fullAddress
         else {
             return nil
         }
@@ -543,7 +542,8 @@ public class SearchController:
 
         var mapImage: Place.MapImage?
         if let mapImageURLString = data.mapImage?.url,
-           let mapImageDarkURLString = data.mapImage?.darkUrl {
+            let mapImageDarkURLString = data.mapImage?.darkUrl
+        {
             mapImage = .init(
                 url: URL(string: mapImageURLString),
                 darkURL: URL(string: mapImageDarkURLString)
@@ -552,7 +552,8 @@ public class SearchController:
 
         var mapImageLarge: Place.MapImage?
         if let mapImageURLString = data.mapImageLarge?.url,
-           let mapImageDarkURLString = data.mapImageLarge?.darkUrl {
+            let mapImageDarkURLString = data.mapImageLarge?.darkUrl
+        {
             mapImageLarge = .init(
                 url: URL(string: mapImageURLString),
                 darkURL: URL(string: mapImageDarkURLString)
@@ -567,7 +568,7 @@ public class SearchController:
             telephonePretty: data.telephonePretty.isEmpty ? nil : data.telephonePretty,
             price: data.price.isEmpty ? nil : data.price,
             categories: data.categories.filter { !$0.isEmpty },
-            rating: data.rating > 0 ? data.rating: nil,
+            rating: data.rating > 0 ? data.rating : nil,
             reviewCount: data.reviewCount > 0 ? data.reviewCount : nil,
             articulatedOperatingStatus: data.articulatedOperatingStatus,
             articulatedHour: data.articulatedHour,
@@ -583,11 +584,11 @@ public class SearchController:
     }
 
     private class func constructPlace(
-        from data: SearchQuery.Data.Search.ResultGroup.Result.TypeSpecific.AsPlaceList.PlaceList.Place.Place
-    ) -> Place?
-    {
+        from data: SearchQuery.Data.Search.ResultGroup.Result.TypeSpecific.AsPlaceList.PlaceList
+            .Place.Place
+    ) -> Place? {
         guard let streetAddress = data.address.streetAddress,
-              let fullAddress = data.address.fullAddress
+            let fullAddress = data.address.fullAddress
         else {
             return nil
         }
@@ -614,7 +615,8 @@ public class SearchController:
 
         var mapImage: Place.MapImage?
         if let mapImageURLString = data.mapImage?.url,
-           let mapImageDarkURLString = data.mapImage?.darkUrl {
+            let mapImageDarkURLString = data.mapImage?.darkUrl
+        {
             mapImage = .init(
                 url: URL(string: mapImageURLString),
                 darkURL: URL(string: mapImageDarkURLString)
@@ -623,7 +625,8 @@ public class SearchController:
 
         var mapImageLarge: Place.MapImage?
         if let mapImageURLString = data.mapImageLarge?.url,
-           let mapImageDarkURLString = data.mapImageLarge?.darkUrl {
+            let mapImageDarkURLString = data.mapImageLarge?.darkUrl
+        {
             mapImageLarge = .init(
                 url: URL(string: mapImageURLString),
                 darkURL: URL(string: mapImageDarkURLString)
@@ -638,7 +641,7 @@ public class SearchController:
             telephonePretty: data.telephonePretty.isEmpty ? nil : data.telephonePretty,
             price: data.price.isEmpty ? nil : data.price,
             categories: data.categories.filter { !$0.isEmpty },
-            rating: data.rating > 0 ? data.rating: nil,
+            rating: data.rating > 0 ? data.rating : nil,
             reviewCount: data.reviewCount > 0 ? data.reviewCount : nil,
             articulatedOperatingStatus: data.articulatedOperatingStatus,
             articulatedHour: data.articulatedHour,
@@ -655,10 +658,9 @@ public class SearchController:
 
     private class func constructPlaceResult(
         from result: SearchQuery.Data.Search.ResultGroup.Result
-    ) -> PartialResult<PlaceResult>
-    {
+    ) -> PartialResult<PlaceResult> {
         guard let place = result.typeSpecific?.asPlace?.place,
-              let parsedPlace = constructPlace(from: place)
+            let parsedPlace = constructPlace(from: place)
         else {
             return PartialResult()
         }
@@ -671,12 +673,12 @@ public class SearchController:
 
     private class func constructPlaceListResult(
         from result: SearchQuery.Data.Search.ResultGroup.Result
-    ) -> PartialResult<PlaceListResult>
-    {
-        guard let placeList = result
-            .typeSpecific?
-            .asPlaceList?
-            .placeList
+    ) -> PartialResult<PlaceListResult> {
+        guard
+            let placeList = result
+                .typeSpecific?
+                .asPlaceList?
+                .placeList
         else {
             return PartialResult()
         }

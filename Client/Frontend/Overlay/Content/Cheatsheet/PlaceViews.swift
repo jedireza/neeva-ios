@@ -102,8 +102,8 @@ private struct QuickActionButtonStyle: ButtonStyle {
             Color.white
                 .cornerRadius(cornerRadius)
                 .opacity(
-                    configuration.isPressed ?
-                    PlaceViewUX.QuickActionButton.pressedHighlightOpacity : 0
+                    configuration.isPressed
+                        ? PlaceViewUX.QuickActionButton.pressedHighlightOpacity : 0
                 )
         )
 
@@ -148,7 +148,7 @@ struct PlaceView: View {
                 texts += [
                     Text(" "),
                     Text(hour)
-                        .foregroundColor(.secondaryLabel)
+                        .foregroundColor(.secondaryLabel),
                 ]
             }
         }
@@ -171,7 +171,8 @@ struct PlaceView: View {
                         annotationItems: viewModel.annotatedMapItems
                     ) { place in
                         MapMarker(
-                            coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon),
+                            coordinate: CLLocationCoordinate2D(
+                                latitude: place.lat, longitude: place.lon),
                             tint: Color.brand.variant.red
                         )
                     }
@@ -258,57 +259,70 @@ struct PlaceView: View {
     var quickActions: some View {
         HStack(spacing: PlaceViewUX.textSpacing) {
             if let url = viewModel.telephoneURL,
-               UIApplication.shared.canOpenURL(url) {
-                Button(action: {
-                    UIApplication.shared.open(url)
-                }, label: {
-                    VStack {
-                        Image(systemSymbol: .phoneFill)
-                        Text("Call")
-                            .withFont(.bodyMedium)
+                UIApplication.shared.canOpenURL(url)
+            {
+                Button(
+                    action: {
+                        UIApplication.shared.open(url)
+                    },
+                    label: {
+                        VStack {
+                            Image(systemSymbol: .phoneFill)
+                            Text("Call")
+                                .withFont(.bodyMedium)
+                        }
                     }
-                })
+                )
                 .buttonStyle(QuickActionButtonStyle())
             }
 
             if let website = place.websiteURL {
-                Button(action: {
-                    onOpenURLForCheatsheet(website, "PlaceViewQuickActionWebsite")
-                }, label: {
-                    VStack {
-                        Image(systemSymbol: .globe)
-                        Text("Website")
-                            .withFont(.bodyMedium)
+                Button(
+                    action: {
+                        onOpenURLForCheatsheet(website, "PlaceViewQuickActionWebsite")
+                    },
+                    label: {
+                        VStack {
+                            Image(systemSymbol: .globe)
+                            Text("Website")
+                                .withFont(.bodyMedium)
+                        }
                     }
-                })
+                )
                 .buttonStyle(QuickActionButtonStyle())
             }
 
             if let yelpLink = place.yelpURL {
-                Button(action: {
-                    onOpenURLForCheatsheet(yelpLink, "PlaceViewQuickActionYelp")
-                }, label: {
-                    VStack {
-                        Image(systemSymbol: .globe)
-                        Text("Yelp")
-                            .withFont(.bodyMedium)
+                Button(
+                    action: {
+                        onOpenURLForCheatsheet(yelpLink, "PlaceViewQuickActionYelp")
+                    },
+                    label: {
+                        VStack {
+                            Image(systemSymbol: .globe)
+                            Text("Yelp")
+                                .withFont(.bodyMedium)
+                        }
                     }
-                })
+                )
                 .buttonStyle(QuickActionButtonStyle())
             }
 
-            Button(action: {
-                let mapItem = MKMapItem(placemark: MKPlacemark(placemark: viewModel.placeMark))
-                mapItem.name = place.name
-                mapItem.openInMaps()
-            }, label: {
-                VStack {
-                    Image(systemSymbol: .arrowTriangleTurnUpRightDiamondFill)
-                    Text("Directions")
-                        .withFont(.bodyMedium)
-                        .lineLimit(1)
+            Button(
+                action: {
+                    let mapItem = MKMapItem(placemark: MKPlacemark(placemark: viewModel.placeMark))
+                    mapItem.name = place.name
+                    mapItem.openInMaps()
+                },
+                label: {
+                    VStack {
+                        Image(systemSymbol: .arrowTriangleTurnUpRightDiamondFill)
+                        Text("Directions")
+                            .withFont(.bodyMedium)
+                            .lineLimit(1)
+                    }
                 }
-            })
+            )
             .buttonStyle(QuickActionButtonStyle())
         }
     }
@@ -318,7 +332,7 @@ struct PlaceView: View {
         VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
             // Operating Hour
             if let hours = viewModel.sortedLocalizedHours,
-               let nextOpen = viewModel.nextOpen
+                let nextOpen = viewModel.nextOpen
             {
                 VStack(alignment: .leading, spacing: PlaceViewUX.textSpacing) {
                     HStack(alignment: .center) {
@@ -336,24 +350,27 @@ struct PlaceView: View {
                             }
                         }
                         Spacer()
-                        Button(action: {
-                            hourExpanded.toggle()
-                        }, label: {
-                            if hourExpanded {
-                                Image(systemSymbol: .chevronUp)
-                                    .foregroundColor(.label)
-                            } else {
-                                Image(systemSymbol: .chevronDown)
-                                    .foregroundColor(.label)
+                        Button(
+                            action: {
+                                hourExpanded.toggle()
+                            },
+                            label: {
+                                if hourExpanded {
+                                    Image(systemSymbol: .chevronUp)
+                                        .foregroundColor(.label)
+                                } else {
+                                    Image(systemSymbol: .chevronDown)
+                                        .foregroundColor(.label)
+                                }
                             }
-                        })
+                        )
                         .padding(.horizontal)
                     }
 
                     Group {
                         if !hourExpanded {
                             HStack {
-                                if case let .open(start, end) = nextOpen.articulatedHours{
+                                if case let .open(start, end) = nextOpen.articulatedHours {
                                     if nextOpen.gregorianWeekday != viewModel.currentDayOfTheWeek {
                                         Text(nextOpen.weekday)
                                             .withFont(.bodyMedium)
@@ -397,17 +414,20 @@ struct PlaceView: View {
                         .withFont(.headingMedium)
                         .foregroundColor(.label)
                     Spacer()
-                    Button(action: {
-                        addressExpanded.toggle()
-                    }, label: {
-                        if addressExpanded {
-                            Image(systemSymbol: .chevronUp)
-                                .foregroundColor(.label)
-                        } else {
-                            Image(systemSymbol: .chevronDown)
-                                .foregroundColor(.label)
+                    Button(
+                        action: {
+                            addressExpanded.toggle()
+                        },
+                        label: {
+                            if addressExpanded {
+                                Image(systemSymbol: .chevronUp)
+                                    .foregroundColor(.label)
+                            } else {
+                                Image(systemSymbol: .chevronDown)
+                                    .foregroundColor(.label)
+                            }
                         }
-                    })
+                    )
                     .padding(.horizontal)
                 }
                 addressTextView
@@ -420,18 +440,21 @@ struct PlaceView: View {
                     Text("Phone")
                         .withFont(.headingMedium)
                         .foregroundColor(.label)
-                    Button(action: {
-                        if let url = viewModel.telephoneURL,
-                           UIApplication.shared.canOpenURL(url) {
-                          UIApplication.shared.open(url)
-                        }
-                    }, label: {
-                        HStack {
-                            Text(phone)
-                                .withFont(.bodyMedium)
-                            Spacer()
-                        }
-                    })
+                    Button(
+                        action: {
+                            if let url = viewModel.telephoneURL,
+                                UIApplication.shared.canOpenURL(url)
+                            {
+                                UIApplication.shared.open(url)
+                            }
+                        },
+                        label: {
+                            HStack {
+                                Text(phone)
+                                    .withFont(.bodyMedium)
+                                Spacer()
+                            }
+                        })
                 }
             }
         }
@@ -453,12 +476,14 @@ struct PlaceView: View {
                 Text(place.address.street)
                     .withFont(.bodyMedium)
                     .contextMenu {
-                        Button(action: {
-                            UIPasteboard.general.string = place.address.street
-                        }, label: {
-                            Text("Copy to clipboard")
-                            Image(systemName: "doc.on.doc")
-                        })
+                        Button(
+                            action: {
+                                UIPasteboard.general.string = place.address.street
+                            },
+                            label: {
+                                Text("Copy to clipboard")
+                                Image(systemName: "doc.on.doc")
+                            })
                     }
             }
         } else {
@@ -471,12 +496,14 @@ struct PlaceView: View {
                 Text(text)
                     .withFont(.bodyMedium)
                     .contextMenu {
-                        Button(action: {
-                            UIPasteboard.general.string = text
-                        }, label: {
-                            Text("Copy to clipboard")
-                            Image(systemName: "doc.on.doc")
-                        })
+                        Button(
+                            action: {
+                                UIPasteboard.general.string = text
+                            },
+                            label: {
+                                Text("Copy to clipboard")
+                                Image(systemName: "doc.on.doc")
+                            })
                     }
             }
 
@@ -509,12 +536,15 @@ struct PlaceListView: View {
                         annotationItems: viewModel.annotatedMapItems
                     ) { place in
                         MapAnnotation(
-                            coordinate: CLLocationCoordinate2D(latitude: place.lat, longitude: place.lon)
+                            coordinate: CLLocationCoordinate2D(
+                                latitude: place.lat, longitude: place.lon)
                         ) {
                             Image(systemName: "\(viewModel.placeIndex[place.id]!+1).circle.fill")
                                 .foregroundColor(.brand.red)
                                 .scaledToFit()
-                                .frame(width: PlaceViewUX.mapPinSize, height:  PlaceViewUX.mapPinSize)
+                                .frame(
+                                    width: PlaceViewUX.mapPinSize, height: PlaceViewUX.mapPinSize
+                                )
                                 .background(
                                     Circle()
                                         .fill(Color.white)
@@ -540,7 +570,10 @@ struct PlaceListView: View {
                             Image(systemName: "\(idx+1).circle.fill")
                                 .foregroundColor(.brand.red)
                                 .scaledToFit()
-                                .frame(width: PlaceViewUX.listIconSize, height: PlaceViewUX.listIconSize)
+                                .frame(
+                                    width: PlaceViewUX.listIconSize,
+                                    height: PlaceViewUX.listIconSize
+                                )
                                 .padding(PlaceViewUX.textSpacing)
 
                             HeaderView(place: place)
@@ -551,7 +584,10 @@ struct PlaceListView: View {
                                 WebImage(url: imageURL)
                                     .resizable()
                                     .scaledToFill()
-                                    .frame(width: PlaceViewUX.listImageSize, height: PlaceViewUX.listImageSize)
+                                    .frame(
+                                        width: PlaceViewUX.listImageSize,
+                                        height: PlaceViewUX.listImageSize
+                                    )
                                     .clipped()
                                     .cornerRadius(PlaceViewUX.listImageCornerRadius)
                             }
@@ -604,7 +640,7 @@ struct PlaceListView: View {
 
                 // Categories
                 if let categories = place.categories.joined(separator: ", "),
-                   !categories.isEmpty
+                    !categories.isEmpty
                 {
                     Text(categories)
                         .withFont(.bodySmall)

@@ -91,6 +91,15 @@ query Search($query: String!) {
                 height
                 width
               }
+              neevaMapsQuery {
+                query
+                latitude
+                longitude
+                radius
+                isLocationShift
+                placeID
+                zoom
+              }
             }
           }
           ... on PlaceList {
@@ -153,6 +162,15 @@ query Search($query: String!) {
                   useHighVisuals
                   articulatedOperatingStatus
                   articulatedHour
+                  neevaMapsQuery {
+                    query
+                    latitude
+                    longitude
+                    radius
+                    isLocationShift
+                    placeID
+                    zoom
+                  }
                   placeSuggestions {
                     address {
                       country

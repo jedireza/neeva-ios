@@ -3247,6 +3247,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
   case appAccountDeletion
   case iosApp
   case iosAppLoggedOut
+  case iosWeb3App
   case preview
   case premiumSurvey
   case protectExtension
@@ -3267,6 +3268,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case "AppAccountDeletion": self = .appAccountDeletion
       case "IOSApp": self = .iosApp
       case "IOSAppLoggedOut": self = .iosAppLoggedOut
+      case "IOSWeb3App": self = .iosWeb3App
       case "Preview": self = .preview
       case "PremiumSurvey": self = .premiumSurvey
       case "ProtectExtension": self = .protectExtension
@@ -3288,6 +3290,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case .appAccountDeletion: return "AppAccountDeletion"
       case .iosApp: return "IOSApp"
       case .iosAppLoggedOut: return "IOSAppLoggedOut"
+      case .iosWeb3App: return "IOSWeb3App"
       case .preview: return "Preview"
       case .premiumSurvey: return "PremiumSurvey"
       case .protectExtension: return "ProtectExtension"
@@ -3309,6 +3312,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       case (.appAccountDeletion, .appAccountDeletion): return true
       case (.iosApp, .iosApp): return true
       case (.iosAppLoggedOut, .iosAppLoggedOut): return true
+      case (.iosWeb3App, .iosWeb3App): return true
       case (.preview, .preview): return true
       case (.premiumSurvey, .premiumSurvey): return true
       case (.protectExtension, .protectExtension): return true
@@ -3331,6 +3335,7 @@ public enum FeedbackSource: RawRepresentable, Equatable, Hashable, CaseIterable,
       .appAccountDeletion,
       .iosApp,
       .iosAppLoggedOut,
+      .iosWeb3App,
       .preview,
       .premiumSurvey,
       .protectExtension,
@@ -7225,6 +7230,16 @@ public final class SearchQuery: GraphQLQuery {
                     height
                     width
                   }
+                  neevaMapsQuery {
+                    __typename
+                    query
+                    latitude
+                    longitude
+                    radius
+                    isLocationShift
+                    placeID
+                    zoom
+                  }
                 }
               }
               ... on PlaceList {
@@ -7298,6 +7313,16 @@ public final class SearchQuery: GraphQLQuery {
                       useHighVisuals
                       articulatedOperatingStatus
                       articulatedHour
+                      neevaMapsQuery {
+                        __typename
+                        query
+                        latitude
+                        longitude
+                        radius
+                        isLocationShift
+                        placeID
+                        zoom
+                      }
                       placeSuggestions {
                         __typename
                         address {
@@ -7575,7 +7600,7 @@ public final class SearchQuery: GraphQLQuery {
 
   public let operationName: String = "Search"
 
-  public let operationIdentifier: String? = "044087d7eb05d628602711572f6904b11aef710ffbe4612ffdc66b26191a5748"
+  public let operationIdentifier: String? = "33a16aaf5f610a184235d88f813259cb653e4e5f1f3e4a4858c5312f05201d16"
 
   public var query: String
 
@@ -8874,6 +8899,7 @@ public final class SearchQuery: GraphQLQuery {
                     GraphQLField("imageURL", type: .nonNull(.scalar(String.self))),
                     GraphQLField("mapImage", type: .object(MapImage.selections)),
                     GraphQLField("mapImageLarge", type: .object(MapImageLarge.selections)),
+                    GraphQLField("neevaMapsQuery", type: .object(NeevaMapsQuery.selections)),
                   ]
                 }
 
@@ -8883,8 +8909,8 @@ public final class SearchQuery: GraphQLQuery {
                   self.resultMap = unsafeResultMap
                 }
 
-                public init(id: String? = nil, placeSubType: PlaceSubType? = nil, name: String, address: Address, position: Position, telephone: String, telephonePretty: String, websiteUrl: String, yelpUrl: String, googleMapsUrl: String? = nil, price: String, rating: Double, reviewCount: Int, articulatedOperatingStatus: String? = nil, articulatedHour: String? = nil, specialHours: [SpecialHour]? = nil, hours: Hour? = nil, isClosed: Bool, isOpenNow: Bool? = nil, categories: [String], imageUrl: String, mapImage: MapImage? = nil, mapImageLarge: MapImageLarge? = nil) {
-                  self.init(unsafeResultMap: ["__typename": "PlaceData", "id": id, "placeSubType": placeSubType, "name": name, "address": address.resultMap, "position": position.resultMap, "telephone": telephone, "telephonePretty": telephonePretty, "websiteURL": websiteUrl, "yelpURL": yelpUrl, "googleMapsURL": googleMapsUrl, "price": price, "rating": rating, "reviewCount": reviewCount, "articulatedOperatingStatus": articulatedOperatingStatus, "articulatedHour": articulatedHour, "specialHours": specialHours.flatMap { (value: [SpecialHour]) -> [ResultMap] in value.map { (value: SpecialHour) -> ResultMap in value.resultMap } }, "hours": hours.flatMap { (value: Hour) -> ResultMap in value.resultMap }, "isClosed": isClosed, "isOpenNow": isOpenNow, "categories": categories, "imageURL": imageUrl, "mapImage": mapImage.flatMap { (value: MapImage) -> ResultMap in value.resultMap }, "mapImageLarge": mapImageLarge.flatMap { (value: MapImageLarge) -> ResultMap in value.resultMap }])
+                public init(id: String? = nil, placeSubType: PlaceSubType? = nil, name: String, address: Address, position: Position, telephone: String, telephonePretty: String, websiteUrl: String, yelpUrl: String, googleMapsUrl: String? = nil, price: String, rating: Double, reviewCount: Int, articulatedOperatingStatus: String? = nil, articulatedHour: String? = nil, specialHours: [SpecialHour]? = nil, hours: Hour? = nil, isClosed: Bool, isOpenNow: Bool? = nil, categories: [String], imageUrl: String, mapImage: MapImage? = nil, mapImageLarge: MapImageLarge? = nil, neevaMapsQuery: NeevaMapsQuery? = nil) {
+                  self.init(unsafeResultMap: ["__typename": "PlaceData", "id": id, "placeSubType": placeSubType, "name": name, "address": address.resultMap, "position": position.resultMap, "telephone": telephone, "telephonePretty": telephonePretty, "websiteURL": websiteUrl, "yelpURL": yelpUrl, "googleMapsURL": googleMapsUrl, "price": price, "rating": rating, "reviewCount": reviewCount, "articulatedOperatingStatus": articulatedOperatingStatus, "articulatedHour": articulatedHour, "specialHours": specialHours.flatMap { (value: [SpecialHour]) -> [ResultMap] in value.map { (value: SpecialHour) -> ResultMap in value.resultMap } }, "hours": hours.flatMap { (value: Hour) -> ResultMap in value.resultMap }, "isClosed": isClosed, "isOpenNow": isOpenNow, "categories": categories, "imageURL": imageUrl, "mapImage": mapImage.flatMap { (value: MapImage) -> ResultMap in value.resultMap }, "mapImageLarge": mapImageLarge.flatMap { (value: MapImageLarge) -> ResultMap in value.resultMap }, "neevaMapsQuery": neevaMapsQuery.flatMap { (value: NeevaMapsQuery) -> ResultMap in value.resultMap }])
                 }
 
                 public var __typename: String {
@@ -9101,6 +9127,15 @@ public final class SearchQuery: GraphQLQuery {
                   }
                   set {
                     resultMap.updateValue(newValue?.resultMap, forKey: "mapImageLarge")
+                  }
+                }
+
+                public var neevaMapsQuery: NeevaMapsQuery? {
+                  get {
+                    return (resultMap["neevaMapsQuery"] as? ResultMap).flatMap { NeevaMapsQuery(unsafeResultMap: $0) }
+                  }
+                  set {
+                    resultMap.updateValue(newValue?.resultMap, forKey: "neevaMapsQuery")
                   }
                 }
 
@@ -9526,6 +9561,105 @@ public final class SearchQuery: GraphQLQuery {
                     }
                   }
                 }
+
+                public struct NeevaMapsQuery: GraphQLSelectionSet {
+                  public static let possibleTypes: [String] = ["NeevaMapsQuery"]
+
+                  public static var selections: [GraphQLSelection] {
+                    return [
+                      GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                      GraphQLField("query", type: .scalar(String.self)),
+                      GraphQLField("latitude", type: .scalar(Double.self)),
+                      GraphQLField("longitude", type: .scalar(Double.self)),
+                      GraphQLField("radius", type: .scalar(Int.self)),
+                      GraphQLField("isLocationShift", type: .scalar(Bool.self)),
+                      GraphQLField("placeID", type: .scalar(String.self)),
+                      GraphQLField("zoom", type: .scalar(Int.self)),
+                    ]
+                  }
+
+                  public private(set) var resultMap: ResultMap
+
+                  public init(unsafeResultMap: ResultMap) {
+                    self.resultMap = unsafeResultMap
+                  }
+
+                  public init(query: String? = nil, latitude: Double? = nil, longitude: Double? = nil, radius: Int? = nil, isLocationShift: Bool? = nil, placeId: String? = nil, zoom: Int? = nil) {
+                    self.init(unsafeResultMap: ["__typename": "NeevaMapsQuery", "query": query, "latitude": latitude, "longitude": longitude, "radius": radius, "isLocationShift": isLocationShift, "placeID": placeId, "zoom": zoom])
+                  }
+
+                  public var __typename: String {
+                    get {
+                      return resultMap["__typename"]! as! String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "__typename")
+                    }
+                  }
+
+                  public var query: String? {
+                    get {
+                      return resultMap["query"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "query")
+                    }
+                  }
+
+                  public var latitude: Double? {
+                    get {
+                      return resultMap["latitude"] as? Double
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "latitude")
+                    }
+                  }
+
+                  public var longitude: Double? {
+                    get {
+                      return resultMap["longitude"] as? Double
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "longitude")
+                    }
+                  }
+
+                  public var radius: Int? {
+                    get {
+                      return resultMap["radius"] as? Int
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "radius")
+                    }
+                  }
+
+                  public var isLocationShift: Bool? {
+                    get {
+                      return resultMap["isLocationShift"] as? Bool
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "isLocationShift")
+                    }
+                  }
+
+                  public var placeId: String? {
+                    get {
+                      return resultMap["placeID"] as? String
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "placeID")
+                    }
+                  }
+
+                  public var zoom: Int? {
+                    get {
+                      return resultMap["zoom"] as? Int
+                    }
+                    set {
+                      resultMap.updateValue(newValue, forKey: "zoom")
+                    }
+                  }
+                }
               }
             }
 
@@ -9688,6 +9822,7 @@ public final class SearchQuery: GraphQLQuery {
                         GraphQLField("useHighVisuals", type: .scalar(Bool.self)),
                         GraphQLField("articulatedOperatingStatus", type: .scalar(String.self)),
                         GraphQLField("articulatedHour", type: .scalar(String.self)),
+                        GraphQLField("neevaMapsQuery", type: .object(NeevaMapsQuery.selections)),
                         GraphQLField("placeSuggestions", type: .list(.nonNull(.object(PlaceSuggestion.selections)))),
                       ]
                     }
@@ -9698,8 +9833,8 @@ public final class SearchQuery: GraphQLQuery {
                       self.resultMap = unsafeResultMap
                     }
 
-                    public init(id: String? = nil, type: String, placeSubType: PlaceSubType? = nil, name: String, address: Address, telephone: String, telephonePretty: String, websiteUrl: String, yelpUrl: String, position: Position, isAddress: Bool? = nil, rating: Double, price: String, specialHours: [SpecialHour]? = nil, hours: Hour? = nil, reviewCount: Int, imageUrl: String, imageUrLs: [String]? = nil, isClosed: Bool, isOpenNow: Bool? = nil, categories: [String], mapImage: MapImage? = nil, mapImageLarge: MapImageLarge? = nil, googleMapsUrl: String? = nil, useHighVisuals: Bool? = nil, articulatedOperatingStatus: String? = nil, articulatedHour: String? = nil, placeSuggestions: [PlaceSuggestion]? = nil) {
-                      self.init(unsafeResultMap: ["__typename": "PlaceData", "id": id, "type": type, "placeSubType": placeSubType, "name": name, "address": address.resultMap, "telephone": telephone, "telephonePretty": telephonePretty, "websiteURL": websiteUrl, "yelpURL": yelpUrl, "position": position.resultMap, "isAddress": isAddress, "rating": rating, "price": price, "specialHours": specialHours.flatMap { (value: [SpecialHour]) -> [ResultMap] in value.map { (value: SpecialHour) -> ResultMap in value.resultMap } }, "hours": hours.flatMap { (value: Hour) -> ResultMap in value.resultMap }, "reviewCount": reviewCount, "imageURL": imageUrl, "imageURLs": imageUrLs, "isClosed": isClosed, "isOpenNow": isOpenNow, "categories": categories, "mapImage": mapImage.flatMap { (value: MapImage) -> ResultMap in value.resultMap }, "mapImageLarge": mapImageLarge.flatMap { (value: MapImageLarge) -> ResultMap in value.resultMap }, "googleMapsURL": googleMapsUrl, "useHighVisuals": useHighVisuals, "articulatedOperatingStatus": articulatedOperatingStatus, "articulatedHour": articulatedHour, "placeSuggestions": placeSuggestions.flatMap { (value: [PlaceSuggestion]) -> [ResultMap] in value.map { (value: PlaceSuggestion) -> ResultMap in value.resultMap } }])
+                    public init(id: String? = nil, type: String, placeSubType: PlaceSubType? = nil, name: String, address: Address, telephone: String, telephonePretty: String, websiteUrl: String, yelpUrl: String, position: Position, isAddress: Bool? = nil, rating: Double, price: String, specialHours: [SpecialHour]? = nil, hours: Hour? = nil, reviewCount: Int, imageUrl: String, imageUrLs: [String]? = nil, isClosed: Bool, isOpenNow: Bool? = nil, categories: [String], mapImage: MapImage? = nil, mapImageLarge: MapImageLarge? = nil, googleMapsUrl: String? = nil, useHighVisuals: Bool? = nil, articulatedOperatingStatus: String? = nil, articulatedHour: String? = nil, neevaMapsQuery: NeevaMapsQuery? = nil, placeSuggestions: [PlaceSuggestion]? = nil) {
+                      self.init(unsafeResultMap: ["__typename": "PlaceData", "id": id, "type": type, "placeSubType": placeSubType, "name": name, "address": address.resultMap, "telephone": telephone, "telephonePretty": telephonePretty, "websiteURL": websiteUrl, "yelpURL": yelpUrl, "position": position.resultMap, "isAddress": isAddress, "rating": rating, "price": price, "specialHours": specialHours.flatMap { (value: [SpecialHour]) -> [ResultMap] in value.map { (value: SpecialHour) -> ResultMap in value.resultMap } }, "hours": hours.flatMap { (value: Hour) -> ResultMap in value.resultMap }, "reviewCount": reviewCount, "imageURL": imageUrl, "imageURLs": imageUrLs, "isClosed": isClosed, "isOpenNow": isOpenNow, "categories": categories, "mapImage": mapImage.flatMap { (value: MapImage) -> ResultMap in value.resultMap }, "mapImageLarge": mapImageLarge.flatMap { (value: MapImageLarge) -> ResultMap in value.resultMap }, "googleMapsURL": googleMapsUrl, "useHighVisuals": useHighVisuals, "articulatedOperatingStatus": articulatedOperatingStatus, "articulatedHour": articulatedHour, "neevaMapsQuery": neevaMapsQuery.flatMap { (value: NeevaMapsQuery) -> ResultMap in value.resultMap }, "placeSuggestions": placeSuggestions.flatMap { (value: [PlaceSuggestion]) -> [ResultMap] in value.map { (value: PlaceSuggestion) -> ResultMap in value.resultMap } }])
                     }
 
                     public var __typename: String {
@@ -9952,6 +10087,15 @@ public final class SearchQuery: GraphQLQuery {
                       }
                       set {
                         resultMap.updateValue(newValue, forKey: "articulatedHour")
+                      }
+                    }
+
+                    public var neevaMapsQuery: NeevaMapsQuery? {
+                      get {
+                        return (resultMap["neevaMapsQuery"] as? ResultMap).flatMap { NeevaMapsQuery(unsafeResultMap: $0) }
+                      }
+                      set {
+                        resultMap.updateValue(newValue?.resultMap, forKey: "neevaMapsQuery")
                       }
                     }
 
@@ -10383,6 +10527,105 @@ public final class SearchQuery: GraphQLQuery {
                         }
                         set {
                           resultMap.updateValue(newValue, forKey: "height")
+                        }
+                      }
+                    }
+
+                    public struct NeevaMapsQuery: GraphQLSelectionSet {
+                      public static let possibleTypes: [String] = ["NeevaMapsQuery"]
+
+                      public static var selections: [GraphQLSelection] {
+                        return [
+                          GraphQLField("__typename", type: .nonNull(.scalar(String.self))),
+                          GraphQLField("query", type: .scalar(String.self)),
+                          GraphQLField("latitude", type: .scalar(Double.self)),
+                          GraphQLField("longitude", type: .scalar(Double.self)),
+                          GraphQLField("radius", type: .scalar(Int.self)),
+                          GraphQLField("isLocationShift", type: .scalar(Bool.self)),
+                          GraphQLField("placeID", type: .scalar(String.self)),
+                          GraphQLField("zoom", type: .scalar(Int.self)),
+                        ]
+                      }
+
+                      public private(set) var resultMap: ResultMap
+
+                      public init(unsafeResultMap: ResultMap) {
+                        self.resultMap = unsafeResultMap
+                      }
+
+                      public init(query: String? = nil, latitude: Double? = nil, longitude: Double? = nil, radius: Int? = nil, isLocationShift: Bool? = nil, placeId: String? = nil, zoom: Int? = nil) {
+                        self.init(unsafeResultMap: ["__typename": "NeevaMapsQuery", "query": query, "latitude": latitude, "longitude": longitude, "radius": radius, "isLocationShift": isLocationShift, "placeID": placeId, "zoom": zoom])
+                      }
+
+                      public var __typename: String {
+                        get {
+                          return resultMap["__typename"]! as! String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "__typename")
+                        }
+                      }
+
+                      public var query: String? {
+                        get {
+                          return resultMap["query"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "query")
+                        }
+                      }
+
+                      public var latitude: Double? {
+                        get {
+                          return resultMap["latitude"] as? Double
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "latitude")
+                        }
+                      }
+
+                      public var longitude: Double? {
+                        get {
+                          return resultMap["longitude"] as? Double
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "longitude")
+                        }
+                      }
+
+                      public var radius: Int? {
+                        get {
+                          return resultMap["radius"] as? Int
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "radius")
+                        }
+                      }
+
+                      public var isLocationShift: Bool? {
+                        get {
+                          return resultMap["isLocationShift"] as? Bool
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "isLocationShift")
+                        }
+                      }
+
+                      public var placeId: String? {
+                        get {
+                          return resultMap["placeID"] as? String
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "placeID")
+                        }
+                      }
+
+                      public var zoom: Int? {
+                        get {
+                          return resultMap["zoom"] as? Int
+                        }
+                        set {
+                          resultMap.updateValue(newValue, forKey: "zoom")
                         }
                       }
                     }
