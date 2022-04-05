@@ -15,6 +15,7 @@ struct OverlayView: View {
     @State var safeArea: CGFloat = 0
     @State var keyboardHidden = true
     @State var presentSheet = false
+    @State var isVisible = false
 
     var limitToOverlayType: [OverlayType]?
     var canDisplay: Bool {
@@ -101,6 +102,11 @@ struct OverlayView: View {
                     safeArea = geom.safeAreaInsets.bottom
                     keyboardHidden = safeArea < 100
                 }
+                .onChange(of: canDisplay) { value in
+                    if !value, isVisible {
+                        overlayManager.hideCurrentOverlay(animate: false)
+                    }
+                }
                 .padding(
                     .bottom,
                     overlayManager.offsetForBottomBar && !chromeModel.inlineToolbar
@@ -108,10 +114,11 @@ struct OverlayView: View {
                         ? chromeModel.bottomBarHeight - scrollingControlModel.footerBottomOffset
                         : 0
                 )
-                .onChange(of: canDisplay) { value in
-                    if !value {
-                        overlayManager.hideCurrentOverlay()
-                    }
+                .onAppear {
+                    isVisible = true
+                }
+                .onDisappear {
+                    isVisible = false
                 }
         }
     }
