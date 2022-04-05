@@ -15,4 +15,9 @@ extension URL {
             (self.scheme == NeevaConstants.appHomeURL.scheme
             && self.host == NeevaConstants.appHomeURL.host) || self.host == "login.neeva.com"
     }
+
+    /// Checks if the current URL is for the Neeva Search Results Page
+    public func isNeevaSearchResultsPageURL() -> Bool {
+        return isNeevaURL() && path == "/search"
+    }
 }

@@ -706,7 +706,7 @@ extension BrowserViewController: WKNavigationDelegate {
                         && Defaults[.signedInOnce]
                 {
                     self.presentIntroViewController(true, signInMode: true)
-                    decisionHandler(.cancel)
+                    decisionHandler(.allow)
                     return
                 }
             }

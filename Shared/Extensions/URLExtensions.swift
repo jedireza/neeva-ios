@@ -436,9 +436,7 @@ extension URL {
 }
 
 // Extensions to deal with ReaderMode URLs
-
 extension URL {
-
     public var isReaderModeURL: Bool {
         let scheme = self.scheme
         let host = self.host

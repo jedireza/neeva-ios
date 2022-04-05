@@ -7,9 +7,11 @@ import Combine
 import CryptoKit
 import Defaults
 import Shared
+import SwiftUI
 import UIKit
 
 private let log = Logger.auth
+private let browserLog = Logger.browser
 
 enum FirstRunButtonActions {
     case signin
@@ -26,13 +28,13 @@ class IntroViewModel: NSObject, ObservableObject {
     @Published var marketingEmailOptOut = true
     @Published var onOtherOptionsPage: Bool = false
     @Published var onSignInMode: Bool = false
-
-    var signInErrorMessage: String = ""
     @Published var showSignInError = false
 
+    public var signInErrorMessage: String = ""
     public var presentationController: UIViewController
     public var overlayManager: OverlayManager
-    public var onDismiss: ((FirstRunButtonActions) -> Void)
+
+    private var onDismiss: ((FirstRunButtonActions) -> Void)?
 
     public func buttonAction(_ option: FirstRunButtonActions) {
         // Make sure all actions are run on the main thread to prevent runtime errors
@@ -49,7 +51,7 @@ class IntroViewModel: NSObject, ObservableObject {
                     Defaults[.firstRunPath] = "FirstRunSkipToBrowser"
                 }
 
-                self.onDismiss(.skipToBrowser)
+                self.dismiss(.skipToBrowser)
             case FirstRunButtonActions.oktaSignup(
                 let email,
                 let firstname,
@@ -63,7 +65,7 @@ class IntroViewModel: NSObject, ObservableObject {
                     marketingEmailOptOut: marketingEmailOptOut
                 )
             case FirstRunButtonActions.oktaSignin(let email):
-                self.onDismiss(.oktaSignin(email))
+                self.dismiss(.oktaSignin(email))
             case FirstRunButtonActions.oauthWithProvider(
                 let provider, let marketingEmailOptOut, _, let email):
                 self.marketingEmailOptOut = marketingEmailOptOut
@@ -75,11 +77,39 @@ class IntroViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - Presenting/Dismissing
-    public func dismiss(completion: @escaping () -> Void) {
+    public func present(
+        onDismiss: @escaping ((FirstRunButtonActions) -> Void), completion: @escaping (() -> Void)
+    ) {
+        self.onDismiss = onDismiss
+
+        overlayManager.presentFullScreenModal(
+            content: AnyView(
+                IntroFirstRunView()
+                    .environmentObject(self)
+                    .onAppear {
+                        AppDelegate.setRotationLock(to: .portrait)
+                    }
+                    .onDisappear {
+                        AppDelegate.setRotationLock(to: .all)
+                    }
+            )
+        ) {
+            completion()
+        }
+    }
+
+    public func dismiss(_ firstRunButtonAction: FirstRunButtonActions?) {
         Defaults[.introSeen] = true
 
         overlayManager.hideCurrentOverlay(ofPriority: .fullScreen) {
-            completion()
+            browserLog.info("Dismissed introVC")
+
+            guard let firstRunButtonAction = firstRunButtonAction else {
+                return
+            }
+
+            self.onDismiss?(firstRunButtonAction)
+            self.onDismiss = nil
         }
     }
 
@@ -152,7 +182,7 @@ class IntroViewModel: NSObject, ObservableObject {
                 }
                 showErrorAlert(errMsg: errorMessage)
             } else if let cookie = token {
-                self.onDismiss(
+                self.dismiss(
                     .oauthWithProvider(provider, self.marketingEmailOptOut, cookie, email))
             }
         }
@@ -170,13 +200,9 @@ class IntroViewModel: NSObject, ObservableObject {
     }
 
     // MARK: - Init
-    public init(
-        presentationController: UIViewController, overlayManager: OverlayManager,
-        onDismiss: @escaping ((FirstRunButtonActions) -> Void)
-    ) {
+    public init(presentationController: UIViewController, overlayManager: OverlayManager) {
         self.presentationController = presentationController
         self.overlayManager = overlayManager
-        self.onDismiss = onDismiss
     }
 }
 
@@ -225,7 +251,7 @@ extension IntroViewModel: ASAuthorizationControllerDelegate {
                     attributes: EnvironmentHelper.shared.getFirstRunAttributes()
                 )
             }
-            self.onDismiss(
+            self.dismiss(
                 .signupWithApple(self.marketingEmailOptOut, identityTokenStr, authorizationCodeStr))
             break
         default:
@@ -318,8 +344,7 @@ extension IntroViewModel {
         request.httpBody = jsonData
 
         let config = URLSessionConfiguration.default
-        let delegate = OktaAccountCreatedDelegate(onDismiss: onDismiss)
-
+        let delegate = OktaAccountCreatedDelegate(onDismiss: dismiss)
         let session = URLSession(configuration: config, delegate: delegate, delegateQueue: nil)
 
         session.dataTask(with: request) { data, response, error in
