@@ -725,7 +725,6 @@ extension BrowserViewController: WKNavigationDelegate {
 
                 }
             }
-
             decisionHandler(.allow)
             return
         }

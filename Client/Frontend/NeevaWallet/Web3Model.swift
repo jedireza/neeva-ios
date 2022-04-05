@@ -64,7 +64,7 @@ class Web3Model: ObservableObject, ResponseRelay {
 
     var server: Server? {
         #if XYZ
-            return server?
+            return serverManager?.server
         #endif
         return nil
     }
@@ -569,8 +569,12 @@ class WalletDetailsModel: ObservableObject {
             self.toastDelegate?.shouldShowToast(for: message)
         }
 
-        func getWeb3Model() -> Web3Model {
-            return self
+        func updateCurrentSequence(_ sequence: SequenceInfo) {
+            self.currentSequence = sequence
+        }
+
+        func getWallet() -> WalletAccessor? {
+            return wallet
         }
     }
 #endif

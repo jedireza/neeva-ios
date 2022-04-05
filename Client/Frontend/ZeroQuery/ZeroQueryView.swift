@@ -7,10 +7,6 @@ import Shared
 import Storage
 import SwiftUI
 
-#if XYZ
-    import WalletCore
-#endif
-
 private enum TriState: Int, Codable {
     case hidden
     case compact

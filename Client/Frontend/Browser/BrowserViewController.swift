@@ -500,14 +500,12 @@ class BrowserViewController: UIViewController, ModalPresenter {
             if Self.createNewTabOnStartForTesting {
                 self.tabManager.select(self.tabManager.addTab())
             } else if self.tabManager.normalTabs.isEmpty {
-                #if XYZ
+                if NeevaConstants.currentTarget == .xyz {
                     self.showZeroQuery()
                     if !Defaults[.walletIntroSeen] {
                         self.web3Model.showWalletPanel()
                     }
-                    return
-                #endif
-                if !Defaults[.didFirstNavigation] {
+                } else if !Defaults[.didFirstNavigation] {
                     self.showPreviewHome()
                 } else {
                     self.showTabTray()

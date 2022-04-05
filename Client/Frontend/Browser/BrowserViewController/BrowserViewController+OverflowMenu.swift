@@ -168,9 +168,7 @@ extension BrowserViewController {
             )
             showFeedbackPanel(bvc: self, screenshot: image ?? self.feedbackImage)
         case .cryptoWallet:
-            #if XYZ
-                web3Model.showWalletPanel()
-            #endif
+            web3Model.showWalletPanel()
         }
     }
 }

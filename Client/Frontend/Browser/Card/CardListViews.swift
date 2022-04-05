@@ -5,10 +5,6 @@
 import Shared
 import SwiftUI
 
-#if XYZ
-    import WalletCore
-#endif
-
 struct SpaceCardsView: View {
     @EnvironmentObject var spacesModel: SpaceCardModel
 

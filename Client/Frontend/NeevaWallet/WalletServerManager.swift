@@ -14,8 +14,10 @@ protocol ToastDelegate: AnyObject {
     func shouldShowToast(for message: LocalizedStringKey)
 }
 
-protocol WalletServerManagerDelegate: ToastDelegate {
-    func getWeb3Model() -> Web3Model
+protocol WalletServerManagerDelegate: ResponseRelay, ToastDelegate {
+    func updateCurrentSession()
+    func updateCurrentSequence(_ sequence: SequenceInfo)
+    func getWallet() -> WalletAccessor?
 }
 
 class WalletServerManager {
@@ -29,10 +31,10 @@ class WalletServerManager {
     }
 
     func registerToHandlers() {
-        guard let web3Model = delegate?.getWeb3Model() else { return }
-        server.register(handler: PersonalSignHandler(relay: web3Model))
-        server.register(handler: SendTransactionHandler(relay: web3Model))
-        server.register(handler: SignTypedDataHandler(relay: web3Model))
+        guard let delegate = delegate else { return }
+        server.register(handler: PersonalSignHandler(relay: delegate))
+        server.register(handler: SendTransactionHandler(relay: delegate))
+        server.register(handler: SignTypedDataHandler(relay: delegate))
     }
 
 }
@@ -46,7 +48,7 @@ extension WalletServerManager: ServerDelegate {
         _ server: Server, shouldStart session: Session,
         completion: @escaping (Session.WalletInfo) -> Void
     ) {
-        guard let wallet = delegate?.getWeb3Model().wallet else {
+        guard let wallet = delegate?.getWallet() else {
             let walletInfo = Session.WalletInfo(
                 approved: false,
                 accounts: [],
@@ -63,7 +65,7 @@ extension WalletServerManager: ServerDelegate {
             "WC: Should Start from \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))"
         )
         DispatchQueue.main.async {
-            self.delegate?.getWeb3Model().currentSequence = SequenceInfo(
+            let sequence = SequenceInfo(
                 type: .sessionRequest,
                 thumbnailURL: session.dAppInfo.peerMeta.icons.first ?? .aboutBlank,
                 dAppMeta: session.dAppInfo.peerMeta,
@@ -101,6 +103,7 @@ extension WalletServerManager: ServerDelegate {
                         completion(walletInfo)
                     }
                 })
+            self.delegate?.updateCurrentSequence(sequence)
         }
     }
 
@@ -113,14 +116,14 @@ extension WalletServerManager: ServerDelegate {
         guard !Defaults[.sessionsPeerIDs].contains(session.dAppInfo.peerId) else { return }
         Defaults[.dAppsSession(session.dAppInfo.peerId)] = try! JSONEncoder().encode(session)
         Defaults[.sessionsPeerIDs].insert(session.dAppInfo.peerId)
-        self.delegate?.getWeb3Model().updateCurrentSession()
+        self.delegate?.updateCurrentSession()
     }
 
     func server(_ server: Server, didDisconnect session: Session) {
         LogService.shared.log(
             "WC: Did disconnect session to \(String(describing: session.dAppInfo.peerMeta.url.baseDomain))"
         )
-        self.delegate?.getWeb3Model().updateCurrentSession()
+        self.delegate?.updateCurrentSession()
         Defaults[.dAppsSession(session.dAppInfo.peerId)] = nil
         Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
         DispatchQueue.main.async {

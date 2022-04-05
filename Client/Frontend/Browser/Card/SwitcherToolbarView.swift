@@ -6,10 +6,6 @@ import Defaults
 import Shared
 import SwiftUI
 
-#if XYZ
-    import WalletCore
-#endif
-
 class SwitcherToolbarModel: ObservableObject {
     let tabManager: TabManager
     let openLazyTab: () -> Void
