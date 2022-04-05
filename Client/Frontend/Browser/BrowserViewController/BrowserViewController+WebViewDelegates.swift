@@ -488,18 +488,19 @@ extension BrowserViewController: WKNavigationDelegate {
 
     // Use for links, that do not show a confirmation before opening.
     fileprivate func showOverlay(forExternalUrl url: URL) {
-        // NOTE: This only considers schemes included in our LSApplicationQueriesSchemes
-        // PList declaration. We should probably take that into consideration here and
-        // still allow users to open other, unknown URLs.
-        guard UIApplication.shared.canOpenURL(url) else {
-            return
-        }
-
         tabManager.selectedTab?.stop()
 
         showModal(style: .grouped) {
-            OpenInAppOverlayContent(url: url)
-                .environment(\.hideOverlay, { self.overlayManager.hideCurrentOverlay() })
+            OpenInAppOverlayContent(url: url) {
+                guard let toastViewManager = self.getSceneDelegate()?.toastViewManager else {
+                    return
+                }
+
+                ToastDefaults().showToast(
+                    with:
+                        "Unable to open link in external app. Check if the app is installed on this device.",
+                    toastViewManager: toastViewManager)
+            }.environment(\.hideOverlay, { self.overlayManager.hideCurrentOverlay() })
         }
     }
 
