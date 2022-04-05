@@ -21,7 +21,7 @@ private enum HistoryPanelUX {
     static let actionIconColor = UIColor.Photon.Grey40  // Works for light and dark theme.
 }
 
-private class FetchInProgressError: MaybeErrorType {
+class FetchInProgressError: MaybeErrorType {
     internal var description: String {
         return "Fetch is already in-progress"
     }
