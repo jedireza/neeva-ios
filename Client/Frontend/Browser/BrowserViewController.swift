@@ -909,6 +909,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
     func openLazyTab(
         openedFrom: ZeroQueryOpenedLocation = .openTab(nil), switchToIncognitoMode: Bool? = nil
     ) {
+        popToBVC()
+
         if let switchToIncognitoMode = switchToIncognitoMode {
             tabManager.setIncognitoMode(to: switchToIncognitoMode)
         }
