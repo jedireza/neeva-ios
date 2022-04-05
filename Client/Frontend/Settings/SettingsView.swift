@@ -17,8 +17,13 @@ extension EnvironmentValues {
     }
 }
 
+enum SettingsPage {
+    case cookieCutter
+}
+
 struct SettingsView: View {
     let dismiss: () -> Void
+    let openPage: SettingsPage?
 
     #if DEBUG
         @State var showDebugSettings = true
@@ -40,7 +45,7 @@ struct SettingsView: View {
                     GeneralSettingsSection()
                 }
                 Section(header: Text("Privacy")) {
-                    PrivacySettingsSection()
+                    PrivacySettingsSection(openCookieCutterPage: openPage == .cookieCutter)
                 }
                 Section(header: Text("Support")) {
                     SupportSettingsSection()
@@ -87,11 +92,11 @@ struct SettingPreviewWrapper<Content: View>: View {
 }
 
 class SettingsViewController: UIHostingController<AnyView> {
-    init(bvc: BrowserViewController) {
+    init(bvc: BrowserViewController, openPage: SettingsPage? = nil) {
         super.init(rootView: AnyView(EmptyView()))
 
         self.rootView = AnyView(
-            SettingsView(dismiss: { self.dismiss(animated: true, completion: nil) })
+            SettingsView(dismiss: { self.dismiss(animated: true, completion: nil) }, openPage: openPage)
                 .environment(\.openInNewTab) { url, isIncognito in
                     self.dismiss(animated: true, completion: nil)
                     bvc.openURLInNewTab(url, isIncognito: isIncognito)
@@ -122,6 +127,7 @@ class SettingsViewController: UIHostingController<AnyView> {
                     } onDismiss: {
                     }
                 }
+                .environmentObject(bvc.browserModel)
         )
     }
 
@@ -132,6 +138,6 @@ class SettingsViewController: UIHostingController<AnyView> {
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
-        SettingsView(dismiss: {})
+        SettingsView(dismiss: {}, openPage: nil)
     }
 }
