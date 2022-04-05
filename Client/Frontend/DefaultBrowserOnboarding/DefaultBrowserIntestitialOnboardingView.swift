@@ -6,6 +6,12 @@ import Defaults
 import Shared
 import SwiftUI
 
+public enum DefaultBrowserInterstitialChoice: Int {
+    case undecided = 0
+    case openSettings = 1
+    case skipForNow = 2
+}
+
 class DefaultBrowserInterstitialOnboardingViewController: UIHostingController<
     DefaultBrowserInterstitialOnboardingViewController.Content
 >
@@ -233,6 +239,8 @@ struct DefaultBrowserInterstitialOnboardingView: View {
                 action: {
                     buttonAction()
                     didTakeAction = true
+                    Defaults[.lastDefaultBrowserInterstitialChoice] =
+                        DefaultBrowserInterstitialChoice.openSettings.rawValue
                     ClientLogger.shared.logCounter(
                         .DefaultBrowserOnboardingInterstitialOpen,
                         attributes: [
@@ -286,6 +294,8 @@ struct DefaultBrowserInterstitialOnboardingView: View {
 
     private func tapSkip() {
         skipAction()
+        Defaults[.lastDefaultBrowserInterstitialChoice] =
+            DefaultBrowserInterstitialChoice.skipForNow.rawValue
         ClientLogger.shared.logCounter(
             .DefaultBrowserOnboardingInterstitialSkip,
             attributes: [

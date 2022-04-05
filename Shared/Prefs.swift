@@ -189,6 +189,9 @@ extension Defaults.Keys {
     public static let lastDefaultBrowserPromptInteraction = Defaults.Key<String?>(
         "lastDefaultBrowserPromptInteraction")
 
+    public static let lastDefaultBrowserInterstitialChoice = Defaults.Key<Int>(
+        "lastDefaultBrowserInterstitialChoice", default: 0)
+
     // MARK: - Spotlight Search
     public static let createUserActivities = Defaults.BoolKey("createUserActivities", default: true)
     public static let makeActivityAvailForSearch = Defaults.BoolKey(
