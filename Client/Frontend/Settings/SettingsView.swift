@@ -37,23 +37,23 @@ struct SettingsView: View {
                             NeevaSettingsSection(dismissVC: dismiss, userInfo: .shared)
                         }
                     }
-                    
+
                     Section(header: Text("General")) {
                         GeneralSettingsSection()
                     }
-                    
+
                     Section(header: Text("Privacy")) {
                         PrivacySettingsSection()
                     }
-                    
+
                     Section(header: Text("Support")) {
                         SupportSettingsSection()
                     }
-                    
+
                     Section(header: Text("About")) {
                         AboutSettingsSection(showDebugSettings: $showDebugSettings)
                     }
-                    
+
                     if showDebugSettings {
                         DebugSettingsSection()
                     }
@@ -70,7 +70,7 @@ struct SettingsView: View {
                     }
                 }
             }
-            
+
             OverlayView(limitToOverlayType: [.toast(nil)])
         }
     }
