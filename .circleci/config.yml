@@ -47,6 +47,12 @@ commands:
       - run:
           name: Build Client
           command: xcodebuild build-for-testing -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
+  build-xyzclient:
+    steps:
+      - generate-user-scripts
+      - run:
+          name: Build Client
+          command: xcodebuild build-for-testing -scheme XYZClient -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
   build-codegen:
     steps:
        - run:
@@ -149,6 +155,7 @@ jobs:
       - bootstrap
       - build-codegen
       - build-client
+      - build-xyzclient
       - save_cache:
           name: Save build cache
           key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
