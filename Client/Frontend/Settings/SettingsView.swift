@@ -96,38 +96,40 @@ class SettingsViewController: UIHostingController<AnyView> {
         super.init(rootView: AnyView(EmptyView()))
 
         self.rootView = AnyView(
-            SettingsView(dismiss: { self.dismiss(animated: true, completion: nil) }, openPage: openPage)
-                .environment(\.openInNewTab) { url, isIncognito in
-                    self.dismiss(animated: true, completion: nil)
-                    bvc.openURLInNewTab(url, isIncognito: isIncognito)
+            SettingsView(
+                dismiss: { self.dismiss(animated: true, completion: nil) }, openPage: openPage
+            )
+            .environment(\.openInNewTab) { url, isIncognito in
+                self.dismiss(animated: true, completion: nil)
+                bvc.openURLInNewTab(url, isIncognito: isIncognito)
+            }
+            .environment(\.onOpenURL) { url in
+                self.dismiss(animated: true, completion: nil)
+                bvc.openURLInNewTabPreservingIncognitoState(url)
+            }
+            .environment(\.settingsPresentIntroViewController) {
+                self.dismiss(animated: true) {
+                    bvc.presentIntroViewController(
+                        true,
+                        completion: {
+                            bvc.hideZeroQuery()
+                        })
                 }
-                .environment(\.onOpenURL) { url in
-                    self.dismiss(animated: true, completion: nil)
-                    bvc.openURLInNewTabPreservingIncognitoState(url)
+            }
+            .environment(\.dismissScreen) {
+                self.dismiss(animated: true, completion: nil)
+            }
+            .environment(\.showNotificationPrompt) {
+                bvc.showAsModalOverlaySheet(
+                    style: OverlayStyle(
+                        showTitle: false,
+                        backgroundColor: .systemBackground)
+                ) {
+                    NotificationPromptViewOverlayContent()
+                } onDismiss: {
                 }
-                .environment(\.settingsPresentIntroViewController) {
-                    self.dismiss(animated: true) {
-                        bvc.presentIntroViewController(
-                            true,
-                            completion: {
-                                bvc.hideZeroQuery()
-                            })
-                    }
-                }
-                .environment(\.dismissScreen) {
-                    self.dismiss(animated: true, completion: nil)
-                }
-                .environment(\.showNotificationPrompt) {
-                    bvc.showAsModalOverlaySheet(
-                        style: OverlayStyle(
-                            showTitle: false,
-                            backgroundColor: .systemBackground)
-                    ) {
-                        NotificationPromptViewOverlayContent()
-                    } onDismiss: {
-                    }
-                }
-                .environmentObject(bvc.browserModel)
+            }
+            .environmentObject(bvc.browserModel)
         )
     }
 
