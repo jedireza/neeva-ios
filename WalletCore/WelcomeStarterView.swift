@@ -12,15 +12,20 @@ public struct WelcomeStarterView: View {
     @Default(.cryptoPublicKey) var publicKey
     @State var isCreatingWallet: Bool = false
     @Binding var viewState: ViewState
+    let completion: () -> Void
 
-    public init(dismiss: @escaping () -> Void, viewState: Binding<ViewState>) {
+    public init(
+        dismiss: @escaping () -> Void, viewState: Binding<ViewState>,
+        completion: @escaping () -> Void
+    ) {
         self._viewState = viewState
         self.dismiss = dismiss
+        self.completion = completion
     }
 
     public var body: some View {
         VStack {
-            CreateWalletIllustration(isCreatingWallet: $isCreatingWallet)
+            CreateWalletIllustration(isCreatingWallet: $isCreatingWallet, completion: completion)
             if publicKey.isEmpty {
                 Button(action: { viewState = .importWallet }) {
                     Text("Import My Wallet")
@@ -61,9 +66,12 @@ public struct WelcomeStarterView: View {
                 }
                 .buttonStyle(.wallet(.primary))
                 .padding(.vertical, 8)
-                Text("You can access your Secret Recovery Phrase from your wallet anytime.")
-                    .withFont(.bodyLarge)
-                    .foregroundColor(.secondaryLabel)
+                Text(
+                    "REMEMBER: Write down or save your Secret Recovery Phrase somewhere safe. You need it to ensure you can access your wallet forever."
+                )
+                .withFont(.bodyLarge)
+                .foregroundColor(.secondaryLabel)
+                .multilineTextAlignment(.center)
             }
         }.padding(.horizontal, 16)
     }
@@ -77,6 +85,8 @@ struct CreateWalletIllustration: View {
     @State var confettiCounter = 0
     @State var timer: Timer? = nil
     @State var finalAnimationShown = false
+
+    let completion: () -> Void
 
     var body: some View {
         ZStack {
@@ -117,6 +127,7 @@ struct CreateWalletIllustration: View {
                     confettiCounter = 1
                     model.createWallet {
                         isCreatingWallet = false
+                        completion()
                     }
                 }
             }

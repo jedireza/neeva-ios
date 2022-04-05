@@ -117,6 +117,10 @@ public class CheatsheetMenuViewModel: ObservableObject {
         {
             currentPageURL = currentPageURL?.decodeReaderModeURL
         }
+        // unwrap session restore URL
+        if let unwrapped = InternalURL.unwrapSessionRestore(url: currentPageURL) {
+            currentPageURL = unwrapped
+        }
 
         guard let url = currentPageURL,
             ["https", "http"].contains(url.scheme),

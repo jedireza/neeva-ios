@@ -488,17 +488,19 @@ extension BrowserViewController: WKNavigationDelegate {
 
     // Use for links, that do not show a confirmation before opening.
     fileprivate func showOverlay(forExternalUrl url: URL) {
-        // NOTE: This only considers schemes included in our LSApplicationQueriesSchemes
-        // PList declaration. We should probably take that into consideration here and
-        // still allow users to open other, unknown URLs.
-        guard UIApplication.shared.canOpenURL(url) else {
-            return
-        }
-
         tabManager.selectedTab?.stop()
 
         showModal(style: .grouped) {
-            OpenInAppOverlayContent(url: url)
+            OpenInAppOverlayContent(url: url) {
+                guard let toastViewManager = self.getSceneDelegate()?.toastViewManager else {
+                    return
+                }
+
+                ToastDefaults().showToast(
+                    with:
+                        "Unable to open link in external app. Check if the app is installed on this device.",
+                    toastViewManager: toastViewManager)
+            }.environment(\.hideOverlay, { self.overlayManager.hideCurrentOverlay() })
         }
     }
 
@@ -709,7 +711,7 @@ extension BrowserViewController: WKNavigationDelegate {
                 }
             }
 
-            if FeatureFlag[.enableCryptoWallet], url.lastPathComponent == "wc" {
+            if NeevaConstants.currentTarget == .xyz, url.lastPathComponent == "wc" {
                 if url.query == nil {
                     // If this is only for invoking a wallet app with no params, cancel the navigation.
                     decisionHandler(.cancel)
@@ -1036,30 +1038,6 @@ extension BrowserViewController: WKNavigationDelegate {
                     Defaults[.firstRunSeenAndNotSignedIn] = false
                 }
 
-                if shouldLogDBPrompt
-                    && userInfo.hasLoginCookie()
-                {
-                    ClientLogger.shared.logCounter(
-                        .DefaultBrowserInterstitialImp
-                    )
-                    shouldLogDBPrompt = false
-                }
-
-                if let interactionStr = Defaults[.lastDefaultBrowserPromptInteraction],
-                    let interaction = LogConfig.Interaction(rawValue: interactionStr),
-                    userInfo.hasLoginCookie()
-                {
-                    ClientLogger.shared.logCounter(
-                        interaction,
-                        attributes: [
-                            ClientLogCounterAttribute(
-                                key: LogConfig.PromoCardAttribute.defaultBrowserInterstitialTrigger,
-                                value: OpenDefaultBrowserOnboardingTrigger.afterSignup.rawValue)
-                        ]
-                    )
-                    Defaults[.lastDefaultBrowserPromptInteraction] = nil
-                }
-
                 userInfo.updateLoginCookieFromWebKitCookieStore {
                     // We have a fresh login cookie.
                     Defaults[.signedInOnce] = true
@@ -1082,7 +1060,7 @@ extension BrowserViewController: WKNavigationDelegate {
         // mode, and we will show the preview mode sign up prompt
         // we will show the promp for both incognito and normal mode
         if let url = webView.url, url.origin == NeevaConstants.appURL.origin {
-            if !Defaults[.signedInOnce] {
+            if !Defaults[.signedInOnce] && NeevaConstants.currentTarget == .client {
                 if let query = SearchEngine.current.queryForSearchURL(url),
                     Defaults[.previewModeQueries].count == Defaults[.maxQueryLimit]
                         || Defaults[.previewModeQueries].count % Defaults[.signupPromptInterval]

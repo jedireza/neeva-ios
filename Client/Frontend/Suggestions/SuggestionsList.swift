@@ -13,7 +13,7 @@ struct SuggestionsList: View {
     @EnvironmentObject private var suggestionModel: SuggestionModel
 
     var searchSuggestionLabel: String {
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             return "Web Search from \(SearchEngine.current.label)"
         } else {
             return SearchEngine.current.isNeeva
@@ -43,7 +43,7 @@ struct SuggestionsList: View {
                 }
             } else {
                 TabSuggestionsList()
-                if !FeatureFlag[.web3Mode] {
+                if NeevaConstants.currentTarget != .xyz {
                     AutocompleteSuggestionView()
                 }
 

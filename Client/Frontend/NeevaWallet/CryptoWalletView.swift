@@ -55,13 +55,29 @@ struct CryptoWalletView: View {
                 case .xyzIntro:
                     XYZIntroView(viewState: $viewState)
                 case .starter:
-                    WelcomeStarterView(dismiss: dismiss, viewState: $viewState)
+                    WelcomeStarterView(dismiss: dismiss, viewState: $viewState) {
+                        ClientLogger.shared.logCounter(
+                            .CreatedWallet,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.walletAddress,
+                                    value: Defaults[.cryptoPublicKey])
+                            ])
+                    }
                 case .dashboard:
                     WalletDashboard(viewState: $viewState, assetStore: AssetStore.shared)
                 case .showPhrases:
                     ShowPhrasesView(dismiss: dismiss, viewState: $viewState)
                 case .importWallet:
-                    ImportWalletView(dismiss: dismiss, viewState: $viewState)
+                    ImportWalletView(dismiss: dismiss, viewState: $viewState) {
+                        ClientLogger.shared.logCounter(
+                            .ImportedWallet,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.walletAddress,
+                                    value: Defaults[.cryptoPublicKey])
+                            ])
+                    }
                 }
             }
         }

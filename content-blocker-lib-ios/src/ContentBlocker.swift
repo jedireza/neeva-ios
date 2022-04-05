@@ -9,17 +9,21 @@ import Defaults
 
 enum BlocklistCategory: CaseIterable {
     case easyPrivacy
+    case easyPrivacyWeb3
 
     static func fromFile(_ file: BlocklistFileName) -> BlocklistCategory {
         switch file {
         case .easyPrivacy:
             return .easyPrivacy
+        case .easyPrivacyWeb3:
+            return .easyPrivacyWeb3
         }
     }
 }
 
 enum BlocklistFileName: String, CaseIterable {
     case easyPrivacy = "easy_privacy"
+    case easyPrivacyWeb3 = "easy_privacy_web3"
 
     var filename: String { return self.rawValue }
 
@@ -29,6 +33,8 @@ enum BlocklistFileName: String, CaseIterable {
         switch strength {
         case .easyPrivacy:
             return BlocklistFileName.easyPrivacyStrength
+        case .easyPrivacyWeb3:
+            return [.easyPrivacyWeb3]
         }
     }
 }
@@ -217,7 +223,11 @@ extension ContentBlocker {
     func compileListsNotInStore(completion: @escaping () -> Void) {
         //let blocklists = BlocklistFileName.allCases.map { $0.filename }
         var blocklists = [String]()
-        blocklists = [BlocklistFileName.easyPrivacy.filename]
+        blocklists = [
+            NeevaConstants.currentTarget == .xyz ?
+                BlocklistFileName.easyPrivacyWeb3.filename :
+                BlocklistFileName.easyPrivacy.filename
+        ]
         let deferreds: [Deferred<Void>] = blocklists.map { filename in
             let result = Deferred<Void>()
             ruleStore.lookUpContentRuleList(forIdentifier: filename) { contentRuleList, error in

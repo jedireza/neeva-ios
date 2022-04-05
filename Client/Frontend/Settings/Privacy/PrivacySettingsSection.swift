@@ -20,37 +20,49 @@ struct PrivacySettingsSection: View {
                         .ViewDataManagement, attributes: EnvironmentHelper.shared.getAttributes())
                 }
         )
+
         Toggle(isOn: $closeIncognitoTabs) {
             DetailedSettingsLabel(
                 title: "Close Incognito Tabs",
                 description: "When Leaving Incognito Mode"
             )
         }
-        if FeatureFlag[.newTrackingProtectionSettings] {
-            makeNavigationLink(title: "Tracking Protection") {
-                List {
-                    Section(header: Text("Global Privacy Settings").padding(.top, 21)) {
-                        TrackingSettingsBlock()
+
+        if !FeatureFlag[.cookieCutter] {
+            if FeatureFlag[.newTrackingProtectionSettings] {
+                makeNavigationLink(title: "Tracking Protection") {
+                    List {
+                        Section(header: Text("Global Privacy Settings").padding(.top, 21)) {
+                            TrackingSettingsBlock()
+                        }
+
+                        TrackingAttribution()
                     }
-                    TrackingAttribution()
+                    .listStyle(.insetGrouped)
+                    .applyToggleStyle()
+                    .onAppear {
+                        ClientLogger.shared.logCounter(
+                            .ViewTrackingProtection,
+                            attributes: EnvironmentHelper.shared.getAttributes())
+                    }
                 }
-                .listStyle(.insetGrouped)
-                .applyToggleStyle()
-                .onAppear {
-                    ClientLogger.shared.logCounter(
-                        .ViewTrackingProtection,
-                        attributes: EnvironmentHelper.shared.getAttributes())
-                }
+            } else {
+                Toggle("Tracking Protection", isOn: $contentBlockingEnabled)
+                    .onChange(of: contentBlockingEnabled) { enabled in
+                        ClientLogger.shared.logCounter(
+                            enabled ? .TurnOnGlobalBlockTracking : .TurnOffGlobalBlockTracking,
+                            attributes: EnvironmentHelper.shared.getAttributes()
+                        )
+                    }
             }
-        } else {
-            Toggle("Tracking Protection", isOn: $contentBlockingEnabled)
-                .onChange(of: contentBlockingEnabled) { enabled in
-                    ClientLogger.shared.logCounter(
-                        enabled ? .TurnOnGlobalBlockTracking : .TurnOffGlobalBlockTracking,
-                        attributes: EnvironmentHelper.shared.getAttributes()
-                    )
-                }
         }
+
+        if FeatureFlag[.cookieCutter] {
+            NavigationLink(
+                "Cookie Cutter",
+                destination: CookieCutterSettings().environmentObject(CookieCutterModel()))
+        }
+
         NavigationLinkButton("Privacy Policy") {
             ClientLogger.shared.logCounter(
                 .ViewPrivacyPolicy, attributes: EnvironmentHelper.shared.getAttributes())

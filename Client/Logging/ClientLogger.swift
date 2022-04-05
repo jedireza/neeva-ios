@@ -60,7 +60,8 @@ public class ClientLogger {
         }
 
         let clientLogBase = ClientLogBase(
-            id: FeatureFlag[.web3Mode] ? "xyz.neeva.app.ios.browser" : "co.neeva.app.ios.browser",
+            id: NeevaConstants.currentTarget == .xyz
+                ? "xyz.neeva.app.ios.browser" : "co.neeva.app.ios.browser",
             version: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString")
                 as! String, environment: self.env)
         let clientLogCounter = ClientLogCounter(path: path.rawValue, attributes: loggingAttributes)

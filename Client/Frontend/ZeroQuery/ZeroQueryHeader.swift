@@ -11,43 +11,27 @@ struct ZeroQueryHeader: View {
     var label: LocalizedStringKey?
     var icon: Nicon?
 
-    private var accessibilityLabel: String {
-        if let label = label {
-            return "\(Text(title)), \(Text(label))"
-        }
-        return "\(Text(title))"
-    }
-
-    private var accessibilityTraits: AccessibilityTraits {
-        if label != nil, icon != nil {
-            return [.isHeader, .isButton]
-        }
-        return [.isHeader]
-    }
-
     var body: some View {
-        if let action = action {
+        if let action = action, let label = label, let icon = icon {
             HStack {
                 titleView
                 Spacer()
                 Button(action: action) {
                     // decorative because the toggle action is expressed on the header view itself.
                     // This button is not an accessibility element.
-                    if let icon = icon {
-                        Symbol(decorative: icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
-                            .frame(
-                                width: ZeroQueryUX.ToggleButtonSize,
-                                height: ZeroQueryUX.ToggleButtonSize,
-                                alignment: .center
-                            )
-                            .background(Color(light: .ui.gray98, dark: .systemFill)).clipShape(
-                                Circle())
-                    }
+                    Symbol(decorative: icon, size: ZeroQueryUX.ToggleIconSize, weight: .medium)
+                        .frame(
+                            width: ZeroQueryUX.ToggleButtonSize,
+                            height: ZeroQueryUX.ToggleButtonSize,
+                            alignment: .center
+                        )
+                        .background(Color(light: .ui.gray98, dark: .systemFill)).clipShape(
+                            Circle())
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityAddTraits(accessibilityTraits)
-            .accessibilityLabel(accessibilityLabel)
+            .accessibilityAddTraits([.isHeader, .isButton])
+            .accessibilityLabel("\(Text(title)), \(Text(label))")
             .accessibilityAction(.default, action)
             .padding([.top, .horizontal], ZeroQueryUX.Padding)
         } else {
@@ -56,8 +40,8 @@ struct ZeroQueryHeader: View {
                 Spacer()
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityAddTraits(accessibilityTraits)
-            .accessibilityLabel(accessibilityLabel)
+            .accessibilityAddTraits([.isHeader])
+            .accessibilityLabel("\(Text(title))")
             .padding([.top, .horizontal], ZeroQueryUX.Padding)
         }
 

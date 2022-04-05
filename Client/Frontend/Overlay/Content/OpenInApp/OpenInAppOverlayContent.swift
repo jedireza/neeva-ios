@@ -9,16 +9,23 @@ struct OpenInAppOverlayContent: View {
     @Environment(\.hideOverlay) private var hideOverlay
 
     let url: URL
+    let failedToOpenURL: () -> Void
 
     var body: some View {
         OpenInAppOverlayView(
             url: url,
             onOpen: {
                 hideOverlay()
-                UIApplication.shared.open(url, options: [:])
+
+                UIApplication.shared.open(url, options: [:]) { opened in
+                    if !opened {
+                        failedToOpenURL()
+                    }
+                }
             },
             onCancel: hideOverlay
         )
+        .padding(.bottom)
         .overlayIsFixedHeight(isFixedHeight: true)
     }
 }

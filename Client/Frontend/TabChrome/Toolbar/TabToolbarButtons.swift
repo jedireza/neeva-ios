@@ -56,7 +56,7 @@ enum TabToolbarButtons {
         }
 
         @ViewBuilder private var label: some View {
-            if FeatureFlag[.web3Mode] {
+            if NeevaConstants.currentTarget == .xyz {
                 Web3Theme(with: currentTheme).backButton
             } else {
                 Symbol(
@@ -145,7 +145,7 @@ enum TabToolbarButtons {
         }
 
         @ViewBuilder private var label: some View {
-            if FeatureFlag[.web3Mode] {
+            if NeevaConstants.currentTarget == .xyz {
                 Web3Theme(with: currentTheme).overflowButton
             } else {
                 Symbol(
@@ -228,7 +228,7 @@ enum TabToolbarButtons {
 
         @ViewBuilder
         var body: some View {
-            if FeatureFlag[.web3Mode] {
+            if NeevaConstants.currentTarget == .xyz {
                 SecondaryMenuButton(action: action) { button in
                     button.setImage(
                         Web3Theme(with: currentTheme).tabsImage, for: .normal)

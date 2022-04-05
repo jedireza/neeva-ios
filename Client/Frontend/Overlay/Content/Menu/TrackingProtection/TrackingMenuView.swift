@@ -10,12 +10,12 @@ import Storage
 import SwiftUI
 
 private enum TrackingMenuUX {
-    static let hallOfShameElementSpacing: CGFloat = 8
-    static let hallOfShameRowSpacing: CGFloat = 60
-    static let hallOfShameElementFaviconSize: CGFloat = 25
+    static let whosTrackingYouElementSpacing: CGFloat = 8
+    static let whosTrackingYouRowSpacing: CGFloat = 60
+    static let whosTrackingYouElementFaviconSize: CGFloat = 25
 }
 
-struct HallOfShameDomain {
+struct WhosTrackingYouDomain {
     let domain: TrackingEntity
     let count: Int
 }
@@ -30,7 +30,7 @@ class TrackingStatsViewModel: ObservableObject {
     }
 
     @Published private(set) var numDomains = 0
-    @Published private(set) var hallOfShameDomains = [HallOfShameDomain]()
+    @Published private(set) var whosTrackingYouDomains = [WhosTrackingYouDomain]()
     @Published var preventTrackersForCurrentPage: Bool {
         didSet {
             ClientLogger.shared.logCounter(
@@ -122,10 +122,10 @@ class TrackingStatsViewModel: ObservableObject {
     }
 
     func onDataUpdated() {
-        hallOfShameDomains =
+        whosTrackingYouDomains =
             trackers
             .reduce(into: [:]) { dict, tracker in dict[tracker] = (dict[tracker] ?? 0) + 1 }
-            .map { HallOfShameDomain(domain: $0.key, count: $0.value) }
+            .map { WhosTrackingYouDomain(domain: $0.key, count: $0.value) }
             .sorted(by: { $0.count > $1.count })
             .prefix(3)
             .toArray()
@@ -151,35 +151,36 @@ struct TrackingMenuFirstRowElement: View {
     }
 }
 
-struct HallOfShameElement: View {
-    let hallOfShameDomain: HallOfShameDomain
+struct WhosTrackingYouElement: View {
+    let whosTrackingYouDomain: WhosTrackingYouDomain
 
     var body: some View {
-        HStack(spacing: TrackingMenuUX.hallOfShameElementSpacing) {
-            Image(hallOfShameDomain.domain.rawValue).resizable().cornerRadius(5)
+        HStack(spacing: TrackingMenuUX.whosTrackingYouElementSpacing) {
+            Image(whosTrackingYouDomain.domain.rawValue).resizable().cornerRadius(5)
                 .frame(
-                    width: TrackingMenuUX.hallOfShameElementFaviconSize,
-                    height: TrackingMenuUX.hallOfShameElementFaviconSize)
-            Text("\(hallOfShameDomain.count)").withFont(.displayMedium)
+                    width: TrackingMenuUX.whosTrackingYouElementFaviconSize,
+                    height: TrackingMenuUX.whosTrackingYouElementFaviconSize)
+            Text("\(whosTrackingYouDomain.count)").withFont(.displayMedium)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(
-            "\(hallOfShameDomain.count) trackers blocked from \(hallOfShameDomain.domain.rawValue)"
+            "\(whosTrackingYouDomain.count) trackers blocked from \(whosTrackingYouDomain.domain.rawValue)"
         )
-        .accessibilityIdentifier("TrackingMenu.HallOfShameElement")
+        .accessibilityIdentifier("TrackingMenu.WhosTrackingYouElement")
     }
 }
 
-struct HallOfShameView: View {
-    let hallOfShameDomains: [HallOfShameDomain]
+struct WhosTrackingYouView: View {
+    let whosTrackingYouDomains: [WhosTrackingYouDomain]
 
     var body: some View {
         GroupedCell(alignment: .leading) {
             VStack(alignment: .leading) {
-                Text("Hall of Shame").withFont(.headingMedium).foregroundColor(.secondaryLabel)
-                HStack(spacing: TrackingMenuUX.hallOfShameRowSpacing) {
-                    ForEach(hallOfShameDomains, id: \.domain.rawValue) { hallOfShameDomain in
-                        HallOfShameElement(hallOfShameDomain: hallOfShameDomain)
+                Text("Who's Tracking You").withFont(.headingMedium).foregroundColor(.secondaryLabel)
+                HStack(spacing: TrackingMenuUX.whosTrackingYouRowSpacing) {
+                    ForEach(whosTrackingYouDomains, id: \.domain.rawValue) {
+                        whosTrackingYouDomain in
+                        WhosTrackingYouElement(whosTrackingYouDomain: whosTrackingYouDomain)
                     }
                 }.padding(.bottom, 4)
             }.padding(.vertical, 14)
@@ -197,10 +198,17 @@ struct TrackingMenuView: View {
             if viewModel.preventTrackersForCurrentPage {
                 HStack(spacing: 8) {
                     TrackingMenuFirstRowElement(label: "Trackers", num: viewModel.numTrackers)
-                    TrackingMenuFirstRowElement(label: "Domains", num: viewModel.numDomains)
+
+                    if FeatureFlag[.cookieCutter] {
+                        // TODO: Make this actually track a number
+                        TrackingMenuFirstRowElement(label: "Cookies", num: 0)
+                    } else {
+                        TrackingMenuFirstRowElement(label: "Domains", num: viewModel.numDomains)
+                    }
                 }
-                if !viewModel.hallOfShameDomains.isEmpty {
-                    HallOfShameView(hallOfShameDomains: viewModel.hallOfShameDomains)
+
+                if !viewModel.whosTrackingYouDomains.isEmpty {
+                    WhosTrackingYouView(whosTrackingYouDomains: viewModel.whosTrackingYouDomains)
                 }
             }
 

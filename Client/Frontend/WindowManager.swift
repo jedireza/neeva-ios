@@ -192,7 +192,7 @@ class WindowManager: KeyboardReadable {
         } completion: { [self] _ in
             openWindow?.rootViewController?.dismiss(
                 animated: false,
-                completion: {
+                completion: { [self] in
                     openWindow?.isHidden = true
 
                     // setting to nil removes UIWindow from stack

@@ -190,6 +190,8 @@ public struct LogConfig {
         case DefaultBrowserInterstitialImpSkipToBrowser
         /// Tap on Get started in welcome screen
         case GetStartedInWelcome
+        /// Resolved AdService attributionToken (if one exists)
+        case ResolvedAttributionToken
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -339,6 +341,17 @@ public struct LogConfig {
         case SignInWithAppleSuccess
         case SignInWithAppleFailed
         case ImplicitDeleteCookie
+
+        // MARK: Web3
+        case CreatedWallet
+        case ImportedWallet
+        case ConnectedSite
+        case DisconnectedSite
+        case SwitchedChain
+        case ThemeSet
+        case PersonalSign
+        case TransactionSuccessful
+        case TransactionAttempted
     }
 
     /// Specify a comma separated string with these values to
@@ -363,6 +376,7 @@ public struct LogConfig {
         case TabGroup = "TabGroup"
         case Feedback = "Feedback"
         case DebugMode = "DebugMode"
+        case Web3 = "Web3"
     }
 
     public static var enabledLoggingCategories: Set<InteractionCategory>?
@@ -376,6 +390,7 @@ public struct LogConfig {
             || category == .Stability
             || category == .DebugMode
             || category == .PromoCard
+            || category == .Web3
         {
             return true
         }
@@ -412,6 +427,7 @@ public struct LogConfig {
         return category == .FirstRun
             || category == .Stability
             || category == .PromoCard
+            || category == .Web3
     }
 
     // MARK: - Category
@@ -512,6 +528,7 @@ public struct LogConfig {
         case .OpenDefaultBrowserURL: return .FirstRun
         case .StartExperiment: return .FirstRun
         case .GetStartedInWelcome: return .FirstRun
+        case .ResolvedAttributionToken: return .FirstRun
 
         // MARK: - PromoCard
         case .PromoCardAppear: return .PromoCard
@@ -640,6 +657,17 @@ public struct LogConfig {
         case .SignInWithAppleSuccess: return .DebugMode
         case .SignInWithAppleFailed: return .DebugMode
         case .ImplicitDeleteCookie: return .DebugMode
+
+        // MARK: Web3
+        case .CreatedWallet: return .Web3
+        case .ImportedWallet: return .Web3
+        case .ConnectedSite: return .Web3
+        case .DisconnectedSite: return .Web3
+        case .SwitchedChain: return .Web3
+        case .ThemeSet: return .Web3
+        case .PersonalSign: return .Web3
+        case .TransactionSuccessful: return .Web3
+        case .TransactionAttempted: return .Web3
         }
     }
 
@@ -676,8 +704,6 @@ public struct LogConfig {
         public static let PreviewModeQueryCount = "PreviewModeQueryCount"
         /// Session UUID v2
         public static let SessionUUIDv2 = "SessionUUIDv2"
-        /// AdServices AAAttribution.attributionToken
-        public static let AdServicesAttributionToken = "AdServicesAttributionToken"
     }
 
     public struct UIInteractionAttribute {
@@ -807,5 +833,12 @@ public struct LogConfig {
 
     public struct TrackingProtectionAttribute {
         public static let toggleProtectionForURL = "ToggleProtectionForURL"
+    }
+
+    public struct Web3Attribute {
+        public static let walletAddress = "WalletAddress"
+        public static let connectedSite = "ConnectedSite"
+        public static let partnerCollection = "PartnerCollection"
+        public static let transactionAmount = "TransactionAmount"
     }
 }

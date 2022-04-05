@@ -61,6 +61,16 @@ struct SessionInfoView: View {
                         Defaults[.sessionsPeerIDs].remove(session.dAppInfo.peerId)
                         hideOverlaySheet()
                         web3Model.currentSession = nil
+                        ClientLogger.shared.logCounter(
+                            .DisconnectedSite,
+                            attributes: [
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.walletAddress,
+                                    value: Defaults[.cryptoPublicKey]),
+                                ClientLogCounterAttribute(
+                                    key: LogConfig.Web3Attribute.connectedSite,
+                                    value: session.dAppInfo.peerMeta.url.absoluteString),
+                            ])
                     }) {
                         HStack(spacing: 4) {
                             Symbol(decorative: .wifiSlash, style: .bodyMedium)

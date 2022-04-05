@@ -11,13 +11,10 @@
 	<key>com.apple.developer.siri</key>
 	<true/>
 	<key>com.apple.security.application-groups</key>
-	<array>
-		<string>group.co.neeva.app.ios.browser</string>
-	</array>
+	<array/>
 	<key>keychain-access-groups</key>
 	<array>
 		<string>$(AppIdentifierPrefix)xyz.neeva.app.ios.browser</string>
-		<string>$(AppIdentifierPrefix)group.co.neeva.app.ios.browser</string>
 	</array>
 </dict>
 </plist>

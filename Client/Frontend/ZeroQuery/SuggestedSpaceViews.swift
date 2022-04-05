@@ -22,7 +22,7 @@ struct SuggestedSpacesView: View {
         VStack {
             if case .refreshing = spaceStore.state, spaceStore.allSpaces.isEmpty {
                 VStack(spacing: ZeroQueryUX.Padding) {
-                    ForEach(0..<itemsToShow) { _ in
+                    ForEach(0..<itemsToShow, id: \.self) { _ in
                         LoadingSpaceListItem()
                     }
                 }

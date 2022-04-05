@@ -84,7 +84,8 @@ class TabContainerModel: ObservableObject {
     static var defaultType: ContentUIType {
         // TODO(darin): We should get rid of the notion of .blank. We should be showing the empty
         // card grid in this case instead.
-        !Defaults[.didFirstNavigation] && !FeatureFlag[.web3Mode] ? .previewHome : .blank
+        !Defaults[.didFirstNavigation] && NeevaConstants.currentTarget != .xyz
+            ? .previewHome : .blank
     }
 
     func updateContent(_ event: ContentUIVisibilityEvent) {
@@ -112,7 +113,7 @@ class TabContainerModel: ObservableObject {
                 zeroQueryModel.targetTab = .defaultValue
             }
         case .hideZeroQuery:
-            if !Defaults[.didFirstNavigation] && !FeatureFlag[.web3Mode] {
+            if !Defaults[.didFirstNavigation] && NeevaConstants.currentTarget != .xyz {
                 currentContentUI = .previewHome
             } else {
                 currentContentUI = webContainerType
@@ -178,13 +179,21 @@ struct TabContainerContent: View {
                         SimulatedSwipeViewRepresentable(
                             model: simulatedSwipeModel, superview: bvc.view.superview
                         )
+                        .padding(.bottom, webViewBottomPadding)
                         .opacity(!simulatedSwipeModel.hidden ? 1 : 0)
+                        .frame(width: geom.size.width + SwipeUX.EdgeWidth)
+                        // When in landscape mode, the SimulatedSwipeView would clip
+                        // some of the content. This was caused by the SafeArea pushing the view
+                        // over the content. Subtracting the horizontal SafeArea from the
+                        // offset would prevent this, but would overshoot, stopping users from being able
+                        // to swipe back on the view. Diving one of the edges by 4 seemed to create a goldilocks
+                        // amount of less offset but just enough to still be interactable.
                         .offset(
-                            x: -geom.size.width + simulatedSwipeModel.overlayOffset,
+                            x: -geom.size.width - geom.safeAreaInsets.leading
+                                - (geom.safeAreaInsets.trailing / 4)
+                                + simulatedSwipeModel.overlayOffset,
                             y: webViewOffsetY
                         )
-                        .frame(width: geom.size.width + SwipeUX.EdgeWidth)
-                        .padding(.bottom, webViewBottomPadding)
                     }
 
                     if FeatureFlag[.cardStrip] && !FeatureFlag[.topCardStrip]

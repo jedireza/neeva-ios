@@ -34,10 +34,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
     private(set) var searchQueryModel = SearchQueryModel()
     private(set) var locationModel = LocationViewModel()
 
-    // Default Browser intersititual
-    private var shouldPresentDBPrompt = false
-    var shouldLogDBPrompt = false
-
     lazy var readerModeModel: ReaderModeModel = {
         let model = ReaderModeModel(
             setReadingMode: { [self] enabled in
@@ -197,7 +193,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
 
         chromeModel.topBarDelegate = self
         chromeModel.toolbarDelegate = self
-        if FeatureFlag[.enableCryptoWallet] {
+        if NeevaConstants.currentTarget == .xyz {
             self.configureWalletServer()
         }
         didInit()
@@ -390,7 +386,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             }
         }
 
-        if FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget == .xyz {
             DispatchQueue.main.async {
                 AssetStore.shared.refresh()
             }
@@ -496,7 +492,7 @@ class BrowserViewController: UIViewController, ModalPresenter {
             if Self.createNewTabOnStartForTesting {
                 self.tabManager.select(self.tabManager.addTab())
             } else if self.tabManager.normalTabs.isEmpty {
-                if FeatureFlag[.web3Mode] {
+                if NeevaConstants.currentTarget == .xyz {
                     self.showZeroQuery()
                     if !Defaults[.walletIntroSeen] {
                         self.web3Model.showWalletPanel()
@@ -511,16 +507,9 @@ class BrowserViewController: UIViewController, ModalPresenter {
     }
 
     override func viewDidAppear(_ animated: Bool) {
-        if !FeatureFlag[.web3Mode] {
+        if NeevaConstants.currentTarget != .xyz {
             if !Defaults[.introSeen] {
-                if NeevaExperiment.startExperiment(
-                    for: .defaultBrowserInterstitialFirst
-                ) == .showInterstitialFirst {
-                    presentDefaultBrowserFirstRun()
-                } else {
-                    presentIntroViewController()
-                }
-                NeevaExperiment.logStartExperiment(for: .defaultBrowserInterstitialFirst)
+                presentDefaultBrowserFirstRun()
             }
         }
 
@@ -876,11 +865,6 @@ class BrowserViewController: UIViewController, ModalPresenter {
                 ),
                 notify: true
             )
-
-            if self.shouldPresentDBPrompt {
-                self.presentDBPromptView()
-            }
-
             self.hideCardGrid(withAnimation: false)
         }
     }
@@ -925,6 +909,8 @@ class BrowserViewController: UIViewController, ModalPresenter {
     func openLazyTab(
         openedFrom: ZeroQueryOpenedLocation = .openTab(nil), switchToIncognitoMode: Bool? = nil
     ) {
+        popToBVC()
+
         if let switchToIncognitoMode = switchToIncognitoMode {
             tabManager.setIncognitoMode(to: switchToIncognitoMode)
         }
@@ -1251,7 +1237,7 @@ extension BrowserViewController: TabDelegate {
                         chromeModel.estimatedProgress = estimatedProgress
                     } else if estimatedProgress == 1 && chromeModel.estimatedProgress != 1 {
                         chromeModel.estimatedProgress = 1
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { [self] in
                             if chromeModel.estimatedProgress == 1 {
                                 chromeModel.estimatedProgress = nil
                             }
@@ -1583,6 +1569,7 @@ extension BrowserViewController {
         ) {
             Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
             Defaults[.introSeen] = true
+            Defaults[.firstRunSeenAndNotSignedIn] = true
             ClientLogger.shared.logCounter(
                 .DefaultBrowserInterstitialImp
             )
@@ -1619,9 +1606,6 @@ extension BrowserViewController {
             {
                 DispatchQueue.main.async {
                     selectedTab.loadRequest(URLRequest(url: url))
-                    if self.shouldPresentDBPrompt {
-                        self.presentDBPromptView()
-                    }
                     self.hideCardGrid(withAnimation: false)
                 }
             } else {
@@ -1644,9 +1628,6 @@ extension BrowserViewController {
                 }
             }
         }
-
-        // Only show to new users
-        let introSeen = Defaults[.introSeen]
 
         introViewModel = IntroViewModel(
             presentationController: self, overlayManager: overlayManager,
@@ -1690,22 +1671,6 @@ extension BrowserViewController {
                         }
                     }
 
-                    if let arm = NeevaExperiment.arm(for: .defaultBrowserInterstitialFirst),
-                        arm == .control
-                            && !Defaults[.didSetDefaultBrowser]
-                            && !Defaults[.didShowDefaultBrowserInterstitial]
-                            && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
-                    {
-                        if case .skipToBrowser = action {
-                            if !introSeen {
-                                self.presentDBPromptView(fromSkipToBrowser: true)
-                            }
-                        } else {
-                            self.shouldPresentDBPrompt = true
-                            self.shouldLogDBPrompt = true
-                        }
-                    }
-
                     SpaceStore.shared.refresh(force: true)
                 }
             })
@@ -1727,45 +1692,6 @@ extension BrowserViewController {
             )
         ) {
             completion?()
-        }
-    }
-
-    private func presentDBPromptView(fromSkipToBrowser: Bool = false) {
-        if let arm = NeevaExperiment.arm(for: .defaultBrowserInterstitialFirst),
-            arm == .showInterstitialFirst
-        {
-            return
-        }
-
-        self.shouldPresentDBPrompt = false
-
-        if fromSkipToBrowser {
-            ClientLogger.shared.logCounter(
-                .DefaultBrowserInterstitialImpSkipToBrowser
-            )
-        }
-
-        self.overlayManager.presentFullScreenModal(
-            content: AnyView(
-                DefaultBrowserInterstitialOnboardingView(
-                    trigger: fromSkipToBrowser ? .skipToBrowser : .afterSignup
-                ) {
-                    self.overlayManager.hideCurrentOverlay()
-                } buttonAction: {
-                    self.overlayManager.hideCurrentOverlay()
-                    UIApplication.shared.openSettings(
-                        triggerFrom: fromSkipToBrowser
-                            ? .defaultBrowserPromptSkipToBrowser
-                            : .defaultBrowserPromptMergeEduction
-                    )
-                }
-            )
-        ) {}
-
-        if fromSkipToBrowser {
-            Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser] = true
-        } else {
-            Defaults[.didShowDefaultBrowserInterstitial] = true
         }
     }
 
@@ -2196,7 +2122,7 @@ extension BrowserViewController {
         // otherwise, present as popover
         showModal(style: .cheatsheet) { [self] in
             CheatsheetOverlayContent(
-                menuAction: { perform(overflowMenuAction: $0, targetButtonView: nil) },
+                menuAction: { self.perform(overflowMenuAction: $0, targetButtonView: nil) },
                 tabManager: tabManager
             )
             .environment(\.onSigninOrJoinNeeva) {
@@ -2204,12 +2130,12 @@ extension BrowserViewController {
                     .CheatsheetErrorSigninOrJoinNeeva,
                     attributes: EnvironmentHelper.shared.getFirstRunAttributes()
                 )
-                overlayManager.hideCurrentOverlay()
-                presentIntroViewController(
+                self.overlayManager.hideCurrentOverlay()
+                self.presentIntroViewController(
                     true,
                     onDismiss: {
                         DispatchQueue.main.async {
-                            hideCardGrid(withAnimation: true)
+                            self.hideCardGrid(withAnimation: true)
                         }
                     }
                 )
