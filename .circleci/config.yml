@@ -51,7 +51,7 @@ commands:
     steps:
       - generate-user-scripts
       - run:
-          name: Build Client
+          name: Build XYZ Client
           command: xcodebuild build-for-testing -scheme XYZClient -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPhone 12'
   build-codegen:
     steps:
