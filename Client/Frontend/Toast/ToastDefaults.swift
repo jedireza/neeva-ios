@@ -12,6 +12,7 @@ class ToastDefaults: NSObject {
     var toastProgressViewModel: ToastProgressViewModel?
 
     private var requestListener: AnyCancellable?
+    private var requestListener2: AnyCancellable?
 
     func showToast(with text: String, toastViewManager: ToastViewManager, checkmark: Bool = false) {
         let toastView = toastViewManager.makeToast(
@@ -115,11 +116,13 @@ class ToastDefaults: NSObject {
             } else {
                 self.toastProgressViewModel?.status = .success
                 if let spaceID = request.targetSpaceID {
-                    SpaceStore.shared.refreshSpace(spaceID: spaceID)
+                    SpaceStore.shared.refreshSpace(spaceID: spaceID, afterUpdating: request.url)
                 }
-                self.requestListener = SpaceStore.shared.$state.sink { state in
-                    bvc.chromeModel.urlInSpace = false
-                    self.requestListener?.cancel()
+                self.requestListener2 = SpaceStore.shared.$state.sink { [request] state in
+                    if case .ready = state {
+                        bvc.chromeModel.urlInSpace = SpaceStore.shared.urlInASpace(request.url)
+                        self.requestListener2?.cancel()
+                    }
                 }
             }
         }
