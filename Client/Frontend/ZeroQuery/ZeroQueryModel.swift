@@ -117,7 +117,34 @@ class ZeroQueryModel: ObservableObject {
             Defaults[.didDismissDefaultBrowserCard] = true
         }
 
-        if !Defaults[.signedInOnce] {
+        let notSeenInterstitial =
+            !Defaults[.didShowDefaultBrowserInterstitial]
+            && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser]
+
+        if !Defaults[.didDismissDefaultBrowserCard]
+            && !Defaults[.didSetDefaultBrowser]
+            && Defaults[.didFirstNavigation]
+            && (notSeenInterstitial
+                || satisfyDefaultBrowserPromoFreqRule()
+                || DefaultBrowserInterstitialChoice(
+                    rawValue: Defaults[.lastDefaultBrowserInterstitialChoice]) == .skipForNow)
+        {
+            ClientLogger.shared.logCounter(.DefaultBrowserPromoCardImp)
+            promoCard = .defaultBrowser {
+                ClientLogger.shared.logCounter(
+                    .PromoDefaultBrowser,
+                    attributes: EnvironmentHelper.shared.getAttributes()
+                )
+                self.bvc.presentDBOnboardingViewController(triggerFrom: .defaultBrowserPromoCard)
+            } onClose: {
+                ClientLogger.shared.logCounter(
+                    .CloseDefaultBrowserPromo,
+                    attributes: EnvironmentHelper.shared.getAttributes()
+                )
+                self.promoCard = nil
+                Defaults[.didDismissDefaultBrowserCard] = true
+            }
+        } else if !Defaults[.signedInOnce] {
             if NeevaConstants.currentTarget == .xyz && Defaults[.cryptoPublicKey].isEmpty {
                 promoCard = .walletPromo {
                     self.bvc.web3Model.showWalletPanel()
@@ -175,27 +202,6 @@ class ZeroQueryModel: ObservableObject {
                     Defaults[.seenBlackFridayFollowPromo] = true
                     self.promoCard = nil
                 })
-        } else if !Defaults[.didDismissDefaultBrowserCard]
-            && !Defaults[.didSetDefaultBrowser]
-            && ((!Defaults[.didShowDefaultBrowserInterstitial]
-                && !Defaults[.didShowDefaultBrowserInterstitialFromSkipToBrowser])
-                || satisfyDefaultBrowserPromoFreqRule())
-        {
-            ClientLogger.shared.logCounter(.DefaultBrowserPromoCardImp)
-            promoCard = .defaultBrowser {
-                ClientLogger.shared.logCounter(
-                    .PromoDefaultBrowser,
-                    attributes: EnvironmentHelper.shared.getAttributes()
-                )
-                self.bvc.presentDBOnboardingViewController(triggerFrom: .defaultBrowserPromoCard)
-            } onClose: {
-                ClientLogger.shared.logCounter(
-                    .CloseDefaultBrowserPromo,
-                    attributes: EnvironmentHelper.shared.getAttributes()
-                )
-                self.promoCard = nil
-                Defaults[.didDismissDefaultBrowserCard] = true
-            }
         } else {
             promoCard = nil
         }

@@ -55,6 +55,7 @@ struct InternalSettingsView: View {
     @Default(.forceProdGraphQLLogger) var forceProdGraphQLLogger
     @Default(.firstRunImpressionLogged) var firstRunImpressionLogged
     @Default(.lastReportedConversionEvent) var lastReportedConversionEvent
+    @Default(.lastDefaultBrowserInterstitialChoice) var lastDefaultBrowserInterstitialChoice
 
     var body: some View {
         List {
@@ -144,6 +145,10 @@ struct InternalSettingsView: View {
                         .accentColor(.red)
                         .buttonStyle(.borderless)
                 }
+                NumberField(
+                    String("lastDefaultBrowserInterstitialChoice"),
+                    number: $lastDefaultBrowserInterstitialChoice
+                )
             }
             Section(header: Text(verbatim: "User-generated")) {
                 HStack {
