@@ -154,8 +154,8 @@ jobs:
     steps:
       - bootstrap
       - build-codegen
-      - build-client
       - build-xyzclient
+      - build-client
       - save_cache:
           name: Save build cache
           key: v1-build-{{ .Environment.CIRCLE_SHA1 }}
