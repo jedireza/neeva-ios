@@ -120,7 +120,6 @@ commands:
           name: XCUITests - iPad
           command: xcodebuild test-without-building -scheme Client -workspace Neeva.xcworkspace -destination 'platform=iOS Simulator,name=iPad Pro (11-inch) (3rd generation)' -only-testing XCUITests -resultBundlePath xcuitests-$CIRCLE_BUILD_NUM.xcresult
       - store-xcuitest-artifact
-
   store-xcuitest-artifact:
     steps:
       - run:
@@ -217,20 +216,12 @@ jobs:
           key: v1-xyzbuild-{{ .Environment.CIRCLE_SHA1 }}
           paths:
             - ~/Library/Developer/Xcode/DerivedData
-  swift-format-xyz:
-    macos:
-      xcode: "13.3.0"
-    resource_class: macos.x86.medium.gen2
-    steps:
-      - restore-xyzbuild-cache
-      - build-swift-format
-      - swift-format-check
-
 workflows:
   version: 2
   build:
     jobs:
       - build
+      - xyzbuild
       - swift-format:
           requires: [build]
       - test-client:
@@ -243,6 +234,3 @@ workflows:
       - xcui-tests-ipad:
           requires: [build]
           context: ios-testing
-      - xyzbuild
-      - swift-format-xyz:
-          requires: [xyzbuild]
