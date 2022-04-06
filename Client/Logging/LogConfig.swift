@@ -192,6 +192,8 @@ public struct LogConfig {
         case GetStartedInWelcome
         /// Resolved AdService attributionToken (if one exists)
         case ResolvedAttributionToken
+        /// Request AttributionToken error
+        case ResolvedAttributionTokenError
 
         // MARK: promo card
         /// Promo card is rendered on screen
@@ -524,6 +526,7 @@ public struct LogConfig {
         case .StartExperiment: return .FirstRun
         case .GetStartedInWelcome: return .FirstRun
         case .ResolvedAttributionToken: return .FirstRun
+        case .ResolvedAttributionTokenError: return .FirstRun
 
         // MARK: - PromoCard
         case .PromoCardAppear: return .PromoCard
@@ -696,6 +699,10 @@ public struct LogConfig {
         public static let PreviewModeQueryCount = "PreviewModeQueryCount"
         /// Session UUID v2
         public static let SessionUUIDv2 = "SessionUUIDv2"
+        /// Attribution Token Error Type
+        public static let AttributionTokenErrorType = "AttributionTokenErrorType"
+        /// Attribution Token Error Message
+        public static let AttributionTokenErrorMessage = "AttributionTokenErrorMessage"
     }
 
     public struct UIInteractionAttribute {
