@@ -64,7 +64,9 @@ class UserActivityHandler {
         attributes.weakRelatedUniqueIdentifier = url.absoluteString
 
         // Fetch favicon
-        if Defaults[.addThumbnailToActivities] {
+        if #unavailable(iOS 15),
+            Defaults[.addThumbnailToActivities]
+        {
             if let faviconURLString = tab.pageMetadata?.faviconURL,
                 let faviconURL = URL(string: faviconURLString)
             {
@@ -79,21 +81,12 @@ class UserActivityHandler {
                         let resolvedImage =
                             image
                             ?? UserActivityHandler.getFallbackFavicon(for: url, favicon: favicon)
-                        let faviconSource: LogConfig.SpotlightAttribute.ThumbnailSource =
-                            (image != nil) ? .favicon : .fallback
-                        ClientLogger.shared.logCounter(
-                            .addThumbnailToUserActivity,
-                            attributes: EnvironmentHelper.shared.getAttributes() + [
-                                ClientLogCounterAttribute(
-                                    key: LogConfig.SpotlightAttribute.thumbnailSource,
-                                    value: faviconSource.rawValue
-                                )
-                            ]
-                        )
 
                         attributes.thumbnailData = resolvedImage.pngData()
                         userActivity.contentAttributeSet = attributes
                         userActivity.needsSave = true
+
+                        Defaults[.numOfThumbnailsForUserActivity] += 1
                     }
                 }
             } else {
@@ -101,15 +94,7 @@ class UserActivityHandler {
                     for: url, favicon: nil
                 ).pngData()
 
-                ClientLogger.shared.logCounter(
-                    .addThumbnailToUserActivity,
-                    attributes: EnvironmentHelper.shared.getAttributes() + [
-                        ClientLogCounterAttribute(
-                            key: LogConfig.SpotlightAttribute.thumbnailSource,
-                            value: LogConfig.SpotlightAttribute.ThumbnailSource.fallback.rawValue
-                        )
-                    ]
-                )
+                Defaults[.numOfThumbnailsForUserActivity] += 1
             }
         }
 

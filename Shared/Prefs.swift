@@ -204,6 +204,9 @@ extension Defaults.Keys {
         "overwriteSpotlightDefaults", default: true)
     public static let numOfIndexedUserActivities = Defaults.Key<Int>(
         "numOfIndexedUserActivities", default: 0)
+    public static let numOfThumbnailsForUserActivity = Defaults.Key<Int>(
+        "numOfThumbnailsForUserActivity", default: 0
+    )
     public static let numOfWillIndexEvents = Defaults.Key<Int>("numOfWillIndexEvents", default: 0)
     public static let numOfDidIndexEvents = Defaults.Key<Int>("numOfDidIndexEvents", default: 0)
 

@@ -289,15 +289,10 @@ public struct LogConfig {
         // MARK: Spotlight
         // when url is opened from a user activity
         case openURLFromUserActivity
-        // when we create and index a user activity for a url browsing activity
-        case createUserActivity
-        // when we receive the callback after fetching a thumbnail to update the thumbnail
-        case addThumbnailToUserActivity
+        // Aggregated index activities
+        case spotlightEventsForSession
         // when an indexed CSSearchablItem is opened
         case openCSSearchableItem
-        // Indexing access
-        case willIndex
-        case didIndex
         case clearIndexError
 
         // MARK: Shortcuts
@@ -610,11 +605,8 @@ public struct LogConfig {
 
         // MARK: - Spotlight
         case .openURLFromUserActivity: return .Spotlight
-        case .createUserActivity: return .Spotlight
-        case .addThumbnailToUserActivity: return .Spotlight
+        case .spotlightEventsForSession: return .Spotlight
         case .openCSSearchableItem: return .Spotlight
-        case .willIndex: return .Spotlight
-        case .didIndex: return .Spotlight
         case .clearIndexError: return .Spotlight
 
         // MARK: - Shortcuts
@@ -802,6 +794,13 @@ public struct LogConfig {
         public static let indexCount = "indexCount"
 
         public static let error = "error"
+
+        public enum CountForEvent: String {
+            case createUserActivity
+            case addThumbnailToUserActivity
+            case willIndex
+            case didIndex
+        }
 
         public enum ThumbnailSource: String {
             case none

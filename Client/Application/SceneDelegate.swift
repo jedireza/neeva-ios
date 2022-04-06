@@ -536,27 +536,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func sendAggregatedSpotlightLogs() {
         ClientLogger.shared.logCounter(
-            .createUserActivity,
+            .spotlightEventsForSession,
             attributes: EnvironmentHelper.shared.getAttributes() + [
                 ClientLogCounterAttribute(
-                    key: "count", value: String(Defaults[.numOfIndexedUserActivities]))
-            ]
-        )
-        ClientLogger.shared.logCounter(
-            .willIndex,
-            attributes: EnvironmentHelper.shared.getAttributes() + [
+                    key: LogConfig.SpotlightAttribute.CountForEvent.createUserActivity.rawValue,
+                    value: String(Defaults[.numOfIndexedUserActivities])
+                ),
                 ClientLogCounterAttribute(
-                    key: "count", value: String(Defaults[.numOfWillIndexEvents]))
-            ]
-        )
-        ClientLogger.shared.logCounter(
-            .didIndex,
-            attributes: EnvironmentHelper.shared.getAttributes() + [
+                    key: LogConfig.SpotlightAttribute.CountForEvent.addThumbnailToUserActivity
+                        .rawValue,
+                    value: String(Defaults[.numOfThumbnailsForUserActivity])
+                ),
                 ClientLogCounterAttribute(
-                    key: "count", value: String(Defaults[.numOfDidIndexEvents]))
+                    key: LogConfig.SpotlightAttribute.CountForEvent.willIndex.rawValue,
+                    value: String(Defaults[.numOfWillIndexEvents])
+                ),
+                ClientLogCounterAttribute(
+                    key: LogConfig.SpotlightAttribute.CountForEvent.didIndex.rawValue,
+                    value: String(Defaults[.numOfDidIndexEvents])
+                ),
             ]
         )
         Defaults[.numOfIndexedUserActivities] = 0
+        Defaults[.numOfThumbnailsForUserActivity] = 0
         Defaults[.numOfWillIndexEvents] = 0
         Defaults[.numOfDidIndexEvents] = 0
     }
