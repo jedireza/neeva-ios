@@ -1336,6 +1336,7 @@
 		E63B18E227FB472E001BA0B0 /* ViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A8CE5ED27CCA66600735C75 /* ViewExtension.swift */; };
 		E63B18E327FB5AD9001BA0B0 /* SessionInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4A93B54E277EA7E100CD5415 /* SessionInfoView.swift */; };
 		E63B18E627FB69DF001BA0B0 /* WalletServerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63B18E427FB69B5001BA0B0 /* WalletServerManager.swift */; };
+		E63B18E727FDEBCF001BA0B0 /* BrowserViewController+IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20ED47CD27F28235002E3ADF /* BrowserViewController+IntroView.swift */; };
 		E63DBA5727F339FC001B7A68 /* SuggestedXYZSearchesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63DBA5627F339FC001B7A68 /* SuggestedXYZSearchesView.swift */; };
 		E63F71881DB7FBE200A995C9 /* TestSQLiteMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = E63F71871DB7FBE200A995C9 /* TestSQLiteMetadata.swift */; };
 		E64024E027F241CA00D65B63 /* ZeroQueryHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E64024DF27F241CA00D65B63 /* ZeroQueryHeader.swift */; };
@@ -6631,6 +6632,7 @@
 				4A42C49E27E58487003B9826 /* QueryButtonView.swift in Sources */,
 				4A42C49F27E58487003B9826 /* ContextMenuHelper.swift in Sources */,
 				4A42C4A027E58487003B9826 /* TabLocationBarButton.swift in Sources */,
+				E63B18E727FDEBCF001BA0B0 /* BrowserViewController+IntroView.swift in Sources */,
 				4A42C4A127E58487003B9826 /* WKWebView+Zoom.m in Sources */,
 				4A42C4A227E58487003B9826 /* TabManager+TabStorage.swift in Sources */,
 				4A42C4A327E58487003B9826 /* TabManager+WKNavigationDelegate.swift in Sources */,
