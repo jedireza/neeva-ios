@@ -21,7 +21,7 @@ struct SiteRowView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }.lineLimit(1)
-                
+
                 Spacer()
             }
             .padding()
@@ -54,7 +54,7 @@ enum TimeSection: Int, CaseIterable {
 
 struct HistorySectionHeader: View {
     let section: TimeSection
-    
+
     var title: some View {
         HStack {
             Text(section.title ?? "")
@@ -82,22 +82,24 @@ struct HistoryPanelView: View {
             GroupedCell.Decoration {
                 VStack(spacing: 0) {
                     GroupedRowButtonView(label: "Clear Recent History", symbol: .trash) {
-                        
+
                     }
-                    
+
                     Color.groupedBackground.frame(height: 1)
 
-                    GroupedRowButtonView(label: "Recently Closed Tabs", symbol: .clockArrowCirclepath) {
-                        
+                    GroupedRowButtonView(
+                        label: "Recently Closed Tabs", symbol: .clockArrowCirclepath
+                    ) {
+
                     }
                 }.accentColor(.label)
             }.padding(.horizontal)
-            
+
             // History List
             LazyVStack(spacing: 0, pinnedViews: .sectionHeaders) {
                 ForEach(TimeSection.allCases, id: \.self) { section in
                     let itemsInSection = model.groupedSites.itemsForSection(section.rawValue)
-                    
+
                     if itemsInSection.count > 0 {
                         Section(header: HistorySectionHeader(section: section)) {
                             ForEach(
@@ -107,7 +109,7 @@ struct HistoryPanelView: View {
                                     .onAppear {
                                         model.loadNextItemsIfNeeded(from: index)
                                     }
-                                
+
                                 Color.groupedBackground.frame(height: 1)
                             }
                         }

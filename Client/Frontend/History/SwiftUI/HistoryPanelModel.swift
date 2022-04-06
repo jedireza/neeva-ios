@@ -47,7 +47,7 @@ class HistoryPanelModel: ObservableObject {
                 return deferMaybe(result)
             }
     }
-    
+
     func addSiteDataToGroupedSites(_ result: Maybe<Cursor<Site?>>) {
         if let sites = result.successValue {
             for site in sites {
@@ -60,15 +60,15 @@ class HistoryPanelModel: ObservableObject {
             }
         }
     }
-    
+
     func loadNextItemsIfNeeded(from index: Int) {
         guard index >= currentFetchOffset - 1 else {
             print("unnessecary to load more sites", index, currentFetchOffset)
             return
         }
-        
+
         print("load more sites")
-        
+
         loadSiteData().uponQueue(.main) { result in
             self.addSiteDataToGroupedSites(result)
         }
