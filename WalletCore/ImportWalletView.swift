@@ -14,6 +14,7 @@ public struct ImportWalletView: View {
     @Binding var viewState: ViewState
     @State var isImporting: Bool = false
     @State var isFocused: Bool = false
+    @State var clipboardHasPhrase = false
     let completion: () -> Void
 
     public init(
@@ -59,7 +60,7 @@ public struct ImportWalletView: View {
             )
             .frame(maxHeight: 120)
 
-            if UIPasteboard.general.string?.split(separator: " ").count == 12 && isFocused {
+            if isFocused, clipboardHasPhrase {
                 Button(
                     action: {
                         inputPhrase = UIPasteboard.general.string!
@@ -96,6 +97,9 @@ public struct ImportWalletView: View {
         }
         .padding(.horizontal, 16)
         .ignoresSafeArea(.keyboard)
+        .onChange(of: isFocused) { _ in
+            clipboardHasPhrase = UIPasteboard.general.string?.split(separator: " ").count == 12
+        }
     }
 
     func onImport() {
